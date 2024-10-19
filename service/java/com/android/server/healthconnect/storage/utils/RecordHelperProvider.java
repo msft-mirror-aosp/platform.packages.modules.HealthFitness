@@ -193,6 +193,10 @@ public final class RecordHelperProvider {
         return RECORD_ID_TO_HELPER_MAP.values();
     }
 
+    /**
+     * @deprecated {@link InternalHealthConnectMappings#getRecordHelper(int)}
+     */
+    @Deprecated
     public static RecordHelper<?> getRecordHelper(int recordType) {
         return requireNonNull(RECORD_ID_TO_HELPER_MAP.get(recordType));
     }

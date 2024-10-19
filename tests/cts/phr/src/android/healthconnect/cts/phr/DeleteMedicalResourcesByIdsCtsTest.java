@@ -20,6 +20,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZ
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
@@ -92,11 +93,15 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
         mUtil.deleteAllMedicalData();
+        if (TestUtils.setLowerRateLimitsForTesting(true)) {
+            mUtil.mLimitsAdjustmentForTesting = 10;
+        }
     }
 
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+        TestUtils.setLowerRateLimitsForTesting(false);
     }
 
     @Test
@@ -112,6 +117,29 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
         finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalResourcesByIds_writeLimitExceeded_throws() throws Exception {
+        // Insert a data source to ensure we have an appInfoId.
+        mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        // Make the maximum number of calls allowed by quota
+        int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+            mManager.deleteMedicalResources(
+                    List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), callback);
+            callback.verifyNoExceptionOrThrow();
+        }
+
+        // Make 1 extra call and check quota is exceeded
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(
+                List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), callback);
+
+        HealthConnectException exception = callback.assertAndGetException();
+        assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
     @Test

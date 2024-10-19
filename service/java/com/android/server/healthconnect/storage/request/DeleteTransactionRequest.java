@@ -29,7 +29,7 @@ import android.util.Slog;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
@@ -58,6 +58,7 @@ public final class DeleteTransactionRequest {
             String packageName,
             DeleteUsingFiltersRequestParcel request,
             AppInfoHelper appInfoHelper) {
+        var internalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         Objects.requireNonNull(packageName);
         mPackageName = packageName;
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
@@ -69,7 +70,7 @@ public final class DeleteTransactionRequest {
             Map<RecordHelper<?>, List<UUID>> recordTypeToUuids = new ArrayMap<>();
             for (RecordIdFilter recordId : recordIds) {
                 RecordHelper<?> recordHelper =
-                        RecordHelperProvider.getRecordHelper(
+                        internalHealthConnectMappings.getRecordHelper(
                                 HealthConnectMappings.getInstance()
                                         .getRecordType(recordId.getRecordType()));
                 UUID uuid = StorageUtils.getUUIDFor(recordId, packageName);
@@ -105,7 +106,8 @@ public final class DeleteTransactionRequest {
 
         recordTypeFilters.forEach(
                 (recordType) -> {
-                    RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+                    RecordHelper<?> recordHelper =
+                            internalHealthConnectMappings.getRecordHelper(recordType);
                     Objects.requireNonNull(recordHelper);
 
                     mDeleteTableRequests.add(

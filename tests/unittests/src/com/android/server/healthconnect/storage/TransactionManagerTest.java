@@ -73,7 +73,6 @@ import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -118,7 +117,7 @@ public class TransactionManagerTest {
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
-    // TODO(b/373322447):  HealthPermissionIntentAppsTracker
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     private TransactionTestUtils mTransactionTestUtils;
@@ -483,7 +482,8 @@ public class TransactionManagerTest {
     @Test
     @EnableFlags(Flags.FLAG_ADD_MISSING_ACCESS_LOGS)
     public void populateWithAggregation_accessLogRecorded() {
-        RecordHelper<?> helper = RecordHelperProvider.getRecordHelper(RECORD_TYPE_HEART_RATE);
+        RecordHelper<?> helper =
+                mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_HEART_RATE);
         AggregationType<?> aggregationType =
                 AggregationTypeIdMapper.getInstance()
                         .getAggregationTypeFor(HEART_RATE_RECORD_BPM_AVG);

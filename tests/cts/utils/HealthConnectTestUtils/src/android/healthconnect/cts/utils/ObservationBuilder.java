@@ -225,6 +225,15 @@ public final class ObservationBuilder extends FhirResourceBuilder<ObservationBui
     }
 
     /**
+     * Sets the id field for this observation.
+     *
+     * @return this builder.
+     */
+    public ObservationBuilder setId(String id) {
+        return set("id", id);
+    }
+
+    /**
      * Sets the category for this observation.
      *
      * @return this builder.

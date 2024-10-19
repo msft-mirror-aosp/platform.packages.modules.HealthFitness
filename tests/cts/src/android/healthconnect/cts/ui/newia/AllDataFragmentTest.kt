@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.healthconnect.cts.ui
+package android.healthconnect.cts.ui.newia
 
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.HeightRecord
@@ -32,6 +32,7 @@ import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
+import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
@@ -113,6 +114,7 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
         context.launchDataActivity {
             findText("Activity")
             findTextAndClick("Steps")
+
             findText("Entries")
             findText("Access")
         }

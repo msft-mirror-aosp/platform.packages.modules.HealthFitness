@@ -53,7 +53,7 @@ object UiTestUtils {
 
     const val TEST_APP_PACKAGE_NAME = "android.healthconnect.cts.app"
 
-    private val TEST_APP_2_PACKAGE_NAME = "android.healthconnect.cts.app2"
+    const val TEST_APP_2_PACKAGE_NAME = "android.healthconnect.cts.app2"
 
     const val TEST_APP_NAME = "Health Connect cts test app"
 

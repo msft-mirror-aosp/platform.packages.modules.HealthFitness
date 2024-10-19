@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"በመሣሪያዎ ላይ ያለውን የጤና እና አካል ብቃት ውሂብ ያስተዳድሩ እና የትኛዎቹ መተግበሪያዎች ሊደርሱበት እንደሚችሉ ይቆጣጠሩ"</string>
     <string name="data_title" msgid="4456619761533380816">"ውሂብ እና መዳረሻ"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"የጤና መዝገቦችን አስስ"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"የእርስዎን የጤና መዝገቦች እና የትኛዎቹ መተግበሪያዎች ሊደርሱባቸው እንደሚችሉ ይመልከቱ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"ሁሉም ምድቦች"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"ሁሉንም ምድቦች አሳይ"</string>
     <string name="no_data" msgid="1906986019249068659">"ውሂብ የለም"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> የዳራ እና የድሮ ውሂብን ጨምሮ ከጤና አገናኝ የመጣ ውሂብን ከእንግዲህ ማንበብ ወይም መፃፍ አይችልም።\n\nይህ መተግበሪያው ሊኖሩት በሚችሉት እንደ ካሜራ፣ ማይክሮፎን ወይም አካባቢ ወይም ባሉ ሌሎች ፈቃዶች ላይ ተጽዕኖ አይኖረውም።"</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"እንዲሁም ከ<xliff:g id="APP_NAME">%1$s</xliff:g> የመጡየአካል ብቃት ውሂብ እና የጤና መዝገቦችን ከጤና አገናኝ ይሰርዙ"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"ለዚህ መተግበሪያ የተወገዱ ፈቃዶች"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"እንዲሁም ሁሉንም የጤና አገናኝ ውሂብ ሰርዝ"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"ቀጣይ ቀን"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"የተመረጠው ቀን"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ቀዳሚው ቀን"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"የመተግበሪያ መዳረሻ"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"በአሁኑ ጊዜ ምንም የተጫኑ ተኳዃኝ መተግበሪያዎች የሉዎትም"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"ተጨማሪ መዳረሻ"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"ውሂብ ለጥፍ፣ የዳራ ውሂብ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ለዚህ መተግበሪያ ተጨማሪ ፈቃዶች ተወግደዋል"</string>
     <string name="permissions_header" msgid="6519976063360071569">"ፈቃዶች"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"ብቃት እና ጤንነት"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"ቀላል ፍሰት"</string>
     <string name="flow_medium" msgid="3783688724668943154">"መካከለኛ ፍሰት"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"ከባድ ፍሰት"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"ያልታወቀ ፍሰት"</string>
     <string name="period_day" msgid="3821944462093965882">"የወር አበባ ቀን <xliff:g id="DAY">%1$d</xliff:g> ከ<xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{ክፍለ ጊዜ (1 ቀን)}one{ክፍለ ጊዜ (# ቀን)}other{ክፍለ ጊዜ (# ቀናት)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"አዎንታዊ"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"አሉታዊ"</string>
     <string name="ovulation_high" msgid="205362931427158291">"ከፍተኛ"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"የመተግበሪያ ምንጮችን ያርትዑ"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"የመሣሪያ ነባሪ"</string>
     <string name="app_data_title" msgid="6499967982291000837">"የመተግበሪያ ውሂብ"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"ከ<xliff:g id="APP_NAME">%1$s</xliff:g> የመጣ ውሂብ እዚህ ይታያል"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"የጤና አገናኝ መዳረሻ ካላቸው መተግበሪያዎች የመጣ ውሂብ እዚህ ይታያል"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"ቀን"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"ሳምንት"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"ወር"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"በ<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ኛው ሳምንት የተመረጡት የ<xliff:g id="APP_NAME">%1$s</xliff:g> ግቤቶች በቋሚነት ይሰረዙ?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"በ<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> የተመረጡት የ<xliff:g id="APP_NAME">%1$s</xliff:g> ግቤቶች በቋሚነት ይሰረዙ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ይህ <xliff:g id="APP_NAME">%s</xliff:g> ግቤት በቋሚነት ይሰረዝ?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"ለ<xliff:g id="APP_NAME">%2$s</xliff:g> <xliff:g id="DATA_TYPE">%1$s</xliff:g> ውሂብ በቋሚነት ይሰረዝ?"</string>
 </resources>

@@ -16,10 +16,42 @@
 
 package android.healthconnect.cts.phr;
 
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_CONDITION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ENCOUNTER;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_MEDICATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_LABS;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_PREGNANCY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_SOCIAL_HISTORY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_VITAL_SIGNS;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_PRACTITIONER;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_PROCEDURE;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_Patient;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
+
+import static com.google.common.base.Preconditions.checkState;
+
+import static java.util.stream.Collectors.toSet;
 
 import android.app.UiAutomation;
 import android.health.connect.CreateMedicalDataSourceRequest;
@@ -37,18 +69,35 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.common.collect.Iterables;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PhrCtsTestUtils {
 
     static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
+    static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
     static final String PHR_BACKGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app1";
     static final String PHR_FOREGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app2";
     static final TestAppProxy PHR_BACKGROUND_APP =
             TestAppProxy.forPackageNameInBackground(PHR_BACKGROUND_APP_PKG);
     static final TestAppProxy PHR_FOREGROUND_APP =
             TestAppProxy.forPackageName(PHR_FOREGROUND_APP_PKG);
+
+    static final Set<Integer> MEDICAL_RESOURCE_TYPES_LIST =
+            Set.of(
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                    MEDICAL_RESOURCE_TYPE_CONDITIONS,
+                    MEDICAL_RESOURCE_TYPE_MEDICATIONS,
+                    MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
+                    MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS,
+                    MEDICAL_RESOURCE_TYPE_VISITS,
+                    MEDICAL_RESOURCE_TYPE_PROCEDURES,
+                    MEDICAL_RESOURCE_TYPE_PREGNANCY,
+                    MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+                    MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
+                    MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS);
 
     int mLimitsAdjustmentForTesting = 1;
     private final HealthConnectManager mManager;
@@ -107,5 +156,42 @@ public class PhrCtsTestUtils {
         } finally {
             uiAutomation.dropShellPermissionIdentity();
         }
+    }
+
+    /**
+     * Inserts a data source with one resource for each permission category and returns the ids of
+     * inserted resources.
+     */
+    public List<MedicalResourceId> insertSourceAndOneResourcePerPermissionCategory(
+            TestAppProxy appProxy) throws Exception {
+        grantPermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
+        String dataSourceId =
+                appProxy.createMedicalDataSource(getCreateMedicalDataSourceRequest()).getId();
+        List<MedicalResource> insertedMedicalResources =
+                List.of(
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_IMMUNIZATION),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_ALLERGY),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_CONDITION),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_MEDICATION),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_Patient),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_PRACTITIONER),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_ENCOUNTER),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_PROCEDURE),
+                        appProxy.upsertMedicalResource(
+                                dataSourceId, FHIR_DATA_OBSERVATION_PREGNANCY),
+                        appProxy.upsertMedicalResource(
+                                dataSourceId, FHIR_DATA_OBSERVATION_SOCIAL_HISTORY),
+                        appProxy.upsertMedicalResource(
+                                dataSourceId, FHIR_DATA_OBSERVATION_VITAL_SIGNS),
+                        appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_OBSERVATION_LABS));
+        revokePermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
+
+        checkState(
+                insertedMedicalResources.stream()
+                        .map(MedicalResource::getType)
+                        .collect(toSet())
+                        .equals(MEDICAL_RESOURCE_TYPES_LIST));
+
+        return insertedMedicalResources.stream().map(MedicalResource::getId).toList();
     }
 }

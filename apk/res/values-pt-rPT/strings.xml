@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"A app <xliff:g id="APP_NAME">%1$s</xliff:g> vai deixar de poder ler ou escrever dados da Saúde Connect, incluindo dados antigos e de segundo plano.\n\nIsto não afeta outras autorizações que esta app possa ter, como o acesso à câmara, ao microfone ou à localização."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Eliminar também os dados de fitness e os registos de saúde da app <xliff:g id="APP_NAME">%1$s</xliff:g> da Saúde Connect"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Autorizações removidas para esta app"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Eliminar também todos os dados da Saúde Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Dia seguinte"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Dia selecionado"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Dia anterior"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Editar origens de apps"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Predefinição do dispositivo"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Dados de apps"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Os dados da app <xliff:g id="APP_NAME">%1$s</xliff:g> são apresentados aqui"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Os dados de apps com acesso à Saúde Connect são apresentados aqui"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dia"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Semana"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mês"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Eliminar permanentemente as entradas da app <xliff:g id="APP_NAME">%1$s</xliff:g> selecionadas da semana de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Eliminar permanentemente as entradas da app <xliff:g id="APP_NAME">%1$s</xliff:g> selecionadas de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Eliminar permanentemente esta entrada da app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Eliminar permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> da app <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>
