@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.healthconnect.cts.ui
+package android.healthconnect.cts.ui.permissions
 
 import android.app.Activity
 import android.content.Intent
@@ -29,6 +29,7 @@ import android.health.connect.datatypes.ExerciseSessionType
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.PermissionHelper.READ_EXERCISE_ROUTES
 import android.healthconnect.cts.utils.PermissionHelper.getDeclaredHealthPermissions
@@ -45,7 +46,6 @@ import java.time.Duration
 import java.time.Instant
 import org.junit.AfterClass
 import org.junit.Assert.assertThrows
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 

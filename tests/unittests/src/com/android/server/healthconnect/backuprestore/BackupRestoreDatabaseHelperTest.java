@@ -25,6 +25,7 @@ import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -40,6 +41,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import org.junit.After;
 import org.junit.Before;
@@ -107,9 +109,19 @@ public class BackupRestoreDatabaseHelperTest {
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         DeviceInfoHelper deviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+        HealthConnectMappings healthConnectMappings =
+                healthConnectInjector.getHealthConnectMappings();
+        InternalHealthConnectMappings internalHealthConnectMappings =
+                healthConnectInjector.getInternalHealthConnectMappings();
+
         mBackupRestoreDatabaseHelper =
                 new BackupRestoreDatabaseHelper(
-                        transactionManager, appInfoHelper, accessLogsHelper, deviceInfoHelper);
+                        transactionManager,
+                        appInfoHelper,
+                        accessLogsHelper,
+                        deviceInfoHelper,
+                        healthConnectMappings,
+                        internalHealthConnectMappings);
     }
 
     @After

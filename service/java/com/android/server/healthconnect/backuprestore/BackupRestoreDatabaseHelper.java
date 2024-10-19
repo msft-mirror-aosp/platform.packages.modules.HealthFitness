@@ -34,7 +34,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,6 +55,7 @@ public class BackupRestoreDatabaseHelper {
 
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     // TODO: b/369799948 - maybe also allow client passes its own page size.
     @VisibleForTesting static final int MAXIMUM_PAGE_SIZE = 5000;
@@ -64,12 +65,15 @@ public class BackupRestoreDatabaseHelper {
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
-            DeviceInfoHelper deviceInfoHelper) {
+            DeviceInfoHelper deviceInfoHelper,
+            HealthConnectMappings healthConnectMappings,
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mAccessLogsHelper = accessLogsHelper;
         mDeviceInfoHelper = deviceInfoHelper;
-        mHealthConnectMappings = HealthConnectMappings.getInstance();
+        mHealthConnectMappings = healthConnectMappings;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
     /** Retrieve backup changes from the data tables. */
@@ -83,7 +87,8 @@ public class BackupRestoreDatabaseHelper {
         // TODO: b/369799948 - this is wrong and only returns first 5000 records for now. Use page
         // token to resume from the previous backup point and limit the page size.
         for (var recordType : recordTypes) {
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordType);
             Set<String> grantedExtraReadPermissions =
                     Set.copyOf(recordHelper.getExtraReadPermissions());
             ReadRecordsRequestUsingFilters<? extends Record> readRecordsRequest =
