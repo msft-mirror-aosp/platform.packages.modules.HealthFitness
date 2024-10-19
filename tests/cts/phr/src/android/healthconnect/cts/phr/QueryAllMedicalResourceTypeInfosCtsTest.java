@@ -285,6 +285,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testQueryAllMedicalResourceTypeInfos_withoutManagePerm_throws()
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =

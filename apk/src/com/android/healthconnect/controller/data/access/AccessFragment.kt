@@ -57,7 +57,7 @@ class AccessFragment : Hilt_AccessFragment() {
     }
 
     init {
-        this.setPageName(PageName.DATA_ACCESS_PAGE)
+        this.setPageName(PageName.TAB_ACCESS_PAGE)
     }
 
     @Inject lateinit var logger: HealthConnectLogger
