@@ -42,6 +42,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
@@ -77,6 +78,7 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -122,11 +124,15 @@ public class ReadMedicalResourcesByIdsCtsTest {
         mUtil = new PhrCtsTestUtils(TestUtils.getHealthConnectManager());
         mUtil.deleteAllMedicalData();
         mManager = TestUtils.getHealthConnectManager();
+        if (TestUtils.setLowerRateLimitsForTesting(true)) {
+            mUtil.mLimitsAdjustmentForTesting = 10;
+        }
     }
 
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+        TestUtils.setLowerRateLimitsForTesting(false);
     }
 
     @Test
@@ -146,6 +152,32 @@ public class ReadMedicalResourcesByIdsCtsTest {
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
         finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_readLimitExceeded_throws()
+            throws InterruptedException {
+        MedicalDataSource dataSource =
+                mUtil.createDataSource(PhrDataFactory.getCreateMedicalDataSourceRequest());
+        MedicalResource resource =
+                mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        // Make the maximum number of calls allowed by quota
+        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mUtil.mLimitsAdjustmentForTesting;
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+            mManager.readMedicalResources(
+                    List.of(resource.getId()), Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+        }
+
+        // Make 1 extra call and check quota is exceeded
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                List.of(resource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
     @Test
