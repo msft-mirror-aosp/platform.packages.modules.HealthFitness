@@ -32,17 +32,18 @@ import android.os.Bundle
 import android.os.OutcomeReceiver
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.os.asOutcomeReceiver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.READ_IMMUNIZATION
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.requireSystemService
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.showMessageDialog
@@ -130,6 +131,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         view
             .requireViewById<Button>(R.id.phr_request_read_and_write_medical_data_button)
             .setOnClickListener { requestMedicalPermissions() }
+
+        setUpFhirResourceFromSpinner(view)
     }
 
     private fun executeAndShowMessage(block: suspend () -> String) {
@@ -150,24 +153,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             loadJSONFromAsset(requireContext(), "immunization_1.json")
                 ?: return "No Immunization resource to insert"
         Log.d("INSERT_IMMUNIZATION", "Writing immunization $immunizationResource")
-        val insertedDataSourceId =
-            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
-        val insertedResources =
-            upsertMedicalResources(
-                listOf(
-                    UpsertMedicalResourceRequest.Builder(
-                            insertedDataSourceId,
-                            FhirVersion.parseFhirVersion("4.0.1"),
-                            immunizationResource,
-                        )
-                        .build()
-                )
-            )
-        val insertedResourceId = "$insertedDataSourceId,1,immunization_1"
-        return insertedResources.joinToString(
-            separator = "\n",
-            transform = MedicalResource::toString,
-        )
+        return insertResource(view, immunizationResource)
     }
 
     private suspend fun insertAllergy(view: View): String {
@@ -175,6 +161,45 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             loadJSONFromAsset(requireContext(), "allergyintolerance_1.json")
                 ?: return "No Allergy resource to insert"
         Log.d("INSERT_ALLERGY", "Writing allergy $allergyResource")
+        return insertResource(view, allergyResource)
+    }
+
+    private fun setUpFhirResourceFromSpinner(rootView: View) {
+        val jsonFiles = getJsonFilesFromAssets(requireContext())
+        val spinnerOptions = listOf(getString(R.string.spinner_default_message)) + jsonFiles
+        val spinnerAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerOptions)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        val spinner = rootView.findViewById<Spinner>(R.id.phr_spinner)
+        spinner.adapter = spinnerAdapter
+
+        spinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long,
+                ) {
+                    if (position == 0) { // Ignore "Select resource" default message
+                        return
+                    }
+
+                    val selectedFile = spinnerOptions[position]
+                    val selectedResource =
+                        loadJSONFromAsset(requireContext(), selectedFile) ?: return
+                    Log.d("INSERT_RESOURCE_FROM_SPINNER", "Writing resource $selectedResource")
+                    executeAndShowMessage { insertResource(rootView, selectedResource) }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // No-op.
+                }
+            }
+    }
+
+    private suspend fun insertResource(view: View, resource: String): String {
         val insertedDataSourceId =
             view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
         val insertedResources =
@@ -183,12 +208,11 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     UpsertMedicalResourceRequest.Builder(
                             insertedDataSourceId,
                             FhirVersion.parseFhirVersion("4.0.1"),
-                            allergyResource,
+                            resource,
                         )
                         .build()
                 )
             )
-        val insertedResourceId = "$insertedDataSourceId,1,allergyintolerance_1"
         return insertedResources.joinToString(
             separator = "\n",
             transform = MedicalResource::toString,
@@ -213,6 +237,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             )
         return "SUCCESSFUL DATA UPSERT \n\nUpserted data:\n" +
             insertedResources.joinToString(separator = "\n", transform = MedicalResource::toString)
+    }
+
+    private fun getJsonFilesFromAssets(context: Context): List<String> {
+        return context.assets.list("")?.filter { it.endsWith(".json") } ?: emptyList()
     }
 
     private suspend fun upsertMedicalResources(
@@ -267,7 +295,6 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     healthConnectManager.readMedicalResources(request, Runnable::run, receiver)
                 }
                 .medicalResources
-        // val resources = receiver.getResult().getMedicalResources()
         Log.d("READ_MEDICAL_RESOURCES", "Read ${resources.size} resources")
         return resources
     }
@@ -322,18 +349,6 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                 .show()
             null
         }
-    }
-
-    private fun showLoadJSONDataDialog() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("FHIR JSON files loaded.")
-        builder.setPositiveButton(android.R.string.ok) { _, _ -> }
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
-    }
-
-    private fun requestReadImmunizationPermission() {
-        mRequestPermissionLauncher.launch(arrayOf(READ_IMMUNIZATION))
     }
 
     private fun requestMedicalPermissions() {

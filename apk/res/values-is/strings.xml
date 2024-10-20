@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Stjórnaðu heilsu- og hreystigögnum í tækinu þínu og stjórnaðu hvaða forrit hafa aðgang að þeim"</string>
     <string name="data_title" msgid="4456619761533380816">"Gögn og aðgangur"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Skoða heilsufarsgögn"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Farðu yfir heilsufarsgögnin þín og hvaða forrit hafa aðgang að þeim"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Allir flokkar"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Sjá alla flokka"</string>
     <string name="no_data" msgid="1906986019249068659">"Engin gögn"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> mun ekki lengur geta lesið eða skrifað gögn frá Heilsutengingu, þ.m.t. bakgrunnsgögn og eldri gögn.\n\nÞetta hefur ekki áhrif á aðrar heimildir sem forritið kann að hafa, eins og fyrir myndavél, hljóðnema eða staðsetningu."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Eyða einnig hreysti- og heilsufarsgögnum í Heilsutengingu úr <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Heimildir forritsins voru fjarlægðar"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Eyða einnig öllum gögnum Heilsutengingar"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Næsti dagur"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Valinn dagur"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Fyrri dagur"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Aðgangur forrita"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Engin samhæf forrit eru uppsett eins og stendur"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Aukinn aðgangur"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Eldri gögn, bakgrunnsgögn"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Viðbótarheimildir fjarlægðar fyrir þetta forrit"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Heimildir"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Hreysti og vellíðan"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Lítið flæði"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Miðlungsflæði"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Mikið flæði"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Magn blæðinga óþekkt"</string>
     <string name="period_day" msgid="3821944462093965882">"Dagur blæðinga <xliff:g id="DAY">%1$d</xliff:g> af <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Blæðingar (einn dagur)}one{Blæðingar (# dagur)}other{Blæðingar (# dagar)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Jákvætt"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Neikvætt"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Mikið"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Bæta við eða fjarlægja forrit sem veita upplýsingar"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Sjálfgefin stilling tækis"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Forritsgögn"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Gögn úr <xliff:g id="APP_NAME">%1$s</xliff:g> birtast hér"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Gögn úr forritum með aðgang að Heilsutengingu birtast hér"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dagur"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Vika"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mánuður"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Eyða völdum <xliff:g id="APP_NAME">%1$s</xliff:g>-færslum frá vikunni <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> fyrir fullt og allt?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Eyða völdum <xliff:g id="APP_NAME">%1$s</xliff:g>-færslum frá <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> fyrir fullt og allt?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Eyða þessari <xliff:g id="APP_NAME">%s</xliff:g>-færslu fyrir fullt og allt?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Loka fyrir aðgang <xliff:g id="APP_NAME">%2$s</xliff:g> að <xliff:g id="DATA_TYPE">%1$s</xliff:g>-gögnum varanlega?"</string>
 </resources>

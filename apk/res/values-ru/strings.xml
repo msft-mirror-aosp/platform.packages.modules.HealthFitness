@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Управляйте данными о физической активности и здоровье с устройства и контролируйте доступ приложений к этой информации."</string>
     <string name="data_title" msgid="4456619761533380816">"Данные и доступ"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Просмотреть информацию о здоровье"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Информация о здоровье и приложения, имеющие к ней доступ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Все категории"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Показать все категории"</string>
     <string name="no_data" msgid="1906986019249068659">"Нет данных"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"У приложения \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больше не будет доступа к данным платформы \"Здоровье и спорт\", в том числе сохраненным ранее или в фоновом режиме.\n\nДругие разрешения, например на использование камеры, микрофона или геоданных, затронуты не будут."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Также удалить с платформы \"Здоровье и спорт\" данные приложения \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" о физической активности и здоровье"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Разрешения для этого приложения удалены."</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Также удалить все данные из сервиса \"Здоровье и спорт\""</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Следующий день"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Выбранный день"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Предыдущий день"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Доступ для приложения"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"На устройстве нет совместимых приложений"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Дополнительные права доступа"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Сохраненные данные, фоновый режим"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"У приложения отозваны дополнительные разрешения."</string>
     <string name="permissions_header" msgid="6519976063360071569">"Разрешения"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Физическая активность и самочувствие"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Скудные выделения"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Умеренные выделения"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Обильные выделения"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Объем выделений неизвестен"</string>
     <string name="period_day" msgid="3821944462093965882">"День менструации: <xliff:g id="DAY">%1$d</xliff:g> из <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Менструация (1 день)}one{Менструация (# день)}few{Менструация (# дня)}many{Менструация (# дней)}other{Менструация (# дня)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Положительный результат"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Отрицательный результат"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Высокий уровень фертильности"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Изменить список приложений"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Приложение по умолчанию"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Данные приложения"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Здесь показываются данные из приложения \"<xliff:g id="APP_NAME">%1$s</xliff:g>\"."</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Здесь показываются данные из приложений, у которых есть доступ к приложению \"Здоровье и спорт\"."</string>
     <string name="date_picker_day" msgid="3076687507968958991">"День"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Неделя"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Месяц"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Навсегда удалить выбранные записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Навсегда удалить выбранные записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Навсегда удалить эту запись в приложении \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) приложения \"<xliff:g id="APP_NAME">%2$s</xliff:g>\" без возможности восстановления?"</string>
 </resources>

@@ -28,7 +28,6 @@ import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
-import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -86,7 +85,6 @@ public class HealthConnectManagerService extends SystemService {
     private final PreferenceHelper mPreferenceHelper;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
-    private final CloudBackupManager mCloudBackupManager;
 
     @Nullable private HealthConnectInjector mHealthConnectInjector;
 
@@ -94,9 +92,7 @@ public class HealthConnectManagerService extends SystemService {
         super(context);
         mContext = context;
         mCurrentForegroundUser = context.getUser();
-        HealthPermissionIntentAppsTracker permissionIntentTracker =
-                new HealthPermissionIntentAppsTracker(context);
-
+        HealthPermissionIntentAppsTracker permissionIntentTracker;
         AppInfoHelper appInfoHelper;
         AccessLogsHelper accessLogsHelper;
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
@@ -114,6 +110,7 @@ public class HealthConnectManagerService extends SystemService {
             mHealthConnectInjector = HealthConnectInjector.getInstance();
             mHealthConnectDeviceConfigManager =
                     mHealthConnectInjector.getHealthConnectDeviceConfigManager();
+            permissionIntentTracker = mHealthConnectInjector.getHealthPermissionIntentAppsTracker();
             mTransactionManager = mHealthConnectInjector.getTransactionManager();
             mPreferenceHelper = mHealthConnectInjector.getPreferenceHelper();
             mMigrationStateManager = mHealthConnectInjector.getMigrationStateManager();
@@ -124,14 +121,7 @@ public class HealthConnectManagerService extends SystemService {
             activityDateHelper = mHealthConnectInjector.getActivityDateHelper();
             changeLogsHelper = mHealthConnectInjector.getChangeLogsHelper();
             changeLogsRequestHelper = mHealthConnectInjector.getChangeLogsRequestHelper();
-            firstGrantTimeManager =
-                    new FirstGrantTimeManager(
-                            context,
-                            permissionIntentTracker,
-                            FirstGrantTimeDatastore.createInstance(),
-                            mHealthConnectInjector.getPackageInfoUtils(),
-                            healthDataCategoryPriorityHelper,
-                            mMigrationStateManager);
+            firstGrantTimeManager = mHealthConnectInjector.getFirstGrantTimeManager();
             healthConnectMappings = mHealthConnectInjector.getHealthConnectMappings();
             internalHealthConnectMappings =
                     mHealthConnectInjector.getInternalHealthConnectMappings();
@@ -158,8 +148,8 @@ public class HealthConnectManagerService extends SystemService {
                             mHealthConnectInjector.getPriorityMigrationHelper());
             mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
             mExportManager = mHealthConnectInjector.getExportManager();
-            mCloudBackupManager = mHealthConnectInjector.getCloudBackupManager();
         } else {
+            permissionIntentTracker = HealthPermissionIntentAppsTracker.getInstance(context);
             mHealthConnectDeviceConfigManager =
                     HealthConnectDeviceConfigManager.initializeInstance(context);
             mTransactionManager =
@@ -178,7 +168,7 @@ public class HealthConnectManagerService extends SystemService {
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
             activityDateHelper = ActivityDateHelper.getInstance();
             firstGrantTimeManager =
-                    new FirstGrantTimeManager(
+                    FirstGrantTimeManager.getInstance(
                             context,
                             permissionIntentTracker,
                             FirstGrantTimeDatastore.createInstance(),
@@ -186,8 +176,7 @@ public class HealthConnectManagerService extends SystemService {
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
             healthConnectMappings = HealthConnectMappings.getInstance();
-            internalHealthConnectMappings =
-                    new InternalHealthConnectMappings(healthConnectMappings);
+            internalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -215,7 +204,6 @@ public class HealthConnectManagerService extends SystemService {
                             Clock.systemUTC(),
                             mExportImportSettingsStorage,
                             mTransactionManager);
-            mCloudBackupManager = new CloudBackupManager();
         }
 
         mUserManager = context.getSystemService(UserManager.class);
@@ -261,8 +249,7 @@ public class HealthConnectManagerService extends SystemService {
                         activityDateHelper,
                         changeLogsHelper,
                         changeLogsRequestHelper,
-                        internalHealthConnectMappings,
-                        mCloudBackupManager);
+                        internalHealthConnectMappings);
     }
 
     @Override

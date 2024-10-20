@@ -41,7 +41,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
@@ -159,7 +159,8 @@ public final class DataMigrationManager {
             StorageUtils.addNameBasedUUIDTo(record);
         }
 
-        return RecordHelperProvider.getRecordHelper(record.getRecordType())
+        return InternalHealthConnectMappings.getInstance()
+                .getRecordHelper(record.getRecordType())
                 .getUpsertTableRequest(record);
     }
 
