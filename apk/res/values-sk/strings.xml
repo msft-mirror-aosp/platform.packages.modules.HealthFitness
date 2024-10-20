@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Spravujte údaje o zdraví a kondícii vo svojom zariadení a ovládajte, ktoré aplikácie k nim majú mať prístup"</string>
     <string name="data_title" msgid="4456619761533380816">"Údaje a prístup"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Prehliadať zdravotné záznamy"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Zobraziť zdravotné záznamy a aplikácie, ktoré k nim majú prístup"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Všetky kategórie"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Zobraziť všetky kategórie"</string>
     <string name="no_data" msgid="1906986019249068659">"Žiadne údaje"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani do nich zapisovať. Týka sa to aj dát na pozadí a minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Odstrániť z Dát o zdraví aj údaje o kondícii a zdravotné záznamy pochádzajúce z aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Povolenia pre túto aplikáciu boli odstránené"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Odstrániť aj všetky údaje Dát o zdraví"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Nasledujúci deň"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný deň"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Predchádzajúci deň"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Prístup aplikácie"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentálne nemáte nainštalované žiadne kompatibilné aplikácie"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatočný prístup"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Minulé dáta, dáta na pozadí"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Tejto aplikácii boli odstránené ďalšie povolenia"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Povolenia"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Kondícia a kvalita života"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Slabá menštruácia"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Stredne silná menštruácia"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Silná menštruácia"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Neznáme krvácanie"</string>
     <string name="period_day" msgid="3821944462093965882">"Deň menštruácie: <xliff:g id="DAY">%1$d</xliff:g> z <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menštruácia (1 deň)}few{Menštruácia (# dni)}many{Menštruácia (# dňa)}other{Menštruácia (# dní)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Pozitívny"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatívny"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Vysoká"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Upraviť zdroje aplikácií"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Predvolená aplikácia zariadenia"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Dáta aplikácie"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Tu sa budú zobrazovať údaje z aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Tu sa budú zobrazovať údaje z aplikácií s prístupom k Dátam o zdraví"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Deň"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Týždeň"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mesiac"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Chcete natrvalo odstrániť vybrané záznamy aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g> z týždňa <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Chcete natrvalo odstrániť vybrané záznamy aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g> z mesiaca <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Chcete tento záznam aplikácie <xliff:g id="APP_NAME">%s</xliff:g> natrvalo odstrániť?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Chcete natrvalo odstrániť údaje (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) aplikácie <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>

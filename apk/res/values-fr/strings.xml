@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Gérez les données de santé et remise en forme sur votre appareil, et contrôlez les applis autorisées à y accéder"</string>
     <string name="data_title" msgid="4456619761533380816">"Données et accès"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Parcourir les dossiers médicaux"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Afficher vos dossiers médicaux et les applis qui y ont accès"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Toutes les catégories"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Voir toutes les catégories"</string>
     <string name="no_data" msgid="1906986019249068659">"Aucune donnée"</string>
@@ -333,21 +332,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si vous autorisez un accès en lecture, l\'appli peut lire les nouvelles données et celles des 30 derniers jours"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si vous autorisez un accès en lecture, l\'appli peut lire les nouvelles données ainsi que les données précédentes"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à Santé Connect ?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Consultez les <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> pour découvrir comment elle gère vos données"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"règles de confidentialité"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à votre dossier médical ?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"Si vous lui accordez l\'accès, l\'application pourra lire et écrire des données sur les allergies, les résultats d\'analyses, les vaccins, etc.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"À propos du dossier médical"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Données à partager"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"Si vous l\'y autorisez, <xliff:g id="APP_NAME">%1$s</xliff:g> pourra partager votre dossier médical avec Santé Connect."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Synchronisez votre dossier médical depuis vos différentes applis et sources pour les conserver au même endroit"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Supprimer toutes les autorisations ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Tout supprimer"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à l\'appareil photo, au micro ou à la localisation."</string>
@@ -370,6 +362,8 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données en arrière-plan et les données déjà enregistrées.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à l\'appareil photo, au micro ou à la position."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Supprimer également les données de remise en forme et les enregistrements de santé de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> de Santé Connect"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Autorisations supprimées pour cette appli"</string>
+    <!-- no translation found for disconnect_all_app_permissions_dialog_checkbox (2927403999111348272) -->
+    <skip />
     <string name="navigation_next_day" msgid="8853443471183944219">"Jour suivant"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Jour sélectionné"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Jour précédent"</string>
@@ -410,8 +404,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accès de l\'appli"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aucune appli compatible n\'est installée pour le moment"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accès supplémentaires"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Anciennes données, données en arrière-plan"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"D\'autres autorisations ont été révoquées pour cette appli"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Autorisations"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitness et bien-être"</string>
@@ -612,11 +605,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Flux léger"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Flux moyen"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Flux abondant"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Flux inconnu"</string>
     <string name="period_day" msgid="3821944462093965882">"Jour de règles <xliff:g id="DAY">%1$d</xliff:g> sur <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Période (1 jour)}one{Période (# jour)}other{Période (# jours)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positif"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Négatif"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Élevé"</string>
@@ -646,7 +637,7 @@
     <string name="boot_camp" msgid="1554811887379786226">"Camp d\'entraînement"</string>
     <string name="boxing" msgid="2200194516739940317">"Boxe"</string>
     <string name="burpee" msgid="1434605818712603589">"Burpees"</string>
-    <string name="calisthenics" msgid="9080623890020954493">"Gymnastique suédoise"</string>
+    <string name="calisthenics" msgid="9080623890020954493">"Entraînement au poids du corps"</string>
     <string name="cricket" msgid="7543586707938752011">"Cricket"</string>
     <string name="crunch" msgid="4265356947720591896">"Abdos crunch"</string>
     <string name="dancing" msgid="4099572666298130171">"Danse"</string>
@@ -1085,10 +1076,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Modifier les sources d\'application"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Paramètre par défaut"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Données d\'application"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Les données de l\'appli <xliff:g id="APP_NAME">%1$s</xliff:g> s\'afficheront ici"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Les données issues des applications ayant accès à Santé Connect s\'afficheront ici"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Jour"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Semaine"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mois"</string>
@@ -1134,6 +1123,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Supprimer définitivement les entrées sélectionnées de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Supprimer définitivement les entrées sélectionnées de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> pour <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Supprimer définitivement cette entrée de l\'application <xliff:g id="APP_NAME">%s</xliff:g> ?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Supprimer définitivement les données de type <xliff:g id="DATA_TYPE">%1$s</xliff:g> pour l\'appli <xliff:g id="APP_NAME">%2$s</xliff:g> ?"</string>
 </resources>

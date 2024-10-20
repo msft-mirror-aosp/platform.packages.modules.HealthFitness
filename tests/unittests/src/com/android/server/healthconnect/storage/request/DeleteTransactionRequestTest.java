@@ -23,7 +23,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 
 import static com.android.server.healthconnect.storage.request.DeleteTransactionRequest.HEALTH_CONNECT_PACKAGE_NAME;
-import static com.android.server.healthconnect.storage.utils.RecordHelperProvider.getRecordHelper;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -39,12 +38,14 @@ import android.health.connect.datatypes.StepsRecord;
 import android.os.Environment;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -59,6 +60,7 @@ public class DeleteTransactionRequestTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
 
     private AppInfoHelper mAppInfoHelper;
+    private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -80,16 +82,17 @@ public class DeleteTransactionRequestTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-
-        mAppInfoHelper =
+        HealthConnectInjector injector =
                 HealthConnectInjectorImpl.newBuilderForTest(
                                 mHealthConnectDatabaseTestRule.getUserContext())
                         .setTransactionManager(
                                 mHealthConnectDatabaseTestRule.getTransactionManager())
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
-                        .build()
-                        .getAppInfoHelper();
+                        .build();
+
+        mAppInfoHelper = injector.getAppInfoHelper();
+        mInternalHealthConnectMappings = injector.getInternalHealthConnectMappings();
     }
 
     @Test
@@ -104,7 +107,7 @@ public class DeleteTransactionRequestTest {
 
     @Test
     public void getPackageName_autoDelete_isHcPackageName() {
-        RecordHelper<?> helper = getRecordHelper(RECORD_TYPE_STEPS);
+        RecordHelper<?> helper = mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_STEPS);
         DeleteTableRequest deleteRequest = helper.getDeleteRequestForAutoDelete(30);
 
         DeleteTransactionRequest request = new DeleteTransactionRequest(List.of(deleteRequest));
@@ -144,7 +147,8 @@ public class DeleteTransactionRequestTest {
 
     @Test
     public void getRecordTypeIds_autoDelete_expectsEmpty() {
-        RecordHelper<?> helper = getRecordHelper(RECORD_TYPE_DISTANCE);
+        RecordHelper<?> helper =
+                mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_DISTANCE);
         DeleteTableRequest deleteRequest = helper.getDeleteRequestForAutoDelete(30);
 
         DeleteTransactionRequest request = new DeleteTransactionRequest(List.of(deleteRequest));

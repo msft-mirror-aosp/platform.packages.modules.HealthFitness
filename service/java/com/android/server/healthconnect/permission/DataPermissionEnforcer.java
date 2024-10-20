@@ -32,7 +32,7 @@ import android.util.ArraySet;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,16 +49,18 @@ public class DataPermissionEnforcer {
     private final Context mContext;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     public DataPermissionEnforcer(
             PermissionManager permissionManager,
             Context context,
             HealthConnectDeviceConfigManager deviceConfigManager,
-            HealthConnectMappings healthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mPermissionManager = permissionManager;
         mContext = context;
         mDeviceConfigManager = deviceConfigManager;
-        mHealthConnectMappings = healthConnectMappings;
+        mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
     /** Enforces default write permissions for given recordTypeIds */
@@ -134,7 +136,8 @@ public class DataPermissionEnforcer {
 
         for (RecordInternal<?> recordInternal : recordInternals) {
             int recordTypeId = recordInternal.getRecordType();
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordTypeId);
 
             if (!recordTypeIdToExtraPerms.containsKey(recordTypeId)) {
                 recordTypeIdToExtraPerms.put(recordTypeId, new ArraySet<>());
@@ -194,7 +197,7 @@ public class DataPermissionEnforcer {
     public Set<String> collectGrantedExtraReadPermissions(
             Set<Integer> recordTypeIds, AttributionSource attributionSource) {
         return recordTypeIds.stream()
-                .map(RecordHelperProvider::getRecordHelper)
+                .map(mInternalHealthConnectMappings::getRecordHelper)
                 .flatMap(recordHelper -> recordHelper.getExtraReadPermissions().stream())
                 .distinct()
                 .filter(permission -> isPermissionGranted(permission, attributionSource))
@@ -206,7 +209,8 @@ public class DataPermissionEnforcer {
         Map<String, Boolean> mapping = new ArrayMap<>();
         for (RecordInternal<?> recordInternal : recordInternals) {
             int recordTypeId = recordInternal.getRecordType();
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordTypeId);
 
             for (String permName : recordHelper.getExtraWritePermissions()) {
                 mapping.put(permName, isPermissionGranted(permName, attributionSource));

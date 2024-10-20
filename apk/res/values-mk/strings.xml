@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Управувајте со податоците за здравје и фитнес на вашиот уред и контролирајте кои апликации може да пристапуваат до нив"</string>
     <string name="data_title" msgid="4456619761533380816">"Податоци и пристап"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Прелистувајте здравствена евиденција"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Погледнете ја вашата здравствена евиденција и кои апликации може да пристапат до неа"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Сите категории"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Преглед на сите категории"</string>
     <string name="no_data" msgid="1906986019249068659">"Нема податоци"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> веќе нема да може да чита или евидентира податоци од Health Connect, меѓу кои и заднински и минати податоци.\n\nОва не влијае на другите дозволи што може да ги има апликацијава, како камера, микрофон или локација."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Избриши ги и податоците за фитнес и здравствената евиденција од <xliff:g id="APP_NAME">%1$s</xliff:g> од Health Connect"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Дозволите за апликацијава се отстранети"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Избриши ги и сите податоци од Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Следниот ден"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Избран ден"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Претходниот ден"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Пристап на апликацијата"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Во моментов немате инсталирано компатибилни апликации"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Дополнителен пристап"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Минати податоци, податоци во заднина"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Отстранети се дополнителните дозволи за апликацијава"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Дозволи"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Фитнес и благосостојба"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Слаб проток"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Среден проток"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Силен проток"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Непознат менструален циклус"</string>
     <string name="period_day" msgid="3821944462093965882">"Менструација: ден <xliff:g id="DAY">%1$d</xliff:g> од <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Менструација (1 ден)}one{Менструација (# ден)}other{Менструација (# дена)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Позитивна"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Негативна"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Голема"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Изменување на изворите на апликации"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Стандардни поставки за уредот"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Податоци од апликација"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Податоците од <xliff:g id="APP_NAME">%1$s</xliff:g> ќе се прикажуваат тука"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Податоците од апликациите со пристап до Health Connect ќе се прикажуваат тука"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Ден"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Седмица"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Месец"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Да се избришат трајно избраните записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за целата седмица од <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Да се избришат трајно избраните записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Да се избришe трајно записов во <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Да се избришат трајно податоците за <xliff:g id="DATA_TYPE">%1$s</xliff:g> за <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>

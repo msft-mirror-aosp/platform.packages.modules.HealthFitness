@@ -62,7 +62,7 @@ public class InternalHealthConnectMappings {
      * Use {@link #getInstance()} to avoid creating multiple instances until it gets migrated off.
      */
     @VisibleForTesting
-    InternalHealthConnectMappings(HealthConnectMappings healthConnectMappings) {
+    public InternalHealthConnectMappings(HealthConnectMappings healthConnectMappings) {
         this(
                 InternalDataTypeDescriptors.getAllInternalDataTypeDescriptors(),
                 healthConnectMappings);
