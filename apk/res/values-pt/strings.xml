@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Gerencie os dados de saúde e condicionamento físico no seu dispositivo e controle quais apps podem ter acesso a eles"</string>
     <string name="data_title" msgid="4456619761533380816">"Dados e acesso"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Procurar histórico de saúde"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Veja seus históricos de saúde e quais apps podem acessá-los"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Todas as categorias"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Acessar todas as categorias"</string>
     <string name="no_data" msgid="1906986019249068659">"Não há dados"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"O app <xliff:g id="APP_NAME">%1$s</xliff:g> não poderá mais ler nem gravar dados da Conexão Saúde, incluindo dados históricos e em segundo plano.\n\nIsso não afeta outras permissões que esse app possa ter, como de câmera, microfone ou localização."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Também excluir da Conexão Saúde os dados de condicionamento físico e os históricos de saúde do app <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Permissões removidas do app"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Também excluir todos os dados da plataforma Conexão Saúde"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Dia seguinte"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Dia selecionado"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Dia anterior"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Acesso de apps"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Não há apps compatíveis instalados no momento"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acesso adicional"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Dados anteriores, dados em segundo plano"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Outras permissões foram removidas desse app"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permissões"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Condicionamento físico e bem-estar"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Fluxo leve"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Fluxo moderado"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Fluxo intenso"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Fluxo desconhecido"</string>
     <string name="period_day" msgid="3821944462093965882">"Dia <xliff:g id="DAY">%1$d</xliff:g> de <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> da menstruação"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menstruação (1 dia)}one{Menstruação (# dia)}other{Menstruação (# dias)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positivo"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativo"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Alta"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Editar fontes de apps"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Padrão do dispositivo"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Dados do app"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Os dados do app <xliff:g id="APP_NAME">%1$s</xliff:g> vão aparecer aqui"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Os dados de apps com acesso à Conexão Saúde vão aparecer aqui"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dia"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Semana"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mês"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Excluir permanentemente as entradas selecionadas do app <xliff:g id="APP_NAME">%1$s</xliff:g> na semana dos dias <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Excluir permanentemente as entradas selecionadas do app <xliff:g id="APP_NAME">%1$s</xliff:g> em <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Excluir permanentemente esta entrada do app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Excluir permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> no app <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>

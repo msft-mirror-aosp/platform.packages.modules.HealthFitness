@@ -121,7 +121,12 @@ public final class RecordTypeForUuidMappings {
 
     private RecordTypeForUuidMappings() {}
 
-    /** Maps the internal record type to a special record type for UUIDs. */
+    /**
+     * Maps the internal record type to a special record type for UUIDs.
+     *
+     * @deprecated Use {@link InternalHealthConnectMappings#getRecordTypeIdForUuid(int)}
+     */
+    @Deprecated
     public static int getRecordTypeIdForUuid(@RecordType int recordTypeId) {
         return requireNonNull(
                 sInternalTypeToSpecialTypeMap.get(recordTypeId),

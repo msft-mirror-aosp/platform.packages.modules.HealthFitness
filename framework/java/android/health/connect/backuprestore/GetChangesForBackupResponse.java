@@ -24,8 +24,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
-
-// TODO(b/369798725): Add tests for the parcelable implementation
+import java.util.Objects;
 
 /** @hide */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
@@ -45,6 +44,18 @@ public final class GetChangesForBackupResponse implements Parcelable {
     private GetChangesForBackupResponse(Parcel in) {
         mChanges = in.createTypedArrayList(BackupChange.CREATOR);
         mNextChangeToken = in.readString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GetChangesForBackupResponse that)) return false;
+        return mChanges.equals(that.mChanges) && mNextChangeToken.equals(that.mNextChangeToken);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mChanges, mNextChangeToken);
     }
 
     @NonNull
@@ -78,6 +89,8 @@ public final class GetChangesForBackupResponse implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeTypedList(mChanges);
         dest.writeString(mNextChangeToken);
+        dest.writeTypedList(mChanges);
     }
 }

@@ -52,7 +52,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DropTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,17 +187,13 @@ final class DatabaseUpgradeHelper {
     // Retuurns all records that were part of the initial schema. This is everything added
     // before SKIN_TEMPERATURE.
     private static void forEachInitialRecordHelper(Consumer<RecordHelper<?>> action) {
-        RecordHelperProvider.getRecordHelpers().stream()
+        InternalHealthConnectMappings.getInstance().getRecordHelpers().stream()
                 .filter(
                         helper ->
                                 helper.getRecordIdentifier() > RECORD_TYPE_UNKNOWN
                                         && helper.getRecordIdentifier()
                                                 < RECORD_TYPE_SKIN_TEMPERATURE)
                 .forEach(action);
-    }
-
-    private static void forEachRecordHelper(Consumer<RecordHelper<?>> action) {
-        RecordHelperProvider.getRecordHelpers().forEach(action);
     }
 
     private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {
