@@ -21,7 +21,6 @@ import android.app.SystemServiceRegistry;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.health.connect.aidl.IHealthConnectService;
-import android.permission.flags.Flags;
 
 /**
  * Class for performing registration for Health services.
@@ -55,11 +54,8 @@ public class HealthServicesInitializer {
 
     private static boolean isHardwareSupported(Context context) {
         PackageManager pm = context.getPackageManager();
-        boolean disabledOnWatch =
-            pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
-                && !Flags.replaceBodySensorPermissionEnabled();
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
-                && !disabledOnWatch
+                && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
     }

@@ -138,7 +138,6 @@ import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
-import android.permission.flags.Flags;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -1104,11 +1103,8 @@ public final class TestUtils {
     /** returns true if the hardware is supported by HealthConnect. */
     public static boolean isHardwareSupported(Context context) {
         PackageManager pm = context.getPackageManager();
-        boolean disabledOnWatch =
-            pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
-                && !Flags.replaceBodySensorPermissionEnabled();
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
-                && !disabledOnWatch
+                && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
     }

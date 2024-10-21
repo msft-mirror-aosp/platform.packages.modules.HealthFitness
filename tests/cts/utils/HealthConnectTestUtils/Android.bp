@@ -24,7 +24,6 @@ java_library {
         ":healthfitness-permissions-testapp-srcs",
     ],
     static_libs: [
-        "android.permission.flags-aconfig-java-export",
         "androidx.appcompat_appcompat",
         "androidx.test.rules",
         "cts-install-lib",
