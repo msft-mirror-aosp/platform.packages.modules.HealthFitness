@@ -64,6 +64,7 @@ java_sdk_library {
     name: "framework-healthfitness",
     permitted_packages: [
         "android.health",
+        "android.permission.flags",
         "com.android.healthfitness.flags",
     ],
     srcs: [":framework-healthfitness-sources"],
@@ -75,6 +76,7 @@ java_sdk_library {
         "//packages/modules/HealthFitness:__subpackages__",
     ],
     static_libs: [
+        "android.permission.flags-aconfig-java-export",
         "healthfitness-statsd",
         "healthfitness-aconfig-flags-lib",
         "healthfitness-aconfig-flags-helper",

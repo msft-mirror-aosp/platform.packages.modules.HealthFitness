@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.UserManager
+import android.permission.flags.Flags
 import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
@@ -104,8 +105,10 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
 
     private fun isHardwareSupported(context: Context): Boolean {
         val pm: PackageManager = context.packageManager
+        val disabledOnWatch = pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+            && !Flags.replaceBodySensorPermissionEnabled()
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            !disabledOnWatch &&
             !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
             !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
     }
