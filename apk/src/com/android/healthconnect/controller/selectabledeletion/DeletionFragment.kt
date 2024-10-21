@@ -58,7 +58,6 @@ class DeletionFragment : Hilt_DeletionFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.deletionProgress.observe(viewLifecycleOwner) { deletion ->
             when (deletion) {
                 DeletionViewModel.DeletionProgress.NOT_STARTED -> {
