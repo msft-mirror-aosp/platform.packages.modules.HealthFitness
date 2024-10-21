@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.content.Intent
 import android.content.Intent.*
 import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -54,6 +55,7 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -96,6 +98,7 @@ import org.mockito.kotlin.whenever
 class FitnessAppFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue val viewModel: AppPermissionViewModel = mock()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
@@ -579,7 +582,7 @@ class FitnessAppFragmentTest {
 
     @Test
     @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun seeAppData_isEnabled_buttonDisplayed() {
+    fun seeAppData_showManageAppSectionEnabled_isEnabled_buttonDisplayed() {
 
         val writePermission = FitnessPermission(EXERCISE, WRITE)
         val readPermission = FitnessPermission(DISTANCE, READ)
@@ -591,10 +594,37 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+            bundleOf(
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                EXTRA_APP_NAME to TEST_APP_NAME,
+                SHOW_MANAGE_APP_SECTION to true, // shows manage app permission
+            )
         )
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Delete app data")).check(doesNotExist())
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun seeAppData_hideManageAppPermissionEnabled_isEnabled_buttonDisplayed() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        launchFragment<FitnessAppFragment>(
+            bundleOf(
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                EXTRA_APP_NAME to TEST_APP_NAME,
+                SHOW_MANAGE_APP_SECTION to false, // hides manage app permission
+            )
+        )
+        onView(withText("Manage app")).check(doesNotExist())
+        onView(withText("See app data")).check(doesNotExist())
     }
 
     @Test
