@@ -46,6 +46,15 @@ flag {
 }
 
 flag {
+    name: "personal_health_record_telemetry"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for guarding telemetry for PHR MVP APIs."
+    bug: "361796560"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
     name: "export_import"
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."
