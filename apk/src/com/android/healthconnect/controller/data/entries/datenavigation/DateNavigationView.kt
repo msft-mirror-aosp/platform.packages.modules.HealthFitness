@@ -31,6 +31,7 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_WEEK
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
@@ -50,7 +51,7 @@ constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
-    private val timeSource: TimeSource = SystemTimeSource
+    private val timeSource: TimeSource = SystemTimeSource,
 ) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     private val logger: HealthConnectLogger
@@ -67,7 +68,9 @@ constructor(
     init {
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
 
         val view = inflate(context, R.layout.widget_date_navigation_with_spinner, this)
@@ -99,7 +102,7 @@ constructor(
         return period
     }
 
-    fun disableDateNavigationView(isEnabled: Boolean, text: String){
+    fun disableDateNavigationView(isEnabled: Boolean, text: String) {
         setSpinnerText(text)
         disableButtons(isEnabled)
         toggleSpinnerVisibility(isEnabled)
@@ -109,17 +112,17 @@ constructor(
         return (datePickerSpinner.adapter as DatePickerSpinnerAdapter).getText()
     }
 
-    private fun setSpinnerText(text:String){
+    private fun setSpinnerText(text: String) {
         // text from the adapter can be null on rotation
-        if(getDateNavigationText() == null){
+        if (getDateNavigationText() == null) {
             disabledSpinner.text = text
         } else {
             disabledSpinner.text = (datePickerSpinner.adapter as DatePickerSpinnerAdapter).getText()
         }
     }
 
-    private fun toggleSpinnerVisibility(isEnabled: Boolean){
-        if(!isEnabled){
+    private fun toggleSpinnerVisibility(isEnabled: Boolean) {
+        if (!isEnabled) {
             datePickerSpinner.visibility = GONE
             disabledSpinner.visibility = VISIBLE
         } else {
@@ -128,8 +131,8 @@ constructor(
         }
     }
 
-    private fun disableButtons(isEnabled: Boolean){
-        if(isEnabled){
+    private fun disableButtons(isEnabled: Boolean) {
+        if (isEnabled) {
             nextDayButton.isEnabled = mNextDayEnabled
         } else {
             nextDayButton.isEnabled = false
@@ -175,13 +178,22 @@ constructor(
                     parent: AdapterView<*>?,
                     unused: View?,
                     position: Int,
-                    id: Long
+                    id: Long,
                 ) {
                     val period: DateNavigationPeriod =
                         when (position) {
-                            0 -> PERIOD_DAY
-                            1 -> PERIOD_WEEK
-                            2 -> PERIOD_MONTH
+                            0 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+                                PERIOD_DAY
+                            }
+                            1 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
+                                PERIOD_WEEK
+                            }
+                            2 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+                                PERIOD_MONTH
+                            }
                             else -> throw IllegalStateException("Not supported time period.")
                         }
                     setPeriod(period)
@@ -193,15 +205,23 @@ constructor(
             object : AccessibilityDelegate() {
                 override fun onInitializeAccessibilityNodeInfo(
                     host: View,
-                    info: AccessibilityNodeInfo
+                    info: AccessibilityNodeInfo,
                 ) {
                     super.onInitializeAccessibilityNodeInfo(host, info)
                     info.addAction(
                         AccessibilityNodeInfo.AccessibilityAction(
                             AccessibilityNodeInfoCompat.ACTION_CLICK,
-                            context.getString(R.string.selected_date_view_action_description)))
+                            context.getString(R.string.selected_date_view_action_description),
+                        )
+                    )
                 }
             }
+
+        when (period) {
+            PERIOD_DAY -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+            PERIOD_WEEK -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
+            PERIOD_MONTH -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+        }
     }
 
     private fun updateDisplayedDates() {
@@ -209,7 +229,8 @@ constructor(
         val today =
             LocalDate.ofInstant(
                     Instant.ofEpochMilli(timeSource.currentTimeMillis()),
-                    timeSource.deviceZoneOffset())
+                    timeSource.deviceZoneOffset(),
+                )
                 .atStartOfDay(timeSource.deviceZoneOffset())
                 .toInstant()
 
@@ -227,11 +248,13 @@ constructor(
                 .atStartOfDay(ZoneId.systemDefault())
                 .plus(toPeriod(period))
                 .toInstant()
-        //TODO: (b/363233408) Ensure new IA works with training plans
+        // TODO: (b/363233408) Ensure new IA works with training plans
         nextDayButton.isEnabled = !displayedEndDate.isAfter(today)
         mNextDayEnabled = nextDayButton.isEnabled
         (datePickerSpinner.adapter as DatePickerSpinnerAdapter).setStartTimeAndPeriod(
-            getDisplayedStartDate(), period)
+            getDisplayedStartDate(),
+            period,
+        )
     }
 
     private fun getDisplayedStartDate(): Instant =
