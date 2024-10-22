@@ -586,7 +586,6 @@ public class MedicalDataSourceHelper {
      *     self data and the app is filtering using {@code packageNames} but the app itself is not
      *     included in it.
      */
-    // TODO(b/359892459): Add CTS tests once it is properly implemented.
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
             Set<String> packageNames,
             Set<Integer> grantedReadMedicalResourceTypes,
