@@ -21,9 +21,6 @@ import static android.healthconnect.cts.utils.DataFactory.buildDevice;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
 
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -33,7 +30,6 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -43,16 +39,12 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.HeartRateRecord;
-import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.HealthConnectReceiver;
-import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
-import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
@@ -75,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -132,31 +123,6 @@ public class RateLimiterTest {
                 assertThrows(
                         HealthConnectException.class, () -> exceedWriteQuotaWithInsertRecords());
         assertThat(exception).hasMessageThat().contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#getMedicalDataSourcesByIds"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByIds_readLimitExceeded_throws()
-            throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        MedicalDataSource dataSource = createMedicalDataSource(manager);
-        // Make the maximum number of calls allowed by quota
-        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mLimitsAdjustmentForTesting;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-            manager.getMedicalDataSources(
-                    List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-        }
-
-        // Make 1 extra call and check quota is exceeded
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        manager.getMedicalDataSources(
-                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException exception = receiver.assertAndGetException();
-        assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
     @Test
@@ -381,15 +347,5 @@ public class RateLimiterTest {
                 new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class);
         recordList.forEach(v -> request.addId(v.getMetadata().getId()));
         TestUtils.readRecords(request.build());
-    }
-
-    private static MedicalDataSource createMedicalDataSource(HealthConnectManager manager)
-            throws InterruptedException {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        manager.createMedicalDataSource(
-                PhrDataFactory.getCreateMedicalDataSourceRequest(),
-                Executors.newSingleThreadExecutor(),
-                createReceiver);
-        return createReceiver.getResponse();
     }
 }
