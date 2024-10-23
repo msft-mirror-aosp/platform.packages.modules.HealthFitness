@@ -240,7 +240,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final TransactionManager mTransactionManager;
     @Nullable private final CloudBackupManager mCloudBackupManager;
-    private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final Context mContext;
@@ -278,7 +277,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     HealthConnectServiceImpl(
             TransactionManager transactionManager,
-            HealthConnectDeviceConfigManager deviceConfigManager,
             HealthConnectPermissionHelper permissionHelper,
             MigrationCleaner migrationCleaner,
             FirstGrantTimeManager firstGrantTimeManager,
@@ -297,7 +295,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             InternalHealthConnectMappings internalHealthConnectMappings) {
         this(
                 transactionManager,
-                deviceConfigManager,
                 permissionHelper,
                 migrationCleaner,
                 firstGrantTimeManager,
@@ -319,7 +316,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @VisibleForTesting
     HealthConnectServiceImpl(
             TransactionManager transactionManager,
-            HealthConnectDeviceConfigManager deviceConfigManager,
             HealthConnectPermissionHelper permissionHelper,
             MigrationCleaner migrationCleaner,
             FirstGrantTimeManager firstGrantTimeManager,
@@ -341,7 +337,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mPreferenceHelper = PreferenceHelper.getInstance();
         mChangeLogsRequestHelper = changeLogsRequestHelper;
         mActivityDateHelper = activityDateHelper;
-        mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
         mFirstGrantTimeManager = firstGrantTimeManager;
         mContext = context;
@@ -632,7 +627,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         boolean enforceSelfRead =
                                 mDataPermissionEnforcer.enforceReadAccessAndGetEnforceSelfRead(
                                         recordTypesToTest, attributionSource);
-                        if (!hasReadHistoryPermission(uid, pid)) {
+                        if (!isPermissionGranted(READ_HEALTH_DATA_HISTORY, uid, pid)) {
                             startDateAccess =
                                     mPermissionHelper
                                             .getHealthDataStartDateAccessOrThrow(
@@ -758,7 +753,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     try {
                         long startDateAccessEpochMilli = request.getStartTime();
 
-                        if (!holdsDataManagementPermission && !hasReadHistoryPermission(uid, pid)) {
+                        if (!holdsDataManagementPermission
+                                && !isPermissionGranted(READ_HEALTH_DATA_HISTORY, uid, pid)) {
                             Instant startDateAccessInstant =
                                     mPermissionHelper.getHealthDataStartDateAccessOrThrow(
                                             callingPackageName, userHandle);
@@ -1048,7 +1044,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                             changeLogsTokenRequest.getRecordTypes(), attributionSource);
                     long startDateAccessEpochMilli = DEFAULT_LONG;
-                    if (!hasReadHistoryPermission(uid, pid)) {
+                    if (!isPermissionGranted(READ_HEALTH_DATA_HISTORY, uid, pid)) {
                         startDateAccessEpochMilli =
                                 mPermissionHelper
                                         .getHealthDataStartDateAccessOrThrow(
@@ -3364,11 +3360,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private boolean hasDataManagementPermission(int uid, int pid) {
         return isPermissionGranted(MANAGE_HEALTH_DATA_PERMISSION, uid, pid);
-    }
-
-    private boolean hasReadHistoryPermission(int uid, int pid) {
-        return mDeviceConfigManager.isHistoryReadFeatureEnabled()
-                && isPermissionGranted(READ_HEALTH_DATA_HISTORY, uid, pid);
     }
 
     private boolean isPermissionGranted(String permission, int uid, int pid) {

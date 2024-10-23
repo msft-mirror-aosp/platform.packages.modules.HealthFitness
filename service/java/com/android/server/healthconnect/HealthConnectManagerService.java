@@ -228,7 +228,6 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
-                        mHealthConnectDeviceConfigManager,
                         permissionHelper,
                         migrationCleaner,
                         firstGrantTimeManager,
