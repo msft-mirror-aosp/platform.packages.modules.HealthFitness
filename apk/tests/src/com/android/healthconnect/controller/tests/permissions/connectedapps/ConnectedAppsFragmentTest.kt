@@ -262,7 +262,22 @@ class ConnectedAppsFragmentTest {
     }
 
     @Test
-    fun allowedApps_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun allowedApps_newIAEnabled_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText("Also delete all Health Connect data"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    fun allowedApps_phrEnabled_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
         whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
