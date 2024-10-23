@@ -47,7 +47,6 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
 import javax.inject.Inject
@@ -329,9 +328,7 @@ constructor(
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }
-        if (isPersonalHealthRecordEnabled()) {
-            reloadPermissions()
-        }
+        reloadPermissions()
     }
 
     /** Grants/Revokes all the [FitnessPermission]s sent by the caller. */
@@ -341,9 +338,7 @@ constructor(
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }
-        if (isPersonalHealthRecordEnabled()) {
-            reloadPermissions()
-        }
+        reloadPermissions()
     }
 
     /** Grants/Revokes all the [AdditionalPermission]s sent by the caller. */

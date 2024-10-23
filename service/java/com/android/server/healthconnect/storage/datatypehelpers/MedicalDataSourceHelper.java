@@ -395,7 +395,6 @@ public class MedicalDataSourceHelper {
             boolean isCalledFromBgWithoutBgRead,
             AppInfoHelper appInfoHelper)
             throws SQLiteException {
-        // TODO(b/359892459): Add CTS tests once it is properly implemented.
         if (!hasWritePermission && grantedReadMedicalResourceTypes.isEmpty()) {
             throw new IllegalStateException("no read or write permission");
         }
