@@ -163,6 +163,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         timeSource,
                         false,
                     )
+
                 if (selectedPeriod == DateNavigationPeriod.PERIOD_DAY) {
                     if (deletionMapSize < deletionType.totalEntries) {
                         getString(

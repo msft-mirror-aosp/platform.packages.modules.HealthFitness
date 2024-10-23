@@ -35,9 +35,12 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 
 import com.google.common.base.Preconditions;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,6 +63,12 @@ public class HealthConnectDatabaseTest {
                         InstrumentationRegistry.getInstrumentation()
                                 .getContext()
                                 .getDatabasePath("mock"));
+    }
+
+    @After
+    public void tearDown() {
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
     }
 
     @Test
