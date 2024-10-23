@@ -2011,7 +2011,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     () -> {
                         try {
                             ExportImportJobs.schedulePeriodicExportJob(
-                                    userHandle.getIdentifier(),
+                                    userHandle,
                                     mContext,
                                     mExportImportSettingsStorage,
                                     mExportManager);
@@ -2148,7 +2148,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         // TODO(b/370954019): Modify runExport to use specific file.
-                        mExportManager.runExport();
+                        mExportManager.runExport(userHandle);
                         callback.onResult();
                     } catch (Exception exception) {
                         throw new HealthConnectException(ERROR_IO, exception.toString());
