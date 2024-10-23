@@ -293,7 +293,7 @@
     <string name="procedures_content_description" msgid="1086900373141440005">"閱讀程序資料"</string>
     <string name="social_history_uppercase_label" msgid="1731364502071035544">"社交活動記錄"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"社交活動記錄"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"讀取社交活動記錄"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"讀取生活型態資料"</string>
     <string name="vital_signs_uppercase_label" msgid="214938594708280346">"生命徵象"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"生命徵象"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"讀取生命徵象"</string>

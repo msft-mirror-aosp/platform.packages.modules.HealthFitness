@@ -386,7 +386,7 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entesos"</string>
     <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Configura"</string>
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"No s\'han pogut exportar les dades"</string>
-    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Hi ha hagut un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"S\'ha produït un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Pròxima exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="next_export_text" msgid="6726252793571403846">"La pròxima exportació començarà aviat"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>

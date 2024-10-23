@@ -276,9 +276,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"예방 접종"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"예방 접종"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"예방 접종 데이터를 읽습니다."</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"실험실 결과"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"실험실 결과"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"실험실 결과 데이터 읽기"</string>
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"검사 결과"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"검사 결과"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"검사 결과 데이터 읽기"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"복용약"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"복용약"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"복용약 정보 읽기"</string>
@@ -288,15 +288,15 @@
     <string name="problems_uppercase_label" msgid="4047882613795113715">"문제"</string>
     <string name="problems_lowercase_label" msgid="6934298611508910866">"문제"</string>
     <string name="problems_content_description" msgid="1549418294742668962">"문제 데이터 읽기"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"절차"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"절차"</string>
-    <string name="procedures_content_description" msgid="1086900373141440005">"절차 데이터 읽기"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"소셜 기록"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"소셜 기록"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"소셜 기록 데이터 읽기"</string>
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"생체 신호"</string>
-    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"생체 신호"</string>
-    <string name="vital_signs_content_description" msgid="914944352640528612">"생체 신호 데이터 읽기"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"시술"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"시술"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"시술 데이터 읽기"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"사회력"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"사회력"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"사회력 데이터 읽기"</string>
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"활력 징후"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"활력 징후"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"활력 징후 데이터 읽기"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"마음챙김"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"마음챙김"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"마음챙김 읽기"</string>
@@ -324,8 +324,8 @@
     <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"모든 건강 기록 권한을 삭제하시겠어요?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"피트니스 및 웰니스 권한을 모두 삭제하시겠어요?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 더 이상 헬스 커넥트의 데이터를 읽거나 쓸 수 없습니다.\n\n이는 카메라, 마이크 또는 위치와 같이 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
-    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 더 이상 헬스 커넥트의 데이터(백그라운드 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n이는 카메라, 마이크 또는 위치와 같이 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
-    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 더 이상 헬스 커넥트의 데이터(이전 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n이는 카메라, 마이크 또는 위치와 같이 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 더 이상 헬스 커넥트의 데이터(백그라운드 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n이는 카메라, 마이크 또는 위치와 같이 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 더 이상 헬스 커넥트의 데이터(이전 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n이는 카메라, 마이크 또는 위치와 같이 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 더 이상 헬스 커넥트의 데이터(백그라운드 및 이전 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n이는 카메라, 마이크 또는 위치와 같이 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"헬스 커넥트에서 <xliff:g id="APP_NAME">%1$s</xliff:g> 앱의 피트니스 데이터 및 건강 기록도 삭제"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"이 앱의 권한이 삭제되었습니다."</string>
