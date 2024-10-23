@@ -123,7 +123,6 @@ public class FirstGrantTimeUnitTest {
                 () -> HealthConnectDeviceConfigManager.initializeInstance(mContext),
                 Manifest.permission.READ_DEVICE_CONFIG);
         TransactionManager.initializeInstance(new StorageContext(context, CURRENT_USER));
-        FirstGrantTimeManager.resetInstanceForTest();
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));

@@ -163,11 +163,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mChangeLogsRequestHelper;
         mPermissionIntentAppsTracker =
                 builder.mPermissionIntentAppsTracker == null
-                        ? HealthPermissionIntentAppsTracker.getInstance(context)
+                        ? new HealthPermissionIntentAppsTracker(context)
                         : builder.mPermissionIntentAppsTracker;
         mFirstGrantTimeManager =
                 builder.mFirstGrantTimeManager == null
-                        ? FirstGrantTimeManager.getInstance(
+                        ? new FirstGrantTimeManager(
                                 context,
                                 mPermissionIntentAppsTracker,
                                 builder.mFirstGrantTimeDatastore == null
