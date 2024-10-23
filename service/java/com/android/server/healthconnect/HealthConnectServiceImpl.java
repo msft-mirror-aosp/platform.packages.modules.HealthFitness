@@ -64,7 +64,6 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthConnectManager.DataDownloadState;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.HealthPermissions;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.PageTokenWrapper;
@@ -355,7 +354,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 new DataPermissionEnforcer(
                         mPermissionManager,
                         mContext,
-                        deviceConfigManager,
                         internalHealthConnectMappings);
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
@@ -619,10 +617,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setCallerForegroundState(isInForeground);
 
                         if (!isInForeground) {
-                            mDataPermissionEnforcer.enforceBackgroundReadRestrictions(
-                                    uid,
+                            mContext.enforcePermission(
+                                    READ_HEALTH_DATA_IN_BACKGROUND,
                                     pid,
-                                    /* errorMessage= */ attributionSource.getPackageName()
+                                    uid,
+                                    attributionSource.getPackageName()
                                             + "must be in foreground to call aggregate method");
                         }
                         tryAcquireApiCallQuota(
@@ -723,10 +722,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             // then enforce self read
                             enforceSelfRead = true;
                         } else if (!isInForeground) {
-                            // If Background Read feature is disabled
-                            // or READ_HEALTH_DATA_IN_BACKGROUND permission is not granted,
+                            // If READ_HEALTH_DATA_IN_BACKGROUND permission is not granted,
                             // then enforce self read
-                            enforceSelfRead = isOnlySelfReadInBackgroundAllowed(uid, pid);
+                            enforceSelfRead =
+                                    !isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
                         }
                         if (request.getRecordIdFiltersParcel() == null) {
                             // Only enforce requested packages if this is a
@@ -1029,10 +1028,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     logger.setCallerForegroundState(isInForeground);
 
                     if (!isInForeground) {
-                        mDataPermissionEnforcer.enforceBackgroundReadRestrictions(
-                                uid,
+                        mContext.enforcePermission(
+                                READ_HEALTH_DATA_IN_BACKGROUND,
                                 pid,
-                                /* errorMessage= */ callerPackageName
+                                uid,
+                                callerPackageName
                                         + "must be in foreground to call getChangeLogs method");
                     }
 
@@ -2011,7 +2011,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     () -> {
                         try {
                             ExportImportJobs.schedulePeriodicExportJob(
-                                    userHandle.getIdentifier(),
+                                    userHandle,
                                     mContext,
                                     mExportImportSettingsStorage,
                                     mExportManager);
@@ -2148,7 +2148,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         // TODO(b/370954019): Modify runExport to use specific file.
-                        mExportManager.runExport();
+                        mExportManager.runExport(userHandle);
                         callback.onResult();
                     } catch (Exception exception) {
                         throw new HealthConnectException(ERROR_IO, exception.toString());
@@ -2325,11 +2325,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             + " data");
                         }
 
-                        // If reading from background while Background Read feature is disabled
-                        // or READ_HEALTH_DATA_IN_BACKGROUND permission is not granted, then
-                        // enforce self read.
+                        // If reading from background while READ_HEALTH_DATA_IN_BACKGROUND
+                        // permission is not granted, then enforce self read.
                         boolean isCalledFromBgWithoutBgRead =
-                                !isInForeground && isOnlySelfReadInBackgroundAllowed(uid, pid);
+                                !isInForeground
+                                        && !isPermissionGranted(
+                                                READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
 
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -2427,11 +2428,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             + " data");
                         }
 
-                        // If reading from background while Background Read feature is disabled
-                        // or READ_HEALTH_DATA_IN_BACKGROUND permission is not granted, then
-                        // enforce self read.
+                        // If reading from background while READ_HEALTH_DATA_IN_BACKGROUND
+                        // permission is not granted, then enforce self read.
                         boolean isCalledFromBgWithoutBgRead =
-                                !isInForeground && isOnlySelfReadInBackgroundAllowed(uid, pid);
+                                !isInForeground
+                                        && !isPermissionGranted(
+                                                READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
 
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -2692,11 +2694,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             + " data");
                         }
 
-                        // If reading from background while Background Read feature is disabled
-                        // or READ_HEALTH_DATA_IN_BACKGROUND permission is not granted, then
-                        // enforce self read.
+                        // If reading from background while READ_HEALTH_DATA_IN_BACKGROUND
+                        // permission is not granted, then enforce self read.
                         boolean isCalledFromBgWithoutBgRead =
-                                !isInForeground && isOnlySelfReadInBackgroundAllowed(uid, pid);
+                                !isInForeground
+                                        && !isPermissionGranted(
+                                                READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
 
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -2794,10 +2797,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             enforceSelfRead = true;
                         } else if (!isInForeground) {
                             // This is when read permission is granted but the app is reading from
-                            // the background. Then we enforce self read if Background Read feature
-                            // is disabled or READ_HEALTH_DATA_IN_BACKGROUND permission is not
-                            // granted.
-                            enforceSelfRead = isOnlySelfReadInBackgroundAllowed(uid, pid);
+                            // the background. Then we enforce self read if
+                            // READ_HEALTH_DATA_IN_BACKGROUND permission is not granted.
+                            enforceSelfRead =
+                                    !isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
                         }
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -3366,16 +3369,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private boolean hasReadHistoryPermission(int uid, int pid) {
         return mDeviceConfigManager.isHistoryReadFeatureEnabled()
                 && isPermissionGranted(READ_HEALTH_DATA_HISTORY, uid, pid);
-    }
-
-    /**
-     * Returns true if Background Read feature is disabled or {@link
-     * HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} permission is not granted for the provided
-     * uid and pid, false otherwise.
-     */
-    private boolean isOnlySelfReadInBackgroundAllowed(int uid, int pid) {
-        return !mDeviceConfigManager.isBackgroundReadFeatureEnabled()
-                || !isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
     }
 
     private boolean isPermissionGranted(String permission, int uid, int pid) {

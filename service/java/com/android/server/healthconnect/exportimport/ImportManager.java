@@ -29,8 +29,6 @@ import static com.android.server.healthconnect.exportimport.ExportImportNotifica
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 
-import static java.util.Objects.requireNonNull;
-
 import android.annotation.Nullable;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -77,10 +75,8 @@ public class ImportManager {
     private final TransactionManager mTransactionManager;
     private final HealthConnectNotificationSender mNotificationSender;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
-
     @Nullable private final Clock mClock;
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ImportManager(
             AppInfoHelper appInfoHelper,
             Context context,
@@ -92,24 +88,24 @@ public class ImportManager {
         this(
                 appInfoHelper,
                 context,
-                ExportImportNotificationSender.createSender(context),
                 exportImportSettingsStorage,
                 transactionManager,
                 deviceInfoHelper,
                 healthDataCategoryPriorityHelper,
-                clock);
+                clock,
+                ExportImportNotificationSender.createSender(context));
     }
 
+    @VisibleForTesting
     public ImportManager(
             AppInfoHelper appInfoHelper,
             Context context,
-            HealthConnectNotificationSender notificationSender,
             ExportImportSettingsStorage exportImportSettingsStorage,
             TransactionManager transactionManager,
             DeviceInfoHelper deviceInfoHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            @Nullable Clock clock) {
-        requireNonNull(context);
+            @Nullable Clock clock,
+            HealthConnectNotificationSender notificationSender) {
         mContext = context;
         mDatabaseMerger =
                 new DatabaseMerger(
@@ -119,9 +115,9 @@ public class ImportManager {
                         healthDataCategoryPriorityHelper,
                         transactionManager);
         mTransactionManager = transactionManager;
-        mNotificationSender = notificationSender;
         mExportImportSettingsStorage = exportImportSettingsStorage;
         mClock = clock;
+        mNotificationSender = notificationSender;
     }
 
     /** Reads and merges the backup data from a local file. */

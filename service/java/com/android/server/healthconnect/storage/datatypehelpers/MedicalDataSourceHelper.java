@@ -395,7 +395,6 @@ public class MedicalDataSourceHelper {
             boolean isCalledFromBgWithoutBgRead,
             AppInfoHelper appInfoHelper)
             throws SQLiteException {
-        // TODO(b/359892459): Add CTS tests once it is properly implemented.
         if (!hasWritePermission && grantedReadMedicalResourceTypes.isEmpty()) {
             throw new IllegalStateException("no read or write permission");
         }
@@ -587,7 +586,6 @@ public class MedicalDataSourceHelper {
      *     self data and the app is filtering using {@code packageNames} but the app itself is not
      *     included in it.
      */
-    // TODO(b/359892459): Add CTS tests once it is properly implemented.
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
             Set<String> packageNames,
             Set<Integer> grantedReadMedicalResourceTypes,

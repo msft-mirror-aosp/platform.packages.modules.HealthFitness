@@ -23,7 +23,7 @@ import static com.android.server.healthconnect.exportimport.ExportImportJobs.PER
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_COMPLETE_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_PAUSE_JOB_NAME;
 
-import android.annotation.UserIdInt;
+import android.annotation.Nullable;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -32,6 +32,7 @@ import android.content.Context;
 import android.health.connect.Constants;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
@@ -65,7 +66,7 @@ public class HealthConnectDailyService extends JobService {
     public static final String EXTRA_USER_ID = "user_id";
     public static final String EXTRA_JOB_NAME_KEY = "job_name";
     private static final String TAG = "HealthConnectDailyService";
-    @UserIdInt private static volatile int sCurrentUserId;
+    @Nullable private static volatile UserHandle sUserHandle;
 
     /**
      * Routes the job to the right place based on the job name, after performing common checks.,
@@ -77,7 +78,8 @@ public class HealthConnectDailyService extends JobService {
     public boolean onStartJob(JobParameters params) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
         String jobName = params.getExtras().getString(EXTRA_JOB_NAME_KEY);
-        if (userId == DEFAULT_INT || userId != sCurrentUserId) {
+        Context context = getApplicationContext();
+        if (userId == DEFAULT_INT || sUserHandle == null || userId != sUserHandle.getIdentifier()) {
             // This job is no longer valid, the service for this user should have been stopped.
             // Just ignore this request in case we still got the request.
             return false;
@@ -86,8 +88,6 @@ public class HealthConnectDailyService extends JobService {
         if (Objects.isNull(jobName)) {
             return false;
         }
-
-        Context context = getApplicationContext();
 
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
         ExportImportSettingsStorage exportImportSettingsStorage;
@@ -207,7 +207,7 @@ public class HealthConnectDailyService extends JobService {
                             boolean isExportSuccessful =
                                     ExportImportJobs.executePeriodicExportJob(
                                             context,
-                                            userId,
+                                            Objects.requireNonNull(sUserHandle),
                                             params.getExtras(),
                                             exportManager,
                                             exportImportSettingsStorage);
@@ -229,9 +229,9 @@ public class HealthConnectDailyService extends JobService {
     }
 
     /** Start periodically scheduling this service for {@code userId}. */
-    public static void schedule(JobScheduler jobScheduler, @UserIdInt int userId, JobInfo jobInfo) {
+    public static void schedule(JobScheduler jobScheduler, UserHandle userHandle, JobInfo jobInfo) {
         Objects.requireNonNull(jobScheduler);
-        sCurrentUserId = userId;
+        sUserHandle = userHandle;
 
         int result = jobScheduler.schedule(jobInfo);
         if (result != JobScheduler.RESULT_SUCCESS) {

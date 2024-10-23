@@ -158,7 +158,7 @@ public class HealthConnectManagerService extends SystemService {
             mPreferenceHelper = PreferenceHelper.getInstance();
             mMigrationStateManager =
                     MigrationStateManager.initializeInstance(
-                            mCurrentForegroundUser.getIdentifier(),
+                            mCurrentForegroundUser,
                             mHealthConnectDeviceConfigManager,
                             mPreferenceHelper);
             appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
@@ -209,7 +209,7 @@ public class HealthConnectManagerService extends SystemService {
         mUserManager = context.getSystemService(UserManager.class);
         mMigrationBroadcastScheduler =
                 new MigrationBroadcastScheduler(
-                        mCurrentForegroundUser.getIdentifier(),
+                        mCurrentForegroundUser,
                         mHealthConnectDeviceConfigManager,
                         mMigrationStateManager);
         mMigrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
@@ -278,7 +278,7 @@ public class HealthConnectManagerService extends SystemService {
         mTransactionManager.onUserSwitching();
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
-        mMigrationStateManager.onUserSwitching(mContext, to.getUserHandle().getIdentifier());
+        mMigrationStateManager.onUserSwitching(mContext, to.getUserHandle());
 
         mCurrentForegroundUser = to.getUserHandle();
 
@@ -318,7 +318,7 @@ public class HealthConnectManagerService extends SystemService {
         mTransactionManager.onUserUnlocked(
                 new HealthConnectUserContext(mContext, mCurrentForegroundUser));
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
-        mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser.getIdentifier());
+        mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
         mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
 
@@ -334,8 +334,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        HealthConnectDailyJobs.schedule(
-                                mContext, mCurrentForegroundUser.getIdentifier());
+                        HealthConnectDailyJobs.schedule(mContext, mCurrentForegroundUser);
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to schedule Health Connect daily service.", e);
                     }
@@ -371,7 +370,7 @@ public class HealthConnectManagerService extends SystemService {
                 () -> {
                     try {
                         ExportImportJobs.schedulePeriodicJobIfNotScheduled(
-                                mCurrentForegroundUser.getIdentifier(),
+                                mCurrentForegroundUser,
                                 mContext,
                                 mExportImportSettingsStorage,
                                 mExportManager);
