@@ -46,6 +46,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /** Unit test for class {@link CloudBackupManager}. */
 @RunWith(AndroidJUnit4.class)
@@ -73,6 +74,8 @@ public class CloudBackupManagerTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
         TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils =
                 new TransactionTestUtils(mDatabaseTestRule.getUserContext(), transactionManager);
