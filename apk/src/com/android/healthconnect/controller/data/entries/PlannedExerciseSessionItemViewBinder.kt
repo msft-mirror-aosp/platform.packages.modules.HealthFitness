@@ -24,7 +24,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -57,7 +57,7 @@ class PlannedExerciseSessionItemViewBinder(
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
-        logger.logImpression(DataEntriesElement.PLANNED_EXERCISE_SESSION_ENTRY_BUTTON)
+        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
 
         title.text = data.title
         title.contentDescription = data.titleA11y
@@ -69,7 +69,7 @@ class PlannedExerciseSessionItemViewBinder(
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
             } else {
-                logger.logInteraction(DataEntriesElement.PLANNED_EXERCISE_SESSION_ENTRY_BUTTON)
+                logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
                 onItemClickedListener?.onItemClicked(data.uuid, index)
             }
         }

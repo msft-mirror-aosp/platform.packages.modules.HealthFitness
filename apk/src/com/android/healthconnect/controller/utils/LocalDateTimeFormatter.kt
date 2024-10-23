@@ -16,7 +16,10 @@
 package com.android.healthconnect.controller.utils
 
 import android.content.Context
-import android.text.format.DateFormat.*
+import android.text.format.DateFormat.getBestDateTimePattern
+import android.text.format.DateFormat.getLongDateFormat
+import android.text.format.DateFormat.getTimeFormat
+import android.text.format.DateFormat.is24HourFormat
 import android.text.format.DateUtils
 import com.android.healthconnect.controller.R
 import dagger.hilt.android.qualifiers.ApplicationContext

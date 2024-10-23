@@ -17,12 +17,15 @@ package android.healthconnect.cts.phr;
 
 import static android.health.connect.HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP_PKG;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.RECORD_SIZE_LIMIT_IN_BYTES;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
@@ -45,6 +48,8 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
@@ -64,12 +69,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.compatibility.common.util.SystemUtil;
 
+import com.google.common.base.Strings;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -95,11 +103,118 @@ public class UpsertMedicalResourcesCtsTest {
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
         mUtil.deleteAllMedicalData();
+        if (TestUtils.setLowerRateLimitsForTesting(true)) {
+            // 10 comes from the setLowerRateLimitsForTesting method in RateLimiter.
+            mUtil.mLimitsAdjustmentForTesting = 10;
+        }
     }
 
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+        TestUtils.setLowerRateLimitsForTesting(false);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        List<UpsertMedicalResourceRequest> requests = List.of(getUpsertMedicalResourceRequest());
+        startMigrationWithShellPermissionIdentity();
+
+        mManager.upsertMedicalResources(requests, newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(ERROR_DATA_SYNC_IN_PROGRESS);
+
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    // TODO(b/370731291): Investigate and add tests against rolling memory limit
+    // QUOTA_BUCKET_DATA_PUSH_LIMIT_PER_APP_15M and QUOTA_BUCKET_DATA_PUSH_LIMIT_ACROSS_APPS_15M.
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_writeLimitExceeded_throws() throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        String resourceDataTemplate =
+                "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization%d\"}";
+
+        // Make the maximum number of calls allowed by quota. Minus 1 because of the above call.
+        int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+            String resourceData = String.format(resourceDataTemplate, i);
+            UpsertMedicalResourceRequest request =
+                    new UpsertMedicalResourceRequest.Builder(
+                                    dataSource.getId(), FHIR_VERSION_R4, resourceData)
+                            .build();
+            mManager.upsertMedicalResources(
+                    List.of(request), Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+        }
+
+        // Make 1 extra create call and check quota is exceeded.
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String resourceData = String.format(resourceDataTemplate, maximumCalls);
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, resourceData)
+                        .build();
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
+        assertThat(exception.getMessage()).contains("API call quota exceeded");
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_singleRequestSizeLimitExceeded_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        // Divided by 2 because string size is 2 bytes per char.
+        int nCharacters = RECORD_SIZE_LIMIT_IN_BYTES / mUtil.mLimitsAdjustmentForTesting / 2;
+        String data = Strings.repeat("0", nCharacters + 1);
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_ID, FHIR_VERSION_R4, data)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
+        assertThat(exception.getMessage())
+                .contains("Record size exceeded the single record size limit");
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_memoryChunkSizeLimitExceeded_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        // 1000 is just picked after trial and error. See comments in
+        // http://ag/27893719/4..8/tests/cts/src/android/healthconnect/cts/ratelimiter/RateLimiterTest.java#b206.
+        int nCopies = 1000 / mUtil.mLimitsAdjustmentForTesting;
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, "UpsertMedicalResourceRequest")
+                        .build();
+
+        mManager.upsertMedicalResources(
+                Collections.nCopies(nCopies, request),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
+        assertThat(exception.getMessage())
+                .contains("Records chunk size exceeded the max chunk limit");
     }
 
     @Test
@@ -313,16 +428,37 @@ public class UpsertMedicalResourcesCtsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void upsert_migrationInProgress_expectException() throws InterruptedException {
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        List<UpsertMedicalResourceRequest> requests = List.of(getUpsertMedicalResourceRequest());
-        startMigrationWithShellPermissionIdentity();
+    public void testUpsertMedicalResources_inForegroundNoWritePerms_throws() throws Exception {
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        MedicalDataSource dataSource =
+                PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        revokePermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
-        mManager.upsertMedicalResources(requests, newSingleThreadExecutor(), receiver);
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                PHR_FOREGROUND_APP.upsertMedicalResource(
+                                        dataSource.getId(), FHIR_DATA_IMMUNIZATION));
 
-        assertThat(receiver.assertAndGetException().getErrorCode())
-                .isEqualTo(ERROR_DATA_SYNC_IN_PROGRESS);
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
 
-        finishMigrationWithShellPermissionIdentity();
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_inBackgroundNoWritePerms_throws() throws Exception {
+        grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        MedicalDataSource dataSource =
+                PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                PHR_BACKGROUND_APP.upsertMedicalResource(
+                                        dataSource.getId(), FHIR_DATA_IMMUNIZATION));
+
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 }

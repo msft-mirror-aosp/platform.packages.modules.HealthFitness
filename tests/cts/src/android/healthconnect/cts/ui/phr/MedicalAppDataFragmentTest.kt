@@ -15,12 +15,19 @@
  */
 package android.healthconnect.cts.ui.phr
 
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.MenstruationPeriodRecord
+import android.health.connect.datatypes.Record
+import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
+import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.findObject
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY
 import android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
@@ -33,6 +40,7 @@ import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+import java.time.Instant
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -82,6 +90,53 @@ class MedicalAppDataFragmentTest : HealthConnectBaseTest() {
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findText("Allergies")
+            findText("Vaccines")
+        }
+    }
+
+    @Test
+    fun appWithFitnessAndMedicalData_showsBothTypes() {
+        val NOW = Instant.now()
+        APP_A_WITH_READ_WRITE_PERMS.insertRecords(
+            mutableListOf(
+                StepsRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(2), 10).build(),
+                HeartRateRecord.Builder(
+                        newEmptyMetadata(),
+                        NOW,
+                        NOW.plusSeconds(10),
+                        listOf(HeartRateRecord.HeartRateSample(140, NOW)),
+                    )
+                    .build(),
+                MenstruationPeriodRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(10))
+                    .build(),
+                SleepSessionRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(1000)).build(),
+            )
+                as List<Record>?
+        )
+        context.launchMainActivity {
+            scrollDownTo(By.text("App permissions"))
+            findTextAndClick("App permissions")
+            findTextAndClick("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+
+            scrollToEnd()
+            findTextAndClick("See app data")
+
+            findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+
+            findText("Activity")
+            findText("Steps")
+            scrollDownTo(By.text("Cycle tracking"))
+            findText("Cycle tracking")
+            findText("Menstruation")
+            scrollDownTo(By.text("Sleep"))
+            findText("Sleep")
+            scrollDownTo(By.text("Vitals"))
+            findText("Vitals")
+            findText("Heart rate")
+            scrollDownTo(By.text("Health records"))
+            scrollDownTo(By.text("Allergies"))
+            findText("Allergies")
+            scrollDownTo(By.text("Vaccines"))
             findText("Vaccines")
         }
     }
