@@ -216,10 +216,6 @@ android_app {
     ],
     libs: [
         "framework-healthfitness.stubs.module_lib",
-        "framework-annotations-lib",
     ],
     apex_available: ["com.android.healthfitness"],
-    flags_packages: [
-        "healthfitness-aconfig-flags",
-    ],
 }

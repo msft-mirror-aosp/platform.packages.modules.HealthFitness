@@ -40,15 +40,6 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
-    <!-- @FlaggedApi("com.android.healthfitness.flags.activity_intensity") -->
-    <permission
-        android:name="android.permission.health.READ_ACTIVITY_INTENSITY"
-        android:label="@string/activity_intensity_read_content_description"
-        android:protectionLevel="dangerous"
-        android:permissionGroup="android.permission-group.HEALTH"
-        android:featureFlag="com.android.healthfitness.flags.activity_intensity"
-    />
-
     <permission
         android:name="android.permission.health.READ_DISTANCE"
         android:label="@string/distance_read_content_description"
@@ -359,15 +350,6 @@
         android:label="@string/active_calories_burned_write_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
-
-    <!-- @FlaggedApi("com.android.healthfitness.flags.activity_intensity") -->
-    <permission
-        android:name="android.permission.health.WRITE_ACTIVITY_INTENSITY"
-        android:label="@string/activity_intensity_write_content_description"
-        android:protectionLevel="dangerous"
-        android:permissionGroup="android.permission-group.HEALTH"
-        android:featureFlag="com.android.healthfitness.flags.activity_intensity"
-    />
 
     <permission
         android:name="android.permission.health.WRITE_DISTANCE"
