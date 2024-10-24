@@ -35,6 +35,8 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -64,6 +66,7 @@ public class CloudBackupManagerTest {
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
+    private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private CloudBackupManager mCloudBackupManager;
 
@@ -76,14 +79,14 @@ public class CloudBackupManagerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
+        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils =
-                new TransactionTestUtils(mDatabaseTestRule.getUserContext(), transactionManager);
+                new TransactionTestUtils(mDatabaseTestRule.getUserContext(), mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getUserContext())
-                        .setTransactionManager(transactionManager)
+                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
@@ -95,15 +98,20 @@ public class CloudBackupManagerTest {
                 healthConnectInjector.getHealthConnectMappings();
         InternalHealthConnectMappings internalHealthConnectMappings =
                 healthConnectInjector.getInternalHealthConnectMappings();
+        ChangeLogsHelper changeLogsHelper = healthConnectInjector.getChangeLogsHelper();
+        ChangeLogsRequestHelper changeLogsRequestHelper =
+                healthConnectInjector.getChangeLogsRequestHelper();
 
         mCloudBackupManager =
                 new CloudBackupManager(
-                        transactionManager,
+                        mTransactionManager,
                         appInfoHelper,
                         accessLogsHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
-                        internalHealthConnectMappings);
+                        internalHealthConnectMappings,
+                        changeLogsHelper,
+                        changeLogsRequestHelper);
     }
 
     @After
@@ -130,6 +138,7 @@ public class CloudBackupManagerTest {
         GetChangesForBackupResponse response = mCloudBackupManager.getChangesForBackup(null);
 
         assertThat(response.getChanges().size()).isEqualTo(1);
-        assertThat(response.getNextChangeToken()).isEqualTo("placeHolderPageToken");
+        String nextChangeToken = response.getNextChangeToken();
+        assertThat(nextChangeToken).isEqualTo("1");
     }
 }

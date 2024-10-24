@@ -91,6 +91,5 @@ public final class GetChangesForBackupResponse implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeTypedList(mChanges);
         dest.writeString(mNextChangeToken);
-        dest.writeTypedList(mChanges);
     }
 }
