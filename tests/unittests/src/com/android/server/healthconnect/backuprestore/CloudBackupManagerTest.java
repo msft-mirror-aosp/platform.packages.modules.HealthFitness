@@ -22,6 +22,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -37,6 +38,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,6 +46,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /** Unit test for class {@link CloudBackupManager}. */
 @RunWith(AndroidJUnit4.class)
@@ -71,6 +74,8 @@ public class CloudBackupManagerTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
         TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils =
                 new TransactionTestUtils(mDatabaseTestRule.getUserContext(), transactionManager);
@@ -86,9 +91,19 @@ public class CloudBackupManagerTest {
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         DeviceInfoHelper deviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+        HealthConnectMappings healthConnectMappings =
+                healthConnectInjector.getHealthConnectMappings();
+        InternalHealthConnectMappings internalHealthConnectMappings =
+                healthConnectInjector.getInternalHealthConnectMappings();
+
         mCloudBackupManager =
                 new CloudBackupManager(
-                        transactionManager, appInfoHelper, accessLogsHelper, deviceInfoHelper);
+                        transactionManager,
+                        appInfoHelper,
+                        accessLogsHelper,
+                        deviceInfoHelper,
+                        healthConnectMappings,
+                        internalHealthConnectMappings);
     }
 
     @After

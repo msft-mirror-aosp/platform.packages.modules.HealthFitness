@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionStrings
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
@@ -37,6 +38,7 @@ import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
+import com.android.healthconnect.controller.utils.pref
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -62,27 +64,19 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
-    private val header: RequestPermissionHeaderPreference? by lazy {
-        preferenceScreen.findPreference(HEADER)
-    }
+    private val header: RequestPermissionHeaderPreference by pref(HEADER)
 
-    private val allowAllPreference: HealthMainSwitchPreference? by lazy {
-        preferenceScreen.findPreference(ALLOW_ALL_PREFERENCE)
-    }
+    private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
 
-    private val readPermissionCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(READ_CATEGORY)
-    }
+    private val readPermissionCategory: PreferenceGroup by pref(READ_CATEGORY)
 
-    private val writePermissionCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(WRITE_CATEGORY)
-    }
+    private val writePermissionCategory: PreferenceGroup by pref(WRITE_CATEGORY)
 
     private val onSwitchChangeListener = OnCheckedChangeListener { _, grant ->
-        readPermissionCategory?.children?.forEach { preference ->
+        readPermissionCategory.children.forEach { preference ->
             (preference as TwoStatePreference).isChecked = grant
         }
-        writePermissionCategory?.children?.forEach { preference ->
+        writePermissionCategory.children.forEach { preference ->
             (preference as TwoStatePreference).isChecked = grant
         }
         viewModel.updateMedicalPermissions(grant)
@@ -111,40 +105,73 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.permissions_screen, rootKey)
         // TODO(b/342159144): Update visual elements.
-        allowAllPreference?.logNameActive = ErrorPageElement.UNKNOWN_ELEMENT
-        allowAllPreference?.logNameInactive = ErrorPageElement.UNKNOWN_ELEMENT
+        allowAllPreference.logNameActive = ErrorPageElement.UNKNOWN_ELEMENT
+        allowAllPreference.logNameInactive = ErrorPageElement.UNKNOWN_ELEMENT
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.appMetadata.observe(viewLifecycleOwner) { app ->
-            logger.logImpression(PermissionsElement.APP_RATIONALE_LINK)
-            val onAboutHealthRecordsClicked = {
-                deviceInfoUtils.openHCGetStartedLink(requireActivity())
-            }
-            val onRationaleLinkClicked = {
-                val startRationaleIntent =
-                    healthPermissionReader.getApplicationRationaleIntent(app.packageName)
-                logger.logInteraction(PermissionsElement.APP_RATIONALE_LINK)
-                startActivity(startRationaleIntent)
-            }
-            header?.bindMedical(
-                appName = app.appName,
-                onAboutHealthRecordsClicked,
-                onRationaleLinkClicked,
-            )
-            readPermissionCategory?.title =
-                getString(R.string.read_permission_category, app.appName)
-            writePermissionCategory?.title =
-                getString(R.string.write_permission_category, app.appName)
-        }
-        viewModel.medicalPermissionsList.observe(viewLifecycleOwner) { medicalPermissions ->
-            updateDataList(medicalPermissions)
-            setupAllowAll()
 
-            setupAllowButton()
-            setupDontAllowButton()
+        viewModel.medicalScreenState.observe(viewLifecycleOwner) { screenState ->
+            when (screenState) {
+                is MedicalScreenState.NoMedicalData -> {
+                    requireActivity()
+                        .supportFragmentManager
+                        .beginTransaction()
+                        .remove(this)
+                        .commit()
+                }
+                is MedicalScreenState.ShowMedicalWrite -> {
+                    requireActivity()
+                        .supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.permission_content, MedicalWritePermissionFragment())
+                        .commit()
+                }
+                is MedicalScreenState.ShowMedicalReadWrite -> {
+                    setupHeader(screenState.appMetadata, screenState)
+                    updateDataList(screenState.medicalPermissions)
+                    updateCategoryTitles(screenState.appMetadata.appName)
+                    setupButtons()
+                }
+                is MedicalScreenState.ShowMedicalRead -> {
+                    setupHeader(screenState.appMetadata, screenState)
+                    updateDataList(screenState.medicalPermissions)
+                    updateCategoryTitles(screenState.appMetadata.appName)
+                    setupButtons()
+                }
+            }
         }
+    }
+
+    private fun setupHeader(appMetadata: AppMetadata, screenState: RequestPermissionsScreenState) {
+        val onAboutHealthRecordsClicked = {
+            deviceInfoUtils.openHCGetStartedLink(requireActivity())
+        }
+        val onRationaleLinkClicked = {
+            val startRationaleIntent =
+                healthPermissionReader.getApplicationRationaleIntent(appMetadata.packageName)
+            logger.logInteraction(PermissionsElement.APP_RATIONALE_LINK)
+            startActivity(startRationaleIntent)
+        }
+
+        header.bind(
+            appMetadata.appName,
+            screenState,
+            onAboutHealthRecordsClicked = onAboutHealthRecordsClicked,
+            onRationaleLinkClicked = onRationaleLinkClicked,
+        )
+    }
+
+    private fun updateCategoryTitles(appName: String) {
+        readPermissionCategory.title = getString(R.string.read_permission_category, appName)
+        writePermissionCategory.title = getString(R.string.write_permission_category, appName)
+    }
+
+    private fun setupButtons() {
+        setupAllowAll()
+        setupAllowButton()
+        setupDontAllowButton()
     }
 
     private fun setupAllowButton() {
@@ -190,16 +217,16 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         viewModel.allMedicalPermissionsGranted.observe(viewLifecycleOwner) { allPermissionsGranted
             ->
             // does not trigger removing/enabling all permissions
-            allowAllPreference?.removeOnSwitchChangeListener(onSwitchChangeListener)
-            allowAllPreference?.isChecked = allPermissionsGranted
-            allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
+            allowAllPreference.removeOnSwitchChangeListener(onSwitchChangeListener)
+            allowAllPreference.isChecked = allPermissionsGranted
+            allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
         }
-        allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
+        allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
     }
 
     private fun updateDataList(permissionsList: List<HealthPermission.MedicalPermission>) {
-        readPermissionCategory?.removeAll()
-        writePermissionCategory?.removeAll()
+        readPermissionCategory.removeAll()
+        writePermissionCategory.removeAll()
 
         permissionsList
             .sortedBy {
@@ -212,18 +239,16 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
             .forEach { permission ->
                 val value = viewModel.isPermissionLocallyGranted(permission)
                 if (permission.medicalPermissionType == MedicalPermissionType.ALL_MEDICAL_DATA) {
-                    writePermissionCategory?.addPreference(
+                    writePermissionCategory.addPreference(
                         getPermissionPreference(value, permission)
                     )
                 } else {
-                    readPermissionCategory?.addPreference(
-                        getPermissionPreference(value, permission)
-                    )
+                    readPermissionCategory.addPreference(getPermissionPreference(value, permission))
                 }
             }
 
-        readPermissionCategory?.apply { isVisible = (preferenceCount != 0) }
-        writePermissionCategory?.apply { isVisible = (preferenceCount != 0) }
+        readPermissionCategory.apply { isVisible = (preferenceCount != 0) }
+        writePermissionCategory.apply { isVisible = (preferenceCount != 0) }
     }
 
     private fun getPermissionPreference(

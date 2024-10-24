@@ -61,6 +61,8 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -71,7 +73,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDat
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -81,6 +83,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
@@ -131,6 +134,12 @@ public class ImportManagerTest {
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
+    private InternalHealthConnectMappings mInternalHealthConnectMappings;
+
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     @Before
     public void setUp() throws Exception {
@@ -156,6 +165,8 @@ public class ImportManagerTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
                         .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
 
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
@@ -165,6 +176,7 @@ public class ImportManagerTest {
         healthConnectInjector.getHealthConnectDeviceConfigManager();
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
+        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
 
         Instant timeStamp = Instant.parse("2024-06-04T16:39:12Z");
         Clock fakeClock = Clock.fixed(timeStamp, ZoneId.of("UTC"));
@@ -173,12 +185,12 @@ public class ImportManagerTest {
                 new ImportManager(
                         mAppInfoHelper,
                         mContext,
-                        mNotificationSender,
                         mExportImportSettingsStorage,
                         mTransactionManager,
                         mDeviceInfoHelper,
                         mPriorityHelper,
-                        fakeClock);
+                        fakeClock,
+                        mNotificationSender);
         mImportManagerSpy = ExtendedMockito.spy(importManager);
         doReturn(TEST_COMPRESSED_FILE_SIZE)
                 .when(mImportManagerSpy)
@@ -336,7 +348,8 @@ public class ImportManagerTest {
 
         // Delete steps record table in import db.
         String stepsRecordTableName =
-                RecordHelperProvider.getRecordHelper(RecordTypeIdentifier.RECORD_TYPE_STEPS)
+                mInternalHealthConnectMappings
+                        .getRecordHelper(RecordTypeIdentifier.RECORD_TYPE_STEPS)
                         .getMainTableName();
         try (SQLiteDatabase importDb =
                 SQLiteDatabase.openDatabase(

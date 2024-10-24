@@ -93,27 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"pristup podacima o zdravlju"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Očitavanje potrošenih kalorija"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Aplikaciji omogućuje očitavanje podataka o potrošenim kalorijama"</string>
-    <string name="background_read_medical_title" msgid="378446129450196253">"Pristup svim podacima u pozadini"</string>
-    <string name="background_read_medical_request_title" msgid="5388067032484069722">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa svim podacima u pozadini?"</string>
-    <string name="background_read_medical_description" msgid="4205144207056391848">"Dopustite ovoj aplikaciji da pristupa podacima o fitnessu i općem stanju te podacima o zdravstvenom stanju kad ne upotrebljavate aplikaciju"</string>
-    <string name="background_read_medical_request_description" msgid="6135447220241108032">"Ako to dopustite, ova aplikacija može pristupati podacima o fitnessu i općem stanju te podacima o zdravstvenom stanju kad ne upotrebljavate aplikaciju."</string>
-    <string name="historic_access_medical_title" msgid="1198466488695524014">"Pristup prethodnim podacima o fitnessu i općem stanju"</string>
-    <string name="historic_access_medical_request_title" msgid="4927886483832141584">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa prethodnim podacima o fitnessu i općem stanju?"</string>
-    <string name="historic_access_medical_description" msgid="513689388911992345">"Dopustite ovoj aplikaciji da pristupa podacima koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_medical_description_fallback" msgid="1596909285259037066">"Dopustite ovoj aplikaciji da pristupa svim prethodnim podacima"</string>
-    <string name="historic_access_medical_request_description" msgid="6938665708764487963">"Ako to dopustite, aplikacija može pristupati podacima koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_medical_request_description_fallback" msgid="1075934237674126677">"Ako to dopustite, aplikacija može pristupati svim prethodnim podacima."</string>
-    <string name="historic_access_medical_warning" msgid="6691110601538756473">"Trenutačno se ne čitaju podaci o fitnessu jer <xliff:g id="APP_NAME">%1$s</xliff:g> nema dopuštenja za čitanje"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Pristup podacima u pozadini"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima u pozadini?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima u pozadini?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Ako to dopustite, ova aplikacija može pristupati podacima o fitnessu i wellnessu te podacima o zdravstvenom stanju kad ne upotrebljavate aplikaciju."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Ako to dopustite, ova aplikacija može pristupati podacima o zdravstvenom stanju kad ne upotrebljavate aplikaciju."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Ako to dopustite, ova aplikacija može pristupati podacima o fitnessu i wellnessu kad ne upotrebljavate aplikaciju."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Ako to dopustite, ova aplikacija može pristupati podacima Health Connecta kad ne upotrebljavate aplikaciju."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa prethodnim podacima?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Ako to dopustite, aplikacija može pristupati podacima o fitnessu i wellnessu koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Ako to dopustite, aplikacija može pristupati svim prethodnim podacima o fitnessu i wellnessu."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Ako to dopustite, aplikacija može pristupati podacima Health Connecta koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Ako to dopustite, aplikacija može pristupati svim prethodnim podacima Health Connecta."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Želite li dopustiti dodatni pristup za aplikaciju <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi pristupiti i ovim postavkama Health Connecta"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Pristup svim podacima u pozadini"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Pristup podacima o zdravstvenom stanju u pozadini"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Pristup podacima o fitnessu i wellnessu u pozadini"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Dopustite ovoj aplikaciji da pristupa podacima o fitnessu i wellnessu te podacima o zdravstvenom stanju kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Dopustite ovoj aplikaciji da pristupa tim podacima kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Dopustite ovoj aplikaciji da pristupa tim podacima kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"Pristup podacima u pozadini"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Dopustite ovoj aplikaciji da pristupa podacima Health Connecta kad ne upotrebljavate aplikaciju"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Pristup prethodnim podacima o fitnessu i wellnessu"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Dopustite ovoj aplikaciji da pristupa podacima koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Dopustite ovoj aplikaciji da pristupa svim prethodnim podacima"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Pristup prethodnim podacima"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Dopustite ovoj aplikaciji da pristupa podacima Health Connecta koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Dopustite ovoj aplikaciji da pristupa svim prethodnim podacima Health Connecta"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> već može pristupiti prethodnim podacima o vašem zdravstvenom stanju"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Pročitajte više o dopuštenjima"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Pristup svim podacima u pozadini"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Pristup podacima o zdravstvenom stanju u pozadini"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Pristup podacima o fitnessu i wellnessu u pozadini"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Dopustite ovoj aplikaciji da pristupa podacima o fitnessu i wellnessu te podacima o zdravstvenom stanju kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Dopustite ovoj aplikaciji da pristupa tim podacima kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Dopustite ovoj aplikaciji da pristupa tim podacima kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Pristup podacima u pozadini"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Dopustite ovoj aplikaciji da pristupa podacima Health Connecta kad ne upotrebljavate aplikaciju"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Pristup prethodnim podacima o fitnessu i wellnessu"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Dopustite ovoj aplikaciji da pristupa podacima koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Dopustite ovoj aplikaciji da pristupa svim prethodnim podacima"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"Pristup prethodnim podacima"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Dopustite ovoj aplikaciji da pristupa podacima Health Connecta koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Dopustite ovoj aplikaciji da pristupa svim prethodnim podacima Health Connecta"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Trenutačno se ne čitaju podaci o fitnessu jer <xliff:g id="APP_NAME">%1$s</xliff:g> nema dopuštenja za čitanje"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> već može pristupiti prethodnim podacima o vašem zdravstvenom stanju. Da biste to promijenili, isključite dopuštenja za podatke o zdravstvenom stanju za tu aplikaciju"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Upravljajte dopuštenjima za zdravstveni profil"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup pozadinskim podacima ili prethodnim podacima za ovu aplikaciju"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup iz pozadine za ovu aplikaciju"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup prethodnim podacima za ovu aplikaciju"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Dopustite ovoj aplikaciji da pristupa svim prethodnim podacima Health Connecta"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Dopustite aplikaciji da pristupa podacima Health Connecta kad ne upotrebljavate aplikaciju"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Ako dopustite, ova aplikacija može pristupati podacima iz aplikacije Health Connect i kad je ne upotrebljavate."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Pristup prethodnim podacima"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa prijašnjim podacima?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Dopustite aplikaciji da pristupa podacima Health Connecta koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Dopustite aplikaciji da pristupa svim prethodnim podacima Health Connecta"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Ako dopustite, aplikacija može pristupati podacima iz aplikacije Health Connect koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ako dopustite, aplikacija može pristupati svim prethodnim podacima Health Connecta."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktivna potrošnja kalorija"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktivna potrošnja kalorija"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Očitavanje aktivne potrošnje kalorija"</string>
@@ -324,21 +353,24 @@
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Pisanje podataka sesije usredotočene svjesnosti"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Dopusti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da očita"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Dopusti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da zapiše"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Odustani"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Dopusti"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Dopusti sve"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ne dopuštaj"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Odaberite podatke za koje želite da ih ova aplikacija čita ili bilježi u Health Connect"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Odaberite podatke za koje želite da ih ova aplikacija čita iz Health Connecta ili bilježi u Health Connect"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Odaberite podatke za koje želite da ih ova aplikacija čita iz Health Connecta"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Odaberite podatke za koje želite da ih ova aplikacija bilježi u Health Connect"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ako date pristup za čitanje, aplikacija može čitati nove podatke i podatke iz proteklih 30 dana"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ako date pristup za čitanje, aplikacija može čitati nove i prijašnje podatke"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa Health Connectu?"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima o fitnessu i wellnessu?"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Više o tome kako aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> postupa s vašim podacima možete saznati u odjeljku <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> te aplikacije"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilima o privatnosti"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa vašim podacima o zdravstvenom stanju?"</string>
-    <string name="medical_request_header_desc" msgid="5721171305631983663">"Ako omogućite pristup, aplikacija može čitati i pisati podatke o alergijama, laboratorijskim nalazima, cjepivima i druge podatke\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ako omogućite pristup, aplikacija može čitati i pisati podatke o alergijama, laboratorijskim nalazima, cjepivima i druge podatke\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ako omogućite pristup, aplikacija može čitati podatke o alergijama, laboratorijskim nalazima, cjepivima i druge podatke\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"O podacima o zdravstvenom stanju"</string>
     <string name="medical_request_data_to_share" msgid="2208383833492573960">"Podaci za dijeljenje"</string>
-    <string name="medical_request_share" msgid="6237397362923728514">"Ako dopustite, aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> može dijeliti vaše podatke o zdravstvenom stanju s Health Connectom."</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Ako to dopustite, <xliff:g id="APP_NAME">%1$s</xliff:g> može dijeliti podatke o vašem zdravstvenom stanju s Health Connectom."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sinkronizirajte podatke o zdravstvenom stanju iz različitih aplikacija i izvora da biste ih zadržali na jednom mjestu"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Želite li ukloniti sva dopuštenja?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Ukloni sve"</string>
@@ -362,6 +394,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti bilježiti podatke iz Health Connecta, uključujući pozadinske ili prethodne podatke.\n\nTo ne utječe na druga dopuštenja dodijeljena ovoj aplikaciji kao što su pristup kameri, mikrofonu ili lokaciji."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Izbriši i podatke o fitnessu i zdravstvenom stanju iz aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> iz Health Connecta"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Uklonjena su dopuštenja za ovu aplikaciju"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Izbriši i sve podatke Health Connecta"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Sljedeći dan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Odabrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prethodni dan"</string>
@@ -1074,10 +1107,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Uređivanje izvora aplikacija"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Zadana postavka uređaja"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Podaci aplikacije"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Ovdje će se prikazati podaci iz aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Ovdje će se prikazati podaci iz aplikacija s pristupom Health Connectu"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dan"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Tjedan"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mjesec"</string>
@@ -1087,13 +1118,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Prošli mjesec"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Unosi"</string>
     <string name="tab_access" msgid="7818197975407243701">"Pristup"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Želite li dopustiti dodatni pristup za aplikaciju <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi pristupiti i ovim postavkama Health Connecta"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup pozadinskim podacima ili prethodnim podacima za ovu aplikaciju"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup iz pozadine za ovu aplikaciju"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup prethodnim podacima za ovu aplikaciju"</string>
-    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> već može pristupiti prethodnim podacima o vašem zdravstvenom stanju. Da biste to promijenili, isključite dopuštenja za podatke o zdravstvenom stanju za tu aplikaciju"</string>
-    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Upravljajte dopuštenjima za zdravstveni profil"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Započnite upotrebljavati Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinkronizirajte svoje prve aplikacije da biste dijelili podatke o zdravlju i sportskim aktivnostima između njih"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Postavi"</string>
@@ -1123,6 +1147,13 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Želite li trajno izbrisati odabrane unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za tjedan <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Želite li trajno izbrisati odabrane unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za mjesec <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Želite li trajno izbrisati taj unos aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Želite li trajno izbrisati podatke vrste <xliff:g id="DATA_TYPE">%1$s</xliff:g> za aplikaciju <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
+    <!-- no translation found for on (8266542510798355807) -->
     <skip />
+    <!-- no translation found for off (6996623844428550649) -->
+    <skip />
+    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
+    <skip />
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Pristupljeno jučer: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Pristupljeno: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

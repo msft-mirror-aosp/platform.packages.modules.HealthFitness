@@ -16,18 +16,10 @@
 
 package android.healthconnect.cts.ratelimiter;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.buildDevice;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
-
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -36,36 +28,23 @@ import static org.junit.Assert.assertThrows;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.CreateMedicalDataSourceRequest;
-import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthConnectManager;
-import android.health.connect.MedicalResourceId;
-import android.health.connect.ReadMedicalResourcesInitialRequest;
-import android.health.connect.ReadMedicalResourcesRequest;
-import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
-import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.HeartRateRecord;
-import android.health.connect.datatypes.MedicalDataSource;
-import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.HealthConnectReceiver;
-import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
-import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
@@ -74,8 +53,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.compatibility.common.util.ApiTest;
-
-import com.google.common.collect.Iterables;
 
 import org.junit.After;
 import org.junit.Before;
@@ -90,8 +67,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -151,131 +126,6 @@ public class RateLimiterTest {
     }
 
     @Test
-    @ApiTest(apis = {"android.health.connect#createMedicalDataSource"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testTryAcquireApiCallQuota_createMedicalDataSource_writeLimitExceeded() {
-        HealthConnectException exception =
-                assertThrows(
-                        HealthConnectException.class,
-                        this::exceedWriteQuotaWithCreateMedicalDataSource);
-        assertThat(exception).hasMessageThat().contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#deleteMedicalResource"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testTryAcquireApiCallQuota_deleteMedicalResourcesById_writeLimitExceeded() {
-        HealthConnectException exception =
-                assertThrows(
-                        HealthConnectException.class,
-                        this::exceedWriteQuotaWithDeleteMedicalDataSourceByIds);
-        assertThat(exception).hasMessageThat().contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#deleteMedicalResource"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testTryAcquireApiCallQuota_deleteMedicalResourcesByRequest_writeLimitExceeded() {
-        HealthConnectException exception =
-                assertThrows(
-                        HealthConnectException.class,
-                        this::exceedWriteQuotaWithDeleteMedicalDataSourceByRequest);
-        assertThat(exception).hasMessageThat().contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#upsertMedicalResources"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testTryAcquireApiCallQuota_upsertMedicalResources_writeLimitExceeded_throws() {
-        HealthConnectException thrown =
-                assertThrows(
-                        HealthConnectException.class,
-                        this::exceedWriteQuotaWithUpsertMedicalResources);
-        assertThat(thrown.getMessage()).contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#getMedicalDataSourcesByIds"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByIds_readLimitExceeded_throws()
-            throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        MedicalDataSource dataSource = createMedicalDataSource(manager);
-        // Make the maximum number of calls allowed by quota
-        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mLimitsAdjustmentForTesting;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-            manager.getMedicalDataSources(
-                    List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-        }
-
-        // Make 1 extra call and check quota is exceeded
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        manager.getMedicalDataSources(
-                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException exception = receiver.assertAndGetException();
-        assertThat(exception.getMessage()).contains("API call quota exceeded");
-    }
-
-    // TODO(b/370731291): Add rate limit tests for MemoryRollingQuota, and
-    // calling from background.
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#readMedicalResourcesByIds"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testReadMedicalResourcesByIds_readLimitExceeded_throws()
-            throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        MedicalResource immunization = upsertMedicalData(manager, FHIR_DATA_IMMUNIZATION);
-        // Make the maximum number of calls allowed by quota
-        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mLimitsAdjustmentForTesting;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-            manager.readMedicalResources(
-                    List.of(immunization.getId()), Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-        }
-
-        // Make 1 extra call and check quota is exceeded
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        manager.readMedicalResources(
-                List.of(immunization.getId()), Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException exception = receiver.assertAndGetException();
-        assertThat(exception.getMessage()).contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#readMedicalResourcesByRequest"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testReadMedicalResourcesByRequest_readLimitExceeded_throws()
-            throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        upsertMedicalData(manager, FHIR_DATA_IMMUNIZATION);
-        ReadMedicalResourcesRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
-                        .build();
-        // Make the maximum number of calls allowed by quota
-        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mLimitsAdjustmentForTesting;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                    new HealthConnectReceiver<>();
-            manager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-        }
-
-        // Make 1 extra call and check quota is exceeded
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        manager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException exception = receiver.assertAndGetException();
-        assertThat(exception.getMessage()).contains("API call quota exceeded");
-    }
-
-    @Test
     @ApiTest(apis = {"android.health.connect#readRecords"})
     public void testTryAcquireApiCallQuota_readLimitExceeded() throws InterruptedException {
         HealthConnectException exception =
@@ -307,46 +157,6 @@ public class RateLimiterTest {
             throws InterruptedException {
         // No exception expected.
         exceedRecordMemoryRollingQuotaBackgroundLimit();
-    }
-
-    // TODO(b/346256048): re-evaluate the "magic number"s in the tests below once we turn on the PHR
-    // flags on pre/post submit.
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testMedicalResourcesChunkSizeLimitExceeded() throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        int nCopies = 1000 / mLimitsAdjustmentForTesting;
-        UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID, FHIR_VERSION_R4, "UpsertMedicalResourceRequest")
-                        .build();
-        List<UpsertMedicalResourceRequest> requests = Collections.nCopies(nCopies, request);
-
-        manager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException thrown = receiver.assertAndGetException();
-        assertThat(thrown.getMessage()).contains("Records chunk size exceeded the max chunk limit");
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testMedicalResourceSizeLimitExceeded() throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        int nCharacters = 200000 / mLimitsAdjustmentForTesting;
-        List<Character> data = Collections.nCopies(nCharacters, '0');
-        UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID, FHIR_VERSION_R4, data.toString())
-                        .build();
-
-        manager.upsertMedicalResources(
-                List.of(request), Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException thrown = receiver.assertAndGetException();
-        assertThat(thrown.getMessage())
-                .contains("Record size exceeded the single record size limit");
     }
 
     private void exceedChunkMemoryQuota() throws InterruptedException {
@@ -401,101 +211,6 @@ public class RateLimiterTest {
         while (tryWriteWithBuffer > 0) {
             TestUtils.insertRecords(List.of(getCompleteStepsRecord()));
 
-            tryWriteWithBuffer--;
-        }
-    }
-
-    private void exceedWriteQuotaWithCreateMedicalDataSource() throws InterruptedException {
-        float quotaAcquired = acquireCallQuotaForWrite();
-        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        int count = 0;
-
-        while (quotaAcquired > 1) {
-            count++;
-            // Append request count to the fhir base uri to avoid duplicates.
-            CreateMedicalDataSourceRequest request =
-                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
-            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            quotaAcquired--;
-        }
-        int tryWriteWithBuffer = 20;
-        while (tryWriteWithBuffer > 0) {
-            count++;
-            CreateMedicalDataSourceRequest request =
-                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
-            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            tryWriteWithBuffer--;
-        }
-    }
-
-    private void exceedWriteQuotaWithDeleteMedicalDataSourceByIds() throws InterruptedException {
-        float quotaAcquired = acquireCallQuotaForWrite();
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        // We will try to delete an id that doesn't exist. This doesn't matter.
-        List<MedicalResourceId> request = List.of(PhrDataFactory.getMedicalResourceId());
-
-        while (quotaAcquired > 1) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            quotaAcquired--;
-        }
-        int tryWriteWithBuffer = 20;
-        while (tryWriteWithBuffer > 0) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            tryWriteWithBuffer--;
-        }
-    }
-
-    private void exceedWriteQuotaWithDeleteMedicalDataSourceByRequest()
-            throws InterruptedException {
-        float quotaAcquired = acquireCallQuotaForWrite();
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        // We will try to delete a data source that doesn't exist. This doesn't matter for quota
-        // check.
-        DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder()
-                        .addDataSourceId(UUID.randomUUID().toString())
-                        .build();
-
-        while (quotaAcquired > 1) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            quotaAcquired--;
-        }
-        int tryWriteWithBuffer = 20;
-        while (tryWriteWithBuffer > 0) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            tryWriteWithBuffer--;
-        }
-    }
-
-    private void exceedWriteQuotaWithUpsertMedicalResources() throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        float quotaAcquired = acquireCallQuotaForWrite();
-        List<UpsertMedicalResourceRequest> request = List.of(getUpsertMedicalResourceRequest());
-
-        while (quotaAcquired > 1) {
-            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-            manager.upsertMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            quotaAcquired--;
-        }
-        int tryWriteWithBuffer = 20;
-        while (tryWriteWithBuffer > 0) {
-            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-            manager.upsertMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
             tryWriteWithBuffer--;
         }
     }
@@ -632,29 +347,5 @@ public class RateLimiterTest {
                 new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class);
         recordList.forEach(v -> request.addId(v.getMetadata().getId()));
         TestUtils.readRecords(request.build());
-    }
-
-    private static MedicalDataSource createMedicalDataSource(HealthConnectManager manager)
-            throws InterruptedException {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        manager.createMedicalDataSource(
-                PhrDataFactory.getCreateMedicalDataSourceRequest(),
-                Executors.newSingleThreadExecutor(),
-                createReceiver);
-        return createReceiver.getResponse();
-    }
-
-    private static MedicalResource upsertMedicalData(HealthConnectManager manager, String data)
-            throws InterruptedException {
-        MedicalDataSource dataSource = createMedicalDataSource(manager);
-        String dataSourceId = dataSource.getId();
-        HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
-        UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(dataSourceId, FHIR_VERSION_R4, data)
-                        .build();
-        manager.upsertMedicalResources(
-                List.of(request), Executors.newSingleThreadExecutor(), dataReceiver);
-        // Make sure something got inserted.
-        return Iterables.getOnlyElement(dataReceiver.getResponse());
     }
 }

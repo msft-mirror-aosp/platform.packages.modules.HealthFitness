@@ -26,9 +26,9 @@ import android.health.connect.ratelimiter.RateLimiter.QuotaCategory;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.compatibility.common.util.SystemUtil;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.TestUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class RateLimiterTest {
 
     @Before
     public void setUp() {
-        TestUtils.runWithShellPermissionIdentity(
+        SystemUtil.runWithShellPermissionIdentity(
                 () -> {
                     HealthConnectDeviceConfigManager.initializeInstance(mContext);
                     HealthConnectDeviceConfigManager.getInitialisedInstance()
@@ -75,7 +75,7 @@ public class RateLimiterTest {
 
     @After
     public void tearDown() {
-        TestUtils.runWithShellPermissionIdentity(
+        SystemUtil.runWithShellPermissionIdentity(
                 () -> {
                     HealthConnectDeviceConfigManager.initializeInstance(mContext);
                     HealthConnectDeviceConfigManager.getInitialisedInstance()

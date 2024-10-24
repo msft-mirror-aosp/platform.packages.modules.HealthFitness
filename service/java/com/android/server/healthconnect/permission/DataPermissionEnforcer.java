@@ -17,22 +17,19 @@
 package com.android.server.healthconnect.permission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 
 import static java.util.stream.Collectors.toSet;
 
 import android.content.AttributionSource;
 import android.content.Context;
-import android.health.connect.HealthPermissions;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,18 +44,17 @@ import java.util.Set;
 public class DataPermissionEnforcer {
     private final PermissionManager mPermissionManager;
     private final Context mContext;
-    private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     public DataPermissionEnforcer(
             PermissionManager permissionManager,
             Context context,
-            HealthConnectDeviceConfigManager deviceConfigManager,
-            HealthConnectMappings healthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mPermissionManager = permissionManager;
         mContext = context;
-        mDeviceConfigManager = deviceConfigManager;
-        mHealthConnectMappings = healthConnectMappings;
+        mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
     /** Enforces default write permissions for given recordTypeIds */
@@ -134,7 +130,8 @@ public class DataPermissionEnforcer {
 
         for (RecordInternal<?> recordInternal : recordInternals) {
             int recordTypeId = recordInternal.getRecordType();
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordTypeId);
 
             if (!recordTypeIdToExtraPerms.containsKey(recordTypeId)) {
                 recordTypeIdToExtraPerms.put(recordTypeId, new ArraySet<>());
@@ -174,19 +171,6 @@ public class DataPermissionEnforcer {
     }
 
     /**
-     * Checks the Background Read feature flags, enforces {@link
-     * HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} permission if the flag is enabled,
-     * otherwise throws {@link SecurityException}.
-     */
-    public void enforceBackgroundReadRestrictions(int uid, int pid, String errorMessage) {
-        if (mDeviceConfigManager.isBackgroundReadFeatureEnabled()) {
-            mContext.enforcePermission(READ_HEALTH_DATA_IN_BACKGROUND, pid, uid, errorMessage);
-        } else {
-            throw new SecurityException(errorMessage);
-        }
-    }
-
-    /**
      * Returns granted extra read permissions.
      *
      * <p>Used to not expose extra data if caller doesn't have corresponding permission.
@@ -194,7 +178,7 @@ public class DataPermissionEnforcer {
     public Set<String> collectGrantedExtraReadPermissions(
             Set<Integer> recordTypeIds, AttributionSource attributionSource) {
         return recordTypeIds.stream()
-                .map(RecordHelperProvider::getRecordHelper)
+                .map(mInternalHealthConnectMappings::getRecordHelper)
                 .flatMap(recordHelper -> recordHelper.getExtraReadPermissions().stream())
                 .distinct()
                 .filter(permission -> isPermissionGranted(permission, attributionSource))
@@ -206,7 +190,8 @@ public class DataPermissionEnforcer {
         Map<String, Boolean> mapping = new ArrayMap<>();
         for (RecordInternal<?> recordInternal : recordInternals) {
             int recordTypeId = recordInternal.getRecordType();
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordTypeId);
 
             for (String permName : recordHelper.getExtraWritePermissions()) {
                 mapping.put(permName, isPermissionGranted(permName, attributionSource));

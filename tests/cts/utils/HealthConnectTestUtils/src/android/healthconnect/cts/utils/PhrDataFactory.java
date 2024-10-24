@@ -121,6 +121,39 @@ public class PhrDataFactory {
             "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy2\"}";
     public static final String FHIR_RESOURCE_ID_ALLERGY = "Allergy1";
     public static final String DIFFERENT_FHIR_RESOURCE_ID_ALLERGY = "Allergy2";
+    public static final String FHIR_DATA_CONDITION =
+            "{\"resourceType\" : \"Condition\", \"id\" : \"Condition1\", \"category\" :"
+                    + " [\"Condition1\"]}";
+    public static final String FHIR_DATA_MEDICATION =
+            "{\"resourceType\" : \"Medication\", \"id\" : \"Medication1\"}";
+    public static final String FHIR_DATA_Patient =
+            "{\"resourceType\" : \"Patient\", \"id\" : \"Patient1\"}";
+    public static final String FHIR_DATA_PRACTITIONER =
+            "{\"resourceType\" : \"Practitioner\", \"id\" : \"Practitioner1\"}";
+    public static final String FHIR_DATA_ENCOUNTER =
+            "{\"resourceType\" : \"Encounter\", \"id\" : \"Encounter1\"}";
+    public static final String FHIR_DATA_PROCEDURE =
+            "{\"resourceType\" : \"Procedure\", \"id\" : \"Procedure1\"}";
+    public static final String FHIR_DATA_OBSERVATION_PREGNANCY =
+            new ObservationBuilder()
+                    .setId("1")
+                    .setPregnancyStatus(ObservationBuilder.PregnancyStatus.NOT_PREGNANT)
+                    .toJson();
+    public static final String FHIR_DATA_OBSERVATION_SOCIAL_HISTORY =
+            new ObservationBuilder()
+                    .setId("2")
+                    .setCategory(ObservationBuilder.ObservationCategory.SOCIAL_HISTORY)
+                    .toJson();
+    public static final String FHIR_DATA_OBSERVATION_VITAL_SIGNS =
+            new ObservationBuilder()
+                    .setId("3")
+                    .setCategory(ObservationBuilder.ObservationCategory.VITAL_SIGNS)
+                    .toJson();
+    public static final String FHIR_DATA_OBSERVATION_LABS =
+            new ObservationBuilder()
+                    .setId("4")
+                    .setCategory(ObservationBuilder.ObservationCategory.LABORATORY)
+                    .toJson();
 
     public static final String RESOURCE_ID_FIELD_NAME = "id";
 

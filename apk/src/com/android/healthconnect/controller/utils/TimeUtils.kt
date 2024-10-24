@@ -19,11 +19,54 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_DAY
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_MONTH
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_WEEK
+import java.time.DayOfWeek
 import java.time.Instant
 import java.time.Period
+import java.time.ZoneId
+
+/**
+ * Returns the localized instant start time of a period: Day: start of day Week: start of Monday of
+ * that week Month: start of the first day of the month
+ */
+fun getPeriodStartDate(selectedDate: Instant, period: DateNavigationPeriod): Instant {
+    return when (period) {
+        PERIOD_DAY -> {
+            selectedDate
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        }
+
+        PERIOD_WEEK -> {
+            val dayOfWeek: DayOfWeek =
+                selectedDate.atZone(ZoneId.systemDefault()).toLocalDate().dayOfWeek
+            val dayOfWeekOffset: Int = dayOfWeek.value - 1
+            selectedDate
+                .atZone(ZoneId.systemDefault())
+                .minus(Period.ofDays(dayOfWeekOffset))
+                .toLocalDate()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        }
+
+        PERIOD_MONTH -> {
+            val dayOfMonth = selectedDate.atZone(ZoneId.systemDefault()).toLocalDate().dayOfMonth
+            val dayOfMonthOffset: Int = dayOfMonth - 1
+            selectedDate
+                .atZone(ZoneId.systemDefault())
+                .minus(Period.ofDays(dayOfMonthOffset))
+                .toLocalDate()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        }
+    }
+}
 
 /**
  * Formats [startTime] and [period] as follows:
+ * * Ensures startTime is at the localized start of the current period
+ * * * e.g. for week, it will always be on the Monday of the selected week
  * * Day (if useWeekday): "Sun, Aug 20" or "Mon, Aug 20, 2022"
  * * Day (if not useWeekday): "Aug 20" or "Aug 20, 2022"
  * * Week: "Aug 21-27" or "Aug 21-27, 2022"
@@ -36,41 +79,53 @@ fun formatDateTimeForTimePeriod(
     timeSource: TimeSource,
     useWeekday: Boolean = true,
 ): String {
+    val modifiedStartDate = getPeriodStartDate(startTime, period)
+
     if (
-        areInSameYear(startTime, Instant.ofEpochMilli(timeSource.currentTimeMillis()), timeSource)
+        areInSameYear(
+            modifiedStartDate,
+            Instant.ofEpochMilli(timeSource.currentTimeMillis()),
+            timeSource,
+        )
     ) {
         return when (period) {
             PERIOD_DAY -> {
                 if (useWeekday) {
-                    dateFormatter.formatWeekdayDateWithoutYear(startTime)
+                    dateFormatter.formatWeekdayDateWithoutYear(modifiedStartDate)
                 } else {
-                    dateFormatter.formatShortDateWithoutYear(startTime)
+                    dateFormatter.formatShortDateWithoutYear(modifiedStartDate)
                 }
             }
             PERIOD_WEEK -> {
                 dateFormatter.formatDateRangeWithoutYear(
-                    startTime,
-                    startTime.plus(Period.ofWeeks(1)),
+                    modifiedStartDate,
+                    modifiedStartDate
+                        .plus(Period.ofWeeks(1))
+                        .minusMillis(1), // to ensure we are always showing Mon-Sun
                 )
             }
             PERIOD_MONTH -> {
-                dateFormatter.formatMonthWithoutYear(startTime)
+                dateFormatter.formatMonthWithoutYear(modifiedStartDate)
             }
         }
     }
+
     return when (period) {
         PERIOD_DAY -> {
             if (useWeekday) {
-                dateFormatter.formatWeekdayDateWithYear(startTime)
+                dateFormatter.formatWeekdayDateWithYear(modifiedStartDate)
             } else {
-                dateFormatter.formatShortDateWithYear(startTime)
+                dateFormatter.formatShortDateWithYear(modifiedStartDate)
             }
         }
         PERIOD_WEEK -> {
-            dateFormatter.formatDateRangeWithYear(startTime, startTime.plus(Period.ofWeeks(1)))
+            dateFormatter.formatDateRangeWithYear(
+                modifiedStartDate,
+                modifiedStartDate.plus(Period.ofWeeks(1)).minusMillis(1),
+            )
         }
         PERIOD_MONTH -> {
-            dateFormatter.formatMonthWithYear(startTime)
+            dateFormatter.formatMonthWithYear(modifiedStartDate)
         }
     }
 }

@@ -128,36 +128,78 @@
     <!-- region permission ui labels -->
 
     <!-- Other health permissions -->
-    <!-- Apps with medical permissions -->
-    <string name="background_read_medical_title" description="Title for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access all data in the background</string>
-    <string name="background_read_medical_request_title" description="Title for screen to give permission to an app to read health data in the background. when the app also has medical permissions [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access all data in the background?</string>
-    <string name="background_read_medical_description" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access fitness and wellness data and health records data when you\'re not using the app</string>
-    <string name="background_read_medical_request_description" description="Description for screen to give permission to an app to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access fitness and wellness data and health records data when you\'re not using the app.</string>
+    <!-- Single request -->
+    <string name="background_read_single_request_title" description="Title for screen to give permission to an app to read health data in the background. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access data in the background?</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" description="Description for screen to give permission to an app to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access fitness and wellness data and health records when you\'re not using the app.</string>
+    <string name="background_read_medical_single_request_description_medical_granted" description="Description for screen to give permission to an app to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access health records when you\'re not using the app.</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" description="Description for screen to give permission to an app to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access fitness and wellness data when you\'re not using the app.</string>
+    <string name="background_read_single_request_description" description="Description for screen to give permission to an app to read health data in the background. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data when you\'re not using the app.</string>
 
-    <string name="historic_access_medical_title" description="Title for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access past fitness and wellness data</string>
-    <string name="historic_access_medical_request_title" description="Title for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access past fitness and wellness data?</string>
-    <string name="historic_access_medical_description" description="Description for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
-    <string name="historic_access_medical_description_fallback" description="Description for permission to access past health data when the app also has medical permissions and when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past data</string>
-    <string name="historic_access_medical_request_description" description="Description for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
-    <string name="historic_access_medical_request_description_fallback" description="Description for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access all past data.</string>
+    <string name="history_read_single_request_title" description="Title for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access past data?</string>
+    <string name="history_read_medical_single_request_description" description="Description for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access fitness and wellness data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
+    <string name="history_read_medical_single_request_description_fallback" description="Description for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access all past fitness and wellness data.</string>
+    <string name="history_read_single_request_description" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
+    <string name="history_read_single_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access all past Health&#160;Connect data.</string>
 
-    <string name="historic_access_medical_warning" description="Message to inform the user that no fitness data is currently being read [CHAR_LIMIT=NONE]">No fitness data is currently being read because <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> has no read permissions on</string>
-    <!--endregion-->
 
-    <!-- Apps without medical permissions -->
-    <string name="background_read_title" description="Title for permission to read health data in the background. [CHAR_LIMIT=NONE]">Access data in the background</string>
-    <string name="background_read_request_title" description="Title for screen to give permission to an app to read health data in the background. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access data in the background?</string>
-    <string name="background_read_description" description="Description for permission to read health data in the background. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data when you\'re not using the app</string>
-    <string name="background_read_request_description" description="Description for screen to give permission to an app to read health data in the background. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data when you\'re not using the app.</string>
+    <!-- Combined request -->
+    <string name="additional_permissions_combined_request_title" description="Title for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]">Allow additional access for <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>?</string>
+    <string name="additional_permissions_combined_request_description" description="Description for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> also wants to access these Health&#160;Connect settings</string>
 
-    <string name="historic_access_title" description="Title for permission to access past health data. [CHAR_LIMIT=NONE]">Access past data</string>
-    <string name="historic_access_request_title" description="Title for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access past data?</string>
-    <string name="historic_access_description" description="Description for permission to access past health data. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
-    <string name="historic_access_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past Health&#160;Connect data</string>
-    <string name="historic_access_request_description" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
-    <string name="historic_access_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access all past Health&#160;Connect data.</string>
-    <!--endregion-->
+    <string name="background_read_medical_combined_request_title_both_types_granted" description="Title for permission to read health data in the background, when the app also has medical permissions [CHAR_LIMIT=NONE]">Access all data in the background</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" description="Title for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access health records in the background</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" description="Title for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access fitness and wellness data in the background</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access fitness and wellness data and health records when you\'re not using the app</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access this data when you\'re not using the app</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access this data when you\'re not using the app</string>
 
+    <string name="background_read_combined_request_title" description="Title for permission to read health data in the background. [CHAR_LIMIT=NONE]">Access data in the background</string>
+    <string name="background_read_combined_request_description" description="Description for permission to read health data in the background. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data when you\'re not using the app</string>
+
+    <string name="history_read_medical_combined_request_title" description="Title for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access past fitness and wellness data</string>
+    <string name="history_read_medical_combined_request_description" description="Description for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
+    <string name="history_read_medical_combined_request_description_fallback" description="Description for permission to access past health data when the app also has medical permissions and when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past data</string>
+
+    <string name="history_read_combined_request_title" description="Title for permission to access past health data. [CHAR_LIMIT=NONE]">Access past data</string>
+    <string name="history_read_combined_request_description" description="Description for permission to access past health data. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
+    <string name="history_read_combined_request_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past Health&#160;Connect data</string>
+
+    <string name="history_read_medical_combined_request_footer" description="Footer of screen to request past data permissions for an app when medical read permissions are granted [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can already access past data for your health records</string>
+    <string name="history_read_medical_combined_request_footer_link" description="Link of footer of screen to request past data permissions for an app when medical read permissions are granted [CHAR_LIMIT=NONE]">Read more about permissions</string>
+
+    <!-- Additional access screen -->
+    <string name="background_read_medical_access_title_both_types_granted" description="Title for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access all data in the background</string>
+    <string name="background_read_medical_access_title_medical_granted" description="Title for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access health records in the background</string>
+    <string name="background_read_medical_access_title_fitness_granted" description="Title for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access fitness and wellness data in the background</string>
+
+    <string name="background_read_medical_access_description_both_types_granted" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access fitness and wellness data and health records when you\'re not using the app</string>
+    <string name="background_read_medical_access_description_medical_granted" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access this data when you\'re not using the app</string>
+    <string name="background_read_medical_access_description_fitness_granted" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access this data when you\'re not using the app</string>
+
+    <string name="background_read_access_title" description="Title for permission to read health data in the background. [CHAR_LIMIT=NONE]">Access data in the background</string>
+    <string name="background_read_access_description" description="Description for permission to read health data in the background. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data when you\'re not using the app</string>
+
+    <string name="history_read_medical_access_title" description="Title for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access past fitness and wellness data</string>
+    <string name="history_read_medical_access_description" description="Description for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
+    <string name="history_read_medical_access_description_fallback" description="Description for permission to access past health data when the app also has medical permissions and when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past data</string>
+
+    <string name="history_read_access_title" description="Title for permission to access past health data. [CHAR_LIMIT=NONE]">Access past data</string>
+    <string name="history_read_access_description" description="Description for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
+    <string name="history_read_access_description_fallback" description="Description for permission to access past health data when the app also has medical permissions and when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all Health&#160;Connect past data</string>
+
+    <!-- Warnings and footers -->
+    <string name="history_read_medical_access_read_warning" description="Message to inform the user that no fitness data is currently being read [CHAR_LIMIT=NONE]">No fitness data is currently being read because <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> has no read permissions on</string>
+    <string name="additional_access_medical_read_footer" description="Footer of screen to manage additional permissions for an app when medical read permissions are granted [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can already access past data for your health records. To change this, turn off health record permissions for this app</string>
+    <string name="additional_access_medical_read_footer_link" description="Link to manage health records permissions in footer of screen showing the additional permissions of an app [CHAR_LIMIT=NONE]">Manage health record permissions</string>
+
+    <!-- Disabled additional permissions footers -->
+    <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
+    <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
+    <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
+
+    <!-- Additional permissions manifest descriptions -->
+    <string name="historic_access_description" description="Description for permission to access past health data. [CHAR_LIMIT=NONE]">Allow this app to access all past Health&#160;Connect data</string>
+    <string name="background_read_description" description="Description for permission to access past health data. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data when you\'re not using the app</string>
     <!--endregion-->
 
     <!-- region Activity data types -->
@@ -226,6 +268,11 @@
     <string name="wheelchair_pushes_lowercase_label" description="Lowercase label used to show the user's wheelchair pushes data [CHAR_LIMIT=50]">wheelchair pushes</string>
     <string name="wheelchair_pushes_read_content_description" description="Content description for switch that enables permissions for reading the user's wheelchair pushes data [CHAR_LIMIT=NONE]">Read wheelchair pushes</string>
     <string name="wheelchair_pushes_write_content_description" description="Content description for switch that enables permissions for writing the user's wheelchair pushes data [CHAR_LIMIT=NONE]">Write wheelchair pushes</string>
+
+    <string name="activity_intensity_uppercase_label" description="Uppercase label used to show the user's activity intensity data [CHAR_LIMIT=50]">Activity intensity</string>
+    <string name="activity_intensity_lowercase_label" description="Lowercase label used to show the user's activity intensity data [CHAR_LIMIT=50]">activity intensity</string>
+    <string name="activity_intensity_read_content_description" description="Content description for switch that enables permissions for reading the user's activity intensity data [CHAR_LIMIT=NONE]">Read activity intensity</string>
+    <string name="activity_intensity_write_content_description" description="Content description for switch that enables permissions for writing the user's activity intensity data [CHAR_LIMIT=NONE]">Write activity intensity</string>
     <!--endregion-->
 
     <!-- region Body measurements data types -->
@@ -441,27 +488,35 @@
     <!--endregion-->
 
     <!-- region Permissions -->
-    <!-- region Permission request -->
+
+    <!-- region Common permission request strings -->
     <string name="read_permission_category" description="Title for read permission category in the app permission screen">Allow &#8220;<xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>&#8221; to read</string>
     <string name="write_permission_category" description="Title for write permission category in the app permission screen">Allow &#8220;<xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>&#8221; to write</string>
-    <string name="request_permissions_cancel" description="Label for button to cancel an app's request for permissions [CHAR_LIMIT=20]">Cancel</string>
     <string name="request_permissions_allow" description="Label for button to allow an app to have the selected permissions for the user's data [CHAR_LIMIT=20]">Allow</string>
     <string name="request_permissions_allow_all" description="Label for button to allow an app to have the selected permissions for the user's data [CHAR_LIMIT=20]">Allow all</string>
     <string name="request_permissions_dont_allow" description="Label for button to allow an app to have the selected permissions for the user's data [CHAR_LIMIT=20]">Don\'t allow</string>
-    <string name="request_permissions_header_desc" description="Text asking the user to select permissions for an app. [CHAR_LIMIT=NONE]">Choose data you want this app to read or write to Health&#160;Connect</string>
+    <string name="request_permissions_data_access_type_read_write" description="Text asking the user to select permissions for an app. [CHAR_LIMIT=NONE]">Choose data you want this app to read or write to Health&#160;Connect</string>
+    <string name="request_permissions_data_access_type_read" description="Text asking the user to select permissions for an app. [CHAR_LIMIT=NONE]">Choose data you want this app to read from Health&#160;Connect</string>
+    <string name="request_permissions_data_access_type_write" description="Text asking the user to select permissions for an app. [CHAR_LIMIT=NONE]">Choose data you want this app to write to Health&#160;Connect</string>
+    <!--endregion-->
+
+
+    <!-- region Fitness permission request -->
     <string name="request_permissions_header_time_frame_desc" description="Text describing the time frame of data which an app will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new data and data from the past 30 days</string>
     <string name="request_permissions_header_time_frame_history_desc" description="Text describing the time frame of data which an app with history read permission will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new and past data</string>
     <string name="request_permissions_header_title" description="Title for screen to give permissions to an app to read or write users data. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access Health&#160;Connect?</string>
+    <string name="request_permissions_with_medical_header_title" description="Title for screen to give permissions to an app which also has medical permissions to read or write users fitness data. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access fitness and wellness data?</string>
     <string name="request_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy. Has a link to the app's privacy policy. [CHAR_LIMIT=NONE]">You can learn how <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> handles your data in their <xliff:g example="privacy policy" id="privacy_policy_link">%2$s</xliff:g></string>
     <string name="request_permissions_privacy_policy" description="Link text that open's a third party app's data privacy policy [CHAR_LIMIT=NONE]">privacy policy</string>
     <!--endregion-->
 
     <!-- region Medical permission request -->
     <string name="medical_request_header" description="Title for screen to give medical permissions to an app [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access your health records?</string>
-    <string name="medical_request_header_desc" description="Text describing which medical data can be accessed by the app that is requesting medical permissions [CHAR_LIMIT=NONE]">If you give access, the app can read and write data such as allergies, lab results, vaccines and more\n<xliff:g example="About health records" id="about_health_records_link">%1$s</xliff:g></string>
+    <string name="medical_request_header_access_info_read_write" description="Text describing which medical data can be accessed by the app that is requesting medical permissions [CHAR_LIMIT=NONE]">If you give access, the app can read and write data such as allergies, lab results, vaccines and more\n<xliff:g example="About health records" id="about_health_records_link">%1$s</xliff:g></string>
+    <string name="medical_request_header_access_info_read" description="Text describing which medical data can be accessed by the app that is requesting medical permissions [CHAR_LIMIT=NONE]">If you give access, the app can read data such as allergies, lab results, vaccines and more\n<xliff:g example="About health records" id="about_health_records_link">%1$s</xliff:g></string>
     <string name="medical_request_about_health_records" description="Link to a help page about health records [CHAR_LIMIT=NONE]">About health records</string>
     <string name="medical_request_data_to_share" description="Title for section of the medical permission request screen which lists the data types accessed by this write permission [CHAR_LIMIT=NONE]">Data to share</string>
-    <string name="medical_request_share" description="Explanation than an app can access all health records when it requests medical write permissions [CHAR_LIMIT=NONE]">If you allow, <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can share your health records with Health&#160;Connect.</string>
+    <string name="medical_request_summary" description="Explanation than an app can access all health records when it requests medical write permissions [CHAR_LIMIT=NONE]">If you allow, <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can share your health records with Health&#160;Connect.</string>
     <string name="medical_request_footer" description="Footer for screen requesting medical write permissions for an app [CHAR_LIMIT=NONE]">Sync your health records from your different apps and sources to keep them in one place</string>
     <!--endregion-->
 
@@ -1505,16 +1560,6 @@
     <string name="tab_access" description="Tab that navigates to the screen that shows which apps have access to the given data type. [CHAR_LIMIT=50]">Access</string>
     <!--  endregion -->
 
-    <!-- region Additional Access -->
-    <string name="request_additional_permissions_header_title" description="Title for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]">Allow additional access for <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>?</string>
-    <string name="request_additional_permissions_description" description="Description for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> also wants to access these Health&#160;Connect settings</string>
-    <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
-    <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
-    <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
-    <string name="additional_access_medical_read_footer" description="Footer of screen to manage additional permissions for an app when medical read permissions are granted [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can already access past data for your health records. To change this, turn off health record permissions for this app</string>
-    <string name="additional_access_medical_read_footer_link" description="Link to manage health records permissions in footer of screen showing the additional permissions of an app [CHAR_LIMIT=NONE]">Manage health record permissions</string>
-    <!--  endregion -->
-
     <!-- region Onboarding -->
     <string name="start_using_hc_banner_title" description="Title for banner shown when users have not connected their first fitness app">Start using Health&#160;Connect</string>
     <string name="start_using_hc_banner_content" description="Content for banner shown when users have not connected their first fitness app">Sync your first apps to share health and fitness data between them</string>
@@ -1567,5 +1612,27 @@
     <!-- region Inactive app data -->
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete the selected permission type for an inactive app">Permanently delete <xliff:g example="steps" id="data_type">%1$s</xliff:g> data for <xliff:g example="Run Tracker" id="app_name">%2$s</xliff:g>?</string>
     <!-- endregion -->
+    <!-- endregion -->
+
+    <!-- region Wear -->
+
+    <!-- region Necessary strings to use wear SystemUI copy. -->
+    <!-- Label indicating sensor is on. If you update this string, please update the string
+"switch_bar_on" in SystemUI or do not use the default string for the LocationTile [CHAR LIMIT=NONE] -->
+    <string name="on">On</string>
+    <!-- Label indicating sensor is off. If you update this string, please update the string
+    "switch_bar_off" in SystemUI or do not use the default string for the LocationTile [CHAR LIMIT=NONE] -->
+    <string name="off">Off</string>
+
+    <!-- Summary for showing the last access text for today for Wear [CHAR LIMIT=50] -->
+    <string name="wear_app_perms_24h_access">Accessed <xliff:g id="time_date" example="12:42 PM">%1$s</xliff:g></string>
+
+    <!-- Summary for showing the last access text for yesterday for Wear [CHAR LIMIT=50] -->
+    <string name="wear_app_perms_24h_access_yest">Accessed yesterday <xliff:g id="time_date" example="12:42 PM">%1$s</xliff:g></string>
+
+    <!-- Summary for showing the last access text for 7 days for Wear [CHAR LIMIT=50] -->
+    <string name="wear_app_perms_7d_access">Accessed <xliff:g id="time_date" example="Jan 3">%1$s</xliff:g> <xliff:g id="time_date" example="12:42 PM">%2$s</xliff:g></string>
+    <!-- endregion -->
+
     <!-- endregion -->
 </resources>

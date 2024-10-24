@@ -31,7 +31,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.time.Duration;
 import java.time.Period;
@@ -77,7 +76,8 @@ public final class AggregateTransactionRequest {
             AggregationType<?> aggregationType = mAggregationTypeIdMapper.getAggregationTypeFor(id);
             int recordTypeId = aggregationType.getApplicableRecordTypeId();
             mRecordTypeIds.add(recordTypeId);
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            RecordHelper<?> recordHelper =
+                    internalHealthConnectMappings.getRecordHelper(recordTypeId);
             AggregateTableRequest aggregateTableRequest =
                     recordHelper.getAggregateTableRequest(
                             aggregationType,
