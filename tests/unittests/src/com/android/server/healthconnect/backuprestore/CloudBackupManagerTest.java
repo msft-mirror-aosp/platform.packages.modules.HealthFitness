@@ -81,11 +81,12 @@ public class CloudBackupManagerTest {
 
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils =
-                new TransactionTestUtils(mDatabaseTestRule.getUserContext(), mTransactionManager);
+                new TransactionTestUtils(
+                        mDatabaseTestRule.getDatabaseContext(), mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getUserContext())
+                HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
                         .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)

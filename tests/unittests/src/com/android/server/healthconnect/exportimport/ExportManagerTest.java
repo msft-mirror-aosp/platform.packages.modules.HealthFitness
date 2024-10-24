@@ -55,7 +55,6 @@ import com.android.modules.utils.testing.ExtendedMockitoRule.MockStatic;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStaticClasses;
 import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -112,7 +111,7 @@ public class ExportManagerTest {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
-    private HealthConnectUserContext mContext;
+    private DatabaseContext mContext;
     private TransactionTestUtils mTransactionTestUtils;
     private ExportManager mExportManager;
     private DatabaseContext mExportedDbContext;
@@ -126,7 +125,7 @@ public class ExportManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        mContext = mDatabaseTestRule.getUserContext();
+        mContext = mDatabaseTestRule.getDatabaseContext();
         TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, transactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);

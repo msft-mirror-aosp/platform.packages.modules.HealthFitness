@@ -161,7 +161,7 @@ public class MedicalDataSourceHelperTest {
         // we don't need context for that.
         mTransactionTestUtils =
                 new TransactionTestUtils(
-                        mHealthConnectDatabaseTestRule.getUserContext(), mTransactionManager);
+                        mHealthConnectDatabaseTestRule.getDatabaseContext(), mTransactionManager);
         mUtil =
                 new PhrTestUtils(
                         mContext,
