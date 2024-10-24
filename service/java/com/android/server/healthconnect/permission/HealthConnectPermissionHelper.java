@@ -19,7 +19,6 @@ package com.android.server.healthconnect.permission;
 import static android.Manifest.permission.INTERACT_ACROSS_USERS_FULL;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -28,11 +27,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Binder;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.time.Instant;
@@ -63,6 +64,8 @@ public final class HealthConnectPermissionHelper {
     private final HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final AppInfoHelper mAppInfoHelper;
+    private final HealthConnectMappings mHealthConnectMappings;
 
     /**
      * Constructs a {@link HealthConnectPermissionHelper}.
@@ -80,29 +83,18 @@ public final class HealthConnectPermissionHelper {
             PackageManager packageManager,
             Set<String> healthPermissions,
             HealthPermissionIntentAppsTracker permissionIntentTracker,
-            FirstGrantTimeManager firstGrantTimeManager) {
-        this(
-                context,
-                packageManager,
-                healthPermissions,
-                permissionIntentTracker,
-                firstGrantTimeManager,
-                HealthDataCategoryPriorityHelper.getInstance());
-    }
-
-    public HealthConnectPermissionHelper(
-            Context context,
-            PackageManager packageManager,
-            Set<String> healthPermissions,
-            HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager firstGrantTimeManager,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            AppInfoHelper appInfoHelper,
+            HealthConnectMappings healthConnectMappings) {
         mContext = context;
         mPackageManager = packageManager;
         mHealthPermissions = healthPermissions;
         mPermissionIntentAppsTracker = permissionIntentTracker;
         mFirstGrantTimeManager = firstGrantTimeManager;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mAppInfoHelper = appInfoHelper;
+        mHealthConnectMappings = healthConnectMappings;
     }
 
     /**
@@ -112,8 +104,7 @@ public final class HealthConnectPermissionHelper {
      * end of the priority list corresponding to {@code permissionName}'s health permission
      * category.
      */
-    public void grantHealthPermission(
-            @NonNull String packageName, @NonNull String permissionName, @NonNull UserHandle user) {
+    public void grantHealthPermission(String packageName, String permissionName, UserHandle user) {
         Objects.requireNonNull(packageName);
         Objects.requireNonNull(permissionName);
         enforceManageHealthPermissions(/* message= */ "grantHealthPermission");
@@ -130,6 +121,7 @@ public final class HealthConnectPermissionHelper {
                     MASK_PERMISSION_FLAGS,
                     PackageManager.FLAG_PERMISSION_USER_SET,
                     checkedUser);
+            mAppInfoHelper.getOrInsertAppInfoId(packageName, mContext);
             addToPriorityListIfRequired(packageName, permissionName);
 
         } finally {
@@ -139,10 +131,7 @@ public final class HealthConnectPermissionHelper {
 
     /** See {@link HealthConnectManager#revokeHealthPermission}. */
     public void revokeHealthPermission(
-            @NonNull String packageName,
-            @NonNull String permissionName,
-            @Nullable String reason,
-            @NonNull UserHandle user) {
+            String packageName, String permissionName, @Nullable String reason, UserHandle user) {
         Objects.requireNonNull(packageName);
         Objects.requireNonNull(permissionName);
         enforceManageHealthPermissions(/* message= */ "revokeHealthPermission");
@@ -184,7 +173,7 @@ public final class HealthConnectPermissionHelper {
     /** See {@link HealthConnectManager#revokeAllHealthPermissions}. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void revokeAllHealthPermissions(
-            @NonNull String packageName, @Nullable String reason, @NonNull UserHandle user) {
+            String packageName, @Nullable String reason, UserHandle user) {
         Objects.requireNonNull(packageName);
         enforceManageHealthPermissions(/* message= */ "revokeAllHealthPermissions");
         UserHandle checkedUser = UserHandle.of(handleIncomingUser(user.getIdentifier()));
@@ -198,9 +187,7 @@ public final class HealthConnectPermissionHelper {
     }
 
     /** See {@link HealthConnectManager#getGrantedHealthPermissions}. */
-    @NonNull
-    public List<String> getGrantedHealthPermissions(
-            @NonNull String packageName, @NonNull UserHandle user) {
+    public List<String> getGrantedHealthPermissions(String packageName, UserHandle user) {
         Objects.requireNonNull(packageName);
         enforceManageHealthPermissions(/* message= */ "getGrantedHealthPermissions");
         UserHandle checkedUser = UserHandle.of(handleIncomingUser(user.getIdentifier()));
@@ -214,11 +201,8 @@ public final class HealthConnectPermissionHelper {
     }
 
     /** See {@link HealthConnectManager#getHealthPermissionsFlags(String, List)}. */
-    @NonNull
     public Map<String, Integer> getHealthPermissionsFlags(
-            @NonNull String packageName,
-            @NonNull UserHandle user,
-            @NonNull List<String> permissions) {
+            String packageName, UserHandle user, List<String> permissions) {
         Objects.requireNonNull(packageName);
         Objects.requireNonNull(user);
         Objects.requireNonNull(permissions);
@@ -236,10 +220,7 @@ public final class HealthConnectPermissionHelper {
 
     /** See {@link HealthConnectManager#setHealthPermissionsUserFixedFlagValue(String, List)}. */
     public void setHealthPermissionsUserFixedFlagValue(
-            @NonNull String packageName,
-            @NonNull UserHandle user,
-            @NonNull List<String> permissions,
-            boolean value) {
+            String packageName, UserHandle user, List<String> permissions, boolean value) {
         Objects.requireNonNull(packageName);
         Objects.requireNonNull(user);
         Objects.requireNonNull(permissions);
@@ -260,8 +241,7 @@ public final class HealthConnectPermissionHelper {
      * Returns {@code true} if there is at least one granted permission for the provided {@code
      * packageName}, {@code false} otherwise.
      */
-    public boolean hasGrantedHealthPermissions(
-            @NonNull String packageName, @NonNull UserHandle user) {
+    public boolean hasGrantedHealthPermissions(String packageName, UserHandle user) {
         return !getGrantedHealthPermissions(packageName, user).isEmpty();
     }
 
@@ -287,7 +267,6 @@ public final class HealthConnectPermissionHelper {
      * throws {@link IllegalAccessException} if health permission is in an incorrect state where
      * first grant time can't be fetched.
      */
-    @NonNull
     public Instant getHealthDataStartDateAccessOrThrow(String packageName, UserHandle user) {
         Optional<Instant> startDateAccess = getHealthDataStartDateAccess(packageName, user);
         if (startDateAccess.isEmpty()) {
@@ -306,28 +285,26 @@ public final class HealthConnectPermissionHelper {
     }
 
     private void addToPriorityListIfRequired(String packageName, String permissionName) {
-        if (HealthPermissions.isWritePermission(permissionName)) {
+        if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.appendToPriorityList(
                     packageName,
-                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    mHealthConnectMappings.getHealthDataCategoryForWritePermission(permissionName),
                     mContext,
                     /* isInactiveApp= */ false);
         }
     }
 
     private void removeFromPriorityListIfRequired(String packageName, String permissionName) {
-        if (HealthPermissions.isWritePermission(permissionName)) {
+        if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
                     packageName,
-                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    mHealthConnectMappings.getHealthDataCategoryForWritePermission(permissionName),
                     this,
                     mContext.getUser());
         }
     }
 
-    @NonNull
-    private List<String> getGrantedHealthPermissionsUnchecked(
-            @NonNull String packageName, @NonNull UserHandle user) {
+    private List<String> getGrantedHealthPermissionsUnchecked(String packageName, UserHandle user) {
         PackageInfo packageInfo =
                 getPackageInfoUnchecked(
                         packageName,
@@ -351,11 +328,8 @@ public final class HealthConnectPermissionHelper {
         return grantedHealthPerms;
     }
 
-    @NonNull
     private Map<String, Integer> getHealthPermissionsFlagsUnchecked(
-            @NonNull String packageName,
-            @NonNull UserHandle user,
-            @NonNull List<String> permissions) {
+            String packageName, UserHandle user, List<String> permissions) {
         enforceValidHealthPermissions(packageName, user, permissions);
 
         Map<String, Integer> result = new ArrayMap<>();
@@ -369,10 +343,7 @@ public final class HealthConnectPermissionHelper {
     }
 
     private void setHealthPermissionsUserFixedFlagValueUnchecked(
-            @NonNull String packageName,
-            @NonNull UserHandle user,
-            @NonNull List<String> permissions,
-            boolean value) {
+            String packageName, UserHandle user, List<String> permissions, boolean value) {
         enforceValidHealthPermissions(packageName, user, permissions);
 
         int flagMask = PackageManager.FLAG_PERMISSION_USER_FIXED;

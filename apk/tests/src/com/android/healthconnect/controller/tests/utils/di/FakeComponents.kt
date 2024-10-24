@@ -160,7 +160,9 @@ class FakeLoadDataAggregationsUseCase : ILoadDataAggregationsUseCase {
             UseCaseResults.Failed(
                 IllegalStateException(
                     "AggregationResponsesSize = ${this.aggregations.size}, " +
-                        "invocationCount = $invocationCount. Please update aggregation responses before invoking."))
+                        "invocationCount = $invocationCount. Please update aggregation responses before invoking."
+                )
+            )
         } else if (forceFail) {
             UseCaseResults.Failed(IllegalStateException(exceptionMessage))
         } else {
@@ -256,7 +258,7 @@ class FakeLoadPriorityEntriesUseCase : ILoadPriorityEntriesUseCase {
 
     override suspend fun invoke(
         fitnessPermissionType: FitnessPermissionType,
-        localDate: LocalDate
+        localDate: LocalDate,
     ): UseCaseResults<List<Record>> {
         return if (forceFail) UseCaseResults.Failed(Exception(this.exceptionMessage))
         else UseCaseResults.Success(priorityEntries.getOrDefault(localDate, listOf()))
@@ -425,7 +427,7 @@ class FakeLoadLastDateWithPriorityDataUseCase : ILoadLastDateWithPriorityDataUse
 
     fun setLastDateWithPriorityDataForHealthPermissionType(
         fitnessPermissionType: FitnessPermissionType,
-        localDate: LocalDate?
+        localDate: LocalDate?,
     ) {
         lastDateWithPriorityDataMap[fitnessPermissionType] = localDate
     }
@@ -524,12 +526,20 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
 class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
     private var exportState: ScheduledExportUiState =
         ScheduledExportUiState(
-            null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
+            null,
+            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+            0,
+            "0",
+        )
 
     fun reset() {
         exportState =
             ScheduledExportUiState(
-                null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
+                null,
+                ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                0,
+                "0",
+            )
     }
 
     fun updateExportStatus(exportState: ScheduledExportUiState) {
@@ -562,7 +572,8 @@ class FakeLoadExerciseRoute : ILoadExerciseRoutePermissionUseCase {
     private var state =
         ExerciseRouteState(
             exercisePermissionState = PermissionUiState.ASK_EVERY_TIME,
-            exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME)
+            exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME,
+        )
 
     fun setExerciseRouteState(state: ExerciseRouteState) {
         this.state = state
@@ -585,7 +596,8 @@ class FakeTriggerImportUseCase : ITriggerImportUseCase {
         ImportUiState(
             ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
             /** isImportOngoing= */
-            false)
+            false,
+        )
 
     fun reset() {
         lastImportCompletionInstant = null
@@ -605,14 +617,16 @@ class FakeLoadImportStatusUseCase : ILoadImportStatusUseCase {
         ImportUiState(
             ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
             /** isImportOngoing= */
-            false)
+            false,
+        )
 
     fun reset() {
         importState =
             ImportUiState(
                 ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
                 /** isImportOngoing= */
-                false)
+                false,
+            )
     }
 
     fun updateExportStatus(importState: ImportUiState) {

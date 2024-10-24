@@ -17,13 +17,12 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,6 +32,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class LoadAppPermissionsStatusUseCaseTest {
@@ -47,7 +47,10 @@ class LoadAppPermissionsStatusUseCaseTest {
         hiltRule.inject()
         loadAppPermissionsStatusUseCase =
             LoadAppPermissionsStatusUseCase(
-                loadGrantedHealthPermissionsUseCase, healthPermissionReader, Dispatchers.Main)
+                loadGrantedHealthPermissionsUseCase,
+                healthPermissionReader,
+                Dispatchers.Main,
+            )
     }
 
     @Test
@@ -58,7 +61,9 @@ class LoadAppPermissionsStatusUseCaseTest {
             FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
 
         loadGrantedHealthPermissionsUseCase.updateData(
-            TEST_APP_PACKAGE_NAME, listOf(readExercisePermission.toString()))
+            TEST_APP_PACKAGE_NAME,
+            listOf(readExercisePermission.toString()),
+        )
         whenever(healthPermissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(readExercisePermission, writeExercisePermission))
 
@@ -67,7 +72,9 @@ class LoadAppPermissionsStatusUseCaseTest {
             .containsExactlyElementsIn(
                 listOf(
                     HealthPermissionStatus(readExercisePermission, true),
-                    HealthPermissionStatus(writeExercisePermission, false)))
+                    HealthPermissionStatus(writeExercisePermission, false),
+                )
+            )
     }
 
     @Test
@@ -79,13 +86,15 @@ class LoadAppPermissionsStatusUseCaseTest {
 
         loadGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
-            listOf(readExercisePermission.toString(), writeExercisePermission.toString()))
+            listOf(readExercisePermission.toString(), writeExercisePermission.toString()),
+        )
         whenever(healthPermissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(writeExercisePermission))
 
         val result = loadAppPermissionsStatusUseCase.invoke(TEST_APP_PACKAGE_NAME)
         assertThat(result)
             .containsExactlyElementsIn(
-                listOf(HealthPermissionStatus(writeExercisePermission, true)))
+                listOf(HealthPermissionStatus(writeExercisePermission, true))
+            )
     }
 }

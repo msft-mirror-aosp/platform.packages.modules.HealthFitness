@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.AggregationType;
@@ -51,7 +50,6 @@ public final class StepsRecordHelper extends IntervalRecordHelper<StepsRecordInt
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return STEPS_TABLE_NAME;
     }
@@ -71,19 +69,17 @@ public final class StepsRecordHelper extends IntervalRecordHelper<StepsRecordInt
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull StepsRecordInternal recordInternal) {
+    void populateSpecificRecordValue(Cursor cursor, StepsRecordInternal recordInternal) {
         recordInternal.setCount(getCursorInt(cursor, COUNT_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull StepsRecordInternal stepsRecord) {
+            ContentValues contentValues, StepsRecordInternal stepsRecord) {
         contentValues.put(COUNT_COLUMN_NAME, stepsRecord.getCount());
     }
 
     @Override
-    @NonNull
     List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(COUNT_COLUMN_NAME, INTEGER));
     }

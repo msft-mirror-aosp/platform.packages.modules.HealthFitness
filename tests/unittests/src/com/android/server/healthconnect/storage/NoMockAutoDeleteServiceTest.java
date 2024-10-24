@@ -28,8 +28,15 @@ import android.os.Environment;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -38,6 +45,8 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
@@ -55,18 +64,38 @@ public class NoMockAutoDeleteServiceTest {
     @Rule(order = 2)
     public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     private static final String TEST_PACKAGE_NAME = "package.name";
 
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
+    private HealthConnectInjector mHealthConnectInjector;
 
     @Before
     public void setup() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        PreferenceHelper.clearInstanceForTest();
+
         HealthConnectUserContext context = testRule.getUserContext();
         mTransactionManager = testRule.getTransactionManager();
         DatabaseHelper.clearAllData(mTransactionManager);
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        DeviceInfoHelper.resetInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
+        FirstGrantTimeManager.resetInstanceForTest();
+        HealthPermissionIntentAppsTracker.resetInstanceForTest();
+
+        mHealthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .build();
     }
 
     @Test
@@ -77,17 +106,36 @@ public class NoMockAutoDeleteServiceTest {
                         .get(0);
         RecordHelper<?> helper = new StepsRecordHelper();
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
-            List<RecordInternal<?>> records = helper.getInternalRecords(cursor);
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(
+                            cursor,
+                            mHealthConnectInjector.getDeviceInfoHelper(),
+                            mHealthConnectInjector.getAppInfoHelper());
             assertThat(records).hasSize(1);
             assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
         }
 
-        AutoDeleteService.setRecordRetentionPeriodInDays(30);
-        assertThat(AutoDeleteService.getRecordRetentionPeriodInDays()).isEqualTo(30);
-        AutoDeleteService.startAutoDelete(testRule.getUserContext());
+        AutoDeleteService.setRecordRetentionPeriodInDays(
+                30, mHealthConnectInjector.getPreferenceHelper());
+        assertThat(
+                        AutoDeleteService.getRecordRetentionPeriodInDays(
+                                mHealthConnectInjector.getPreferenceHelper()))
+                .isEqualTo(30);
+        AutoDeleteService.startAutoDelete(
+                testRule.getUserContext(),
+                mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                mHealthConnectInjector.getPreferenceHelper(),
+                mHealthConnectInjector.getAppInfoHelper(),
+                mHealthConnectInjector.getTransactionManager(),
+                mHealthConnectInjector.getAccessLogsHelper(),
+                mHealthConnectInjector.getActivityDateHelper());
 
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
-            List<RecordInternal<?>> records = helper.getInternalRecords(cursor);
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(
+                            cursor,
+                            mHealthConnectInjector.getDeviceInfoHelper(),
+                            mHealthConnectInjector.getAppInfoHelper());
             assertThat(records).isEmpty();
         }
 

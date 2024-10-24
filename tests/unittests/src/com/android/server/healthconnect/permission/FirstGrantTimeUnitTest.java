@@ -21,7 +21,6 @@ import static com.android.server.healthconnect.permission.FirstGrantTimeDatastor
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_STAGED;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -31,6 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -52,12 +52,12 @@ import android.util.Pair;
 
 import androidx.test.InstrumentationRegistry;
 
+import com.android.compatibility.common.util.SystemUtil;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -119,9 +119,11 @@ public class FirstGrantTimeUnitTest {
     public void setUp() {
         Context context = InstrumentationRegistry.getContext();
         MockitoAnnotations.initMocks(this);
-        HealthConnectDeviceConfigManager.initializeInstance(context);
+        SystemUtil.runWithShellPermissionIdentity(
+                () -> HealthConnectDeviceConfigManager.initializeInstance(mContext),
+                Manifest.permission.READ_DEVICE_CONFIG);
         TransactionManager.initializeInstance(new HealthConnectUserContext(context, CURRENT_USER));
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
+        FirstGrantTimeManager.resetInstanceForTest();
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
@@ -133,9 +135,14 @@ public class FirstGrantTimeUnitTest {
         when(mContext.getApplicationContext()).thenReturn(context);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
         when(mContext.getSystemService(UserManager.class)).thenReturn(mUserManager);
+        when(mContext.getUser()).thenReturn(CURRENT_USER);
         when(mUserManager.isUserUnlocked()).thenReturn(true);
 
-        mHealthConnectInjectorBuilder = HealthConnectInjectorImpl.newBuilderForTest(context);
+        mHealthConnectInjectorBuilder =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setMigrationStateManager(mMigrationStateManager)
+                        .setFirstGrantTimeDatastore(mDatastore)
+                        .setHealthPermissionIntentAppsTracker(mTracker);
         mUiAutomation.adoptShellPermissionIdentity(
                 "android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS");
     }
@@ -472,19 +479,9 @@ public class FirstGrantTimeUnitTest {
     }
 
     private FirstGrantTimeManager createFirstGrantTimeManager(boolean useMockPackageInfoUtils) {
-        HealthConnectInjector healthConnectInjector;
         if (useMockPackageInfoUtils) {
-            healthConnectInjector =
-                    mHealthConnectInjectorBuilder.setPackageInfoUtils(mPackageInfoUtils).build();
-        } else {
-            healthConnectInjector = mHealthConnectInjectorBuilder.build();
+            mHealthConnectInjectorBuilder.setPackageInfoUtils(mPackageInfoUtils);
         }
-
-        return new FirstGrantTimeManager(
-                mContext,
-                mTracker,
-                mDatastore,
-                healthConnectInjector.getPackageInfoUtils(),
-                healthConnectInjector.getHealthDataCategoryPriorityHelper());
+        return mHealthConnectInjectorBuilder.build().getFirstGrantTimeManager();
     }
 }

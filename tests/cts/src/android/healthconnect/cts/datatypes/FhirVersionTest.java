@@ -18,7 +18,9 @@ package android.healthconnect.cts.datatypes;
 
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.R4B_VERSION_STRING;
 import static android.healthconnect.cts.utils.PhrDataFactory.R4_VERSION_STRING;
+import static android.healthconnect.cts.utils.PhrDataFactory.UNSUPPORTED_VERSION_STRING;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -83,6 +85,11 @@ public class FhirVersionTest {
     }
 
     @Test
+    public void testFhirVersion_parseFhirVersion_invalidNegativeNumbers() {
+        assertThrows(IllegalArgumentException.class, () -> parseFhirVersion("-4.0.1"));
+    }
+
+    @Test
     public void testFhirVersion_toString() {
         FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
 
@@ -124,5 +131,43 @@ public class FhirVersionTest {
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();
+    }
+
+    @Test
+    public void testWriteToParcel_negativeVersionNumbers_throws() {
+        Parcel parcel = Parcel.obtain();
+        parcel.writeInt(-1);
+        parcel.writeInt(0);
+        parcel.writeInt(0);
+        parcel.setDataPosition(0);
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> FhirVersion.CREATOR.createFromParcel(parcel));
+
+        assertThat(thrown).hasMessageThat().contains("Version numbers can not be negative");
+        parcel.recycle();
+    }
+
+    @Test
+    public void testFhirVersion_isSupportedFhirVersion_supportsR4() {
+        FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
+
+        assertThat(fhirVersion.isSupportedFhirVersion()).isTrue();
+    }
+
+    @Test
+    public void testFhirVersion_isSupportedFhirVersion_supportsR4B() {
+        FhirVersion fhirVersion = parseFhirVersion(R4B_VERSION_STRING);
+
+        assertThat(fhirVersion.isSupportedFhirVersion()).isTrue();
+    }
+
+    @Test
+    public void testFhirVersion_isSupportedFhirVersion_differentVersionNotSupported() {
+        FhirVersion fhirVersion = parseFhirVersion(UNSUPPORTED_VERSION_STRING);
+
+        assertThat(fhirVersion.isSupportedFhirVersion()).isFalse();
     }
 }

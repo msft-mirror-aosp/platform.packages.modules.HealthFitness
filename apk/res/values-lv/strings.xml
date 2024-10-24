@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Pārvaldiet ierīcē saglabātos veselības un fitnesa datus un kontrolējiet, kuras lietotnes tiem var piekļūt."</string>
     <string name="data_title" msgid="4456619761533380816">"Dati un piekļuve"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Pārlūkot veselības datus"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Skatiet savus veselības ierakstus un to, kuras lietotnes tiem var piekļūt."</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Visas kategorijas"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Skatīt visas kategorijas"</string>
     <string name="no_data" msgid="1906986019249068659">"Nav datu"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"piekļuve jūsu veselības rādītāju datiem"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Lasīt patērēto kaloriju datus"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Atļauj lietotnei lasīt patērēto kaloriju datus"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Piekļuve datiem fonā"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt datiem fonā?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt datiem fonā?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Ja atļausiet, šī lietotne varēs piekļūt fitnesa un labsajūtas datiem un veselības datiem, kad neizmantosiet lietotni."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Ja atļausiet, šī lietotne varēs piekļūt veselības datiem, kad neizmantosiet lietotni."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Ja atļausiet, šī lietotne varēs piekļūt fitnesa un labsajūtas datiem, kad neizmantosiet lietotni."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Ja atļausiet, šī lietotne varēs piekļūt Health Connect datiem, kad neizmantosiet lietotni."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt iepriekšējiem datiem?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Ja atļausiet, šī lietotne varēs piekļūt fitnesa un labsajūtas datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Ja atļausiet, šī lietotne varēs piekļūt visiem iepriekšējiem fitnesa un labsajūtas datiem."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Ja atļausiet, šī lietotne varēs piekļūt Health Connect datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Ja atļausiet, šī lietotne varēs piekļūt visiem iepriekšējiem Health Connect datiem."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Vai piešķirt lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> papildu piekļuvi?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vēlas piekļūt arī šiem Health Connect iestatījumiem"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Piekļuve visiem datiem fonā"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Piekļuve veselības datiem fonā"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Piekļuve fitnesa un labsajūtas datiem fonā"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Atļaut šai lietotnei piekļūt fitnesa un labsajūtas datiem un veselības datiem, kad neizmantojat lietotni"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Atļaut šai lietotnei piekļūt šiem datiem, kad neizmantojat lietotni"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Atļaut šai lietotnei piekļūt šiem datiem, kad neizmantojat lietotni"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"Piekļuve datiem fonā"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Atļaut šai lietotnei piekļūt Health Connect datiem, kad neizmantojat lietotni"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Piekļuve iepriekšējiem fitnesa un labsajūtas datiem"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Atļaut šai lietotnei piekļūt datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Atļaut šai lietotnei piekļūt visiem iepriekšējiem datiem"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Piekļuve iepriekšējiem datiem"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Atļaut šai lietotnei piekļūt Health Connect datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Atļaut šai lietotnei piekļūt visiem iepriekšējiem Health Connect datiem"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> jau var piekļūt iepriekšējiem veselības datiem"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Uzzināt vairāk par atļaujām"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Piekļuve visiem datiem fonā"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Piekļuve veselības datiem fonā"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Piekļuve fitnesa un labsajūtas datiem fonā"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Atļaut šai lietotnei piekļūt fitnesa un labsajūtas datiem un veselības datiem, kad neizmantojat lietotni"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Atļaut šai lietotnei piekļūt šiem datiem, kad neizmantojat lietotni"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Atļaut šai lietotnei piekļūt šiem datiem, kad neizmantojat lietotni"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Piekļuve datiem fonā"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Atļaut šai lietotnei piekļūt Health Connect datiem, kad neizmantojat lietotni"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Piekļuve iepriekšējiem fitnesa un labsajūtas datiem"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Atļaut šai lietotnei piekļūt datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Atļaut šai lietotnei piekļūt visiem iepriekšējiem datiem"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"Piekļuve iepriekšējiem datiem"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Atļaut šai lietotnei piekļūt Health Connect datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Atļaut šai lietotnei piekļūt visiem iepriekšējiem Health Connect datiem"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Pašlaik netiek lasīti neviena veida fitnesa dati, jo lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> nav ieslēgta neviena lasīšanas atļauja."</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> jau var piekļūt iepriekšējiem veselības datiem. Lai to mainītu, izslēdziet šai lietotnei veselības datu atļaujas."</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Pārvaldīt veselības datu atļaujas"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Lai šai lietotnei ieslēgtu piekļuvi fonā vai iepriekšējiem datiem, iespējojiet vismaz vienu lasīšanas atļauju."</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Lai šai lietotnei ieslēgtu piekļuvi fonā, iespējojiet vismaz vienu lasīšanas atļauju."</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Lai šai lietotnei ieslēgtu piekļuvi iepriekšējiem datiem, iespējojiet vismaz vienu lasīšanas atļauju."</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Atļaut šai lietotnei piekļūt visiem iepriekšējiem Health Connect datiem"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Atļaut šai lietotnei piekļūt Health Connect datiem, kad neizmantojat lietotni"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Ja atļausiet, šī lietotne varēs piekļūt Health Connect datiem, kad neizmantosiet lietotni."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Piekļuve iepriekšējiem datiem"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt iepriekšējiem datiem?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Atļaut šai lietotnei piekļūt Health Connect datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Atļaut šai lietotnei piekļūt visiem iepriekšējiem Health Connect datiem"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Ja atļausiet, šī lietotne varēs piekļūt Health Connect datiem, kas pievienoti pirms šī datuma: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ja atļausiet, šī lietotne varēs piekļūt visiem iepriekšējiem Health Connect datiem."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktivitātēs patērētās kalorijas"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktivitātēs patērētās kalorijas"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lasīt aktivitātēs patērēto kaloriju datus"</string>
@@ -267,28 +308,70 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"ādas temperatūra"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lasīt ādas temperatūru"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Rakstīt ādas temperatūru"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Visi medicīnas dati"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"visi medicīnas dati"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Rakstīt visus medicīnas datus"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizācija"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizācija"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Lasīt imunizācijas datus"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Visi veselības dati"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"visi veselības dati"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Rakstīt visus veselības datus"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Alerģijas"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"alerģijas"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Lasīt datus par alerģijām"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Veselības stāvokļi"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"veselības stāvokļi"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Lasīt informāciju par veselības stāvokļiem"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vakcinācijas"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vakcinācijas"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"Lasīt datus par vakcinācijām"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratorisko izmeklējumu rezultāti"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratorisko izmeklējumu rezultāti"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Lasīt laboratorisko izmeklējumu rezultātus"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Medikamenti"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"medikamenti"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"Lasīt medikamentu datus"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Personas informācija"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"personas informācija"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Lasīt personas informāciju"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Informācija par ārstniecības personām"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"informācija par ārstniecības personām"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Lasīt informāciju par ārstniecības personām"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Grūtniecība"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"grūtniecība"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Grūtniecības datu lasīšana"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procedūras"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"procedūras"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Procedūru datu lasīšana"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sociālo faktoru vēsture"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociālo faktoru vēsture"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Sociālo faktoru vēstures lasīšana"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Apmeklējumu dati"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"apmeklējumu dati"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Lasīt apmeklējumu datus"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Veselības rādījumi"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"veselības rādījumi"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"Veselības rādījumu lasīšana"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Apzinātība"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"apzinātība"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Lasīt apzinātības sesijas datus"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Rakstīt apzinātības sesijas datus"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Atļauja lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> lasīt datus"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Atļauja lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> rakstīt datus"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Atcelt"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Atļaut"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Atļaut visu"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Neatļaut"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Izvēlieties, kādus datus šī lietotne drīkst lasīt vai rakstīt platformā Health Connect"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Izvēlieties, kādus datus šī lietotne drīkst lasīt vai rakstīt platformā Health Connect"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Izvēlieties, kādus datus šī lietotne drīkst lasīt platformā Health Connect"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Izvēlieties, kādus datus šī lietotne drīkst rakstīt platformā Health Connect"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ja piešķirsiet lasīšanas piekļuvi, šī lietotne varēs lasīt jaunus datus, kā arī datus, kas pievienoti pēdējo 30 dienu laikā."</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ja piešķirsiet lasīšanas piekļuvi, šī lietotne varēs lasīt gan jaunos, gan iepriekšējos datus."</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt platformai Health Connect?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Lai uzzinātu, kā lietotnē <xliff:g id="APP_NAME">%1$s</xliff:g> tiek apstrādāti jūsu dati, skatiet izstrādātāja <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>."</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt fitnesa un labsajūtas datiem?"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Lai uzzinātu, kā lietotnē <xliff:g id="APP_NAME">%1$s</xliff:g> tiek apstrādāti jūsu dati, skatiet: <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>."</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"konfidencialitātes politiku"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt jūsu veselības datiem?"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ja piešķirsiet piekļuvi, lietotne varēs lasīt un rakstīt datus, piemēram, par alerģijām, laboratorijas rezultātiem un vakcināciju.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ja piešķirsiet piekļuvi, lietotne varēs lasīt datus, piemēram, par alerģijām, laboratorijas rezultātiem un vakcināciju.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Par veselības datiem"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Kopīgojami dati"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Ja atļausiet, <xliff:g id="APP_NAME">%1$s</xliff:g> varēs kopīgot jūsu veselības datus ar platformu Health Connect."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Sinhronizējiet veselības datus no dažādām lietotnēm un avotiem, lai glabātu tos vienuviet"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vai noņemt visas atļaujas?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Noņemt visu"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
@@ -296,10 +379,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus, tostarp iepriekšējos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, atrašanās vietas, kameras vai mikrofona atļauja."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus, tostarp fona datus un iepriekšējos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, atrašanās vietas, kameras vai mikrofona atļauja."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Dzēst arī lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g> datus no platformas Health Connect"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Vai noņemt visas fitnesa un labsajūtas atļaujas?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Turklāt no platformas Health Connect izdzēst fitnesa datus, kas iegūti no lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Vai noņemt visas veselības datu atļaujas?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Turklāt no platformas Health Connect izdzēst veselības datus, kas iegūti no lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt šos no platformas Health Connect iegūtos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt šos no platformas Health Connect iegūtos datus, tostarp fona datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt šos no platformas Health Connect iegūtos datus, tostarp iepriekšējos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt šos no platformas Health Connect iegūtos datus, tostarp fona un iepriekšējos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Vai noņemt visas atļaujas?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus, tostarp fona datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus, tostarp iepriekšējos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus, tostarp fona un iepriekšējos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Turklāt no platformas Health Connect izdzēst fitnesa un veselības datus, kas iegūti no lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Šai lietotnei ir noņemtas atļaujas."</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Turklāt dzēst visus Health Connect datus"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Nākamā diena"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Atlasītā diena"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Iepriekšējā diena"</string>
     <string name="default_error" msgid="7966868260616403475">"Radās kļūda. Lūdzu, mēģiniet vēlreiz."</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"Nezināms resurss"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Avota dati"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Atverošā figūriekava."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Aizverošā figūriekava."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Lauka “<xliff:g id="FIELD">%2$s</xliff:g>” vērtība"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Detalizēts pirmkods: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Lietotnes, kurām ir šī atļauja, var lasīt un rakstīt jūsu veselības un fitnesa datus."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolējiet, kuras lietotnes var piekļūt platformā Health Connect glabātajiem datiem. Lai pārskatītu, kādus datus noteikta lietotne drīkst rakstīt vai lasīt, pieskarieties lietotnei."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Atļauta piekļuve"</string>
@@ -316,6 +422,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Noņemt visas"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Lietotnes pārvaldība"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Skatīt lietotnes datus"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Noņemt šīs lietotnes piekļuvi"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Dzēst lietotnes datus"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Neaktīvās lietotnes"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Šīm lietotnēm vairs nav piekļuves, taču to dati joprojām tiek glabāti platformā Health Connect."</string>
@@ -328,13 +435,14 @@
     <string name="app_access_title" msgid="7137018424885371763">"Lietotnes piekļuve"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Pašlaik nav instalēta neviena saderīga lietotne"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Papildu piekļuve"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Iepriekšējie dati, fona dati"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Šai lietotnei ir noņemtas papildu atļaujas."</string>
     <string name="permissions_header" msgid="6519976063360071569">"Atļaujas"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitness un labsajūta"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Treniņi, miegs, uzturs un citas atļaujas"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Veselības dati"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"veselības dati"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Laboratorijas rezultāti, zāles, potes…"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Laboratorijas rezultāti, zāles, potes…"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Noņemtas lietotņu atļaujas"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Platformā Health Connect tika noņemtas lietotnes <xliff:g id="APP_DATA">%s</xliff:g> atļaujas."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Platformā Health Connect tika noņemtas lietotņu <xliff:g id="APP_DATA_0">%1$s</xliff:g> un <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> atļaujas."</string>
@@ -351,8 +459,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"Drīz sāksies nākamā eksportēšana"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Dublēšana un atjaunošana"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Pēdējā eksportēšanas reize: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for no_last_export_message (8138900854579872667) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"Pēdējā eksportēšanas reize: tikko"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Pēdējā eksportēšanas reize: pirms 1 minūtes}zero{Pēdējā eksportēšanas reize: pirms # minūtēm}one{Pēdējā eksportēšanas reize: pirms # minūtes}other{Pēdējā eksportēšanas reize: pirms # minūtēm}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Pēdējā eksportēšanas reize: pirms 1 stundas}zero{Pēdējā eksportēšanas reize: pirms # stundām}one{Pēdējā eksportēšanas reize: pirms # stundas}other{Pēdējā eksportēšanas reize: pirms # stundām}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Pēdējā eksportēšanas reize: nav"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ieplānota eksportēšana"</string>
     <string name="import_data" msgid="404502315533233094">"Importēt datus"</string>
@@ -381,6 +491,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"Kur saglabāt ieplānotā eksporta datus"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Izvēlieties mākoņa krātuves lietotni datu eksportēšanai."</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Vai importēt šo failu?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"Fails “<xliff:g id="FILE_NAME">%1$s</xliff:g>” tiks importēts platformā Health Connect."</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Atcelt"</string>
@@ -400,6 +511,13 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Atvērt"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Izvēlēties failu"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Atbrīvot vietu"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Ieplānotā eksportēšana ir ieslēgta."</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect nevarēja eksportēt datus"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Nepieciešams vairāk vietas"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Radās problēma ar eksportēšanu šajā datumā: <xliff:g id="DATE">%1$s</xliff:g>. Lūdzu, no jauna iestatiet ieplānoto eksportēšanu un mēģiniet vēlreiz."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Lai turpinātu ieplānoto eksportēšanu, lietotnei Health Connect ir nepieciešams <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> krātuves vietas jūsu tālrunī."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Iestatīt"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Atbrīvot vietu"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atpakaļ"</string>
     <string name="export_next_button" msgid="657930567137105172">"Tālāk"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Atcelt"</string>
@@ -416,6 +534,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Pāriet uz Play veikalu"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Darba sākšana ar Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Lietotnē Health Connect tiek glabāti jūsu veselības un fitnesa dati, tādējādi varat vienkāršā veidā sinhronizēt dažādas lietotnes savā ierīcē."</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Platformā Health Connect tiek uzglabāti un sinhronizēti jūsu veselības un fitnesa dati no dažādām lietotnēm.\n\n"<b>"Fitnesa un labsajūtas dati,"</b>" tostarp treniņu sesijas, noieto soļu skaits, uztura paradumi, miega ilgums un citi dati.\n\n"<b>"Veselības dati,"</b>" tostarp saistībā ar vakcinācijām, laboratorisko izmeklējumu rezultātiem un citām tēmām."</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Izmantojot Health Connect, varat veikt tālāk norādītās darbības."</string>
     <string name="share_data" msgid="3481932156368883946">"Datu kopīgošana ar lietotnēm"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Izvēlieties, kādus datus katra lietotne var lasīt vai rakstīt platformā Health Connect."</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Iestatījumu un konfidencialitātes pārvaldība"</string>
@@ -460,7 +580,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Vai neatgriezeniski dzēst visus šī veida datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), kas pievienoti no lietotnes <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Vai vēlaties neatgriezeniski izdzēst šo ierakstu no Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Pievienotās lietotnes vairs nevarēs piekļūt šiem datiem no platformas Health Connect."</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Tādējādi tiks dzēsti visi menstruāciju dati šajā laika periodā: <xliff:g id="START_DATE">%1$s</xliff:g>–<xliff:g id="END_DATE">%2$s</xliff:g>."</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"Tādējādi tiks dzēsti visi menstruāciju dati šajā laika periodā: <xliff:g id="START_DATE">%1$s</xliff:g>–<xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Dzēst"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Atpakaļ"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Gatavs"</string>
@@ -516,7 +636,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Viegla asiņošana"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Vidēja asiņošana"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Spēcīga asiņošana"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Nezināma asiņošanas intensitāte"</string>
     <string name="period_day" msgid="3821944462093965882">"Menstruālā cikla <xliff:g id="DAY">%1$d</xliff:g>. diena no <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menstruācija (viena diena)}zero{Menstruācija (# dienu)}one{Menstruācija (# diena)}other{Menstruācija (# dienas)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Pozitīvs"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatīvs"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Augsts līmenis"</string>
@@ -985,7 +1107,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Rediģēt lietotņu avotus"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Ierīces noklusējuma lietotne"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Lietotnes dati"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Šeit būs redzami dati no lietotnēm, kurām ir piekļuve platformai Health Connect."</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Šeit tiks rādīti dati no lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>."</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Šeit būs redzami dati no lietotnēm, kurām ir piekļuve platformai Health Connect."</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Diena"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Nedēļa"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mēnesis"</string>
@@ -995,20 +1118,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"Iepriekšējais mēnesis"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Ieraksti"</string>
     <string name="tab_access" msgid="7818197975407243701">"Piekļuve"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Vai piešķirt lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> papildu piekļuvi?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vēlas piekļūt arī šiem Health Connect iestatījumiem"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Lai šai lietotnei ieslēgtu piekļuvi fonā vai iepriekšējiem datiem, iespējojiet vismaz vienu lasīšanas atļauju."</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Lai šai lietotnei ieslēgtu piekļuvi fonā, iespējojiet vismaz vienu lasīšanas atļauju."</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Lai šai lietotnei ieslēgtu piekļuvi iepriekšējiem datiem, iespējojiet vismaz vienu lasīšanas atļauju."</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Vai neatgriezeniski dzēst visus datus no Health Connect?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Vai neatgriezeniski dzēst atlasītos datus no Health Connect?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Visi dati ir izdzēsti."</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Ir izdzēsti šādi dati: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>."</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Izdzēsto vienumu skaits ir <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>."</string>
-    <string name="select_all" msgid="837499881590001166">"Atlasīt visu"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Sāciet lietot Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinhronizējiet pirmās lietotnes, starp kurām sinhronizēt veselības un fitnesa datus"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Vēlāk"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Iestatīt"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Pievienojiet citas lietotnes"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Sāciet kopīgot datus starp lietotni <xliff:g id="APP_NAME">%s</xliff:g> un veselības lietotnēm jūsu tālrunī"</string>
@@ -1016,4 +1127,33 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Skatiet saderīgas lietotnes"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Atrodiet citas lietotnes, ar ko sinhronizēt lietotnes <xliff:g id="APP_NAME">%s</xliff:g> datus, izmantojot Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Skatīt lietotņu veikalā"</string>
+    <string name="select_all" msgid="837499881590001166">"Atlasīt visu"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Pievienotās lietotnes vairs nevarēs lasīt šos datus no lietotnes platformas Health Connect."</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Vai neatgriezeniski dzēst visus datus?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Vai neatgriezeniski dzēst atlasītos datus?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Vai neatgriezeniski dzēst visus lietotnes <xliff:g id="APP_NAME">%s</xliff:g> datus?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Vai neatgriezeniski dzēst atlasītos lietotnes <xliff:g id="APP_NAME">%s</xliff:g> datus?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Vai neatgriezeniski dzēst visus ierakstus par šo datumu: <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Vai neatgriezeniski dzēst visus ierakstus par šo nedēļu: <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Vai neatgriezeniski dzēst visus ierakstus par šo mēnesi: <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Vai neatgriezeniski dzēst atlasītos ierakstus par šo datumu: <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Vai neatgriezeniski dzēst atlasītos ierakstus par šo nedēļu: <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Vai neatgriezeniski dzēst atlasītos ierakstus par šo mēnesi: <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Vai neatgriezeniski dzēst šo ierakstu?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Vai neatgriezeniski dzēst visus lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g> ierakstus par šo datumu: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Vai neatgriezeniski dzēst visus lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g> ierakstus par šo nedēļu: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Vai neatgriezeniski dzēst visus lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g> ierakstus par šo mēnesi: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Vai neatgriezeniski dzēst atlasītos lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g> ierakstus par šo datumu: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vai neatgriezeniski dzēst atlasītos lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>ierakstus par šo nedēļu: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vai neatgriezeniski dzēst atlasītos lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g> ierakstus par šo mēnesi: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vai neatgriezeniski dzēst šo lietotnes <xliff:g id="APP_NAME">%s</xliff:g> ierakstu?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Vai neatgriezeniski dzēst datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) lietotnei <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
+    <!-- no translation found for on (8266542510798355807) -->
+    <skip />
+    <!-- no translation found for off (6996623844428550649) -->
+    <skip />
+    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
+    <skip />
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Pēdējā piekļuves reize vakar: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Pēdējā piekļuves reize: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

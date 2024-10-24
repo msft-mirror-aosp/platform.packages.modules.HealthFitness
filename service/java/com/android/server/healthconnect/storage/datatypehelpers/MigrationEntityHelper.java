@@ -21,7 +21,6 @@ import static com.android.server.healthconnect.storage.request.UpsertTableReques
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.util.Pair;
 
@@ -45,7 +44,6 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     private static final String COLUMN_ENTITY_ID = "entity_id";
 
     /** Returns a request to create a table for this helper. */
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
@@ -64,8 +62,7 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     }
 
     /** Returns a request to insert the provided {@code entityId}. */
-    @NonNull
-    public static UpsertTableRequest getInsertRequest(@NonNull String entityId) {
+    public UpsertTableRequest getInsertRequest(String entityId) {
         final ContentValues values = new ContentValues();
         values.put(COLUMN_ENTITY_ID, entityId);
         return new UpsertTableRequest(

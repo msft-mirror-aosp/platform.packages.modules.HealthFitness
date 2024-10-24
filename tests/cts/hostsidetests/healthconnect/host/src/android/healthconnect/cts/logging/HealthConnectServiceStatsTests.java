@@ -88,6 +88,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testInsertRecordsError() throws Exception {
@@ -106,6 +107,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testUpdateRecords() throws Exception {
@@ -125,6 +127,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(3);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testUpdateRecordsError() throws Exception {
@@ -144,6 +147,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testDeleteRecords() throws Exception {
@@ -165,6 +169,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
                 assertThat(atom.getErrorCode()).isEqualTo(0);
                 assertThat(atom.getDurationMillis()).isAtLeast(0);
                 assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+                assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
             }
         }
         assertThat(deletedRecords).isAtLeast(2);
@@ -186,6 +191,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testReadRecords() throws Exception {
@@ -205,6 +211,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testReadRecordsError() throws Exception {
@@ -223,6 +230,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testChangeLogTokenRequest() throws Exception {
@@ -241,6 +249,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testChangeLogTokenRequestError() throws Exception {
@@ -259,6 +268,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testChangeLogsRequest() throws Exception {
@@ -278,6 +288,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testChangeLogsRequestError() throws Exception {
@@ -296,6 +307,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testAggregatedDataRequest() throws Exception {
@@ -315,6 +327,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     public void testAggregatedDataRequestError() throws Exception {
@@ -334,6 +347,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     private List<StatsLog.EventMetricData> uploadAtomConfigAndTriggerTest(String testName)
@@ -366,11 +380,17 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
 
     private StatsLog.EventMetricData getEventForApiMethod(
             List<StatsLog.EventMetricData> data, ApiMethod apiMethod) {
+        boolean isFirstCall = true;
         for (StatsLog.EventMetricData datum : data) {
             HealthConnectApiCalled atom =
                     datum.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
 
             if (atom.getApiMethod().equals(apiMethod)) {
+                if (ApiMethod.INSERT_DATA.equals(apiMethod) && isFirstCall) {
+                    // skip the insert api call in setup
+                    isFirstCall = false;
+                    continue;
+                }
                 return datum;
             }
         }

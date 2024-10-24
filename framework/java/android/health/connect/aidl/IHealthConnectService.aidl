@@ -5,7 +5,6 @@ import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
@@ -21,11 +20,14 @@ import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
+import android.health.connect.aidl.IGetChangesForBackupResponseCallback;
+import android.health.connect.aidl.IGetSettingsForBackupResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMigrationCallback;
@@ -397,6 +399,13 @@ interface IHealthConnectService {
     void runImport(in UserHandle userHandle, in Uri file, in IEmptyResponseCallback callback);
 
     /**
+    * Triggers an immediate export of health connect data.
+    *
+    * @hide
+    */
+    void runImmediateExport(in Uri file, in IEmptyResponseCallback callback);
+
+    /**
      * Creates a {@code MedicalDataSource} in HealthConnect based on the {@code request} values.
      *
      * @param attributionSource attribution source for the data.
@@ -480,7 +489,7 @@ interface IHealthConnectService {
      */
     void readMedicalResourcesByRequest(
         in AttributionSource attributionSource,
-        in ReadMedicalResourcesRequest request,
+        in ReadMedicalResourcesRequestParcel request,
         in IReadMedicalResourcesResponseCallback callback);
 
     /**
@@ -514,4 +523,10 @@ interface IHealthConnectService {
      * @param callback Callback to receive result of performing this operation.
      */
     void queryAllMedicalResourceTypeInfos(in IMedicalResourceTypeInfosCallback callback);
+
+    /** @hide */
+    void getChangesForBackup(in @nullable String changeToken, in IGetChangesForBackupResponseCallback callback);
+
+    /** @hide */
+    void getSettingsForBackup(in IGetSettingsForBackupResponseCallback callback);
 }

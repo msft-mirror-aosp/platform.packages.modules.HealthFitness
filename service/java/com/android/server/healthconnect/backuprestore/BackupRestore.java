@@ -36,7 +36,6 @@ import static com.android.server.healthconnect.backuprestore.BackupRestore.Backu
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -73,6 +72,9 @@ import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.utils.FilesUtil;
 import com.android.server.healthconnect.utils.RunnableWithThrowable;
@@ -195,16 +197,27 @@ public final class BackupRestore {
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public BackupRestore(
+            AppInfoHelper appInfoHelper,
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
-            @NonNull Context context) {
+            PreferenceHelper preferenceHelper,
+            TransactionManager transactionManager,
+            Context context,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mFirstGrantTimeManager = firstGrantTimeManager;
         mMigrationStateManager = migrationStateManager;
         mContext = context;
         mCurrentForegroundUser = mContext.getUser();
-        mDatabaseMerger = new DatabaseMerger(context);
-        mPreferenceHelper = PreferenceHelper.getInstance();
-        mTransactionManager = TransactionManager.getInitialisedInstance();
+        mDatabaseMerger =
+                new DatabaseMerger(
+                        appInfoHelper,
+                        context,
+                        deviceInfoHelper,
+                        healthDataCategoryPriorityHelper,
+                        transactionManager);
+        mPreferenceHelper = preferenceHelper;
+        mTransactionManager = transactionManager;
     }
 
     public void setupForUser(UserHandle currentForegroundUser) {
@@ -250,8 +263,8 @@ public final class BackupRestore {
     public void stageAllHealthConnectRemoteData(
             Map<String, ParcelFileDescriptor> pfdsByFileName,
             Map<String, HealthConnectException> exceptionsByFileName,
-            @NonNull UserHandle userHandle,
-            @NonNull IDataStagingFinishedCallback callback) {
+            UserHandle userHandle,
+            IDataStagingFinishedCallback callback) {
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
         File stagedRemoteDataDir = dbContext.getDatabaseDir();
@@ -336,8 +349,7 @@ public final class BackupRestore {
 
     /** Writes the backup data into files represented by the passed file descriptors. */
     public void getAllDataForBackup(
-            @NonNull StageRemoteDataRequest stageRemoteDataRequest,
-            @NonNull UserHandle userHandle) {
+            StageRemoteDataRequest stageRemoteDataRequest, UserHandle userHandle) {
         Slog.i(
                 TAG,
                 "getAllDataForBackup, number of files to backup = "
@@ -395,7 +407,7 @@ public final class BackupRestore {
 
     /** Deletes all the staged data and resets all the states. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public void deleteAndResetEverything(@NonNull UserHandle userHandle) {
+    public void deleteAndResetEverything(UserHandle userHandle) {
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
 
@@ -451,7 +463,7 @@ public final class BackupRestore {
 
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
-    public Set<String> getStagedRemoteFileNames(@NonNull UserHandle userHandle) {
+    public Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
         File[] allFiles = dbContext.getDatabaseDir().listFiles();
@@ -1049,8 +1061,7 @@ public final class BackupRestore {
             return false;
         }
 
-        static void schedule(
-                Context context, @NonNull JobInfo jobInfo, BackupRestore backupRestore) {
+        static void schedule(Context context, JobInfo jobInfo, BackupRestore backupRestore) {
             sBackupRestore = backupRestore;
             final long token = Binder.clearCallingIdentity();
             try {

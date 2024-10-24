@@ -16,11 +16,11 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
@@ -32,51 +32,23 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.net.Uri;
 
+import com.google.common.truth.Correspondence;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 public class PhrDataFactory {
-    public static final String DATA_SOURCE_ID = "123";
-    public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
-    public static final Uri DATA_SOURCE_FHIR_BASE_URI =
-            Uri.parse("https://fhir.com/oauth/api/FHIR/R4/");
-    public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
-    public static final String DIFFERENT_DATA_SOURCE_ID = "456";
-    public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
-    public static final Uri DIFFERENT_DATA_SOURCE_BASE_URI =
-            Uri.parse("https://fhir.com/oauth/api/FHIR/R5/");
-    public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
+    private static final int FHIR_BASE_URI_CHARACTER_LIMIT = 2000;
+    private static final int MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT = 90;
 
-    public static final String FHIR_DATA_IMMUNIZATION =
-            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
-    public static final String DIFFERENT_FHIR_DATA_IMMUNIZATION =
-            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization2\"}";
-    public static final String DIFFERENT_FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization2";
-    public static final String FHIR_RESOURCE_TYPE_STRING_IMMUNIZATION = "Immunization";
-
-    public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
-            "{\"resourceType\" : \"Immunization\"}";
-    public static final String FHIR_DATA_IMMUNIZATION_ID_EMPTY =
-            "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"\"}";
-    public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
-            "{\"id\" : \"Immunization1\"}";
-    public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
-    public static final String FHIR_RESOURCE_TYPE_UNSUPPORTED = "StructureDefinition";
-    public static final String FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE =
-            "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"Immunization1\"}";
-    public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
-
-    public static final String FHIR_DATA_ALLERGY =
-            "{\"resourceType\" : \"Allergy\", \"id\" : \"Allergy1\"}";
-    public static final String FHIR_RESOURCE_TYPE_ALLERGY = "Allergy";
-    public static final String FHIR_RESOURCE_ID_ALLERGY = "Allergy1";
-
-    public static final String RESOURCE_TYPE_FIELD_NAME = "resourceType";
-    public static final String RESOURCE_ID_FIELD_NAME = "id";
+    public static final int MAX_ALLOWED_MEDICAL_DATA_SOURCES = 20;
 
     /**
      * String version code for FHIR version <a href="https://hl7.org/fhir/r4/versions.html">R4</a>.
@@ -98,20 +70,126 @@ public class PhrDataFactory {
     public static final FhirVersion FHIR_VERSION_UNSUPPORTED =
             parseFhirVersion(UNSUPPORTED_VERSION_STRING);
 
+    public static final UUID DATA_SOURCE_UUID = UUID.randomUUID();
+    public static final String DATA_SOURCE_ID = DATA_SOURCE_UUID.toString();
+    public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
+    public static final Uri DATA_SOURCE_FHIR_BASE_URI =
+            Uri.parse("https://fhir.com/oauth/api/FHIR/R4/");
+    public static final Uri DATA_SOURCE_FHIR_BASE_URI_MAX_CHARS =
+            Uri.parse("d".repeat(FHIR_BASE_URI_CHARACTER_LIMIT));
+    public static final Uri DATA_SOURCE_FHIR_BASE_URI_EXCEEDED_CHARS =
+            Uri.parse("d".repeat(FHIR_BASE_URI_CHARACTER_LIMIT + 1));
+    public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
+    public static final String DATA_SOURCE_DISPLAY_NAME_MAX_CHARS =
+            "d".repeat(MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT);
+    public static final String DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS =
+            "d".repeat(MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT + 1);
+    public static final Instant DATA_SOURCE_LAST_DATA_UPDATE_TIME =
+            Instant.parse("2024-09-10T00:02:00Z");
+    public static final FhirVersion DATA_SOURCE_FHIR_VERSION = FHIR_VERSION_R4;
+    public static final UUID DIFFERENT_DATA_SOURCE_UUID = UUID.randomUUID();
+    public static final String DIFFERENT_DATA_SOURCE_ID = DIFFERENT_DATA_SOURCE_UUID.toString();
+    public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
+    public static final Uri DIFFERENT_DATA_SOURCE_BASE_URI =
+            Uri.parse("https://fhir.com/oauth/api/FHIR/R5/");
+    public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
+    public static final Instant DIFFERENT_DATA_SOURCE_LAST_DATA_UPDATE_TIME =
+            Instant.parse("2023-01-01T00:02:00Z");
+    public static final FhirVersion DIFFERENT_DATA_SOURCE_FHIR_VERSION = FHIR_VERSION_R4B;
+
+    public static final String FHIR_DATA_IMMUNIZATION =
+            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
+    public static final String DIFFERENT_FHIR_DATA_IMMUNIZATION =
+            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization2\"}";
+    public static final String DIFFERENT_FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization2";
+
+    public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
+            "{\"resourceType\" : \"Immunization\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_ID_EMPTY =
+            "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
+            "{\"id\" : \"Immunization1\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
+    public static final String FHIR_RESOURCE_TYPE_UNSUPPORTED = "StructureDefinition";
+    public static final String FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE =
+            "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"Immunization1\"}";
+    public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
+
+    public static final String FHIR_DATA_ALLERGY =
+            "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy1\"}";
+    public static final String DIFFERENT_FHIR_DATA_ALLERGY =
+            "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy2\"}";
+    public static final String FHIR_RESOURCE_ID_ALLERGY = "Allergy1";
+    public static final String DIFFERENT_FHIR_RESOURCE_ID_ALLERGY = "Allergy2";
+    public static final String FHIR_DATA_CONDITION =
+            "{\"resourceType\" : \"Condition\", \"id\" : \"Condition1\", \"category\" :"
+                    + " [\"Condition1\"]}";
+    public static final String FHIR_DATA_MEDICATION =
+            "{\"resourceType\" : \"Medication\", \"id\" : \"Medication1\"}";
+    public static final String FHIR_DATA_Patient =
+            "{\"resourceType\" : \"Patient\", \"id\" : \"Patient1\"}";
+    public static final String FHIR_DATA_PRACTITIONER =
+            "{\"resourceType\" : \"Practitioner\", \"id\" : \"Practitioner1\"}";
+    public static final String FHIR_DATA_ENCOUNTER =
+            "{\"resourceType\" : \"Encounter\", \"id\" : \"Encounter1\"}";
+    public static final String FHIR_DATA_PROCEDURE =
+            "{\"resourceType\" : \"Procedure\", \"id\" : \"Procedure1\"}";
+    public static final String FHIR_DATA_OBSERVATION_PREGNANCY =
+            new ObservationBuilder()
+                    .setId("1")
+                    .setPregnancyStatus(ObservationBuilder.PregnancyStatus.NOT_PREGNANT)
+                    .toJson();
+    public static final String FHIR_DATA_OBSERVATION_SOCIAL_HISTORY =
+            new ObservationBuilder()
+                    .setId("2")
+                    .setCategory(ObservationBuilder.ObservationCategory.SOCIAL_HISTORY)
+                    .toJson();
+    public static final String FHIR_DATA_OBSERVATION_VITAL_SIGNS =
+            new ObservationBuilder()
+                    .setId("3")
+                    .setCategory(ObservationBuilder.ObservationCategory.VITAL_SIGNS)
+                    .toJson();
+    public static final String FHIR_DATA_OBSERVATION_LABS =
+            new ObservationBuilder()
+                    .setId("4")
+                    .setCategory(ObservationBuilder.ObservationCategory.LABORATORY)
+                    .toJson();
+
+    public static final String RESOURCE_ID_FIELD_NAME = "id";
+
     public static final String PAGE_TOKEN = "111";
 
+    public static final Correspondence<MedicalDataSource, MedicalDataSource>
+            MEDICAL_DATA_SOURCE_EQUIVALENCE =
+                    Correspondence.from(
+                            PhrDataFactory::isMedicalDataSourceEqual, "isMedicalDataSourceEqual");
+
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
-    public static MedicalDataSource.Builder getMedicalDataSourceBuilder() {
+    public static MedicalDataSource.Builder getMedicalDataSourceBuilderRequiredFieldsOnly() {
         return new MedicalDataSource.Builder(
                 DATA_SOURCE_ID,
                 DATA_SOURCE_PACKAGE_NAME,
                 DATA_SOURCE_FHIR_BASE_URI,
-                DATA_SOURCE_DISPLAY_NAME);
+                DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION);
     }
 
-    /** Creates and returns a {@link MedicalResource} with default arguments. */
-    public static MedicalDataSource getMedicalDataSource() {
-        return getMedicalDataSourceBuilder().build();
+    /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
+    public static MedicalDataSource.Builder getMedicalDataSourceBuilderWithOptionalFields() {
+        return getMedicalDataSourceBuilderRequiredFieldsOnly()
+                .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME);
+    }
+
+    /**
+     * Creates and returns a {@link MedicalDataSource} with default arguments for required fields.
+     */
+    public static MedicalDataSource getMedicalDataSourceRequiredFieldsOnly() {
+        return getMedicalDataSourceBuilderRequiredFieldsOnly().build();
+    }
+
+    /** Creates and returns a {@link MedicalDataSource} with default arguments. */
+    public static MedicalDataSource getMedicalDataSourceWithOptionalFields() {
+        return getMedicalDataSourceBuilderWithOptionalFields().build();
     }
 
     /**
@@ -127,12 +205,13 @@ public class PhrDataFactory {
     }
 
     /**
-     * Creates and returns a {@link CreateMedicalDataSourceRequest.Builder} with default arguments.
+     * Creates and returns a {@link CreateMedicalDataSourceRequest.Builder} with default arguments
+     * for required fields.
      */
     public static CreateMedicalDataSourceRequest.Builder
             getCreateMedicalDataSourceRequestBuilder() {
         return new CreateMedicalDataSourceRequest.Builder(
-                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME);
+                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_FHIR_VERSION);
     }
 
     /**
@@ -144,7 +223,7 @@ public class PhrDataFactory {
             String suffix) {
         Uri fhirBaseUri = Uri.withAppendedPath(DATA_SOURCE_FHIR_BASE_URI, "/" + suffix);
         return new CreateMedicalDataSourceRequest.Builder(
-                fhirBaseUri, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
+                fhirBaseUri, DATA_SOURCE_DISPLAY_NAME + " " + suffix, DATA_SOURCE_FHIR_VERSION);
     }
 
     /** Creates and returns a {@link CreateMedicalDataSourceRequest} with default arguments. */
@@ -200,7 +279,7 @@ public class PhrDataFactory {
      */
     public static FhirResource getUpdatedAllergyFhirResource() throws JSONException {
         return new FhirResource.Builder(
-                        FHIR_RESOURCE_TYPE_UNKNOWN,
+                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                         FHIR_RESOURCE_ID_ALLERGY,
                         addCompletedStatus(FHIR_DATA_ALLERGY))
                 .build();
@@ -219,14 +298,26 @@ public class PhrDataFactory {
     }
 
     /**
-     * Creates and returns a {@link FhirResource} with Allergy data.
-     *
-     * <p>{@code FHIR_RESOURCE_TYPE_UNKNOWN} is used here before we create a FHIR resource type for
-     * Allergy.
+     * Creates and returns a {@link FhirResource} with {@link PhrDataFactory#FHIR_DATA_ALLERGY}
+     * data.
      */
     public static FhirResource getFhirResourceAllergy() {
         return new FhirResource.Builder(
-                        FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_ID_ALLERGY, FHIR_DATA_ALLERGY)
+                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        FHIR_RESOURCE_ID_ALLERGY,
+                        FHIR_DATA_ALLERGY)
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with {@link
+     * PhrDataFactory#DIFFERENT_FHIR_DATA_ALLERGY} data.
+     */
+    public static FhirResource getFhirResourceDifferentAllergy() {
+        return new FhirResource.Builder(
+                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        DIFFERENT_FHIR_RESOURCE_ID_ALLERGY,
+                        DIFFERENT_FHIR_DATA_ALLERGY)
                 .build();
     }
 
@@ -237,7 +328,7 @@ public class PhrDataFactory {
      */
     public static MedicalResource.Builder getMedicalResourceBuilder() {
         return new MedicalResource.Builder(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                 DATA_SOURCE_ID,
                 FHIR_VERSION_R4,
                 getFhirResource());
@@ -254,11 +345,11 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS} with the given {@code dataSource}.
      */
     public static MedicalResource createImmunizationMedicalResource(String dataSource) {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResource())
@@ -267,13 +358,27 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} with the given {@code dataSource} with
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS} and {@link
+     * PhrDataFactory#DIFFERENT_FHIR_DATA_IMMUNIZATION} data, with the given {@code dataSource}.
+     */
+    public static MedicalResource createDifferentImmunizationMedicalResource(String dataSource) {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getFhirResourceDifferentImmunization())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS} with the given {@code dataSource} with
      * the default {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}'s status field added.
      */
     public static MedicalResource createUpdatedImmunizationMedicalResource(String dataSource)
             throws JSONException {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                         dataSource,
                         FHIR_VERSION_R4,
                         getUpdatedImmunizationFhirResource())
@@ -282,14 +387,29 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_UNKNOWN} with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} and {@link
+     * PhrDataFactory#FHIR_DATA_ALLERGY} data, with the given {@code dataSource}.
      */
     public static MedicalResource createAllergyMedicalResource(String dataSource) {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResourceAllergy())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} and {@link
+     * PhrDataFactory#DIFFERENT_FHIR_DATA_ALLERGY} data, with the given {@code dataSource}.
+     */
+    public static MedicalResource createDifferentAllergyMedicalResource(String dataSource) {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getFhirResourceDifferentAllergy())
                 .build();
     }
 
@@ -346,7 +466,7 @@ public class PhrDataFactory {
                             .build();
             MedicalResource medicalResource =
                     new MedicalResource.Builder(
-                                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                                     dataSourceId,
                                     fhirVersion,
                                     fhirResource)
@@ -367,11 +487,13 @@ public class PhrDataFactory {
         for (int i = 0; i < numOfResources; i++) {
             FhirResource fhirResource =
                     new FhirResource.Builder(
-                                    FHIR_RESOURCE_TYPE_UNKNOWN, "id/" + i, FHIR_DATA_ALLERGY)
+                                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                    "id/" + i,
+                                    FHIR_DATA_ALLERGY)
                             .build();
             MedicalResource medicalResource =
                     new MedicalResource.Builder(
-                                    MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                                    MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                                     dataSourceId,
                                     fhirVersion,
                                     fhirResource)
@@ -379,5 +501,18 @@ public class PhrDataFactory {
             medicalResources.add(medicalResource);
         }
         return medicalResources;
+    }
+
+    /**
+     * Given two {@link MedicalDataSource}s, compare whether they are equal or not. This ignores the
+     * {@link MedicalDataSource#getLastDataUpdateTime()}.
+     */
+    public static boolean isMedicalDataSourceEqual(
+            MedicalDataSource actual, MedicalDataSource expected) {
+        return Objects.equals(actual.getId(), expected.getId())
+                && Objects.equals(actual.getFhirVersion(), expected.getFhirVersion())
+                && Objects.equals(actual.getFhirBaseUri(), expected.getFhirBaseUri())
+                && Objects.equals(actual.getPackageName(), expected.getPackageName())
+                && Objects.equals(actual.getDisplayName(), expected.getDisplayName());
     }
 }

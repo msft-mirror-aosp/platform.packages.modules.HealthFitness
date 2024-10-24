@@ -32,22 +32,15 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.ProxyActivity
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.compatibility.common.util.SystemUtil
 import com.android.compatibility.common.util.UiAutomatorUtils2.getUiDevice
 import com.google.common.truth.Truth
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
-
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     @Before
     fun setup() {
@@ -112,6 +105,7 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
             }
     }
 
+    @Ignore("b/369324916")
     @Test
     fun requestAdditionalPermissions_showsOnlyNotGrantedPermissions() {
         val permissions = listOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)

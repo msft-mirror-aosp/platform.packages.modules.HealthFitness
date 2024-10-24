@@ -16,13 +16,18 @@
 package com.android.healthconnect.controller.data.access
 
 import android.health.connect.HealthConnectManager
+import android.health.connect.MedicalResourceTypeInfo
+import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.permissions.data.fromMedicalResourceType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 
 @Singleton
 class LoadMedicalTypeContributorAppsUseCase
@@ -30,12 +35,36 @@ class LoadMedicalTypeContributorAppsUseCase
 constructor(
     private val appInfoReader: AppInfoReader,
     private val healthConnectManager: HealthConnectManager,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ILoadMedicalTypeContributorAppsUseCase {
 
     /** Returns a list of [AppMetadata]s that have data in this [MedicalPermissionType]. */
     override suspend operator fun invoke(permissionType: MedicalPermissionType): List<AppMetadata> =
-            emptyList() //TODO(b/350031020): Call API when ready.
+        withContext(dispatcher) {
+            try {
+                val recordTypeInfoMap: List<MedicalResourceTypeInfo> =
+                    suspendCancellableCoroutine { continuation ->
+                        healthConnectManager.queryAllMedicalResourceTypeInfos(
+                            Runnable::run,
+                            continuation.asOutcomeReceiver(),
+                        )
+                    }
+                val packages =
+                    recordTypeInfoMap
+                        .filter {
+                            fromMedicalResourceType(it.medicalResourceType) == permissionType &&
+                                it.contributingDataSources.isNotEmpty()
+                        }
+                        .map { it.contributingDataSources }
+                        .flatten()
+                packages
+                    .map { appInfoReader.getAppMetadata(it.packageName) }
+                    .distinct()
+                    .sortedBy { it.appName }
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
 }
 
 interface ILoadMedicalTypeContributorAppsUseCase {

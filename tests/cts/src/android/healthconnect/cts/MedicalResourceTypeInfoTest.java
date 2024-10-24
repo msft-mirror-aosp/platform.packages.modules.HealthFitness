@@ -15,9 +15,10 @@
  */
 package android.healthconnect.cts;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSource;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -49,19 +50,19 @@ public class MedicalResourceTypeInfoTest {
     @Test
     public void testConstructor_EmptyContributingDataSources() {
         MedicalResourceTypeInfo info =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of());
 
-        assertThat(info.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(info.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
         assertThat(info.getContributingDataSources()).isEmpty();
     }
 
     @Test
     public void testConstructor_withContributingDataSources() {
-        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
+        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSourceRequiredFieldsOnly());
         MedicalResourceTypeInfo info =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, dataSources);
 
-        assertThat(info.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(info.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
         assertThat(info.getContributingDataSources()).isEqualTo(dataSources);
     }
 
@@ -73,11 +74,11 @@ public class MedicalResourceTypeInfoTest {
 
     @Test
     public void testEquals() {
-        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
+        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSourceRequiredFieldsOnly());
         MedicalResourceTypeInfo info1 =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, dataSources);
         MedicalResourceTypeInfo info2 =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, dataSources);
 
         assertThat(info1.equals(info2)).isTrue();
         assertThat(info1.hashCode()).isEqualTo(info2.hashCode());
@@ -85,13 +86,14 @@ public class MedicalResourceTypeInfoTest {
 
     @Test
     public void testEquals_comparesAllValues() {
-        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
+        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSourceRequiredFieldsOnly());
         MedicalResourceTypeInfo info =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, dataSources);
         MedicalResourceTypeInfo infoDifferentMedicalResourceType =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_UNKNOWN, dataSources);
+                new MedicalResourceTypeInfo(
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, dataSources);
         MedicalResourceTypeInfo infoDifferentDataSources =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of());
 
         assertThat(infoDifferentMedicalResourceType.equals(info)).isFalse();
         assertThat(infoDifferentDataSources.equals(info)).isFalse();
@@ -101,9 +103,9 @@ public class MedicalResourceTypeInfoTest {
 
     @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
-        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
+        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSourceRequiredFieldsOnly());
         MedicalResourceTypeInfo original =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, dataSources);
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
@@ -112,5 +114,22 @@ public class MedicalResourceTypeInfoTest {
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();
+    }
+
+    @Test
+    public void testRestoreInvalidMedicalResourceTypeFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSourceRequiredFieldsOnly());
+        MedicalResourceTypeInfo original =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, dataSources);
+        setFieldValueUsingReflection(original, "mMedicalResourceType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceTypeInfo.CREATOR.createFromParcel(parcel));
     }
 }

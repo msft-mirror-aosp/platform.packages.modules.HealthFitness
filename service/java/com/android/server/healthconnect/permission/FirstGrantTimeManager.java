@@ -19,7 +19,6 @@ package com.android.server.healthconnect.permission;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_CURRENT;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_STAGED;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.WorkerThread;
 import android.content.Context;
@@ -76,24 +75,15 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final MigrationStateManager mMigrationStateManager;
 
-    public FirstGrantTimeManager(
-            Context context,
-            HealthPermissionIntentAppsTracker tracker,
-            FirstGrantTimeDatastore datastore) {
-        this(
-                context,
-                tracker,
-                datastore,
-                PackageInfoUtils.getInstance(),
-                HealthDataCategoryPriorityHelper.getInstance());
-    }
+    @Nullable private static FirstGrantTimeManager sFirstGrantTimeManager;
 
-    public FirstGrantTimeManager(
+    private FirstGrantTimeManager(
             Context context,
             HealthPermissionIntentAppsTracker tracker,
             FirstGrantTimeDatastore datastore,
             PackageInfoUtils packageInfoUtils,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            MigrationStateManager migrationStateManager) {
         mTracker = tracker;
         mDatastore = datastore;
         mPackageManager = context.getPackageManager();
@@ -102,7 +92,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         mContext = context;
         mPackageInfoHelper = packageInfoUtils;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
-        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
+        mMigrationStateManager = migrationStateManager;
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 
@@ -115,8 +105,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
      * granted but there's no grant time recorded. This mitigates the case where some health
      * permissions got granted/revoked without onPermissionsChanged callback.
      */
-    public Optional<Instant> getFirstGrantTime(
-            @NonNull String packageName, @NonNull UserHandle user) throws IllegalArgumentException {
+    public Optional<Instant> getFirstGrantTime(String packageName, UserHandle user)
+            throws IllegalArgumentException {
 
         Integer uid = mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
         if (uid == null) {
@@ -141,8 +131,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     }
 
     /** Sets the provided first grant time for the given {@code packageName}. */
-    public void setFirstGrantTime(
-            @NonNull String packageName, @NonNull Instant time, @NonNull UserHandle user) {
+    public void setFirstGrantTime(String packageName, Instant time, UserHandle user) {
         final Integer uid =
                 mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
         if (uid == null) {
@@ -305,8 +294,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         return mDatastore.getFile(userHandle, DATA_TYPE_CURRENT);
     }
 
-    void onPackageRemoved(
-            @NonNull String packageName, int removedPackageUid, @NonNull UserHandle userHandle) {
+    void onPackageRemoved(String packageName, int removedPackageUid, UserHandle userHandle) {
         String[] leftSharedUidPackages =
                 mPackageInfoHelper.getPackagesForUid(
                         removedPackageUid, userHandle, getUserContext(userHandle));
@@ -482,9 +470,9 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
      */
     @GuardedBy("mGrantTimeLock")
     private void validateAndCorrectRecordedStateForUser(
-            @NonNull UserGrantTimeState recordedState,
-            @NonNull List<PackageInfo> healthPackagesInfos,
-            @NonNull UserHandle user) {
+            UserGrantTimeState recordedState,
+            List<PackageInfo> healthPackagesInfos,
+            UserHandle user) {
         Set<String> validPackagesPerUser = new ArraySet<>();
         Set<String> validSharedUsersPerUser = new ArraySet<>();
 
@@ -526,7 +514,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     @GuardedBy("mGrantTimeLock")
     private boolean setPackageGrantTimeIfNotRecorded(
-            @NonNull UserGrantTimeState grantTimeState, @NonNull String packageName) {
+            UserGrantTimeState grantTimeState, String packageName) {
         if (!grantTimeState.containsPackageGrantTime(packageName)) {
             Log.w(
                     TAG,
@@ -541,7 +529,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     @GuardedBy("mGrantTimeLock")
     private boolean setSharedUserGrantTimeIfNotRecorded(
-            @NonNull UserGrantTimeState grantTimeState, @NonNull String sharedUserIdName) {
+            UserGrantTimeState grantTimeState, String sharedUserIdName) {
         if (!grantTimeState.containsSharedUserGrantTime(sharedUserIdName)) {
             Log.w(
                     TAG,
@@ -556,7 +544,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     @GuardedBy("mGrantTimeLock")
     private boolean removeInvalidPackagesFromGrantTimeStateForUser(
-            @NonNull UserGrantTimeState recordedState, @NonNull Set<String> validApps) {
+            UserGrantTimeState recordedState, Set<String> validApps) {
         Set<String> recordedButNotValid =
                 new ArraySet<>(recordedState.getPackageGrantTimes().keySet());
         recordedButNotValid.removeAll(validApps);
@@ -576,7 +564,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     @GuardedBy("mGrantTimeLock")
     private boolean removeInvalidSharedUsersFromGrantTimeStateForUser(
-            @NonNull UserGrantTimeState recordedState, @NonNull Set<String> validSharedUsers) {
+            UserGrantTimeState recordedState, Set<String> validSharedUsers) {
         Set<String> recordedButNotValid =
                 new ArraySet<>(recordedState.getSharedUserGrantTimes().keySet());
         recordedButNotValid.removeAll(validSharedUsers);
@@ -594,8 +582,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         return false;
     }
 
-    private boolean checkSupportPermissionsUsageIntent(
-            @NonNull String[] names, @NonNull UserHandle user) {
+    private boolean checkSupportPermissionsUsageIntent(String[] names, UserHandle user) {
         for (String packageName : names) {
             if (mTracker.supportsPermissionUsageIntent(packageName, user)) {
                 return true;
@@ -604,7 +591,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         return false;
     }
 
-    private void logIfInDebugMode(@NonNull String prefixMessage, @NonNull Object objectToLog) {
+    private void logIfInDebugMode(String prefixMessage, Object objectToLog) {
         if (Constants.DEBUG) {
             Log.d(TAG, prefixMessage + objectToLog);
         }
@@ -636,7 +623,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         }
 
         @Nullable
-        Instant put(@NonNull Integer uid, @NonNull Instant time) {
+        Instant put(Integer uid, Instant time) {
             return mUidToGrantTime.put(uid, time);
         }
 
@@ -645,8 +632,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
          *
          * <p>Prefer using shared user names for apps where present.
          */
-        @NonNull
-        UserGrantTimeState extractUserGrantTimeStateUseSharedNames(@NonNull UserHandle user) {
+        UserGrantTimeState extractUserGrantTimeStateUseSharedNames(UserHandle user) {
             Map<String, Instant> sharedUserToGrantTime = new ArrayMap<>();
             Map<String, Instant> packageNameToGrantTime = new ArrayMap<>();
 
@@ -680,8 +666,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
          * <p>Always uses package names, even if shared user names for an app is present.
          */
         @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-        @NonNull
-        UserGrantTimeState extractUserGrantTimeStateDoNotUseSharedNames(@NonNull UserHandle user) {
+        UserGrantTimeState extractUserGrantTimeStateDoNotUseSharedNames(UserHandle user) {
             Map<String, Instant> sharedUserToGrantTime = new ArrayMap<>();
             Map<String, Instant> packageNameToGrantTime = new ArrayMap<>();
 
@@ -704,8 +689,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
         void populateFromUserGrantTimeState(
                 @Nullable UserGrantTimeState grantTimeState,
-                @NonNull Map<String, Set<Integer>> sharedUserNameToUids,
-                @NonNull UserHandle user) {
+                Map<String, Set<Integer>> sharedUserNameToUids,
+                UserHandle user) {
             if (grantTimeState == null) {
                 return;
             }
@@ -745,8 +730,32 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         }
     }
 
-    @NonNull
     private Context getUserContext(UserHandle userHandle) {
         return mContext.createContextAsUser(userHandle, /*flags*/ 0);
+    }
+
+    public static synchronized FirstGrantTimeManager getInstance(
+            Context context,
+            HealthPermissionIntentAppsTracker tracker,
+            FirstGrantTimeDatastore datastore,
+            PackageInfoUtils packageInfoUtils,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            MigrationStateManager migrationStateManager) {
+        if (sFirstGrantTimeManager == null) {
+            sFirstGrantTimeManager =
+                    new FirstGrantTimeManager(
+                            context,
+                            tracker,
+                            datastore,
+                            packageInfoUtils,
+                            healthDataCategoryPriorityHelper,
+                            migrationStateManager);
+        }
+        return sFirstGrantTimeManager;
+    }
+
+    /** Used to reset instance for testing. */
+    public static void resetInstanceForTest() {
+        sFirstGrantTimeManager = null;
     }
 }

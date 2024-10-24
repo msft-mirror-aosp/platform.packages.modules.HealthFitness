@@ -34,7 +34,6 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.DeviceConfigRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import org.junit.After;
@@ -57,10 +56,6 @@ public class ExerciseRouteBackgroundReadTest {
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
-
-    @Rule
-    public DeviceConfigRule mDeviceConfigRule =
-            new DeviceConfigRule(BACKGROUND_READ_FEATURE_FLAG, "true");
 
     @Before
     public void setUp() {

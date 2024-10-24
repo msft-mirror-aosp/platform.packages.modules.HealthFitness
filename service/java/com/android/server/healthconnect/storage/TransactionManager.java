@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
-import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 
@@ -29,7 +28,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.RecordHel
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,8 +46,12 @@ import android.util.Slog;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -58,7 +60,7 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TableColumnPair;
 
@@ -90,14 +92,18 @@ public final class TransactionManager {
 
     private volatile HealthConnectDatabase mHealthConnectDatabase;
     private UserHandle mUserHandle;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    private TransactionManager(@NonNull HealthConnectUserContext context) {
+    private TransactionManager(
+            HealthConnectUserContext context,
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mHealthConnectDatabase = new HealthConnectDatabase(context);
         mUserHandleToDatabaseMap.put(context.getCurrentUserHandle(), mHealthConnectDatabase);
         mUserHandle = context.getCurrentUserHandle();
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
-    public void onUserUnlocked(@NonNull HealthConnectUserContext healthConnectUserContext) {
+    public void onUserUnlocked(HealthConnectUserContext healthConnectUserContext) {
         if (!mUserHandleToDatabaseMap.containsKey(
                 healthConnectUserContext.getCurrentUserHandle())) {
             mUserHandleToDatabaseMap.put(
@@ -117,7 +123,10 @@ public final class TransactionManager {
      * @return List of uids of the inserted {@link RecordInternal}, in the same order as they
      *     presented to {@code request}.
      */
-    public List<String> insertAll(@NonNull UpsertTransactionRequest request)
+    public List<String> insertAll(
+            AppInfoHelper appInfoHelper,
+            AccessLogsHelper accessLogsHelper,
+            UpsertTransactionRequest request)
             throws SQLiteException {
         if (Constants.DEBUG) {
             Slog.d(TAG, "Inserting " + request.getUpsertRequests().size() + " requests.");
@@ -136,7 +145,11 @@ public final class TransactionManager {
                                 upsertRequest.getRecordInternal().getRecordType(),
                                 upsertRequest.getRecordInternal().getAppInfoId(),
                                 upsertRequest.getRecordInternal().getUuid());
-                        addChangelogsForOtherModifiedRecords(upsertRequest, modificationChangelogs);
+                        addChangelogsForOtherModifiedRecords(
+                                appInfoHelper.getAppInfoId(
+                                        upsertRequest.getRecordInternal().getPackageName()),
+                                upsertRequest,
+                                modificationChangelogs);
                         insertOrReplaceRecord(db, upsertRequest);
                     }
 
@@ -149,9 +162,8 @@ public final class TransactionManager {
                         insertRecord(db, modificationChangelog);
                     }
 
-                    for (UpsertTableRequest insertRequestsForAccessLogs : request.getAccessLogs()) {
-                        insertRecord(db, insertRequestsForAccessLogs);
-                    }
+                    accessLogsHelper.recordUpsertAccessLog(
+                            db, request.getPackageName(), request.getRecordTypeIds());
                     return request.getUUIdsInOrder();
                 });
     }
@@ -160,7 +172,7 @@ public final class TransactionManager {
      * Ignores if a record is already present. This does not generate changelogs and should only be
      * used for backup and restore.
      */
-    public void insertAll(@NonNull List<UpsertTableRequest> requests) throws SQLiteException {
+    public void insertAll(List<UpsertTableRequest> requests) throws SQLiteException {
         runAsTransaction(
                 db -> {
                     requests.forEach(request -> insertOrIgnore(db, request));
@@ -172,7 +184,7 @@ public final class TransactionManager {
      *
      * @param upsertTableRequests a list of insert table requests.
      */
-    public void insertOrReplaceAll(@NonNull List<UpsertTableRequest> upsertTableRequests)
+    public void insertOrReplaceAll(List<UpsertTableRequest> upsertTableRequests)
             throws SQLiteException {
         insertAll(upsertTableRequests, this::insertOrReplaceRecord);
     }
@@ -184,7 +196,7 @@ public final class TransactionManager {
      * @param upsertTableRequests a list of insert table requests.
      */
     public void insertOrReplaceAll(
-            @NonNull SQLiteDatabase db, @NonNull List<UpsertTableRequest> upsertTableRequests) {
+            SQLiteDatabase db, List<UpsertTableRequest> upsertTableRequests) {
         insertRequests(db, upsertTableRequests, this::insertOrReplaceRecord);
     }
 
@@ -194,7 +206,7 @@ public final class TransactionManager {
      *
      * @param upsertTableRequests a list of insert table requests.
      */
-    public void insertOrIgnoreOnConflict(@NonNull List<UpsertTableRequest> upsertTableRequests) {
+    public void insertOrIgnoreOnConflict(List<UpsertTableRequest> upsertTableRequests) {
         runAsTransaction(
                 db -> {
                     upsertTableRequests.forEach(request -> insertOrIgnore(db, request));
@@ -209,8 +221,11 @@ public final class TransactionManager {
      *
      * @param request a delete request.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public int deleteAll(@NonNull DeleteTransactionRequest request) throws SQLiteException {
+    public int deleteAll(
+            DeleteTransactionRequest request,
+            boolean shouldRecordDeleteAccessLogs,
+            AccessLogsHelper accessLogsHelper)
+            throws SQLiteException {
         long currentTime = Instant.now().toEpochMilli();
         ChangeLogsHelper.ChangeLogs deletionChangelogs =
                 new ChangeLogsHelper.ChangeLogs(OPERATION_TYPE_DELETE, currentTime);
@@ -222,7 +237,7 @@ public final class TransactionManager {
                     int numberOfRecordsDeleted = 0;
                     for (DeleteTableRequest deleteTableRequest : request.getDeleteTableRequests()) {
                         final RecordHelper<?> recordHelper =
-                                RecordHelperProvider.getRecordHelper(
+                                mInternalHealthConnectMappings.getRecordHelper(
                                         deleteTableRequest.getRecordType());
                         int innerRequestRecordsDeleted;
                         if (deleteTableRequest.requiresRead()) {
@@ -234,29 +249,28 @@ public final class TransactionManager {
                                     db.rawQuery(deleteTableRequest.getReadCommand(), null)) {
                                 int numberOfUuidsToDelete = 0;
                                 while (cursor.moveToNext()) {
+                                    String packageColumnName =
+                                            requireNonNull(
+                                                    deleteTableRequest.getPackageColumnName());
+                                    String idColumnName =
+                                            requireNonNull(deleteTableRequest.getIdColumnName());
                                     numberOfUuidsToDelete++;
                                     long appInfoId =
-                                            StorageUtils.getCursorLong(
-                                                    cursor,
-                                                    deleteTableRequest.getPackageColumnName());
+                                            StorageUtils.getCursorLong(cursor, packageColumnName);
                                     if (deleteTableRequest.requiresPackageCheck()) {
                                         request.enforcePackageCheck(
-                                                StorageUtils.getCursorUUID(
-                                                        cursor,
-                                                        deleteTableRequest.getIdColumnName()),
+                                                StorageUtils.getCursorUUID(cursor, idColumnName),
                                                 appInfoId);
                                     }
                                     UUID deletedRecordUuid =
-                                            StorageUtils.getCursorUUID(
-                                                    cursor, deleteTableRequest.getIdColumnName());
+                                            StorageUtils.getCursorUUID(cursor, idColumnName);
                                     deletionChangelogs.addUUID(
                                             deleteTableRequest.getRecordType(),
                                             appInfoId,
                                             deletedRecordUuid);
 
                                     // Add changelogs for affected records, e.g. a training plan
-                                    // being
-                                    // deleted will create changelogs for affected exercise
+                                    // being deleted will create changelogs for affected exercise
                                     // sessions.
                                     for (ReadTableRequest additionalChangelogUuidRequest :
                                             recordHelper
@@ -266,8 +280,9 @@ public final class TransactionManager {
                                                 read(additionalChangelogUuidRequest);
                                         while (cursorAdditionalUuids.moveToNext()) {
                                             modificationChangelogs.addUUID(
-                                                    additionalChangelogUuidRequest
-                                                            .getRecordHelper()
+                                                    requireNonNull(
+                                                                    additionalChangelogUuidRequest
+                                                                            .getRecordHelper())
                                                             .getRecordIdentifier(),
                                                     StorageUtils.getCursorLong(
                                                             cursorAdditionalUuids,
@@ -301,6 +316,10 @@ public final class TransactionManager {
                             modificationChangelogs.getUpsertTableRequests()) {
                         insertRecord(db, modificationChangelog);
                     }
+                    if (Flags.addMissingAccessLogs() && shouldRecordDeleteAccessLogs) {
+                        accessLogsHelper.recordDeleteAccessLog(
+                                db, request.getPackageName(), request.getRecordTypeIds());
+                    }
                     return numberOfRecordsDeleted;
                 });
     }
@@ -310,17 +329,21 @@ public final class TransactionManager {
      *
      * @param aggregateTableRequest an aggregate request.
      */
-    @NonNull
-    public void populateWithAggregation(AggregateTableRequest aggregateTableRequest) {
+    public void populateWithAggregation(
+            AggregateTableRequest aggregateTableRequest,
+            String packageName,
+            Set<Integer> recordTypeIds,
+            AccessLogsHelper accessLogsHelper,
+            boolean shouldRecordAccessLog) {
         final SQLiteDatabase db = getReadableDb();
-        if (!aggregateTableRequest.getRecordHelper().isRecordOperationsEnabled()) {
-            return;
-        }
         try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
                 Cursor metaDataCursor =
                         db.rawQuery(
                                 aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
             aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
+        }
+        if (Flags.addMissingAccessLogs() && shouldRecordAccessLog) {
+            accessLogsHelper.recordReadAccessLog(getWritableDb(), packageName, recordTypeIds);
         }
     }
 
@@ -333,7 +356,12 @@ public final class TransactionManager {
      *     information, which should use {@link #readRecordsAndPageToken(ReadTransactionRequest)}
      *     instead.
      */
-    public List<RecordInternal<?>> readRecordsByIds(@NonNull ReadTransactionRequest request)
+    public List<RecordInternal<?>> readRecordsByIds(
+            ReadTransactionRequest request,
+            AppInfoHelper appInfoHelper,
+            AccessLogsHelper accessLogsHelper,
+            DeviceInfoHelper deviceInfoHelper,
+            boolean shouldRecordAccessLog)
             throws SQLiteException {
         // TODO(b/308158714): Make this build time check once we have different classes.
         checkArgument(
@@ -343,12 +371,18 @@ public final class TransactionManager {
         for (ReadTableRequest readTableRequest : request.getReadRequests()) {
             RecordHelper<?> helper = readTableRequest.getRecordHelper();
             requireNonNull(helper);
-            if (helper.isRecordOperationsEnabled()) {
-                try (Cursor cursor = read(readTableRequest)) {
-                    List<RecordInternal<?>> internalRecords = helper.getInternalRecords(cursor);
-                    populateInternalRecordsWithExtraData(internalRecords, readTableRequest);
-                    recordInternals.addAll(internalRecords);
-                }
+            try (Cursor cursor = read(readTableRequest)) {
+                List<RecordInternal<?>> internalRecords =
+                        helper.getInternalRecords(cursor, deviceInfoHelper, appInfoHelper);
+                populateInternalRecordsWithExtraData(internalRecords, readTableRequest);
+                recordInternals.addAll(internalRecords);
+            }
+        }
+
+        if (Flags.addMissingAccessLogs()) {
+            if (!request.isReadingSelfData() && shouldRecordAccessLog) {
+                accessLogsHelper.recordReadAccessLog(
+                        getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
             }
         }
         return recordInternals;
@@ -367,7 +401,12 @@ public final class TransactionManager {
      *     #readRecordsByIds(ReadTransactionRequest)} instead.
      */
     public Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsAndPageToken(
-            @NonNull ReadTransactionRequest request) throws SQLiteException {
+            ReadTransactionRequest request,
+            AppInfoHelper appInfoHelper,
+            AccessLogsHelper accessLogsHelper,
+            DeviceInfoHelper deviceInfoHelper,
+            boolean shouldRecordDeleteAccessLogs)
+            throws SQLiteException {
         // TODO(b/308158714): Make these build time checks once we have different classes.
         checkArgument(
                 request.getPageToken() != null && request.getPageSize().isPresent(),
@@ -379,22 +418,27 @@ public final class TransactionManager {
         List<RecordInternal<?>> recordInternalList;
         RecordHelper<?> helper = readTableRequest.getRecordHelper();
         requireNonNull(helper);
-        if (!helper.isRecordOperationsEnabled()) {
-            recordInternalList = new ArrayList<>(0);
-            return Pair.create(recordInternalList, EMPTY_PAGE_TOKEN);
-        }
 
         PageTokenWrapper pageToken;
         try (Cursor cursor = read(readTableRequest)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     helper.getNextInternalRecordsPageAndToken(
+                            deviceInfoHelper,
                             cursor,
                             request.getPageSize().orElse(DEFAULT_PAGE_SIZE),
                             // pageToken is never null for read by filter requests
-                            requireNonNull(request.getPageToken()));
+                            requireNonNull(request.getPageToken()),
+                            appInfoHelper);
             recordInternalList = readResult.first;
             pageToken = readResult.second;
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
+        }
+
+        if (Flags.addMissingAccessLogs()) {
+            if (!request.isReadingSelfData() && shouldRecordDeleteAccessLogs) {
+                accessLogsHelper.recordReadAccessLog(
+                        getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+            }
         }
         return Pair.create(recordInternalList, pageToken);
     }
@@ -412,7 +456,7 @@ public final class TransactionManager {
      * @param request an insert request.
      * @return rowId of the inserted record.
      */
-    public long insert(@NonNull UpsertTableRequest request) {
+    public long insert(UpsertTableRequest request) {
         final SQLiteDatabase db = getWritableDb();
         return insertRecord(db, request);
     }
@@ -432,7 +476,7 @@ public final class TransactionManager {
      * @param request an insert request.
      * @return rowId of the inserted record.
      */
-    public long insert(SQLiteDatabase db, @NonNull UpsertTableRequest request) {
+    public long insert(SQLiteDatabase db, UpsertTableRequest request) {
         return insertRecord(db, request);
     }
 
@@ -448,7 +492,7 @@ public final class TransactionManager {
      *
      * @param request an update request.
      */
-    public void update(@NonNull UpsertTableRequest request) {
+    public void update(UpsertTableRequest request) {
         final SQLiteDatabase db = getWritableDb();
         updateRecord(db, request);
     }
@@ -468,18 +512,53 @@ public final class TransactionManager {
      * @param request an insert request.
      * @return rowId of the inserted or updated record.
      */
-    public long insertOrReplace(@NonNull UpsertTableRequest request) {
+    public long insertOrReplace(UpsertTableRequest request) {
         final SQLiteDatabase db = getWritableDb();
         return insertOrReplaceRecord(db, request);
     }
 
     /** Note: It is the responsibility of the caller to close the returned cursor */
-    @NonNull
-    public Cursor read(@NonNull ReadTableRequest request) {
+    public Cursor read(ReadTableRequest request) {
         if (Constants.DEBUG) {
             Slog.d(TAG, "Read query: " + request.getReadCommand());
         }
         return getReadableDb().rawQuery(request.getReadCommand(), null);
+    }
+
+    /** Returns the count of rows that would be returned by the given request. */
+    public int count(ReadTableRequest request) {
+        return count(request, getReadableDb());
+    }
+
+    /**
+     * Returns the count of rows that would be returned by the given request.
+     *
+     * <p>Use {@link #count(ReadTableRequest)} unless you already have the database from a
+     * transaction.
+     */
+    public static int count(ReadTableRequest request, SQLiteDatabase db) {
+        String countSql = request.getCountCommand();
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Count query: " + countSql);
+        }
+        try (Cursor cursor = db.rawQuery(countSql, null)) {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            } else {
+                throw new RuntimeException("Bad count SQL:" + countSql);
+            }
+        }
+    }
+
+    /**
+     * Do a read using {@link SQLiteDatabase#rawQuery(String, String[])}. This method should be used
+     * in preference to {@link ReadTableRequest} when it is necessary to read using a query with
+     * untrusted user input, to prevent SQL injection attacks.
+     *
+     * <p>Note: It is the responsibility of the caller to close the returned cursor
+     */
+    public Cursor rawQuery(String sql, @Nullable String[] selectionArgs) {
+        return getReadableDb().rawQuery(sql, selectionArgs);
     }
 
     /**
@@ -490,7 +569,7 @@ public final class TransactionManager {
      * @param db a {@link SQLiteDatabase}.
      * @param request a {@link ReadTableRequest}.
      */
-    public Cursor read(SQLiteDatabase db, @NonNull ReadTableRequest request) {
+    public Cursor read(SQLiteDatabase db, ReadTableRequest request) {
         if (Constants.DEBUG) {
             Slog.d(TAG, "Read query: " + request.getReadCommand());
         }
@@ -511,7 +590,7 @@ public final class TransactionManager {
      * @param tableName Name of table
      * @return Number of entries in the given table
      */
-    public long getNumberOfEntriesInTheTable(@NonNull String tableName) {
+    public long getNumberOfEntriesInTheTable(String tableName) {
         requireNonNull(tableName);
         return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
     }
@@ -522,7 +601,7 @@ public final class TransactionManager {
      * @param context Context
      * @return Size of the database
      */
-    public long getDatabaseSize(@NonNull Context context) {
+    public long getDatabaseSize(Context context) {
         requireNonNull(context);
         return context.getDatabasePath(getReadableDb().getPath()).length();
     }
@@ -551,7 +630,10 @@ public final class TransactionManager {
      *
      * @param request an update request.
      */
-    public void updateAll(@NonNull UpsertTransactionRequest request) {
+    public void updateAll(
+            AppInfoHelper appInfoHelper,
+            AccessLogsHelper accessLogsHelper,
+            UpsertTransactionRequest request) {
         long currentTime = Instant.now().toEpochMilli();
         ChangeLogsHelper.ChangeLogs updateChangelogs =
                 new ChangeLogsHelper.ChangeLogs(OPERATION_TYPE_UPSERT, currentTime);
@@ -565,9 +647,12 @@ public final class TransactionManager {
                                 upsertRequest.getRecordInternal().getAppInfoId(),
                                 upsertRequest.getRecordInternal().getUuid());
                         // Add changelogs for affected records, e.g. a training plan being deleted
-                        // will
-                        // create changelogs for affected exercise sessions.
-                        addChangelogsForOtherModifiedRecords(upsertRequest, modificationChangelogs);
+                        // will create changelogs for affected exercise sessions.
+                        addChangelogsForOtherModifiedRecords(
+                                appInfoHelper.getAppInfoId(
+                                        upsertRequest.getRecordInternal().getPackageName()),
+                                upsertRequest,
+                                modificationChangelogs);
                         updateRecord(db, upsertRequest);
                     }
 
@@ -580,9 +665,8 @@ public final class TransactionManager {
                         insertRecord(db, modificationChangelog);
                     }
 
-                    for (UpsertTableRequest insertRequestsForAccessLogs : request.getAccessLogs()) {
-                        insertRecord(db, insertRequestsForAccessLogs);
-                    }
+                    accessLogsHelper.recordUpsertAccessLog(
+                            db, request.getPackageName(), request.getRecordTypeIds());
                 });
     }
 
@@ -595,7 +679,8 @@ public final class TransactionManager {
         final SQLiteDatabase db = getReadableDb();
         HashMap<Integer, Set<Long>> recordTypeToPackageIdsMap = new HashMap<>();
         for (Integer recordType : recordTypes) {
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordType);
             HashSet<Long> packageIds = new HashSet<>();
             try (Cursor cursorForDistinctPackageNames =
                     db.rawQuery(
@@ -625,7 +710,7 @@ public final class TransactionManager {
      * <p>This is because this function is called from {@link AutoDeleteService}, and we want to
      * make sure that either all its operation succeed or fail in a single run.
      */
-    public void deleteWithoutChangeLogs(@NonNull List<DeleteTableRequest> deleteTableRequests) {
+    public void deleteWithoutChangeLogs(List<DeleteTableRequest> deleteTableRequests) {
         requireNonNull(deleteTableRequests);
         runAsTransaction(
                 db -> {
@@ -638,8 +723,8 @@ public final class TransactionManager {
     }
 
     private void insertAll(
-            @NonNull List<UpsertTableRequest> upsertTableRequests,
-            @NonNull BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
+            List<UpsertTableRequest> upsertTableRequests,
+            BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
         runAsTransaction(
                 db -> {
                     insertRequests(db, upsertTableRequests, insert);
@@ -647,9 +732,9 @@ public final class TransactionManager {
     }
 
     private void insertRequests(
-            @NonNull SQLiteDatabase db,
-            @NonNull List<UpsertTableRequest> upsertTableRequests,
-            @NonNull BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
+            SQLiteDatabase db,
+            List<UpsertTableRequest> upsertTableRequests,
+            BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
         upsertTableRequests.forEach((upsertTableRequest) -> insert.accept(db, upsertTableRequest));
     }
 
@@ -704,7 +789,7 @@ public final class TransactionManager {
     }
 
     /** Assumes that caller will be closing {@code db} and handling the transaction if required */
-    public long insertRecord(@NonNull SQLiteDatabase db, @NonNull UpsertTableRequest request) {
+    public long insertRecord(SQLiteDatabase db, UpsertTableRequest request) {
         long rowId = db.insertOrThrow(request.getTable(), null, request.getContentValues());
         request.getChildTableRequests()
                 .forEach(childRequest -> insertRecord(db, childRequest.withParentKey(rowId)));
@@ -722,7 +807,7 @@ public final class TransactionManager {
      *
      * @return the row ID of the newly inserted row or <code>-1</code> if an error occurred.
      */
-    public long insertOrIgnore(@NonNull SQLiteDatabase db, @NonNull UpsertTableRequest request) {
+    public long insertOrIgnore(SQLiteDatabase db, UpsertTableRequest request) {
         long rowId =
                 db.insertWithOnConflict(
                         request.getTable(),
@@ -742,7 +827,6 @@ public final class TransactionManager {
     }
 
     /** Note: NEVER close this DB */
-    @NonNull
     private SQLiteDatabase getReadableDb() {
         SQLiteDatabase sqLiteDatabase = mHealthConnectDatabase.getReadableDatabase();
 
@@ -753,7 +837,6 @@ public final class TransactionManager {
     }
 
     /** Note: NEVER close this DB */
-    @NonNull
     private SQLiteDatabase getWritableDb() {
         SQLiteDatabase sqLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
 
@@ -838,9 +921,13 @@ public final class TransactionManager {
         }
         for (ReadTableRequest extraDataRequest : request.getExtraReadRequests()) {
             Cursor cursorExtraData = read(extraDataRequest);
-            request.getRecordHelper()
-                    .updateInternalRecordsWithExtraFields(
-                            records, cursorExtraData, extraDataRequest.getTableName());
+            RecordHelper<?> recordHelper = request.getRecordHelper();
+            if (recordHelper == null) {
+                throw new IllegalArgumentException(
+                        "Extra read request with no attached record helper.");
+            }
+            recordHelper.updateInternalRecordsWithExtraFields(
+                    records, cursorExtraData, extraDataRequest.getTableName());
         }
     }
 
@@ -850,8 +937,7 @@ public final class TransactionManager {
      *
      * <p>Note: This function updates rather than the traditional delete + insert in SQLite
      */
-    private long insertOrReplaceRecord(
-            @NonNull SQLiteDatabase db, @NonNull UpsertTableRequest request) {
+    private long insertOrReplaceRecord(SQLiteDatabase db, UpsertTableRequest request) {
         try {
             if (request.getUniqueColumnsCount() == 0) {
                 throw new RuntimeException(
@@ -932,18 +1018,24 @@ public final class TransactionManager {
     }
 
     private void addChangelogsForOtherModifiedRecords(
-            UpsertTableRequest upsertRequest, ChangeLogsHelper.ChangeLogs modificationChangelogs) {
+            long callingPackageAppInfoId,
+            UpsertTableRequest upsertRequest,
+            ChangeLogsHelper.ChangeLogs modificationChangelogs) {
         // Carries out read requests provided by the record helper and uses the results to add
         // changelogs to the transaction.
         final RecordHelper<?> recordHelper =
-                RecordHelperProvider.getRecordHelper(upsertRequest.getRecordType());
+                mInternalHealthConnectMappings.getRecordHelper(upsertRequest.getRecordType());
         for (ReadTableRequest additionalChangelogUuidRequest :
                 recordHelper.getReadRequestsForRecordsModifiedByUpsertion(
-                        upsertRequest.getRecordInternal().getUuid(), upsertRequest)) {
+                        upsertRequest.getRecordInternal().getUuid(),
+                        upsertRequest,
+                        callingPackageAppInfoId)) {
             Cursor cursorAdditionalUuids = read(additionalChangelogUuidRequest);
             while (cursorAdditionalUuids.moveToNext()) {
+                RecordHelper<?> extraRecordHelper =
+                        requireNonNull(additionalChangelogUuidRequest.getRecordHelper());
                 modificationChangelogs.addUUID(
-                        additionalChangelogUuidRequest.getRecordHelper().getRecordIdentifier(),
+                        extraRecordHelper.getRecordIdentifier(),
                         StorageUtils.getCursorLong(cursorAdditionalUuids, APP_INFO_ID_COLUMN_NAME),
                         StorageUtils.getCursorUUID(cursorAdditionalUuids, UUID_COLUMN_NAME));
             }
@@ -967,17 +1059,22 @@ public final class TransactionManager {
         R run(SQLiteDatabase db) throws E;
     }
 
-    @NonNull
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static synchronized TransactionManager initializeInstance(
-            @NonNull HealthConnectUserContext context) {
+            HealthConnectUserContext context) {
         if (sTransactionManager == null) {
-            sTransactionManager = new TransactionManager(context);
+            sTransactionManager =
+                    new TransactionManager(context, InternalHealthConnectMappings.getInstance());
         }
 
         return sTransactionManager;
     }
 
-    @NonNull
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static TransactionManager getInitialisedInstance() {
         requireNonNull(sTransactionManager);
 
@@ -1003,7 +1100,6 @@ public final class TransactionManager {
         }
     }
 
-    @NonNull
     public UserHandle getCurrentUserHandle() {
         return mUserHandle;
     }

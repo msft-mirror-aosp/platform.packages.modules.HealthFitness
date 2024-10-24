@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -81,7 +80,7 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
     }
 
     @Override
-    public void applyGeneratedLocalTimeUpgrade(@NonNull SQLiteDatabase db) {
+    public void applyGeneratedLocalTimeUpgrade(SQLiteDatabase db) {
         try {
             db.execSQL(
                     AlterTableRequest.getAlterTableCommandToAddGeneratedColumn(
@@ -97,7 +96,6 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
     }
 
     @Override
-    @NonNull
     protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
         return List.of(
                 new CreateTableRequest.GeneratedColumnInfo(
@@ -113,7 +111,6 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
     @Override
-    @NonNull
     final List<Pair<String, String>> getSpecificColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(TIME_COLUMN_NAME, INTEGER));
@@ -126,8 +123,7 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
     }
 
     @Override
-    final void populateContentValues(
-            @NonNull ContentValues contentValues, @NonNull T instantRecord) {
+    final void populateContentValues(ContentValues contentValues, T instantRecord) {
         contentValues.put(TIME_COLUMN_NAME, instantRecord.getTimeInMillis());
         contentValues.put(ZONE_OFFSET_COLUMN_NAME, instantRecord.getZoneOffsetInSeconds());
         contentValues.put(
@@ -164,17 +160,17 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
     }
 
     abstract void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull T instantRecordInternal);
+            ContentValues contentValues, T instantRecordInternal);
 
     @Override
-    final void populateRecordValue(@NonNull Cursor cursor, @NonNull T instantRecordInternal) {
+    final void populateRecordValue(Cursor cursor, T instantRecordInternal) {
         instantRecordInternal.setZoneOffset(getCursorInt(cursor, ZONE_OFFSET_COLUMN_NAME));
         instantRecordInternal.setTime(getCursorLong(cursor, TIME_COLUMN_NAME));
 
         populateSpecificRecordValue(cursor, instantRecordInternal);
     }
 
-    abstract void populateSpecificRecordValue(@NonNull Cursor cursor, @NonNull T recordInternal);
+    abstract void populateSpecificRecordValue(Cursor cursor, T recordInternal);
 
     /**
      * This implementation should return the column names with which the table should be created.
@@ -184,6 +180,5 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @NonNull
     abstract List<Pair<String, String>> getInstantRecordColumnInfo();
 }

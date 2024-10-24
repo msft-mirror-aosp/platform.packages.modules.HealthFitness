@@ -18,7 +18,6 @@ package com.android.server.healthconnect.logging;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -31,6 +30,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,8 +48,13 @@ final class UsageStatsCollector {
     private final List<PackageInfo> mAllPackagesInstalledForUser;
 
     private final PreferenceHelper mPreferenceHelper;
+    private final AccessLogsHelper mAccessLogsHelper;
 
-    UsageStatsCollector(@NonNull Context context, @NonNull UserHandle userHandle) {
+    UsageStatsCollector(
+            Context context,
+            UserHandle userHandle,
+            PreferenceHelper preferenceHelper,
+            AccessLogsHelper accessLogsHelper) {
         Objects.requireNonNull(userHandle);
         Objects.requireNonNull(context);
 
@@ -58,7 +63,8 @@ final class UsageStatsCollector {
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
-        mPreferenceHelper = PreferenceHelper.getInstance();
+        mPreferenceHelper = preferenceHelper;
+        mAccessLogsHelper = accessLogsHelper;
     }
 
     /**
@@ -80,21 +86,22 @@ final class UsageStatsCollector {
     }
 
     /**
-     * Returns the number of apps that are connected to Health Connect.
+     * Returns the list of apps that are connected to Health Connect.
      *
-     * @return Number of apps that are connected (have read/write) to Health Connect
+     * @return List of apps that are connected (have read/write) to Health Connect
      */
-    int getPackagesHoldingHealthPermissions() {
+    List<String> getPackagesHoldingHealthPermissions() {
         // TODO(b/260707328): replace with getPackagesHoldingPermissions
-        int count = 0;
+        List<String> packageNames = new ArrayList<>();
 
         for (PackageInfo info : mAllPackagesInstalledForUser) {
             if (PackageInfoUtils.anyRequestedHealthPermissionGranted(mContext, info)) {
-                count++;
+                packageNames.add(info.packageName);
             }
         }
-        return count;
+        return packageNames;
     }
+
 
     /**
      * Returns the configured export frequency of the user.
@@ -126,7 +133,8 @@ final class UsageStatsCollector {
 
     void upsertLastAccessLogTimeStamp() {
 
-        long latestAccessLogTimeStamp = AccessLogsHelper.getLatestAccessLogTimeStamp();
+        long latestAccessLogTimeStamp =
+                mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
 
         // Access logs are only stored for 7 days, therefore only update this value if there is an
         // access log. Last access timestamp can be before 7 days and might already exist in
@@ -137,7 +145,7 @@ final class UsageStatsCollector {
         }
     }
 
-    private boolean hasRequestedHealthPermission(@NonNull PackageInfo packageInfo) {
+    private boolean hasRequestedHealthPermission(PackageInfo packageInfo) {
         if (packageInfo == null || packageInfo.requestedPermissions == null) {
             return false;
         }

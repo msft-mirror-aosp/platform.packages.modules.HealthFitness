@@ -19,14 +19,16 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
 /** ViewBinder for FormattedMedicalDataEntry. */
-class MedicalEntryItemViewBinder : ViewBinder<FormattedEntry.FormattedMedicalDataEntry, View> {
+class MedicalEntryItemViewBinder(
+    private val onClickMedicalEntryListener: OnClickMedicalEntryListener?
+) : SimpleViewBinder<FormattedEntry.FormattedMedicalDataEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -34,7 +36,9 @@ class MedicalEntryItemViewBinder : ViewBinder<FormattedEntry.FormattedMedicalDat
         val context = parent.context.applicationContext
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context).inflate(R.layout.item_data_entry, parent, false)
     }
@@ -53,5 +57,10 @@ class MedicalEntryItemViewBinder : ViewBinder<FormattedEntry.FormattedMedicalDat
         header.contentDescription = data.headerA11y
 
         deleteButton.visibility = View.GONE
+
+        view.setOnClickListener {
+            // TODO(b/342159144): Log interaction
+            onClickMedicalEntryListener?.onItemClicked(data.medicalResourceId, index)
+        }
     }
 }
