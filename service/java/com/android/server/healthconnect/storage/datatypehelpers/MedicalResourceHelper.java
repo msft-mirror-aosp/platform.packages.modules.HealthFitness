@@ -334,9 +334,6 @@ public final class MedicalResourceHelper {
      * @throws IllegalArgumentException if any of the ids has a data source id which is not valid
      *     (not a String form of a UUID)
      */
-    // TODO(b/358105031): add CTS test coverage for read by ids with/without permission
-    // checks.
-
     public List<MedicalResource> readMedicalResourcesByIdsWithPermissionChecks(
             List<MedicalResourceId> medicalResourceIds,
             Set<Integer> grantedReadMedicalResourceTypes,
@@ -530,8 +527,6 @@ public final class MedicalResourceHelper {
      * @param pageTokenWrapper a {@link PhrPageTokenWrapper}.
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
-    // TODO(b/354872929): Add cts tests for read by request.
-
     public ReadMedicalResourcesInternalResponse
             readMedicalResourcesByRequestWithoutPermissionChecks(
                     PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
@@ -550,8 +545,6 @@ public final class MedicalResourceHelper {
      *
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
-    // TODO(b/360833189): Support request.getDataSourceIds().
-    // TODO(b/354872929): Add cts tests for read by request.
     // TODO(b/360352345): Add cts tests for access logs being created per API call.
 
     public ReadMedicalResourcesInternalResponse readMedicalResourcesByRequestWithPermissionChecks(
@@ -916,8 +909,6 @@ public final class MedicalResourceHelper {
                             + UpsertMedicalResourceInternalRequest.class.getSimpleName()
                             + "(s).");
         }
-
-        // TODO(b/350697473): Add cts tests covering upsert journey with data source creation.
         return mTransactionManager.runAsTransaction(
                 (TransactionRunnableWithReturn<List<MedicalResource>, RuntimeException>)
                         db ->
