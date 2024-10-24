@@ -169,7 +169,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "access_logs_table", 2);
 
-        assertThat(mExportManager.runExport()).isTrue();
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
@@ -212,7 +212,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "change_logs_table", 2);
 
-        assertThat(mExportManager.runExport()).isTrue();
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
@@ -228,7 +228,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        assertThat(mExportManager.runExport()).isTrue();
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         DatabaseContext databaseContext =
                 DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
@@ -242,7 +242,7 @@ public class ExportManagerTest {
     public void runExport_localExportFails_logsWithGenericError() throws IOException {
         when(Files.copy((Path) any(), any(), any())).thenThrow(new IOException("Copy failed"));
 
-        assertThat(mExportManager.runExport()).isFalse();
+        assertThat(mExportManager.runExport(mContext.getUser())).isFalse();
 
         // Time not recorded due to fake clock.
         assertErrorStatusStored(DATA_EXPORT_ERROR_UNKNOWN, mTimeStamp);
@@ -267,7 +267,7 @@ public class ExportManagerTest {
     // Compressor is mocked so no zip file will be exported.
     @MockStaticClasses({@MockStatic(Compressor.class), @MockStatic(Slog.class)})
     public void runExport_noCompressedFile_logsWithGenericError() {
-        assertThat(mExportManager.runExport()).isFalse();
+        assertThat(mExportManager.runExport(mContext.getUser())).isFalse();
         // Time not recorded due to fake clock.
         assertErrorStatusStored(DATA_EXPORT_ERROR_UNKNOWN, mTimeStamp);
         ExtendedMockito.verify(
@@ -290,7 +290,7 @@ public class ExportManagerTest {
         new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
         new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
 
-        mExportManager.deleteLocalExportFiles();
+        mExportManager.deleteLocalExportFiles(mContext.getUser());
 
         assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
                 .isFalse();
@@ -304,7 +304,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        assertThat(mExportManager.runExport()).isTrue();
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
@@ -332,7 +332,7 @@ public class ExportManagerTest {
                         .setUri(Uri.fromFile(new File("inaccessible")))
                         .build());
 
-        assertThat(mExportManager.runExport()).isFalse();
+        assertThat(mExportManager.runExport(mContext.getUser())).isFalse();
         assertExportStartRecorded();
 
         // time not recorded due to fake clock
@@ -362,7 +362,7 @@ public class ExportManagerTest {
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
         // running a successful export records a "last successful export"
-        assertThat(mExportManager.runExport()).isTrue();
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
         assertExportStartRecorded();
 
         // Get the actual size of the files rather than using a fixed size as the size isn't fixed
@@ -387,7 +387,7 @@ public class ExportManagerTest {
                 new ScheduledExportSettings.Builder()
                         .setUri(Uri.fromFile(new File("inaccessible")))
                         .build());
-        assertThat(mExportManager.runExport()).isFalse();
+        assertThat(mExportManager.runExport(mContext.getUser())).isFalse();
 
         // Last successful export should hold the previous timestamp as the last export failed
         Instant lastSuccessfulExport =
@@ -412,7 +412,7 @@ public class ExportManagerTest {
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
         // Running a successful export records a "last successful export".
-        assertThat(mExportManager.runExport()).isTrue();
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
         assertThat(
                         mExportImportSettingsStorage
                                 .getScheduledExportStatus(context)
@@ -424,7 +424,7 @@ public class ExportManagerTest {
                 new ScheduledExportSettings.Builder()
                         .setUri(Uri.fromFile(new File("inaccessible")))
                         .build());
-        assertThat(mExportManager.runExport()).isFalse();
+        assertThat(mExportManager.runExport(mContext.getUser())).isFalse();
 
         // Last successful export should hold the previous file name as the last export failed
         assertThat(

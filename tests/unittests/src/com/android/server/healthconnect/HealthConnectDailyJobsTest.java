@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 import android.app.job.JobScheduler;
 import android.content.Context;
-
+import android.os.UserHandle;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,9 +48,9 @@ public class HealthConnectDailyJobsTest {
 
     @Test
     public void testJobSchedule() {
-        HealthConnectDailyJobs.schedule(mContext, 0);
+        HealthConnectDailyJobs.schedule(mContext, UserHandle.getUserHandleForUid(0));
         verify(mJobScheduler, times(1)).schedule(any());
-        HealthConnectDailyJobs.schedule(mContext, 1);
+        HealthConnectDailyJobs.schedule(mContext, UserHandle.getUserHandleForUid(1));
         verify(mJobScheduler, times(2)).schedule(any());
         HealthConnectDailyJobs.cancelAllJobs(mContext);
         verify(mJobScheduler, times(1)).cancelAll();

@@ -133,7 +133,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mMigrationStateManager =
                 builder.mMigrationStateManager == null
                         ? MigrationStateManager.initializeInstance(
-                                healthConnectUserContext.getUser().getIdentifier(),
+                                healthConnectUserContext.getUser(),
                                 mHealthConnectDeviceConfigManager,
                                 mPreferenceHelper)
                         : builder.mMigrationStateManager;
