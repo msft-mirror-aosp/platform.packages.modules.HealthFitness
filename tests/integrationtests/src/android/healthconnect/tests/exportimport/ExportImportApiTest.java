@@ -142,20 +142,24 @@ public class ExportImportApiTest {
         assertThat(stepsRecordsAfterDeletion).isEmpty();
 
         CountDownLatch latch = new CountDownLatch(1);
-        mHealthConnectManager.runImport(
-                mRemoteExportFileUri,
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<Void, HealthConnectException>() {
-                    @Override
-                    public void onResult(Void result) {
-                        latch.countDown();
-                    }
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mHealthConnectManager.runImport(
+                                mRemoteExportFileUri,
+                                Executors.newSingleThreadExecutor(),
+                                new OutcomeReceiver<Void, HealthConnectException>() {
+                                    @Override
+                                    public void onResult(Void result) {
+                                        latch.countDown();
+                                    }
 
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        latch.countDown();
-                    }
-                });
+                                    @Override
+                                    public void onError(HealthConnectException exception) {
+                                        latch.countDown();
+                                    }
+                                }),
+                "android.permission.MANAGE_HEALTH_DATA");
+
         Thread.sleep(SLEEP_TIME_MS);
         List<StepsRecord> stepsRecordsAfterImport = readAllRecords(StepsRecord.class);
         assertThat(stepsRecordsAfterImport).isEqualTo(stepsRecords);
@@ -165,13 +169,12 @@ public class ExportImportApiTest {
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
     public void exportOn_thenExportOff_noJobScheduled() throws Exception {
         SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    mHealthConnectManager.configureScheduledExport(
-                            new ScheduledExportSettings.Builder()
-                                    .setUri(mRemoteExportFileUri)
-                                    .setPeriodInDays(1)
-                                    .build());
-                },
+                () ->
+                        mHealthConnectManager.configureScheduledExport(
+                                new ScheduledExportSettings.Builder()
+                                        .setUri(mRemoteExportFileUri)
+                                        .setPeriodInDays(1)
+                                        .build()),
                 "android.permission.MANAGE_HEALTH_DATA");
         // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
         SystemUtil.eventually(
