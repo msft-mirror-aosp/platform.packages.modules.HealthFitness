@@ -17,11 +17,11 @@
 package android.healthconnect.cts.phr;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.PAGE_TOKEN;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceBuilder;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.PAGE_TOKEN;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceAllergy;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceBuilder;
 
 import static com.google.common.truth.Truth.assertThat;
 

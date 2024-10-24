@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts.utils;
+package android.healthconnect.cts.phr.utils;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
