@@ -55,6 +55,7 @@ import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -136,6 +137,9 @@ class CombinedPermissionsFragmentTest {
                 fragment.preferenceScreen.findPreference("manage_app") as PreferenceCategory?
             assertThat(managePermissions?.preferenceCount).isEqualTo(2)
             assertThat(manageApp?.preferenceCount).isEqualTo(2)
+
+            verify(healthConnectLogger, atLeast(1)).setPageId(PageName.COMBINED_APP_ACCESS_PAGE)
+            verify(healthConnectLogger).logPageImpression()
         }
     }
 
@@ -254,7 +258,9 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -277,7 +283,9 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
     }
 

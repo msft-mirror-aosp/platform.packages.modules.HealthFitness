@@ -196,7 +196,9 @@ class SettingsCombinedPermissionsFragmentTest {
         onView(withText("Lab results, medications, vaccines and others"))
             .check(matches(isDisplayed()))
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Remove access for this app"))
             .perform(scrollTo())
@@ -208,7 +210,41 @@ class SettingsCombinedPermissionsFragmentTest {
             )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_PERMISSIONS_PAGE)
+    }
+
+    @Test
+    fun fragmentStarts_logPageImpression() {
+        val writePermission =
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+        val readPermission =
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
+        whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
+
+        val validState =
+            AdditionalAccessViewModel.State(
+                backgroundReadUIState =
+                    AdditionalAccessViewModel.AdditionalPermissionState(
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<SettingsCombinedPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
     }
 

@@ -41,8 +41,6 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
         private const val FOOTER_PREFERENCE = "request_medical_write_footer"
     }
 
-    // TODO(b/342159144): Update page name.
-    private val pageName = PageName.UNKNOWN_PAGE
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
@@ -57,6 +55,10 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
 
     private val footer: FooterPreference? by lazy {
         preferenceScreen.findPreference(FOOTER_PREFERENCE)
+    }
+
+    init {
+        this.setPageName(PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

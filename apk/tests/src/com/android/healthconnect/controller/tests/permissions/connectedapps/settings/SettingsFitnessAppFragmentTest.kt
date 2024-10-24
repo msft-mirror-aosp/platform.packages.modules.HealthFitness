@@ -187,6 +187,29 @@ class SettingsFitnessAppFragmentTest {
         onView(withText("Allow all")).check(matches(isDisplayed()))
         onView(withText("Allowed to read")).check(matches(isDisplayed()))
         onView(withText("Allowed to write")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun fragmentStarts_logPageImpression() {
+        val writePermission =
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+        val readPermission =
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
+
+        val scenario =
+            launchFragment<SettingsFitnessAppFragment>(
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
