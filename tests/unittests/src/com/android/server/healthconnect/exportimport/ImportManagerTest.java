@@ -185,12 +185,12 @@ public class ImportManagerTest {
                 new ImportManager(
                         mAppInfoHelper,
                         mContext,
-                        mNotificationSender,
                         mExportImportSettingsStorage,
                         mTransactionManager,
                         mDeviceInfoHelper,
                         mPriorityHelper,
-                        fakeClock);
+                        fakeClock,
+                        mNotificationSender);
         mImportManagerSpy = ExtendedMockito.spy(importManager);
         doReturn(TEST_COMPRESSED_FILE_SIZE)
                 .when(mImportManagerSpy)

@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Context;
+import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -112,7 +113,9 @@ public class MigrationBroadcastSchedulingTest {
         mMigrationBroadcastScheduler =
                 Mockito.spy(
                         new MigrationBroadcastScheduler(
-                                0, mHealthConnectDeviceConfigManager, mMigrationStateManager));
+                                UserHandle.getUserHandleForUid(0),
+                                mHealthConnectDeviceConfigManager,
+                                mMigrationStateManager));
     }
 
     @Test
@@ -131,7 +134,9 @@ public class MigrationBroadcastSchedulingTest {
         MigrationStateManager.resetInitializedInstanceForTest();
         MigrationStateManager migrationStateManager =
                 MigrationStateManager.initializeInstance(
-                        0, mHealthConnectDeviceConfigManager, mPreferenceHelper);
+                        UserHandle.getUserHandleForUid(0),
+                        mHealthConnectDeviceConfigManager,
+                        mPreferenceHelper);
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
         migrationStateManager.updateMigrationState(mContext, MIGRATION_STATE_IN_PROGRESS);
 

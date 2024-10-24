@@ -24,6 +24,7 @@ import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readAllRecords;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -74,6 +75,8 @@ public class ExportImportApiTest {
     private static final String REMOTE_EXPORT_DATABASE_FILE_NAME = "remote_file.db";
     private static final int SLEEP_TIME_MS = 1000;
 
+    private static final int TIMEOUT_MS = 10000;
+
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
     private DatabaseContext mExportedDbContext;
@@ -117,17 +120,21 @@ public class ExportImportApiTest {
         assertThat(stepsRecords).isNotEmpty();
 
         SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    mHealthConnectManager.configureScheduledExport(
-                            new ScheduledExportSettings.Builder()
-                                    .setUri(mRemoteExportFileUri)
-                                    .setPeriodInDays(1)
-                                    .build());
-                },
+                () ->
+                        mHealthConnectManager.configureScheduledExport(
+                                new ScheduledExportSettings.Builder()
+                                        .setUri(mRemoteExportFileUri)
+                                        .setPeriodInDays(1)
+                                        .build()),
                 "android.permission.MANAGE_HEALTH_DATA");
-        // TODO(b/318484678): Improve tests (as possible) replacing sleep by conditions.
-        Thread.sleep(SLEEP_TIME_MS);
+        SystemUtil.eventually(
+                () ->
+                        assertWithMessage("The job is still not scheduled after 10 secs")
+                                .that(isExportImportJobScheduled())
+                                .isTrue(),
+                TIMEOUT_MS);
         runShellCommandForHCJob("run -f -n");
+        // TODO: b/375190993 - Improve tests (as possible) replacing sleep by conditions.
         Thread.sleep(SLEEP_TIME_MS);
 
         deleteRecords(stepsRecords);
@@ -166,10 +173,14 @@ public class ExportImportApiTest {
                                     .build());
                 },
                 "android.permission.MANAGE_HEALTH_DATA");
-        // TODO(b/318484678): Improve tests (as possible) replacing sleep by conditions.
-        Thread.sleep(SLEEP_TIME_MS);
+        // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
+        SystemUtil.eventually(
+                () ->
+                        assertWithMessage("The job is still not scheduled after 10 secs")
+                                .that(isExportImportJobScheduled())
+                                .isTrue(),
+                TIMEOUT_MS);
         runShellCommandForHCJob("run -f -n");
-        assertThat(isExportImportJobScheduled()).isTrue();
 
         SystemUtil.runWithShellPermissionIdentity(
                 () -> {
@@ -180,9 +191,13 @@ public class ExportImportApiTest {
                                     .build());
                 },
                 "android.permission.MANAGE_HEALTH_DATA");
-        Thread.sleep(SLEEP_TIME_MS);
-        runShellCommandForHCJob("run -f -n");
-        assertThat(isExportImportJobScheduled()).isFalse();
+        // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
+        SystemUtil.eventually(
+                () ->
+                        assertWithMessage("The job is still scheduled after 10 secs")
+                                .that(isExportImportJobScheduled())
+                                .isFalse(),
+                TIMEOUT_MS);
     }
 
     // TODO(b/370954019): Add test for immediate export.
