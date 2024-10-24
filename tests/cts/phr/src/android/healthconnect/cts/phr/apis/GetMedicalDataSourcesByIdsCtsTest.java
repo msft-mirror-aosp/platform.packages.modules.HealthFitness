@@ -34,6 +34,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
+import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
@@ -269,6 +270,25 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         assertThat(receiver.getResponse()).hasSize(1);
         Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
         assertThat(lastDataUpdateTime).isAtLeast(insertTime);
+        assertThat(lastDataUpdateTime).isAtMost(Instant.now());
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesById_dataUpdated_returnsCorrectLastDataUpdateTime()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        Instant updateTime = Instant.now();
+        mUtil.upsertMedicalData(dataSource.getId(), addCompletedStatus(FHIR_DATA_IMMUNIZATION));
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).hasSize(1);
+        Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
+        assertThat(lastDataUpdateTime).isAtLeast(updateTime);
         assertThat(lastDataUpdateTime).isAtMost(Instant.now());
     }
 
