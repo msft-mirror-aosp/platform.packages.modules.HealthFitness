@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts.phr;
+package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
@@ -34,6 +34,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
+import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
@@ -49,6 +50,7 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.phr.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.PhrDataFactory;
@@ -268,6 +270,25 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         assertThat(receiver.getResponse()).hasSize(1);
         Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
         assertThat(lastDataUpdateTime).isAtLeast(insertTime);
+        assertThat(lastDataUpdateTime).isAtMost(Instant.now());
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesById_dataUpdated_returnsCorrectLastDataUpdateTime()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        Instant updateTime = Instant.now();
+        mUtil.upsertMedicalData(dataSource.getId(), addCompletedStatus(FHIR_DATA_IMMUNIZATION));
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).hasSize(1);
+        Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
+        assertThat(lastDataUpdateTime).isAtLeast(updateTime);
         assertThat(lastDataUpdateTime).isAtMost(Instant.now());
     }
 

@@ -18,11 +18,12 @@ package com.android.server.healthconnect.injector;
 
 import android.content.Context;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
@@ -78,8 +79,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     }
 
     private HealthConnectInjectorImpl(Builder builder) {
-        HealthConnectUserContext healthConnectUserContext = builder.mHealthConnectUserContext;
         Context context = builder.mContext;
+        // Don't store the user and make it available via the injector, as this user is always
+        // the first / system user, and doesn't change after that.
+        // Any class that is using this user below are responsible for making sure that they
+        // update any reference to user when it changes.
+        UserHandle userHandle = builder.mUserHandle;
 
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
@@ -87,7 +92,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
-                        ? TransactionManager.initializeInstance(healthConnectUserContext)
+                        ? TransactionManager.initializeInstance(
+                                new DatabaseContext(context, userHandle))
                         : builder.mTransactionManager;
         mAppInfoHelper =
                 builder.mAppInfoHelper == null
@@ -133,9 +139,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mMigrationStateManager =
                 builder.mMigrationStateManager == null
                         ? MigrationStateManager.initializeInstance(
-                                healthConnectUserContext.getUser(),
-                                mHealthConnectDeviceConfigManager,
-                                mPreferenceHelper)
+                                userHandle, mHealthConnectDeviceConfigManager, mPreferenceHelper)
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
@@ -287,8 +291,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
      */
     public static class Builder {
 
-        private final HealthConnectUserContext mHealthConnectUserContext;
         private final Context mContext;
+        private final UserHandle mUserHandle;
 
         @Nullable private PackageInfoUtils mPackageInfoUtils;
         @Nullable private TransactionManager mTransactionManager;
@@ -311,7 +315,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
 
         private Builder(Context context) {
             mContext = context;
-            mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
+            mUserHandle = context.getUser();
         }
 
         /** Set fake or custom {@link PackageInfoUtils} */

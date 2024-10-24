@@ -55,7 +55,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -125,7 +124,7 @@ public class ImportManagerTest {
 
     private ImportManager mImportManagerSpy;
 
-    private HealthConnectUserContext mContext;
+    private DatabaseContext mContext;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
@@ -153,7 +152,7 @@ public class ImportManagerTest {
         DeviceInfoHelper.resetInstanceForTest();
         HealthDataCategoryPriorityHelper.clearInstanceForTest();
 
-        mContext = mDatabaseTestRule.getUserContext();
+        mContext = mDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);

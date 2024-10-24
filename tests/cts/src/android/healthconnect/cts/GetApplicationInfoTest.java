@@ -17,127 +17,96 @@
 package android.healthconnect.cts;
 
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
+import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
+import static android.healthconnect.cts.utils.HealthConnectReceiver.outcomeExecutor;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+
+import static com.android.compatibility.common.util.SystemUtil.getEventually;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.app.UiAutomation;
+import static java.util.Objects.requireNonNull;
+
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.AppInfo;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
-import android.os.OutcomeReceiver;
 import android.platform.test.annotations.AppModeFull;
-import android.util.Log;
 
-import androidx.test.InstrumentationRegistry;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class GetApplicationInfoTest {
-    private static final String TAG = "GetApplicationInfoTest";
-    private static final UiAutomation sUiAutomation =
-            InstrumentationRegistry.getInstrumentation().getUiAutomation();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
+    private Context mContext;
+    private HealthConnectManager mManager;
+
+    @Before
+    public void setUp() {
+        mContext = ApplicationProvider.getApplicationContext();
+        mManager = requireNonNull(mContext.getSystemService(HealthConnectManager.class));
+    }
+
     /** TODO(b/257796081): Cleanup the database after each test. */
     @Test
     public void testEmptyApplicationInfo() throws InterruptedException {
-        sUiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
-        try {
-            Context context = ApplicationProvider.getApplicationContext();
-            HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-            CountDownLatch latch = new CountDownLatch(1);
-            assertThat(service).isNotNull();
-            AtomicReference<List<AppInfo>> response = new AtomicReference<>();
-            service.getContributorApplicationsInfo(
-                    Executors.newSingleThreadExecutor(),
-                    new OutcomeReceiver<>() {
-                        @Override
-                        public void onResult(ApplicationInfoResponse result) {
-                            response.set(result.getApplicationInfoList());
-                            latch.countDown();
-                        }
-
-                        @Override
-                        public void onError(HealthConnectException exception) {
-                            Log.e(TAG, exception.getMessage());
-                        }
-                    });
-            assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
-        } finally {
-            sUiAutomation.dropShellPermissionIdentity();
-        }
+        ApplicationInfoResponse response =
+                callAndGetResponseWithShellPermissionIdentity(
+                        mManager::getContributorApplicationsInfo, MANAGE_HEALTH_DATA);
 
         /** TODO(b/257796081): Test the response size after database clean up is implemented */
-        // assertThat(response.get()).hasSize(0);
+        // assertThat(response.getApplicationInfoList()).hasSize(0);
     }
 
     @Test
     public void testEmptyApplicationInfo_no_perm() throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(service).isNotNull();
-        AtomicReference<List<AppInfo>> response = new AtomicReference<>();
-        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
-                new AtomicReference<>();
-        try {
-            TestUtils.getApplicationInfo();
-            Assert.fail("Reading app info must not be allowed without right HC permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
-        }
+        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
+        mManager.getContributorApplicationsInfo(outcomeExecutor(), receiver);
+        HealthConnectException healthConnectException = receiver.assertAndGetException();
+        assertThat(healthConnectException.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     @Test
-    public void testGetApplicationInfo() throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        CountDownLatch latch = new CountDownLatch(1);
+    public void testGetApplicationInfo() throws Exception {
         TestUtils.insertRecords(getTestRecords());
-        sUiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        // App info table will be updated in the background, so might take some additional time.
+        ApplicationInfoResponse eventualResponse =
+                getEventually(
+                        () -> {
+                            ApplicationInfoResponse response =
+                                    callAndGetResponseWithShellPermissionIdentity(
+                                            mManager::getContributorApplicationsInfo,
+                                            MANAGE_HEALTH_DATA);
+                            assertThat(response.getApplicationInfoList()).hasSize(1);
+                            return response;
+                        });
 
-        try {
-            // Wait for some time, as app info table will be  updated in the background so might
-            // take some additional time.
-            latch.await(1, TimeUnit.SECONDS);
-
-            List<AppInfo> result = TestUtils.getApplicationInfo();
-            assertThat(result).hasSize(1);
-
-            AppInfo appInfo = result.get(0);
-
-            assertThat(appInfo.getPackageName())
-                    .isEqualTo(context.getApplicationInfo().packageName);
-            assertThat(appInfo.getName())
-                    .isEqualTo(
-                            context.getPackageManager()
-                                    .getApplicationLabel(context.getApplicationInfo()));
-            assertThat(appInfo.getIcon()).isNotNull();
-        } finally {
-            sUiAutomation.dropShellPermissionIdentity();
-        }
+        AppInfo appInfo = eventualResponse.getApplicationInfoList().get(0);
+        ApplicationInfo applicationInfo = mContext.getApplicationInfo();
+        assertThat(appInfo.getPackageName()).isEqualTo(applicationInfo.packageName);
+        assertThat(appInfo.getName())
+                .isEqualTo(
+                        mContext.getPackageManager()
+                                .getApplicationLabel(applicationInfo)
+                                .toString());
+        assertThat(appInfo.getIcon()).isNotNull();
     }
 }

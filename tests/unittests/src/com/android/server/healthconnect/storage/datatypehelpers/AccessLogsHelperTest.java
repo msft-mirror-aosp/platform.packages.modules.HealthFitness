@@ -108,12 +108,12 @@ public class AccessLogsHelperTest {
 
         mTransactionTestUtils =
                 new TransactionTestUtils(
-                        mHealthConnectDatabaseTestRule.getUserContext(),
+                        mHealthConnectDatabaseTestRule.getDatabaseContext(),
                         mHealthConnectDatabaseTestRule.getTransactionManager());
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(
-                                mHealthConnectDatabaseTestRule.getUserContext())
+                                mHealthConnectDatabaseTestRule.getDatabaseContext())
                         .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
