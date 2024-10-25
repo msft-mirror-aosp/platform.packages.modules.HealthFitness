@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts.datatypes;
+package android.healthconnect.cts.phr;
 
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;

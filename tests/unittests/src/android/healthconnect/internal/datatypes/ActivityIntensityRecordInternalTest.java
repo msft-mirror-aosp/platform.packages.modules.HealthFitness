@@ -34,12 +34,14 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.internal.datatypes.ActivityIntensityRecordInternal;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Parcel;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import com.android.healthfitness.flags.Flags;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -57,6 +59,11 @@ import java.util.UUID;
 public class ActivityIntensityRecordInternalTest {
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Before
+    public void setUp() {
+        HealthConnectMappings.resetInstanceForTesting();
+    }
 
     @Test
     public void toExternalRecord_allFieldsSet() {

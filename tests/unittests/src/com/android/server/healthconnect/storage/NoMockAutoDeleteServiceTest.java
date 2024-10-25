@@ -27,7 +27,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.Environment;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -80,7 +80,7 @@ public class NoMockAutoDeleteServiceTest {
         MockitoAnnotations.initMocks(this);
         PreferenceHelper.clearInstanceForTest();
 
-        HealthConnectUserContext context = testRule.getUserContext();
+        DatabaseContext context = testRule.getDatabaseContext();
         mTransactionManager = testRule.getTransactionManager();
         DatabaseHelper.clearAllData(mTransactionManager);
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
@@ -122,7 +122,7 @@ public class NoMockAutoDeleteServiceTest {
                                 mHealthConnectInjector.getPreferenceHelper()))
                 .isEqualTo(30);
         AutoDeleteService.startAutoDelete(
-                testRule.getUserContext(),
+                testRule.getDatabaseContext(),
                 mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
                 mHealthConnectInjector.getPreferenceHelper(),
                 mHealthConnectInjector.getAppInfoHelper(),

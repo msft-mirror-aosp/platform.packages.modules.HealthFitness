@@ -57,7 +57,7 @@ import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -131,7 +131,7 @@ public class TransactionManagerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        HealthConnectUserContext context = mHealthConnectDatabaseTestRule.getUserContext();
+        DatabaseContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
