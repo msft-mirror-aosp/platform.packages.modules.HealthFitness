@@ -27,6 +27,8 @@ import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
@@ -38,6 +40,7 @@ import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappi
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class CloudBackupManager {
 
+    private static final String TAG = "CloudBackupManager";
     private final BackupRestoreDatabaseHelper mDatabaseHelper;
 
     public CloudBackupManager(
@@ -46,7 +49,9 @@ public final class CloudBackupManager {
             AccessLogsHelper accessLogsHelper,
             DeviceInfoHelper deviceInfoHelper,
             HealthConnectMappings healthConnectMappings,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            ChangeLogsHelper changeLogsHelper,
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         mDatabaseHelper =
                 new BackupRestoreDatabaseHelper(
                         transactionManager,
@@ -54,7 +59,9 @@ public final class CloudBackupManager {
                         accessLogsHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
-                        internalHealthConnectMappings);
+                        internalHealthConnectMappings,
+                        changeLogsHelper,
+                        changeLogsRequestHelper);
     }
 
     /**
@@ -75,9 +82,7 @@ public final class CloudBackupManager {
             // TODO: b/369799948 - handles the case when still reading records from data tables.
             throw new UnsupportedOperationException();
         }
-        // TODO: b/369799948 - add proper next change token.
-        return new GetChangesForBackupResponse(
-                mDatabaseHelper.getChangesFromDataTables(), "placeHolderPageToken");
+        return mDatabaseHelper.getChangesAndTokenFromDataTables();
     }
 
     /** Returns all user settings bundled as a single byte array. */
