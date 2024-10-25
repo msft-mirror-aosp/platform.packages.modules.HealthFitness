@@ -16,7 +16,6 @@
 
 package android.health.connect;
 
-import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 
 import android.annotation.FlaggedApi;
@@ -49,10 +48,6 @@ public class HealthPermissionCategory {
     // ACTIVITY
     /** Permission category for {@link ActiveCaloriesBurnedRecord} */
     public static final int ACTIVE_CALORIES_BURNED = 1;
-
-    /** Permission category for {@link android.health.connect.datatypes.ActivityIntensityRecord}. */
-    @FlaggedApi(FLAG_ACTIVITY_INTENSITY)
-    public static final int ACTIVITY_INTENSITY = 42;
 
     /** Permission category for {@link DistanceRecord} */
     public static final int DISTANCE = 2;
@@ -183,7 +178,6 @@ public class HealthPermissionCategory {
     @IntDef({
         UNKNOWN,
         ACTIVE_CALORIES_BURNED,
-        ACTIVITY_INTENSITY,
         DISTANCE,
         ELEVATION_GAINED,
         EXERCISE,

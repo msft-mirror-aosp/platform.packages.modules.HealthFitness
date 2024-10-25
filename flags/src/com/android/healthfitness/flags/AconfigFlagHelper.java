@@ -131,11 +131,4 @@ public final class AconfigFlagHelper {
     public static synchronized boolean isPersonalHealthRecordEnabled() {
         return Flags.personalHealthRecord() && isDbFlagEnabled(DB_VERSION_PERSONAL_HEALTH_RECORD);
     }
-
-    /** Returns a boolean indicating whether Activity Intensity data type is enabled. */
-    public static boolean isActivityIntensityEnabled() {
-        return Flags.activityIntensity()
-                && Flags.activityIntensityDb()
-                && Flags.healthConnectMappings();
-    }
 }
