@@ -1681,5 +1681,11 @@
     <string name="manage_fitness_and_wellness_permissions" description="Label for button to manager fitness and wellness permissions for an app.">Manage fitness and wellness permissions</string>
     <!-- endregion -->
 
+    <!-- region Privacy Dashboard  -->
+    <string name="used_by_apps_count" description="Text to indicate how many apps used this permission in past 24 hours.">{count, plural, =1 {Used by 1 app} other {Used by # apps}}</string>
+    <string name="not_used_in_past_24_hours" description="Text to indicate no app used this permission in past 24 hours.">Not used in past 24 hours</string>
+    <string name="accessed" description="Text to indicate last accessed time to a permission.">Accessed <xliff:g example="13:05" id="recent_access_time">%1$s</xliff:g></string>
+    <!-- endregion -->
+
     <!-- endregion -->
 </resources>

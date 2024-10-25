@@ -35,6 +35,10 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.request.wear.elements.Chip
 import com.android.healthconnect.controller.permissions.request.wear.elements.ScrollableScreen
+import java.time.Instant
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /** Wear Settings Permissions Screen to see allowed/disallowed status for one app. */
 @Composable
@@ -42,6 +46,7 @@ fun PerDataTypeScreen(
     viewModel: WearConnectedAppsViewModel,
     permissionStr: String,
     dataTypeStr: String,
+    showRecentAccess: Boolean,
     onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
@@ -53,6 +58,7 @@ fun PerDataTypeScreen(
                 viewModel,
                 healthPermission,
                 dataTypeStr,
+                showRecentAccess,
                 onAppChipClick,
                 onRemoveAllAppAccessButtonClick,
             )
@@ -66,7 +72,15 @@ fun PerDataTypeScreen(
         }
 
         // Not allowed apps.
-        item { DeniedAppsList(viewModel, healthPermission, dataTypeStr, onAppChipClick) }
+        item {
+            DeniedAppsList(
+                viewModel,
+                healthPermission,
+                dataTypeStr,
+                showRecentAccess,
+                onAppChipClick,
+            )
+        }
     }
 }
 
@@ -75,11 +89,15 @@ fun AllowedAppsList(
     viewModel: WearConnectedAppsViewModel,
     healthPermission: HealthPermission,
     dataTypeStr: String,
+    showRecentAccess: Boolean,
     onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
     val allowedApps = dataTypeToAllowedApps[healthPermission]
+    val dataTypeToAppToLastAccessTime by viewModel.dataTypeToAppToLastAccessTime.collectAsState()
+    val usedApps =
+        dataTypeToAppToLastAccessTime.find { it.permission == healthPermission }?.appAccesses
     if (allowedApps?.isNotEmpty() == true) {
         val nApps = allowedApps.size
         Column {
@@ -91,6 +109,15 @@ fun AllowedAppsList(
                 Chip(
                     label = app.appName,
                     labelMaxLines = 3,
+                    secondaryLabel =
+                        if (showRecentAccess) {
+                            val lastAccessTime = usedApps?.find { it.app == app }?.lastAccessTime
+                            lastAccessTime?.let {
+                                stringResource(R.string.accessed, formatTime(it))
+                            }
+                        } else {
+                            null
+                        },
                     onClick = {
                         onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
                     },
@@ -112,15 +139,24 @@ fun AllowedAppsList(
     }
 }
 
+private fun formatTime(instant: Instant): String {
+    val localTime: LocalTime = instant.atZone(ZoneId.systemDefault()).toLocalTime()
+    return localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+}
+
 @Composable
 fun DeniedAppsList(
     viewModel: WearConnectedAppsViewModel,
     healthPermission: HealthPermission,
     dataTypeStr: String,
+    showRecentAccess: Boolean,
     onAppChipClick: (String, String, String) -> Unit,
 ) {
     val dataTypeToDeniedApps by viewModel.dataTypeToDeniedApps.collectAsState()
     val deniedApps = dataTypeToDeniedApps[healthPermission]
+    val dataTypeToAppToLastAccessTime by viewModel.dataTypeToAppToLastAccessTime.collectAsState()
+    val usedApps =
+        dataTypeToAppToLastAccessTime.find { it.permission == healthPermission }?.appAccesses
     if (deniedApps?.isNotEmpty() == true) {
         val nApps = deniedApps.size
         Column {
@@ -132,6 +168,15 @@ fun DeniedAppsList(
                 Chip(
                     label = app.appName,
                     labelMaxLines = 3,
+                    secondaryLabel =
+                        if (showRecentAccess) {
+                            val lastAccessTime = usedApps?.find { it.app == app }?.lastAccessTime
+                            lastAccessTime?.let {
+                                stringResource(R.string.accessed, formatTime(it))
+                            }
+                        } else {
+                            null
+                        },
                     onClick = {
                         onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
                     },

@@ -17,6 +17,7 @@
  */
 package com.android.healthconnect.controller.permissions.connectedapps.wear
 
+import android.icu.text.MessageFormat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
@@ -34,10 +36,16 @@ import com.android.healthconnect.controller.permissions.request.wear.elements.Sc
 
 /** Wear Settings Permissions Screen to see allowed/disallowed status for all apps. */
 @Composable
-fun AllDataTypesScreen(viewModel: WearConnectedAppsViewModel, onClick: (String, String) -> Unit) {
+fun AllDataTypesScreen(
+    viewModel: WearConnectedAppsViewModel,
+    showRecentAccess: Boolean,
+    onClick: (String, String) -> Unit,
+) {
+    val res = LocalContext.current.resources
     val connectedApps by viewModel.connectedApps.collectAsState()
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
     val dataTypeToDeniedApps by viewModel.dataTypeToDeniedApps.collectAsState()
+    val dataTypeToAppToLastAccessTime by viewModel.dataTypeToAppToLastAccessTime.collectAsState()
     val systemHealthPermissions by viewModel.systemHealthPermissions.collectAsState()
     val nTotalApps = connectedApps.size
 
@@ -61,13 +69,30 @@ fun AllDataTypesScreen(viewModel: WearConnectedAppsViewModel, onClick: (String, 
                 )
             val nAllowedApps = dataTypeToAllowedApps[healthPermission]?.size ?: 0
             val nDeniedApps = dataTypeToDeniedApps[healthPermission]?.size ?: 0
+            val nUsedApps =
+                dataTypeToAppToLastAccessTime
+                    .find { it.permission == healthPermission }
+                    ?.appAccesses
+                    ?.size ?: 0
             val nRequestedApps = nAllowedApps + nDeniedApps
-            val enabled = nRequestedApps != 0
-            val message =
-                if (enabled) {
-                    stringResource(R.string.allowed_apps_count, nAllowedApps, nRequestedApps)
+            val enabled =
+                if (showRecentAccess) {
+                    nUsedApps != 0
                 } else {
-                    stringResource(R.string.no_apps_requesting)
+                    nRequestedApps != 0
+                }
+            val message =
+                when {
+                    enabled && showRecentAccess ->
+                        MessageFormat.format(
+                            res.getString(R.string.used_by_apps_count),
+                            mapOf("count" to nUsedApps),
+                        )
+                    enabled && !showRecentAccess ->
+                        stringResource(R.string.allowed_apps_count, nAllowedApps, nRequestedApps)
+                    !enabled && showRecentAccess ->
+                        stringResource(R.string.not_used_in_past_24_hours)
+                    else -> stringResource(R.string.no_apps_requesting)
                 }
             Chip(
                 label = strDataType,

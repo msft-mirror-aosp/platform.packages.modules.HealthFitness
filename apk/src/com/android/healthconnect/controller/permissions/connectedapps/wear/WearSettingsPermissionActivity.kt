@@ -17,6 +17,7 @@
  */
 package com.android.healthconnect.controller.permissions.connectedapps.wear
 
+import android.content.Intent.EXTRA_REASON
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -48,7 +49,15 @@ class WearSettingsPermissionActivity : Hilt_WearSettingsPermissionActivity() {
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
         window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
 
-        setContent { WearSettingsPermissionsNavGraph() }
+        // If with EXTRA_REASON, show Privacy Dashboard; otherwise show Permission Manager.
+        // They use the same UI layout and sequence except for labels:
+        // Permission Manager shows "[xx] of [yy] apps allowed",
+        // Privacy Dashboard shows "Used by xx apps", and "Accessed [time]".
+        setContent { WearSettingsPermissionsNavGraph(!getReasonExtra().isEmpty()) }
+    }
+
+    private fun getReasonExtra(): String {
+        return intent.getStringExtra(EXTRA_REASON).orEmpty()
     }
 
     companion object {
