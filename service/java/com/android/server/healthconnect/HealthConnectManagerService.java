@@ -28,6 +28,7 @@ import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -154,7 +155,7 @@ public class HealthConnectManagerService extends SystemService {
                     HealthConnectDeviceConfigManager.initializeInstance(context);
             mTransactionManager =
                     TransactionManager.initializeInstance(
-                            new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+                            new DatabaseContext(mContext, mCurrentForegroundUser));
             mPreferenceHelper = PreferenceHelper.getInstance();
             mMigrationStateManager =
                     MigrationStateManager.initializeInstance(
@@ -314,8 +315,7 @@ public class HealthConnectManagerService extends SystemService {
     private void switchToSetupForUser(UserHandle user) {
         // Note: This is for test setup debugging, please don't surround with DEBUG flag
         Slog.d(TAG, "switchToSetupForUser: " + user);
-        mTransactionManager.onUserUnlocked(
-                new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+        mTransactionManager.onUserUnlocked(new DatabaseContext(mContext, mCurrentForegroundUser));
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
