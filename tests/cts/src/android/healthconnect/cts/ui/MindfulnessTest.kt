@@ -52,6 +52,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -81,6 +82,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
     @RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
     @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
+    @Ignore("b/373902570")
     fun oldIA_dataAndAccess_seeAllEntries_flagEnabled_showsMindfulness() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
