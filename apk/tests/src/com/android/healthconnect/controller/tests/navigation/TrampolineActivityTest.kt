@@ -52,6 +52,7 @@ import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCateg
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
+import com.android.healthconnect.controller.home.HomeViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState
@@ -63,6 +64,8 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
+import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -102,6 +105,7 @@ class TrampolineActivityTest {
     @BindValue
     val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
     @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
+    @BindValue val homeViewModel: HomeViewModel = mock(HomeViewModel::class.java)
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -191,9 +195,15 @@ class TrampolineActivityTest {
                 )
             )
         }
-        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
         whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
             MutableLiveData<Set<FitnessPermissionType>>(emptySet())
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
+        }
+        whenever(homeViewModel.hasAnyMedicalData).then { MutableLiveData(false) }
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.NoBanner)
         }
     }
 

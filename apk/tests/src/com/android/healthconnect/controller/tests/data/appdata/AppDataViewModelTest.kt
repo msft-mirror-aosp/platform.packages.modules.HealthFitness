@@ -28,7 +28,7 @@ import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
 import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.data.appdata.AppDataUseCase
+import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
@@ -89,7 +89,7 @@ class AppDataViewModelTest {
         context.setLocale(Locale.US)
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
-        viewModel = AppDataViewModel(appInfoReader, AppDataUseCase(manager, Dispatchers.Main))
+        viewModel = AppDataViewModel(appInfoReader, AllDataUseCase(manager, Dispatchers.Main))
     }
 
     @After
