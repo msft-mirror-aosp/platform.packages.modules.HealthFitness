@@ -99,6 +99,10 @@ public class BackupRestoreDatabaseHelperTest {
 
     @Before
     public void setUp() {
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
+        DeviceInfoHelper.resetInstanceForTest();
+
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils =
                 new TransactionTestUtils(
