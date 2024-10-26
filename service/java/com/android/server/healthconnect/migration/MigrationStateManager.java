@@ -39,7 +39,6 @@ import static com.android.server.healthconnect.migration.MigrationConstants.PREM
 import static com.android.server.healthconnect.migration.MigrationUtils.filterIntent;
 import static com.android.server.healthconnect.migration.MigrationUtils.filterPermissions;
 
-import android.annotation.UserIdInt;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -50,6 +49,7 @@ import android.health.connect.Constants;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectManager;
 import android.os.Build;
+import android.os.UserHandle;
 import android.os.ext.SdkExtensions;
 import android.util.Slog;
 
@@ -92,14 +92,14 @@ public final class MigrationStateManager {
 
     private final Object mLock = new Object();
     private volatile MigrationBroadcastScheduler mMigrationBroadcastScheduler;
-    private int mUserId;
+    private UserHandle mUserHandle;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private MigrationStateManager(
-            @UserIdInt int userId,
+            UserHandle userHandle,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
             PreferenceHelper preferenceHelper) {
-        mUserId = userId;
+        mUserHandle = userHandle;
         mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
         mPreferenceHelper = preferenceHelper;
     }
@@ -111,14 +111,14 @@ public final class MigrationStateManager {
      * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
      */
     public static MigrationStateManager initializeInstance(
-            @UserIdInt int userId,
+            UserHandle userHandle,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
             PreferenceHelper preferenceHelper) {
         synchronized (sInstanceLock) {
             if (Objects.isNull(sMigrationStateManager)) {
                 sMigrationStateManager =
                         new MigrationStateManager(
-                                userId, healthConnectDeviceConfigManager, preferenceHelper);
+                                userHandle, healthConnectDeviceConfigManager, preferenceHelper);
             }
 
             return sMigrationStateManager;
@@ -126,10 +126,10 @@ public final class MigrationStateManager {
     }
 
     /** Re-initialize this class instance with the new user */
-    public void onUserSwitching(Context context, @UserIdInt int userId) {
+    public void onUserSwitching(Context context, UserHandle userHandle) {
         synchronized (mLock) {
             MigrationStateChangeJob.cancelAllJobs(context);
-            mUserId = userId;
+            mUserHandle = userHandle;
         }
     }
 
@@ -259,14 +259,14 @@ public final class MigrationStateManager {
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(context, state, timeoutReached);
                 MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                        mHealthConnectDeviceConfigManager, context, mUserId);
+                        mHealthConnectDeviceConfigManager, context, mUserHandle);
                 return;
             case MIGRATION_STATE_IN_PROGRESS:
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(
                         context, MIGRATION_STATE_IN_PROGRESS, timeoutReached);
                 MigrationStateChangeJob.scheduleMigrationPauseJob(
-                        mHealthConnectDeviceConfigManager, context, mUserId);
+                        mHealthConnectDeviceConfigManager, context, mUserHandle);
                 updateMigrationStartsCount();
                 return;
             case MIGRATION_STATE_ALLOWED:
@@ -279,7 +279,7 @@ public final class MigrationStateManager {
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(context, MIGRATION_STATE_ALLOWED, timeoutReached);
                 MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                        mHealthConnectDeviceConfigManager, context, mUserId);
+                        mHealthConnectDeviceConfigManager, context, mUserHandle);
                 return;
             case MIGRATION_STATE_COMPLETE:
                 updateMigrationStatePreference(context, MIGRATION_STATE_COMPLETE, timeoutReached);
@@ -588,7 +588,7 @@ public final class MigrationStateManager {
                 if (!MigrationStateChangeJob.existsAStateChangeJob(
                         context, MIGRATION_COMPLETE_JOB_NAME)) {
                     MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                            mHealthConnectDeviceConfigManager, context, mUserId);
+                            mHealthConnectDeviceConfigManager, context, mUserHandle);
                 }
                 return;
             case MIGRATION_STATE_MODULE_UPGRADE_REQUIRED:
@@ -599,7 +599,7 @@ public final class MigrationStateManager {
                 if (!MigrationStateChangeJob.existsAStateChangeJob(
                         context, MIGRATION_PAUSE_JOB_NAME)) {
                     MigrationStateChangeJob.scheduleMigrationPauseJob(
-                            mHealthConnectDeviceConfigManager, context, mUserId);
+                            mHealthConnectDeviceConfigManager, context, mUserHandle);
                 }
                 return;
 
@@ -624,7 +624,7 @@ public final class MigrationStateManager {
         }
         if (!MigrationStateChangeJob.existsAStateChangeJob(context, MIGRATION_COMPLETE_JOB_NAME)) {
             MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                    mHealthConnectDeviceConfigManager, context, mUserId);
+                    mHealthConnectDeviceConfigManager, context, mUserHandle);
         }
     }
 
