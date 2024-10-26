@@ -16,8 +16,7 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static java.util.Objects.requireNonNull;
-
+import android.annotation.Nullable;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,7 +29,11 @@ import com.android.server.healthconnect.utils.FilesUtil;
 import java.io.File;
 
 /**
- * {@link Context} for the staged health connect db.
+ * {@link Context} for storing, accessing and deleting a user database in HealthConnect.
+ *
+ * <p>By default, the database is created in the top level health connect directory in storage. But
+ * other use cases that create a copy of the database (e.g. D2D, export/import) can pass in a
+ * directory to create a database in a sub-directory.
  *
  * @hide
  */
@@ -38,26 +41,29 @@ public final class DatabaseContext extends ContextWrapper {
 
     private static final String TAG = "HealthConnectDatabaseContext";
 
-    private final String mDatabaseDirName;
+    private final UserHandle mUserHandle;
+    private final File mDatabaseDir;
 
-    private File mDatabaseDir;
-
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private DatabaseContext(Context context, String databaseDirName, UserHandle userHandle) {
-        super(context);
-        requireNonNull(context);
-        mDatabaseDirName = databaseDirName;
-        setupForUser(userHandle);
+    public DatabaseContext(Context context, UserHandle userHandle) {
+        this(context, userHandle, null);
     }
 
-    /** Updates the DB directory */
-    public void setupForUser(UserHandle userHandle) {
-        File hcDirectory = FilesUtil.getDataSystemCeHCDirectoryForUser(userHandle.getIdentifier());
-        mDatabaseDir = new File(hcDirectory, mDatabaseDirName);
+    public DatabaseContext(
+            Context context, UserHandle userHandle, @Nullable String databaseDirName) {
+        super(context.createContextAsUser(userHandle, 0));
+        mUserHandle = userHandle;
+
+        if (databaseDirName == null) {
+            mDatabaseDir = FilesUtil.getDataSystemCeHCDirectoryForUser(userHandle.getIdentifier());
+        } else {
+            File hcDirectory =
+                    FilesUtil.getDataSystemCeHCDirectoryForUser(userHandle.getIdentifier());
+            mDatabaseDir = new File(hcDirectory, databaseDirName);
+        }
         mDatabaseDir.mkdirs();
     }
 
-    /** Returns the directory of the staged database */
+    /** Returns the directory in which the database is stored */
     public File getDatabaseDir() {
         return mDatabaseDir;
     }
@@ -85,7 +91,7 @@ public final class DatabaseContext extends ContextWrapper {
 
     /** Factory method */
     public static DatabaseContext create(
-            Context context, String databaseDirName, UserHandle userHandle) {
-        return new DatabaseContext(context, databaseDirName, userHandle);
+            Context context, @Nullable String databaseDirName, UserHandle userHandle) {
+        return new DatabaseContext(context, userHandle, databaseDirName);
     }
 }

@@ -57,10 +57,12 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.utils.toInstant
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -74,6 +76,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
+    @Inject lateinit var timeSource: TimeSource
 
     private var packageName: String = ""
     private var appName: String = ""
@@ -261,6 +264,8 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
         if (permissionType is MedicalPermissionType) {
             dateNavigationView.isVisible = false
+        } else {
+            setDateNavigationViewMaxDate()
         }
         header = view.findViewById(R.id.app_header)
         noDataView = view.findViewById(R.id.no_data_view)
@@ -494,6 +499,14 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                     entriesRecyclerView.isVisible = false
                 }
             }
+        }
+    }
+
+    private fun setDateNavigationViewMaxDate() {
+        if (permissionType == FitnessPermissionType.PLANNED_EXERCISE) {
+            dateNavigationView.setMaxDate(null)
+        } else {
+            dateNavigationView.setMaxDate(timeSource.currentTimeMillis().toInstant())
         }
     }
 }

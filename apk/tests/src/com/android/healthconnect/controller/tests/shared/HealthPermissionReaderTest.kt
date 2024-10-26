@@ -8,6 +8,9 @@ import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.HealthPermission
@@ -35,6 +38,7 @@ class HealthPermissionReaderTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val setFlagsRule = SetFlagsRule()
+    @get:Rule val checkFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     @Inject lateinit var permissionReader: HealthPermissionReader
     private lateinit var context: Context
@@ -178,6 +182,53 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_PLANNED_EXERCISE,
                 HealthPermissions.WRITE_PLANNED_EXERCISE,
                 HealthPermissions.READ_HEALTH_DATA_HISTORY,
+            )
+    }
+
+    @RequiresFlagsEnabled(
+        Flags.FLAG_ACTIVITY_INTENSITY,
+        Flags.FLAG_ACTIVITY_INTENSITY_DB,
+        Flags.FLAG_HEALTH_CONNECT_MAPPINGS,
+    )
+    @Test
+    fun getHealthPermissions_activityIntensityFlagsEnabled_returnsPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsAtLeast(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
+            )
+    }
+
+    @RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY_DB, Flags.FLAG_HEALTH_CONNECT_MAPPINGS)
+    @RequiresFlagsDisabled(Flags.FLAG_ACTIVITY_INTENSITY)
+    @Test
+    fun getHealthPermissions_activityIntensityFlagDisabled_doesNotReturnPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsNoneOf(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
+            )
+    }
+
+    @RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_HEALTH_CONNECT_MAPPINGS)
+    @RequiresFlagsDisabled(Flags.FLAG_ACTIVITY_INTENSITY_DB)
+    @Test
+    fun getHealthPermissions_activityIntensityDbFlagDisabled_doesNotReturnPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsNoneOf(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
+            )
+    }
+
+    @RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_ACTIVITY_INTENSITY_DB)
+    @RequiresFlagsDisabled(Flags.FLAG_HEALTH_CONNECT_MAPPINGS)
+    @Test
+    fun getHealthPermissions_healthConnectMappingsFlagDisabled_doesNotReturnPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsNoneOf(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
             )
     }
 

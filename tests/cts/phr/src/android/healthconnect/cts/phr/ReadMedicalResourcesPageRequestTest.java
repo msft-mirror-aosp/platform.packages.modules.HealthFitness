@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts;
+package android.healthconnect.cts.phr;
 
 import static android.healthconnect.cts.utils.DataFactory.DEFAULT_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
