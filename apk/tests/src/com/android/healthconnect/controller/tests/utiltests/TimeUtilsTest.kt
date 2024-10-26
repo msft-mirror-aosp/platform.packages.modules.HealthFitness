@@ -30,6 +30,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -44,6 +45,11 @@ class TimeUtilsTest {
         context.setLocale(Locale.US)
         dateFormatter = LocalDateTimeFormatter(context)
         timeSource = TestTimeSource
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+    }
+
+    @After
+    fun tearDown() {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
