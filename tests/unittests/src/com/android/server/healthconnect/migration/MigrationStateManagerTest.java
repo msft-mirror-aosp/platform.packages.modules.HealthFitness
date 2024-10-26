@@ -149,9 +149,7 @@ public class MigrationStateManagerTest {
         MigrationStateManager.resetInitializedInstanceForTest();
         mMigrationStateManager =
                 MigrationStateManager.initializeInstance(
-                        DEFAULT_USER_HANDLE.getIdentifier(),
-                        mHealthConnectDeviceConfigManager,
-                        mPreferenceHelper);
+                        DEFAULT_USER_HANDLE, mHealthConnectDeviceConfigManager, mPreferenceHelper);
         mMigrationStateManager.addStateChangedListener(mMockListener::onMigrationStateChanged);
     }
 
@@ -1011,26 +1009,34 @@ public class MigrationStateManagerTest {
         ExtendedMockito.verify(
                 () ->
                         MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()));
+                                eq(mHealthConnectDeviceConfigManager),
+                                eq(mContext),
+                                any(UserHandle.class)));
     }
 
     private void verifyScheduleMigrationPauseJob() {
         ExtendedMockito.verify(
                 () ->
                         MigrationStateChangeJob.scheduleMigrationPauseJob(
-                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()));
+                                eq(mHealthConnectDeviceConfigManager),
+                                eq(mContext),
+                                any(UserHandle.class)));
     }
 
     private void verifyNoJobScheduled() {
         ExtendedMockito.verify(
                 () ->
                         MigrationStateChangeJob.scheduleMigrationPauseJob(
-                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()),
+                                eq(mHealthConnectDeviceConfigManager),
+                                eq(mContext),
+                                any(UserHandle.class)),
                 never());
         ExtendedMockito.verify(
                 () ->
                         MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()),
+                                eq(mHealthConnectDeviceConfigManager),
+                                eq(mContext),
+                                any(UserHandle.class)),
                 never());
     }
 

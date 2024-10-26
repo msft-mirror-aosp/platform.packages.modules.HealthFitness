@@ -182,6 +182,14 @@ android_library {
         "hilt_android",
         "healthfitness-ui-statsd",
         "healthfitness-aconfig-flags-helper",
+        "androidx.compose.foundation_foundation",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.runtime_runtime-livedata",
+        "androidx.compose.ui_ui",
+        "androidx.wear.compose_compose-material",
+        "androidx.wear.compose_compose-material3",
+        "libprotobuf-java-lite",
+        "androidx.lifecycle_lifecycle-runtime-compose",
     ],
     kotlincflags: ["-Xjvm-default=all"],
     apex_available: ["com.android.healthfitness"],
@@ -216,6 +224,10 @@ android_app {
     ],
     libs: [
         "framework-healthfitness.stubs.module_lib",
+        "framework-annotations-lib",
     ],
     apex_available: ["com.android.healthfitness"],
+    flags_packages: [
+        "healthfitness-aconfig-flags",
+    ],
 }

@@ -698,53 +698,46 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void testStartMigrationFromIdleState() throws IOException {
+    public void testStartMigrationFromIdleState() throws IOException, InterruptedException {
         try {
             enableStateChangeJobs();
-            runWithShellPermissionIdentity(
-                    () -> {
-                        assertStateChangeJobDoesNotExist();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_IDLE);
-                        TestUtils.startMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                        assertStateChangeJobExists();
-                        TestUtils.finishMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                        assertStateChangeJobDoesNotExist();
-                    },
-                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+            assertStateChangeJobDoesNotExist();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(MIGRATION_STATE_IDLE);
+            TestUtils.startMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+            assertStateChangeJobExists();
+            TestUtils.finishMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+            assertStateChangeJobDoesNotExist();
         } finally {
             restoreDeviceConfigs();
         }
     }
 
     @Test
-    public void testInsertMinDataMigrationSdkExtensionVersion_upgradeRequired() throws IOException {
+    public void testInsertMinDataMigrationSdkExtensionVersion_upgradeRequired()
+            throws IOException, InterruptedException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) + 1;
         try {
             enableStateChangeJobs();
-            runWithShellPermissionIdentity(
-                    () -> {
-                        assertStateChangeJobDoesNotExist();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_IDLE);
-                        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
-                        assertStateChangeJobExists();
-                        TestUtils.startMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                        assertStateChangeJobExists();
-                        TestUtils.finishMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                        assertStateChangeJobDoesNotExist();
-                    },
-                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+            assertStateChangeJobDoesNotExist();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(MIGRATION_STATE_IDLE);
+            TestUtils.insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(version);
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
+            assertStateChangeJobExists();
+            TestUtils.startMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+            assertStateChangeJobExists();
+            TestUtils.finishMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+            assertStateChangeJobDoesNotExist();
         } finally {
             restoreDeviceConfigs();
         }
@@ -752,58 +745,51 @@ public class DataMigrationTest {
 
     @Test
     public void testInsertMinDataMigrationSdkExtensionVersion_noUpgradeRequired()
-            throws IOException {
+            throws IOException, InterruptedException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE);
         try {
             enableStateChangeJobs();
-            runWithShellPermissionIdentity(
-                    () -> {
-                        assertStateChangeJobDoesNotExist();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_IDLE);
-                        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_ALLOWED);
-                        assertStateChangeJobExists();
-                        TestUtils.startMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                        assertStateChangeJobExists();
-                        TestUtils.finishMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                        assertStateChangeJobDoesNotExist();
-                    },
-                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+            assertStateChangeJobDoesNotExist();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(MIGRATION_STATE_IDLE);
+            TestUtils.insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(version);
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(MIGRATION_STATE_ALLOWED);
+            assertStateChangeJobExists();
+            TestUtils.startMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+            assertStateChangeJobExists();
+            TestUtils.finishMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+            assertStateChangeJobDoesNotExist();
         } finally {
             restoreDeviceConfigs();
         }
     }
 
     @Test
-    public void testInsertMinDataMigrationSdkExtensionVersion_jobsDisabled() throws IOException {
+    public void testInsertMinDataMigrationSdkExtensionVersion_jobsDisabled()
+            throws IOException, InterruptedException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE);
         try {
             disableStateChangeJobs();
-            runWithShellPermissionIdentity(
-                    () -> {
-                        assertStateChangeJobDoesNotExist();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_IDLE);
-                        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_ALLOWED);
-                        assertStateChangeJobDoesNotExist();
-                        TestUtils.startMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                        assertStateChangeJobDoesNotExist();
-                        TestUtils.finishMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                        assertStateChangeJobDoesNotExist();
-                    },
-                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+            assertStateChangeJobDoesNotExist();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(MIGRATION_STATE_IDLE);
+            TestUtils.insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(version);
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(MIGRATION_STATE_ALLOWED);
+            assertStateChangeJobDoesNotExist();
+            TestUtils.startMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+            assertStateChangeJobDoesNotExist();
+            TestUtils.finishMigrationWithShellPermissionIdentity();
+            assertThat(TestUtils.getHealthConnectDataMigrationState())
+                    .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+            assertStateChangeJobDoesNotExist();
         } finally {
             restoreDeviceConfigs();
         }

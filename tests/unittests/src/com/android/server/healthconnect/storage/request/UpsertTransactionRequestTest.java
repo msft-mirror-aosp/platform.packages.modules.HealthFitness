@@ -30,7 +30,7 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -59,12 +59,12 @@ public class UpsertTransactionRequestTest {
     public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
-    private HealthConnectUserContext mContext;
+    private DatabaseContext mContext;
     private AppInfoHelper mAppInfoHelper;
 
     @Before
     public void setup() {
-        mContext = mHealthConnectDatabaseTestRule.getUserContext();
+        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
         TransactionTestUtils transactionTestUtils =
                 new TransactionTestUtils(
                         mContext, mHealthConnectDatabaseTestRule.getTransactionManager());

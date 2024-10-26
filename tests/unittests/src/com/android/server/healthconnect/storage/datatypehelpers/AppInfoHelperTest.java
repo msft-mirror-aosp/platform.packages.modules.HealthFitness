@@ -34,7 +34,7 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.After;
@@ -71,8 +71,8 @@ public class AppInfoHelperTest {
 
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
-        HealthConnectUserContext healthConnectUserContext =
-                mHealthConnectDatabaseTestRule.getUserContext();
+        DatabaseContext healthConnectUserContext =
+                mHealthConnectDatabaseTestRule.getDatabaseContext();
         TransactionManager transactionManager =
                 mHealthConnectDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils =

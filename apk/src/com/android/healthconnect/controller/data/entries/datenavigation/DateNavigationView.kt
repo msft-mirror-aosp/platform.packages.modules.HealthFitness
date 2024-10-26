@@ -31,15 +31,16 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_WEEK
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.getPeriodStartDate
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.toInstant
 import com.android.healthconnect.controller.utils.toLocalDate
 import dagger.hilt.android.EntryPointAccessors
-import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
-import java.time.Period
 import java.time.ZoneId
 
 /** Allows the user to navigate in time to see their past data. */
@@ -50,7 +51,7 @@ constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
-    private val timeSource: TimeSource = SystemTimeSource
+    private val timeSource: TimeSource = SystemTimeSource,
 ) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     private val logger: HealthConnectLogger
@@ -62,12 +63,15 @@ constructor(
     private var selectedDate = Instant.ofEpochMilli(timeSource.currentTimeMillis())
     private var period: DateNavigationPeriod = PERIOD_DAY
     private var onDateChangedListener: OnDateChangedListener? = null
-    private var mNextDayEnabled = true
+    private var nextDayEnabled = true
+    private var maxDate: Instant? = timeSource.currentTimeMillis().toInstant()
 
     init {
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
 
         val view = inflate(context, R.layout.widget_date_navigation_with_spinner, this)
@@ -91,6 +95,11 @@ constructor(
         updateDisplayedDates()
     }
 
+    fun setMaxDate(instant: Instant?) {
+        maxDate = instant
+        updateDisplayedDates()
+    }
+
     fun getDate(): Instant {
         return selectedDate
     }
@@ -99,7 +108,7 @@ constructor(
         return period
     }
 
-    fun disableDateNavigationView(isEnabled: Boolean, text: String){
+    fun disableDateNavigationView(isEnabled: Boolean, text: String) {
         setSpinnerText(text)
         disableButtons(isEnabled)
         toggleSpinnerVisibility(isEnabled)
@@ -109,17 +118,17 @@ constructor(
         return (datePickerSpinner.adapter as DatePickerSpinnerAdapter).getText()
     }
 
-    private fun setSpinnerText(text:String){
+    private fun setSpinnerText(text: String) {
         // text from the adapter can be null on rotation
-        if(getDateNavigationText() == null){
+        if (getDateNavigationText() == null) {
             disabledSpinner.text = text
         } else {
             disabledSpinner.text = (datePickerSpinner.adapter as DatePickerSpinnerAdapter).getText()
         }
     }
 
-    private fun toggleSpinnerVisibility(isEnabled: Boolean){
-        if(!isEnabled){
+    private fun toggleSpinnerVisibility(isEnabled: Boolean) {
+        if (!isEnabled) {
             datePickerSpinner.visibility = GONE
             disabledSpinner.visibility = VISIBLE
         } else {
@@ -128,9 +137,9 @@ constructor(
         }
     }
 
-    private fun disableButtons(isEnabled: Boolean){
-        if(isEnabled){
-            nextDayButton.isEnabled = mNextDayEnabled
+    private fun disableButtons(isEnabled: Boolean) {
+        if (isEnabled) {
+            nextDayButton.isEnabled = nextDayEnabled
         } else {
             nextDayButton.isEnabled = false
         }
@@ -163,7 +172,12 @@ constructor(
         datePickerSpinner = view.findViewById(R.id.date_picker_spinner) as Spinner
         disabledSpinner = view.findViewById(R.id.disabled_spinner)
         val adapter =
-            DatePickerSpinnerAdapter(view.context, getDisplayedStartDate(), period, timeSource)
+            DatePickerSpinnerAdapter(
+                view.context,
+                getPeriodStartDate(selectedDate, period),
+                period,
+                timeSource,
+            )
         adapter.setDropDownViewResource(R.layout.date_navigation_spinner_item)
         datePickerSpinner.adapter = adapter
 
@@ -175,13 +189,22 @@ constructor(
                     parent: AdapterView<*>?,
                     unused: View?,
                     position: Int,
-                    id: Long
+                    id: Long,
                 ) {
                     val period: DateNavigationPeriod =
                         when (position) {
-                            0 -> PERIOD_DAY
-                            1 -> PERIOD_WEEK
-                            2 -> PERIOD_MONTH
+                            0 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+                                PERIOD_DAY
+                            }
+                            1 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
+                                PERIOD_WEEK
+                            }
+                            2 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+                                PERIOD_MONTH
+                            }
                             else -> throw IllegalStateException("Not supported time period.")
                         }
                     setPeriod(period)
@@ -193,23 +216,32 @@ constructor(
             object : AccessibilityDelegate() {
                 override fun onInitializeAccessibilityNodeInfo(
                     host: View,
-                    info: AccessibilityNodeInfo
+                    info: AccessibilityNodeInfo,
                 ) {
                     super.onInitializeAccessibilityNodeInfo(host, info)
                     info.addAction(
                         AccessibilityNodeInfo.AccessibilityAction(
                             AccessibilityNodeInfoCompat.ACTION_CLICK,
-                            context.getString(R.string.selected_date_view_action_description)))
+                            context.getString(R.string.selected_date_view_action_description),
+                        )
+                    )
                 }
             }
+
+        when (period) {
+            PERIOD_DAY -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+            PERIOD_WEEK -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
+            PERIOD_MONTH -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+        }
     }
 
     private fun updateDisplayedDates() {
-        onDateChangedListener?.onDateChanged(getDisplayedStartDate(), period)
+        onDateChangedListener?.onDateChanged(getPeriodStartDate(selectedDate, period), period)
         val today =
             LocalDate.ofInstant(
                     Instant.ofEpochMilli(timeSource.currentTimeMillis()),
-                    timeSource.deviceZoneOffset())
+                    timeSource.deviceZoneOffset(),
+                )
                 .atStartOfDay(timeSource.deviceZoneOffset())
                 .toInstant()
 
@@ -217,55 +249,23 @@ constructor(
         // from Day to Week (underlying selected day is still Sunday), navigates to the next week
         // (underlying selected day is next Sunday), sets the period back to Day => displayed day
         // would be next Sunday. Instead, display today.
-        if (today.isBefore(selectedDate)) {
+        if (today.isBefore(selectedDate) && maxDate != null) {
             selectedDate = today
         }
 
         val displayedEndDate =
-            getDisplayedStartDate()
+            getPeriodStartDate(selectedDate, period)
                 .toLocalDate()
                 .atStartOfDay(ZoneId.systemDefault())
                 .plus(toPeriod(period))
                 .toInstant()
-        //TODO: (b/363233408) Ensure new IA works with training plans
-        nextDayButton.isEnabled = !displayedEndDate.isAfter(today)
-        mNextDayEnabled = nextDayButton.isEnabled
+        nextDayButton.isEnabled = maxDate == null || !displayedEndDate.isAfter(today)
+        nextDayEnabled = nextDayButton.isEnabled
         (datePickerSpinner.adapter as DatePickerSpinnerAdapter).setStartTimeAndPeriod(
-            getDisplayedStartDate(), period)
+            getPeriodStartDate(selectedDate, period),
+            period,
+        )
     }
-
-    private fun getDisplayedStartDate(): Instant =
-        when (period) {
-            PERIOD_DAY -> {
-                selectedDate
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate()
-                    .atStartOfDay(ZoneId.systemDefault())
-                    .toInstant()
-            }
-            PERIOD_WEEK -> {
-                val dayOfWeek: DayOfWeek =
-                    selectedDate.atZone(ZoneId.systemDefault()).toLocalDate().dayOfWeek
-                val dayOfWeekOffset: Int = dayOfWeek.value - 1
-                selectedDate
-                    .atZone(ZoneId.systemDefault())
-                    .minus(Period.ofDays(dayOfWeekOffset))
-                    .toLocalDate()
-                    .atStartOfDay(ZoneId.systemDefault())
-                    .toInstant()
-            }
-            PERIOD_MONTH -> {
-                val dayOfMonth =
-                    selectedDate.atZone(ZoneId.systemDefault()).toLocalDate().dayOfMonth
-                val dayOfMonthOffset: Int = dayOfMonth - 1
-                selectedDate
-                    .atZone(ZoneId.systemDefault())
-                    .minus(Period.ofDays(dayOfMonthOffset))
-                    .toLocalDate()
-                    .atStartOfDay(ZoneId.systemDefault())
-                    .toInstant()
-            }
-        }
 
     interface OnDateChangedListener {
         fun onDateChanged(displayedStartDate: Instant, period: DateNavigationPeriod)
