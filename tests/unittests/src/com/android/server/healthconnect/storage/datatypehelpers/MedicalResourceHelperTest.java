@@ -87,7 +87,7 @@ import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.PhrTestUtils;
@@ -143,7 +143,7 @@ public class MedicalResourceHelperTest {
     private TransactionTestUtils mTransactionTestUtils;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
-    private HealthConnectUserContext mContext;
+    private DatabaseContext mContext;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
 
@@ -152,7 +152,7 @@ public class MedicalResourceHelperTest {
         AccessLogsHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
-        mContext = mHealthConnectDatabaseTestRule.getUserContext();
+        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);

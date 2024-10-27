@@ -26,34 +26,20 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_COMPLETE
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.isHealthPermission;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
-import static android.healthconnect.cts.utils.ObservationBuilder.ObservationCategory.LABORATORY;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import static com.google.common.truth.Correspondence.transforming;
@@ -70,7 +56,6 @@ import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
-import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
@@ -78,12 +63,9 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
-import android.health.connect.ReadMedicalResourcesInitialRequest;
-import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
-import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.AppInfo;
@@ -94,7 +76,6 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.MedicalDataSource;
-import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.Record;
@@ -104,20 +85,12 @@ import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.ConditionBuilder;
 import android.healthconnect.cts.utils.DataFactory;
-import android.healthconnect.cts.utils.EncountersBuilder;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
-import android.healthconnect.cts.utils.MedicationsBuilder;
-import android.healthconnect.cts.utils.ObservationBuilder;
-import android.healthconnect.cts.utils.PatientBuilder;
-import android.healthconnect.cts.utils.PractitionerBuilder;
-import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.platform.test.annotations.AppModeFull;
-import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.ArrayMap;
@@ -130,8 +103,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.compatibility.common.util.SystemUtil;
-
-import com.google.common.collect.Iterables;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -1910,283 +1881,6 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testPatientInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource patient =
-                upsertMedicalData(dataSource1.getId(), new PatientBuilder().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(
-                                MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(patient);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testLabResultsInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource labResult =
-                upsertMedicalData(
-                        dataSource1.getId(),
-                        new ObservationBuilder()
-                                .setBloodGlucose()
-                                .setCategory(LABORATORY)
-                                .toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allLabResultsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(
-                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS)
-                        .build();
-
-        mManager.readMedicalResources(
-                allLabResultsRequest, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(labResult);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testPregnancyInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource pregnancyStatus =
-                upsertMedicalData(
-                        dataSource1.getId(),
-                        new ObservationBuilder()
-                                .setPregnancyStatus(ObservationBuilder.PregnancyStatus.PREGNANT)
-                                .toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allPregnancyRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PREGNANCY)
-                        .build();
-
-        mManager.readMedicalResources(
-                allPregnancyRequest, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(pregnancyStatus);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testSocialHistoryInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource smoking =
-                upsertMedicalData(
-                        dataSource1.getId(),
-                        new ObservationBuilder()
-                                .setTobaccoUse(ObservationBuilder.CurrentSmokingStatus.SMOKER)
-                                .toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allSocialHistoryRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY)
-                        .build();
-
-        mManager.readMedicalResources(
-                allSocialHistoryRequest, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(smoking);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testVitalSignsInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource heartRate =
-                upsertMedicalData(
-                        dataSource1.getId(), new ObservationBuilder().setHeartRate(100).toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allVitalSignsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS)
-                        .build();
-
-        mManager.readMedicalResources(
-                allVitalSignsRequest, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(heartRate);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testConditionInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource condition =
-                upsertMedicalData(dataSource1.getId(), new ConditionBuilder().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allConditions =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_CONDITIONS)
-                        .build();
-
-        mManager.readMedicalResources(allConditions, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(condition);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testPractitionerInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource practitioner =
-                upsertMedicalData(dataSource1.getId(), new PractitionerBuilder().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(
-                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(practitioner);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testPractitionerRoleInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource practitioner =
-                upsertMedicalData(dataSource1.getId(), PractitionerBuilder.role().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(
-                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(practitioner);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testProcedureInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource procedure =
-                upsertMedicalData(dataSource1.getId(), new ProcedureBuilder().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PROCEDURES)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(procedure);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testMedicationInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource medication =
-                upsertMedicalData(dataSource1.getId(), MedicationsBuilder.medication().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(medication);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testMedicationStatementInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource statement =
-                upsertMedicalData(dataSource1.getId(), MedicationsBuilder.statementR4().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(statement);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testMedicationRequestInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource medicationRequest =
-                upsertMedicalData(dataSource1.getId(), MedicationsBuilder.request().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(medicationRequest);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testEncounterInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource encounter =
-                upsertMedicalData(dataSource1.getId(), EncountersBuilder.encounter().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allVisits =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VISITS)
-                        .build();
-
-        mManager.readMedicalResources(allVisits, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(encounter);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testLocationInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource location =
-                upsertMedicalData(dataSource1.getId(), EncountersBuilder.location().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allVisits =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VISITS)
-                        .build();
-
-        mManager.readMedicalResources(allVisits, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(location);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testOrganizationInsertAndRead() throws Exception {
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource organization =
-                upsertMedicalData(dataSource1.getId(), EncountersBuilder.organization().toJson());
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allVisits =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VISITS)
-                        .build();
-
-        mManager.readMedicalResources(allVisits, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(organization);
-    }
-
-    @Test
     public void testGetContributorApplicationsInfo_appCreatesMedicalDataSourceOnly_succeeds()
             throws Exception {
         // Create health fitness data.
@@ -2262,26 +1956,6 @@ public class HealthConnectManagerTest {
         return response.values().stream()
                 .map(RecordTypeInfoResponse::getContributingPackages)
                 .allMatch(List::isEmpty);
-    }
-
-    private MedicalDataSource createDataSource(CreateMedicalDataSourceRequest createRequest)
-            throws InterruptedException {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        mManager.createMedicalDataSource(
-                createRequest, Executors.newSingleThreadExecutor(), createReceiver);
-        return createReceiver.getResponse();
-    }
-
-    private MedicalResource upsertMedicalData(String dataSourceId, String data)
-            throws InterruptedException {
-        HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
-        UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(dataSourceId, FHIR_VERSION_R4, data)
-                        .build();
-        mManager.upsertMedicalResources(
-                List.of(request), Executors.newSingleThreadExecutor(), dataReceiver);
-        // Make sure something got inserted.
-        return Iterables.getOnlyElement(dataReceiver.getResponse());
     }
 
     private static void deleteAllStagedRemoteData()

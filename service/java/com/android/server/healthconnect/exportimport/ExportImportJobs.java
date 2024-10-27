@@ -24,6 +24,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -49,7 +50,7 @@ public class ExportImportJobs {
 
     /** Checks if the rescheduling is needed and schedules the periodic export job if so. */
     public static void schedulePeriodicJobIfNotScheduled(
-            int userId,
+            UserHandle userHandle,
             Context context,
             ExportImportSettingsStorage exportImportSettingsStorage,
             ExportManager exportManager) {
@@ -58,13 +59,14 @@ public class ExportImportJobs {
                         .forNamespace(NAMESPACE)
                         .getAllPendingJobs()
                         .isEmpty()) {
-            schedulePeriodicExportJob(userId, context, exportImportSettingsStorage, exportManager);
+            schedulePeriodicExportJob(
+                    userHandle, context, exportImportSettingsStorage, exportManager);
         }
     }
 
     /** Schedule the periodic export job. */
     public static void schedulePeriodicExportJob(
-            int userId,
+            UserHandle userHandle,
             Context context,
             ExportImportSettingsStorage exportImportSettingsStorage,
             ExportManager exportManager) {
@@ -79,7 +81,7 @@ public class ExportImportJobs {
             // If export is off we try to delete the local files, just in case it happened the
             // rare case where those files weren't delete after the last export.
             if (periodInDays <= 0) {
-                exportManager.deleteLocalExportFiles();
+                exportManager.deleteLocalExportFiles(userHandle);
             }
         }
         // If period is 0 the user has turned export off, we should no longer schedule a new job
@@ -88,7 +90,7 @@ public class ExportImportJobs {
         }
 
         PersistableBundle extras = new PersistableBundle();
-        extras.putInt(HealthConnectDailyService.EXTRA_USER_ID, userId);
+        extras.putInt(HealthConnectDailyService.EXTRA_USER_ID, userHandle.getIdentifier());
         extras.putString(HealthConnectDailyService.EXTRA_JOB_NAME_KEY, PERIODIC_EXPORT_JOB_NAME);
 
         long periodInMillis = Duration.ofDays(periodInDays).toMillis();
@@ -118,7 +120,7 @@ public class ExportImportJobs {
 
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         JobInfo.Builder builder =
-                new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
+                new JobInfo.Builder(MIN_JOB_ID + userHandle.getIdentifier(), componentName)
                         .setRequiresCharging(true)
                         .setRequiresDeviceIdle(true)
                         .setPeriodic(
@@ -135,7 +137,7 @@ public class ExportImportJobs {
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(NAMESPACE),
-                userId,
+                userHandle,
                 builder.build());
     }
 
@@ -146,7 +148,7 @@ public class ExportImportJobs {
     // TODO(b/318484778): Use dependency injection instead of passing an instance to the method.
     public static boolean executePeriodicExportJob(
             Context context,
-            int userId,
+            UserHandle userHandle,
             PersistableBundle extras,
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage) {
@@ -156,10 +158,11 @@ public class ExportImportJobs {
             return true;
         }
 
-        boolean exportSuccess = exportManager.runExport();
+        boolean exportSuccess = exportManager.runExport(userHandle);
         boolean firstExport = extras.getBoolean(IS_FIRST_EXPORT, false);
         if (exportSuccess && firstExport) {
-            schedulePeriodicExportJob(userId, context, exportImportSettingsStorage, exportManager);
+            schedulePeriodicExportJob(
+                    userHandle, context, exportImportSettingsStorage, exportManager);
         }
         return exportSuccess;
 

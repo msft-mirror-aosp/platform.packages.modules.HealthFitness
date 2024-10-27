@@ -75,16 +75,19 @@ import java.util.concurrent.Executors;
 
 public class PhrCtsTestUtils {
 
-    static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
-    static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
-    static final String PHR_BACKGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app1";
-    static final String PHR_FOREGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app2";
-    static final TestAppProxy PHR_BACKGROUND_APP =
+    public static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
+    public static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
+    public static final int RECORD_SIZE_LIMIT_IN_BYTES = 1000000;
+    public static final String PHR_BACKGROUND_APP_PKG =
+            "android.healthconnect.cts.phr.testhelper.app1";
+    public static final String PHR_FOREGROUND_APP_PKG =
+            "android.healthconnect.cts.phr.testhelper.app2";
+    public static final TestAppProxy PHR_BACKGROUND_APP =
             TestAppProxy.forPackageNameInBackground(PHR_BACKGROUND_APP_PKG);
-    static final TestAppProxy PHR_FOREGROUND_APP =
+    public static final TestAppProxy PHR_FOREGROUND_APP =
             TestAppProxy.forPackageName(PHR_FOREGROUND_APP_PKG);
 
-    static final Set<Integer> MEDICAL_RESOURCE_TYPES_LIST =
+    public static final Set<Integer> MEDICAL_RESOURCE_TYPES_LIST =
             Set.of(
                     MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
@@ -99,14 +102,18 @@ public class PhrCtsTestUtils {
                     MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS);
 
-    int mLimitsAdjustmentForTesting = 1;
+    public int mLimitsAdjustmentForTesting = 1;
     private final HealthConnectManager mManager;
 
     public PhrCtsTestUtils(HealthConnectManager manager) {
         mManager = manager;
     }
 
-    MedicalDataSource createDataSource(CreateMedicalDataSourceRequest createRequest)
+    /**
+     * Makes a call to {@link HealthConnectManager#createMedicalDataSource} and returns the created
+     * data source.
+     */
+    public MedicalDataSource createDataSource(CreateMedicalDataSourceRequest createRequest)
             throws InterruptedException {
         HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
         mManager.createMedicalDataSource(
@@ -114,7 +121,11 @@ public class PhrCtsTestUtils {
         return createReceiver.getResponse();
     }
 
-    MedicalResource upsertMedicalData(String dataSourceId, String data)
+    /**
+     * Makes a call to {@link HealthConnectManager#upsertMedicalResources} and returns the upserted
+     * medical resource.
+     */
+    public MedicalResource upsertMedicalData(String dataSourceId, String data)
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
         UpsertMedicalResourceRequest request =
@@ -126,7 +137,8 @@ public class PhrCtsTestUtils {
         return Iterables.getOnlyElement(dataReceiver.getResponse());
     }
 
-    void deleteResources(List<MedicalResourceId> resourceIds) throws InterruptedException {
+    /** Makes a call to {@link HealthConnectManager#deleteMedicalResources}. */
+    public void deleteResources(List<MedicalResourceId> resourceIds) throws InterruptedException {
         HealthConnectReceiver<Void> deleteReceiver = new HealthConnectReceiver<>();
         mManager.deleteMedicalResources(
                 resourceIds, Executors.newSingleThreadExecutor(), deleteReceiver);
@@ -134,7 +146,8 @@ public class PhrCtsTestUtils {
     }
 
     /**
-     * Delete all health records (datasources, resources etc) stored in the Health Connect database.
+     * Delete all health records (data sources, resources etc) stored in the Health Connect
+     * database.
      */
     public void deleteAllMedicalData() throws InterruptedException {
         if (!isPersonalHealthRecordEnabled()) {

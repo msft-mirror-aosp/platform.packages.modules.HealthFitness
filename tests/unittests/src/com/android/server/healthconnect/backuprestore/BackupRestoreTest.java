@@ -56,7 +56,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
@@ -88,8 +87,10 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.utils.FilesUtil;
@@ -132,8 +133,9 @@ public class BackupRestoreTest {
 
     @Mock Context mServiceContext;
     @Mock private TransactionManager mTransactionManager;
-    @Mock private AppInfoHelper mAppInfoHelper;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     @Mock private MigrationStateManager mMockMigrationStateManager;
     @Mock private Context mContext;
     @Mock private JobScheduler mJobScheduler;
@@ -162,8 +164,9 @@ public class BackupRestoreTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(mFakePreferenceHelper)
                         .setMigrationStateManager(mMockMigrationStateManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setTransactionManager(mTransactionManager)
-                        .setAppInfoHelper(mAppInfoHelper)
                         .build();
 
         mBackupRestore =
@@ -184,7 +187,8 @@ public class BackupRestoreTest {
         FilesUtil.deleteDir(mMockBackedDataDirectory);
         FilesUtil.deleteDir(mMockStagedDataDirectory);
         mFakePreferenceHelper.clearCache();
-        clearInvocations(mTransactionManager);
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
     }
 
     @Test
