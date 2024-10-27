@@ -163,7 +163,7 @@ java_test_host {
         "androidx.annotation_annotation",
     ],
     java_resource_dirs: ["host/res"],
-    data: [
+    device_common_data: [
         ":CtsHealthConnectTestApp",
     ],
 }
