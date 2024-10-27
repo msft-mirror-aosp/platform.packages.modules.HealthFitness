@@ -268,6 +268,11 @@
     <string name="wheelchair_pushes_lowercase_label" description="Lowercase label used to show the user's wheelchair pushes data [CHAR_LIMIT=50]">wheelchair pushes</string>
     <string name="wheelchair_pushes_read_content_description" description="Content description for switch that enables permissions for reading the user's wheelchair pushes data [CHAR_LIMIT=NONE]">Read wheelchair pushes</string>
     <string name="wheelchair_pushes_write_content_description" description="Content description for switch that enables permissions for writing the user's wheelchair pushes data [CHAR_LIMIT=NONE]">Write wheelchair pushes</string>
+
+    <string name="activity_intensity_uppercase_label" description="Uppercase label used to show the user's activity intensity data [CHAR_LIMIT=50]">Activity intensity</string>
+    <string name="activity_intensity_lowercase_label" description="Lowercase label used to show the user's activity intensity data [CHAR_LIMIT=50]">activity intensity</string>
+    <string name="activity_intensity_read_content_description" description="Content description for switch that enables permissions for reading the user's activity intensity data [CHAR_LIMIT=NONE]">Read activity intensity</string>
+    <string name="activity_intensity_write_content_description" description="Content description for switch that enables permissions for writing the user's activity intensity data [CHAR_LIMIT=NONE]">Write activity intensity</string>
     <!--endregion-->
 
     <!-- region Body measurements data types -->
@@ -1607,5 +1612,27 @@
     <!-- region Inactive app data -->
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete the selected permission type for an inactive app">Permanently delete <xliff:g example="steps" id="data_type">%1$s</xliff:g> data for <xliff:g example="Run Tracker" id="app_name">%2$s</xliff:g>?</string>
     <!-- endregion -->
+    <!-- endregion -->
+
+    <!-- region Wear -->
+
+    <!-- region Necessary strings to use wear SystemUI copy. -->
+    <!-- Label indicating sensor is on. If you update this string, please update the string
+"switch_bar_on" in SystemUI or do not use the default string for the LocationTile [CHAR LIMIT=NONE] -->
+    <string name="on">On</string>
+    <!-- Label indicating sensor is off. If you update this string, please update the string
+    "switch_bar_off" in SystemUI or do not use the default string for the LocationTile [CHAR LIMIT=NONE] -->
+    <string name="off">Off</string>
+
+    <!-- Summary for showing the last access text for today for Wear [CHAR LIMIT=50] -->
+    <string name="wear_app_perms_24h_access">Accessed <xliff:g id="time_date" example="12:42 PM">%1$s</xliff:g></string>
+
+    <!-- Summary for showing the last access text for yesterday for Wear [CHAR LIMIT=50] -->
+    <string name="wear_app_perms_24h_access_yest">Accessed yesterday <xliff:g id="time_date" example="12:42 PM">%1$s</xliff:g></string>
+
+    <!-- Summary for showing the last access text for 7 days for Wear [CHAR LIMIT=50] -->
+    <string name="wear_app_perms_7d_access">Accessed <xliff:g id="time_date" example="Jan 3">%1$s</xliff:g> <xliff:g id="time_date" example="12:42 PM">%2$s</xliff:g></string>
+    <!-- endregion -->
+
     <!-- endregion -->
 </resources>

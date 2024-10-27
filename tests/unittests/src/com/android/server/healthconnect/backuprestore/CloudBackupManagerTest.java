@@ -35,6 +35,8 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -46,6 +48,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /** Unit test for class {@link CloudBackupManager}. */
 @RunWith(AndroidJUnit4.class)
@@ -63,6 +66,7 @@ public class CloudBackupManagerTest {
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
+    private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private CloudBackupManager mCloudBackupManager;
 
@@ -73,14 +77,17 @@ public class CloudBackupManagerTest {
 
     @Before
     public void setUp() {
-        TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
+        MockitoAnnotations.initMocks(this);
+
+        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils =
-                new TransactionTestUtils(mDatabaseTestRule.getUserContext(), transactionManager);
+                new TransactionTestUtils(
+                        mDatabaseTestRule.getDatabaseContext(), mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getUserContext())
-                        .setTransactionManager(transactionManager)
+                HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
+                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
@@ -92,15 +99,20 @@ public class CloudBackupManagerTest {
                 healthConnectInjector.getHealthConnectMappings();
         InternalHealthConnectMappings internalHealthConnectMappings =
                 healthConnectInjector.getInternalHealthConnectMappings();
+        ChangeLogsHelper changeLogsHelper = healthConnectInjector.getChangeLogsHelper();
+        ChangeLogsRequestHelper changeLogsRequestHelper =
+                healthConnectInjector.getChangeLogsRequestHelper();
 
         mCloudBackupManager =
                 new CloudBackupManager(
-                        transactionManager,
+                        mTransactionManager,
                         appInfoHelper,
                         accessLogsHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
-                        internalHealthConnectMappings);
+                        internalHealthConnectMappings,
+                        changeLogsHelper,
+                        changeLogsRequestHelper);
     }
 
     @After
@@ -127,6 +139,7 @@ public class CloudBackupManagerTest {
         GetChangesForBackupResponse response = mCloudBackupManager.getChangesForBackup(null);
 
         assertThat(response.getChanges().size()).isEqualTo(1);
-        assertThat(response.getNextChangeToken()).isEqualTo("placeHolderPageToken");
+        String nextChangeToken = response.getNextChangeToken();
+        assertThat(nextChangeToken).isEqualTo("1");
     }
 }

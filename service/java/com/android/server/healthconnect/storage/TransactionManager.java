@@ -47,7 +47,7 @@ import android.util.Slog;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -95,25 +95,23 @@ public final class TransactionManager {
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     private TransactionManager(
-            HealthConnectUserContext context,
+            DatabaseContext databaseContext,
             InternalHealthConnectMappings internalHealthConnectMappings) {
-        mHealthConnectDatabase = new HealthConnectDatabase(context);
-        mUserHandleToDatabaseMap.put(context.getCurrentUserHandle(), mHealthConnectDatabase);
-        mUserHandle = context.getCurrentUserHandle();
+        mHealthConnectDatabase = new HealthConnectDatabase(databaseContext);
+        mUserHandle = databaseContext.getUser();
+        mUserHandleToDatabaseMap.put(mUserHandle, mHealthConnectDatabase);
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
-    public void onUserUnlocked(HealthConnectUserContext healthConnectUserContext) {
-        if (!mUserHandleToDatabaseMap.containsKey(
-                healthConnectUserContext.getCurrentUserHandle())) {
+    /** Setup the transaction manager for the new user. */
+    public void onUserUnlocked(DatabaseContext databaseContext) {
+        if (!mUserHandleToDatabaseMap.containsKey(databaseContext.getUser())) {
             mUserHandleToDatabaseMap.put(
-                    healthConnectUserContext.getCurrentUserHandle(),
-                    new HealthConnectDatabase(healthConnectUserContext));
+                    databaseContext.getUser(), new HealthConnectDatabase(databaseContext));
         }
 
-        mHealthConnectDatabase =
-                mUserHandleToDatabaseMap.get(healthConnectUserContext.getCurrentUserHandle());
-        mUserHandle = healthConnectUserContext.getCurrentUserHandle();
+        mHealthConnectDatabase = mUserHandleToDatabaseMap.get(databaseContext.getUser());
+        mUserHandle = databaseContext.getUser();
     }
 
     /**
@@ -1063,10 +1061,11 @@ public final class TransactionManager {
      * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
      */
     public static synchronized TransactionManager initializeInstance(
-            HealthConnectUserContext context) {
+            DatabaseContext databaseContext) {
         if (sTransactionManager == null) {
             sTransactionManager =
-                    new TransactionManager(context, InternalHealthConnectMappings.getInstance());
+                    new TransactionManager(
+                            databaseContext, InternalHealthConnectMappings.getInstance());
         }
 
         return sTransactionManager;
