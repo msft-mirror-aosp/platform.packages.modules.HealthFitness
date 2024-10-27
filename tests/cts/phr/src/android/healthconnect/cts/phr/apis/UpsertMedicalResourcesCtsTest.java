@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.healthconnect.cts.phr;
+package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
@@ -38,9 +38,12 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZAT
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
+import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResource;
+import static android.healthconnect.cts.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -58,6 +61,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.phr.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
@@ -219,18 +223,76 @@ public class UpsertMedicalResourcesCtsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testUpsertMedicalResources_forOwnDataSource_succeeds() throws InterruptedException {
+    public void testUpsertMedicalResources_forOwnDataSource_succeedsAndInserts()
+            throws InterruptedException {
         MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        MedicalResource expectedResource = createImmunizationMedicalResource(dataSource.getId());
         UpsertMedicalResourceRequest upsertRequest =
                 new UpsertMedicalResourceRequest.Builder(
-                                dataSource.getId(), FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                                dataSource.getId(),
+                                FHIR_VERSION_R4,
+                                expectedResource.getFhirResource().getData())
                         .build();
 
         mManager.upsertMedicalResources(
                 List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
 
         receiver.verifyNoExceptionOrThrow();
+        assertThat(receiver.getResponse()).hasSize(1);
+        assertThat(receiver.getResponse()).containsExactly(expectedResource);
+        // Verifies the inserted resource exists.
+        HealthConnectReceiver<List<MedicalResource>> resourceReadReceiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                List.of(receiver.getResponse().get(0).getId()),
+                Executors.newSingleThreadExecutor(),
+                resourceReadReceiver);
+        assertThat(resourceReadReceiver.getResponse()).containsExactly(expectedResource);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_forOwnDataSourceAndExistingData_succeedsAndUpdates()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource resourceBeforeUpdate =
+                createImmunizationMedicalResource(dataSource.getId());
+        MedicalResource expectedUpdatedResource =
+                createUpdatedImmunizationMedicalResource(dataSource.getId());
+        UpsertMedicalResourceRequest insertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(),
+                                FHIR_VERSION_R4,
+                                resourceBeforeUpdate.getFhirResource().getData())
+                        .build();
+        UpsertMedicalResourceRequest updateRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(),
+                                FHIR_VERSION_R4,
+                                expectedUpdatedResource.getFhirResource().getData())
+                        .build();
+
+        HealthConnectReceiver<List<MedicalResource>> receiver1 = new HealthConnectReceiver<>();
+        mManager.upsertMedicalResources(
+                List.of(insertRequest), Executors.newSingleThreadExecutor(), receiver1);
+        receiver1.verifyNoExceptionOrThrow();
+        HealthConnectReceiver<List<MedicalResource>> receiver2 = new HealthConnectReceiver<>();
+        mManager.upsertMedicalResources(
+                List.of(updateRequest), Executors.newSingleThreadExecutor(), receiver2);
+        receiver2.verifyNoExceptionOrThrow();
+
+        assertThat(receiver2.getResponse()).hasSize(1);
+        assertThat(receiver2.getResponse()).containsExactly(expectedUpdatedResource);
+        // Verifies the updated resource exists.
+        assertThat(receiver1.getResponse()).hasSize(1);
+        HealthConnectReceiver<List<MedicalResource>> resourceReadReceiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                List.of(receiver1.getResponse().get(0).getId()),
+                Executors.newSingleThreadExecutor(),
+                resourceReadReceiver);
+        assertThat(resourceReadReceiver.getResponse()).containsExactly(expectedUpdatedResource);
     }
 
     @Test
@@ -276,6 +338,26 @@ public class UpsertMedicalResourcesCtsTest {
         mManager.upsertMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_invalidDataSourceIdByReflection_throws()
+            throws Exception {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        setFieldValueUsingReflection(request, "mDataSourceId", "invalid id");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.upsertMedicalResources(
+                                List.of(request),
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
     }
 
     @Test

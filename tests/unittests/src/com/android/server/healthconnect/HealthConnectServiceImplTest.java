@@ -132,6 +132,7 @@ import com.android.server.healthconnect.migration.MigrationTestUtils;
 import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -264,7 +265,6 @@ public class HealthConnectServiceImplTest {
 
     @Mock private TransactionManager mTransactionManager;
     @Mock private AppInfoHelper mAppInfoHelper;
-    @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
     @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private MigrationCleaner mMigrationCleaner;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -278,6 +278,7 @@ public class HealthConnectServiceImplTest {
     @Mock private MedicalDataSourceHelper mMedicalDataSourceHelper;
     @Mock private MedicalResourceHelper mMedicalResourceHelper;
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     @Mock IMigrationCallback mMigrationCallback;
     @Mock IMedicalDataSourceResponseCallback mMedicalDataSourceCallback;
     @Mock IMedicalDataSourcesResponseCallback mMedicalDataSourcesResponseCallback;
@@ -331,12 +332,13 @@ public class HealthConnectServiceImplTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(mPreferenceHelper)
                         .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .build();
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
-                        mDeviceConfigManager,
                         mHealthConnectPermissionHelper,
                         mMigrationCleaner,
                         mFirstGrantTimeManager,
