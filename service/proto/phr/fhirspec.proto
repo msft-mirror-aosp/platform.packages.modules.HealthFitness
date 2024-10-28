@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.android.server.healthconnect.proto;
+
+option java_multiple_files=true;
+
+// FHIR spec details required for Health Connect PHR validation of medical data (FHIR resources
+// received as JSON strings).
+message FhirResourceSpec {
+    // A map of the FHIR resource type int to the FHIR spec config.
+    // The resource type int has to match one of the resource types in FhirResource.java
+    map<int32, FhirDataTypeConfig> resource_type_to_config = 1;
+}
+
+// The FHIR spec config of a resource or data type.
+message FhirDataTypeConfig {
+    // The list of fields that are allowed to be present for this data type.
+    repeated string field_names = 1;
+}
