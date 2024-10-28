@@ -20,6 +20,7 @@ import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -58,4 +59,10 @@ public final class HeightRecordInternal extends InstantRecordInternal<HeightReco
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mHeight);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }
