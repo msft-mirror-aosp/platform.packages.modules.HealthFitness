@@ -295,45 +295,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
-            MedicalResourceHelper medicalResourceHelper,
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            Context context,
-            ExportManager exportManager,
-            ExportImportSettingsStorage exportImportSettingsStorage,
-            AccessLogsHelper accessLogsHelper,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            ActivityDateHelper activityDateHelper,
-            ChangeLogsHelper changeLogsHelper,
-            ChangeLogsRequestHelper changeLogsRequestHelper,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
-        this(
-                transactionManager,
-                permissionHelper,
-                migrationCleaner,
-                firstGrantTimeManager,
-                migrationStateManager,
-                migrationUiStateManager,
-                context,
-                medicalResourceHelper,
-                medicalDataSourceHelper,
-                exportManager,
-                exportImportSettingsStorage,
-                accessLogsHelper,
-                healthDataCategoryPriorityHelper,
-                activityDateHelper,
-                changeLogsHelper,
-                changeLogsRequestHelper,
-                internalHealthConnectMappings);
-    }
-
-    @VisibleForTesting
-    HealthConnectServiceImpl(
-            TransactionManager transactionManager,
-            HealthConnectPermissionHelper permissionHelper,
-            MigrationCleaner migrationCleaner,
-            FirstGrantTimeManager firstGrantTimeManager,
-            MigrationStateManager migrationStateManager,
-            MigrationUiStateManager migrationUiStateManager,
             Context context,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
@@ -344,7 +305,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            PriorityMigrationHelper priorityMigrationHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -393,7 +355,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mExportManager = exportManager;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
-        mPriorityMigrationHelper = PriorityMigrationHelper.getInstance();
+        mPriorityMigrationHelper = priorityMigrationHelper;
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
