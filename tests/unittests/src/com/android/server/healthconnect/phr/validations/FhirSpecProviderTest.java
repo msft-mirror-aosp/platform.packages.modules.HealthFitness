@@ -16,7 +16,19 @@
 
 package com.android.server.healthconnect.phr.validations;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_CONDITION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_LOCATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ORGANIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PATIENT;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
 
@@ -62,6 +74,161 @@ public class FhirSpecProviderTest {
 
         assertThat(immunizationConfig.getFieldNamesList())
                 .containsAtLeast(
-                        "id", "resourceType", "status", "vaccineCode", "occurrenceDateTime");
+                        "id",
+                        "resourceType",
+                        "status",
+                        "vaccineCode",
+                        "occurrenceDateTime",
+                        "extension",
+                        "modifierExtension");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_allergy_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast(
+                        "id",
+                        "resourceType",
+                        "meta",
+                        "clinicalStatus",
+                        "criticality",
+                        "onsetRange",
+                        "contained");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_observation_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_OBSERVATION);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast(
+                        "encounter",
+                        "valueQuantity",
+                        "valueDateTime",
+                        "dataAbsentReason",
+                        "referenceRange");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_condition_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_CONDITION);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("id", "resourceType", "code", "onsetDateTime", "onsetAge");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_procedure_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PROCEDURE);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("id", "resourceType", "subject", "performedRange", "note");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_medication_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_MEDICATION);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("manufacturer", "ingredient", "batch");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_medicationRequest_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast(
+                        "doNotPerform",
+                        "medicationCodeableConcept",
+                        "medicationReference",
+                        "dosageInstruction",
+                        "priorPrescription");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_medicationStatement_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("dateAsserted", "dosage");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_patient_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PATIENT);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("active", "name", "deceasedBoolean", "photo", "contact");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_practitioner_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PRACTITIONER);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("name", "telecom", "qualification");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_practitionerRole_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("practitioner", "healthcareService", "availableTime", "endpoint");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_location_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_LOCATION);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("operationalStatus", "address", "position");
+    }
+
+    @Test
+    public void testGetFhirDataTypeConfigForResourceType_organization_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        FhirDataTypeConfig immunizationConfig =
+                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_ORGANIZATION);
+
+        assertThat(immunizationConfig.getFieldNamesList())
+                .containsAtLeast("name", "alias", "contact");
     }
 }
