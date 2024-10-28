@@ -63,6 +63,7 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -124,7 +125,7 @@ public class ImportManagerTest {
 
     private ImportManager mImportManagerSpy;
 
-    private DatabaseContext mContext;
+    private StorageContext mContext;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
@@ -409,7 +410,7 @@ public class ImportManagerTest {
                         DEFAULT_USER_HANDLE);
 
         File databaseDir =
-                DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())
+                StorageContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())
                         .getDatabaseDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }

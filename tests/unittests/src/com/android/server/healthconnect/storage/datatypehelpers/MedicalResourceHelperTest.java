@@ -87,10 +87,10 @@ import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.PhrTestUtils;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -143,7 +143,7 @@ public class MedicalResourceHelperTest {
     private TransactionTestUtils mTransactionTestUtils;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
-    private DatabaseContext mContext;
+    private StorageContext mContext;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
 

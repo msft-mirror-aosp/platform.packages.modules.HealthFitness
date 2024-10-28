@@ -48,7 +48,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.compatibility.common.util.SystemUtil;
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
+import com.android.server.healthconnect.storage.StorageContext;
 
 import org.junit.After;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class ExportImportApiTest {
 
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
-    private DatabaseContext mExportedDbContext;
+    private StorageContext mExportedDbContext;
     private Uri mRemoteExportFileUri;
 
     @Rule
@@ -95,7 +95,7 @@ public class ExportImportApiTest {
         deleteAllStagedRemoteData();
         runShellCommandForHCJob("cancel -n");
         mExportedDbContext =
-                DatabaseContext.create(
+                StorageContext.create(
                         mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
         // TODO(b/318484678): Improve tests using Uri from a different app.
         mRemoteExportFileUri =
