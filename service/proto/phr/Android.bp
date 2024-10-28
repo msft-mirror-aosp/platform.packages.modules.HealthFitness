@@ -62,12 +62,10 @@ python_library_host {
     },
 }
 
-// Python script for generating a FhirResourceSpec proto message based on fhir spec json files
-python_binary_host {
-    name: "generate-fhir-spec",
-    main: "generate_fhir_spec.py",
+python_library_host {
+    name: "fhir-spec-extractor",
     srcs: [
-        "generate_fhir_spec.py",
+        "fhir_spec_extractor.py",
     ],
     libs: [
         "fhirspec-py-proto",
@@ -75,14 +73,14 @@ python_binary_host {
 }
 
 python_test_host {
-    name: "generate-fhir-spec-test",
-    main: "generate_fhir_spec_test.py",
+    name: "fhir-spec-extractor-test",
+    main: "fhir_spec_extractor_test.py",
     srcs: [
-        "generate_fhir_spec.py",
-        "generate_fhir_spec_test.py",
+        "fhir_spec_extractor_test.py",
     ],
     libs: [
         "fhirspec-py-proto",
+        "fhir-spec-extractor",
     ],
     test_options: {
         unit_test: true,
@@ -94,11 +92,27 @@ python_test_host {
     },
 }
 
+// Python script for generating a FhirResourceSpec proto message based on fhir spec json files
+python_binary_host {
+    name: "generate-fhir-spec",
+    main: "generate_fhir_spec.py",
+    srcs: [
+        "generate_fhir_spec.py",
+    ],
+    libs: [
+        "fhirspec-py-proto",
+        "fhir-spec-extractor",
+    ],
+}
+
 // Genrule that runs generate_fhir_spec.py to generate a FhirResourceSpec proto binary file
 genrule {
     name: "generate-fhir-spec-r4-binarypb",
+    srcs: [
+        "//external/fhir/spec/r4:resource-definitions",
+    ],
     tools: ["generate-fhir-spec"],
-    cmd: "$(location generate-fhir-spec) $(out)",
+    cmd: "$(location generate-fhir-spec) $(out) $(in)",
     out: ["fhirspec-r4.binarypb"],
 }
 
