@@ -24,9 +24,12 @@ import static org.junit.Assert.assertThrows;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -52,6 +55,7 @@ import org.mockito.MockitoAnnotations;
 
 /** Unit test for class {@link CloudBackupManager}. */
 @RunWith(AndroidJUnit4.class)
+@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
 public class CloudBackupManagerTest {
     private static final String TEST_PACKAGE_NAME = "test.package.name";
     private static final long TEST_START_TIME_IN_MILLIS = 2000;
@@ -59,10 +63,13 @@ public class CloudBackupManagerTest {
     private static final int TEST_STEP_COUNT = 1345;
 
     @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).mockStatic(Environment.class).build();
 
-    @Rule(order = 2)
+    @Rule(order = 3)
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
