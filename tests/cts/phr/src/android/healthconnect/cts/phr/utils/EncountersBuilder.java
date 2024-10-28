@@ -38,6 +38,7 @@ public class EncountersBuilder {
                     + "    \"reference\": \"Patient/example\""
                     + "  }"
                     + "}";
+
     private static final String DEFAULT_LOCATION_JSON =
             "{"
                     + "  \"resourceType\": \"Location\","
@@ -53,8 +54,7 @@ public class EncountersBuilder {
                     + "    \"BU MC, SW, F2\","
                     + "    \"Burgers University Medical Center, South Wing, second floor\""
                     + "  ],"
-                    + "  \"description\": \"Second floor of the Old South Wing, formerly in use "
-                    + "by Psychiatry\","
+                    + "  \"description\": \"Second floor of the Old South Wing\","
                     + "  \"mode\": \"instance\","
                     + "  \"telecom\": ["
                     + "    {"
@@ -89,7 +89,7 @@ public class EncountersBuilder {
                     + "  \"physicalType\": {"
                     + "    \"coding\": ["
                     + "      {"
-                    + "        \"system\": "
+                    + "        \"system\":"
                     + "\"http://terminology.hl7.org/CodeSystem/location-physical-type\","
                     + "        \"code\": \"wi\","
                     + "        \"display\": \"Wing\""
@@ -110,6 +110,7 @@ public class EncountersBuilder {
                     + "    }"
                     + "  ]"
                     + "}";
+
     private static final String DEFAULT_ORGANIZATION_JSON =
             "{"
                     + "  \"resourceType\": \"Organization\","
@@ -117,7 +118,7 @@ public class EncountersBuilder {
                     + "  \"identifier\": ["
                     + "    {"
                     + "      \"system\": \"urn:ietf:rfc:3986\","
-                    + "      \"value\": \"2.16.840.1.113883.19.5\""
+                    + "      \"value\": \"urn:oid:2.16.840.1.113883.19.5\""
                     + "    }"
                     + "  ],"
                     + "  \"name\": \"Good Health Clinic\""

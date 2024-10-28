@@ -54,7 +54,7 @@ abstract class FhirResourceBuilder<T extends FhirResourceBuilder<T>> {
     protected abstract T returnThis();
 
     /**
-     * Set the FHIR id for the Observation.
+     * Set the FHIR id for the resource.
      *
      * @return this Builder.
      */
@@ -63,7 +63,7 @@ abstract class FhirResourceBuilder<T extends FhirResourceBuilder<T>> {
     }
 
     /**
-     * Sets an arbitrary String or JSON Object element in the observation FHIR.
+     * Sets an arbitrary String or JSON Object element in the FHIR resource.
      *
      * @param field the element to set.
      * @param value the value to set
@@ -75,6 +75,17 @@ abstract class FhirResourceBuilder<T extends FhirResourceBuilder<T>> {
         } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }
+        return returnThis();
+    }
+
+    /**
+     * Removes json element from the FHIR resource.
+     *
+     * @param field the element to remove.
+     * @return this builder
+     */
+    public T removeField(String field) {
+        mFhir.remove(field);
         return returnThis();
     }
 

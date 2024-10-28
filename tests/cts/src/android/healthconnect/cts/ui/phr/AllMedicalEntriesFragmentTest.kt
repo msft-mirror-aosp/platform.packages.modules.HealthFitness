@@ -81,7 +81,7 @@ class AllMedicalEntriesFragmentTest : HealthConnectBaseTest() {
             findText("Entries")
             findText("Access")
             findObject(By.textContains("Hospital X"))
-            findText("Unknown Resource")
+            findText("Tdap")
         }
     }
 
