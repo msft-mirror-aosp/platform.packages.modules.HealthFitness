@@ -408,10 +408,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mHealthConnectMappings,
                                 mInternalHealthConnectMappings,
                                 mChangeLogsHelper,
-                                mChangeLogsRequestHelper,
-                                mHealthDataCategoryPriorityHelper,
-                                mPreferenceHelper,
-                                mExportImportSettingsStorage)
+                                mChangeLogsRequestHelper)
                         : null;
     }
 
