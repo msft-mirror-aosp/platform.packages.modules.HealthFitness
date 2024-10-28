@@ -20,21 +20,16 @@ import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTOR
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
-import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
-import android.util.Slog;
 
-import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 /**
@@ -46,11 +41,7 @@ import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappi
 public final class CloudBackupManager {
 
     private static final String TAG = "CloudBackupManager";
-
     private final BackupRestoreDatabaseHelper mDatabaseHelper;
-    private final HealthDataCategoryPriorityHelper mPriorityHelper;
-    private final PreferenceHelper mPreferenceHelper;
-    private final ExportImportSettingsStorage mExportImportSettingsStorage;
 
     public CloudBackupManager(
             TransactionManager transactionManager,
@@ -60,13 +51,7 @@ public final class CloudBackupManager {
             HealthConnectMappings healthConnectMappings,
             InternalHealthConnectMappings internalHealthConnectMappings,
             ChangeLogsHelper changeLogsHelper,
-            ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthDataCategoryPriorityHelper priorityHelper,
-            PreferenceHelper preferenceHelper,
-            ExportImportSettingsStorage exportImportSettingsStorage) {
-        mPriorityHelper = priorityHelper;
-        mPreferenceHelper = preferenceHelper;
-        mExportImportSettingsStorage = exportImportSettingsStorage;
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         mDatabaseHelper =
                 new BackupRestoreDatabaseHelper(
                         transactionManager,
@@ -103,14 +88,6 @@ public final class CloudBackupManager {
     /** Returns all user settings bundled as a single byte array. */
     @NonNull
     public GetSettingsForBackupResponse getSettingsForBackup() {
-        Slog.i(TAG, "Formatting user settings for export.");
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(
-                        mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
-
-        int version = 0;
-        byte[] data = backupSettingsHelper.collectUserSettings().toByteArray();
-
-        return new GetSettingsForBackupResponse(new BackupSettings(version, data));
+        throw new UnsupportedOperationException();
     }
 }
