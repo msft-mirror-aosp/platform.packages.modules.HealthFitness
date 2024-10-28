@@ -38,7 +38,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -105,7 +104,7 @@ public class TransactionManagerExerciseRoutesTest {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-        DatabaseContext context = testRule.getDatabaseContext();
+        StorageContext context = testRule.getDatabaseContext();
         mTransactionManager = testRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);

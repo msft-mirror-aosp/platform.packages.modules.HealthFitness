@@ -23,7 +23,6 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
@@ -32,6 +31,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -93,7 +93,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mTransactionManager =
                 builder.mTransactionManager == null
                         ? TransactionManager.initializeInstance(
-                                new DatabaseContext(context, userHandle))
+                                new StorageContext(context, userHandle))
                         : builder.mTransactionManager;
         mAppInfoHelper =
                 builder.mAppInfoHelper == null

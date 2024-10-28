@@ -46,6 +46,7 @@ import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -135,8 +136,8 @@ public class ImportManager {
                 ExportImportLogger.NO_VALUE_RECORDED);
 
         Context userContext = mContext.createContextAsUser(userHandle, 0);
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
+        StorageContext dbContext =
+                StorageContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
         File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
 
         int zipFileSize = getZipFileSize(userContext, uri);
