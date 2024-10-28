@@ -100,7 +100,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mTransactionManager =
                 builder.mTransactionManager == null
                         ? TransactionManager.initializeInstance(
-                                new StorageContext(context, userHandle))
+                                StorageContext.create(context, userHandle))
                         : builder.mTransactionManager;
         mAppInfoHelper =
                 builder.mAppInfoHelper == null

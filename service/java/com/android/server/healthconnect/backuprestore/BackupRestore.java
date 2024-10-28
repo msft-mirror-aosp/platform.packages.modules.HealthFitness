@@ -265,7 +265,7 @@ public final class BackupRestore {
             Map<String, HealthConnectException> exceptionsByFileName,
             UserHandle userHandle,
             IDataStagingFinishedCallback callback) {
-        StorageContext dbContext = StorageContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
         File stagedRemoteDataDir = dbContext.getDatabaseDir();
         try {
             stagedRemoteDataDir.mkdirs();
@@ -407,7 +407,7 @@ public final class BackupRestore {
     /** Deletes all the staged data and resets all the states. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(UserHandle userHandle) {
-        StorageContext dbContext = StorageContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
 
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
@@ -462,7 +462,7 @@ public final class BackupRestore {
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
     public Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
-        StorageContext dbContext = StorageContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
         File[] allFiles = dbContext.getDatabaseDir().listFiles();
         if (allFiles == null) {
             return Collections.emptySet();
@@ -603,7 +603,7 @@ public final class BackupRestore {
 
         int currentDbVersion = mTransactionManager.getDatabaseVersion();
         StorageContext dbContext =
-                StorageContext.create(mContext, STAGED_DATABASE_DIR, mCurrentForegroundUser);
+                StorageContext.create(mContext, mCurrentForegroundUser, STAGED_DATABASE_DIR);
         File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
         if (stagedDbFile.exists()) {
             try (SQLiteDatabase stagedDb =

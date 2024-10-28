@@ -107,7 +107,7 @@ public class ExportManager {
                 DATA_EXPORT_STARTED, NO_VALUE_RECORDED, NO_VALUE_RECORDED, NO_VALUE_RECORDED);
 
         StorageContext dbContext =
-                StorageContext.create(mContext, LOCAL_EXPORT_DIR_NAME, userHandle);
+                StorageContext.create(mContext, userHandle, LOCAL_EXPORT_DIR_NAME);
         File localExportDbFile = getLocalExportDbFile(dbContext);
         File localExportZipFile = getLocalExportZipFile(dbContext);
 
@@ -234,7 +234,7 @@ public class ExportManager {
     void deleteLocalExportFiles(UserHandle userHandle) {
         Slog.i(TAG, "Delete local export files started.");
         StorageContext dbContext =
-                StorageContext.create(mContext, LOCAL_EXPORT_DIR_NAME, userHandle);
+                StorageContext.create(mContext, userHandle, LOCAL_EXPORT_DIR_NAME);
         File localExportDbFile = getLocalExportDbFile(dbContext);
         File localExportZipFile = getLocalExportZipFile(dbContext);
         if (localExportDbFile.exists()) {

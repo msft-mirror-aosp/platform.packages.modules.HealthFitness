@@ -229,7 +229,7 @@ public class HealthConnectManagerService extends SystemService {
     private void switchToSetupForUser(UserHandle user) {
         // Note: This is for test setup debugging, please don't surround with DEBUG flag
         Slog.d(TAG, "switchToSetupForUser: " + user);
-        mTransactionManager.onUserUnlocked(new StorageContext(mContext, mCurrentForegroundUser));
+        mTransactionManager.onUserUnlocked(StorageContext.create(mContext, mCurrentForegroundUser));
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
