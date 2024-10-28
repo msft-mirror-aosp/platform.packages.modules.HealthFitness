@@ -152,7 +152,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                 appInfo = getAppInfo(packageName, context);
             } catch (NameNotFoundException e) {
                 if (requireAllFields) {
-                    throw new IllegalArgumentException("Could not find package info", e);
+                    throw new IllegalStateException("Could not find package info", e);
                 }
 
                 appInfo =
@@ -336,7 +336,7 @@ public final class AppInfoHelper extends DatabaseHelper {
             try {
                 appInfoInternal = getAppInfo(packageName, context);
             } catch (NameNotFoundException e) {
-                throw new IllegalArgumentException("Could not find package info for package", e);
+                throw new IllegalStateException("Could not find package info for package", e);
             }
 
             insertIfNotPresent(db, packageName, appInfoInternal);
