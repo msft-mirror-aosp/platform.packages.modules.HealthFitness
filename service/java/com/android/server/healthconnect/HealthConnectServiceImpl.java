@@ -1259,10 +1259,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to get Priority for {@code dataCategory} */
     @Override
     public void getCurrentPriority(
-            String packageName,
             @HealthDataCategory.Type int dataCategory,
             IGetPriorityResponseCallback callback) {
-        checkParamsNonNull(packageName, callback);
+        checkParamsNonNull(callback);
         ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
@@ -1310,10 +1309,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to update priority for permission category(ies) */
     @Override
     public void updatePriority(
-            String packageName,
             UpdatePriorityRequestParcel updatePriorityRequest,
             IEmptyResponseCallback callback) {
-        checkParamsNonNull(packageName, updatePriorityRequest, callback);
+        checkParamsNonNull(updatePriorityRequest, callback);
         ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
