@@ -48,7 +48,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.compatibility.common.util.SystemUtil;
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
+import com.android.server.healthconnect.storage.StorageContext;
 
 import org.junit.After;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class ExportImportApiTest {
 
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
-    private DatabaseContext mExportedDbContext;
+    private StorageContext mExportedDbContext;
     private Uri mRemoteExportFileUri;
 
     @Rule
@@ -95,8 +95,8 @@ public class ExportImportApiTest {
         deleteAllStagedRemoteData();
         runShellCommandForHCJob("cancel -n");
         mExportedDbContext =
-                DatabaseContext.create(
-                        mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
+                StorageContext.create(
+                        mContext, mContext.getUser(), REMOTE_EXPORT_DATABASE_DIR_NAME);
         // TODO(b/318484678): Improve tests using Uri from a different app.
         mRemoteExportFileUri =
                 Uri.fromFile(
@@ -142,20 +142,24 @@ public class ExportImportApiTest {
         assertThat(stepsRecordsAfterDeletion).isEmpty();
 
         CountDownLatch latch = new CountDownLatch(1);
-        mHealthConnectManager.runImport(
-                mRemoteExportFileUri,
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<Void, HealthConnectException>() {
-                    @Override
-                    public void onResult(Void result) {
-                        latch.countDown();
-                    }
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mHealthConnectManager.runImport(
+                                mRemoteExportFileUri,
+                                Executors.newSingleThreadExecutor(),
+                                new OutcomeReceiver<Void, HealthConnectException>() {
+                                    @Override
+                                    public void onResult(Void result) {
+                                        latch.countDown();
+                                    }
 
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        latch.countDown();
-                    }
-                });
+                                    @Override
+                                    public void onError(HealthConnectException exception) {
+                                        latch.countDown();
+                                    }
+                                }),
+                "android.permission.MANAGE_HEALTH_DATA");
+
         Thread.sleep(SLEEP_TIME_MS);
         List<StepsRecord> stepsRecordsAfterImport = readAllRecords(StepsRecord.class);
         assertThat(stepsRecordsAfterImport).isEqualTo(stepsRecords);
@@ -165,13 +169,12 @@ public class ExportImportApiTest {
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
     public void exportOn_thenExportOff_noJobScheduled() throws Exception {
         SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    mHealthConnectManager.configureScheduledExport(
-                            new ScheduledExportSettings.Builder()
-                                    .setUri(mRemoteExportFileUri)
-                                    .setPeriodInDays(1)
-                                    .build());
-                },
+                () ->
+                        mHealthConnectManager.configureScheduledExport(
+                                new ScheduledExportSettings.Builder()
+                                        .setUri(mRemoteExportFileUri)
+                                        .setPeriodInDays(1)
+                                        .build()),
                 "android.permission.MANAGE_HEALTH_DATA");
         // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
         SystemUtil.eventually(

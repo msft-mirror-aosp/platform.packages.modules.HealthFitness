@@ -84,7 +84,7 @@ public class DeleteTransactionRequestTest {
         MockitoAnnotations.initMocks(this);
         HealthConnectInjector injector =
                 HealthConnectInjectorImpl.newBuilderForTest(
-                                mHealthConnectDatabaseTestRule.getUserContext())
+                                mHealthConnectDatabaseTestRule.getDatabaseContext())
                         .setTransactionManager(
                                 mHealthConnectDatabaseTestRule.getTransactionManager())
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)

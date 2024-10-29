@@ -25,6 +25,8 @@ import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_MANUAL_
 import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_UNKNOWN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVITY_INTENSITY;
 
+import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY;
+import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_HEALTH_CONNECT_MAPPINGS;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -34,12 +36,13 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.internal.datatypes.ActivityIntensityRecordInternal;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Parcel;
-import android.platform.test.annotations.EnableFlags;
-import android.platform.test.flag.junit.SetFlagsRule;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import com.android.healthfitness.flags.Flags;
-
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -49,14 +52,20 @@ import java.time.ZoneOffset;
 import java.util.TimeZone;
 import java.util.UUID;
 
-@EnableFlags({
-    FLAG_HEALTH_CONNECT_MAPPINGS,
-    Flags.FLAG_ACTIVITY_INTENSITY,
-    Flags.FLAG_ACTIVITY_INTENSITY_DB
+@RequiresFlagsEnabled({
+    FLAG_ACTIVITY_INTENSITY,
+    FLAG_ACTIVITY_INTENSITY_DB,
+    FLAG_HEALTH_CONNECT_MAPPINGS
 })
 public class ActivityIntensityRecordInternalTest {
 
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
+    @Before
+    public void setUp() {
+        HealthConnectMappings.resetInstanceForTesting();
+    }
 
     @Test
     public void toExternalRecord_allFieldsSet() {

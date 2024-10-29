@@ -31,7 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.Manifest;
-import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -57,9 +56,9 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
@@ -112,9 +111,6 @@ public class FirstGrantTimeUnitTest {
 
     private HealthConnectInjectorImpl.Builder mHealthConnectInjectorBuilder;
 
-    private final UiAutomation mUiAutomation =
-            InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
     @Before
     public void setUp() {
         Context context = InstrumentationRegistry.getContext();
@@ -122,8 +118,7 @@ public class FirstGrantTimeUnitTest {
         SystemUtil.runWithShellPermissionIdentity(
                 () -> HealthConnectDeviceConfigManager.initializeInstance(mContext),
                 Manifest.permission.READ_DEVICE_CONFIG);
-        TransactionManager.initializeInstance(new HealthConnectUserContext(context, CURRENT_USER));
-        FirstGrantTimeManager.resetInstanceForTest();
+        TransactionManager.initializeInstance(StorageContext.create(context, CURRENT_USER));
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
@@ -143,8 +138,6 @@ public class FirstGrantTimeUnitTest {
                         .setMigrationStateManager(mMigrationStateManager)
                         .setFirstGrantTimeDatastore(mDatastore)
                         .setHealthPermissionIntentAppsTracker(mTracker);
-        mUiAutomation.adoptShellPermissionIdentity(
-                "android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS");
     }
 
     @After

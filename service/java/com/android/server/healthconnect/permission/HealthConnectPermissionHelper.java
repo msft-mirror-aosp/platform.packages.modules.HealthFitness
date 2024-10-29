@@ -38,7 +38,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 
 import java.time.Instant;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -194,7 +193,7 @@ public final class HealthConnectPermissionHelper {
         enforceValidPackage(packageName, checkedUser);
         final long token = Binder.clearCallingIdentity();
         try {
-            return getGrantedHealthPermissionsUnchecked(packageName, checkedUser);
+            return PackageInfoUtils.getGrantedHealthPermissions(mContext, packageName, checkedUser);
         } finally {
             Binder.restoreCallingIdentity(token);
         }
@@ -304,30 +303,6 @@ public final class HealthConnectPermissionHelper {
         }
     }
 
-    private List<String> getGrantedHealthPermissionsUnchecked(String packageName, UserHandle user) {
-        PackageInfo packageInfo =
-                getPackageInfoUnchecked(
-                        packageName,
-                        user,
-                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
-
-        if (packageInfo.requestedPermissions == null) {
-            return List.of();
-        }
-
-        List<String> grantedHealthPerms = new ArrayList<>(packageInfo.requestedPermissions.length);
-        for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
-            String currPerm = packageInfo.requestedPermissions[i];
-            if (mHealthPermissions.contains(currPerm)
-                    && ((packageInfo.requestedPermissionsFlags[i]
-                                    & PackageInfo.REQUESTED_PERMISSION_GRANTED)
-                            != 0)) {
-                grantedHealthPerms.add(currPerm);
-            }
-        }
-        return grantedHealthPerms;
-    }
-
     private Map<String, Integer> getHealthPermissionsFlagsUnchecked(
             String packageName, UserHandle user, List<String> permissions) {
         enforceValidHealthPermissions(packageName, user, permissions);
@@ -358,7 +333,7 @@ public final class HealthConnectPermissionHelper {
     private void revokeAllHealthPermissionsUnchecked(
             String packageName, UserHandle user, String reason) {
         List<String> grantedHealthPermissions =
-                getGrantedHealthPermissionsUnchecked(packageName, user);
+                PackageInfoUtils.getGrantedHealthPermissions(mContext, packageName, user);
         for (String perm : grantedHealthPermissions) {
             mPackageManager.revokeRuntimePermission(packageName, perm, user, reason);
             mPackageManager.updatePermissionFlags(
@@ -377,20 +352,9 @@ public final class HealthConnectPermissionHelper {
         }
     }
 
-    private PackageInfo getPackageInfoUnchecked(
-            String packageName, UserHandle user, PackageManager.PackageInfoFlags flags) {
-        try {
-            PackageManager packageManager =
-                    mContext.createContextAsUser(user, /* flags= */ 0).getPackageManager();
-
-            return packageManager.getPackageInfo(packageName, flags);
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new IllegalArgumentException("invalid package", e);
-        }
-    }
-
     private void enforceValidPackage(String packageName, UserHandle user) {
-        getPackageInfoUnchecked(packageName, user, PackageManager.PackageInfoFlags.of(0));
+        PackageInfoUtils.getPackageInfoUnchecked(
+                packageName, user, PackageManager.PackageInfoFlags.of(0), mContext);
     }
 
     private void enforceManageHealthPermissions(String message) {
@@ -444,10 +408,11 @@ public final class HealthConnectPermissionHelper {
     private void enforceValidHealthPermissions(
             String packageName, UserHandle user, List<String> permissions) {
         PackageInfo packageInfo =
-                getPackageInfoUnchecked(
+                PackageInfoUtils.getPackageInfoUnchecked(
                         packageName,
                         user,
-                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS),
+                        mContext);
 
         Set<String> requestedPermissions = new ArraySet<>(packageInfo.requestedPermissions);
 

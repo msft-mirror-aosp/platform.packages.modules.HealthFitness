@@ -55,7 +55,6 @@ import com.android.modules.utils.testing.ExtendedMockitoRule.MockStatic;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStaticClasses;
 import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -63,6 +62,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -112,10 +112,10 @@ public class ExportManagerTest {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
-    private HealthConnectUserContext mContext;
+    private StorageContext mContext;
     private TransactionTestUtils mTransactionTestUtils;
     private ExportManager mExportManager;
-    private DatabaseContext mExportedDbContext;
+    private StorageContext mExportedDbContext;
     private Instant mTimeStamp;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
 
@@ -126,7 +126,7 @@ public class ExportManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        mContext = mDatabaseTestRule.getUserContext();
+        mContext = mDatabaseTestRule.getDatabaseContext();
         TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, transactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -147,8 +147,8 @@ public class ExportManagerTest {
                         mContext, fakeClock, mExportImportSettingsStorage, transactionManager);
 
         mExportedDbContext =
-                DatabaseContext.create(
-                        mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
+                StorageContext.create(
+                        mContext, mContext.getUser(), REMOTE_EXPORT_DATABASE_DIR_NAME);
         configureExportUri();
     }
 
@@ -230,11 +230,11 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
-        DatabaseContext databaseContext =
-                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
-        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
+        StorageContext storageContext =
+                StorageContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
+        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
                 .isFalse();
-        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
+        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
     }
 
     @Test
@@ -285,16 +285,16 @@ public class ExportManagerTest {
 
     @Test
     public void deleteLocalExportFiles_deletesLocalCopies() {
-        DatabaseContext databaseContext =
-                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
-        new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
-        new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
+        StorageContext storageContext =
+                StorageContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
+        new File(storageContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
+        new File(storageContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
 
         mExportManager.deleteLocalExportFiles(mContext.getUser());
 
-        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
+        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
                 .isFalse();
-        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
+        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
     }
 
     @Test

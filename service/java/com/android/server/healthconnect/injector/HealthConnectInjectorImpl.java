@@ -17,20 +17,25 @@
 package com.android.server.healthconnect.injector;
 
 import android.content.Context;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.FirstGrantTimeDatastore;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -72,14 +77,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+    private final PermissionPackageChangesOrchestrator mPermissionPackageChangesOrchestrator;
+    private final HealthConnectPermissionHelper mHealthConnectPermissionHelper;
+    private final MigrationCleaner mMigrationCleaner;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
     }
 
     private HealthConnectInjectorImpl(Builder builder) {
-        HealthConnectUserContext healthConnectUserContext = builder.mHealthConnectUserContext;
         Context context = builder.mContext;
+        // Don't store the user and make it available via the injector, as this user is always
+        // the first / system user, and doesn't change after that.
+        // Any class that is using this user below are responsible for making sure that they
+        // update any reference to user when it changes.
+        UserHandle userHandle = builder.mUserHandle;
 
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
@@ -87,7 +99,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
-                        ? TransactionManager.initializeInstance(healthConnectUserContext)
+                        ? TransactionManager.initializeInstance(
+                                StorageContext.create(context, userHandle))
                         : builder.mTransactionManager;
         mAppInfoHelper =
                 builder.mAppInfoHelper == null
@@ -133,9 +146,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mMigrationStateManager =
                 builder.mMigrationStateManager == null
                         ? MigrationStateManager.initializeInstance(
-                                healthConnectUserContext.getUser(),
-                                mHealthConnectDeviceConfigManager,
-                                mPreferenceHelper)
+                                userHandle, mHealthConnectDeviceConfigManager, mPreferenceHelper)
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
@@ -159,11 +170,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mChangeLogsRequestHelper;
         mPermissionIntentAppsTracker =
                 builder.mPermissionIntentAppsTracker == null
-                        ? HealthPermissionIntentAppsTracker.getInstance(context)
+                        ? new HealthPermissionIntentAppsTracker(context)
                         : builder.mPermissionIntentAppsTracker;
         mFirstGrantTimeManager =
                 builder.mFirstGrantTimeManager == null
-                        ? FirstGrantTimeManager.getInstance(
+                        ? new FirstGrantTimeManager(
                                 context,
                                 mPermissionIntentAppsTracker,
                                 builder.mFirstGrantTimeDatastore == null
@@ -173,6 +184,31 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mHealthDataCategoryPriorityHelper,
                                 mMigrationStateManager)
                         : builder.mFirstGrantTimeManager;
+        mHealthConnectPermissionHelper =
+                builder.mHealthConnectPermissionHelper == null
+                        ? new HealthConnectPermissionHelper(
+                                context,
+                                context.getPackageManager(),
+                                HealthConnectManager.getHealthPermissions(context),
+                                mPermissionIntentAppsTracker,
+                                mFirstGrantTimeManager,
+                                mHealthDataCategoryPriorityHelper,
+                                mAppInfoHelper,
+                                mHealthConnectMappings)
+                        : builder.mHealthConnectPermissionHelper;
+        mPermissionPackageChangesOrchestrator =
+                builder.mPermissionPackageChangesOrchestrator == null
+                        ? new PermissionPackageChangesOrchestrator(
+                                mPermissionIntentAppsTracker,
+                                mFirstGrantTimeManager,
+                                mHealthConnectPermissionHelper,
+                                context.getUser(),
+                                mHealthDataCategoryPriorityHelper)
+                        : builder.mPermissionPackageChangesOrchestrator;
+        mMigrationCleaner =
+                builder.mMigrationCleaner == null
+                        ? new MigrationCleaner(mTransactionManager, mPriorityMigrationHelper)
+                        : builder.mMigrationCleaner;
     }
 
     @Override
@@ -270,6 +306,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mPermissionIntentAppsTracker;
     }
 
+    @Override
+    public PermissionPackageChangesOrchestrator getPermissionPackageChangesOrchestrator() {
+        return mPermissionPackageChangesOrchestrator;
+    }
+
+    @Override
+    public HealthConnectPermissionHelper getHealthConnectPermissionHelper() {
+        return mHealthConnectPermissionHelper;
+    }
+
+    @Override
+    public MigrationCleaner getMigrationCleaner() {
+        return mMigrationCleaner;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -287,8 +338,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
      */
     public static class Builder {
 
-        private final HealthConnectUserContext mHealthConnectUserContext;
         private final Context mContext;
+        private final UserHandle mUserHandle;
 
         @Nullable private PackageInfoUtils mPackageInfoUtils;
         @Nullable private TransactionManager mTransactionManager;
@@ -309,9 +360,15 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
         @Nullable private FirstGrantTimeDatastore mFirstGrantTimeDatastore;
 
+        @Nullable
+        private PermissionPackageChangesOrchestrator mPermissionPackageChangesOrchestrator;
+
+        @Nullable private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
+        @Nullable private MigrationCleaner mMigrationCleaner;
+
         private Builder(Context context) {
             mContext = context;
-            mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
+            mUserHandle = context.getUser();
         }
 
         /** Set fake or custom {@link PackageInfoUtils} */
@@ -441,6 +498,29 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 HealthPermissionIntentAppsTracker healthPermissionIntentAppsTracker) {
             Objects.requireNonNull(healthPermissionIntentAppsTracker);
             mPermissionIntentAppsTracker = healthPermissionIntentAppsTracker;
+            return this;
+        }
+
+        /** Set fake or custom {@link PermissionPackageChangesOrchestrator} */
+        public Builder setPermissionPackageChangesOrchestrator(
+                PermissionPackageChangesOrchestrator permissionPackageChangesOrchestrator) {
+            Objects.requireNonNull(permissionPackageChangesOrchestrator);
+            mPermissionPackageChangesOrchestrator = permissionPackageChangesOrchestrator;
+            return this;
+        }
+
+        /** Set fake or custom {@link HealthConnectPermissionHelper} */
+        public Builder setHealthConnectPermissionHelper(
+                HealthConnectPermissionHelper healthConnectPermissionHelper) {
+            Objects.requireNonNull(healthConnectPermissionHelper);
+            mHealthConnectPermissionHelper = healthConnectPermissionHelper;
+            return this;
+        }
+
+        /** Set fake or custom {@link MigrationCleaner} */
+        public Builder setMigrationCleaner(MigrationCleaner migrationCleaner) {
+            Objects.requireNonNull(migrationCleaner);
+            mMigrationCleaner = migrationCleaner;
             return this;
         }
 

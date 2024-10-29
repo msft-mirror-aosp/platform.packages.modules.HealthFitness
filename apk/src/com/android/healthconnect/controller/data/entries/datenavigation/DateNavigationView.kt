@@ -36,6 +36,7 @@ import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.toInstant
 import com.android.healthconnect.controller.utils.toLocalDate
 import dagger.hilt.android.EntryPointAccessors
 import java.time.Instant
@@ -62,7 +63,8 @@ constructor(
     private var selectedDate = Instant.ofEpochMilli(timeSource.currentTimeMillis())
     private var period: DateNavigationPeriod = PERIOD_DAY
     private var onDateChangedListener: OnDateChangedListener? = null
-    private var mNextDayEnabled = true
+    private var nextDayEnabled = true
+    private var maxDate: Instant? = timeSource.currentTimeMillis().toInstant()
 
     init {
         val hiltEntryPoint =
@@ -90,6 +92,11 @@ constructor(
 
     fun setPeriod(period: DateNavigationPeriod) {
         this.period = period
+        updateDisplayedDates()
+    }
+
+    fun setMaxDate(instant: Instant?) {
+        maxDate = instant
         updateDisplayedDates()
     }
 
@@ -132,7 +139,7 @@ constructor(
 
     private fun disableButtons(isEnabled: Boolean) {
         if (isEnabled) {
-            nextDayButton.isEnabled = mNextDayEnabled
+            nextDayButton.isEnabled = nextDayEnabled
         } else {
             nextDayButton.isEnabled = false
         }
@@ -242,7 +249,7 @@ constructor(
         // from Day to Week (underlying selected day is still Sunday), navigates to the next week
         // (underlying selected day is next Sunday), sets the period back to Day => displayed day
         // would be next Sunday. Instead, display today.
-        if (today.isBefore(selectedDate)) {
+        if (today.isBefore(selectedDate) && maxDate != null) {
             selectedDate = today
         }
 
@@ -252,9 +259,8 @@ constructor(
                 .atStartOfDay(ZoneId.systemDefault())
                 .plus(toPeriod(period))
                 .toInstant()
-        // TODO: (b/363233408) Ensure new IA works with training plans
-        nextDayButton.isEnabled = !displayedEndDate.isAfter(today)
-        mNextDayEnabled = nextDayButton.isEnabled
+        nextDayButton.isEnabled = maxDate == null || !displayedEndDate.isAfter(today)
+        nextDayEnabled = nextDayButton.isEnabled
         (datePickerSpinner.adapter as DatePickerSpinnerAdapter).setStartTimeAndPeriod(
             getPeriodStartDate(selectedDate, period),
             period,

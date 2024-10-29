@@ -33,7 +33,7 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -70,7 +70,7 @@ public class ReadTransactionRequestTest {
 
     @Before
     public void setup() {
-        HealthConnectUserContext context = mHealthConnectDatabaseTestRule.getUserContext();
+        StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
     }
