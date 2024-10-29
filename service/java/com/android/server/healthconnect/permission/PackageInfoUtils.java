@@ -206,6 +206,69 @@ public final class PackageInfoUtils {
         return uid;
     }
 
+    /**
+     * Returns the list of health permissions granted to a given package name. It does not check if
+     * the given package name is valid. TODO(b/368072570): Make this function non-static once DI
+     * flag is removed.
+     */
+    public static List<String> getGrantedHealthPermissions(
+            Context context, String packageName, UserHandle user) {
+        // Ideally we could've used the Map in the state for this class. However, this function
+        // needs
+        // to be static due to complications around passing Context to the constructor of this
+        // class.
+        PackageInfo packageInfo =
+                getPackageInfoUnchecked(
+                        packageName,
+                        user,
+                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS),
+                        context);
+
+        return getGrantedHealthPermissions(context, packageInfo);
+    }
+
+    /** Returns the list of health permissions granted to the given {@link PackageInfo}. */
+    public static List<String> getGrantedHealthPermissions(
+            Context context, PackageInfo packageInfo) {
+        Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(context);
+
+        if (packageInfo.requestedPermissions == null) {
+            return List.of();
+        }
+
+        List<String> grantedHealthPerms = new ArrayList<>(packageInfo.requestedPermissions.length);
+        for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
+            String currPerm = packageInfo.requestedPermissions[i];
+            if (packageInfo.requestedPermissionsFlags != null
+                    && healthPermissions.contains(currPerm)
+                    && ((packageInfo.requestedPermissionsFlags[i]
+                                    & PackageInfo.REQUESTED_PERMISSION_GRANTED)
+                            != 0)) {
+                grantedHealthPerms.add(currPerm);
+            }
+        }
+        return grantedHealthPerms;
+    }
+
+    /**
+     * Returns the list of {@link PackageInfo} for a given package. It does not check if the given
+     * package name is valid.
+     */
+    public static PackageInfo getPackageInfoUnchecked(
+            String packageName,
+            UserHandle user,
+            PackageManager.PackageInfoFlags flags,
+            Context context) {
+        try {
+            PackageManager packageManager =
+                    context.createContextAsUser(user, /* flags= */ 0).getPackageManager();
+
+            return packageManager.getPackageInfo(packageName, flags);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new IllegalArgumentException("invalid package", e);
+        }
+    }
+
     private PackageManager getPackageManagerAsUser(UserHandle user, Context context) {
         PackageManager packageManager = mUsersPackageManager.get(user);
         if (packageManager == null) {

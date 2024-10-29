@@ -999,7 +999,6 @@ public class HealthConnectManager {
                             callback) {
         try {
             mService.getCurrentPriority(
-                    mContext.getPackageName(),
                     dataCategory,
                     new IGetPriorityResponseCallback.Stub() {
                         @Override
@@ -1035,7 +1034,6 @@ public class HealthConnectManager {
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         try {
             mService.updatePriority(
-                    mContext.getPackageName(),
                     new UpdatePriorityRequestParcel(request),
                     new IEmptyResponseCallback.Stub() {
                         @Override

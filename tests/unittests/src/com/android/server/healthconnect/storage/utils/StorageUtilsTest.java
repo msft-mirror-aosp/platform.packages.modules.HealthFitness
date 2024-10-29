@@ -17,9 +17,9 @@
 package healthconnect.storage.utils;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceId;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.UUID_BYTE_SIZE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.bytesToUuids;
