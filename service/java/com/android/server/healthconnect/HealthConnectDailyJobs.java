@@ -30,7 +30,6 @@ import android.os.PersistableBundle;
 import android.os.UserHandle;
 
 import com.android.server.healthconnect.logging.DailyLoggingService;
-import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -84,8 +83,7 @@ public class HealthConnectDailyJobs {
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
             TransactionManager transactionManager,
-            ActivityDateHelper activityDateHelper,
-            HealthConnectPermissionHelper healthConnectPermissionHelper) {
+            ActivityDateHelper activityDateHelper) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
 
         AutoDeleteService.startAutoDelete(
@@ -101,7 +99,6 @@ public class HealthConnectDailyJobs {
                 UserHandle.getUserHandleForUid(userId),
                 preferenceHelper,
                 accessLogsHelper,
-                transactionManager,
-                healthConnectPermissionHelper);
+                transactionManager);
     }
 }

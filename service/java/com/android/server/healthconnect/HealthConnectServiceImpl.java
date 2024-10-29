@@ -408,7 +408,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mHealthConnectMappings,
                                 mInternalHealthConnectMappings,
                                 mChangeLogsHelper,
-                                mChangeLogsRequestHelper)
+                                mChangeLogsRequestHelper,
+                                mHealthDataCategoryPriorityHelper,
+                                mPreferenceHelper,
+                                mExportImportSettingsStorage)
                         : null;
     }
 
@@ -1266,8 +1269,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to get Priority for {@code dataCategory} */
     @Override
     public void getCurrentPriority(
-            @HealthDataCategory.Type int dataCategory,
-            IGetPriorityResponseCallback callback) {
+            @HealthDataCategory.Type int dataCategory, IGetPriorityResponseCallback callback) {
         checkParamsNonNull(callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1316,8 +1318,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to update priority for permission category(ies) */
     @Override
     public void updatePriority(
-            UpdatePriorityRequestParcel updatePriorityRequest,
-            IEmptyResponseCallback callback) {
+            UpdatePriorityRequestParcel updatePriorityRequest, IEmptyResponseCallback callback) {
         checkParamsNonNull(updatePriorityRequest, callback);
         ErrorCallback errorCallback = callback::onError;
 

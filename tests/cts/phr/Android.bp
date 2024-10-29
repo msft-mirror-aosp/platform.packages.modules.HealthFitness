@@ -31,9 +31,6 @@ android_test {
     srcs: [
         "src/android/healthconnect/cts/phr/**/*.java",
     ],
-    exclude_srcs: [
-        "src/android/healthconnect/cts/phr/PhrCtsTestUtils.java",
-    ],
     // Tag this module as a cts test artifact
     test_suites: [
         "cts",
@@ -68,7 +65,7 @@ android_test {
 java_library {
     name: "cts-healthconnect-phr-lib",
     srcs: [
-        "src/android/healthconnect/cts/phr/PhrCtsTestUtils.java",
+        "src/android/healthconnect/cts/phr/utils/*.java",
     ],
     static_libs: [
         "androidx.appcompat_appcompat",

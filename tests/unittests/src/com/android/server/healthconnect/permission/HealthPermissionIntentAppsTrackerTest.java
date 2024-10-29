@@ -55,8 +55,7 @@ public class HealthPermissionIntentAppsTrackerTest {
         when(mContext.getSystemService(eq(UserManager.class))).thenReturn(mUserManager);
         when(mUserManager.getUserHandles(anyBoolean())).thenReturn(List.of(CURRENT_USER));
         setSelfIntentSupport(false);
-        HealthPermissionIntentAppsTracker.resetInstanceForTest();
-        mTracker = HealthPermissionIntentAppsTracker.getInstance(mContext);
+        mTracker = new HealthPermissionIntentAppsTracker(mContext);
     }
 
     @Test

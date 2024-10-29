@@ -137,7 +137,7 @@ public class ImportManager {
 
         Context userContext = mContext.createContextAsUser(userHandle, 0);
         StorageContext dbContext =
-                StorageContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
+                StorageContext.create(mContext, userHandle, IMPORT_DATABASE_DIR_NAME);
         File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
 
         int zipFileSize = getZipFileSize(userContext, uri);

@@ -47,11 +47,7 @@ public final class StorageContext extends ContextWrapper {
 
     private final File mDatabaseDir;
 
-    public StorageContext(Context context, UserHandle userHandle) {
-        this(context, userHandle, null);
-    }
-
-    public StorageContext(
+    private StorageContext(
             Context context, UserHandle userHandle, @Nullable String databaseDirName) {
         super(context.createContextAsUser(userHandle, 0));
 
@@ -62,7 +58,6 @@ public final class StorageContext extends ContextWrapper {
                     FilesUtil.getDataSystemCeHCDirectoryForUser(userHandle.getIdentifier());
             mDatabaseDir = new File(hcDirectory, databaseDirName);
         }
-        mDatabaseDir.mkdirs();
     }
 
     /** Returns the directory in which the database is stored */
@@ -92,8 +87,15 @@ public final class StorageContext extends ContextWrapper {
     }
 
     /** Factory method */
+    public static StorageContext create(Context context, UserHandle userHandle) {
+        return create(context, userHandle, null);
+    }
+
+    /** Factory method */
     public static StorageContext create(
-            Context context, @Nullable String databaseDirName, UserHandle userHandle) {
-        return new StorageContext(context, userHandle, databaseDirName);
+            Context context, UserHandle userHandle, @Nullable String databaseDirName) {
+        StorageContext storageContext = new StorageContext(context, userHandle, databaseDirName);
+        storageContext.mDatabaseDir.mkdirs();
+        return storageContext;
     }
 }
