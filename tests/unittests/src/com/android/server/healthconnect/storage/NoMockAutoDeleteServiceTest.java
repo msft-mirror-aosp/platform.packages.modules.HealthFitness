@@ -86,8 +86,6 @@ public class NoMockAutoDeleteServiceTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         DeviceInfoHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
-        FirstGrantTimeManager.resetInstanceForTest();
-        HealthPermissionIntentAppsTracker.resetInstanceForTest();
 
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)

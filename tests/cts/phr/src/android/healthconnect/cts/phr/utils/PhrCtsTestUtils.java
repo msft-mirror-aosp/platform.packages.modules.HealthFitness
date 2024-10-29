@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts.phr;
+package android.healthconnect.cts.phr.utils;
 
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
@@ -29,23 +29,23 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_CONDITION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ENCOUNTER;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_MEDICATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_LABS;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_PREGNANCY;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_SOCIAL_HISTORY;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_VITAL_SIGNS;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_PRACTITIONER;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_PROCEDURE;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_Patient;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_CONDITION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ENCOUNTER;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_MEDICATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_LABS;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_PREGNANCY;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_SOCIAL_HISTORY;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_OBSERVATION_VITAL_SIGNS;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_PRACTITIONER;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_PROCEDURE;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_Patient;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 

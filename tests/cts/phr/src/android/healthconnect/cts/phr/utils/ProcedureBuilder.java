@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts.utils;
+package android.healthconnect.cts.phr.utils;
 
 public final class ProcedureBuilder extends FhirResourceBuilder<ProcedureBuilder> {
 

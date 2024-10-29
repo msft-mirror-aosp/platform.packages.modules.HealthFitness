@@ -18,14 +18,14 @@ package android.healthconnect.cts.phr;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceBuilder;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceAllergy;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceBuilder;
 import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
