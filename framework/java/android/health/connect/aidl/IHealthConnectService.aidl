@@ -169,22 +169,19 @@ interface IHealthConnectService {
         in IEmptyResponseCallback callback);
 
     /**
-     * @param packageName Calling package's name
      * @param permissionCategory PermissionCategory corresponding to which priority is requested
      * @param callback Callback to receive result of performing this operation
      */
     void getCurrentPriority(
-        String packageName,
         int permissionCategory,
         in IGetPriorityResponseCallback callback);
 
     /**
      * @param packageName Calling package's name
-     * @param request Delete request using the mentioned filters
+     * @param request Update request with the required priority changes
      * @param callback Callback to receive result of performing this operation
      */
     void updatePriority(
-        String packageName,
         in UpdatePriorityRequestParcel request,
         in IEmptyResponseCallback callback);
 

@@ -19,11 +19,6 @@ package android.healthconnect.cts.utils;
 import android.app.UiAutomation;
 import android.health.connect.HealthConnectException;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 /**
  * A specialization of {@link TestOutcomeReceiver} for the case when {@link HealthConnectException}
  * may be thrown.
@@ -32,38 +27,13 @@ import java.util.concurrent.Executors;
  */
 public final class HealthConnectReceiver<T> extends TestOutcomeReceiver<T, HealthConnectException> {
 
-    private static final Executor sExecutor =
-            Executors.newSingleThreadExecutor(
-                    runnable -> {
-                        Thread t = Executors.defaultThreadFactory().newThread(runnable);
-                        t.setName("HealthConnectReceiver");
-                        return t;
-                    });
-
-    /** Returns an {@code Executor} that can be used for delivering an outcome to a receiver. */
-    public static Executor outcomeExecutor() {
-        return sExecutor;
-    }
-
-    /**
-     * Wraps an API call that returns its response via an {@link android.os.OutcomeReceiver}.
-     *
-     * @see #callAndGetResponse(CallableForOutcome)
-     */
-    public interface CallableForOutcome<R> {
-        /** Calls the API method with the specified {@code executor} and {@code receiver}. */
-        void call(Executor executor, HealthConnectReceiver<R> receiver);
-    }
-
     /**
      * Helper for calling an API method that returns its response via an {@link
      * android.os.OutcomeReceiver}.
      */
-    public static <R> R callAndGetResponse(CallableForOutcome<R> callable)
+    public static <R> R callAndGetResponse(CallableForOutcome<R, HealthConnectException> callable)
             throws InterruptedException {
-        HealthConnectReceiver<R> receiver = new HealthConnectReceiver<>();
-        callable.call(sExecutor, receiver);
-        return receiver.getResponse();
+        return callAndGetResponse(HealthConnectException.class, callable);
     }
 
     /**
@@ -72,16 +42,9 @@ public final class HealthConnectReceiver<T> extends TestOutcomeReceiver<T, Healt
      * UiAutomation#adoptShellPermissionIdentity(String...)}.
      */
     public static <R> R callAndGetResponseWithShellPermissionIdentity(
-            CallableForOutcome<R> callable, String... permissions) throws InterruptedException {
-        // Don't use SystemUtil.runWithShellPermissionIdentity as that wraps all thrown exceptions
-        // in RuntimeException, which is unnecessary for our APIs which don't throw any
-        // checked exceptions.
-        UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        automation.adoptShellPermissionIdentity(permissions);
-        try {
-            return callAndGetResponse(callable);
-        } finally {
-            automation.dropShellPermissionIdentity();
-        }
+            CallableForOutcome<R, HealthConnectException> callable, String... permissions)
+            throws InterruptedException {
+        return callAndGetResponseWithShellPermissionIdentity(
+                HealthConnectException.class, callable, permissions);
     }
 }

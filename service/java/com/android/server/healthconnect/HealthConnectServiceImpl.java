@@ -34,13 +34,23 @@ import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_RESOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_RESOURCES_BY_REQUESTS;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_CHANGES;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_CHANGES_TOKEN;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_MEDICAL_DATA_SOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_MEDICAL_DATA_SOURCES_BY_REQUESTS;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.INSERT_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_AGGREGATED_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_DATA;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_REQUESTS;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPDATE_DATA;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPSERT_MEDICAL_RESOURCES;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -1256,10 +1266,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to get Priority for {@code dataCategory} */
     @Override
     public void getCurrentPriority(
-            String packageName,
             @HealthDataCategory.Type int dataCategory,
             IGetPriorityResponseCallback callback) {
-        checkParamsNonNull(packageName, callback);
+        checkParamsNonNull(callback);
         ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
@@ -1307,10 +1316,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to update priority for permission category(ies) */
     @Override
     public void updatePriority(
-            String packageName,
             UpdatePriorityRequestParcel updatePriorityRequest,
             IEmptyResponseCallback callback) {
-        checkParamsNonNull(packageName, updatePriorityRequest, callback);
+        checkParamsNonNull(updatePriorityRequest, callback);
         ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
@@ -2203,7 +2211,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
         String packageName = attributionSource.getPackageName();
         HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, INSERT_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, CREATE_MEDICAL_DATA_SOURCE)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(packageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2248,7 +2258,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     tryAndReturnResult(callback, dataSource, logger);
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
@@ -2272,7 +2282,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_IDS)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2353,7 +2365,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     logger.setNumberOfRecords(medicalDataSources.size());
                     tryAndReturnResult(callback, medicalDataSources, logger);
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 holdsDataManagementPermission);
@@ -2378,7 +2390,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_REQUESTS)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2455,7 +2469,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     logger.setNumberOfRecords(medicalDataSources.size());
                     tryAndReturnResult(callback, medicalDataSources, logger);
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 holdsDataManagementPermission);
@@ -2474,7 +2488,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, DELETE_MEDICAL_DATA_SOURCE_WITH_DATA)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2521,7 +2537,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                     tryAndReturnResult(callback, logger);
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
@@ -2541,7 +2557,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, INSERT_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, UPSERT_MEDICAL_RESOURCES)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2603,7 +2621,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     tryAndReturnResult(callback, medicalResources, logger);
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
@@ -2623,7 +2641,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_IDS)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2720,11 +2740,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     logger.setNumberOfRecords(medicalResources.size());
-
                     callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null, 0));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
@@ -2744,7 +2763,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_REQUESTS)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2826,7 +2847,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     response.getRemainingCount()));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
@@ -2855,7 +2876,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_IDS)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2896,7 +2919,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                     tryAndReturnResult(callback, logger);
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
@@ -2925,7 +2948,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                new HealthConnectServiceLogger.Builder(
+                                holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_REQUESTS)
+                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2969,7 +2994,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                     tryAndReturnResult(callback, logger);
                 },
-                null,
+                logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
@@ -2977,8 +3002,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private void scheduleLoggingHealthDataApiErrors(
             Task task,
-            // TODO(361796560): remove `@Nullable` when PHR telemetry is properly implemented
-            @Nullable HealthConnectServiceLogger.Builder logger,
+            HealthConnectServiceLogger.Builder logger,
             ErrorCallback errorCallback,
             int uid,
             boolean isController) {
@@ -3017,15 +3041,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 if (errorCode == ERROR_UNKNOWN) {
                                     Slog.e(TAG, "errorCode should not be ERROR_UNKNOWN!");
                                 }
-                                if (logger != null) {
-                                    logger.setHealthDataServiceApiStatusError(errorCode);
-                                }
+                                logger.setHealthDataServiceApiStatusError(errorCode);
                                 tryAndThrowException(errorCallback, exception, errorCode);
                             }
                         } finally {
-                            if (logger != null) {
-                                logger.build().log();
-                            }
+                            logger.build().log();
                         }
                     }
                 },
