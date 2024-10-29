@@ -165,7 +165,7 @@ public class FirstGrantTimeUnitTest {
             when(mPackageInfoUtils.getPackageUid(
                             eq(packageName), any(UserHandle.class), any(Context.class)))
                     .thenReturn(uid);
-            when(mPackageInfoUtils.getPackageNameFromUid(eq(uid)))
+            when(mPackageInfoUtils.getPackageNameForUid(eq(mContext), eq(uid)))
                     .thenReturn(Optional.of(packageName));
         }
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(
@@ -262,7 +262,7 @@ public class FirstGrantTimeUnitTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                 };
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackageNamesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(packageInfo));
         when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
@@ -298,7 +298,7 @@ public class FirstGrantTimeUnitTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                 };
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackageNamesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(packageInfo));
         when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
