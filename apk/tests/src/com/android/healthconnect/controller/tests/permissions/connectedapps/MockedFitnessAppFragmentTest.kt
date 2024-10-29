@@ -21,6 +21,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.content.Intent
 import android.content.pm.PackageManager.FLAG_PERMISSION_USER_SET
 import android.health.connect.HealthPermissions
+import android.platform.test.annotations.DisableFlags
 import androidx.core.os.bundleOf
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -32,23 +33,23 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.app.FitnessAppFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
 import com.android.healthconnect.controller.shared.Constants
-import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.isAbove
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
+import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -60,29 +61,16 @@ class MockedFitnessAppFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @BindValue val healthPermissionManager: HealthPermissionManager = mock()
-    @BindValue val healthPermissionReader: HealthPermissionReader = mock()
 
     @Before
     fun setup() {
         hiltRule.inject()
         toggleAnimation(false)
-        whenever(healthPermissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .thenReturn(
-                listOf(
-                    fromPermissionString(HealthPermissions.READ_EXERCISE),
-                    fromPermissionString(HealthPermissions.READ_HEART_RATE),
-                    fromPermissionString(HealthPermissions.READ_EXERCISE_ROUTES),
-                    fromPermissionString(HealthPermissions.WRITE_STEPS),
-                    fromPermissionString(HealthPermissions.READ_HEALTH_DATA_HISTORY),
-                )
-            )
     }
 
     @After
     fun tearDown() {
         toggleAnimation(true)
-        Mockito.reset(healthPermissionManager)
-        Mockito.reset(healthPermissionReader)
     }
 
     @Test
@@ -91,8 +79,9 @@ class MockedFitnessAppFragmentTest {
             .thenReturn(
                 listOf(
                     HealthPermissions.READ_EXERCISE,
-                    HealthPermissions.READ_HEART_RATE,
+                    HealthPermissions.READ_SLEEP,
                     HealthPermissions.READ_EXERCISE_ROUTES,
+                    HealthPermissions.READ_HEALTH_DATA_HISTORY,
                 )
             )
 
@@ -103,7 +92,7 @@ class MockedFitnessAppFragmentTest {
             )
         )
 
-        onView(withText("Exercise")).perform(scrollTo()).perform(click())
+        onView(allOf(withText("Exercise"))).perform(scrollTo()).perform(click())
 
         // check for dialog
         onView(withText("Disable both data types?"))
@@ -168,7 +157,7 @@ class MockedFitnessAppFragmentTest {
             )
         )
 
-        onView(withText("Exercise")).perform(scrollTo()).perform(click())
+        onView(allOf(withText("Exercise"))).perform(scrollTo()).perform(click())
 
         // check for dialog
         onView(withText("Disable both data types?"))
@@ -221,7 +210,7 @@ class MockedFitnessAppFragmentTest {
             )
         )
 
-        onView(withText("Exercise")).perform(scrollTo()).perform(click())
+        onView(allOf(withText("Exercise"))).perform(scrollTo()).perform(click())
 
         // check for dialog
         onView(withText("Disable both data types?")).check(doesNotExist())
