@@ -270,3 +270,12 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+    name: "export_import_nice_to_have"
+    namespace: "health_fitness_aconfig"
+    description: "Enables export/import feature updates after fast follow stage."
+    bug: "318484000"
+    is_fixed_read_only: true
+    is_exported: true
+}

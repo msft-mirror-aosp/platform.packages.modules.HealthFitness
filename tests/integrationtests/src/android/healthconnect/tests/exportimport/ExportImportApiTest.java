@@ -96,7 +96,7 @@ public class ExportImportApiTest {
         runShellCommandForHCJob("cancel -n");
         mExportedDbContext =
                 StorageContext.create(
-                        mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
+                        mContext, mContext.getUser(), REMOTE_EXPORT_DATABASE_DIR_NAME);
         // TODO(b/318484678): Improve tests using Uri from a different app.
         mRemoteExportFileUri =
                 Uri.fromFile(

@@ -29,8 +29,8 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_P
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
 
 import static com.google.common.truth.Truth.assertThat;
 

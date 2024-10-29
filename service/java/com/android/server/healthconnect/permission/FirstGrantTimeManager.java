@@ -75,9 +75,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final MigrationStateManager mMigrationStateManager;
 
-    @Nullable private static FirstGrantTimeManager sFirstGrantTimeManager;
-
-    private FirstGrantTimeManager(
+    public FirstGrantTimeManager(
             Context context,
             HealthPermissionIntentAppsTracker tracker,
             FirstGrantTimeDatastore datastore,
@@ -732,30 +730,5 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     private Context getUserContext(UserHandle userHandle) {
         return mContext.createContextAsUser(userHandle, /*flags*/ 0);
-    }
-
-    public static synchronized FirstGrantTimeManager getInstance(
-            Context context,
-            HealthPermissionIntentAppsTracker tracker,
-            FirstGrantTimeDatastore datastore,
-            PackageInfoUtils packageInfoUtils,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            MigrationStateManager migrationStateManager) {
-        if (sFirstGrantTimeManager == null) {
-            sFirstGrantTimeManager =
-                    new FirstGrantTimeManager(
-                            context,
-                            tracker,
-                            datastore,
-                            packageInfoUtils,
-                            healthDataCategoryPriorityHelper,
-                            migrationStateManager);
-        }
-        return sFirstGrantTimeManager;
-    }
-
-    /** Used to reset instance for testing. */
-    public static void resetInstanceForTest() {
-        sFirstGrantTimeManager = null;
     }
 }

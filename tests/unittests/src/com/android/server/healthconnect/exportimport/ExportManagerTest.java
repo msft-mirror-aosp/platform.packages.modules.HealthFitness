@@ -148,7 +148,7 @@ public class ExportManagerTest {
 
         mExportedDbContext =
                 StorageContext.create(
-                        mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
+                        mContext, mContext.getUser(), REMOTE_EXPORT_DATABASE_DIR_NAME);
         configureExportUri();
     }
 
@@ -231,7 +231,7 @@ public class ExportManagerTest {
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         StorageContext storageContext =
-                StorageContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
+                StorageContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
         assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
                 .isFalse();
         assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
@@ -286,7 +286,7 @@ public class ExportManagerTest {
     @Test
     public void deleteLocalExportFiles_deletesLocalCopies() {
         StorageContext storageContext =
-                StorageContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
+                StorageContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
         new File(storageContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
         new File(storageContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
 

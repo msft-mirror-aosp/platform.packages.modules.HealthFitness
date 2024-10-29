@@ -68,7 +68,7 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
                         .getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
         mStorageContext =
-                new StorageContext(
+                StorageContext.create(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
         // TransactionManager might already be initialized with a different context.
         // We first clear any earlier instance, then initialize with the required context.
