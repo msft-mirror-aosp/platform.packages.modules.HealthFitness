@@ -57,9 +57,9 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
@@ -122,7 +122,7 @@ public class FirstGrantTimeUnitTest {
         SystemUtil.runWithShellPermissionIdentity(
                 () -> HealthConnectDeviceConfigManager.initializeInstance(mContext),
                 Manifest.permission.READ_DEVICE_CONFIG);
-        TransactionManager.initializeInstance(new DatabaseContext(context, CURRENT_USER));
+        TransactionManager.initializeInstance(new StorageContext(context, CURRENT_USER));
         FirstGrantTimeManager.resetInstanceForTest();
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))

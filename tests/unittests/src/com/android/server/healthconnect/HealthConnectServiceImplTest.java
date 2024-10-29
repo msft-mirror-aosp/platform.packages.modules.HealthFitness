@@ -48,6 +48,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceI
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
 import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
@@ -82,6 +83,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
+import android.health.HealthFitnessStatsLog;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
@@ -259,6 +261,7 @@ public class HealthConnectServiceImplTest {
                     .mockStatic(UserHandle.class)
                     .mockStatic(TransactionManager.class)
                     .mockStatic(HealthDataCategoryPriorityHelper.class)
+                    .mockStatic(HealthFitnessStatsLog.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -1556,6 +1559,36 @@ public class HealthConnectServiceImplTest {
         verify(mMedicalDataSourceCallback, timeout(5000)).onError(mErrorCaptor.capture());
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
         assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_IO);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    public void testCreateMedicalDataSource_telemetryFlagOff_expectNoLogs() {
+        setUpCreateMedicalDataSourceDefaultMocks();
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+        when(mMedicalDataSourceHelper.createMedicalDataSource(any(), any(), any()))
+                .thenThrow(SQLiteException.class);
+
+        mHealthConnectService.createMedicalDataSource(
+                mAttributionSource,
+                getCreateMedicalDataSourceRequest(),
+                mMedicalDataSourceCallback);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyLong(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyString()),
+                times(0));
     }
 
     @Test
