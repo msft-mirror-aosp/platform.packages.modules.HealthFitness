@@ -279,3 +279,21 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+    name: "expressive_theming_enabled"
+    namespace: "health_fitness_aconfig"
+    description: "Enables expressive theming for the UI."
+    bug: "376085738"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "architecture_improvement"
+    namespace: "health_fitness_aconfig"
+    description: "Enables architecture and testing improvement for HC."
+    bug: "376085738"
+    is_fixed_read_only: true
+    is_exported: true
+}
