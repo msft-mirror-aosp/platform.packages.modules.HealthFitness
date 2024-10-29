@@ -18,8 +18,8 @@ package android.healthconnect.cts;
 
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
-import static android.healthconnect.cts.utils.HealthConnectReceiver.outcomeExecutor;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
 
 import static com.android.compatibility.common.util.SystemUtil.getEventually;
 

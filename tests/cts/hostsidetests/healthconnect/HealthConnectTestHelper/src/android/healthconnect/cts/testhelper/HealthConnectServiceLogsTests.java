@@ -30,6 +30,8 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.getMetadata;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getStepsRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.insertRecords;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
+import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.TestUtils.deleteAllMedicalData;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -54,6 +56,7 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.phr.PhrCtsTestUtils;
 import android.os.OutcomeReceiver;
 
 import androidx.test.InstrumentationRegistry;
@@ -66,6 +69,7 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -83,6 +87,7 @@ public class HealthConnectServiceLogsTests {
 
     private final HealthConnectManager mHealthConnectManager =
             InstrumentationRegistry.getContext().getSystemService(HealthConnectManager.class);
+    private final PhrCtsTestUtils mPhrTestUtils = new PhrCtsTestUtils(mHealthConnectManager);
     private static final String MY_PACKAGE_NAME =
             InstrumentationRegistry.getContext().getPackageName();
 
@@ -94,11 +99,18 @@ public class HealthConnectServiceLogsTests {
         insertRecords(List.of(record), mHealthConnectManager);
 
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
+        deleteAllMedicalData();
     }
 
     @After
     public void after() throws InterruptedException {
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
+        deleteAllMedicalData();
+    }
+
+    @Test
+    public void testCreateMedicalDataSource() throws Exception {
+        logErrorIfAny(() -> mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1")));
     }
 
     @Test
@@ -412,5 +424,17 @@ public class HealthConnectServiceLogsTests {
                 });
 
         assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+    }
+
+    /**
+     * Executes a {@link Callable} and logs error if any. This is mainly used to make an API call to
+     * trigger telemetry events, the result of the call is irrelevant.
+     */
+    private void logErrorIfAny(Callable<?> callable) {
+        try {
+            callable.call();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

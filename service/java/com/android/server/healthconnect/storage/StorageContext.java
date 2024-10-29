@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect.exportimport;
+package com.android.server.healthconnect.storage;
 
 import android.annotation.Nullable;
 import android.content.Context;
@@ -29,29 +29,31 @@ import com.android.server.healthconnect.utils.FilesUtil;
 import java.io.File;
 
 /**
- * {@link Context} for storing, accessing and deleting a user database in HealthConnect.
+ * {@link Context} for accessing storage directory for Health Connect.
  *
- * <p>By default, the database is created in the top level health connect directory in storage. But
- * other use cases that create a copy of the database (e.g. D2D, export/import) can pass in a
- * directory to create a database in a sub-directory.
+ * <p>It creates a different directory per user on the device, and provides data separation between
+ * users.
+ *
+ * <p>This is used to initialize {@link HealthConnectDatabase} to perform database operations.
+ *
+ * <p>Use cases that require creating an additional database (e.g. D2D, export/import) can pass in a
+ * sub-directory to create the database in that directory.
  *
  * @hide
  */
-public final class DatabaseContext extends ContextWrapper {
+public final class StorageContext extends ContextWrapper {
 
     private static final String TAG = "HealthConnectDatabaseContext";
 
-    private final UserHandle mUserHandle;
     private final File mDatabaseDir;
 
-    public DatabaseContext(Context context, UserHandle userHandle) {
+    public StorageContext(Context context, UserHandle userHandle) {
         this(context, userHandle, null);
     }
 
-    public DatabaseContext(
+    public StorageContext(
             Context context, UserHandle userHandle, @Nullable String databaseDirName) {
         super(context.createContextAsUser(userHandle, 0));
-        mUserHandle = userHandle;
 
         if (databaseDirName == null) {
             mDatabaseDir = FilesUtil.getDataSystemCeHCDirectoryForUser(userHandle.getIdentifier());
@@ -90,8 +92,8 @@ public final class DatabaseContext extends ContextWrapper {
     }
 
     /** Factory method */
-    public static DatabaseContext create(
+    public static StorageContext create(
             Context context, @Nullable String databaseDirName, UserHandle userHandle) {
-        return new DatabaseContext(context, userHandle, databaseDirName);
+        return new StorageContext(context, userHandle, databaseDirName);
     }
 }

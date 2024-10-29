@@ -37,6 +37,7 @@ import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -105,8 +106,8 @@ public class ExportManager {
         ExportImportLogger.logExportStatus(
                 DATA_EXPORT_STARTED, NO_VALUE_RECORDED, NO_VALUE_RECORDED, NO_VALUE_RECORDED);
 
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, userHandle);
+        StorageContext dbContext =
+                StorageContext.create(mContext, LOCAL_EXPORT_DIR_NAME, userHandle);
         File localExportDbFile = getLocalExportDbFile(dbContext);
         File localExportZipFile = getLocalExportZipFile(dbContext);
 
@@ -232,8 +233,8 @@ public class ExportManager {
 
     void deleteLocalExportFiles(UserHandle userHandle) {
         Slog.i(TAG, "Delete local export files started.");
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, userHandle);
+        StorageContext dbContext =
+                StorageContext.create(mContext, LOCAL_EXPORT_DIR_NAME, userHandle);
         File localExportDbFile = getLocalExportDbFile(dbContext);
         File localExportZipFile = getLocalExportZipFile(dbContext);
         if (localExportDbFile.exists()) {
@@ -245,11 +246,11 @@ public class ExportManager {
         Slog.i(TAG, "Delete local export files completed.");
     }
 
-    private File getLocalExportDbFile(DatabaseContext dbContext) {
+    private File getLocalExportDbFile(StorageContext dbContext) {
         return new File(dbContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
     }
 
-    private File getLocalExportZipFile(DatabaseContext dbContext) {
+    private File getLocalExportZipFile(StorageContext dbContext) {
         return new File(dbContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
     }
 
@@ -268,7 +269,7 @@ public class ExportManager {
         Slog.i(TAG, "Local export completed: " + destination.toPath().toAbsolutePath());
     }
 
-    private void exportToUri(DatabaseContext dbContext, File source, Uri destination)
+    private void exportToUri(StorageContext dbContext, File source, Uri destination)
             throws IOException {
         Slog.i(TAG, "Export to URI started.");
         try (OutputStream outputStream =
@@ -282,7 +283,7 @@ public class ExportManager {
     }
 
     // TODO(b/325599879): Double check if we need to vacuum the database after clearing the tables.
-    private void deleteLogTablesContent(DatabaseContext dbContext) {
+    private void deleteLogTablesContent(StorageContext dbContext) {
         // Throwing a exception when calling this method implies that it was not possible to
         // create a HC database from the file and, therefore, most probably the database was
         // corrupted during the file copy.
