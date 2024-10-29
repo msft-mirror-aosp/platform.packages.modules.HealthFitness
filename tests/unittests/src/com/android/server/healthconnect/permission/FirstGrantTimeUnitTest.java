@@ -31,7 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.Manifest;
-import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -112,9 +111,6 @@ public class FirstGrantTimeUnitTest {
 
     private HealthConnectInjectorImpl.Builder mHealthConnectInjectorBuilder;
 
-    private final UiAutomation mUiAutomation =
-            InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
     @Before
     public void setUp() {
         Context context = InstrumentationRegistry.getContext();
@@ -142,8 +138,6 @@ public class FirstGrantTimeUnitTest {
                         .setMigrationStateManager(mMigrationStateManager)
                         .setFirstGrantTimeDatastore(mDatastore)
                         .setHealthPermissionIntentAppsTracker(mTracker);
-        mUiAutomation.adoptShellPermissionIdentity(
-                "android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS");
     }
 
     @After
