@@ -19,12 +19,14 @@ package com.android.server.healthconnect.storage;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ACTIVITY_INTENSITY;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_GENERATED_LOCAL_TIME;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PLANNED_EXERCISE_SESSIONS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_SKIN_TEMPERATURE;
 import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
+import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.TransactionManager.runAsTransaction;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
@@ -36,6 +38,7 @@ import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityIntensityRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
@@ -79,6 +82,9 @@ final class DatabaseUpgradeHelper {
     private static final Upgrader UPGRADE_TO_PERSONAL_HEALTH_RECORD =
             DatabaseUpgradeHelper::applyPersonalHealthRecordDatabaseUpgrade;
 
+    private static final Upgrader UPGRADE_TO_ACTIVITY_INTENSITY =
+            db -> createTable(db, new ActivityIntensityRecordHelper().getCreateTableRequest());
+
     /**
      * A list of db version -> Upgrader to upgrade the db from the previous version to the version.
      * The upgrades must be executed one by one in the numeric order of db versions, hence TreeMap.
@@ -91,7 +97,8 @@ final class DatabaseUpgradeHelper {
                             DB_VERSION_PLANNED_EXERCISE_SESSIONS,
                                     UPGRADE_TO_PLANNED_EXERCISE_SESSIONS,
                             DB_VERSION_MINDFULNESS_SESSION, UPGRADE_TO_MINDFULNESS_SESSION,
-                            DB_VERSION_PERSONAL_HEALTH_RECORD, UPGRADE_TO_PERSONAL_HEALTH_RECORD));
+                            DB_VERSION_PERSONAL_HEALTH_RECORD, UPGRADE_TO_PERSONAL_HEALTH_RECORD,
+                            DB_VERSION_ACTIVITY_INTENSITY, UPGRADE_TO_ACTIVITY_INTENSITY));
 
     /**
      * Applies db upgrades to bring the current schema to the latest supported version.
@@ -138,6 +145,9 @@ final class DatabaseUpgradeHelper {
             if (shouldUpgrade(DB_VERSION_PERSONAL_HEALTH_RECORD, effectiveOldVersion, newVersion)) {
                 UPGRADE_TO_PERSONAL_HEALTH_RECORD.upgrade(db);
             }
+            if (effectiveOldVersion < DB_VERSION_ACTIVITY_INTENSITY) {
+                UPGRADE_TO_ACTIVITY_INTENSITY.upgrade(db);
+            }
         }
     }
 
@@ -151,7 +161,7 @@ final class DatabaseUpgradeHelper {
 
     private static void createTablesForMinSupportedVersion(SQLiteDatabase db) {
         for (CreateTableRequest createTableRequest : getInitialCreateTableRequests()) {
-            HealthConnectDatabase.createTable(db, createTableRequest);
+            createTable(db, createTableRequest);
         }
     }
 
@@ -204,7 +214,7 @@ final class DatabaseUpgradeHelper {
             return;
         }
         PlannedExerciseSessionRecordHelper recordHelper = new PlannedExerciseSessionRecordHelper();
-        HealthConnectDatabase.createTable(db, recordHelper.getCreateTableRequest());
+        createTable(db, recordHelper.getCreateTableRequest());
         executeSqlStatements(
                 db,
                 recordHelper
