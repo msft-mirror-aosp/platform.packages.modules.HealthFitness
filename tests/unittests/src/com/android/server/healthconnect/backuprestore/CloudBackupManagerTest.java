@@ -35,6 +35,7 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -42,6 +43,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
@@ -102,6 +105,9 @@ public class CloudBackupManagerTest {
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         DeviceInfoHelper deviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+        HealthDataCategoryPriorityHelper priorityHelper =
+                healthConnectInjector.getHealthDataCategoryPriorityHelper();
+        PreferenceHelper preferenceHelper = healthConnectInjector.getPreferenceHelper();
         HealthConnectMappings healthConnectMappings =
                 healthConnectInjector.getHealthConnectMappings();
         InternalHealthConnectMappings internalHealthConnectMappings =
@@ -109,6 +115,8 @@ public class CloudBackupManagerTest {
         ChangeLogsHelper changeLogsHelper = healthConnectInjector.getChangeLogsHelper();
         ChangeLogsRequestHelper changeLogsRequestHelper =
                 healthConnectInjector.getChangeLogsRequestHelper();
+        ExportImportSettingsStorage exportImportSettingsStorage =
+                healthConnectInjector.getExportImportSettingsStorage();
 
         mCloudBackupManager =
                 new CloudBackupManager(
@@ -119,7 +127,10 @@ public class CloudBackupManagerTest {
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
-                        changeLogsRequestHelper);
+                        changeLogsRequestHelper,
+                        priorityHelper,
+                        preferenceHelper,
+                        exportImportSettingsStorage);
     }
 
     @After
