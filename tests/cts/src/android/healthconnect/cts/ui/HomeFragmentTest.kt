@@ -25,8 +25,8 @@ import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
-import android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
-import android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest
+import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
+import android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled

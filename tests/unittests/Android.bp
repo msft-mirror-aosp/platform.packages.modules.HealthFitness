@@ -53,6 +53,7 @@ android_test {
         "services.core",
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
+        "cts-healthconnect-phr-lib",
         "flag-junit",
         "platform-parametric-runner-lib",
         "framework-annotations-lib",

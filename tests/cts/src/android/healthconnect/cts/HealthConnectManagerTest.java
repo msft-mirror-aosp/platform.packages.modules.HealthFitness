@@ -32,11 +32,11 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
