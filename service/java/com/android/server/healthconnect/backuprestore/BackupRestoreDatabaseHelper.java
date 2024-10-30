@@ -18,7 +18,11 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
+
 import android.annotation.Nullable;
+import android.database.Cursor;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.backuprestore.BackupChange;
@@ -38,8 +42,10 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -84,6 +90,31 @@ public class BackupRestoreDatabaseHelper {
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mChangeLogsHelper = changeLogsHelper;
         mChangeLogsRequestHelper = changeLogsRequestHelper;
+    }
+
+    /**
+     * Verifies whether the provided change logs token is still valid. The token is valid if the
+     * next change log still exists or the token points to the end of the change logs table.
+     */
+    boolean isChangeLogsTokenValid(@Nullable String changeLogsPageToken) {
+        if (changeLogsPageToken == null) {
+            return false;
+        }
+        ChangeLogsRequestHelper.TokenRequest tokenRequest =
+                mChangeLogsRequestHelper.getRequest(/* packageName= */ "", changeLogsPageToken);
+        if (tokenRequest.getRowIdChangeLogs() == mChangeLogsHelper.getLatestRowId()) {
+            return true;
+        }
+        WhereClauses whereClauses =
+                new WhereClauses(AND)
+                        .addWhereEqualsClause(
+                                PRIMARY_COLUMN_NAME,
+                                String.valueOf(tokenRequest.getRowIdChangeLogs() + 1));
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(ChangeLogsHelper.TABLE_NAME).setWhereClause(whereClauses);
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return cursor.getCount() == 1;
+        }
     }
 
     /**
@@ -193,15 +224,15 @@ public class BackupRestoreDatabaseHelper {
     }
 
     private String getChangeLogsPageToken() {
-        long nextRowId = mChangeLogsHelper.getLatestRowId() + 1;
+        long rowId = mChangeLogsHelper.getLatestRowId();
         ChangeLogsRequestHelper.TokenRequest tokenRequest =
                 new ChangeLogsRequestHelper.TokenRequest(
                         List.of(),
                         getRecordTypes(),
-                        // TODO: b/369799948 - revisit what should be passed.
+                        // Pass empty string to avoid package filters.
                         /* requestingPackageName= */ "",
-                        nextRowId);
-        return mChangeLogsRequestHelper.getNextPageToken(tokenRequest, nextRowId);
+                        rowId);
+        return mChangeLogsRequestHelper.getNextPageToken(tokenRequest, rowId);
     }
 
     private List<BackupChange> convertRecordsToBackupChange(List<RecordInternal<?>> records) {
