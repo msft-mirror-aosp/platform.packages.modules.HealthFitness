@@ -124,12 +124,31 @@ class RawFhirViewModelTest {
             listOf(
                 RawFhirViewModel.FormattedFhir(
                     fhir =
-                        "{\n" +
+                    "{\n" +
                             "    \"resourceType\": \"Immunization\",\n" +
-                            "    \"id\": \"Immunization_1\"\n" +
+                            "    \"id\": \"immunization-1\",\n" +
+                            "    \"status\": \"completed\",\n" +
+                            "    \"vaccineCode\": {\n" +
+                            "        \"coding\": [\n" +
+                            "            {\n" +
+                            "                \"system\": \"http://hl7.org/fhir/sid/cvx\",\n" +
+                            "                \"code\": \"115\"\n" +
+                            "            },\n" +
+                            "            {\n" +
+                            "                \"system\": \"http://hl7.org/fhir/sid/ndc\",\n" +
+                            "                \"code\": \"58160-842-11\"\n" +
+                            "            }\n" +
+                            "        ],\n" +
+                            "        \"text\": \"Tdap\"\n" +
+                            "    },\n" +
+                            "    \"patient\": {\n" +
+                            "        \"reference\": \"Patient/patient_1\",\n" +
+                            "        \"display\": \"Example, Anne\"\n" +
+                            "    },\n" +
+                            "    \"occurrenceDateTime\": \"2018-05-21\"\n" +
                             "}",
                     fhirContentDescription =
-                        "Detailed source code: Open bracket. Field resourceType Value: Immunization. Field id Value: Immunization_1.Closed bracket.",
+                        "Detailed source code: Open bracket. Field resourceType Value: Immunization. Field id Value: immunization-1. Field status Value: completed. Field vaccineCode ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/cvx.     Field code Value    : 115.    Closed bracket.Detailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/ndc.     Field code Value    : 58160-842-11.    Closed bracket.   Field text Value  : Tdap.  Closed bracket. Field patient ValueDetailed source code:   Open bracket.   Field reference Value  : Patient/patient_1.   Field display Value  : Example, Anne.  Closed bracket. Field occurrenceDateTime Value: 2018-05-21.Closed bracket.",
                 )
             )
         assertThat(testObserver.getLastValue())
@@ -159,7 +178,7 @@ class RawFhirViewModelTest {
                     fhir =
                         "{\n" +
                             "    \"resourceType\": \"Immunization\",\n" +
-                            "    \"id\": \"immunization_1\",\n" +
+                            "    \"id\": \"immunization-1\",\n" +
                             "    \"status\": \"completed\",\n" +
                             "    \"vaccineCode\": {\n" +
                             "        \"coding\": [\n" +
@@ -233,7 +252,7 @@ class RawFhirViewModelTest {
                             "    ]\n" +
                             "}",
                     fhirContentDescription =
-                        "Detailed source code: Open bracket. Field resourceType Value: Immunization. Field id Value: immunization_1. Field status Value: completed. Field vaccineCode ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/cvx.     Field code Value    : 115.    Closed bracket.Detailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/ndc.     Field code Value    : 58160-842-11.    Closed bracket.   Field text Value  : Tdap.  Closed bracket. Field patient ValueDetailed source code:   Open bracket.   Field reference Value  : Patient/patient_1.   Field display Value  : Example, Anne.  Closed bracket. Field encounter ValueDetailed source code:   Open bracket.   Field reference Value  : Encounter/encounter_unk.   Field display Value  : GP Visit.  Closed bracket. Field occurrenceDateTime Value: 2018-05-21. Field primarySource Value: true. Field manufacturer ValueDetailed source code:   Open bracket.   Field display Value  : Sanofi Pasteur.  Closed bracket. Field lotNumber Value: 1. Field site ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-ActSite.     Field code Value    : LA.     Field display Value    : Left Arm.    Closed bracket.   Field text Value  : Left Arm.  Closed bracket. Field route ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration.     Field code Value    : IM.     Field display Value    : Injection, intramuscular.    Closed bracket.   Field text Value  : Injection, intramuscular.  Closed bracket. Field doseQuantity ValueDetailed source code:   Open bracket.   Field value Value  : 0.5.   Field unit Value  : mL.  Closed bracket. Field performer ValueDetailed source code:   Open bracket.   Field function ValueDetailed source code:     Open bracket.     Field coding ValueDetailed source code:       Open bracket.       Field system Value      : http://terminology.hl7.org/CodeSystem/v2-0443.       Field code Value      : AP.       Field display Value      : Administering Provider.      Closed bracket.     Field text Value    : Administering Provider.    Closed bracket.   Field actor ValueDetailed source code:     Open bracket.     Field reference Value    : Practitioner/practitioner_1.     Field type Value    : Practitioner.     Field display Value    : Dr Maria Hernandez.    Closed bracket.  Closed bracket.Closed bracket.",
+                        "Detailed source code: Open bracket. Field resourceType Value: Immunization. Field id Value: immunization-1. Field status Value: completed. Field vaccineCode ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/cvx.     Field code Value    : 115.    Closed bracket.Detailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/ndc.     Field code Value    : 58160-842-11.    Closed bracket.   Field text Value  : Tdap.  Closed bracket. Field patient ValueDetailed source code:   Open bracket.   Field reference Value  : Patient/patient_1.   Field display Value  : Example, Anne.  Closed bracket. Field encounter ValueDetailed source code:   Open bracket.   Field reference Value  : Encounter/encounter_unk.   Field display Value  : GP Visit.  Closed bracket. Field occurrenceDateTime Value: 2018-05-21. Field primarySource Value: true. Field manufacturer ValueDetailed source code:   Open bracket.   Field display Value  : Sanofi Pasteur.  Closed bracket. Field lotNumber Value: 1. Field site ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-ActSite.     Field code Value    : LA.     Field display Value    : Left Arm.    Closed bracket.   Field text Value  : Left Arm.  Closed bracket. Field route ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration.     Field code Value    : IM.     Field display Value    : Injection, intramuscular.    Closed bracket.   Field text Value  : Injection, intramuscular.  Closed bracket. Field doseQuantity ValueDetailed source code:   Open bracket.   Field value Value  : 0.5.   Field unit Value  : mL.  Closed bracket. Field performer ValueDetailed source code:   Open bracket.   Field function ValueDetailed source code:     Open bracket.     Field coding ValueDetailed source code:       Open bracket.       Field system Value      : http://terminology.hl7.org/CodeSystem/v2-0443.       Field code Value      : AP.       Field display Value      : Administering Provider.      Closed bracket.     Field text Value    : Administering Provider.    Closed bracket.   Field actor ValueDetailed source code:     Open bracket.     Field reference Value    : Practitioner/practitioner_1.     Field type Value    : Practitioner.     Field display Value    : Dr Maria Hernandez.    Closed bracket.  Closed bracket.Closed bracket.",
                 )
             )
         assertThat(testObserver.getLastValue())
