@@ -51,6 +51,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -95,7 +96,8 @@ public class HealthConnectDatabaseTest {
     @DisableFlags({
         FLAG_DEVELOPMENT_DATABASE,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_ACTIVITY_INTENSITY_DB
+        FLAG_ACTIVITY_INTENSITY_DB,
+        Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES
     })
     public void onCreate_dbWithLatestSchemaCreated() {
         SQLiteDatabase sqliteDatabase =
