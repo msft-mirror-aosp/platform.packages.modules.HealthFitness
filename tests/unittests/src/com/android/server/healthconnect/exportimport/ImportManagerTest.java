@@ -411,7 +411,7 @@ public class ImportManagerTest {
 
         File databaseDir =
                 StorageContext.create(mContext, mContext.getUser(), IMPORT_DATABASE_DIR_NAME)
-                        .getDatabaseDir();
+                        .getDataDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }
 
