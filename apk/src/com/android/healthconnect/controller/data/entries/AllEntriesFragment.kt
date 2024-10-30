@@ -285,9 +285,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 it.layoutManager = LinearLayoutManager(context, VERTICAL, false)
             }
 
-        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
-            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
-        }
         return view
     }
 
@@ -342,6 +339,9 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 dateNavigationView.getDate(),
                 dateNavigationView.getPeriod(),
             )
+        }
+        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
+            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
         }
         logger.setPageId(PageName.TAB_ENTRIES_PAGE)
         logger.logPageImpression()
@@ -471,6 +471,14 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     entriesRecyclerView.isVisible = false
                 }
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val deletionFragment = childFragmentManager.findFragmentByTag(DELETION_TAG)
+        if (deletionFragment != null) {
+            childFragmentManager.commitNow { remove(deletionFragment) }
         }
     }
 }

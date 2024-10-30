@@ -94,10 +94,10 @@
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Verbrande calorieën lezen"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Hiermee kan een app de verbrande calorieën lezen"</string>
     <string name="background_read_single_request_title" msgid="4903874755139858906">"<xliff:g id="APP_NAME">%1$s</xliff:g> toegang geven tot gegevens op de achtergrond?"</string>
-    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Als je dit toestaat, heeft deze app toegang tot fitness- en welzijnsgegevens en medische dossiers als je de app niet gebruikt."</string>
-    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Als je dit toestaat, heeft deze app toegang tot medische dossiers als je de app niet gebruikt."</string>
-    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Als je dit toestaat, heeft deze app toegang tot fitness- en welzijnsgegevens als je de app niet gebruikt."</string>
-    <string name="background_read_single_request_description" msgid="2679634929322639576">"Als je dit toestaat, heeft deze app toegang tot Health Connect-gegevens als je de app niet gebruikt."</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Als je dit toestaat, heeft deze app toegang tot fitness- en welzijnsgegevens en medische dossiers wanneer je de app niet gebruikt."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Als je dit toestaat, heeft deze app toegang tot medische dossiers wanneer je de app niet gebruikt."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Als je dit toestaat, heeft deze app toegang tot fitness- en welzijnsgegevens wanneer je de app niet gebruikt."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Als je dit toestaat, heeft deze app toegang tot Health Connect-gegevens wanneer je de app niet gebruikt."</string>
     <string name="history_read_single_request_title" msgid="6848027207063414793">"<xliff:g id="APP_NAME">%1$s</xliff:g> toegang geven tot eerdere gegevens?"</string>
     <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Als je dit toestaat, heeft deze app toegang tot fitness- en welzijnsgegevens die vóór <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> zijn toegevoegd."</string>
     <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Als je dit toestaat, heeft deze app toegang tot alle eerdere fitness- en welzijnsgegevens."</string>
@@ -108,11 +108,11 @@
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Toegang tot alle gegevens op de achtergrond"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Toegang tot medische dossiers op de achtergrond"</string>
     <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Toegang tot fitness- en welzijnsgegevens op de achtergrond"</string>
-    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Geef deze app toegang tot fitness- en welzijnsgegevens en medische dossiers als je de app niet gebruikt"</string>
-    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Geef deze app toegang tot deze gegevens als je de app niet gebruikt"</string>
-    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Geef deze app toegang tot deze gegevens als je de app niet gebruikt"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Geef deze app toegang tot fitness- en welzijnsgegevens en medische dossiers wanneer je de app niet gebruikt"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Geef deze app toegang tot deze gegevens wanneer je de app niet gebruikt"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Geef deze app toegang tot deze gegevens wanneer je de app niet gebruikt"</string>
     <string name="background_read_combined_request_title" msgid="4184649296697480520">"Toegang tot gegevens op de achtergrond"</string>
-    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Geef deze app toegang tot Health Connect-gegevens als je de app niet gebruikt"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Geef deze app toegang tot Health Connect-gegevens wanneer je de app niet gebruikt"</string>
     <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Toegang tot eerdere fitness- en welzijnsgegevens"</string>
     <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Geef deze app toegang tot gegevens die vóór <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> zijn toegevoegd"</string>
     <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Geef deze app toegang tot alle eerdere gegevens"</string>
@@ -124,11 +124,11 @@
     <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Toegang tot alle gegevens op de achtergrond"</string>
     <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Toegang tot medische dossiers op de achtergrond"</string>
     <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Toegang tot fitness- en welzijnsgegevens op de achtergrond"</string>
-    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Geef deze app toegang tot fitness- en welzijnsgegevens en medische dossiers als je de app niet gebruikt"</string>
-    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Geef deze app toegang tot deze gegevens als je de app niet gebruikt"</string>
-    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Geef deze app toegang tot deze gegevens als je de app niet gebruikt"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Geef deze app toegang tot fitness- en welzijnsgegevens en medische dossiers wanneer je de app niet gebruikt"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Geef deze app toegang tot deze gegevens wanneer je de app niet gebruikt"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Geef deze app toegang tot deze gegevens wanneer je de app niet gebruikt"</string>
     <string name="background_read_access_title" msgid="4184498185599147117">"Toegang tot gegevens op de achtergrond"</string>
-    <string name="background_read_access_description" msgid="2360433029368320323">"Geef deze app toegang tot Health Connect-gegevens als je de app niet gebruikt"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Geef deze app toegang tot Health Connect-gegevens wanneer je de app niet gebruikt"</string>
     <string name="history_read_medical_access_title" msgid="1375462150672418692">"Toegang tot eerdere fitness- en welzijnsgegevens"</string>
     <string name="history_read_medical_access_description" msgid="5615959269427106141">"Geef deze app toegang tot gegevens die vóór <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> zijn toegevoegd"</string>
     <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Geef deze app toegang tot alle eerdere gegevens"</string>
@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"rolstoelduwen"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Gegevens over rolstoelduwen lezen"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Gegevens over rolstoelduwen schrijven"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Basaal metabolisme"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"basaal metabolisme"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Gegevens over basaal metabolisme lezen"</string>
@@ -1148,12 +1156,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"De geselecteerde <xliff:g id="APP_NAME">%1$s</xliff:g>-vermeldingen voor <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> definitief verwijderen?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Deze <xliff:g id="APP_NAME">%s</xliff:g>-vermelding definitief verwijderen?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Gegevens van het type <xliff:g id="DATA_TYPE">%1$s</xliff:g> voor <xliff:g id="APP_NAME">%2$s</xliff:g> definitief verwijderen?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Aan"</string>
+    <string name="off" msgid="6996623844428550649">"Uit"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Geopend: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Geopend: gisteren om <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Geopend: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> om <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

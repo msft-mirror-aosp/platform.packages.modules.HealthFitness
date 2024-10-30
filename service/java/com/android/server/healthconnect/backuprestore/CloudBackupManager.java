@@ -30,6 +30,7 @@ import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -47,6 +48,7 @@ public final class CloudBackupManager {
 
     private static final String TAG = "CloudBackupManager";
 
+    private final TransactionManager mTransactionManager;
     private final BackupRestoreDatabaseHelper mDatabaseHelper;
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
@@ -64,6 +66,7 @@ public final class CloudBackupManager {
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper,
             ExportImportSettingsStorage exportImportSettingsStorage) {
+        mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
         mExportImportSettingsStorage = exportImportSettingsStorage;
@@ -94,7 +97,15 @@ public final class CloudBackupManager {
     @NonNull
     public GetChangesForBackupResponse getChangesForBackup(@Nullable String changeToken) {
         if (changeToken != null) {
-            // TODO: b/369799948 - handles the case when still reading records from data tables.
+            // TODO: b/369799948 - error handling?
+            BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                    BackupChangeTokenHelper.getBackupChangeToken(mTransactionManager, changeToken);
+            if (backupChangeToken.getDataTableName() != null) {
+                return mDatabaseHelper.getChangesAndTokenFromDataTables(
+                        backupChangeToken.getDataTableName(),
+                        backupChangeToken.getDataTablePageToken(),
+                        backupChangeToken.getChangeLogsRequestToken());
+            }
             throw new UnsupportedOperationException();
         }
         return mDatabaseHelper.getChangesAndTokenFromDataTables();

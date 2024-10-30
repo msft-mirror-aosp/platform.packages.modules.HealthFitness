@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,6 @@ import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -67,10 +66,6 @@ import java.util.Set;
  * @hide
  */
 public class MedicalResourceValidator {
-    private static final FhirVersion R4_FHIR_VERSION = FhirVersion.parseFhirVersion("4.0.1");
-    private static final FhirVersion R4B_FHIR_VERSION = FhirVersion.parseFhirVersion("4.3.0");
-    private static final List<FhirVersion> SUPPORTED_FHIR_VERSIONS =
-            List.of(R4_FHIR_VERSION, R4B_FHIR_VERSION);
     // For the values in these codes see
     // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-pregnancy-status-uv-ips.html
     private static final Set<String> PREGNANCY_LOINC_CODES =
@@ -95,12 +90,16 @@ public class MedicalResourceValidator {
     private final String mFhirData;
     private final FhirVersion mFhirVersion;
     private final String mDataSourceId;
+    private @Nullable FhirResourceValidator mFhirResourceValidator;
 
     /** Returns a validator for the provided {@link UpsertMedicalResourceRequest}. */
-    public MedicalResourceValidator(UpsertMedicalResourceRequest request) {
+    public MedicalResourceValidator(
+            UpsertMedicalResourceRequest request,
+            @Nullable FhirResourceValidator fhirResourceValidator) {
         mFhirData = request.getData();
         mFhirVersion = request.getFhirVersion();
         mDataSourceId = request.getDataSourceId();
+        mFhirResourceValidator = fhirResourceValidator;
     }
 
     /**
@@ -136,8 +135,9 @@ public class MedicalResourceValidator {
                 validateAndGetResourceType(
                         extractedFhirResourceTypeString, extractedFhirResourceId);
 
-        // TODO(b/350010200) Perform structural FHIR validation after FhirResourceValidator is
-        // implemented.
+        if (mFhirResourceValidator != null) {
+            mFhirResourceValidator.validateFhirResource(parsedFhirJsonObj, fhirResourceTypeInt);
+        }
 
         @MedicalResourceType
         int medicalResourceTypeInt =

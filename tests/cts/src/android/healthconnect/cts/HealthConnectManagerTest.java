@@ -31,9 +31,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
-import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
@@ -44,7 +41,6 @@ import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import static com.google.common.truth.Correspondence.transforming;
 import static com.google.common.truth.Truth.assertThat;
@@ -62,7 +58,6 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
-import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
@@ -75,14 +70,12 @@ import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
-import android.health.connect.datatypes.AppInfo;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HydrationRecord;
-import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.Record;
@@ -129,16 +122,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /** CTS test for API provided by HealthConnectManager. */
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -162,7 +152,6 @@ public class HealthConnectManagerTest {
     public void before() throws InterruptedException {
         deleteAllRecords();
         TestUtils.deleteAllStagedRemoteData();
-        TestUtils.deleteAllMedicalData();
         mContext = ApplicationProvider.getApplicationContext();
         mManager = requireNonNull(mContext.getSystemService(HealthConnectManager.class));
     }
@@ -170,7 +159,6 @@ public class HealthConnectManagerTest {
     @After
     public void after() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
-        TestUtils.deleteAllMedicalData();
     }
 
     private void deleteAllRecords() throws InterruptedException {
@@ -1411,74 +1399,6 @@ public class HealthConnectManagerTest {
         }
 
         verifyRecordTypeResponse(response, expectedResponseMap);
-    }
-
-    @Test
-    public void testGetContributorApplicationsInfo_appCreatesMedicalDataSourceOnly_succeeds()
-            throws Exception {
-        // Create health fitness data.
-        Set<String> expectedPackages = new HashSet<>();
-        TestUtils.insertRecords(getTestRecords());
-        expectedPackages.add(APP_PACKAGE_NAME);
-        // Create medical data with a different package.
-        if (personalHealthRecord()) {
-            APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-            expectedPackages.add(APP_WRITE_PERMS_ONLY.getPackageName());
-        }
-
-        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
-        runWithShellPermissionIdentity(
-                () -> {
-                    mManager.getContributorApplicationsInfo(
-                            Executors.newSingleThreadExecutor(), receiver);
-                    assertThat(
-                                    receiver.getResponse().getApplicationInfoList().stream()
-                                            .map(AppInfo::getPackageName)
-                                            .collect(Collectors.toSet()))
-                            .isEqualTo(expectedPackages);
-                },
-                MANAGE_HEALTH_DATA);
-    }
-
-    @Test
-    public void testGetContributorApplicationsInfo_appCreatesMedicalResource_isInContributingApps()
-            throws Exception {
-        // Create health fitness data.
-        Set<String> expectedPackages = new HashSet<>();
-        TestUtils.insertRecords(getTestRecords());
-        expectedPackages.add(APP_PACKAGE_NAME);
-        // Create a dataSource and a medicalResource with a different package.
-        if (personalHealthRecord()) {
-            MedicalDataSource dataSource =
-                    APP_WRITE_PERMS_ONLY.createMedicalDataSource(
-                            getCreateMedicalDataSourceRequest());
-            APP_WRITE_PERMS_ONLY.upsertMedicalResource(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
-            expectedPackages.add(APP_WRITE_PERMS_ONLY.getPackageName());
-        }
-        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
-
-        runWithShellPermissionIdentity(
-                () -> {
-                    mManager.getContributorApplicationsInfo(
-                            Executors.newSingleThreadExecutor(), receiver);
-                    assertThat(
-                                    receiver.getResponse().getApplicationInfoList().stream()
-                                            .map(AppInfo::getPackageName)
-                                            .collect(Collectors.toSet()))
-                            .isEqualTo(expectedPackages);
-                },
-                MANAGE_HEALTH_DATA);
-    }
-
-    @Test
-    public void testGetContributorApplicationsInfo_noManageHealthDataPerm_throws()
-            throws InterruptedException {
-        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
-
-        mManager.getContributorApplicationsInfo(Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.assertAndGetException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     private boolean isEmptyContributingPackagesForAll(

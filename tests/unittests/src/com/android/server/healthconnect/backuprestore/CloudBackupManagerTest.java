@@ -15,13 +15,16 @@
  */
 package com.android.server.healthconnect.backuprestore;
 
+import static com.android.server.healthconnect.backuprestore.BackupRestoreDatabaseHelper.MAXIMUM_PAGE_SIZE;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
@@ -56,6 +59,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Unit test for class {@link CloudBackupManager}. */
 @RunWith(AndroidJUnit4.class)
 @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
@@ -70,7 +76,10 @@ public class CloudBackupManagerTest {
 
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(Environment.class).build();
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .build();
 
     @Rule(order = 3)
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
@@ -141,10 +150,38 @@ public class CloudBackupManagerTest {
     }
 
     @Test
-    public void getChangesForBackup_changeTokenIsNotNull_throwsUnsupportedOperationException() {
+    public void getChangesForBackup_dataTableIsNull_throwsUnsupportedOperationException() {
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT));
+
+        GetChangesForBackupResponse response = mCloudBackupManager.getChangesForBackup(null);
+
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> mCloudBackupManager.getChangesForBackup("testChangeToken"));
+                () -> mCloudBackupManager.getChangesForBackup(response.getNextChangeToken()));
+    }
+
+    @Test
+    public void getChangesForBackup_dataTableIsNotNull_succeed() {
+        List<RecordInternal<?>> records = new ArrayList<>();
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE + 1; recordNumber++) {
+            records.add(
+                    createStepsRecord(
+                            // Add offsets to start time and end time for distinguishing different
+                            // records.
+                            TEST_START_TIME_IN_MILLIS + recordNumber,
+                            TEST_END_TIME_IN_MILLIS + recordNumber,
+                            TEST_STEP_COUNT));
+        }
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
+
+        GetChangesForBackupResponse response = mCloudBackupManager.getChangesForBackup(null);
+
+        GetChangesForBackupResponse secondResponse =
+                mCloudBackupManager.getChangesForBackup(response.getNextChangeToken());
+        assertThat(secondResponse.getChanges().size()).isEqualTo(1);
     }
 
     @Test

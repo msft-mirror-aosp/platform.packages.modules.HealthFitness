@@ -67,6 +67,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getHex
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.mock;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -87,6 +88,10 @@ import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.PhrTestUtils;
@@ -153,11 +158,18 @@ public class MedicalResourceHelperTest {
         AppInfoHelper.resetInstanceForTest();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mAppInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
-        mAccessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper);
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         mMedicalDataSourceHelper =
                 new MedicalDataSourceHelper(
@@ -169,7 +181,6 @@ public class MedicalResourceHelperTest {
                         mMedicalDataSourceHelper,
                         mFakeTimeSource,
                         mAccessLogsHelper);
-
         mUtil =
                 new PhrTestUtils(
                         mContext,
