@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"wheelchair pushes"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Read wheelchair pushes"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Write wheelchair pushes"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Activity intensity"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"activity intensity"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Read activity intensity"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Write activity intensity"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Basal metabolic rate"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"basal metabolic rate"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Read basal metabolic rate"</string>
