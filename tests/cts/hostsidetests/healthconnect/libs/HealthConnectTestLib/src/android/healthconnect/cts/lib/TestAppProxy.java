@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.lib;
 
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.healthconnect.cts.lib.BundleHelper.INTENT_EXCEPTION;
 import static android.healthconnect.cts.lib.BundleHelper.KILL_SELF_REQUEST;
 import static android.healthconnect.cts.lib.BundleHelper.QUERY_TYPE;
@@ -43,7 +44,6 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
-import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.ProxyActivity;
 import android.os.Bundle;
 
@@ -200,9 +200,10 @@ public class TestAppProxy {
      */
     public MedicalResource upsertMedicalResource(String datasourceId, String data)
             throws Exception {
+        String R4VersionString = "4.0.1";
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                datasourceId, PhrDataFactory.FHIR_VERSION_R4, data)
+                                datasourceId, parseFhirVersion(R4VersionString), data)
                         .build();
         Bundle requestBundle = BundleHelper.fromUpsertMedicalResourceRequests(List.of(request));
         Bundle responseBundle = getFromTestApp(requestBundle);

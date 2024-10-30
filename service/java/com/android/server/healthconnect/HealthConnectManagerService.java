@@ -18,8 +18,6 @@ package com.android.server.healthconnect;
 
 import android.annotation.Nullable;
 import android.content.Context;
-import android.health.connect.HealthConnectManager;
-import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.os.Process;
 import android.os.UserHandle;
@@ -28,7 +26,6 @@ import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -41,9 +38,9 @@ import com.android.server.healthconnect.migration.MigratorPackageChangesReceiver
 import com.android.server.healthconnect.migration.notification.MigrationNotificationSender;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
-import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -90,7 +87,6 @@ public class HealthConnectManagerService extends SystemService {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
 
-        HealthPermissionIntentAppsTracker permissionIntentTracker;
         AppInfoHelper appInfoHelper;
         AccessLogsHelper accessLogsHelper;
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
@@ -98,7 +94,6 @@ public class HealthConnectManagerService extends SystemService {
         ChangeLogsHelper changeLogsHelper;
         ChangeLogsRequestHelper changeLogsRequestHelper;
         FirstGrantTimeManager firstGrantTimeManager;
-        HealthConnectMappings healthConnectMappings;
         HealthConnectPermissionHelper permissionHelper;
         MigrationCleaner migrationCleaner;
         InternalHealthConnectMappings internalHealthConnectMappings;
@@ -107,7 +102,6 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectInjector = HealthConnectInjector.getInstance();
         mHealthConnectDeviceConfigManager =
                 mHealthConnectInjector.getHealthConnectDeviceConfigManager();
-        permissionIntentTracker = mHealthConnectInjector.getHealthPermissionIntentAppsTracker();
         mTransactionManager = mHealthConnectInjector.getTransactionManager();
         mPreferenceHelper = mHealthConnectInjector.getPreferenceHelper();
         mMigrationStateManager = mHealthConnectInjector.getMigrationStateManager();
@@ -119,29 +113,11 @@ public class HealthConnectManagerService extends SystemService {
         changeLogsHelper = mHealthConnectInjector.getChangeLogsHelper();
         changeLogsRequestHelper = mHealthConnectInjector.getChangeLogsRequestHelper();
         firstGrantTimeManager = mHealthConnectInjector.getFirstGrantTimeManager();
-        healthConnectMappings = mHealthConnectInjector.getHealthConnectMappings();
         internalHealthConnectMappings = mHealthConnectInjector.getInternalHealthConnectMappings();
-        permissionHelper =
-                new HealthConnectPermissionHelper(
-                        context,
-                        context.getPackageManager(),
-                        HealthConnectManager.getHealthPermissions(context),
-                        permissionIntentTracker,
-                        firstGrantTimeManager,
-                        healthDataCategoryPriorityHelper,
-                        appInfoHelper,
-                        healthConnectMappings);
+        permissionHelper = mHealthConnectInjector.getHealthConnectPermissionHelper();
         mPermissionPackageChangesOrchestrator =
-                new PermissionPackageChangesOrchestrator(
-                        permissionIntentTracker,
-                        firstGrantTimeManager,
-                        permissionHelper,
-                        mCurrentForegroundUser,
-                        healthDataCategoryPriorityHelper);
-        migrationCleaner =
-                new MigrationCleaner(
-                        mHealthConnectInjector.getTransactionManager(),
-                        mHealthConnectInjector.getPriorityMigrationHelper());
+                mHealthConnectInjector.getPermissionPackageChangesOrchestrator();
+        migrationCleaner = mHealthConnectInjector.getMigrationCleaner();
         mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
         mExportManager = mHealthConnectInjector.getExportManager();
 
@@ -253,7 +229,7 @@ public class HealthConnectManagerService extends SystemService {
     private void switchToSetupForUser(UserHandle user) {
         // Note: This is for test setup debugging, please don't surround with DEBUG flag
         Slog.d(TAG, "switchToSetupForUser: " + user);
-        mTransactionManager.onUserUnlocked(new DatabaseContext(mContext, mCurrentForegroundUser));
+        mTransactionManager.onUserUnlocked(StorageContext.create(mContext, mCurrentForegroundUser));
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);

@@ -17,31 +17,31 @@ package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.healthconnect.cts.phr.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
-import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
-import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
-import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP_PKG;
-import static android.healthconnect.cts.phr.PhrCtsTestUtils.RECORD_SIZE_LIMIT_IN_BYTES;
+import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
+import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
+import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
+import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP_PKG;
+import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.RECORD_SIZE_LIMIT_IN_BYTES;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_EMPTY;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createImmunizationMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_EMPTY;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
-import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
@@ -61,7 +61,8 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
-import android.healthconnect.cts.phr.PhrCtsTestUtils;
+import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
+import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
@@ -141,14 +142,12 @@ public class UpsertMedicalResourcesCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_writeLimitExceeded_throws() throws Exception {
         MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
-        String resourceDataTemplate =
-                "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization%d\"}";
 
         // Make the maximum number of calls allowed by quota. Minus 1 because of the above call.
         int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
         for (int i = 0; i < maximumCalls; i++) {
             HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-            String resourceData = String.format(resourceDataTemplate, i);
+            String resourceData = new ImmunizationBuilder().setId("Immunization" + i).toJson();
             UpsertMedicalResourceRequest request =
                     new UpsertMedicalResourceRequest.Builder(
                                     dataSource.getId(), FHIR_VERSION_R4, resourceData)
@@ -160,7 +159,8 @@ public class UpsertMedicalResourcesCtsTest {
 
         // Make 1 extra create call and check quota is exceeded.
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        String resourceData = String.format(resourceDataTemplate, maximumCalls);
+        String resourceData =
+                new ImmunizationBuilder().setId("Immunization" + maximumCalls).toJson();
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
                                 dataSource.getId(), FHIR_VERSION_R4, resourceData)

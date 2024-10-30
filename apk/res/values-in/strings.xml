@@ -116,7 +116,7 @@
     <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Mengakses data kebugaran dan kesehatan lama"</string>
     <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Izinkan aplikasi ini mengakses data yang ditambahkan sebelum <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Izinkan aplikasi ini mengakses semua data lama"</string>
-    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Mengakses data lama"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Akses data lama"</string>
     <string name="history_read_combined_request_description" msgid="1437787086896636484">"Izinkan aplikasi ini mengakses data Health Connect yang ditambahkan sebelum <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Izinkan aplikasi ini mengakses semua data Health Connect lama"</string>
     <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> dapat mengakses data lama untuk catatan kesehatan Anda"</string>
@@ -127,7 +127,7 @@
     <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Izinkan aplikasi ini mengakses data kebugaran dan kesehatan serta catatan kesehatan saat Anda tidak sedang menggunakan aplikasi"</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Izinkan aplikasi ini mengakses data ini saat Anda tidak sedang menggunakan aplikasi"</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Izinkan aplikasi ini mengakses data ini saat Anda tidak sedang menggunakan aplikasi"</string>
-    <string name="background_read_access_title" msgid="4184498185599147117">"Mengakses data di latar belakang"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Akses data di latar belakang"</string>
     <string name="background_read_access_description" msgid="2360433029368320323">"Izinkan aplikasi ini mengakses data Health Connect saat Anda tidak sedang menggunakan aplikasi"</string>
     <string name="history_read_medical_access_title" msgid="1375462150672418692">"Mengakses data kebugaran dan kesehatan lama"</string>
     <string name="history_read_medical_access_description" msgid="5615959269427106141">"Izinkan aplikasi ini mengakses data yang ditambahkan sebelum <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"dorongan kursi roda"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Baca dorongan kursi roda"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Tulis dorongan kursi roda"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Laju metabolisme basal"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"laju metabolisme basal"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Baca laju metabolisme basal"</string>
@@ -1148,12 +1156,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Hapus permanen entri <xliff:g id="APP_NAME">%1$s</xliff:g> yang dipilih untuk bulan <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Hapus permanen entri <xliff:g id="APP_NAME">%s</xliff:g> ini?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Hapus permanen data <xliff:g id="DATA_TYPE">%1$s</xliff:g> untuk <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Aktif"</string>
+    <string name="off" msgid="6996623844428550649">"Nonaktif"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Diakses <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Diakses kemarin <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Diakses <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

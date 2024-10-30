@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"мүгедек арбасын итеру көрсеткіші"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Мүгедек арбасын итеру көрсеткішін оқу"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Мүгедек арбасын итеру көрсеткішін жазу"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Тыныш күйдегі зат алмасу жылдамдығы"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"тыныш күйдегі зат алмасу жылдамдығы"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Тыныш күйдегі зат алмасу жылдамдығы деректерін оқу"</string>
@@ -1148,12 +1156,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Белгілі бір ай (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) бойынша таңдалған <xliff:g id="APP_NAME">%1$s</xliff:g> жазбалары біржола жойылсын ба?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Бұл <xliff:g id="APP_NAME">%s</xliff:g> жазбасы біржола жойылсын ба?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> қолданбасындағы <xliff:g id="DATA_TYPE">%1$s</xliff:g> деректерін біржола жою керек пе?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Қосулы"</string>
+    <string name="off" msgid="6996623844428550649">"Өшірулі"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Пайдаланылған уақыты: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Кеше пайдаланылған уақыты: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Пайдаланылған уақыты: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>
