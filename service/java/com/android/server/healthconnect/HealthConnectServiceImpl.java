@@ -2628,6 +2628,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     List<MedicalResource> medicalResources =
                             mMedicalResourceHelper.upsertMedicalResources(
                                     callingPackageName, validatedMedicalResourcesToUpsert);
+                    logger.setMedicalResourceTypes(
+                            medicalResources.stream()
+                                    .map(MedicalResource::getType)
+                                    .collect(toSet()));
                     logger.setNumberOfRecords(medicalResources.size());
 
                     tryAndReturnResult(callback, medicalResources, logger);
@@ -2799,6 +2803,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     throwExceptionIfDataSyncInProgress();
 
                     PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request);
+                    logger.setMedicalResourceTypes(
+                            Set.of(pageTokenWrapper.getRequest().getMedicalResourceType()));
                     ReadMedicalResourcesInternalResponse response;
 
                     if (holdsDataManagementPermission) {
@@ -2979,8 +2985,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
-                    if (request.getDataSourceIds().isEmpty()
-                            && request.getMedicalResourceTypes().isEmpty()) {
+                    Set<Integer> medicalResourceTypes = request.getMedicalResourceTypes();
+                    logger.setMedicalResourceTypes(medicalResourceTypes);
+                    if (request.getDataSourceIds().isEmpty() && medicalResourceTypes.isEmpty()) {
                         tryAndReturnResult(callback, logger);
                         return;
                     }
