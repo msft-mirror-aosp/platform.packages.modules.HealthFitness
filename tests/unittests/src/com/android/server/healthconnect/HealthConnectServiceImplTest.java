@@ -313,7 +313,9 @@ public class HealthConnectServiceImplTest {
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
         mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
 
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        mContext =
+                new HealthConnectUserContext(
+                        InstrumentationRegistry.getInstrumentation().getContext(), mUserHandle);
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
         mAttributionSource = mContext.getAttributionSource();
         mTestPackageName = mAttributionSource.getPackageName();
