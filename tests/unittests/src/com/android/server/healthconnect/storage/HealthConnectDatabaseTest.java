@@ -72,7 +72,11 @@ public class HealthConnectDatabaseTest {
     }
 
     @Test
-    @DisableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        Flags.FLAG_DEVELOPMENT_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_ACTIVITY_INTENSITY_DB
+    })
     public void onCreate_dbWithLatestSchemaCreated() {
         initializeDatabase();
 
