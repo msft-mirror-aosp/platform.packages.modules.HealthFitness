@@ -24,10 +24,13 @@ import com.android.internal.annotations.VisibleForTesting;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A scheduler class to schedule task on the most relevant thread-pool.
@@ -52,77 +55,68 @@ public final class HealthConnectThreadScheduler {
 
     // Executor to run HC background tasks
     @VisibleForTesting
-    static volatile ThreadPoolExecutor sBackgroundThreadExecutor =
-            new ThreadPoolExecutor(
-                    NUM_EXECUTOR_THREADS_BACKGROUND,
-                    NUM_EXECUTOR_THREADS_BACKGROUND,
-                    KEEP_ALIVE_TIME_BACKGROUND,
-                    TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<>());
+    static volatile ThreadPoolExecutor sBackgroundThreadExecutor = createBackgroundExecutor();
 
     // Executor to run HC background tasks
     @VisibleForTesting
     static volatile ThreadPoolExecutor sInternalBackgroundExecutor =
-            new ThreadPoolExecutor(
-                    NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
-                    NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
-                    KEEP_ALIVE_TIME_INTERNAL_BACKGROUND,
-                    TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<>());
+            createInternalBackgroundExecutor();
 
     // Executor to run HC tasks for clients
     @VisibleForTesting
-    static volatile ThreadPoolExecutor sForegroundExecutor =
-            new ThreadPoolExecutor(
-                    NUM_EXECUTOR_THREADS_FOREGROUND,
-                    NUM_EXECUTOR_THREADS_FOREGROUND,
-                    KEEP_ALIVE_TIME_SHARED,
-                    TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<>());
+    static volatile ThreadPoolExecutor sForegroundExecutor = createForegroundExecutor();
 
     // Executor to run HC controller tasks
     @VisibleForTesting
-    static volatile ThreadPoolExecutor sControllerExecutor =
-            new ThreadPoolExecutor(
-                    NUM_EXECUTOR_THREADS_CONTROLLER,
-                    NUM_EXECUTOR_THREADS_CONTROLLER,
-                    KEEP_ALIVE_TIME_CONTROLLER,
-                    TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<>());
+    static volatile ThreadPoolExecutor sControllerExecutor = createControllerExecutor();
 
     public static void resetThreadPools() {
-        sInternalBackgroundExecutor =
-                new ThreadPoolExecutor(
-                        NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
-                        NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
-                        KEEP_ALIVE_TIME_INTERNAL_BACKGROUND,
-                        TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>());
+        sInternalBackgroundExecutor = createInternalBackgroundExecutor();
+        sBackgroundThreadExecutor = createBackgroundExecutor();
+        sForegroundExecutor = createForegroundExecutor();
+        sControllerExecutor = createControllerExecutor();
 
-        sBackgroundThreadExecutor =
-                new ThreadPoolExecutor(
-                        NUM_EXECUTOR_THREADS_BACKGROUND,
-                        NUM_EXECUTOR_THREADS_BACKGROUND,
-                        KEEP_ALIVE_TIME_BACKGROUND,
-                        TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>());
-
-        sForegroundExecutor =
-                new ThreadPoolExecutor(
-                        NUM_EXECUTOR_THREADS_FOREGROUND,
-                        NUM_EXECUTOR_THREADS_FOREGROUND,
-                        KEEP_ALIVE_TIME_SHARED,
-                        TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>());
-
-        sControllerExecutor =
-                new ThreadPoolExecutor(
-                        NUM_EXECUTOR_THREADS_CONTROLLER,
-                        NUM_EXECUTOR_THREADS_CONTROLLER,
-                        KEEP_ALIVE_TIME_CONTROLLER,
-                        TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>());
         HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER.resume();
+    }
+
+    private static ThreadPoolExecutor createInternalBackgroundExecutor() {
+        return new ThreadPoolExecutor(
+                NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
+                NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
+                KEEP_ALIVE_TIME_INTERNAL_BACKGROUND,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new NamedThreadFactory("hc-int-bg-"));
+    }
+
+    private static ThreadPoolExecutor createBackgroundExecutor() {
+        return new ThreadPoolExecutor(
+                NUM_EXECUTOR_THREADS_BACKGROUND,
+                NUM_EXECUTOR_THREADS_BACKGROUND,
+                KEEP_ALIVE_TIME_BACKGROUND,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new NamedThreadFactory("hc-bg-"));
+    }
+
+    private static ThreadPoolExecutor createForegroundExecutor() {
+        return new ThreadPoolExecutor(
+                NUM_EXECUTOR_THREADS_FOREGROUND,
+                NUM_EXECUTOR_THREADS_FOREGROUND,
+                KEEP_ALIVE_TIME_SHARED,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new NamedThreadFactory("hc-fg-"));
+    }
+
+    private static ThreadPoolExecutor createControllerExecutor() {
+        return new ThreadPoolExecutor(
+                NUM_EXECUTOR_THREADS_CONTROLLER,
+                NUM_EXECUTOR_THREADS_CONTROLLER,
+                KEEP_ALIVE_TIME_CONTROLLER,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new NamedThreadFactory("hc-ctrl-"));
     }
 
     static void shutdownThreadPools() {
@@ -223,5 +217,22 @@ public final class HealthConnectThreadScheduler {
                 Slog.e(TAG, "Internal task schedule failed", e);
             }
         };
+    }
+
+    private static class NamedThreadFactory implements ThreadFactory {
+        private final ThreadFactory mDefaultFactory = Executors.defaultThreadFactory();
+        private final AtomicInteger mCount = new AtomicInteger();
+        private final String mPrefix;
+
+        NamedThreadFactory(String prefix) {
+            mPrefix = prefix;
+        }
+
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = mDefaultFactory.newThread(runnable);
+            thread.setName(mPrefix + mCount.getAndIncrement());
+            return thread;
+        }
     }
 }
