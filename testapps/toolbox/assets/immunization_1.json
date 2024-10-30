@@ -1,6 +1,6 @@
 {
   "resourceType": "Immunization",
-  "id": "immunization_1",
+  "id": "immunization-1",
   "status": "completed",
   "vaccineCode": {
     "coding": [
