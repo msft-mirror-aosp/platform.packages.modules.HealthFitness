@@ -19,7 +19,10 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.google.common.truth.Truth.assertThat;
 
 import android.os.Environment;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.TransactionManager;
 
@@ -27,6 +30,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
 public class BackupChangeTokenHelperTest {
 
     private static final String TEST_DATA_TABLE_NAME = "step_records_table";
@@ -34,10 +38,13 @@ public class BackupChangeTokenHelperTest {
     private static final String TEST_CHANGE_LOGS_REQUEST_TOKEN = "1";
 
     @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).mockStatic(Environment.class).build();
 
-    @Rule(order = 2)
+    @Rule(order = 3)
     public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 

@@ -28,9 +28,12 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -62,6 +65,7 @@ import java.util.List;
 
 /** Unit test for class {@link BackupRestoreDatabaseHelper}. */
 @RunWith(AndroidJUnit4.class)
+@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
 public class BackupRestoreDatabaseHelperTest {
 
     private static final String TEST_PACKAGE_NAME = "test.package.name";
@@ -81,10 +85,13 @@ public class BackupRestoreDatabaseHelperTest {
     }
 
     @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).mockStatic(Environment.class).build();
 
-    @Rule(order = 2)
+    @Rule(order = 3)
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 

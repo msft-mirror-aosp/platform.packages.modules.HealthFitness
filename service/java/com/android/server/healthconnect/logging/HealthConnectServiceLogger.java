@@ -18,15 +18,24 @@ package com.android.server.healthconnect.logging;
 
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__API_METHOD_UNKNOWN;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__CREATE_MEDICAL_DATA_SOURCE;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__DELETE_DATA;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__DELETE_MEDICAL_RESOURCES_BY_IDS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__DELETE_MEDICAL_RESOURCES_BY_REQUESTS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__GET_CHANGES;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__GET_CHANGES_TOKEN;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__GET_GRANTED_PERMISSIONS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__GET_MEDICAL_DATA_SOURCES_BY_IDS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__GET_MEDICAL_DATA_SOURCES_BY_REQUESTS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__INSERT_DATA;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__READ_AGGREGATED_DATA;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__READ_DATA;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__READ_MEDICAL_RESOURCES_BY_IDS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__READ_MEDICAL_RESOURCES_BY_REQUESTS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__REVOKE_ALL_PERMISSIONS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__UPDATE_DATA;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_METHOD__UPSERT_MEDICAL_RESOURCES;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_STATUS__ERROR;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_STATUS__STATUS_UNKNOWN;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS;
@@ -152,6 +161,16 @@ import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_B
 import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND;
 import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND;
 
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_RESOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_RESOURCES_BY_REQUESTS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_MEDICAL_DATA_SOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_MEDICAL_DATA_SOURCES_BY_REQUESTS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_REQUESTS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPSERT_MEDICAL_RESOURCES;
+
 import android.annotation.IntDef;
 import android.health.HealthFitnessStatsLog;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -169,6 +188,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class to log metrics from HealthConnectService
@@ -189,6 +209,9 @@ public class HealthConnectServiceLogger {
     private final int mCallerForegroundState;
     private static final int MAX_NUMBER_OF_LOGGED_DATA_TYPES = 6;
     private static final int RECORD_TYPE_NOT_ASSIGNED_DEFAULT_VALUE = -1;
+
+    /** See {@link Builder#setShouldLog(boolean)}. */
+    private final boolean mIsLogDisabled;
 
     /**
      * HealthConnectService ApiMethods supported by logging.
@@ -212,6 +235,26 @@ public class HealthConnectServiceLogger {
         public static final int REVOKE_ALL_PERMISSIONS =
                 HEALTH_CONNECT_API_CALLED__API_METHOD__REVOKE_ALL_PERMISSIONS;
         public static final int UPDATE_DATA = HEALTH_CONNECT_API_CALLED__API_METHOD__UPDATE_DATA;
+        // PHR data source APIs
+        public static final int CREATE_MEDICAL_DATA_SOURCE =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__CREATE_MEDICAL_DATA_SOURCE;
+        public static final int GET_MEDICAL_DATA_SOURCES_BY_IDS =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__GET_MEDICAL_DATA_SOURCES_BY_IDS;
+        public static final int GET_MEDICAL_DATA_SOURCES_BY_REQUESTS =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__GET_MEDICAL_DATA_SOURCES_BY_REQUESTS;
+        public static final int DELETE_MEDICAL_DATA_SOURCE_WITH_DATA =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
+        // PHR medical resource APIs
+        public static final int UPSERT_MEDICAL_RESOURCES =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__UPSERT_MEDICAL_RESOURCES;
+        public static final int READ_MEDICAL_RESOURCES_BY_IDS =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__READ_MEDICAL_RESOURCES_BY_IDS;
+        public static final int READ_MEDICAL_RESOURCES_BY_REQUESTS =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__READ_MEDICAL_RESOURCES_BY_REQUESTS;
+        public static final int DELETE_MEDICAL_RESOURCES_BY_IDS =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__DELETE_MEDICAL_RESOURCES_BY_IDS;
+        public static final int DELETE_MEDICAL_RESOURCES_BY_REQUESTS =
+                HEALTH_CONNECT_API_CALLED__API_METHOD__DELETE_MEDICAL_RESOURCES_BY_REQUESTS;
 
         @IntDef({
             API_METHOD_UNKNOWN,
@@ -224,10 +267,35 @@ public class HealthConnectServiceLogger {
             READ_DATA,
             REVOKE_ALL_PERMISSIONS,
             UPDATE_DATA,
+            // PHR data source APIs
+            CREATE_MEDICAL_DATA_SOURCE,
+            GET_MEDICAL_DATA_SOURCES_BY_IDS,
+            GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
+            DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
+            // PHR medical resource APIs
+            UPSERT_MEDICAL_RESOURCES,
+            READ_MEDICAL_RESOURCES_BY_IDS,
+            READ_MEDICAL_RESOURCES_BY_REQUESTS,
+            DELETE_MEDICAL_RESOURCES_BY_IDS,
+            DELETE_MEDICAL_RESOURCES_BY_REQUESTS
         })
         @Retention(RetentionPolicy.SOURCE)
         public @interface ApiMethod {}
     }
+
+    private static final Set<Integer> PHR_APIS =
+            Set.of(
+                    // PHR data source APIs
+                    CREATE_MEDICAL_DATA_SOURCE,
+                    GET_MEDICAL_DATA_SOURCES_BY_IDS,
+                    GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
+                    DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
+                    // PHR medical resource APIs
+                    UPSERT_MEDICAL_RESOURCES,
+                    READ_MEDICAL_RESOURCES_BY_IDS,
+                    READ_MEDICAL_RESOURCES_BY_REQUESTS,
+                    DELETE_MEDICAL_RESOURCES_BY_IDS,
+                    DELETE_MEDICAL_RESOURCES_BY_REQUESTS);
 
     /**
      * Rate limiting ranges differentiated by Foreground/Background.
@@ -378,6 +446,7 @@ public class HealthConnectServiceLogger {
         private int[] mRecordTypes;
         private String mPackageName;
         private int mCallerForegroundState;
+        private boolean mIsLogDisabled;
 
         public Builder(boolean holdsDataManagementPermission, @ApiMethods.ApiMethod int apiMethod) {
             mStartTime = System.currentTimeMillis();
@@ -508,6 +577,24 @@ public class HealthConnectServiceLogger {
                     isCallerInForeground
                             ? HEALTH_CONNECT_API_CALLED__CALLER_FOREGROUND_STATE__FOREGROUND
                             : HEALTH_CONNECT_API_CALLED__CALLER_FOREGROUND_STATE__BACKGROUND;
+            return this;
+        }
+
+        /**
+         * Sets a boolean that indicates whether this log should be logged when {@link
+         * HealthConnectServiceLogger#log() log()} is called. This is typically used when adding new
+         * loggings which is guarded behind a flag.
+         *
+         * <p>E.g. if you have a flag called {@code abcTelemetry()}, instead of conditioning on that
+         * flag to decide whether to build a {@link HealthConnectServiceLogger} and call {@link
+         * HealthConnectServiceLogger#log() log()}, you can just build and call the log() method as
+         * if the flag didn't exist, but before you {@link #build()}, call this method and pass
+         * {@code abcTelemetry()} to it.
+         *
+         * <p>NOTE: this boolean is set to {@code true} by default.
+         */
+        public Builder setShouldLog(boolean shouldLog) {
+            this.mIsLogDisabled = !shouldLog;
             return this;
         }
 
@@ -649,10 +736,14 @@ public class HealthConnectServiceLogger {
         mRecordTypes = builder.mRecordTypes;
         mPackageName = builder.mPackageName;
         mCallerForegroundState = builder.mCallerForegroundState;
+        mIsLogDisabled = builder.mIsLogDisabled;
     }
 
     /** Log to statsd. */
     public void log() {
+        if (mIsLogDisabled) {
+            return;
+        }
 
         // Do not log API calls made from the controller
         if (mHoldsDataManagementPermission) {
@@ -669,6 +760,19 @@ public class HealthConnectServiceLogger {
                 mCallerForegroundState,
                 mPackageName);
 
+        logToPrivateWestWorld();
+    }
+
+    private void logToPrivateWestWorld() {
+        boolean isPhrApi = PHR_APIS.contains(mHealthDataServiceApiMethod);
+
+        // For PHR APIs.
+        if (isPhrApi) {
+            // TODO(b/375157800): implement private west world logging for PHR
+            return;
+        }
+
+        // For non PHR APIs.
         // For private logging, max 6 data types per request are being logged
         // rest will be ignored
         HealthFitnessStatsLog.write(

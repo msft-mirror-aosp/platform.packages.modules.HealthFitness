@@ -18,12 +18,16 @@ package android.healthconnect.cts.utils;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.app.UiAutomation;
 import android.os.OutcomeReceiver;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,6 +41,14 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TestOutcomeReceiver<T, E extends RuntimeException> implements OutcomeReceiver<T, E> {
     private static final String TAG = "HCTestOutcomeReceiver";
     private static final int DEFAULT_TIMEOUT_SECONDS = 5;
+
+    private static final Executor sExecutor =
+            Executors.newSingleThreadExecutor(
+                    runnable -> {
+                        Thread t = Executors.defaultThreadFactory().newThread(runnable);
+                        t.setName("HealthConnectReceiver");
+                        return t;
+                    });
 
     private final CountDownLatch mLatch = new CountDownLatch(1);
     private final AtomicReference<T> mResponse = new AtomicReference<>();
@@ -91,7 +103,53 @@ public class TestOutcomeReceiver<T, E extends RuntimeException> implements Outco
     @Override
     public void onError(@NonNull E error) {
         mException.set(error);
-        Log.e(TAG, error.getMessage());
+        Log.e(TAG, "onError", error);
         mLatch.countDown();
+    }
+
+    /** Returns an {@code Executor} that can be used for delivering an outcome to a receiver. */
+    public static Executor outcomeExecutor() {
+        return sExecutor;
+    }
+
+    /**
+     * Wraps an API call that returns its response via an {@link android.os.OutcomeReceiver}.
+     *
+     * @see #callAndGetResponse(Class, CallableForOutcome)
+     */
+    public interface CallableForOutcome<R, E extends RuntimeException> {
+        /** Calls the API method with the specified {@code executor} and {@code receiver}. */
+        void call(Executor executor, TestOutcomeReceiver<R, E> receiver);
+    }
+
+    /**
+     * Helper for calling an API method that returns its response via an {@link
+     * android.os.OutcomeReceiver}.
+     */
+    public static <R, E extends RuntimeException> R callAndGetResponse(
+            Class<E> exceptionType, CallableForOutcome<R, E> callable) throws InterruptedException {
+        TestOutcomeReceiver<R, E> receiver = new TestOutcomeReceiver<>();
+        callable.call(sExecutor, receiver);
+        return receiver.getResponse();
+    }
+
+    /**
+     * Helper for calling an API method that returns its response via an {@link
+     * android.os.OutcomeReceiver} while holding permissions via {@link
+     * UiAutomation#adoptShellPermissionIdentity(String...)}.
+     */
+    public static <R, E extends RuntimeException> R callAndGetResponseWithShellPermissionIdentity(
+            Class<E> exceptionType, CallableForOutcome<R, E> callable, String... permissions)
+            throws InterruptedException {
+        // Don't use SystemUtil.runWithShellPermissionIdentity as that wraps all thrown exceptions
+        // in RuntimeException, which is unnecessary for our APIs which don't throw any
+        // checked exceptions.
+        UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        automation.adoptShellPermissionIdentity(permissions);
+        try {
+            return callAndGetResponse(exceptionType, callable);
+        } finally {
+            automation.dropShellPermissionIdentity();
+        }
     }
 }
