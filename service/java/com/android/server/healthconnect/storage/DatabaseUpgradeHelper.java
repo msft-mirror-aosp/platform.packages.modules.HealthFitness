@@ -30,8 +30,8 @@ import static com.android.server.healthconnect.storage.HealthConnectDatabase.cre
 import static com.android.server.healthconnect.storage.TransactionManager.runAsTransaction;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
 
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.android.healthfitness.flags.Flags;
@@ -207,7 +207,7 @@ final class DatabaseUpgradeHelper {
     }
 
     private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {
-        if (doesTableAlreadyExist(db, PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME)) {
+        if (checkTableExists(db, PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME)) {
             // Upgrade has already been applied. Return early.
             // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
             // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
@@ -229,7 +229,7 @@ final class DatabaseUpgradeHelper {
     }
 
     private static void applyPersonalHealthRecordDatabaseUpgrade(SQLiteDatabase db) {
-        if (doesTableAlreadyExist(db, MedicalResourceHelper.getMainTableName())) {
+        if (checkTableExists(db, MedicalResourceHelper.getMainTableName())) {
             // Upgrade has already been applied. Return early.
             // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
             // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
@@ -245,16 +245,6 @@ final class DatabaseUpgradeHelper {
     /** Executes a list of SQL statements one after another, in a transaction. */
     public static void executeSqlStatements(SQLiteDatabase db, List<String> statements) {
         runAsTransaction(db, unused -> statements.forEach(db::execSQL));
-    }
-
-    private static boolean doesTableAlreadyExist(SQLiteDatabase db, String tableName) {
-        long numEntries =
-                DatabaseUtils.queryNumEntries(
-                        db,
-                        SQLITE_MASTER_TABLE_NAME,
-                        /* selection= */ "type = 'table' AND name == '" + tableName + "'",
-                        /* selectionArgs= */ null);
-        return numEntries > 0;
     }
 
     /** Interface to implement upgrade actions from one db version to the next. */

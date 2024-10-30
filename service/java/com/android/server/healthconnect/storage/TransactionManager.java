@@ -1083,7 +1083,9 @@ public final class TransactionManager {
     @com.android.internal.annotations.VisibleForTesting
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public static synchronized void clearInstanceForTest() {
-        sTransactionManager = null;
+        if (sTransactionManager != null) {
+            sTransactionManager = null;
+        }
     }
 
     /** Cleans up the database and this manager, so unit tests can run correctly. */

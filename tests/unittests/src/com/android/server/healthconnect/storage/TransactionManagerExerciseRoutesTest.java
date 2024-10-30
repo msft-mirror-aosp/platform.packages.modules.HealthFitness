@@ -104,23 +104,23 @@ public class TransactionManagerExerciseRoutesTest {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-        StorageContext context = testRule.getDatabaseContext();
-        mTransactionManager = testRule.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);
-        HealthConnectDeviceConfigManager.initializeInstance(context);
-
         DeviceInfoHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
         AccessLogsHelper.resetInstanceForTest();
+        StorageContext context = testRule.getDatabaseContext();
+        mTransactionManager = testRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);
+        HealthConnectDeviceConfigManager.initializeInstance(context);
+
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
