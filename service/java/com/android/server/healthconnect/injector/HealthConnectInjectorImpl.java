@@ -128,7 +128,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mHealthDataCategoryPriorityHelper;
         mPriorityMigrationHelper =
                 builder.mPriorityMigrationHelper == null
-                        ? PriorityMigrationHelper.getInstance(
+                        ? new PriorityMigrationHelper(
                                 mHealthDataCategoryPriorityHelper, mTransactionManager)
                         : builder.mPriorityMigrationHelper;
         mExportImportSettingsStorage =
