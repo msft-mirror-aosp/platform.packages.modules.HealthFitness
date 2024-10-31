@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"impulsos en cadira de rodes"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Llegir els impulsos en cadira de rodes"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Escriure els impulsos en cadira de rodes"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Metabolisme basal"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"metabolisme basal"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Llegir el metabolisme basal"</string>
@@ -1022,7 +1030,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permet totes les rutes"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"No permetis"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permet sempre"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Accedeix a les rutes d\'exercici"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accedir a les rutes d\'exercici"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les rutes"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pregunta sempre"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"No permetis"</string>
@@ -1148,12 +1156,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vols suprimir permanentment les entrades seleccionades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vols suprimir permanentment aquesta entrada de l\'aplicació <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Vols suprimir permanentment les dades de <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Activat"</string>
+    <string name="off" msgid="6996623844428550649">"Desactivat"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"S\'hi ha accedit a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"S\'hi va accedir ahir a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"S\'hi ha accedit el dia <xliff:g id="TIME_DATE_0">%1$s</xliff:g> a les <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

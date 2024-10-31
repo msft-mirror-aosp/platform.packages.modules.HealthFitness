@@ -72,7 +72,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 /**
@@ -84,8 +83,6 @@ import java.util.function.BiConsumer;
  */
 public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
-    private static final ConcurrentHashMap<UserHandle, HealthConnectDatabase>
-            mUserHandleToDatabaseMap = new ConcurrentHashMap<>();
 
     @Nullable private static volatile TransactionManager sTransactionManager;
 
@@ -98,18 +95,20 @@ public final class TransactionManager {
             InternalHealthConnectMappings internalHealthConnectMappings) {
         mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
         mUserHandle = storageContext.getUser();
-        mUserHandleToDatabaseMap.put(mUserHandle, mHealthConnectDatabase);
         mInternalHealthConnectMappings = internalHealthConnectMappings;
+    }
+
+    /** Called when we are switching users. */
+    public void onUserSwitching() {
+        mHealthConnectDatabase.close();
     }
 
     /** Setup the transaction manager for the new user. */
     public void onUserUnlocked(StorageContext storageContext) {
-        if (!mUserHandleToDatabaseMap.containsKey(storageContext.getUser())) {
-            mUserHandleToDatabaseMap.put(
-                    storageContext.getUser(), new HealthConnectDatabase(storageContext));
+        if (mUserHandle.equals(storageContext.getUser())) {
+            return;
         }
-
-        mHealthConnectDatabase = mUserHandleToDatabaseMap.get(storageContext.getUser());
+        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
         mUserHandle = storageContext.getUser();
     }
 
@@ -715,10 +714,6 @@ public final class TransactionManager {
                 });
     }
 
-    public void onUserSwitching() {
-        mHealthConnectDatabase.close();
-    }
-
     private void insertAll(
             List<UpsertTableRequest> upsertTableRequests,
             BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
@@ -1083,7 +1078,9 @@ public final class TransactionManager {
     @com.android.internal.annotations.VisibleForTesting
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public static synchronized void clearInstanceForTest() {
-        sTransactionManager = null;
+        if (sTransactionManager != null) {
+            sTransactionManager = null;
+        }
     }
 
     /** Cleans up the database and this manager, so unit tests can run correctly. */

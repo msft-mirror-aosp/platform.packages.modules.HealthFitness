@@ -42,6 +42,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -57,6 +58,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -106,20 +108,18 @@ public class AccessLogsHelperTest {
         MockitoAnnotations.initMocks(this);
         AccessLogsHelper.resetInstanceForTest();
 
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mHealthConnectDatabaseTestRule.getDatabaseContext(),
-                        mHealthConnectDatabaseTestRule.getTransactionManager());
+        AppInfoHelper.resetInstanceForTest();
+        Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(
-                                mHealthConnectDatabaseTestRule.getDatabaseContext())
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setPreferenceHelper(new FakePreferenceHelper())
                         .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }
 

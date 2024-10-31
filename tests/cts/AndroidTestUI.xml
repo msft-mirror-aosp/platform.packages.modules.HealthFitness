@@ -28,14 +28,6 @@
         <option name="test-file-name" value="CtsHealthConnectTestAppAWithNormalReadWritePermission.apk"/>
         <option name="test-file-name" value="CtsHealthConnectTestAppBWithNormalReadWritePermission.apk"/>
     </target_preparer>
-    <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
-        <!-- Disable syncing to prevent overwriting flags during testing. -->
-        <option name="run-command" value="device_config set_sync_disabled_for_tests persistent" />
-        <option name="teardown-command" value="device_config set_sync_disabled_for_tests none" />
-        <!-- Reset display and font -->
-        <option name="run-command" value="settings put system font_scale 0.85" />
-        <option name="run-command" value="wm density reset" />
-    </target_preparer>
 
     <option
         name="config-descriptor:metadata"
