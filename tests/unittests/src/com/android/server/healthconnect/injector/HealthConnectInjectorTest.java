@@ -71,8 +71,7 @@ public class HealthConnectInjectorTest {
     public void testProductionInjector_injectorReturnsOriginalPackageInfoUtils() {
         HealthConnectInjector healthConnectInjector = mBuilder.build();
 
-        assertThat(healthConnectInjector.getPackageInfoUtils())
-                .isEqualTo(PackageInfoUtils.getInstance());
+        assertThat(healthConnectInjector.getPackageInfoUtils()).isNotEqualTo(mPackageInfoUtils);
     }
 
     @Test
