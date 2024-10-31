@@ -52,7 +52,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -67,6 +66,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceI
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.utils.TimeSourceImpl;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.quality.Strictness;
@@ -79,6 +79,8 @@ import java.util.UUID;
 public class HealthConnectDatabaseTest {
     private static final String TEST_PACKAGE_NAME = "package.test";
 
+    private Context mContext;
+
     @Rule(order = 0)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
@@ -90,6 +92,13 @@ public class HealthConnectDatabaseTest {
                     .mockStatic(ExportImportLogger.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
+
+    @Before
+    public void setup() {
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
+        when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
+    }
 
     @Test
     @DisableFlags({
@@ -129,10 +138,9 @@ public class HealthConnectDatabaseTest {
         // Disable the flag with `disableFlags()` so it can be enabled later in this test. That's
         // not allowed if FLAG_PERSONAL_HEALTH_RECORD_DATABASE is added to @DisableFlags.
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
-        Context context = createContextWithMockedDataDir();
-        HealthConnectInjector injector = getHealthConnectInjector(context);
+        HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(context, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =
@@ -151,7 +159,7 @@ public class HealthConnectDatabaseTest {
         // When a transaction is executed on that database for the first time, the new value of the
         // flag will be taken into account.
         mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
-        injector = getHealthConnectInjector(context);
+        injector = getHealthConnectInjector(mContext);
         transactionManager = injector.getTransactionManager();
 
         assertPhrTablesExist(transactionManager);
@@ -175,10 +183,9 @@ public class HealthConnectDatabaseTest {
         // Disable the flag with `disableFlags()` so it can be enabled later in this test. That's
         // not allowed if FLAG_PERSONAL_HEALTH_RECORD_DATABASE is added to @DisableFlags.
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
-        Context context = createContextWithMockedDataDir();
-        HealthConnectInjector injector = getHealthConnectInjector(context);
+        HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(context, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =
@@ -192,7 +199,7 @@ public class HealthConnectDatabaseTest {
         // When a transaction is executed on that database for the first time, the new value of the
         // flag will be taken into account.
         mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
-        injector = getHealthConnectInjector(context);
+        injector = getHealthConnectInjector(mContext);
         transactionManager = injector.getTransactionManager();
 
         assertPhrTablesExist(transactionManager);
@@ -205,7 +212,7 @@ public class HealthConnectDatabaseTest {
                         injector.getAccessLogsHelper());
         MedicalDataSource originalMedicalDataSource =
                 medicalDataSourceHelper.createMedicalDataSource(
-                        context,
+                        mContext,
                         PhrDataFactory.getCreateMedicalDataSourceRequest(),
                         TEST_PACKAGE_NAME);
         List<MedicalDataSource> readMedicalDataSources =
@@ -218,8 +225,8 @@ public class HealthConnectDatabaseTest {
     // The database needs to be initialized after the flags have been set by the annotations,
     // hence this methods needs to be called in individual tests rather than in @Before method.
     private HealthConnectDatabase initializeEmptyHealthConnectDatabase() {
-        Context context = createContextWithMockedDataDir();
-        HealthConnectDatabase healthConnectDatabase = new HealthConnectDatabase(context);
+        HealthConnectDatabase healthConnectDatabase =
+                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER));
 
         // Make sure there is nothing there already.
         File databasePath = healthConnectDatabase.getDatabasePath();
@@ -252,15 +259,6 @@ public class HealthConnectDatabaseTest {
                     assertThat(checkTableExists(db, MedicalResourceIndicesHelper.getTableName()))
                             .isFalse();
                 });
-    }
-
-    private static Context createContextWithMockedDataDir() {
-        HealthConnectUserContext context =
-                new HealthConnectUserContext(
-                        InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-        File mockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
-        return context;
     }
 
     private static HealthConnectInjector getHealthConnectInjector(Context context) {

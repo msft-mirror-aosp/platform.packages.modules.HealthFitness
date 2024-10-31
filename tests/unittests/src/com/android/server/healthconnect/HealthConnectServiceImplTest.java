@@ -357,7 +357,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getActivityDateHelper(),
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
-                        healthConnectInjector.getInternalHealthConnectMappings());
+                        healthConnectInjector.getInternalHealthConnectMappings(),
+                        healthConnectInjector.getPriorityMigrationHelper());
     }
 
     @After
