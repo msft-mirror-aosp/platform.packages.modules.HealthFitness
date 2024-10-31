@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"штуршкі інваліднай каляскі"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Счытваць даныя пра штуршкі інваліднай каляскі"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Запісваць даныя пра штуршкі інваліднай каляскі"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Базальная хуткасць метабалізму"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"базальная хуткасць метабалізму"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Счытваць даныя пра базальную хуткасць метабалізму"</string>
@@ -362,7 +370,7 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Калі вы дасце праграме дазвол на чытанне, яна зможа атрымліваць як новыя даныя, так і звесткі за апошнія 30 дзён"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Калі вы дасце праграме дазвол на чытанне, яна зможа атрымліваць як новыя, так і мінулыя даныя"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Даць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да праграмы \"Здароўе і спорт\"?"</string>
-    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" да мінулых даных пра фізічную актыўнасць і фізічны стан?"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да даных пра фізічную актыўнасць і фізічны стан?"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Каб даведацца, як праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" апрацоўвае вашы даныя, прачытайце наступны дакумент: <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"палітыка прыватнасці"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да вашай інфармацыі пра стан здароўя?"</string>
@@ -1148,12 +1156,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Назаўсёды выдаліць выбраныя запісы праграмы \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Назаўсёды выдаліць гэты запіс праграмы \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Назаўсёды выдаліць даныя \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\" для праграмы \"<xliff:g id="APP_NAME">%2$s</xliff:g>\"?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Уключана"</string>
+    <string name="off" msgid="6996623844428550649">"Выключана"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Апошні раз доступ быў атрыманы ў <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Апошні раз доступ быў атрыманы ўчора ў <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Апошні раз доступ быў атрыманы ў <xliff:g id="TIME_DATE_1">%2$s</xliff:g> <xliff:g id="TIME_DATE_0">%1$s</xliff:g>"</string>
 </resources>
