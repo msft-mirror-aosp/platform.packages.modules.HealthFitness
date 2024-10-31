@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -117,9 +116,10 @@ public class PowerRecordHelper
     String getSeriesDataTableName() {
         return SERIES_TABLE_NAME;
     }
+
     /** Populates the {@code record} with values specific to datatype */
     @Override
-    void populateSpecificValues(@NonNull Cursor seriesTableCursor, PowerRecordInternal record) {
+    void populateSpecificValues(Cursor seriesTableCursor, PowerRecordInternal record) {
         HashSet<PowerRecordInternal.PowerRecordSample> powerRecordSampleSet = new HashSet<>();
         UUID uuid = getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME);
         do {

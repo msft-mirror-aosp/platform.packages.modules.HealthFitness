@@ -33,10 +33,10 @@ import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataUseCase
 import com.android.healthconnect.controller.dataentries.formatters.DistanceFormatter
-import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.TotalCaloriesBurnedFormatter
+import com.android.healthconnect.controller.dataentries.formatters.medical.MedicalEntryFormatter
 import com.android.healthconnect.controller.datasources.api.ILoadLastDateWithPriorityDataUseCase
 import com.android.healthconnect.controller.datasources.api.ILoadMostRecentAggregationsUseCase
 import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriorityListUseCase
@@ -133,8 +133,9 @@ class UseCaseModule {
     fun providesLoadMedicalEntriesUseCase(
         @IoDispatcher dispatcher: CoroutineDispatcher,
         loadEntriesHelper: LoadEntriesHelper,
+        medicalEntryFormatter: MedicalEntryFormatter,
     ): ILoadMedicalEntriesUseCase {
-        return LoadMedicalEntriesUseCase(dispatcher, loadEntriesHelper)
+        return LoadMedicalEntriesUseCase(dispatcher, medicalEntryFormatter, loadEntriesHelper)
     }
 
     @Provides
@@ -178,14 +179,9 @@ class UseCaseModule {
     @Provides
     fun providesLoadMenstruationDataUseCase(
         @IoDispatcher dispatcher: CoroutineDispatcher,
-        menstruationPeriodFormatter: MenstruationPeriodFormatter,
         loadEntriesHelper: LoadEntriesHelper,
     ): ILoadMenstruationDataUseCase {
-        return LoadMenstruationDataUseCase(
-            loadEntriesHelper,
-            menstruationPeriodFormatter,
-            dispatcher,
-        )
+        return LoadMenstruationDataUseCase(loadEntriesHelper, dispatcher)
     }
 
     @Provides

@@ -16,6 +16,9 @@
 
 package com.android.healthconnect.controller.tests.utils.di
 
+import android.content.pm.PackageManager.FLAG_PERMISSION_USER_FIXED
+import android.content.pm.PackageManager.FLAG_PERMISSION_USER_SET
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.tests.utils.NOW
 import java.time.Instant
@@ -24,6 +27,16 @@ class FakeHealthPermissionManager : HealthPermissionManager {
 
     private val grantedPermissions = mutableMapOf<String, MutableList<String>>()
     private val healthPermissionFlags = mutableMapOf<String, Map<String, Int>>()
+
+    var revokeHealthPermissionInvocations = 0
+    var grantHealthPermissionInvocations = 0
+
+    fun reset() {
+        revokeHealthPermissionInvocations = 0
+        grantHealthPermissionInvocations = 0
+        grantedPermissions.clear()
+        healthPermissionFlags.clear()
+    }
 
     fun setHealthPermissionFlags(packageName: String, flags: Map<String, Int>) {
         healthPermissionFlags[packageName] = flags
@@ -34,12 +47,12 @@ class FakeHealthPermissionManager : HealthPermissionManager {
     }
 
     override fun getGrantedHealthPermissions(packageName: String): List<String> {
-        return grantedPermissions.getOrDefault(packageName, emptyList())
+        return grantedPermissions.getOrDefault(packageName, emptyList()).toSet().toList()
     }
 
     override fun getHealthPermissionsFlags(
         packageName: String,
-        permissions: List<String>
+        permissions: List<String>,
     ): Map<String, Int> {
         return healthPermissionFlags.getOrDefault(packageName, mapOf())
     }
@@ -47,7 +60,7 @@ class FakeHealthPermissionManager : HealthPermissionManager {
     override fun setHealthPermissionsUserFixedFlagValue(
         packageName: String,
         permissions: List<String>,
-        value: Boolean
+        value: Boolean,
     ) {
         // do nothing
     }
@@ -56,12 +69,31 @@ class FakeHealthPermissionManager : HealthPermissionManager {
         val permissions = grantedPermissions.getOrDefault(packageName, mutableListOf())
         permissions.add(permissionName)
         grantedPermissions[packageName] = permissions
+
+        val flags = getHealthPermissionsFlags(packageName, permissions).toMutableMap()
+        flags[permissionName] = PERMISSION_GRANTED
+        setHealthPermissionFlags(packageName, flags.toMap())
+        grantHealthPermissionInvocations += 1
     }
 
     override fun revokeHealthPermission(packageName: String, permissionName: String) {
         val permissions = grantedPermissions.getOrDefault(packageName, mutableListOf())
         permissions.remove(permissionName)
         grantedPermissions[packageName] = permissions
+
+        val flags = getHealthPermissionsFlags(packageName, permissions).toMutableMap()
+        if (flags.containsKey(permissionName)) {
+            val currentFlag = flags[permissionName]
+            if (currentFlag == PERMISSION_GRANTED) {
+                flags[permissionName] = FLAG_PERMISSION_USER_SET
+            } else if (currentFlag == FLAG_PERMISSION_USER_SET) {
+                flags[permissionName] = FLAG_PERMISSION_USER_FIXED
+            }
+        } else {
+            flags[permissionName] = FLAG_PERMISSION_USER_SET
+        }
+        setHealthPermissionFlags(packageName, flags.toMap())
+        revokeHealthPermissionInvocations += 1
     }
 
     override fun revokeAllHealthPermissions(packageName: String) {

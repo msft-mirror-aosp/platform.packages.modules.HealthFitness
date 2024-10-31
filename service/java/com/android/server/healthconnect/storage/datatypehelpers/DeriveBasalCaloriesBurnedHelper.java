@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.WeightRec
 import static com.android.server.healthconnect.storage.datatypehelpers.WeightRecordHelper.WEIGHT_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
@@ -59,6 +58,7 @@ public final class DeriveBasalCaloriesBurnedHelper {
     private static final String TAG = "DeriveBasalCalories";
     private final Cursor mCursor;
     private final String mColumnName;
+    private final TransactionManager mTransactionManager;
     private double mRateOfEnergyBurntInWatts = 0;
     private String mTimeColumnName;
 
@@ -66,20 +66,23 @@ public final class DeriveBasalCaloriesBurnedHelper {
     private static final int DEFAULT_AGE = 30;
 
     public DeriveBasalCaloriesBurnedHelper(
-            @NonNull Cursor cursor, @NonNull String columnName, @NonNull String timeColumnName) {
+            Cursor cursor,
+            String columnName,
+            String timeColumnName,
+            TransactionManager transactionManager) {
         Objects.requireNonNull(cursor);
         Objects.requireNonNull(columnName);
         Objects.requireNonNull(timeColumnName);
         mCursor = cursor;
         mColumnName = columnName;
         mTimeColumnName = timeColumnName;
+        mTransactionManager = transactionManager;
     }
 
     /**
      * Calculates and returns aggregate of total basal calories burned from table {@link
      * BasalMetabolicRateRecord} for the interval.
      */
-    @NonNull
     public double getBasalCaloriesBurned(long intervalStartTime, long intervalEndTime) {
         if (intervalStartTime >= intervalEndTime) {
             return 0;
@@ -143,9 +146,8 @@ public final class DeriveBasalCaloriesBurnedHelper {
                     mRateOfEnergyBurntInWatts, intervalStartTime, intervalEndTime);
         }
 
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor =
-                transactionManager.read(
+                mTransactionManager.read(
                         new ReadTableRequest(BASAL_METABOLIC_RATE_RECORD_TABLE_NAME)
                                 .setColumnNames(List.of(BASAL_METABOLIC_RATE_COLUMN_NAME))
                                 .setWhereClause(
@@ -315,8 +317,7 @@ public final class DeriveBasalCaloriesBurnedHelper {
 
     private Cursor getReadCursorForDerivingBMR(
             long intervalStartTime, long intervalEndTime, String tableName, String colName) {
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        return transactionManager.read(
+        return mTransactionManager.read(
                 new ReadTableRequest(tableName)
                         .setColumnNames(List.of(colName, mTimeColumnName))
                         .setWhereClause(
@@ -346,7 +347,7 @@ public final class DeriveBasalCaloriesBurnedHelper {
      * Calculates and returns an array of aggregate of total basal calories burned from table {@link
      * BasalMetabolicRateRecord} for group of intervals.
      */
-    public double[] getBasalCaloriesBurned(@NonNull List<Pair<Long, Long>> groupIntervalList) {
+    public double[] getBasalCaloriesBurned(List<Pair<Long, Long>> groupIntervalList) {
         double[] basalCaloriesBurned = new double[groupIntervalList.size()];
         for (int group = 0; group < groupIntervalList.size(); group++) {
             basalCaloriesBurned[group] =

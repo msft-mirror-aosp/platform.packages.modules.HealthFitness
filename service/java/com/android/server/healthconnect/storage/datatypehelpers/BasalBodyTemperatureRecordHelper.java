@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -47,15 +46,13 @@ public final class BasalBodyTemperatureRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return BASAL_BODY_TEMPERATURE_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull BasalBodyTemperatureRecordInternal basalBodyTemperatureRecord) {
+            Cursor cursor, BasalBodyTemperatureRecordInternal basalBodyTemperatureRecord) {
         basalBodyTemperatureRecord.setMeasurementLocation(
                 getCursorInt(cursor, MEASUREMENT_LOCATION_COLUMN_NAME));
         basalBodyTemperatureRecord.setTemperature(getCursorDouble(cursor, TEMPERATURE_COLUMN_NAME));
@@ -63,8 +60,8 @@ public final class BasalBodyTemperatureRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull BasalBodyTemperatureRecordInternal basalBodyTemperatureRecord) {
+            ContentValues contentValues,
+            BasalBodyTemperatureRecordInternal basalBodyTemperatureRecord) {
         contentValues.put(
                 MEASUREMENT_LOCATION_COLUMN_NAME,
                 basalBodyTemperatureRecord.getMeasurementLocation());
@@ -72,7 +69,6 @@ public final class BasalBodyTemperatureRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(MEASUREMENT_LOCATION_COLUMN_NAME, INTEGER),

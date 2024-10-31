@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -44,26 +43,23 @@ public final class RespiratoryRateRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return RESPIRATORY_RATE_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull RespiratoryRateRecordInternal respiratoryRateRecord) {
+            Cursor cursor, RespiratoryRateRecordInternal respiratoryRateRecord) {
         respiratoryRateRecord.setRate(getCursorDouble(cursor, RATE_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull RespiratoryRateRecordInternal respiratoryRateRecord) {
+            ContentValues contentValues, RespiratoryRateRecordInternal respiratoryRateRecord) {
         contentValues.put(RATE_COLUMN_NAME, respiratoryRateRecord.getRate());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(new Pair<>(RATE_COLUMN_NAME, REAL));
     }

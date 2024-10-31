@@ -36,13 +36,14 @@ java_sdk_library {
     defaults: [
         "framework-system-server-module-defaults",
         "framework-system-server-module-optimize-defaults",
+        "healthfitness-phr-fhir-validation-defaults",
     ],
     apex_available: ["com.android.healthfitness"],
     libs: [
         "framework-healthfitness.impl",
         "androidx.annotation_annotation",
-        "framework-sdkextensions",
-        "framework-configinfrastructure",
+        "framework-sdkextensions.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
         "keepanno-annotations",
         "modules-utils-preconditions",
         // Keeping aconfig lib deps in "libs" instead of "static_libs" because we already have them
@@ -53,6 +54,7 @@ java_sdk_library {
     ],
     static_libs: [
         "modules-utils-backgroundthread",
+        "fhirspec-java-proto-lite",
     ],
     jarjar_rules: "jarjar-rules.txt",
     installable: true,

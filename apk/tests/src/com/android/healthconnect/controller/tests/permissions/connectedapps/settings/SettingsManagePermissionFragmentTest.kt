@@ -47,7 +47,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -67,6 +66,7 @@ import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class SettingsManagePermissionFragmentTest {
@@ -88,7 +88,8 @@ class SettingsManagePermissionFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -96,7 +97,10 @@ class SettingsManagePermissionFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         // disable animations
         toggleAnimation(false)
@@ -145,7 +149,8 @@ class SettingsManagePermissionFragmentTest {
 
     @Test
     fun test_accessedHealthData_showsRecentAccessSummary() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, healthUsageLastAccess = NOW))
+        val connectApp =
+            listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, healthUsageLastAccess = NOW))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SettingsManagePermissionFragment>(Bundle())
@@ -169,7 +174,8 @@ class SettingsManagePermissionFragmentTest {
         val connectApp =
             listOf(
                 ConnectedAppMetadata(TEST_APP, status = DENIED),
-                ConnectedAppMetadata(TEST_APP_2, status = ALLOWED))
+                ConnectedAppMetadata(TEST_APP_2, status = ALLOWED),
+            )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SettingsManagePermissionFragment>(Bundle())
@@ -190,7 +196,8 @@ class SettingsManagePermissionFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IN_PROGRESS,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -198,19 +205,25 @@ class SettingsManagePermissionFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val connectApp =
             listOf(
                 ConnectedAppMetadata(TEST_APP, status = DENIED),
-                ConnectedAppMetadata(TEST_APP_2, status = ALLOWED))
+                ConnectedAppMetadata(TEST_APP_2, status = ALLOWED),
+            )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         val scenario = launchFragment<SettingsManagePermissionFragment>(Bundle())
 
         onView(
                 withText(
-                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use Health Connect."))
+                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use Health Connect."
+                )
+            )
             .inRoot(RootMatchers.isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
@@ -234,7 +247,8 @@ class SettingsManagePermissionFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -242,12 +256,16 @@ class SettingsManagePermissionFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val connectApp =
             listOf(
                 ConnectedAppMetadata(TEST_APP, status = DENIED),
-                ConnectedAppMetadata(TEST_APP_2, status = ALLOWED))
+                ConnectedAppMetadata(TEST_APP_2, status = ALLOWED),
+            )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         val scenario = launchFragment<SettingsManagePermissionFragment>(Bundle())
@@ -257,7 +275,9 @@ class SettingsManagePermissionFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health Connect is restoring data and permissions. This may take some time to complete."))
+                    "Health Connect is restoring data and permissions. This may take some time to complete."
+                )
+            )
             .inRoot(RootMatchers.isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))

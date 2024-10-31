@@ -21,7 +21,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -30,6 +29,7 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.BasalMetabolicRateRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 
@@ -67,7 +67,6 @@ public final class BasalMetabolicRateRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return BASAL_METABOLIC_RATE_RECORD_TABLE_NAME;
     }
@@ -87,30 +86,33 @@ public final class BasalMetabolicRateRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull BasalMetabolicRateRecordInternal basalMetabolicRateRecord) {
+            ContentValues contentValues,
+            BasalMetabolicRateRecordInternal basalMetabolicRateRecord) {
         contentValues.put(
                 BASAL_METABOLIC_RATE_COLUMN_NAME, basalMetabolicRateRecord.getBasalMetabolicRate());
     }
 
     @Override
-    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
+    public double[] deriveAggregate(
+            Cursor cursor, AggregateTableRequest request, TransactionManager transactionManager) {
         DeriveBasalCaloriesBurnedHelper deriveBasalCaloriesBurnedHelper =
                 new DeriveBasalCaloriesBurnedHelper(
-                        cursor, BASAL_METABOLIC_RATE_COLUMN_NAME, request.getTimeColumnName());
+                        cursor,
+                        BASAL_METABOLIC_RATE_COLUMN_NAME,
+                        request.getTimeColumnName(),
+                        transactionManager);
         List<Pair<Long, Long>> groupIntervals = request.getGroupSplitIntervals();
         return deriveBasalCaloriesBurnedHelper.getBasalCaloriesBurned(groupIntervals);
     }
 
     @Override
     protected void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull BasalMetabolicRateRecordInternal recordInternal) {
+            Cursor cursor, BasalMetabolicRateRecordInternal recordInternal) {
         recordInternal.setBasalMetabolicRate(
                 getCursorDouble(cursor, BASAL_METABOLIC_RATE_COLUMN_NAME));
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(BASAL_METABOLIC_RATE_COLUMN_NAME, REAL));
     }

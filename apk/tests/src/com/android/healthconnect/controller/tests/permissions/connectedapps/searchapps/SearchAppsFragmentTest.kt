@@ -28,7 +28,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_3
 import com.android.healthconnect.controller.tests.utils.isAbove
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -46,6 +45,7 @@ import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class SearchAppsFragmentTest {
@@ -79,7 +79,9 @@ class SearchAppsFragmentTest {
                 listOf(
                     ConnectedAppMetadata(TEST_APP, status = ConnectedAppStatus.ALLOWED),
                     ConnectedAppMetadata(TEST_APP_2, status = ConnectedAppStatus.DENIED),
-                    ConnectedAppMetadata(TEST_APP_3, status = ConnectedAppStatus.INACTIVE)))
+                    ConnectedAppMetadata(TEST_APP_3, status = ConnectedAppStatus.INACTIVE),
+                )
+            )
         }
 
         launchFragment<SearchAppsFragment>(Bundle())
@@ -106,7 +108,9 @@ class SearchAppsFragmentTest {
                 listOf(
                     ConnectedAppMetadata(TEST_APP, status = ConnectedAppStatus.DENIED),
                     ConnectedAppMetadata(TEST_APP_2, status = ConnectedAppStatus.DENIED),
-                    ConnectedAppMetadata(TEST_APP_3, status = ConnectedAppStatus.INACTIVE)))
+                    ConnectedAppMetadata(TEST_APP_3, status = ConnectedAppStatus.INACTIVE),
+                )
+            )
         }
 
         launchFragment<SearchAppsFragment>(Bundle())
@@ -127,7 +131,9 @@ class SearchAppsFragmentTest {
                 listOf(
                     ConnectedAppMetadata(TEST_APP, status = ConnectedAppStatus.ALLOWED),
                     ConnectedAppMetadata(TEST_APP_2, status = ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_3, status = ConnectedAppStatus.ALLOWED)))
+                    ConnectedAppMetadata(TEST_APP_3, status = ConnectedAppStatus.ALLOWED),
+                )
+            )
         }
 
         launchFragment<SearchAppsFragment>(Bundle())
@@ -159,7 +165,9 @@ class SearchAppsFragmentTest {
                 ConnectedAppMetadata(
                     TEST_APP,
                     status = ConnectedAppStatus.ALLOWED,
-                    permissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY))
+                    permissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY,
+                )
+            )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SearchAppsFragment>(Bundle()) {
@@ -181,7 +189,9 @@ class SearchAppsFragmentTest {
                 ConnectedAppMetadata(
                     TEST_APP,
                     status = ConnectedAppStatus.ALLOWED,
-                    permissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY))
+                    permissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY,
+                )
+            )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SearchAppsFragment>(Bundle()) {
@@ -203,7 +213,9 @@ class SearchAppsFragmentTest {
                 ConnectedAppMetadata(
                     TEST_APP,
                     status = ConnectedAppStatus.ALLOWED,
-                    permissionsType = AppPermissionsType.COMBINED_PERMISSIONS))
+                    permissionsType = AppPermissionsType.COMBINED_PERMISSIONS,
+                )
+            )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SearchAppsFragment>(Bundle()) {
@@ -224,13 +236,16 @@ class SearchAppsFragmentTest {
             listOf(
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
-                    status = ConnectedAppStatus.ALLOWED),
+                    status = ConnectedAppStatus.ALLOWED,
+                ),
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
-                    status = ConnectedAppStatus.ALLOWED),
+                    status = ConnectedAppStatus.ALLOWED,
+                ),
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
-                    status = ConnectedAppStatus.ALLOWED),
+                    status = ConnectedAppStatus.ALLOWED,
+                ),
             )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
 
@@ -248,13 +263,16 @@ class SearchAppsFragmentTest {
             listOf(
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
-                    status = ConnectedAppStatus.DENIED),
+                    status = ConnectedAppStatus.DENIED,
+                ),
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
-                    status = ConnectedAppStatus.DENIED),
+                    status = ConnectedAppStatus.DENIED,
+                ),
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
-                    status = ConnectedAppStatus.DENIED),
+                    status = ConnectedAppStatus.DENIED,
+                ),
             )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
 
@@ -272,13 +290,16 @@ class SearchAppsFragmentTest {
             listOf(
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
-                    status = ConnectedAppStatus.INACTIVE),
+                    status = ConnectedAppStatus.INACTIVE,
+                ),
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
-                    status = ConnectedAppStatus.INACTIVE),
+                    status = ConnectedAppStatus.INACTIVE,
+                ),
                 ConnectedAppMetadata(
                     AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
-                    status = ConnectedAppStatus.INACTIVE),
+                    status = ConnectedAppStatus.INACTIVE,
+                ),
             )
         whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
 

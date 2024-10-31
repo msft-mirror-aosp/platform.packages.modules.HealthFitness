@@ -19,29 +19,40 @@ package android.health.connect;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
-import android.os.OutcomeReceiver;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.ArraySet;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Executor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Request to read medical data sources using {@link
- * HealthConnectManager#getMedicalDataSources(GetMedicalDataSourcesRequest, Executor,
- * OutcomeReceiver)}.
+ * A create request for {@link HealthConnectManager#getMedicalDataSources}.
  *
- * <p>If no package names are set requests all data sources from all packages. Otherwise the request
- * is limited to the requested package names.
+ * <p>If no {@link GetMedicalDataSourcesRequest#getPackageNames() package names} are set, requests
+ * all {@link MedicalDataSource}s from all packages. Otherwise the request is limited to the
+ * requested package names.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class GetMedicalDataSourcesRequest implements Parcelable {
+    @NonNull private final Set<String> mPackageNames;
+
+    // A full Java-language-style package name for the Android app can contain uppercase
+    // or lowercase letters, numbers, and underscores ('_'). It must have at least two segments (one
+    // or more dots), and individual package name parts can only start with letters. See the
+    // <a
+    // href="https://developer.android.com/guide/topics/manifest/manifest-element.html#package">Android developer doc</a>.
+    private static final String PACKAGE_NAME_REGEX =
+            "^([A-Za-z][a-zA-Z0-9_]*\\.)+[A-Za-z][a-zA-Z0-9_]*$";
 
     @NonNull
     public static final Creator<GetMedicalDataSourcesRequest> CREATOR =
@@ -57,11 +68,14 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
                 }
             };
 
-    @NonNull private final Set<String> mPackageNames = new ArraySet<>();
-
+    /**
+     * Creates a new instance of {@link GetMedicalDataSourcesRequest}. Please see {@link
+     * GetMedicalDataSourcesRequest.Builder} for more detailed parameters information.
+     */
     private GetMedicalDataSourcesRequest(@NonNull Set<String> packageNames) {
         Objects.requireNonNull(packageNames);
-        mPackageNames.addAll(packageNames);
+        validatePackageNames(packageNames);
+        mPackageNames = packageNames;
     }
 
     /**
@@ -70,16 +84,39 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
      */
     private GetMedicalDataSourcesRequest(@NonNull Parcel in) {
         Objects.requireNonNull(in);
-        mPackageNames.addAll(in.createStringArrayList());
+        mPackageNames = new ArraySet<>(requireNonNull(in.createStringArrayList()));
+        validatePackageNames(mPackageNames);
     }
 
     /**
-     * Gets the package names for which datasources are being requested. If data sources for all
-     * apps are requested, the result will be empty..
+     * Returns the package names for which {@link MedicalDataSource}s are being requested, or an
+     * empty set for no filter.
      */
     @NonNull
     public Set<String> getPackageNames() {
         return new ArraySet<>(mPackageNames);
+    }
+
+    /**
+     * Validates all of the provided {@code packageNames} are valid, which matches with the {@link
+     * #PACKAGE_NAME_REGEX}.
+     *
+     * @throws IllegalArgumentException with all invalid package names if not all {@code
+     *     packageNames} are valid.
+     */
+    private static void validatePackageNames(Set<String> packageNames) {
+        Pattern pattern = Pattern.compile(PACKAGE_NAME_REGEX);
+
+        Set<String> invalidPackageNames = new HashSet<>();
+        for (String packageName : packageNames) {
+            Matcher matcher = pattern.matcher(packageName);
+            if (!matcher.matches()) {
+                invalidPackageNames.add(packageName);
+            }
+        }
+        if (!invalidPackageNames.isEmpty()) {
+            throw new IllegalArgumentException("Invalid package name(s): " + invalidPackageNames);
+        }
     }
 
     @Override
@@ -113,26 +150,52 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
         return sb.toString();
     }
 
-    /** Builder for a {@link GetMedicalDataSourcesRequest}. */
+    /** Builder class for {@link GetMedicalDataSourcesRequest}. */
     public static final class Builder {
         private final Set<String> mPackageNames = new ArraySet<>();
 
+        /** Constructs a new {@link GetMedicalDataSourcesRequest.Builder} with no filters set. */
         public Builder() {}
 
+        /** Constructs a clone of the other {@link GetMedicalDataSourcesRequest.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mPackageNames.addAll(other.mPackageNames);
+        }
+
+        /** Constructs a clone of the other {@link GetMedicalDataSourcesRequest} instance. */
+        public Builder(@NonNull GetMedicalDataSourcesRequest other) {
+            requireNonNull(other);
+            mPackageNames.addAll(other.getPackageNames());
+        }
+
         /**
-         * Add a package name to limit this request to.
+         * Adds a package name to limit this request to.
          *
-         * <p>If the list of package names is empty, medical data sources for all packages will be
-         * requested. Otherwise only data sources for the added package names are requested.
+         * <p>If the list of package names is empty, {@link MedicalDataSource}s for all packages
+         * will be requested. Otherwise only those for the added package names are requested.
+         *
+         * @throws IllegalArgumentException if the provided {@code packageName} is not valid.
          */
         @NonNull
         public Builder addPackageName(@NonNull String packageName) {
             Objects.requireNonNull(packageName);
+            validatePackageNames(Set.of(packageName));
             mPackageNames.add(packageName);
             return this;
         }
 
-        /** Returns a {@link GetMedicalDataSourcesRequest} as specified by this builder. */
+        /** Clears all package names. */
+        @NonNull
+        public Builder clearPackageNames() {
+            mPackageNames.clear();
+            return this;
+        }
+
+        /**
+         * Returns a new instance of {@link GetMedicalDataSourcesRequest} with the specified
+         * parameters.
+         */
         @NonNull
         public GetMedicalDataSourcesRequest build() {
             return new GetMedicalDataSourcesRequest(mPackageNames);
