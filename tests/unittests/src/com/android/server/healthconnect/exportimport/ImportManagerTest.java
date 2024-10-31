@@ -148,7 +148,6 @@ public class ImportManagerTest {
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
 
         mContext = mDatabaseTestRule.getDatabaseContext();
@@ -208,7 +207,6 @@ public class ImportManagerTest {
         }
         testDir.delete();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 

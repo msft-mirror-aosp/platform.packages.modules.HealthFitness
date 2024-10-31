@@ -145,7 +145,6 @@ public class CloudBackupManagerTest {
     @After
     public void tearDown() {
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 

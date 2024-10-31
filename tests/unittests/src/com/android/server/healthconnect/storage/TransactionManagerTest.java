@@ -132,7 +132,6 @@ public class TransactionManagerTest {
         MockitoAnnotations.initMocks(this);
         StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
