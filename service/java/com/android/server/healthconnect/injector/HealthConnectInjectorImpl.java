@@ -118,7 +118,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
-                        ? HealthDataCategoryPriorityHelper.getInstance(
+                        ? new HealthDataCategoryPriorityHelper(
                                 mAppInfoHelper,
                                 mTransactionManager,
                                 mHealthConnectDeviceConfigManager,

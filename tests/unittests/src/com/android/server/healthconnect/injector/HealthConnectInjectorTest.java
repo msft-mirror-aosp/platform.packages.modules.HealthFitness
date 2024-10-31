@@ -76,7 +76,8 @@ public class HealthConnectInjectorTest {
     }
 
     @Test
-    public void setFakeHealthDataCategoryPriorityHelper_injectorReturnsFakeTransactionManager() {
+    public void
+            setFakeHealthDataCategoryPriorityHelper_injectorReturnsFakeHealthDataCategoryPriorityHelper() {
         HealthConnectInjector healthConnectInjector =
                 mBuilder.setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .build();
@@ -90,6 +91,6 @@ public class HealthConnectInjectorTest {
         HealthConnectInjector healthConnectInjector = mBuilder.build();
 
         assertThat(healthConnectInjector.getHealthDataCategoryPriorityHelper())
-                .isEqualTo(HealthDataCategoryPriorityHelper.getInstance());
+                .isNotEqualTo(mHealthDataCategoryPriorityHelper);
     }
 }
