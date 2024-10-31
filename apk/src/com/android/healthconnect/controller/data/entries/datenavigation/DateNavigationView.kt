@@ -227,7 +227,6 @@ constructor(
                     )
                 }
             }
-
         when (period) {
             PERIOD_DAY -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
             PERIOD_WEEK -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
@@ -265,6 +264,27 @@ constructor(
             getPeriodStartDate(selectedDate, period),
             period,
         )
+        // Needed to trigger the text update
+        datePickerSpinner.adapter.getView(
+            datePickerSpinner.selectedItemPosition,
+            null,
+            datePickerSpinner,
+        )
+
+        datePickerSpinner.contentDescription =
+            (datePickerSpinner.adapter as DatePickerSpinnerAdapter).getText()
+        nextDayButton.contentDescription =
+            when (period) {
+                PERIOD_DAY -> resources.getString(R.string.a11y_next_day)
+                PERIOD_WEEK -> resources.getString(R.string.a11y_next_week)
+                PERIOD_MONTH -> resources.getString(R.string.a11y_next_month)
+            }
+        previousDayButton.contentDescription =
+            when (period) {
+                PERIOD_DAY -> resources.getString(R.string.a11y_previous_day)
+                PERIOD_WEEK -> resources.getString(R.string.a11y_previous_week)
+                PERIOD_MONTH -> resources.getString(R.string.a11y_previous_month)
+            }
     }
 
     interface OnDateChangedListener {

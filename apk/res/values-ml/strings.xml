@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"വീൽചെയർ പുഷുകൾ"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"വീൽചെയർ പുഷുകൾ സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"വീൽചെയർ പുഷുകൾ സംബന്ധിച്ച ഡാറ്റ റൈറ്റ് ചെയ്യുക"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"അടിസ്ഥാന മെറ്റാബോളിക് നിരക്ക്"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"അടിസ്ഥാന മെറ്റാബോളിക് നിരക്ക്"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"അടിസ്ഥാന മെറ്റാബോളിക് നിരക്ക് സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
@@ -1148,12 +1156,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> എന്ന മാസത്തേക്കുള്ള തിരഞ്ഞെടുത്ത <xliff:g id="APP_NAME">%1$s</xliff:g> എൻട്രികൾ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ഈ <xliff:g id="APP_NAME">%s</xliff:g> എൻട്രി ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> എന്നതിനുള്ള <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ശാശ്വതമായി നീക്കം ചെയ്യണോ?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"ഓണാണ്"</string>
+    <string name="off" msgid="6996623844428550649">"ഓഫാണ്"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"ഇന്നലെ <xliff:g id="TIME_DATE">%1$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
 </resources>

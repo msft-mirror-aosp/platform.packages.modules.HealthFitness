@@ -36,6 +36,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
@@ -46,7 +47,6 @@ import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryM
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.HealthConnectDatabase;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
@@ -544,12 +544,12 @@ public final class StorageUtils {
         return id;
     }
 
-    public static boolean checkTableExists(HealthConnectDatabase database, String tableName) {
+    /** Checks whether {@code tableName} exists in the {@code database}. */
+    public static boolean checkTableExists(SQLiteDatabase database, String tableName) {
         try (Cursor cursor =
-                database.getReadableDatabase()
-                        .rawQuery(
-                                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
-                                new String[] {tableName})) {
+                database.rawQuery(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                        new String[] {tableName})) {
             if (cursor.getCount() == 0) {
                 Slog.d(TAG, "Table does not exist: " + tableName);
             }
