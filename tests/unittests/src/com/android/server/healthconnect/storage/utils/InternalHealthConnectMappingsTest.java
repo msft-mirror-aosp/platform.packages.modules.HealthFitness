@@ -25,6 +25,9 @@ import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import android.health.connect.datatypes.AggregationType;
+import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
@@ -44,7 +47,7 @@ public class InternalHealthConnectMappingsTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
-    public void recordTypeIds_uniques() {
+    public void recordTypeIds_unique() {
         List<InternalDataTypeDescriptor> descriptors = getAllInternalDataTypeDescriptors();
 
         List<Integer> recordTypeIds =
@@ -60,7 +63,8 @@ public class InternalHealthConnectMappingsTest {
     @Test
     public void getRecordTypeIdForUuid() {
         List<InternalDataTypeDescriptor> descriptors = getAllInternalDataTypeDescriptors();
-        InternalHealthConnectMappings mappings = new InternalHealthConnectMappings();
+        InternalHealthConnectMappings mappings =
+                new InternalHealthConnectMappings(new HealthConnectMappings());
         for (var descriptor : descriptors) {
             String className = descriptor.getRecordHelper().getClass().getSimpleName();
             int recordTypeId = descriptor.getRecordTypeIdentifier();
@@ -85,7 +89,8 @@ public class InternalHealthConnectMappingsTest {
     @Test
     public void getRecordHelpers() {
         List<InternalDataTypeDescriptor> descriptors = getAllInternalDataTypeDescriptors();
-        InternalHealthConnectMappings mappings = new InternalHealthConnectMappings(descriptors);
+        InternalHealthConnectMappings mappings =
+                new InternalHealthConnectMappings(descriptors, new HealthConnectMappings());
 
         Collection<RecordHelper<?>> recordHelpers = mappings.getRecordHelpers();
 
@@ -97,7 +102,7 @@ public class InternalHealthConnectMappingsTest {
 
         assertThat(recordHelpers.stream().map(Object::getClass).toList())
                 .containsExactlyElementsIn(
-                        RecordHelperProvider.getRecordHelpers().values().stream()
+                        RecordHelperProvider.getRecordHelpers().stream()
                                 .map(x -> x.getClass())
                                 .toList());
     }
@@ -105,7 +110,8 @@ public class InternalHealthConnectMappingsTest {
     @Test
     public void getRecordHelper() {
         List<InternalDataTypeDescriptor> descriptors = getAllInternalDataTypeDescriptors();
-        InternalHealthConnectMappings mappings = new InternalHealthConnectMappings(descriptors);
+        InternalHealthConnectMappings mappings =
+                new InternalHealthConnectMappings(descriptors, new HealthConnectMappings());
 
         for (var descriptor : descriptors) {
             int recordTypeId = descriptor.getRecordTypeIdentifier();
@@ -126,8 +132,10 @@ public class InternalHealthConnectMappingsTest {
 
     @Test
     public void getLoggingEnumForRecordTypeId() {
+        HealthConnectMappings externalMappings = new HealthConnectMappings();
         List<InternalDataTypeDescriptor> descriptors = getAllInternalDataTypeDescriptors();
-        InternalHealthConnectMappings mappings = new InternalHealthConnectMappings();
+        InternalHealthConnectMappings mappings =
+                new InternalHealthConnectMappings(externalMappings);
 
         for (var descriptor : descriptors) {
             int loggingEnum =
@@ -148,5 +156,83 @@ public class InternalHealthConnectMappingsTest {
                                 .map(mappings::getLoggingEnumForRecordTypeId)
                                 .toList())
                 .containsNoDuplicates();
+    }
+
+    @Test
+    public void supportsPriority() {
+        InternalHealthConnectMappings mappings =
+                new InternalHealthConnectMappings(new HealthConnectMappings());
+
+        for (var descriptor : getAllInternalDataTypeDescriptors()) {
+            for (var operationType : AggregationType.OPERATION_VALID_TYPES) {
+                assertThat(
+                                mappings.supportsPriority(
+                                        descriptor.getRecordTypeIdentifier(), operationType))
+                        .isEqualTo(
+                                StorageUtils.supportsPriority(
+                                        descriptor.getRecordTypeIdentifier(), operationType));
+            }
+        }
+
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS, AggregationType.SUM))
+                .isTrue();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS, AggregationType.COUNT))
+                .isFalse();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
+                                AggregationType.SUM))
+                .isTrue();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
+                                AggregationType.COUNT))
+                .isFalse();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION,
+                                AggregationType.SUM))
+                .isTrue();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION,
+                                AggregationType.AVG))
+                .isFalse();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
+                                AggregationType.SUM))
+                .isTrue();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
+                                AggregationType.MAX))
+                .isFalse();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, AggregationType.SUM))
+                .isFalse();
+        assertThat(
+                        mappings.supportsPriority(
+                                RecordTypeIdentifier.RECORD_TYPE_BASAL_BODY_TEMPERATURE,
+                                AggregationType.SUM))
+                .isFalse();
+    }
+
+    @Test
+    public void isDerived() {
+        InternalHealthConnectMappings mappings =
+                new InternalHealthConnectMappings(new HealthConnectMappings());
+
+        for (var descriptor : getAllInternalDataTypeDescriptors()) {
+            assertThat(mappings.isDerivedType(descriptor.getRecordTypeIdentifier()))
+                    .isEqualTo(descriptor.isDerived());
+            assertThat(mappings.isDerivedType(descriptor.getRecordTypeIdentifier()))
+                    .isEqualTo(StorageUtils.isDerivedType(descriptor.getRecordTypeIdentifier()));
+        }
     }
 }

@@ -19,6 +19,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.android.healthconnect.controller.data.entries.AppHeaderView
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/app_header"/>
+
     <com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
         android:id="@+id/date_navigation_view"
         android:paddingTop="@dimen/spacing_xsmall"
@@ -37,7 +43,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/no_data"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:focusable="true"/>
 
     <TextView
         android:id="@+id/error_view"

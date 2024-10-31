@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.request.UpsertTableReques
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -52,6 +51,7 @@ public class PreferenceHelper extends DatabaseHelper {
     public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
             Collections.singletonList(new Pair<>(KEY_COLUMN_NAME, TYPE_STRING));
     private static final String VALUE_COLUMN_NAME = "value";
+    private final TransactionManager mTransactionManager;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile PreferenceHelper sPreferenceHelper;
@@ -59,21 +59,21 @@ public class PreferenceHelper extends DatabaseHelper {
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    protected PreferenceHelper() {}
+    protected PreferenceHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+    }
 
     /** Note: Overrides existing preference (if it exists) with the new value */
     public synchronized void insertOrReplacePreference(String key, String value) {
-        TransactionManager.getInitialisedInstance()
-                .insertOrReplace(
-                        new UpsertTableRequest(
-                                TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
+        mTransactionManager.insertOrReplace(
+                new UpsertTableRequest(
+                        TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
         getPreferences().put(key, value);
     }
 
     /** Removes key entry from the table */
     public synchronized void removeKey(String id) {
-        TransactionManager.getInitialisedInstance()
-                .delete(new DeleteTableRequest(TABLE_NAME).setId(KEY_COLUMN_NAME, id));
+        mTransactionManager.delete(new DeleteTableRequest(TABLE_NAME).setId(KEY_COLUMN_NAME, id));
         getPreferences().remove(id);
     }
 
@@ -88,11 +88,10 @@ public class PreferenceHelper extends DatabaseHelper {
                                         TABLE_NAME,
                                         getContentValues(key, value),
                                         UNIQUE_COLUMN_INFO)));
-        TransactionManager.getInitialisedInstance().insertOrReplaceAll(requests);
+        mTransactionManager.insertOrReplaceAll(requests);
         getPreferences().putAll(keyValues);
     }
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
@@ -125,7 +124,6 @@ public class PreferenceHelper extends DatabaseHelper {
         return mPreferences;
     }
 
-    @NonNull
     private ContentValues getContentValues(String key, String value) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_COLUMN_NAME, key);
@@ -139,8 +137,7 @@ public class PreferenceHelper extends DatabaseHelper {
         }
 
         mPreferences = new ConcurrentHashMap<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 String key = StorageUtils.getCursorString(cursor, KEY_COLUMN_NAME);
                 String value = StorageUtils.getCursorString(cursor, VALUE_COLUMN_NAME);
@@ -149,7 +146,6 @@ public class PreferenceHelper extends DatabaseHelper {
         }
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(KEY_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));
@@ -158,9 +154,23 @@ public class PreferenceHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    public static synchronized PreferenceHelper getInstance() {
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void clearInstanceForTest() {
+        sPreferenceHelper = null;
+    }
+
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
+    public static PreferenceHelper getInstance() {
+        return getInstance(TransactionManager.getInitialisedInstance());
+    }
+
+    /** Method to get an instance of PreferenceHelper by passing in the dependency. */
+    public static synchronized PreferenceHelper getInstance(TransactionManager transactionManager) {
         if (sPreferenceHelper == null) {
-            sPreferenceHelper = new PreferenceHelper();
+            sPreferenceHelper = new PreferenceHelper(transactionManager);
         }
 
         return sPreferenceHelper;

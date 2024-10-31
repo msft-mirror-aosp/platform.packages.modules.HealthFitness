@@ -26,7 +26,9 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEnt
 import dagger.hilt.android.EntryPointAccessors
 
 /** ViewBinder for FormattedMedicalDataEntry. */
-class MedicalEntryItemViewBinder : SimpleViewBinder<FormattedEntry.FormattedMedicalDataEntry, View> {
+class MedicalEntryItemViewBinder(
+    private val onClickMedicalEntryListener: OnClickMedicalEntryListener?
+) : SimpleViewBinder<FormattedEntry.FormattedMedicalDataEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -34,7 +36,9 @@ class MedicalEntryItemViewBinder : SimpleViewBinder<FormattedEntry.FormattedMedi
         val context = parent.context.applicationContext
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context).inflate(R.layout.item_data_entry, parent, false)
     }
@@ -53,5 +57,10 @@ class MedicalEntryItemViewBinder : SimpleViewBinder<FormattedEntry.FormattedMedi
         header.contentDescription = data.headerA11y
 
         deleteButton.visibility = View.GONE
+
+        view.setOnClickListener {
+            // TODO(b/342159144): Log interaction
+            onClickMedicalEntryListener?.onItemClicked(data.medicalResourceId, index)
+        }
     }
 }

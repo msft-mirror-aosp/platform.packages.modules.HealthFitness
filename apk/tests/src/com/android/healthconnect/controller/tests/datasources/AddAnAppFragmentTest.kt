@@ -38,7 +38,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.AddAnAppElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -57,6 +56,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class AddAnAppFragmentTest {
@@ -85,7 +85,11 @@ class AddAnAppFragmentTest {
                     priorityListState = PriorityListState.WithData(true, listOf()),
                     potentialAppSourcesState =
                         PotentialAppSourcesState.WithData(
-                            true, listOf(TEST_APP, TEST_APP_2, TEST_APP_3))))
+                            true,
+                            listOf(TEST_APP, TEST_APP_2, TEST_APP_3),
+                        ),
+                )
+            )
         }
 
         launchFragment<AddAnAppFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
@@ -106,7 +110,9 @@ class AddAnAppFragmentTest {
             MutableLiveData(
                 DataSourcesInfo(
                     priorityListState = PriorityListState.WithData(true, listOf()),
-                    potentialAppSourcesState = PotentialAppSourcesState.Loading(true)))
+                    potentialAppSourcesState = PotentialAppSourcesState.Loading(true),
+                )
+            )
         }
 
         launchFragment<AddAnAppFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
@@ -120,7 +126,9 @@ class AddAnAppFragmentTest {
             MutableLiveData(
                 DataSourcesInfo(
                     priorityListState = PriorityListState.WithData(true, listOf()),
-                    potentialAppSourcesState = PotentialAppSourcesState.LoadingFailed(true)))
+                    potentialAppSourcesState = PotentialAppSourcesState.LoadingFailed(true),
+                )
+            )
         }
 
         launchFragment<AddAnAppFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
@@ -137,7 +145,11 @@ class AddAnAppFragmentTest {
                     priorityListState = PriorityListState.WithData(true, listOf()),
                     potentialAppSourcesState =
                         PotentialAppSourcesState.WithData(
-                            true, listOf(TEST_APP, TEST_APP_2, TEST_APP_3))))
+                            true,
+                            listOf(TEST_APP, TEST_APP_2, TEST_APP_3),
+                        ),
+                )
+            )
         }
 
         launchFragment<AddAnAppFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))

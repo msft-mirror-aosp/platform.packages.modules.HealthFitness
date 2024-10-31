@@ -26,16 +26,25 @@ import android.annotation.NonNull;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Represents the FHIR version. This is designed according to <a
- * href="https://build.fhir.org/versions.html#versions">the official FHIR versions</a>, while the
- * "label" is not supported for now, which represents a 'working' version.
+ * href="https://build.fhir.org/versions.html#versions">the official FHIR versions</a> of the Fast
+ * Healthcare Interoperability Resources (FHIR) standard. "label", which represents a 'working'
+ * version, is not supported for now.
+ *
+ * <p>The versions R4 (4.0.1) and R4B (4.3.0) are supported in Health Connect.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class FhirVersion implements Parcelable {
+    private static final FhirVersion R4_FHIR_VERSION = FhirVersion.parseFhirVersion("4.0.1");
+    private static final FhirVersion R4B_FHIR_VERSION = FhirVersion.parseFhirVersion("4.3.0");
+    private static final Set<FhirVersion> SUPPORTED_FHIR_VERSIONS =
+            Set.of(R4_FHIR_VERSION, R4B_FHIR_VERSION);
+
     private final int mMajor;
     private final int mMinor;
     private final int mPatch;
@@ -46,6 +55,7 @@ public final class FhirVersion implements Parcelable {
         mMajor = major;
         mMinor = minor;
         mPatch = patch;
+        validateVersionNumbersNotNegative();
     }
 
     /**
@@ -57,6 +67,7 @@ public final class FhirVersion implements Parcelable {
         mMajor = in.readInt();
         mMinor = in.readInt();
         mPatch = in.readInt();
+        validateVersionNumbersNotNegative();
     }
 
     @NonNull
@@ -143,5 +154,16 @@ public final class FhirVersion implements Parcelable {
     /** Returns the string representation of the FHIR version. */
     public String toString() {
         return String.format("%d.%d.%d", mMajor, mMinor, mPatch);
+    }
+
+    /** Returns {@code true} if the {@link FhirVersion} is supported by Health Connect. */
+    public boolean isSupportedFhirVersion() {
+        return SUPPORTED_FHIR_VERSIONS.contains(this);
+    }
+
+    private void validateVersionNumbersNotNegative() {
+        if (mMajor < 0 || mMinor < 0 || mPatch < 0) {
+            throw new IllegalArgumentException("Version numbers can not be negative.");
+        }
     }
 }

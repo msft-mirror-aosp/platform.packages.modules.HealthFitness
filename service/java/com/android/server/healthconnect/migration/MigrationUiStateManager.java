@@ -27,7 +27,6 @@ import static android.health.connect.migration.HealthConnectMigrationUiState.MIG
 import static android.health.connect.migration.HealthConnectMigrationUiState.MIGRATION_UI_STATE_IN_PROGRESS;
 import static android.health.connect.migration.HealthConnectMigrationUiState.MIGRATION_UI_STATE_MODULE_UPGRADE_REQUIRED;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.migration.HealthConnectMigrationUiState;
@@ -50,10 +49,10 @@ public class MigrationUiStateManager {
     private static final String TAG = "MigrationUiStateManager";
 
     public MigrationUiStateManager(
-            @NonNull Context context,
-            @NonNull UserHandle userHandle,
-            @NonNull MigrationStateManager migrationStateManager,
-            @NonNull MigrationNotificationSender migrationNotificationSender) {
+            Context context,
+            UserHandle userHandle,
+            MigrationStateManager migrationStateManager,
+            MigrationNotificationSender migrationNotificationSender) {
         this.mContext = context;
         this.mUserHandle = userHandle;
         this.mMigrationNotificationSender = migrationNotificationSender;
@@ -61,12 +60,12 @@ public class MigrationUiStateManager {
     }
 
     /** Assigns a new user handle to this object. */
-    public void setUserHandle(@NonNull UserHandle userHandle) {
+    public void setUserHandle(UserHandle userHandle) {
         this.mUserHandle = userHandle;
     }
 
     /** Attaches this MigrationUiStateManager to the provided {@link MigrationStateManager}. */
-    public void attachTo(@NonNull MigrationStateManager migrationStateManager) {
+    public void attachTo(MigrationStateManager migrationStateManager) {
         migrationStateManager.addStateChangedListener(this::onMigrationStateChanged);
     }
 

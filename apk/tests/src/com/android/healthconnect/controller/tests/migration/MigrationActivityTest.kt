@@ -17,7 +17,6 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import dagger.hilt.android.testing.BindValue
@@ -28,6 +27,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @UninstallModules(DeviceInfoUtilsModule::class)
 @HiltAndroidTest
@@ -55,7 +55,10 @@ class MigrationActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val startActivityIntent =
             Intent.makeMainActivity(ComponentName(context, MigrationActivity::class.java))
@@ -73,7 +76,10 @@ class MigrationActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val startActivityIntent =
             Intent.makeMainActivity(ComponentName(context, MigrationActivity::class.java))

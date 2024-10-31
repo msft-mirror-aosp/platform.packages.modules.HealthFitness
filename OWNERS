@@ -1,7 +1,6 @@
 # Bug component: 1219472
 
 jstembridge@google.com
-arkivanov@google.com
 dmckaigue@google.com
 itsleo@google.com
 jhummel@google.com
@@ -15,5 +14,7 @@ rosiebye@google.com
 sameerj@google.com
 ymq@google.com
 xueweizhao@google.com
+teog@google.com
+csitari@google.com
 
 include platform/packages/modules/common:/MODULES_OWNERS  # see go/mainline-owners-policy
