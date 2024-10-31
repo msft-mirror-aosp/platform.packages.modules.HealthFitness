@@ -20,16 +20,22 @@ import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTOR
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.util.Slog;
 
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 /**
@@ -41,7 +47,12 @@ import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappi
 public final class CloudBackupManager {
 
     private static final String TAG = "CloudBackupManager";
+
+    private final TransactionManager mTransactionManager;
     private final BackupRestoreDatabaseHelper mDatabaseHelper;
+    private final HealthDataCategoryPriorityHelper mPriorityHelper;
+    private final PreferenceHelper mPreferenceHelper;
+    private final ExportImportSettingsStorage mExportImportSettingsStorage;
 
     public CloudBackupManager(
             TransactionManager transactionManager,
@@ -51,7 +62,14 @@ public final class CloudBackupManager {
             HealthConnectMappings healthConnectMappings,
             InternalHealthConnectMappings internalHealthConnectMappings,
             ChangeLogsHelper changeLogsHelper,
-            ChangeLogsRequestHelper changeLogsRequestHelper) {
+            ChangeLogsRequestHelper changeLogsRequestHelper,
+            HealthDataCategoryPriorityHelper priorityHelper,
+            PreferenceHelper preferenceHelper,
+            ExportImportSettingsStorage exportImportSettingsStorage) {
+        mTransactionManager = transactionManager;
+        mPriorityHelper = priorityHelper;
+        mPreferenceHelper = preferenceHelper;
+        mExportImportSettingsStorage = exportImportSettingsStorage;
         mDatabaseHelper =
                 new BackupRestoreDatabaseHelper(
                         transactionManager,
@@ -79,7 +97,15 @@ public final class CloudBackupManager {
     @NonNull
     public GetChangesForBackupResponse getChangesForBackup(@Nullable String changeToken) {
         if (changeToken != null) {
-            // TODO: b/369799948 - handles the case when still reading records from data tables.
+            // TODO: b/369799948 - error handling?
+            BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                    BackupChangeTokenHelper.getBackupChangeToken(mTransactionManager, changeToken);
+            if (backupChangeToken.getDataTableName() != null) {
+                return mDatabaseHelper.getChangesAndTokenFromDataTables(
+                        backupChangeToken.getDataTableName(),
+                        backupChangeToken.getDataTablePageToken(),
+                        backupChangeToken.getChangeLogsRequestToken());
+            }
             throw new UnsupportedOperationException();
         }
         return mDatabaseHelper.getChangesAndTokenFromDataTables();
@@ -88,6 +114,14 @@ public final class CloudBackupManager {
     /** Returns all user settings bundled as a single byte array. */
     @NonNull
     public GetSettingsForBackupResponse getSettingsForBackup() {
-        throw new UnsupportedOperationException();
+        Slog.i(TAG, "Formatting user settings for export.");
+        BackupSettingsHelper backupSettingsHelper =
+                new BackupSettingsHelper(
+                        mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
+
+        int version = 0;
+        byte[] data = backupSettingsHelper.collectUserSettings().toByteArray();
+
+        return new GetSettingsForBackupResponse(new BackupSettings(version, data));
     }
 }

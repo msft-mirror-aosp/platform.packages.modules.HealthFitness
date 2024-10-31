@@ -19,23 +19,26 @@ package com.android.server.healthconnect.storage;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ACTIVITY_INTENSITY;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_GENERATED_LOCAL_TIME;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PLANNED_EXERCISE_SESSIONS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_SKIN_TEMPERATURE;
 import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
+import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.TransactionManager.runAsTransaction;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
 
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityIntensityRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
@@ -79,6 +82,9 @@ final class DatabaseUpgradeHelper {
     private static final Upgrader UPGRADE_TO_PERSONAL_HEALTH_RECORD =
             DatabaseUpgradeHelper::applyPersonalHealthRecordDatabaseUpgrade;
 
+    private static final Upgrader UPGRADE_TO_ACTIVITY_INTENSITY =
+            db -> createTable(db, new ActivityIntensityRecordHelper().getCreateTableRequest());
+
     /**
      * A list of db version -> Upgrader to upgrade the db from the previous version to the version.
      * The upgrades must be executed one by one in the numeric order of db versions, hence TreeMap.
@@ -91,7 +97,8 @@ final class DatabaseUpgradeHelper {
                             DB_VERSION_PLANNED_EXERCISE_SESSIONS,
                                     UPGRADE_TO_PLANNED_EXERCISE_SESSIONS,
                             DB_VERSION_MINDFULNESS_SESSION, UPGRADE_TO_MINDFULNESS_SESSION,
-                            DB_VERSION_PERSONAL_HEALTH_RECORD, UPGRADE_TO_PERSONAL_HEALTH_RECORD));
+                            DB_VERSION_PERSONAL_HEALTH_RECORD, UPGRADE_TO_PERSONAL_HEALTH_RECORD,
+                            DB_VERSION_ACTIVITY_INTENSITY, UPGRADE_TO_ACTIVITY_INTENSITY));
 
     /**
      * Applies db upgrades to bring the current schema to the latest supported version.
@@ -138,6 +145,9 @@ final class DatabaseUpgradeHelper {
             if (shouldUpgrade(DB_VERSION_PERSONAL_HEALTH_RECORD, effectiveOldVersion, newVersion)) {
                 UPGRADE_TO_PERSONAL_HEALTH_RECORD.upgrade(db);
             }
+            if (effectiveOldVersion < DB_VERSION_ACTIVITY_INTENSITY) {
+                UPGRADE_TO_ACTIVITY_INTENSITY.upgrade(db);
+            }
         }
     }
 
@@ -151,7 +161,7 @@ final class DatabaseUpgradeHelper {
 
     private static void createTablesForMinSupportedVersion(SQLiteDatabase db) {
         for (CreateTableRequest createTableRequest : getInitialCreateTableRequests()) {
-            HealthConnectDatabase.createTable(db, createTableRequest);
+            createTable(db, createTableRequest);
         }
     }
 
@@ -197,14 +207,14 @@ final class DatabaseUpgradeHelper {
     }
 
     private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {
-        if (doesTableAlreadyExist(db, PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME)) {
+        if (checkTableExists(db, PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME)) {
             // Upgrade has already been applied. Return early.
             // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
             // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
             return;
         }
         PlannedExerciseSessionRecordHelper recordHelper = new PlannedExerciseSessionRecordHelper();
-        HealthConnectDatabase.createTable(db, recordHelper.getCreateTableRequest());
+        createTable(db, recordHelper.getCreateTableRequest());
         executeSqlStatements(
                 db,
                 recordHelper
@@ -219,7 +229,7 @@ final class DatabaseUpgradeHelper {
     }
 
     private static void applyPersonalHealthRecordDatabaseUpgrade(SQLiteDatabase db) {
-        if (doesTableAlreadyExist(db, MedicalResourceHelper.getMainTableName())) {
+        if (checkTableExists(db, MedicalResourceHelper.getMainTableName())) {
             // Upgrade has already been applied. Return early.
             // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
             // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
@@ -235,16 +245,6 @@ final class DatabaseUpgradeHelper {
     /** Executes a list of SQL statements one after another, in a transaction. */
     public static void executeSqlStatements(SQLiteDatabase db, List<String> statements) {
         runAsTransaction(db, unused -> statements.forEach(db::execSQL));
-    }
-
-    private static boolean doesTableAlreadyExist(SQLiteDatabase db, String tableName) {
-        long numEntries =
-                DatabaseUtils.queryNumEntries(
-                        db,
-                        SQLITE_MASTER_TABLE_NAME,
-                        /* selection= */ "type = 'table' AND name == '" + tableName + "'",
-                        /* selectionArgs= */ null);
-        return numEntries > 0;
     }
 
     /** Interface to implement upgrade actions from one db version to the next. */

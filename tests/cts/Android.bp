@@ -84,6 +84,7 @@ android_test {
     ],
     srcs: [
         "src/android/healthconnect/cts/nopermission/HealthConnectManagerNoPermissionsGrantedTest.java",
+        "src/android/healthconnect/cts/nopermission/*NoPermissionsDeclaredTest.java",
     ],
     // Tag this module as a cts test artifact
     test_suites: [

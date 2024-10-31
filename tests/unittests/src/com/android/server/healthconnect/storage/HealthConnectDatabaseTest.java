@@ -16,17 +16,34 @@
 
 package com.android.server.healthconnect.storage;
 
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
+
 import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
+import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
+import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.NUM_OF_TABLES;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.assertNumberOfTables;
+import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.internal.datatypes.RecordInternal;
+import android.healthconnect.cts.phr.utils.PhrDataFactory;
+import android.os.Environment;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -34,80 +51,226 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
-import com.android.healthfitness.flags.Flags;
+import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.logging.ExportImportLogger;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.utils.TimeSourceImpl;
 
-import com.google.common.base.Preconditions;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.quality.Strictness;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class HealthConnectDatabaseTest {
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
-    @Mock Context mContext;
-    private HealthConnectDatabase mHealthConnectDatabase;
-    private SQLiteDatabase mSQLiteDatabase;
+    private static final String TEST_PACKAGE_NAME = "package.test";
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        when(mContext.getDatabasePath(anyString()))
-                .thenReturn(
-                        InstrumentationRegistry.getInstrumentation()
-                                .getContext()
-                                .getDatabasePath("mock"));
-    }
+    @Rule(order = 0)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
-    @After
-    public void tearDown() {
-        AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
-    }
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .mockStatic(ExportImportLogger.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
 
     @Test
-    @DisableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_DEVELOPMENT_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
     public void onCreate_dbWithLatestSchemaCreated() {
-        initializeDatabase();
+        SQLiteDatabase sqliteDatabase =
+                initializeEmptyHealthConnectDatabase().getWritableDatabase();
 
-        assertThat(mHealthConnectDatabase).isNotNull();
-        assertThat(mSQLiteDatabase).isNotNull();
-        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES);
-        assertThat(mSQLiteDatabase.getVersion()).isEqualTo(LAST_ROLLED_OUT_DB_VERSION);
+        assertThat(sqliteDatabase).isNotNull();
+        assertNumberOfTables(sqliteDatabase, NUM_OF_TABLES);
+        assertThat(sqliteDatabase.getVersion()).isEqualTo(LAST_ROLLED_OUT_DB_VERSION);
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    @DisableFlags(FLAG_INFRA_TO_GUARD_DB_CHANGES)
     public void onCreate_infraFlagDisabled_expectCorrectDbVersion() {
-        initializeDatabase();
+        SQLiteDatabase sqliteDatabase =
+                initializeEmptyHealthConnectDatabase().getWritableDatabase();
 
-        assertThat(mSQLiteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
+        assertThat(sqliteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    @EnableFlags(FLAG_INFRA_TO_GUARD_DB_CHANGES)
     public void onCreate_infraFlagEnabled_expectCorrectDbVersion() {
-        initializeDatabase();
+        SQLiteDatabase sqliteDatabase =
+                initializeEmptyHealthConnectDatabase().getWritableDatabase();
 
-        assertThat(mSQLiteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
+        assertThat(sqliteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
+    }
+
+    @Test
+    public void upgradeToPhrWithExistingHcData_expectExistingDataIntact() {
+        // Disable the flag with `disableFlags()` so it can be enabled later in this test. That's
+        // not allowed if FLAG_PERSONAL_HEALTH_RECORD_DATABASE is added to @DisableFlags.
+        mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
+        Context context = createContextWithMockedDataDir();
+        HealthConnectInjector injector = getHealthConnectInjector(context);
+        TransactionManager transactionManager = injector.getTransactionManager();
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(context, injector);
+        // insert a StepsRecord with TEST_PACKAGE_NAME
+        transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        RecordInternal<StepsRecord> originalStepsRecordInternal =
+                TransactionTestUtils.createStepsRecord(
+                        NOW.toEpochMilli(), NOW.plusMillis(1000).toEpochMilli(), 2);
+        List<UUID> originalStepsRecordUuids =
+                transactionTestUtils
+                        .insertRecords(TEST_PACKAGE_NAME, originalStepsRecordInternal)
+                        .stream()
+                        .map(UUID::fromString)
+                        .toList();
+        assertPhrTablesNotExist(transactionManager);
+
+        // Enable the flag and re-initialize all dependencies including TransactionManager.
+        // When a new TransactionManager is created, it will recreate HealthConnectDatabase. Then
+        // When a transaction is executed on that database for the first time, the new value of the
+        // flag will be taken into account.
+        mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
+        injector = getHealthConnectInjector(context);
+        transactionManager = injector.getTransactionManager();
+
+        assertPhrTablesExist(transactionManager);
+        // read the StepsRecord and assert that it's intact
+        List<RecordInternal<?>> recordInternals =
+                transactionManager.readRecordsByIds(
+                        getReadTransactionRequest(
+                                TEST_PACKAGE_NAME,
+                                Map.of(RECORD_TYPE_STEPS, originalStepsRecordUuids)),
+                        injector.getAppInfoHelper(),
+                        injector.getAccessLogsHelper(),
+                        injector.getDeviceInfoHelper(),
+                        false);
+        assertThat(recordInternals).hasSize(1);
+        assertThat(recordInternals.get(0).toExternalRecord())
+                .isEqualTo(originalStepsRecordInternal.toExternalRecord());
+    }
+
+    @Test
+    public void upgradeToPhrWithExistingHcData_expectPhrFunctionsWorkProperly() {
+        // Disable the flag with `disableFlags()` so it can be enabled later in this test. That's
+        // not allowed if FLAG_PERSONAL_HEALTH_RECORD_DATABASE is added to @DisableFlags.
+        mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
+        Context context = createContextWithMockedDataDir();
+        HealthConnectInjector injector = getHealthConnectInjector(context);
+        TransactionManager transactionManager = injector.getTransactionManager();
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(context, injector);
+        // insert a StepsRecord with TEST_PACKAGE_NAME
+        transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        RecordInternal<StepsRecord> originalStepsRecordInternal =
+                TransactionTestUtils.createStepsRecord(
+                        NOW.toEpochMilli(), NOW.plusMillis(1000).toEpochMilli(), 2);
+        transactionTestUtils.insertRecords(TEST_PACKAGE_NAME, originalStepsRecordInternal);
+        assertPhrTablesNotExist(transactionManager);
+
+        // Enable the flag and re-initialize all dependencies including TransactionManager.
+        // When a new TransactionManager is created, it will recreate HealthConnectDatabase. Then
+        // When a transaction is executed on that database for the first time, the new value of the
+        // flag will be taken into account.
+        mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
+        injector = getHealthConnectInjector(context);
+        transactionManager = injector.getTransactionManager();
+
+        assertPhrTablesExist(transactionManager);
+        // PHR functions should work properly.
+        MedicalDataSourceHelper medicalDataSourceHelper =
+                new MedicalDataSourceHelper(
+                        transactionManager,
+                        injector.getAppInfoHelper(),
+                        new TimeSourceImpl(),
+                        injector.getAccessLogsHelper());
+        MedicalDataSource originalMedicalDataSource =
+                medicalDataSourceHelper.createMedicalDataSource(
+                        context,
+                        PhrDataFactory.getCreateMedicalDataSourceRequest(),
+                        TEST_PACKAGE_NAME);
+        List<MedicalDataSource> readMedicalDataSources =
+                medicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(UUID.fromString(originalMedicalDataSource.getId())));
+        assertThat(readMedicalDataSources).hasSize(1);
+        assertThat(originalMedicalDataSource).isEqualTo(readMedicalDataSources.get(0));
     }
 
     // The database needs to be initialized after the flags have been set by the annotations,
     // hence this methods needs to be called in individual tests rather than in @Before method.
-    private void initializeDatabase() {
-        mHealthConnectDatabase = new HealthConnectDatabase(mContext);
+    private HealthConnectDatabase initializeEmptyHealthConnectDatabase() {
+        Context context = createContextWithMockedDataDir();
+        HealthConnectDatabase healthConnectDatabase = new HealthConnectDatabase(context);
 
         // Make sure there is nothing there already.
-        File databasePath = mHealthConnectDatabase.getDatabasePath();
+        File databasePath = healthConnectDatabase.getDatabasePath();
         if (databasePath.exists()) {
-            Preconditions.checkState(databasePath.delete());
+            checkState(databasePath.delete());
         }
-        mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
+
+        return healthConnectDatabase;
+    }
+
+    private static void assertPhrTablesExist(TransactionManager transactionManager) {
+        transactionManager.runAsTransaction(
+                db -> {
+                    assertThat(checkTableExists(db, MedicalDataSourceHelper.getMainTableName()))
+                            .isTrue();
+                    assertThat(checkTableExists(db, MedicalResourceHelper.getMainTableName()))
+                            .isTrue();
+                    assertThat(checkTableExists(db, MedicalResourceIndicesHelper.getTableName()))
+                            .isTrue();
+                });
+    }
+
+    private static void assertPhrTablesNotExist(TransactionManager transactionManager) {
+        transactionManager.runAsTransaction(
+                db -> {
+                    assertThat(checkTableExists(db, MedicalDataSourceHelper.getMainTableName()))
+                            .isFalse();
+                    assertThat(checkTableExists(db, MedicalResourceHelper.getMainTableName()))
+                            .isFalse();
+                    assertThat(checkTableExists(db, MedicalResourceIndicesHelper.getTableName()))
+                            .isFalse();
+                });
+    }
+
+    private static Context createContextWithMockedDataDir() {
+        HealthConnectUserContext context =
+                new HealthConnectUserContext(
+                        InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
+        File mockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
+        when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
+        return context;
+    }
+
+    private static HealthConnectInjector getHealthConnectInjector(Context context) {
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
+        DeviceInfoHelper.resetInstanceForTest();
+        TransactionManager.clearInstanceForTest();
+        return HealthConnectInjectorImpl.newBuilderForTest(context)
+                .setHealthPermissionIntentAppsTracker(mock(HealthPermissionIntentAppsTracker.class))
+                .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                .build();
     }
 }

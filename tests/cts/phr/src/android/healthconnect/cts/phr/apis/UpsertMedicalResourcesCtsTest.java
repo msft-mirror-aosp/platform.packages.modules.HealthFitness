@@ -48,6 +48,7 @@ import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellP
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -61,6 +62,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
 import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
@@ -75,6 +77,7 @@ import com.android.compatibility.common.util.SystemUtil;
 
 import com.google.common.base.Strings;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -141,14 +144,12 @@ public class UpsertMedicalResourcesCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_writeLimitExceeded_throws() throws Exception {
         MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
-        String resourceDataTemplate =
-                "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization%d\"}";
 
         // Make the maximum number of calls allowed by quota. Minus 1 because of the above call.
         int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
         for (int i = 0; i < maximumCalls; i++) {
             HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-            String resourceData = String.format(resourceDataTemplate, i);
+            String resourceData = new ImmunizationBuilder().setId("Immunization" + i).toJson();
             UpsertMedicalResourceRequest request =
                     new UpsertMedicalResourceRequest.Builder(
                                     dataSource.getId(), FHIR_VERSION_R4, resourceData)
@@ -160,7 +161,8 @@ public class UpsertMedicalResourcesCtsTest {
 
         // Make 1 extra create call and check quota is exceeded.
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        String resourceData = String.format(resourceDataTemplate, maximumCalls);
+        String resourceData =
+                new ImmunizationBuilder().setId("Immunization" + maximumCalls).toJson();
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
                                 dataSource.getId(), FHIR_VERSION_R4, resourceData)
@@ -293,6 +295,46 @@ public class UpsertMedicalResourcesCtsTest {
                 Executors.newSingleThreadExecutor(),
                 resourceReadReceiver);
         assertThat(resourceReadReceiver.getResponse()).containsExactly(expectedUpdatedResource);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_validationEnabledUnknownField_throws() throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder().set("unknown_field", "value").toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_resourceWithPrimitiveTypeExtension_succeeds()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .set("_status", new JSONObject("{\"id\": \"1234\"}"))
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).hasSize(1);
     }
 
     @Test
@@ -468,8 +510,7 @@ public class UpsertMedicalResourcesCtsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testUpsertMedicalResources_hasDataManagementPermission_throws()
-            throws InterruptedException {
+    public void testUpsertMedicalResources_hasDataManagementPermission_throws() {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
         SystemUtil.runWithShellPermissionIdentity(

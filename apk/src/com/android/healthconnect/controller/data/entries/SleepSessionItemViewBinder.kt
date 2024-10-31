@@ -64,8 +64,6 @@ class SleepSessionItemViewBinder(
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
         logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
 
-        title.text = data.title
-        title.contentDescription = data.titleA11y
         header.text = data.header
         header.contentDescription = data.headerA11y
         notes.isVisible = !data.notes.isNullOrBlank()
@@ -75,6 +73,13 @@ class SleepSessionItemViewBinder(
             if (isDeletionState) {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
+                title.contentDescription =
+                    getUpdatedContentDescription(
+                        title.resources,
+                        data.titleA11y,
+                        isDeletionState,
+                        checkBox.isChecked,
+                    )
             } else {
                 logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
                 onItemClickedListener?.onItemClicked(data.uuid, index)
@@ -84,6 +89,22 @@ class SleepSessionItemViewBinder(
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+            title.contentDescription =
+                getUpdatedContentDescription(
+                    title.resources,
+                    data.titleA11y,
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
+
+        title.text = data.title
+        title.contentDescription =
+            getUpdatedContentDescription(
+                title.resources,
+                data.titleA11y,
+                isDeletionState,
+                isChecked,
+            )
     }
 }

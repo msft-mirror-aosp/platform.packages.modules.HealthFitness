@@ -82,6 +82,39 @@ flag {
 }
 
 flag {
+    name: "personal_health_record_disable_d2d"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for excluding PHR tables from device to device transfer flow."
+    bug: "369809932"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+    is_exported: true
+}
+
+flag {
+    name: "personal_health_record_disable_export_import"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for excluding PHR tables from export/import flow."
+    bug: "369809932"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_structural_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    bug: "350010200"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
     name: "export_import"
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."
@@ -267,6 +300,33 @@ flag {
     namespace: "health_fitness_aconfig"
     description: "Enables DB changes to support the activity intensity data type."
     bug: "373585917"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "export_import_nice_to_have"
+    namespace: "health_fitness_aconfig"
+    description: "Enables export/import feature updates after fast follow stage."
+    bug: "318484000"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "expressive_theming_enabled"
+    namespace: "health_fitness_aconfig"
+    description: "Enables expressive theming for the UI."
+    bug: "376085738"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "architecture_improvement"
+    namespace: "health_fitness_aconfig"
+    description: "Enables architecture and testing improvement for HC."
+    bug: "376085738"
     is_fixed_read_only: true
     is_exported: true
 }

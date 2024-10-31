@@ -22,6 +22,8 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.Mockito.mock;
+
 import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
@@ -33,8 +35,14 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
@@ -73,6 +81,18 @@ public class ReadTransactionRequestTest {
         StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
+
+        AccessLogsHelper.resetInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
+        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
     }
 
     @Test

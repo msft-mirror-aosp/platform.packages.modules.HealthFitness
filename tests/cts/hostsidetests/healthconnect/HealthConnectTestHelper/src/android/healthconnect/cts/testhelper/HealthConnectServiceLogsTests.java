@@ -31,12 +31,13 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.getMetadata;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getStepsRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.insertRecords;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
-import static android.healthconnect.cts.utils.TestUtils.deleteAllMedicalData;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static java.time.Instant.EPOCH;
+import static java.util.Objects.requireNonNull;
 
+import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -59,7 +60,7 @@ import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.os.OutcomeReceiver;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.compatibility.common.util.NonApiTest;
 
@@ -85,11 +86,10 @@ import java.util.concurrent.atomic.AtomicReference;
         justification = "METRIC")
 public class HealthConnectServiceLogsTests {
 
+    private final Context mContext = ApplicationProvider.getApplicationContext();
     private final HealthConnectManager mHealthConnectManager =
-            InstrumentationRegistry.getContext().getSystemService(HealthConnectManager.class);
+            requireNonNull(mContext.getSystemService(HealthConnectManager.class));
     private final PhrCtsTestUtils mPhrTestUtils = new PhrCtsTestUtils(mHealthConnectManager);
-    private static final String MY_PACKAGE_NAME =
-            InstrumentationRegistry.getContext().getPackageName();
 
     @Before
     public void before() throws InterruptedException {
@@ -99,13 +99,13 @@ public class HealthConnectServiceLogsTests {
         insertRecords(List.of(record), mHealthConnectManager);
 
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
-        deleteAllMedicalData();
+        mPhrTestUtils.deleteAllMedicalData();
     }
 
     @After
     public void after() throws InterruptedException {
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
-        deleteAllMedicalData();
+        mPhrTestUtils.deleteAllMedicalData();
     }
 
     @Test
@@ -185,7 +185,9 @@ public class HealthConnectServiceLogsTests {
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                         .setTimeRangeFilter(getDefaultTimeRangeFilter())
                         .addDataOrigins(
-                                new DataOrigin.Builder().setPackageName(MY_PACKAGE_NAME).build())
+                                new DataOrigin.Builder()
+                                        .setPackageName(mContext.getPackageName())
+                                        .build())
                         .setPageSize(1)
                         .build(),
                 Executors.newSingleThreadExecutor(),

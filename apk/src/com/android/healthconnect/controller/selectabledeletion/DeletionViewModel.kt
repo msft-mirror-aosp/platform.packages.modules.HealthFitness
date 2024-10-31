@@ -31,6 +31,7 @@ import com.android.healthconnect.controller.selectabledeletion.api.DeletePermiss
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -86,10 +87,9 @@ constructor(
 
     fun delete() {
         viewModelScope.launch {
-            _deletionProgress.value = (DeletionProgress.STARTED)
-
+            _deletionProgress.postValue(DeletionProgress.STARTED)
             try {
-                _deletionProgress.value = (DeletionProgress.PROGRESS_INDICATOR_CAN_START)
+                _deletionProgress.postValue(DeletionProgress.PROGRESS_INDICATOR_CAN_START)
 
                 when (deletionType) {
                     is DeleteHealthPermissionTypes -> {
@@ -126,16 +126,20 @@ constructor(
                         _inactiveAppsReloadNeeded.postValue(true)
                     }
                 }
-
-                _deletionProgress.value = (DeletionProgress.COMPLETED)
+                _deletionProgress.postValue(DeletionProgress.COMPLETED)
             } catch (error: Exception) {
                 Log.e(TAG, "Failed to delete data", error)
-
-                _deletionProgress.value = (DeletionProgress.FAILED)
+                _deletionProgress.postValue(DeletionProgress.FAILED)
             } finally {
-                _deletionProgress.value = (DeletionProgress.PROGRESS_INDICATOR_CAN_END)
+                // delay to ensure that the success/failed dialog has been shown
+                delay(1000)
+                _deletionProgress.postValue(DeletionProgress.PROGRESS_INDICATOR_CAN_END)
             }
         }
+    }
+
+    fun resetInactiveAppsReloadNeeded() {
+        _inactiveAppsReloadNeeded.postValue(false)
     }
 
     fun resetPermissionTypesReloadNeeded() {

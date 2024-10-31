@@ -185,6 +185,7 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.permission.MedicalDataPermissionEnforcer;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
+import com.android.server.healthconnect.phr.validations.FhirResourceValidator;
 import com.android.server.healthconnect.phr.validations.MedicalResourceValidator;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
@@ -282,6 +283,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final MigrationEntityHelper mMigrationEntityHelper;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthConnectMappings mHealthConnectMappings;
+    // This will be null if the phr_fhir_structural_validation flag is false.
+    @Nullable private FhirResourceValidator mFhirResourceValidator;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -408,7 +411,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mHealthConnectMappings,
                                 mInternalHealthConnectMappings,
                                 mChangeLogsHelper,
-                                mChangeLogsRequestHelper)
+                                mChangeLogsRequestHelper,
+                                mHealthDataCategoryPriorityHelper,
+                                mPreferenceHelper,
+                                mExportImportSettingsStorage)
                         : null;
     }
 
@@ -1266,8 +1272,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to get Priority for {@code dataCategory} */
     @Override
     public void getCurrentPriority(
-            @HealthDataCategory.Type int dataCategory,
-            IGetPriorityResponseCallback callback) {
+            @HealthDataCategory.Type int dataCategory, IGetPriorityResponseCallback callback) {
         checkParamsNonNull(callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1316,8 +1321,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to update priority for permission category(ies) */
     @Override
     public void updatePriority(
-            UpdatePriorityRequestParcel updatePriorityRequest,
-            IEmptyResponseCallback callback) {
+            UpdatePriorityRequestParcel updatePriorityRequest, IEmptyResponseCallback callback) {
         checkParamsNonNull(updatePriorityRequest, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -2606,11 +2610,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                             attributionSource);
 
+                    // Initialise validator when upsertMedicalResources is called for the
+                    // first time to avoid unnecessary initialisation when PHR apis are not used.
+                    if (Flags.phrFhirStructuralValidation() && mFhirResourceValidator == null) {
+                        mFhirResourceValidator = new FhirResourceValidator();
+                    }
+
                     List<UpsertMedicalResourceInternalRequest> validatedMedicalResourcesToUpsert =
                             new ArrayList<>();
                     for (UpsertMedicalResourceRequest upsertMedicalResourceRequest : requests) {
                         MedicalResourceValidator validator =
-                                new MedicalResourceValidator(upsertMedicalResourceRequest);
+                                new MedicalResourceValidator(
+                                        upsertMedicalResourceRequest, mFhirResourceValidator);
                         validatedMedicalResourcesToUpsert.add(
                                 validator.validateAndCreateInternalRequest());
                     }
