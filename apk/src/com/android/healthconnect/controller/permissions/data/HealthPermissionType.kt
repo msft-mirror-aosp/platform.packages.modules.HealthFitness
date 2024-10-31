@@ -15,21 +15,28 @@
  */
 package com.android.healthconnect.controller.permissions.data
 
+import android.content.Context
+import android.graphics.drawable.Drawable
+
 /** Umbrella interface for permission types that are displayed in data browse screens. */
 interface HealthPermissionType {
-    fun lowerCaseLabel() : Int
+    fun lowerCaseLabel(): Int
 
-    fun upperCaseLabel() : Int
+    fun upperCaseLabel(): Int
+
+    fun icon(context: Context): Drawable?
 
     val name: String
 }
 
 fun fromPermissionTypeName(name: String): HealthPermissionType {
     return if (isValidFitnessPermissionType(name)) {
-        FitnessPermissionType.valueOf(name) }
-    else if (isValidMedicalPermissionType(name)) {
+        FitnessPermissionType.valueOf(name)
+    } else if (isValidMedicalPermissionType(name)) {
         MedicalPermissionType.valueOf(name)
     } else {
-        throw IllegalArgumentException("PERMISSION_TYPE_KEY is not a valid HealthPermissionType name!")
+        throw IllegalArgumentException(
+            "PERMISSION_TYPE_KEY is not a valid HealthPermissionType name!"
+        )
     }
 }

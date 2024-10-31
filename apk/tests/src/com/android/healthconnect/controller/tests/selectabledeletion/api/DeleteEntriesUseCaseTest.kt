@@ -17,13 +17,16 @@ package com.android.healthconnect.controller.tests.selectabledeletion.api
 
 import android.health.connect.HealthConnectManager
 import android.health.connect.RecordIdFilter
+import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeEntries
+import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteEntries
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.shared.DataType
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -62,13 +65,20 @@ class DeleteEntryUseCaseTest {
             .`when`(manager)
             .deleteRecords(anyListOf(RecordIdFilter::class.java), any(), any())
 
-        useCase.invoke(DeletionTypeEntries(listOf("test_id1", "test_id2"), DataType.STEPS))
+        useCase.invoke(
+            DeleteEntries(
+                mapOf("test_id1" to DataType.STEPS, "test_id2" to DataType.STEPS_CADENCE),
+                4,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = Instant.now(),
+            )
+        )
 
-        verify(manager, times(1)).deleteRecords(listCaptor.capture(), any(), any())
+        verify(manager).deleteRecords(listCaptor.capture(), any(), any())
         assertThat(listCaptor.value[0].id).isEqualTo("test_id1")
         assertThat(listCaptor.value[0].recordType).isEqualTo(StepsRecord::class.java)
         assertThat(listCaptor.value[1].id).isEqualTo("test_id2")
-        assertThat(listCaptor.value[1].recordType).isEqualTo(StepsRecord::class.java)
+        assertThat(listCaptor.value[1].recordType).isEqualTo(StepsCadenceRecord::class.java)
     }
 
     private fun prepareAnswer(): (InvocationOnMock) -> Nothing? {

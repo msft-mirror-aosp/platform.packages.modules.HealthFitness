@@ -29,7 +29,7 @@
                 <shape>
                     <corners android:radius="28dp"/>
                     <solid
-                        android:color="@color/settingslib_thumb_off_color"
+                        android:color="@color/settingslib_thumb_disabled_color"
                         android:alpha="?android:attr/disabledAlpha"/>
                     <size android:height="@dimen/settingslib_spinner_height"/>
                 </shape>

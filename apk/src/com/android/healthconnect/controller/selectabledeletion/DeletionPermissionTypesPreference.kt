@@ -26,8 +26,7 @@ import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -45,7 +44,7 @@ class DeletionPermissionTypesPreference(context: Context) :
     private var widgetFrame: ViewGroup? = null
     private var checkBox: CheckBox? = null
     private var isChecked: Boolean = false
-    private lateinit var mFitnessPermissionType: FitnessPermissionType
+    private lateinit var mHealthPermissionType: HealthPermissionType
 
     private lateinit var logNameNoCheckbox: ElementName
     private lateinit var logNameCheckbox: ElementName
@@ -56,22 +55,23 @@ class DeletionPermissionTypesPreference(context: Context) :
 
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         widgetFrame = holder.findViewById(android.R.id.widget_frame) as ViewGroup?
+        widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
         showCheckbox(isShowCheckbox)
 
         checkBox = holder.findViewById(R.id.checkbox_button) as CheckBox
 
         checkBox?.isChecked = this.isChecked
 
-        checkBox?.contentDescription =
-            context.getString(
-                FitnessPermissionStrings.fromPermissionType(mFitnessPermissionType).uppercaseLabel)
+        checkBox?.contentDescription = context.getString(mHealthPermissionType.upperCaseLabel())
 
         checkBox?.setOnClickListener(checkboxButtonListener)
 
@@ -80,19 +80,21 @@ class DeletionPermissionTypesPreference(context: Context) :
             widgetFrameParent.paddingStart,
             widgetFrameParent.paddingTop,
             /* end = */ 0,
-            widgetFrameParent.paddingBottom)
+            widgetFrameParent.paddingBottom,
+        )
     }
 
     /** Set a click listener to check the checkbox */
     fun setOnPreferenceClickListener(
         method: () -> Unit,
-        onPreferenceClickListener: OnPreferenceClickListener
+        onPreferenceClickListener: OnPreferenceClickListener,
     ) {
         val clickListener = OnPreferenceClickListener {
             if (isShowCheckbox) {
                 checkBox?.toggle()
                 // Set local variable to current value of whether checkBox is checked
                 isChecked = checkBox?.isChecked ?: false
+                widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
                 method()
                 logger.logInteraction(logNameCheckbox)
             } else {
@@ -104,6 +106,7 @@ class DeletionPermissionTypesPreference(context: Context) :
 
         checkboxButtonListener = OnClickListener {
             isChecked = !isChecked
+            widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
             method()
             logger.logInteraction(logNameCheckbox)
         }
@@ -111,12 +114,12 @@ class DeletionPermissionTypesPreference(context: Context) :
         super.setOnPreferenceClickListener(clickListener)
     }
 
-    fun setHealthPermissionType(fitnessPermissionType: FitnessPermissionType) {
-        this.mFitnessPermissionType = fitnessPermissionType
+    fun setHealthPermissionType(healthPermissionType: HealthPermissionType) {
+        this.mHealthPermissionType = healthPermissionType
     }
 
-    fun getHealthPermissionType(): FitnessPermissionType {
-        return mFitnessPermissionType
+    fun getHealthPermissionType(): HealthPermissionType {
+        return mHealthPermissionType
     }
 
     /** Display or hide checkbox */
@@ -163,5 +166,13 @@ class DeletionPermissionTypesPreference(context: Context) :
 
     override fun isSameItem(preference: Preference): Boolean {
         return preference == this
+    }
+
+    private fun getUpdatedContentDescription(isChecked: Boolean): String {
+        return if (isChecked) {
+            context.getString(R.string.a11y_checked)
+        } else {
+            context.getString(R.string.a11y_unchecked)
+        }
     }
 }

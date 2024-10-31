@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.permission;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.Constants;
 import android.os.UserHandle;
@@ -43,7 +42,7 @@ class FirstGrantTimeDatastoreXmlPersistence implements FirstGrantTimeDatastore {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Nullable
     @Override
-    public UserGrantTimeState readForUser(@NonNull UserHandle user, @DataType int dataType) {
+    public UserGrantTimeState readForUser(UserHandle user, @DataType int dataType) {
         File file = getFile(user, dataType);
         if (Constants.DEBUG) {
             Log.d(TAG, "Reading xml from " + file);
@@ -58,9 +57,7 @@ class FirstGrantTimeDatastoreXmlPersistence implements FirstGrantTimeDatastore {
      */
     @Override
     public void writeForUser(
-            @NonNull UserGrantTimeState grantTimesState,
-            @NonNull UserHandle user,
-            @DataType int dataType) {
+            UserGrantTimeState grantTimesState, UserHandle user, @DataType int dataType) {
         File file = getFile(user, dataType);
         if (Constants.DEBUG) {
             Log.d(TAG, "Writing xml to " + file);
@@ -69,7 +66,7 @@ class FirstGrantTimeDatastoreXmlPersistence implements FirstGrantTimeDatastore {
     }
 
     @Override
-    public File getFile(@NonNull UserHandle user, @DataType int sourceType) {
+    public File getFile(UserHandle user, @DataType int sourceType) {
         String fileName =
                 sourceType == FirstGrantTimeDatastore.DATA_TYPE_CURRENT
                         ? GRANT_TIME_FILE_NAME

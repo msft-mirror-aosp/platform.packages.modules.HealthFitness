@@ -15,7 +15,10 @@
   limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="access_screen">
+    <com.android.healthconnect.controller.shared.preference.NoDataPreference
+        app:isPreferenceVisible="false"/>
     <PreferenceCategory
         android:key="can_read">
     </PreferenceCategory>

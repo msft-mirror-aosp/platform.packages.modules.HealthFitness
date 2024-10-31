@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.UserHandle;
@@ -30,7 +29,7 @@ import java.util.Objects;
 public class HealthConnectUserContext extends ContextWrapper {
     private final UserHandle mUserHandle;
 
-    public HealthConnectUserContext(@NonNull Context context, @NonNull UserHandle userHandle) {
+    public HealthConnectUserContext(Context context, UserHandle userHandle) {
         super(context);
         Objects.requireNonNull(context);
         Objects.requireNonNull(userHandle);
@@ -38,7 +37,6 @@ public class HealthConnectUserContext extends ContextWrapper {
         mUserHandle = userHandle;
     }
 
-    @NonNull
     public UserHandle getCurrentUserHandle() {
         return mUserHandle;
     }

@@ -18,6 +18,7 @@ package android.healthconnect.cts.testhelper;
 
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.NutritionRecord.BIOTIN_TOTAL;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.TIMEOUT_SECONDS;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteAllRecordsAddedByTestApp;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteRecords;
@@ -29,9 +30,14 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeightReco
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getMetadata;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getStepsRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.insertRecords;
+import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.time.Instant.EPOCH;
+import static java.util.Objects.requireNonNull;
+
+import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -51,9 +57,10 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.os.OutcomeReceiver;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.compatibility.common.util.NonApiTest;
 
@@ -63,6 +70,7 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -78,19 +86,31 @@ import java.util.concurrent.atomic.AtomicReference;
         justification = "METRIC")
 public class HealthConnectServiceLogsTests {
 
+    private final Context mContext = ApplicationProvider.getApplicationContext();
     private final HealthConnectManager mHealthConnectManager =
-            InstrumentationRegistry.getContext().getSystemService(HealthConnectManager.class);
-    private static final String MY_PACKAGE_NAME =
-            InstrumentationRegistry.getContext().getPackageName();
+            requireNonNull(mContext.getSystemService(HealthConnectManager.class));
+    private final PhrCtsTestUtils mPhrTestUtils = new PhrCtsTestUtils(mHealthConnectManager);
 
     @Before
     public void before() throws InterruptedException {
+        // insert a record so the test app gets an app id in HC
+        Record record =
+                new StepsRecord.Builder(getEmptyMetadata(), EPOCH, Instant.now(), 123).build();
+        insertRecords(List.of(record), mHealthConnectManager);
+
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
+        mPhrTestUtils.deleteAllMedicalData();
     }
 
     @After
     public void after() throws InterruptedException {
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
+        mPhrTestUtils.deleteAllMedicalData();
+    }
+
+    @Test
+    public void testCreateMedicalDataSource() throws Exception {
+        logErrorIfAny(() -> mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1")));
     }
 
     @Test
@@ -165,7 +185,9 @@ public class HealthConnectServiceLogsTests {
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                         .setTimeRangeFilter(getDefaultTimeRangeFilter())
                         .addDataOrigins(
-                                new DataOrigin.Builder().setPackageName(MY_PACKAGE_NAME).build())
+                                new DataOrigin.Builder()
+                                        .setPackageName(mContext.getPackageName())
+                                        .build())
                         .setPageSize(1)
                         .build(),
                 Executors.newSingleThreadExecutor(),
@@ -404,5 +426,17 @@ public class HealthConnectServiceLogsTests {
                 });
 
         assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+    }
+
+    /**
+     * Executes a {@link Callable} and logs error if any. This is mainly used to make an API call to
+     * trigger telemetry events, the result of the call is irrelevant.
+     */
+    private void logErrorIfAny(Callable<?> callable) {
+        try {
+            callable.call();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

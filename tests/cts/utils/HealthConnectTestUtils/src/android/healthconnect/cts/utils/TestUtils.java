@@ -16,8 +16,6 @@
 
 package android.healthconnect.cts.utils;
 
-import static android.Manifest.permission.READ_DEVICE_CONFIG;
-import static android.Manifest.permission.WRITE_ALLOWLISTED_DEVICE_CONFIG;
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.BODY_MEASUREMENTS;
 import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
@@ -140,7 +138,6 @@ import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
-import android.provider.DeviceConfig;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -304,6 +301,22 @@ public final class TestUtils {
         return receiver.getResponse();
     }
 
+    /**
+     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
+     * HealthConnectManager#aggregate} with the given {@code request}.
+     */
+    public static <T> AggregateRecordsResponse<T> getAggregateResponseWithManagePermission(
+            AggregateRecordsRequest<T> request) throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        try {
+            return getAggregateResponse(request);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+    }
+
     public static <T> AggregateRecordsResponse<T> getAggregateResponse(
             AggregateRecordsRequest<T> request) throws InterruptedException {
         HealthConnectReceiver<AggregateRecordsResponse<T>> receiver =
@@ -345,6 +358,22 @@ public final class TestUtils {
                 .aggregateGroupByPeriod(
                         request, period, Executors.newSingleThreadExecutor(), receiver);
         return receiver.getResponse();
+    }
+
+    /**
+     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
+     * HealthConnectManager#readRecords} with the given {@code request}.
+     */
+    public static <T extends Record> List<T> readRecordsWithManagePermission(
+            ReadRecordsRequest<T> request) throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        try {
+            return readRecords(request);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
     }
 
     public static <T extends Record> List<T> readRecords(ReadRecordsRequest<T> request)
@@ -450,7 +479,7 @@ public final class TestUtils {
     }
 
     /**
-     * Delete all medical data (datasources, resources etc) stored in the Health Connect database.
+     * Delete all health records (datasources, resources etc) stored in the Health Connect database.
      */
     public static void deleteAllMedicalData() throws InterruptedException {
         if (!isPersonalHealthRecordEnabled()) {
@@ -595,12 +624,16 @@ public final class TestUtils {
                 TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    public static void insertMinDataMigrationSdkExtensionVersion(int version)
-            throws InterruptedException {
+    /** Calls insertMinDataMigrationSdkExtensionVersion with shell permission identity. */
+    public static void insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(
+            int version) throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
-        getHealthConnectManager()
-                .insertMinDataMigrationSdkExtensionVersion(
-                        version, Executors.newSingleThreadExecutor(), receiver);
+        runWithShellPermissionIdentity(
+                () ->
+                        getHealthConnectManager()
+                                .insertMinDataMigrationSdkExtensionVersion(
+                                        version, Executors.newSingleThreadExecutor(), receiver),
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -635,8 +668,12 @@ public final class TestUtils {
 
     public static int getHealthConnectDataMigrationState() throws InterruptedException {
         HealthConnectReceiver<HealthConnectDataState> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .getHealthConnectDataState(Executors.newSingleThreadExecutor(), receiver);
+        runWithShellPermissionIdentity(
+                () ->
+                        getHealthConnectManager()
+                                .getHealthConnectDataState(
+                                        Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
         return receiver.getResponse().getDataMigrationState();
     }
 
@@ -899,6 +936,8 @@ public final class TestUtils {
             }
         } catch (FileNotFoundException e) {
             Log.e(TAG, e.getMessage());
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
         }
 
         return output.toString();
@@ -912,20 +951,6 @@ public final class TestUtils {
     @NonNull
     public static HealthConnectManager getHealthConnectManager(Context context) {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
-    }
-
-    public static String getDeviceConfigValue(String key) {
-        return runWithShellPermissionIdentity(
-                () -> DeviceConfig.getProperty(DeviceConfig.NAMESPACE_HEALTH_FITNESS, key),
-                READ_DEVICE_CONFIG);
-    }
-
-    public static void setDeviceConfigValue(String key, String value) {
-        runWithShellPermissionIdentity(
-                () ->
-                        DeviceConfig.setProperty(
-                                DeviceConfig.NAMESPACE_HEALTH_FITNESS, key, value, false),
-                WRITE_ALLOWLISTED_DEVICE_CONFIG);
     }
 
     /** Reads {@link StepsRecord}s using record IDs. */
@@ -1279,6 +1304,31 @@ public final class TestUtils {
         for (int i = 0; i < from.size(); i++) {
             copyRecordIdViaReflection(from.get(i), to.get(i));
         }
+    }
+
+    /**
+     * Sets value for a field using reflection. This can be used to set fields for immutable class.
+     *
+     * <p>This method recursively looks for the field in the object's class and its superclasses.
+     */
+    public static void setFieldValueUsingReflection(Object object, String fieldName, Object value)
+            throws NoSuchFieldException, IllegalAccessException {
+        Field field = findFieldUsingReflection(object.getClass(), fieldName);
+        field.setAccessible(true);
+        field.set(object, value);
+    }
+
+    private static Field findFieldUsingReflection(Class<?> type, String fieldName) {
+        try {
+            return type.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            // If field isn't present, recursively look for it in the class's superclass.
+            Class<?> superClass = type.getSuperclass();
+            if (superClass != null) {
+                return findFieldUsingReflection(superClass, fieldName);
+            }
+        }
+        throw new IllegalArgumentException("Could not find field " + fieldName);
     }
 
     // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors

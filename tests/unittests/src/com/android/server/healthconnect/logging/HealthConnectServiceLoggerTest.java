@@ -39,6 +39,7 @@ import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_B
 import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND;
 import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.eq;
@@ -62,6 +63,7 @@ public class HealthConnectServiceLoggerTest {
             HEALTH_CONNECT_API_CALLED__CALLER_FOREGROUND_STATE__FOREGROUND;
     private static final int CALLER_FOREGROUND_STATE_BACKGROUND =
             HEALTH_CONNECT_API_CALLED__CALLER_FOREGROUND_STATE__BACKGROUND;
+    private static final String TEST_APP_PACKAGE_NAME = "com.test.app";
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -76,15 +78,25 @@ public class HealthConnectServiceLoggerTest {
         ExtendedMockito.verify(
                 () ->
                         HealthFitnessStatsLog.write(
-                                anyInt(), anyInt(), anyInt(), anyInt(), anyLong(), anyInt(),
-                                anyInt(), anyInt()),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyLong(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyString()),
                 times(0));
     }
 
     @Test
     public void testLogs_notHoldsDataManagementPermission() {
 
-        new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN).build().log();
+        new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
+                .build()
+                .log();
 
         // then
         ExtendedMockito.verify(
@@ -97,8 +109,32 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
+    }
+
+    @Test
+    public void testShouldLogIsFalse_expectNoLogs() {
+        new HealthConnectServiceLogger.Builder(false, ApiMethods.CREATE_MEDICAL_DATA_SOURCE)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
+                .setShouldLog(false)
+                .build()
+                .log();
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyLong(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyString()),
+                times(0));
     }
 
     @Test
@@ -106,6 +142,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_READS_PER_15M_FOREGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -120,7 +157,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_15_MIN_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -129,6 +167,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_READS_PER_15M_BACKGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -143,7 +182,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -152,6 +192,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_READS_PER_24H_BACKGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -166,7 +207,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -175,6 +217,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_READS_PER_24H_FOREGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -189,7 +232,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -198,6 +242,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -212,7 +257,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_15_MIN_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -221,6 +267,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -235,7 +282,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -244,6 +292,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -258,7 +307,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -267,6 +317,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setRateLimit(QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND, 3000)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -281,7 +332,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -290,6 +342,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setHealthDataServiceApiStatusSuccess()
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -304,7 +357,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -313,6 +367,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setHealthDataServiceApiStatusError(2)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -327,7 +382,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -336,6 +392,7 @@ public class HealthConnectServiceLoggerTest {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setNumberOfRecords(10)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -350,7 +407,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(10),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -361,6 +419,7 @@ public class HealthConnectServiceLoggerTest {
                 .setHealthDataServiceApiStatusSuccess()
                 .setRateLimit(QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND, 3000)
                 .setNumberOfRecords(10)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -375,7 +434,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(10),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -386,6 +446,7 @@ public class HealthConnectServiceLoggerTest {
                 .setHealthDataServiceApiStatusError(1)
                 .setRateLimit(QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND, 3000)
                 .setNumberOfRecords(10)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -400,7 +461,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(10),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
     }
 
@@ -408,6 +470,7 @@ public class HealthConnectServiceLoggerTest {
     public void testCallerForegroundState() {
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setCallerForegroundState(true)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -422,13 +485,15 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_FOREGROUND)));
+                                eq(CALLER_FOREGROUND_STATE_FOREGROUND),
+                                eq(TEST_APP_PACKAGE_NAME)));
     }
 
     @Test
     public void testCallerBackgroundState() {
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)
                 .setCallerForegroundState(false)
+                .setPackageName(TEST_APP_PACKAGE_NAME)
                 .build()
                 .log();
 
@@ -443,7 +508,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_BACKGROUND)));
+                                eq(CALLER_FOREGROUND_STATE_BACKGROUND),
+                                eq(TEST_APP_PACKAGE_NAME)));
     }
 
     private static final class RateLimitingRanges {

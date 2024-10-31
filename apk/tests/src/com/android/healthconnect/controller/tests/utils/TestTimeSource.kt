@@ -32,10 +32,11 @@ import javax.inject.Singleton
 object TestTimeSource : TimeSource {
     private var localNow: Instant = NOW
     private var is24HourFormat = true
+    private var offset: ZoneId = UTC
 
     override fun currentTimeMillis(): Long = localNow.toEpochMilli()
 
-    override fun deviceZoneOffset(): ZoneId = UTC
+    override fun deviceZoneOffset(): ZoneId = offset
 
     override fun currentLocalDateTime(): LocalDateTime =
         Instant.ofEpochMilli(currentTimeMillis()).atZone(deviceZoneOffset()).toLocalDateTime()
@@ -55,6 +56,10 @@ object TestTimeSource : TimeSource {
 
     fun setIs24Hour(boolean: Boolean) {
         is24HourFormat = boolean
+    }
+
+    fun setDeviceZoneOffset(offset: ZoneId) {
+        this.offset = offset
     }
 }
 

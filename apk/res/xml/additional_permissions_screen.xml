@@ -15,9 +15,12 @@
   -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.android.healthconnect.controller.permissions.request.AdditionalPermissionHeaderPreference
-        android:key="request_additional_permissions_header"/>
+    <com.android.healthconnect.controller.permissions.request.RequestPermissionHeaderPreference
+        android:key="request_permissions_header"/>
     <PreferenceCategory
         android:key="additional_permissions_category"
+        app:isPreferenceVisible="false"/>
+    <com.android.settingslib.widget.FooterPreference
+        android:key="request_permissions_footer"
         app:isPreferenceVisible="false"/>
 </PreferenceScreen>

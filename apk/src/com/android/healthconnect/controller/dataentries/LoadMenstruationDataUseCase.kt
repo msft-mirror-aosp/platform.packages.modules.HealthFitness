@@ -28,6 +28,7 @@ import android.health.connect.datatypes.Record
 import android.util.Log
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.service.IoDispatcher
@@ -48,7 +49,7 @@ constructor(
     private val healthConnectManager: HealthConnectManager,
     private val healthDataEntryFormatter: HealthDataEntryFormatter,
     private val menstruationPeriodFormatter: MenstruationPeriodFormatter,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : BaseUseCase<Instant, List<FormattedEntry>>(dispatcher) {
 
     companion object {
@@ -87,7 +88,10 @@ constructor(
             suspendCancellableCoroutine<ReadRecordsResponse<MenstruationPeriodRecord>> {
                     continuation ->
                     healthConnectManager.readRecords(
-                        filter, Runnable::run, continuation.asOutcomeReceiver())
+                        filter,
+                        Runnable::run,
+                        continuation.asOutcomeReceiver(),
+                    )
                 }
                 .records
                 .filter { menstruationPeriodRecord ->
@@ -96,7 +100,13 @@ constructor(
                             menstruationPeriodRecord.endTime.equals(startDate))
                 }
 
-        return records.map { record -> menstruationPeriodFormatter.format(startDate, record) }
+        return records.map { record ->
+            menstruationPeriodFormatter.format(
+                startDate,
+                record,
+                period = DateNavigationPeriod.PERIOD_DAY,
+            )
+        }
     }
 
     private suspend fun getMenstruationFlowRecords(selectedDate: Instant): List<FormattedEntry> {
@@ -117,7 +127,10 @@ constructor(
             suspendCancellableCoroutine<ReadRecordsResponse<MenstruationFlowRecord>> { continuation
                     ->
                     healthConnectManager.readRecords(
-                        filter, Runnable::run, continuation.asOutcomeReceiver())
+                        filter,
+                        Runnable::run,
+                        continuation.asOutcomeReceiver(),
+                    )
                 }
                 .records
 

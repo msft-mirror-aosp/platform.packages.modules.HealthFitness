@@ -26,7 +26,7 @@ import android.os.Environment;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.rules.ExternalResource;
@@ -54,21 +54,31 @@ import java.io.File;
  * handling when multiple test rules are used. It avoids starting multiple sessions in parallel.
  */
 public class HealthConnectDatabaseTestRule extends ExternalResource {
-    private HealthConnectUserContext mContext;
+    private StorageContext mStorageContext;
     private TransactionManager mTransactionManager;
 
+    // Mock Environment using ExtendedMockitoRule in the test using this rule.
     public HealthConnectDatabaseTestRule() {}
 
     @Override
     public void before() {
-        mContext =
-                new HealthConnectUserContext(
-                        InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-        File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
+        File mockDataDirectory =
+                InstrumentationRegistry.getInstrumentation()
+                        .getContext()
+                        .getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
+        mStorageContext =
+                StorageContext.create(
+                        InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
+        // TransactionManager might already be initialized with a different context.
+        // We first clear any earlier instance, then initialize with the required context.
+        // We then call cleanup, so that any leftover in the required location data can be deleted.
+        // We then initialize it again with the required context.
+        TransactionManager.clearInstanceForTest();
+        TransactionManager.initializeInstance(mStorageContext);
         TransactionManager.cleanUpForTest();
-        mTransactionManager = TransactionManager.initializeInstance(mContext);
-        HealthConnectDeviceConfigManager.initializeInstance(mContext);
+        mTransactionManager = TransactionManager.initializeInstance(mStorageContext);
+        HealthConnectDeviceConfigManager.initializeInstance(mStorageContext);
     }
 
     @Override
@@ -77,8 +87,8 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         TransactionManager.cleanUpForTest();
     }
 
-    public HealthConnectUserContext getUserContext() {
-        return mContext;
+    public StorageContext getDatabaseContext() {
+        return mStorageContext;
     }
 
     public TransactionManager getTransactionManager() {
