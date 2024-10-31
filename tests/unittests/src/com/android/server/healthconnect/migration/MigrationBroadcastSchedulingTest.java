@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Context;
+import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -109,12 +110,16 @@ public class MigrationBroadcastSchedulingTest {
         ExtendedMockito.doReturn(mMigrationStateManager)
                 .when(MigrationStateManager::getInitialisedInstance);
 
-        mMigrationBroadcastScheduler = Mockito.spy(new MigrationBroadcastScheduler(0));
+        mMigrationBroadcastScheduler =
+                Mockito.spy(
+                        new MigrationBroadcastScheduler(
+                                UserHandle.getUserHandleForUid(0),
+                                mHealthConnectDeviceConfigManager,
+                                mMigrationStateManager));
     }
 
     @Test
     public void testPrescheduleNewJobs_updateMigrationState_newJobsScheduled() {
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(mJobScheduler.forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE))
                 .thenReturn(mJobScheduler);
         ExtendedMockito.doAnswer(
@@ -127,7 +132,11 @@ public class MigrationBroadcastSchedulingTest {
                 .when(() -> HealthConnectThreadScheduler.scheduleInternalTask(any()));
 
         MigrationStateManager.resetInitializedInstanceForTest();
-        MigrationStateManager migrationStateManager = MigrationStateManager.initializeInstance(0);
+        MigrationStateManager migrationStateManager =
+                MigrationStateManager.initializeInstance(
+                        UserHandle.getUserHandleForUid(0),
+                        mHealthConnectDeviceConfigManager,
+                        mPreferenceHelper);
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
         migrationStateManager.updateMigrationState(mContext, MIGRATION_STATE_IN_PROGRESS);
 

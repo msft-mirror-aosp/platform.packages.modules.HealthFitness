@@ -16,7 +16,8 @@
 package com.android.healthconnect.controller.tests.data.entries.datenavigation
 
 import android.content.Context
-import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
@@ -33,7 +34,9 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.Duration
+import java.time.ZoneId
 import java.util.Locale
+import java.util.TimeZone
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,6 +50,7 @@ class DateNavigationViewTest {
     private lateinit var previousDayButton: ImageButton
     private lateinit var nextDayButton: ImageButton
     private lateinit var datePickerSpinner: Spinner
+    private lateinit var disabledSpinner: TextView
 
     private lateinit var context: Context
     private val dateChangedListener =
@@ -61,14 +65,17 @@ class DateNavigationViewTest {
 
         dateNavigationView =
             DateNavigationView(context = context, attrs = null, timeSource = timeSource)
+        disabledSpinner = dateNavigationView.findViewById(R.id.disabled_spinner)
         datePickerSpinner = dateNavigationView.findViewById(R.id.date_picker_spinner) as Spinner
         previousDayButton = dateNavigationView.findViewById(R.id.navigation_previous_day)
         nextDayButton = dateNavigationView.findViewById(R.id.navigation_next_day)
+        (timeSource as TestTimeSource).setNow(NOW)
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
     @Test
     fun initDateNavigationPreference_titleSetToToday() {
-        assertThat(datePickerSpinner.visibility).isEqualTo(View.VISIBLE)
+        assertThat(datePickerSpinner.visibility).isEqualTo(VISIBLE)
 
         assertSpinnerView("Today")
     }
@@ -198,13 +205,21 @@ class DateNavigationViewTest {
 
     @Test
     fun initDateNavigationPreference_nextNavigationDisabled() {
-        assertThat(nextDayButton.visibility).isEqualTo(View.VISIBLE)
+        assertThat(nextDayButton.visibility).isEqualTo(VISIBLE)
         assertThat(nextDayButton.isEnabled).isEqualTo(false)
     }
 
     @Test
+    fun initDateNavigationPreference_whenTrainingPlans_nextNavigationEnabled() {
+        dateNavigationView.setDate(NOW.plus(Duration.ofDays(1)))
+        dateNavigationView.setMaxDate(null)
+        assertThat(nextDayButton.visibility).isEqualTo(VISIBLE)
+        assertThat(nextDayButton.isEnabled).isEqualTo(true)
+    }
+
+    @Test
     fun initDateNavigationPreference_prevNavigationEnabled() {
-        assertThat(previousDayButton.visibility).isEqualTo(View.VISIBLE)
+        assertThat(previousDayButton.visibility).isEqualTo(VISIBLE)
         assertThat(previousDayButton.isEnabled).isEqualTo(true)
     }
 
@@ -248,10 +263,25 @@ class DateNavigationViewTest {
         assertSpinnerDropDownView("Month", position = 2)
     }
 
+    @Test
+    fun disableDateNavigationView_disablesCorrectly() {
+        dateNavigationView.setDate(NOW.minus(Duration.ofDays(1)))
+        dateNavigationView.disableDateNavigationView(isEnabled = false, text = "Yesterday")
+
+        assertSpinnerView("Yesterday")
+        assertThat(datePickerSpinner.visibility).isEqualTo(GONE)
+        assertThat(disabledSpinner.visibility).isEqualTo(VISIBLE)
+        assertThat(nextDayButton.isEnabled).isFalse()
+        assertThat(previousDayButton.isEnabled).isFalse()
+    }
+
     private fun assertSpinnerView(expected: String) {
         val textView: TextView =
             datePickerSpinner.adapter.getView(
-                datePickerSpinner.selectedItemPosition, null, datePickerSpinner) as TextView
+                datePickerSpinner.selectedItemPosition,
+                null,
+                datePickerSpinner,
+            ) as TextView
         assertThat(textView.text).isEqualTo(expected)
     }
 

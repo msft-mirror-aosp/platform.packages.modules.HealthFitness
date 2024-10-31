@@ -26,6 +26,9 @@ import android.health.connect.HealthDataCategory.SLEEP
 import android.health.connect.HealthDataCategory.VITALS
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.shared.FITNESS_DATA_CATEGORIES
@@ -60,15 +63,15 @@ class HealthDataCategoryExtensionsTest {
     fun allFitnessPermissions_haveParentCategory() {
         val allFitnessPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm) ||
-                    healthPermissionReader.isMedicalPermission(perm)
+                isAdditionalPermission(perm) || isMedicalPermission(perm)
             }
         for (permissionString in allFitnessPermissions) {
             val fitnessPermission = FitnessPermission.fromPermissionString(permissionString)
             assertThat(
                     FITNESS_DATA_CATEGORIES.any {
                         it.healthPermissionTypes().contains(fitnessPermission.fitnessPermissionType)
-                    })
+                    }
+                )
                 .isEqualTo(true)
         }
     }
@@ -77,14 +80,14 @@ class HealthDataCategoryExtensionsTest {
     fun allMedicalPermissions_haveParentCategory() {
         val allMedicalsPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm) ||
-                    healthPermissionReader.isFitnessPermission(perm)
+                isAdditionalPermission(perm) || isFitnessPermission(perm)
             }
         for (permissionString in allMedicalsPermissions) {
             val medicalPermission = MedicalPermission.fromPermissionString(permissionString)
             assertThat(
                     MEDICAL.healthPermissionTypes()
-                        .contains(medicalPermission.medicalPermissionType))
+                        .contains(medicalPermission.medicalPermissionType)
+                )
                 .isEqualTo(true)
         }
     }

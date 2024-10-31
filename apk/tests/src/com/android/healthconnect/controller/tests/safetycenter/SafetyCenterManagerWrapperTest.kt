@@ -28,8 +28,8 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.Mockito.`when` as whenever
 import org.mockito.MockitoAnnotations.initMocks
+import org.mockito.kotlin.whenever
 
 class SafetyCenterManagerWrapperTest {
 
@@ -67,8 +67,10 @@ class SafetyCenterManagerWrapperTest {
                     SafetySourceStatus.Builder(
                             HEALTH_CONNECT_TITLE,
                             HEALTH_CONNECT_SUMMARY,
-                            SafetySourceData.SEVERITY_LEVEL_UNSPECIFIED)
-                        .build())
+                            SafetySourceData.SEVERITY_LEVEL_UNSPECIFIED,
+                        )
+                        .build()
+                )
                 .build()
 
         val safetyEvent =
@@ -77,7 +79,11 @@ class SafetyCenterManagerWrapperTest {
                 .build()
 
         wrapper.setSafetySourceData(
-            mockContext, HEALTH_CONNECT_SOURCE_ID, safetySourceData, safetyEvent)
+            mockContext,
+            HEALTH_CONNECT_SOURCE_ID,
+            safetySourceData,
+            safetyEvent,
+        )
 
         Mockito.verify(mockSafetyCenterManager)
             .setSafetySourceData(HEALTH_CONNECT_SOURCE_ID, safetySourceData, safetyEvent)

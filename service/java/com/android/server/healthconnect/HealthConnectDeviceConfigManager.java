@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.health.connect.ratelimiter.RateLimiter;
@@ -40,13 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @SuppressLint("MissingPermission")
 public class HealthConnectDeviceConfigManager implements DeviceConfig.OnPropertiesChangedListener {
     private static Set<String> sFlagsToTrack = new ArraySet<>();
-    private static final String EXERCISE_ROUTE_FEATURE_FLAG = "exercise_routes_enable";
-    private static final String EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG =
-            "exercise_routes_read_all_enable";
     public static final String ENABLE_RATE_LIMITER_FLAG = "enable_rate_limiter";
-
-    // Flag to enable/disable sleep and exercise sessions.
-    private static final String SESSION_DATATYPE_FEATURE_FLAG = "session_types_enable";
 
     @VisibleForTesting
     public static final String COUNT_MIGRATION_STATE_IN_PROGRESS_FLAG =
@@ -93,17 +86,9 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
             "enable_migration_notifications";
 
     @VisibleForTesting
-    public static final String BACKGROUND_READ_FEATURE_FLAG = "background_read_enable";
-
-    @VisibleForTesting public static final String HISTORY_READ_FEATURE_FLAG = "history_read_enable";
-
-    @VisibleForTesting
     public static final String ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG =
             "aggregation_source_controls_enable";
 
-    private static final boolean SESSION_DATATYPE_DEFAULT_FLAG_VALUE = true;
-    private static final boolean EXERCISE_ROUTE_DEFAULT_FLAG_VALUE = true;
-    private static final boolean EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE = true;
     public static final boolean ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE = true;
 
     @VisibleForTesting
@@ -140,27 +125,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
 
     private final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
     private static final String HEALTH_FITNESS_NAMESPACE = DeviceConfig.NAMESPACE_HEALTH_FITNESS;
-
-    @GuardedBy("mLock")
-    private boolean mExerciseRouteEnabled =
-            DeviceConfig.getBoolean(
-                    HEALTH_FITNESS_NAMESPACE,
-                    EXERCISE_ROUTE_FEATURE_FLAG,
-                    EXERCISE_ROUTE_DEFAULT_FLAG_VALUE);
-
-    @GuardedBy("mLock")
-    private boolean mExerciseRoutesReadAllEnabled =
-            DeviceConfig.getBoolean(
-                    HEALTH_FITNESS_NAMESPACE,
-                    EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG,
-                    EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE);
-
-    @GuardedBy("mLock")
-    private boolean mSessionDatatypeEnabled =
-            DeviceConfig.getBoolean(
-                    HEALTH_FITNESS_NAMESPACE,
-                    SESSION_DATATYPE_FEATURE_FLAG,
-                    SESSION_DATATYPE_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
     private int mMigrationStateInProgressCount =
@@ -247,15 +211,11 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
-    private boolean mBackgroundReadFeatureEnabled = true;
-
-    @GuardedBy("mLock")
-    private boolean mHistoryReadFeatureEnabled = true;
-
-    @GuardedBy("mLock")
     private boolean mAggregationSourceControlsEnabled = true;
 
-    @VisibleForTesting(visibility = VisibleForTesting.Visibility.PACKAGE)
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static HealthConnectDeviceConfigManager initializeInstance(Context context) {
         if (sDeviceConfigManager == null) {
             sDeviceConfigManager = new HealthConnectDeviceConfigManager();
@@ -266,8 +226,11 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         return sDeviceConfigManager;
     }
 
-    /** Returns initialised instance of this class. */
-    @NonNull
+    /**
+     * Returns initialised instance of this class.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static HealthConnectDeviceConfigManager getInitialisedInstance() {
         Objects.requireNonNull(sDeviceConfigManager);
 
@@ -276,9 +239,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
 
     /** Adds flags that need to be updated if their values are changed on the server. */
     private static void addFlagsToTrack() {
-        sFlagsToTrack.add(EXERCISE_ROUTE_FEATURE_FLAG);
-        sFlagsToTrack.add(EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG);
-        sFlagsToTrack.add(SESSION_DATATYPE_FEATURE_FLAG);
         sFlagsToTrack.add(ENABLE_RATE_LIMITER_FLAG);
         sFlagsToTrack.add(COUNT_MIGRATION_STATE_IN_PROGRESS_FLAG);
         sFlagsToTrack.add(COUNT_MIGRATION_STATE_ALLOWED_FLAG);
@@ -292,29 +252,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         sFlagsToTrack.add(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_MIGRATION_NOTIFICATIONS_FLAG);
-        sFlagsToTrack.add(BACKGROUND_READ_FEATURE_FLAG);
-        sFlagsToTrack.add(HISTORY_READ_FEATURE_FLAG);
         sFlagsToTrack.add(ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG);
-    }
-
-    /** Returns if operations with exercise route are enabled. */
-    public boolean isExerciseRouteFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mExerciseRouteEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
-
-    /** Returns true if READ_EXERCISE_ROUTES permission is effective. */
-    public boolean isExerciseRoutesReadAllFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mExerciseRoutesReadAllEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
     }
 
     @GuardedBy("mLock")
@@ -323,16 +261,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                     ENABLE_RATE_LIMITER_FLAG,
                     ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE);
-
-    /** Returns if operations with sessions datatypes are enabled. */
-    public boolean isSessionDatatypeFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mSessionDatatypeEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
 
     /**
      * Returns the required count for {@link
@@ -466,26 +394,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         }
     }
 
-    /** Returns whether reading in background is enabled or not. */
-    public boolean isBackgroundReadFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mBackgroundReadFeatureEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
-
-    /** Returns whether full history reading is enabled or not. */
-    public boolean isHistoryReadFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mHistoryReadFeatureEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
-
     /** Returns whether the new aggregation source control feature is enabled or not. */
     public boolean isAggregationSourceControlsEnabled() {
         mLock.readLock().lock();
@@ -519,24 +427,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
             try {
                 mLock.writeLock().lock();
                 switch (name) {
-                    case EXERCISE_ROUTE_FEATURE_FLAG:
-                        mExerciseRouteEnabled =
-                                properties.getBoolean(
-                                        EXERCISE_ROUTE_FEATURE_FLAG,
-                                        EXERCISE_ROUTE_DEFAULT_FLAG_VALUE);
-                        break;
-                    case EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG:
-                        mExerciseRoutesReadAllEnabled =
-                                properties.getBoolean(
-                                        EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG,
-                                        EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE);
-                        break;
-                    case SESSION_DATATYPE_FEATURE_FLAG:
-                        mSessionDatatypeEnabled =
-                                properties.getBoolean(
-                                        SESSION_DATATYPE_FEATURE_FLAG,
-                                        SESSION_DATATYPE_DEFAULT_FLAG_VALUE);
-                        break;
                     case ENABLE_RATE_LIMITER_FLAG:
                         mRateLimiterEnabled =
                                 properties.getBoolean(
@@ -615,12 +505,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                 properties.getBoolean(
                                         ENABLE_MIGRATION_NOTIFICATIONS_FLAG,
                                         ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
-                        break;
-                    case BACKGROUND_READ_FEATURE_FLAG:
-                        mBackgroundReadFeatureEnabled = true;
-                        break;
-                    case HISTORY_READ_FEATURE_FLAG:
-                        mHistoryReadFeatureEnabled = true;
                         break;
                     case ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG:
                         mAggregationSourceControlsEnabled = true;

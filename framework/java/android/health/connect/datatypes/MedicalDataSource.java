@@ -28,9 +28,18 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * Captures the data source information of medical data. All {@link MedicalResource}s are associated
  * with a {@code MedicalDataSource}.
+ *
+ * <p>The medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+ * Interoperability Resources (FHIR)</a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalDataSource implements Parcelable {
@@ -38,6 +47,8 @@ public final class MedicalDataSource implements Parcelable {
     @NonNull private final String mPackageName;
     @NonNull private final Uri mFhirBaseUri;
     @NonNull private final String mDisplayName;
+    @NonNull private final FhirVersion mFhirVersion;
+    @Nullable private final Instant mLastDataUpdateTime;
 
     @NonNull
     public static final Creator<MedicalDataSource> CREATOR =
@@ -56,27 +67,28 @@ public final class MedicalDataSource implements Parcelable {
             };
 
     /**
-     * @param id The unique identifier of this data source, assigned by the Android Health Platform
-     *     at insertion time.
-     * @param packageName The package name of the contributing package. Auto-populated by the
-     *     platform at source creation time.
-     * @param fhirBaseUri The fhir base URI of this data source.
-     * @param displayName The display name that describes this data source.
+     * Creates a new instance of {@link MedicalDataSource}. Please see {@link
+     * MedicalDataSource.Builder} for more detailed parameters information.
      */
     private MedicalDataSource(
             @NonNull String id,
             @NonNull String packageName,
             @NonNull Uri fhirBaseUri,
-            @NonNull String displayName) {
+            @NonNull String displayName,
+            @NonNull FhirVersion fhirVersion,
+            @Nullable Instant lastDataUpdateTime) {
         requireNonNull(id);
         requireNonNull(packageName);
         requireNonNull(fhirBaseUri);
         requireNonNull(displayName);
+        requireNonNull(fhirVersion);
 
         mId = id;
         mPackageName = packageName;
         mFhirBaseUri = fhirBaseUri;
         mDisplayName = displayName;
+        mFhirVersion = fhirVersion;
+        mLastDataUpdateTime = lastDataUpdateTime;
     }
 
     private MedicalDataSource(@NonNull Parcel in) {
@@ -85,15 +97,23 @@ public final class MedicalDataSource implements Parcelable {
         mPackageName = requireNonNull(in.readString());
         mFhirBaseUri = requireNonNull(in.readParcelable(Uri.class.getClassLoader(), Uri.class));
         mDisplayName = requireNonNull(in.readString());
+        mFhirVersion =
+                requireNonNull(
+                        in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
+        long lastDataUpdateTimeMillis = in.readLong();
+        mLastDataUpdateTime =
+                lastDataUpdateTimeMillis == 0
+                        ? null
+                        : Instant.ofEpochMilli(lastDataUpdateTimeMillis);
     }
 
-    /** Returns the identifier. */
+    /** Returns the unique identifier, assigned by the Android Health Platform at insertion time. */
     @NonNull
     public String getId() {
         return mId;
     }
 
-    /** Returns the corresponding package name. */
+    /** Returns the corresponding package name of the owning app. */
     @NonNull
     public String getPackageName() {
         return mPackageName;
@@ -103,6 +123,24 @@ public final class MedicalDataSource implements Parcelable {
     @NonNull
     public String getDisplayName() {
         return mDisplayName;
+    }
+
+    /** Returns the FHIR version of {@link MedicalResource}s from this source. */
+    @NonNull
+    public FhirVersion getFhirVersion() {
+        return mFhirVersion;
+    }
+
+    /**
+     * Returns the time {@link MedicalResource}s linked to this data source were last updated, or
+     * {@code null} if the data source has no linked resources.
+     *
+     * <p>This time is based on resources that currently exist in HealthConnect, so does not reflect
+     * data deletion.
+     */
+    @Nullable
+    public Instant getLastDataUpdateTime() {
+        return mLastDataUpdateTime;
     }
 
     /** Returns the FHIR base URI, where data written for this data source came from. */
@@ -122,6 +160,31 @@ public final class MedicalDataSource implements Parcelable {
         dest.writeString(mPackageName);
         dest.writeParcelable(mFhirBaseUri, 0);
         dest.writeString(mDisplayName);
+        dest.writeParcelable(mFhirVersion, 0);
+        dest.writeLong(mLastDataUpdateTime == null ? 0 : mLastDataUpdateTime.toEpochMilli());
+    }
+
+    /**
+     * Validates all of the provided {@code ids} are valid.
+     *
+     * <p>Throws {@link IllegalArgumentException} with all invalid IDs if not.
+     *
+     * @hide
+     */
+    public static Set<UUID> validateMedicalDataSourceIds(@NonNull Set<String> ids) {
+        Set<String> invalidIds = new HashSet<>();
+        Set<UUID> uuids = new HashSet<>();
+        for (String id : ids) {
+            try {
+                uuids.add(UUID.fromString(id));
+            } catch (IllegalArgumentException e) {
+                invalidIds.add(id);
+            }
+        }
+        if (!invalidIds.isEmpty()) {
+            throw new IllegalArgumentException("Invalid data source ID(s): " + invalidIds);
+        }
+        return uuids;
     }
 
     /** Indicates whether some other object is "equal to" this one. */
@@ -132,13 +195,21 @@ public final class MedicalDataSource implements Parcelable {
         return getId().equals(that.getId())
                 && getPackageName().equals(that.getPackageName())
                 && getFhirBaseUri().equals(that.getFhirBaseUri())
-                && getDisplayName().equals(that.getDisplayName());
+                && getDisplayName().equals(that.getDisplayName())
+                && getFhirVersion().equals(that.getFhirVersion())
+                && Objects.equals(getLastDataUpdateTime(), that.getLastDataUpdateTime());
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getId(), getPackageName(), getFhirBaseUri(), getDisplayName());
+        return hash(
+                getId(),
+                getPackageName(),
+                getFhirBaseUri(),
+                getDisplayName(),
+                getFhirVersion(),
+                getLastDataUpdateTime());
     }
 
     /** Returns a string representation of this {@link MedicalDataSource}. */
@@ -150,61 +221,72 @@ public final class MedicalDataSource implements Parcelable {
         sb.append(",packageName=").append(getPackageName());
         sb.append(",fhirBaseUri=").append(getFhirBaseUri());
         sb.append(",displayName=").append(getDisplayName());
+        sb.append(",fhirVersion=").append(getFhirVersion());
+        sb.append(",lastDataUpdateTime=").append(getLastDataUpdateTime());
         sb.append("}");
         return sb.toString();
     }
 
-    /** Builder class for {@link MedicalDataSource} */
+    /** Builder class for {@link MedicalDataSource}. */
     public static final class Builder {
         @NonNull private String mId;
         @NonNull private String mPackageName;
         @NonNull private Uri mFhirBaseUri;
         @NonNull private String mDisplayName;
+        @NonNull private FhirVersion mFhirVersion;
+        @Nullable private Instant mLastDataUpdateTime;
 
         /**
-         * @param id The unique identifier of this data source, assigned by the Android Health
-         *     Platform at insertion time.
-         * @param packageName The package name of the contributing package. Auto-populated by the
-         *     platform at source creation time.
-         * @param fhirBaseUri The fhir base URI of the data source.
+         * Constructs a new {@link MedicalDataSource.Builder} instance.
+         *
+         * @param id The unique identifier of this data source.
+         * @param packageName The package name of the owning app.
+         * @param fhirBaseUri The FHIR base URI of the data source.
          * @param displayName The display name that describes the data source.
+         * @param fhirVersion The FHIR version of {@link MedicalResource}s linked to this source.
          */
         public Builder(
                 @NonNull String id,
                 @NonNull String packageName,
                 @NonNull Uri fhirBaseUri,
-                @NonNull String displayName) {
+                @NonNull String displayName,
+                @NonNull FhirVersion fhirVersion) {
             requireNonNull(id);
             requireNonNull(packageName);
             requireNonNull(fhirBaseUri);
             requireNonNull(displayName);
+            requireNonNull(fhirVersion);
 
             mId = id;
             mPackageName = packageName;
             mFhirBaseUri = fhirBaseUri;
             mDisplayName = displayName;
+            mFhirVersion = fhirVersion;
         }
 
-        public Builder(@NonNull Builder original) {
-            requireNonNull(original);
-            mId = original.mId;
-            mPackageName = original.mPackageName;
-            mFhirBaseUri = original.mFhirBaseUri;
-            mDisplayName = original.mDisplayName;
+        /** Constructs a clone of the other {@link MedicalDataSource.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mId = other.mId;
+            mPackageName = other.mPackageName;
+            mFhirBaseUri = other.mFhirBaseUri;
+            mDisplayName = other.mDisplayName;
+            mFhirVersion = other.mFhirVersion;
+            mLastDataUpdateTime = other.mLastDataUpdateTime;
         }
 
-        public Builder(@NonNull MedicalDataSource original) {
-            requireNonNull(original);
-            mId = original.getId();
-            mPackageName = original.getPackageName();
-            mFhirBaseUri = original.getFhirBaseUri();
-            mDisplayName = original.getDisplayName();
+        /** Constructs a clone of the other {@link MedicalDataSource} instance. */
+        public Builder(@NonNull MedicalDataSource other) {
+            requireNonNull(other);
+            mId = other.getId();
+            mPackageName = other.getPackageName();
+            mFhirBaseUri = other.getFhirBaseUri();
+            mDisplayName = other.getDisplayName();
+            mFhirVersion = other.getFhirVersion();
+            mLastDataUpdateTime = other.getLastDataUpdateTime();
         }
 
-        /**
-         * Sets unique identifier of this data source, assigned by the Android Health Platform at
-         * insertion time.
-         */
+        /** Sets unique identifier of this data source. */
         @NonNull
         public Builder setId(@NonNull String id) {
             requireNonNull(id);
@@ -223,7 +305,7 @@ public final class MedicalDataSource implements Parcelable {
             return this;
         }
 
-        /** Sets the fhir base URI of this data source. */
+        /** Sets the FHIR base URI of this data source. */
         @NonNull
         public Builder setFhirBaseUri(@NonNull Uri fhirBaseUri) {
             requireNonNull(fhirBaseUri);
@@ -239,10 +321,31 @@ public final class MedicalDataSource implements Parcelable {
             return this;
         }
 
+        /** Sets the FHIR version of {@link MedicalResource}s linked to this source. */
+        @NonNull
+        public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
+            requireNonNull(fhirVersion);
+            mFhirVersion = fhirVersion;
+            return this;
+        }
+
+        /** Sets the time {@link MedicalResource}s linked to this data source were last updated. */
+        @NonNull
+        public Builder setLastDataUpdateTime(@Nullable Instant lastDataUpdateTime) {
+            mLastDataUpdateTime = lastDataUpdateTime;
+            return this;
+        }
+
         /** Returns a new instance of {@link MedicalDataSource} with the specified parameters. */
         @NonNull
         public MedicalDataSource build() {
-            return new MedicalDataSource(mId, mPackageName, mFhirBaseUri, mDisplayName);
+            return new MedicalDataSource(
+                    mId,
+                    mPackageName,
+                    mFhirBaseUri,
+                    mDisplayName,
+                    mFhirVersion,
+                    mLastDataUpdateTime);
         }
     }
 }

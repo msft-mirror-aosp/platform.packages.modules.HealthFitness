@@ -16,128 +16,195 @@
 
 package android.healthconnect.cts;
 
+import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
+import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
+import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
+import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
+
+import static com.android.compatibility.common.util.SystemUtil.getEventually;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.app.UiAutomation;
+import static java.util.Objects.requireNonNull;
+
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.health.connect.ApplicationInfoResponse;
+import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.AppInfo;
+import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
-import android.os.OutcomeReceiver;
 import android.platform.test.annotations.AppModeFull;
-import android.util.Log;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.InstrumentationRegistry;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class GetApplicationInfoTest {
-    private static final String TAG = "GetApplicationInfoTest";
-    private static final UiAutomation sUiAutomation =
-            InstrumentationRegistry.getInstrumentation().getUiAutomation();
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
-    /** TODO(b/257796081): Cleanup the database after each test. */
+    private Context mContext;
+    private HealthConnectManager mManager;
+    private PhrCtsTestUtils mPhrTestUtils;
+
+    @Before
+    public void setUp() throws InterruptedException {
+        deleteAllStagedRemoteData();
+        mContext = ApplicationProvider.getApplicationContext();
+        deleteAllRecords(mContext.getApplicationInfo().packageName);
+        mManager = requireNonNull(mContext.getSystemService(HealthConnectManager.class));
+        mPhrTestUtils = new PhrCtsTestUtils(mManager);
+        mPhrTestUtils.deleteAllMedicalData();
+    }
+
+    @After
+    public void after() throws InterruptedException {
+        deleteAllStagedRemoteData();
+        mPhrTestUtils.deleteAllMedicalData();
+    }
+
+    private void deleteAllRecords(String packageName) throws InterruptedException {
+        verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addDataOrigin(new DataOrigin.Builder().setPackageName(packageName).build())
+                        .build());
+    }
+
     @Test
     public void testEmptyApplicationInfo() throws InterruptedException {
-        sUiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        ApplicationInfoResponse response =
+                callAndGetResponseWithShellPermissionIdentity(
+                        mManager::getContributorApplicationsInfo, MANAGE_HEALTH_DATA);
 
-        try {
-            Context context = ApplicationProvider.getApplicationContext();
-            HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-            CountDownLatch latch = new CountDownLatch(1);
-            assertThat(service).isNotNull();
-            AtomicReference<List<AppInfo>> response = new AtomicReference<>();
-            service.getContributorApplicationsInfo(
-                    Executors.newSingleThreadExecutor(),
-                    new OutcomeReceiver<>() {
-                        @Override
-                        public void onResult(ApplicationInfoResponse result) {
-                            response.set(result.getApplicationInfoList());
-                            latch.countDown();
-                        }
-
-                        @Override
-                        public void onError(HealthConnectException exception) {
-                            Log.e(TAG, exception.getMessage());
-                        }
-                    });
-            assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
-        } finally {
-            sUiAutomation.dropShellPermissionIdentity();
-        }
-
-        /** TODO(b/257796081): Test the response size after database clean up is implemented */
-        // assertThat(response.get()).hasSize(0);
+        assertThat(response.getApplicationInfoList()).hasSize(0);
     }
 
     @Test
     public void testEmptyApplicationInfo_no_perm() throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(service).isNotNull();
-        AtomicReference<List<AppInfo>> response = new AtomicReference<>();
-        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
-                new AtomicReference<>();
-        try {
-            TestUtils.getApplicationInfo();
-            Assert.fail("Reading app info must not be allowed without right HC permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
-        }
+        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
+        mManager.getContributorApplicationsInfo(outcomeExecutor(), receiver);
+        HealthConnectException healthConnectException = receiver.assertAndGetException();
+        assertThat(healthConnectException.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     @Test
-    public void testGetApplicationInfo() throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        CountDownLatch latch = new CountDownLatch(1);
-        TestUtils.insertRecords(getTestRecords());
-        sUiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+    public void testGetApplicationInfo() throws Exception {
+        insertRecords(getTestRecords());
+        // App info table will be updated in the background, so might take some additional time.
+        ApplicationInfoResponse eventualResponse =
+                getEventually(
+                        () -> {
+                            ApplicationInfoResponse response =
+                                    callAndGetResponseWithShellPermissionIdentity(
+                                            mManager::getContributorApplicationsInfo,
+                                            MANAGE_HEALTH_DATA);
+                            assertThat(response.getApplicationInfoList()).hasSize(1);
+                            return response;
+                        });
 
-        try {
-            // Wait for some time, as app info table will be  updated in the background so might
-            // take some additional time.
-            latch.await(1, TimeUnit.SECONDS);
+        AppInfo appInfo = eventualResponse.getApplicationInfoList().get(0);
+        ApplicationInfo applicationInfo = mContext.getApplicationInfo();
+        assertThat(appInfo.getPackageName()).isEqualTo(applicationInfo.packageName);
+        assertThat(appInfo.getName())
+                .isEqualTo(
+                        mContext.getPackageManager()
+                                .getApplicationLabel(applicationInfo)
+                                .toString());
+        assertThat(appInfo.getIcon()).isNotNull();
+    }
 
-            List<AppInfo> result = TestUtils.getApplicationInfo();
-            assertThat(result).hasSize(1);
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetApplicationInfo_appCreatesMedicalDataSourceOnly_isInContributingApps()
+            throws Exception {
+        // Create health fitness data.
+        insertRecords(getTestRecords());
+        // Create medical data with a different package.
+        APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
 
-            AppInfo appInfo = result.get(0);
+        // App info table will be updated in the background, so might take some additional time.
+        ApplicationInfoResponse eventualResponse =
+                getEventually(
+                        () -> {
+                            ApplicationInfoResponse response =
+                                    callAndGetResponseWithShellPermissionIdentity(
+                                            mManager::getContributorApplicationsInfo,
+                                            MANAGE_HEALTH_DATA);
+                            assertThat(response.getApplicationInfoList()).hasSize(2);
+                            return response;
+                        });
 
-            assertThat(appInfo.getPackageName())
-                    .isEqualTo(context.getApplicationInfo().packageName);
-            assertThat(appInfo.getName())
-                    .isEqualTo(
-                            context.getPackageManager()
-                                    .getApplicationLabel(context.getApplicationInfo()));
-            assertThat(appInfo.getIcon()).isNotNull();
-        } finally {
-            sUiAutomation.dropShellPermissionIdentity();
-        }
+        assertThat(
+                        eventualResponse.getApplicationInfoList().stream()
+                                .map(AppInfo::getPackageName)
+                                .collect(Collectors.toSet()))
+                .containsExactly(
+                        mContext.getApplicationInfo().packageName,
+                        APP_WRITE_PERMS_ONLY.getPackageName());
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetApplicationInfo_appCreatesMedicalDataSourceWithData_isInContributingApps()
+            throws Exception {
+        // Create health fitness data.
+        insertRecords(getTestRecords());
+        // Create a dataSource and a medicalResource with a different package.
+        MedicalDataSource dataSource =
+                APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        APP_WRITE_PERMS_ONLY.upsertMedicalResource(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        // App info table will be updated in the background, so might take some additional time.
+        ApplicationInfoResponse eventualResponse =
+                getEventually(
+                        () -> {
+                            ApplicationInfoResponse response =
+                                    callAndGetResponseWithShellPermissionIdentity(
+                                            mManager::getContributorApplicationsInfo,
+                                            MANAGE_HEALTH_DATA);
+                            assertThat(response.getApplicationInfoList()).hasSize(2);
+                            return response;
+                        });
+
+        assertThat(
+                        eventualResponse.getApplicationInfoList().stream()
+                                .map(AppInfo::getPackageName)
+                                .collect(Collectors.toSet()))
+                .containsExactly(
+                        mContext.getApplicationInfo().packageName,
+                        APP_WRITE_PERMS_ONLY.getPackageName());
     }
 }

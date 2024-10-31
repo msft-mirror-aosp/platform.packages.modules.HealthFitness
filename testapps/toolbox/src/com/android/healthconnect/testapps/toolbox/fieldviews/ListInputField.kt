@@ -99,10 +99,10 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                     EnumDropDown(
                         context,
                         "Sleep Stage",
-                        getStaticFieldNamesAndValues(SleepSessionRecord.StageType::class))
+                        getStaticFieldNamesAndValues(SleepSessionRecord.StageType::class),
+                    )
                 }
                 StepsCadenceRecordSample::class.java -> {
-                    rowLayout.addView(row.startTime)
                     EditableTextView(context, "Steps Cadence", INPUT_TYPE_DOUBLE)
                 }
                 ExerciseSegment::class.java -> {
@@ -110,7 +110,8 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                     EnumDropDown(
                         context,
                         "Segment Type",
-                        getStaticFieldNamesAndValues(ExerciseSegmentType::class))
+                        getStaticFieldNamesAndValues(ExerciseSegmentType::class),
+                    )
                 }
                 ExerciseLap::class.java -> {
                     rowLayout.addView(row.endTime)
@@ -125,7 +126,8 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                         context,
                         EditableTextView(context, "Repetitions", INPUT_TYPE_INT),
                         EditableTextView(context, "Description", INPUT_TYPE_TEXT),
-                        CheckBox(context))
+                        CheckBox(context),
+                    )
                 }
                 else -> {
                     return
@@ -149,7 +151,9 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                     samples.add(
                         SpeedRecordSample(
                             Velocity.fromMetersPerSecond(dataPointString.toDouble()),
-                            instant.getFieldValue()))
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 HeartRateSample::class.java -> {
                     samples.add(HeartRateSample(dataPointString.toLong(), instant.getFieldValue()))
@@ -157,32 +161,45 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                 PowerRecordSample::class.java -> {
                     samples.add(
                         PowerRecordSample(
-                            Power.fromWatts(dataPointString.toDouble()), instant.getFieldValue()))
+                            Power.fromWatts(dataPointString.toDouble()),
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 CyclingPedalingCadenceRecordSample::class.java -> {
                     samples.add(
                         CyclingPedalingCadenceRecordSample(
-                            dataPointString.toDouble(), instant.getFieldValue()))
+                            dataPointString.toDouble(),
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 StepsCadenceRecordSample::class.java -> {
                     samples.add(
                         StepsCadenceRecordSample(
-                            dataPointString.toDouble(), instant.getFieldValue()))
+                            dataPointString.toDouble(),
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 SleepSessionRecord.Stage::class.java -> {
                     samples.add(
                         SleepSessionRecord.Stage(
                             instant.getFieldValue(),
                             row.endTime.getFieldValue(),
-                            dataPointString.toInt()))
+                            dataPointString.toInt(),
+                        )
+                    )
                 }
                 ExerciseSegment::class.java -> {
                     samples.add(
                         ExerciseSegment.Builder(
                                 instant.getFieldValue(),
                                 row.endTime.getFieldValue(),
-                                dataPointString.toInt())
-                            .build())
+                                dataPointString.toInt(),
+                            )
+                            .build()
+                    )
                 }
                 ExerciseLap::class.java -> {
                     samples.add(
@@ -192,7 +209,8 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                                     setLength(Length.fromMeters(dataPointString.toDouble()))
                                 }
                             }
-                            .build())
+                            .build()
+                    )
                 }
                 PlannedExerciseBlock::class.java -> {
                     samples.add(dataPoint.getFieldValue())
@@ -202,7 +220,9 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                         samples.add(
                             SkinTemperatureRecord.Delta(
                                 TemperatureDelta.fromCelsius(dataPointString.toDouble()),
-                                instant.getFieldValue()))
+                                instant.getFieldValue(),
+                            )
+                        )
                     }
                 }
             }

@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableMap
 data class MedicalPermissionStrings(
     @StringRes val uppercaseLabel: Int,
     @StringRes val lowercaseLabel: Int,
-    @StringRes val contentDescription: Int
+    @StringRes val contentDescription: Int,
 ) {
     companion object {
         fun fromPermissionType(
@@ -30,7 +30,8 @@ data class MedicalPermissionStrings(
         ): MedicalPermissionStrings {
             return PERMISSION_TYPE_STRINGS[medicalPermissionType]
                 ?: throw IllegalArgumentException(
-                    "No strings for permission group " + medicalPermissionType.name)
+                    "No strings for permission group " + medicalPermissionType.name
+                )
         }
     }
 }
@@ -42,11 +43,103 @@ private val PERMISSION_TYPE_STRINGS: ImmutableMap<MedicalPermissionType, Medical
             MedicalPermissionStrings(
                 R.string.all_medical_data_uppercase_label,
                 R.string.all_medical_data_lowercase_label,
-                R.string.all_medical_data_content_description))
+                R.string.all_medical_data_content_description,
+            ),
+        )
         .put(
-            MedicalPermissionType.IMMUNIZATION,
+            MedicalPermissionType.ALLERGIES_INTOLERANCES,
             MedicalPermissionStrings(
-                R.string.immunization_uppercase_label,
-                R.string.immunization_lowercase_label,
-                R.string.immunization_content_description))
+                R.string.allergies_intolerances_uppercase_label,
+                R.string.allergies_intolerances_lowercase_label,
+                R.string.allergies_intolerances_content_description,
+            )
+        )
+        .put(
+            MedicalPermissionType.CONDITIONS,
+            MedicalPermissionStrings(
+                R.string.conditions_uppercase_label,
+                R.string.conditions_lowercase_label,
+                R.string.conditions_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.IMMUNIZATIONS,
+            MedicalPermissionStrings(
+                R.string.immunizations_uppercase_label,
+                R.string.immunizations_lowercase_label,
+                R.string.immunizations_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.LABORATORY_RESULTS,
+            MedicalPermissionStrings(
+                R.string.laboratory_results_uppercase_label,
+                R.string.laboratory_results_lowercase_label,
+                R.string.laboratory_results_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.MEDICATIONS,
+            MedicalPermissionStrings(
+                R.string.medications_uppercase_label,
+                R.string.medications_lowercase_label,
+                R.string.medications_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.PERSONAL_DETAILS,
+            MedicalPermissionStrings(
+                R.string.personal_details_uppercase_label,
+                R.string.personal_details_lowercase_label,
+                R.string.personal_details_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.PRACTITIONER_DETAILS,
+            MedicalPermissionStrings(
+                R.string.practitioner_details_uppercase_label,
+                R.string.practitioner_details_lowercase_label,
+                R.string.practitioner_details_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.PREGNANCY,
+            MedicalPermissionStrings(
+                R.string.pregnancy_uppercase_label,
+                R.string.pregnancy_lowercase_label,
+                R.string.pregnancy_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.PROCEDURES,
+            MedicalPermissionStrings(
+                R.string.procedures_uppercase_label,
+                R.string.procedures_lowercase_label,
+                R.string.procedures_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.SOCIAL_HISTORY,
+            MedicalPermissionStrings(
+                R.string.social_history_uppercase_label,
+                R.string.social_history_lowercase_label,
+                R.string.social_history_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.VISITS,
+            MedicalPermissionStrings(
+                R.string.visits_uppercase_label,
+                R.string.visits_lowercase_label,
+                R.string.visits_content_description,
+            ),
+        )
+        .put(
+            MedicalPermissionType.VITAL_SIGNS,
+            MedicalPermissionStrings(
+                R.string.vital_signs_uppercase_label,
+                R.string.vital_signs_lowercase_label,
+                R.string.vital_signs_content_description,
+            ),
+        )
         .buildOrThrow()

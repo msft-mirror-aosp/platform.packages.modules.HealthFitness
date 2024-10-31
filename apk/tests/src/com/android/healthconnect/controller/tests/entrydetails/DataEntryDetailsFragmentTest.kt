@@ -90,12 +90,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when` as whenever
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.atMost
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class DataEntryDetailsFragmentTest {
@@ -125,7 +125,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
+                permissionType = SLEEP,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withId(R.id.loading)).check(matches(not(isDisplayed())))
     }
@@ -136,7 +140,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
+                permissionType = SLEEP,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -147,7 +155,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
+                permissionType = SLEEP,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -166,11 +178,20 @@ class DataEntryDetailsFragmentTest {
                                 title = "12 hour sleeping",
                                 titleA11y = "12 hour sleeping",
                                 dataType = DataType.SLEEP,
-                                notes = "notes")))))
+                                notes = "notes",
+                            )
+                        )
+                    )
+                )
+            )
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
+                permissionType = SLEEP,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("07:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("12 hour sleeping")).check(matches(isDisplayed()))
@@ -191,7 +212,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
+                permissionType = SLEEP,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("12 hour sleeping")).check(matches(isDisplayed()))
         onView(withText("6 hour light sleeping")).check(matches(isDisplayed()))
@@ -206,7 +231,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = HEART_RATE, entryId = "1", showDataOrigin = true))
+                permissionType = HEART_RATE,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("07:06 - 8:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("100 bpm")).check(matches(isDisplayed()))
@@ -223,7 +252,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
+                permissionType = SKIN_TEMPERATURE,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
         onView(withText("Measurement location")).check(matches(isDisplayed()))
@@ -247,7 +280,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
+                permissionType = SKIN_TEMPERATURE,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
         onView(withText("Measurement location")).check(doesNotExist())
@@ -271,7 +308,11 @@ class DataEntryDetailsFragmentTest {
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
+                permissionType = SKIN_TEMPERATURE,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
         onView(withText("Measurement location")).check(matches(isDisplayed()))
@@ -291,7 +332,11 @@ class DataEntryDetailsFragmentTest {
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = EXERCISE, entryId = "1", showDataOrigin = true))
+                permissionType = EXERCISE,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("12 hour running")).check(matches(isDisplayed()))
         onView(withId(R.id.map_view)).check(matches(isDisplayed()))
@@ -305,7 +350,11 @@ class DataEntryDetailsFragmentTest {
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = EXERCISE, entryId = "1", showDataOrigin = true))
+                permissionType = EXERCISE,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("12 hour running")).check(matches(isDisplayed()))
         onView(withId(R.id.map_view)).check(matches(not(isDisplayed())))
@@ -322,7 +371,9 @@ class DataEntryDetailsFragmentTest {
                     title = "Running • Morning Run",
                     titleA11y = "Running • Morning Run",
                     dataType = DataType.PLANNED_EXERCISE,
-                    notes = "Morning quick run by the park"))
+                    notes = "Morning quick run by the park",
+                )
+            )
             add(
                 PlannedExerciseBlockEntry(
                     block =
@@ -335,15 +386,23 @@ class DataEntryDetailsFragmentTest {
                                         ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
                                     completionGoal =
                                         ExerciseCompletionGoal.DistanceGoal(
-                                            Length.fromMeters(1000.0)),
+                                            Length.fromMeters(1000.0)
+                                        ),
                                     performanceGoals =
                                         listOf(
                                             ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                             ExercisePerformanceGoal.SpeedGoal(
                                                 Velocity.fromMetersPerSecond(25.0),
-                                                Velocity.fromMetersPerSecond(15.0)))))),
+                                                Velocity.fromMetersPerSecond(15.0),
+                                            ),
+                                        ),
+                                )
+                            ),
+                        ),
                     title = "Warm up: 1 time",
-                    titleA11y = "Warm up 1 time"))
+                    titleA11y = "Warm up 1 time",
+                )
+            )
             add(SessionHeader("Notes"))
             add(FormattedSectionContent("Morning quick run by the park"))
             add(
@@ -355,31 +414,45 @@ class DataEntryDetailsFragmentTest {
                                     ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                     ExercisePerformanceGoal.SpeedGoal(
                                         Velocity.fromMetersPerSecond(25.0),
-                                        Velocity.fromMetersPerSecond(15.0))))
+                                        Velocity.fromMetersPerSecond(15.0),
+                                    ),
+                                )
+                            )
                             .build(),
                     title = "4 km Running",
-                    titleA11y = "4 kilometres Running"))
+                    titleA11y = "4 kilometres Running",
+                )
+            )
             add(FormattedSectionContent(title = "This is a test exercise step", bulleted = true))
             add(
                 ExercisePerformanceGoalEntry(
                     goal = ExercisePerformanceGoal.HeartRateGoal(150, 180),
                     title = "150 bpm - 180 bpm",
-                    titleA11y = "150 beats per minute - 180 beats per minute"))
+                    titleA11y = "150 beats per minute - 180 beats per minute",
+                )
+            )
             add(
                 ExercisePerformanceGoalEntry(
                     goal =
                         ExercisePerformanceGoal.SpeedGoal(
                             Velocity.fromMetersPerSecond(180.0),
-                            Velocity.fromMetersPerSecond(90.0)),
+                            Velocity.fromMetersPerSecond(90.0),
+                        ),
                     title = "180 km/h - 90 km/h",
-                    titleA11y = "180 kilometres per hour - 90 kilometres per hour"))
+                    titleA11y = "180 kilometres per hour - 90 kilometres per hour",
+                )
+            )
         }
 
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
 
         launchFragment<DataEntryDetailsFragment>(
             DataEntryDetailsFragment.createBundle(
-                permissionType = PLANNED_EXERCISE, entryId = "1", showDataOrigin = true))
+                permissionType = PLANNED_EXERCISE,
+                entryId = "1",
+                showDataOrigin = true,
+            )
+        )
 
         onView(withText("07:06 - 08:06 • Health Connect test app")).check(matches(isDisplayed()))
         onView(withText("Running • Morning Run")).check(matches(isDisplayed()))
@@ -415,7 +488,8 @@ class DataEntryDetailsFragmentTest {
                 headerA11y = "07:06 • TEST_APP_NAME",
                 title = "6 hour deep sleeping",
                 titleA11y = "6 hour deep sleeping",
-            ))
+            ),
+        )
     }
 
     private fun getSkinTemperatureEntry(): FormattedEntry {
@@ -425,12 +499,13 @@ class DataEntryDetailsFragmentTest {
             headerA11y = "16:00 - 17:00 • TEST_APP_NAME",
             title = "+0.5℃ (avg variation)",
             titleA11y = "+0.5 degrees Celsius (average variation)",
-            dataType = DataType.SKIN_TEMPERATURE)
+            dataType = DataType.SKIN_TEMPERATURE,
+        )
     }
 
     private fun getSkinTemperatureDeltas(
         includeBaseline: Boolean,
-        includeLocation: Boolean
+        includeLocation: Boolean,
     ): List<FormattedEntry> {
         val locationDefinedFormattedEntry: FormattedEntry.ReverseSessionDetail =
             FormattedEntry.ReverseSessionDetail(
@@ -466,7 +541,8 @@ class DataEntryDetailsFragmentTest {
                     headerA11y = "16:40 AM",
                     title = "-0.5℃",
                     titleA11y = "-0.5 degrees Celsius",
-                ))
+                ),
+            )
 
         return if (includeBaseline && includeLocation) {
             listOf(locationDefinedFormattedEntry, baselineDefinedFormattedEntry)
@@ -488,7 +564,8 @@ class DataEntryDetailsFragmentTest {
             title = "12 hour sleeping",
             titleA11y = "12 hour sleeping",
             dataType = DataType.SLEEP,
-            notes = "notes")
+            notes = "notes",
+        )
     }
 
     private fun getFormattedExerciseSession(showSession: Boolean): ExerciseSessionEntry {
@@ -505,7 +582,8 @@ class DataEntryDetailsFragmentTest {
                     ExerciseRoute(WARSAW_ROUTE)
                 } else {
                     null
-                })
+                },
+        )
     }
 
     private fun getFormattedSeriesData(): SeriesDataEntry {
@@ -515,13 +593,15 @@ class DataEntryDetailsFragmentTest {
             headerA11y = "07:06 - 8:06 • TEST_APP_NAME",
             title = "100 bpm",
             titleA11y = "100 beats per minute",
-            dataType = DataType.HEART_RATE)
+            dataType = DataType.HEART_RATE,
+        )
     }
 
     private fun getPlannedExerciseStepBuilder(): PlannedExerciseStep.Builder {
         return PlannedExerciseStep.Builder(
             ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
             PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
-            ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(1000.0)))
+            ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(1000.0)),
+        )
     }
 }

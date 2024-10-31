@@ -161,25 +161,6 @@ public class MindfulnessSessionRecordTest {
     }
 
     @Test
-    public void mindfulnessSessionRecordBuilder_clearZoneOffsets() {
-        final ZoneOffset defaultZoneOffset = getDefaultZoneOffset(Instant.now());
-
-        MindfulnessSessionRecord.Builder builder =
-                new MindfulnessSessionRecord.Builder(
-                                new Metadata.Builder().build(),
-                                Instant.now().minusSeconds(60),
-                                Instant.now(),
-                                MINDFULNESS_SESSION_TYPE_BREATHING)
-                        .setStartZoneOffset(ZoneOffset.ofHours(-4))
-                        .setEndZoneOffset(ZoneOffset.ofHours(5));
-
-        assertThat(builder.clearStartZoneOffset().build().getStartZoneOffset())
-                .isEqualTo(defaultZoneOffset);
-        assertThat(builder.clearEndZoneOffset().build().getEndZoneOffset())
-                .isEqualTo(defaultZoneOffset);
-    }
-
-    @Test
     public void equals_hashCode_allFieldsEqual_recordsEqual() {
         Instant endTime = Instant.now();
         Instant startTime = endTime.minusSeconds(60);
@@ -342,7 +323,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("titleA")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -372,7 +353,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffset)
@@ -383,7 +364,7 @@ public class MindfulnessSessionRecordTest {
                 new MindfulnessSessionRecord.Builder(
                                 metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
-                        .setNotes("notesA")
+                        .setNotes("notesB")
                         .setStartZoneOffset(startZoneOffset)
                         .setEndZoneOffset(endZoneOffset)
                         .build();
@@ -403,7 +384,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffsetA)
@@ -434,7 +415,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffset)

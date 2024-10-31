@@ -35,7 +35,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.alldata.medical.MedicalAllDataViewModel
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
@@ -47,7 +47,6 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
@@ -65,10 +64,8 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -86,8 +83,6 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import javax.inject.Inject
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -96,9 +91,9 @@ import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 @UninstallModules(DeviceInfoUtilsModule::class)
@@ -123,16 +118,13 @@ class HomeFragmentTest {
     val exportStatusViewModel: ExportStatusViewModel =
         Mockito.mock(ExportStatusViewModel::class.java)
 
-    @BindValue
-    val medicalDataViewModel: MedicalAllDataViewModel =
-        Mockito.mock(MedicalAllDataViewModel::class.java)
+    @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
 
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
 
     @BindValue val timeSource = TestTimeSource
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
     private lateinit var navHostController: TestNavHostController
     @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
 
@@ -173,11 +165,7 @@ class HomeFragmentTest {
                 )
             )
         }
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.Loading
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
         navHostController = TestNavHostController(context)
 
         // disable animations
@@ -204,7 +192,7 @@ class HomeFragmentTest {
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
+    @DisableFlags(Flags.FLAG_ONBOARDING)
     fun dataAndAccess_navigatesToDataAndAccess() {
         setupFragmentForNavigation()
         onView(withText("Data and access")).check(matches(isDisplayed()))
@@ -214,25 +202,9 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun browseData_navigatesToBrowseData() {
-        setupFragmentForNavigation()
-        onView(withText("Browse data")).check(matches(isDisplayed()))
-        onView(withText("Browse data")).perform(click())
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.data_activity)
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_navigatesToBrowseMedicalData() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.WithData(
-                    listOf(MedicalPermissionType.IMMUNIZATION)
-                )
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -518,7 +490,7 @@ class HomeFragmentTest {
             .check(doesNotExist())
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("1 app has access")).check(matches(isDisplayed()))
-        onView(withText("Browse data")).check(matches(isDisplayed()))
+        onView(withText("Data and access")).check(matches(isDisplayed()))
         onView(withText("See data and which apps can access it")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
     }
@@ -766,64 +738,45 @@ class HomeFragmentTest {
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
     }
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_errorFetchingMedicalData_notDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.Error
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
+
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
     }
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    fun browseMedicalData_loadingMedicalData_notDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.Loading
-            )
-        }
-        setupFragmentForNavigation()
-
-        onView(withText("Browse health records")).check(doesNotExist())
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_emptyMedicalData_notDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.WithData(emptyList())
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
+
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
     }
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_medicalDataExists_isDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.WithData(
-                    listOf(MedicalPermissionType.IMMUNIZATION)
-                )
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
+
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(matches(isDisplayed()))
+        onView(withText("View your health records and which apps can access them"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
     }
 
     // endregion
@@ -1162,7 +1115,6 @@ class HomeFragmentTest {
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
-        verify(healthConnectLogger, never()).logImpression(HomePageElement.BROWSE_DATA_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
         verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
     }
@@ -1202,8 +1154,7 @@ class HomeFragmentTest {
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HOME_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
-        verify(healthConnectLogger, never()).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
-        verify(healthConnectLogger).logImpression(HomePageElement.BROWSE_DATA_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.MANAGE_DATA_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
         verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)

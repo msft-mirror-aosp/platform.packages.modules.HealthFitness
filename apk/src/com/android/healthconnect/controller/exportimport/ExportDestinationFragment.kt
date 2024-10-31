@@ -37,12 +37,14 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.isLocalFile
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.ExportDestinationElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags.exportImportFastFollow
 import com.android.settingslib.widget.LinkTextView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -55,6 +57,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
         registerForActivityResult(contract, ::onSave)
 
     private val viewModel: ExportSettingsViewModel by activityViewModels()
+    private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
     @Inject lateinit var logger: HealthConnectLogger
@@ -120,6 +123,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                         providers.providers,
                         viewModel.selectedDocumentProvider.value,
                         viewModel.selectedDocumentProviderRoot.value,
+                        viewModel.selectedRootsForDocumentProviders,
                         documentProvidersList,
                         inflater,
                     ) { provider, root ->
@@ -165,6 +169,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
 
     override fun onResume() {
         super.onResume()
+        exportStatusViewModel.loadScheduledExportStatus()
         logger.logPageImpression()
     }
 
@@ -175,15 +180,20 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                 Toast.makeText(activity, R.string.export_invalid_storage, Toast.LENGTH_LONG).show()
             } else {
                 viewModel.updateExportUriWithSelectedFrequency(fileUri)
+                requireActivity().setResult(Activity.RESULT_OK, Intent())
                 requireActivity().finish()
             }
         }
     }
 
     private fun getDefaultFileName(): String {
-        return getString(R.string.export_default_file_name) +
-            "_" +
-            timeSource.currentLocalDateTime().toLocalDate() +
-            ".zip"
+        val sequentialNumber = exportStatusViewModel.storedNextExportSequentialNumber.value
+        if (exportImportFastFollow() && sequentialNumber !== null && sequentialNumber != 0) {
+            return getString(
+                R.string.export_default_file_name_with_sequence,
+                sequentialNumber.toString(),
+            ) + ".zip"
+        }
+        return getString(R.string.export_default_file_name) + ".zip"
     }
 }

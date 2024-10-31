@@ -16,8 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import android.annotation.NonNull;
-
 import java.util.List;
 
 /**
@@ -33,10 +31,10 @@ public final class CreateIndexRequest {
     private final List<String> mColumnNames;
 
     public CreateIndexRequest(
-            @NonNull String tableName,
-            @NonNull String indexName,
-            boolean isUnique,
-            @NonNull List<String> columnNames) {
+            String tableName, String indexName, boolean isUnique, List<String> columnNames) {
+        if (columnNames.isEmpty()) {
+            throw new IllegalArgumentException("Index must have at least one column");
+        }
         mTableName = tableName;
         mIndexName = indexName;
         mIsUnique = isUnique;
@@ -44,7 +42,6 @@ public final class CreateIndexRequest {
     }
 
     /** Returns a ready-for-use SQL command. */
-    @NonNull
     public String getCommand() {
         final StringBuilder builder = new StringBuilder("CREATE ");
 

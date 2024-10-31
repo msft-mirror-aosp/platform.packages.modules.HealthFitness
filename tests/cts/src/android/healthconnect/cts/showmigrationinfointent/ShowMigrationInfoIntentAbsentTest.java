@@ -74,9 +74,7 @@ public class ShowMigrationInfoIntentAbsentTest {
     public void testInsertMinDataMigrationSdkExtensionVersion_throwsException()
             throws InterruptedException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) + 1;
-        uiAutomation.adoptShellPermissionIdentity(MIGRATE_HEALTH_CONNECT_DATA);
-        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-        uiAutomation.dropShellPermissionIdentity();
+        TestUtils.insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(version);
     }
 
     @Test(expected = MigrationException.class)

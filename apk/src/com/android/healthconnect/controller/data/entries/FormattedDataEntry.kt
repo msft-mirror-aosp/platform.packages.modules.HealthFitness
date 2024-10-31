@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.data.entries
 
+import android.health.connect.MedicalResourceId
 import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseRoute
 import android.health.connect.datatypes.PlannedExerciseBlock
@@ -23,16 +24,20 @@ import com.android.healthconnect.controller.shared.DataType
 import java.time.Instant
 
 sealed class FormattedEntry(open val uuid: String) {
+    interface HasDataType {
+        val dataType: DataType
+    }
+
     data class FormattedDataEntry(
         override val uuid: String,
         val header: String,
         val headerA11y: String,
         val title: String,
         val titleA11y: String,
-        val dataType: DataType,
+        override val dataType: DataType,
         val startTime: Instant? = null,
         val endTime: Instant? = null,
-    ) : FormattedEntry(uuid)
+    ) : FormattedEntry(uuid), HasDataType
 
     data class FormattedMedicalDataEntry(
         val header: String,
@@ -40,6 +45,7 @@ sealed class FormattedEntry(open val uuid: String) {
         val title: String,
         val titleA11y: String,
         val time: Instant? = null,
+        val medicalResourceId: MedicalResourceId,
     ) : FormattedEntry(uuid = "")
 
     data class SleepSessionEntry(
@@ -48,9 +54,9 @@ sealed class FormattedEntry(open val uuid: String) {
         val headerA11y: String,
         val title: String,
         val titleA11y: String,
-        val dataType: DataType,
+        override val dataType: DataType,
         val notes: String?,
-    ) : FormattedEntry(uuid)
+    ) : FormattedEntry(uuid), HasDataType
 
     data class ExerciseSessionEntry(
         override val uuid: String,
@@ -58,11 +64,11 @@ sealed class FormattedEntry(open val uuid: String) {
         val headerA11y: String,
         val title: String,
         val titleA11y: String,
-        val dataType: DataType,
+        override val dataType: DataType,
         val notes: String?,
         val route: ExerciseRoute? = null,
         val isClickable: Boolean = true,
-    ) : FormattedEntry(uuid)
+    ) : FormattedEntry(uuid), HasDataType
 
     data class SeriesDataEntry(
         override val uuid: String,
@@ -70,8 +76,8 @@ sealed class FormattedEntry(open val uuid: String) {
         val headerA11y: String,
         val title: String,
         val titleA11y: String,
-        val dataType: DataType,
-    ) : FormattedEntry(uuid)
+        override val dataType: DataType,
+    ) : FormattedEntry(uuid), HasDataType
 
     data class SessionHeader(val header: String) : FormattedEntry(uuid = "")
 
@@ -81,6 +87,8 @@ sealed class FormattedEntry(open val uuid: String) {
         FormattedEntry(uuid = "")
 
     data class ItemDataEntrySeparator(val title: String = "") : FormattedEntry(uuid = "")
+
+    data class SelectAllHeader(val title: String = "Select all") : FormattedEntry(uuid = "")
 
     data class ReverseSessionDetail(
         override val uuid: String,
@@ -111,10 +119,10 @@ sealed class FormattedEntry(open val uuid: String) {
         val header: String,
         val headerA11y: String,
         val title: String,
-        val dataType: DataType,
+        override val dataType: DataType,
         val titleA11y: String,
         val notes: String?,
-    ) : FormattedEntry(uuid)
+    ) : FormattedEntry(uuid), HasDataType
 
     data class PlannedExerciseBlockEntry(
         val block: PlannedExerciseBlock,
