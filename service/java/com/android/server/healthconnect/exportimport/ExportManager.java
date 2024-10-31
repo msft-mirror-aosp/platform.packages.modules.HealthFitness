@@ -247,11 +247,11 @@ public class ExportManager {
     }
 
     private File getLocalExportDbFile(StorageContext dbContext) {
-        return new File(dbContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
+        return new File(dbContext.getDataDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
     }
 
     private File getLocalExportZipFile(StorageContext dbContext) {
-        return new File(dbContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
+        return new File(dbContext.getDataDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
     }
 
     private void exportLocally(File destination) throws IOException {

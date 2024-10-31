@@ -115,32 +115,3 @@ genrule {
     cmd: "$(location generate-fhir-spec) $(out) $(in)",
     out: ["fhirspec-r4.binarypb"],
 }
-
-soong_config_bool_variable {
-    name: "phr_fhir_validation",
-}
-
-soong_config_module_type {
-    name: "phr_fhir_validation_java_defaults",
-    module_type: "java_defaults",
-    config_namespace: "HealthFitness",
-    bool_variables: [
-        "phr_fhir_validation",
-    ],
-    properties: [
-        "java_resources",
-    ],
-}
-
-phr_fhir_validation_java_defaults {
-    name: "healthfitness-phr-fhir-validation-defaults",
-    // If flag is false, don't add the generated file
-    soong_config_variables: {
-        // If flag is enabled, add the generated file
-        phr_fhir_validation: {
-            java_resources: [
-                ":generate-fhir-spec-r4-binarypb",
-            ],
-        },
-    },
-}
