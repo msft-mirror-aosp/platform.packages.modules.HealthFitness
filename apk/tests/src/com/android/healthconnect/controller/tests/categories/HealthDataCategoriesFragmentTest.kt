@@ -38,8 +38,6 @@ import com.android.healthconnect.controller.categories.HealthDataCategoryViewMod
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.CategoriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -47,7 +45,6 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -59,6 +56,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 /** List of all Health data categories. */
 private val HEALTH_DATA_ALL_CATEGORIES =
@@ -75,7 +73,6 @@ private val HEALTH_DATA_ALL_CATEGORIES =
 class HealthDataCategoriesFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
     private lateinit var context: Context
     private lateinit var navHostController: TestNavHostController
 
@@ -191,11 +188,15 @@ class HealthDataCategoriesFragmentTest {
             listOf(
                 HealthCategoryUiState(category = HealthDataCategory.ACTIVITY, hasData = false),
                 HealthCategoryUiState(
-                    category = HealthDataCategory.BODY_MEASUREMENTS, hasData = false),
+                    category = HealthDataCategory.BODY_MEASUREMENTS,
+                    hasData = false,
+                ),
                 HealthCategoryUiState(category = HealthDataCategory.SLEEP, hasData = false),
                 HealthCategoryUiState(category = HealthDataCategory.VITALS, hasData = false),
                 HealthCategoryUiState(
-                    category = HealthDataCategory.CYCLE_TRACKING, hasData = false),
+                    category = HealthDataCategory.CYCLE_TRACKING,
+                    hasData = false,
+                ),
                 HealthCategoryUiState(category = HealthDataCategory.NUTRITION, hasData = false),
             )
         whenever(viewModel.categoriesData).then {
@@ -212,11 +213,15 @@ class HealthDataCategoriesFragmentTest {
             listOf(
                 HealthCategoryUiState(category = HealthDataCategory.ACTIVITY, hasData = false),
                 HealthCategoryUiState(
-                    category = HealthDataCategory.BODY_MEASUREMENTS, hasData = false),
+                    category = HealthDataCategory.BODY_MEASUREMENTS,
+                    hasData = false,
+                ),
                 HealthCategoryUiState(category = HealthDataCategory.SLEEP, hasData = false),
                 HealthCategoryUiState(category = HealthDataCategory.VITALS, hasData = false),
                 HealthCategoryUiState(
-                    category = HealthDataCategory.CYCLE_TRACKING, hasData = false),
+                    category = HealthDataCategory.CYCLE_TRACKING,
+                    hasData = false,
+                ),
                 HealthCategoryUiState(category = HealthDataCategory.NUTRITION, hasData = false),
             )
         whenever(viewModel.categoriesData).then {
@@ -245,7 +250,9 @@ class HealthDataCategoriesFragmentTest {
             listOf(
                 HealthCategoryUiState(category = HealthDataCategory.ACTIVITY, hasData = true),
                 HealthCategoryUiState(
-                    category = HealthDataCategory.BODY_MEASUREMENTS, hasData = true),
+                    category = HealthDataCategory.BODY_MEASUREMENTS,
+                    hasData = true,
+                ),
                 HealthCategoryUiState(category = HealthDataCategory.SLEEP, hasData = true),
                 HealthCategoryUiState(category = HealthDataCategory.VITALS, hasData = true),
                 HealthCategoryUiState(category = HealthDataCategory.CYCLE_TRACKING, hasData = true),

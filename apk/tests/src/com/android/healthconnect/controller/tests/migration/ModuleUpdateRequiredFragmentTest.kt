@@ -11,7 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.ModuleUpdateRequiredFragment
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
@@ -32,6 +31,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class ModuleUpdateRequiredFragmentTest {
@@ -60,14 +60,18 @@ class ModuleUpdateRequiredFragmentTest {
         onView(
                 withText(
                     "Health Connect is being integrated with the Android system so " +
-                        "you can access it directly from your settings."))
+                        "you can access it directly from your settings."
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Before continuing, update your phone system."))
             .check(matches(isDisplayed()))
         onView(
                 withText(
                     "If you\'ve already updated your phone system, " +
-                        "try restarting your phone to continue the integration"))
+                        "try restarting your phone to continue the integration"
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Update")).check(matches(isDisplayed()))
@@ -105,7 +109,9 @@ class ModuleUpdateRequiredFragmentTest {
 
         verify(navigationUtils, times(1))
             .navigate(
-                any(), eq(R.id.action_migrationModuleUpdateNeededFragment_to_systemUpdateActivity))
+                any(),
+                eq(R.id.action_migrationModuleUpdateNeededFragment_to_systemUpdateActivity),
+            )
         verify(healthConnectLogger)
             .logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_UPDATE_BUTTON)
     }
@@ -121,14 +127,18 @@ class ModuleUpdateRequiredFragmentTest {
         onView(
                 withText(
                     "Health Connect is being integrated with the Android system so " +
-                        "you can access it directly from your settings."))
+                        "you can access it directly from your settings."
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Before continuing, update your phone system."))
             .check(matches(isDisplayed()))
         onView(
                 withText(
                     "If you\'ve already updated your phone system, " +
-                        "try restarting your phone to continue the integration"))
+                        "try restarting your phone to continue the integration"
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Update")).check(matches(isDisplayed()))

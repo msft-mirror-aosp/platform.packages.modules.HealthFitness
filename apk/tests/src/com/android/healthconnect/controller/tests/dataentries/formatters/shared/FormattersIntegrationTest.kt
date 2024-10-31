@@ -18,7 +18,7 @@
 
 package com.android.healthconnect.controller.tests.dataentries.formatters.shared
 
-import android.health.connect.internal.datatypes.utils.RecordMapper
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
@@ -36,7 +36,9 @@ class FormattersIntegrationTest {
     @Test
     fun allRecordsHaveFormatters() {
         val recordClasses =
-            RecordMapper.getInstance().recordIdToExternalRecordClassMap.values.sortedBy { it.name }
+            HealthConnectMappings.getInstance().recordIdToExternalRecordClassMap.values.sortedBy {
+                it.name
+            }
         val supportedUIRecords =
             HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten().sortedBy { it.name }
         assertThat(recordClasses).isEqualTo(supportedUIRecords)
@@ -46,7 +48,9 @@ class FormattersIntegrationTest {
     @Test
     fun allRecordsHaveFormatters_exceptUnreleasedDataTypes() {
         val recordClasses =
-            RecordMapper.getInstance().recordIdToExternalRecordClassMap.values.sortedBy { it.name }
+            HealthConnectMappings.getInstance().recordIdToExternalRecordClassMap.values.sortedBy {
+                it.name
+            }
         val supportedUIRecords =
             HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten().sortedBy { it.name }
         assertThat(recordClasses).isEqualTo(supportedUIRecords)

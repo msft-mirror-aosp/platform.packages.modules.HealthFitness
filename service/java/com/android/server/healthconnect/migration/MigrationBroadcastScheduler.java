@@ -29,6 +29,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.health.connect.Constants;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.internal.annotations.GuardedBy;
@@ -56,19 +57,21 @@ public final class MigrationBroadcastScheduler {
     private final MigrationStateManager mMigrationStateManager;
 
     @GuardedBy("mLock")
-    private int mUserId;
+    private UserHandle mUserHandle;
 
-    public MigrationBroadcastScheduler(int userId) {
-        mUserId = userId;
-        mHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
-        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
+    public MigrationBroadcastScheduler(
+            UserHandle userHandle,
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
+            MigrationStateManager migrationStateManager) {
+        mUserHandle = userHandle;
+        mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
+        mMigrationStateManager = migrationStateManager;
     }
 
     /** Sets userId. Invoked when the user is switched. */
-    public void setUserId(int userId) {
+    public void setUserId(UserHandle userHandle) {
         synchronized (mLock) {
-            mUserId = userId;
+            mUserHandle = userHandle;
         }
     }
 
@@ -86,7 +89,7 @@ public final class MigrationBroadcastScheduler {
 
             if (Constants.DEBUG) {
                 Slog.d(TAG, "Current migration state: " + migrationState);
-                Slog.d(TAG, "Current user: " + mUserId);
+                Slog.d(TAG, "Current user: " + mUserHandle.getIdentifier());
             }
 
             Objects.requireNonNull(context.getSystemService(JobScheduler.class))
@@ -125,10 +128,10 @@ public final class MigrationBroadcastScheduler {
                 new ComponentName(context, MigrationBroadcastJobService.class);
 
         int uuid = UUID.randomUUID().toString().hashCode();
-        int jobId = String.valueOf(mUserId + uuid).hashCode();
+        int jobId = String.valueOf(mUserHandle.getIdentifier() + uuid).hashCode();
 
         final PersistableBundle extras = new PersistableBundle();
-        extras.putInt(EXTRA_USER_ID, mUserId);
+        extras.putInt(EXTRA_USER_ID, mUserHandle.getIdentifier());
 
         JobInfo.Builder builder =
                 new JobInfo.Builder(jobId, schedulerServiceComponent).setExtras(extras);

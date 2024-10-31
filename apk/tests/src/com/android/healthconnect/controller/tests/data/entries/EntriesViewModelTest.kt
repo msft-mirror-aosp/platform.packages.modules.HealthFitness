@@ -15,6 +15,8 @@
  */
 package com.android.healthconnect.controller.tests.data.entries
 
+import android.content.Context
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
@@ -30,6 +32,7 @@ import com.android.healthconnect.controller.tests.utils.di.FakeLoadDataAggregati
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadDataEntriesUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadMenstruationDataUseCase
+import com.android.healthconnect.controller.utils.TimeSource
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -102,18 +105,20 @@ class EntriesViewModelTest {
     private val testDispatcher = TestCoroutineDispatcher()
 
     @Inject lateinit var appInfoReader: AppInfoReader
-    private val timeSource = TestTimeSource
+    private val timeSource: TimeSource = TestTimeSource
     private val fakeLoadDataEntriesUseCase = FakeLoadDataEntriesUseCase()
     private val fakeLoadMenstruationDataUseCase = FakeLoadMenstruationDataUseCase()
     private val fakeLoadDataAggregationsUseCase = FakeLoadDataAggregationsUseCase()
     private val fakeLoadMedicalEntriesUseCase = FakeLoadMedicalEntriesUseCase()
 
     private lateinit var viewModel: EntriesViewModel
+    private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
+        context = InstrumentationRegistry.getInstrumentation().context
         viewModel =
             EntriesViewModel(
                 appInfoReader,
@@ -196,7 +201,7 @@ class EntriesViewModelTest {
         val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
         viewModel.entries.observeForever(testObserver)
         viewModel.loadEntries(
-            MedicalPermissionType.IMMUNIZATION,
+            MedicalPermissionType.IMMUNIZATIONS,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
             DateNavigationPeriod.PERIOD_WEEK,
         )
@@ -208,27 +213,55 @@ class EntriesViewModelTest {
     }
 
     @Test
-    fun addToDeleteSet_updatesDeleteSetCorrectly() {
-        assertThat(viewModel.setOfEntriesToBeDeleted.value.orEmpty()).isEmpty()
+    fun addToDeleteSet_updatesDeleteMapCorrectly() {
+        assertThat(viewModel.mapOfEntriesToBeDeleted.value.orEmpty()).isEmpty()
 
-        viewModel.addToDeleteSet(FORMATTED_STEPS.uuid)
+        viewModel.addToDeleteMap(FORMATTED_STEPS.uuid, FORMATTED_STEPS.dataType)
 
-        assertThat(viewModel.setOfEntriesToBeDeleted.value).containsExactly(FORMATTED_STEPS.uuid)
+        assertThat(viewModel.mapOfEntriesToBeDeleted.value)
+            .containsExactlyEntriesIn(mapOf(FORMATTED_STEPS.uuid to FORMATTED_STEPS.dataType))
     }
 
     @Test
-    fun removeFromDeleteSet_updatesDeleteSetCorrectly() {
-        viewModel.addToDeleteSet(FORMATTED_STEPS.uuid)
-        viewModel.addToDeleteSet(FORMATTED_STEPS_2.uuid)
-        viewModel.removeFromDeleteSet(FORMATTED_STEPS.uuid)
+    fun removeFromDeleteSet_updatesDeleteMapCorrectly() {
+        viewModel.addToDeleteMap(FORMATTED_STEPS.uuid, FORMATTED_STEPS.dataType)
+        viewModel.addToDeleteMap(FORMATTED_STEPS_2.uuid, FORMATTED_STEPS.dataType)
+        viewModel.removeFromDeleteMap(FORMATTED_STEPS.uuid)
 
-        assertThat(viewModel.setOfEntriesToBeDeleted.value).containsExactly(FORMATTED_STEPS_2.uuid)
+        assertThat(viewModel.mapOfEntriesToBeDeleted.value)
+            .containsExactlyEntriesIn(mapOf(FORMATTED_STEPS_2.uuid to FORMATTED_STEPS.dataType))
     }
 
     @Test
-    fun setDeletionState_setsCorrectly(){
-        viewModel.setIsDeletionState(true)
+    fun setScreenState_setsCorrectly() {
+        viewModel.setScreenState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
 
-        assertThat(viewModel.isDeletionState.value).isTrue()
+        assertThat(viewModel.screenState.value)
+            .isEqualTo(EntriesViewModel.EntriesDeletionScreenState.DELETE)
+    }
+
+    @Test
+    fun setAllEntriesSelectedValue_setCorrectValue() {
+        viewModel.setAllEntriesSelectedValue(true)
+
+        assertThat(viewModel.allEntriesSelected.value).isTrue()
+    }
+
+    @Test
+    fun getEntriesList_getsCorrectValue() = runTest {
+        fakeLoadDataEntriesUseCase.updateList(listOf(FORMATTED_STEPS))
+        fakeLoadDataAggregationsUseCase.updateAggregation(formattedAggregation("12 steps"))
+        val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
+        viewModel.entries.observeForever(testObserver)
+        viewModel.loadEntries(
+            FitnessPermissionType.STEPS,
+            Instant.ofEpochMilli(timeSource.currentTimeMillis()),
+            DateNavigationPeriod.PERIOD_WEEK,
+        )
+
+        advanceUntilIdle()
+
+        assertThat(viewModel.getEntriesList())
+            .isEqualTo(mutableListOf(formattedAggregation("12 steps"), FORMATTED_STEPS))
     }
 }

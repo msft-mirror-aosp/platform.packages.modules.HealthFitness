@@ -14,7 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.migration.AppUpdateRequiredFragment
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.AppStoreUtils
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -37,6 +36,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class AppUpdateRequiredFragmentTest {
@@ -66,7 +66,9 @@ class AppUpdateRequiredFragmentTest {
         onView(
                 withText(
                     "Health Connect is being integrated with the Android system so " +
-                        "you can access it directly from your settings."))
+                        "you can access it directly from your settings."
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Before continuing, update the Health Connect app to the latest version."))
             .check(matches(isDisplayed()))
@@ -84,16 +86,16 @@ class AppUpdateRequiredFragmentTest {
     fun appUpdateRequiredFragment_ifAppStoreExists_intentToAppStore() {
         whenever(appStoreUtils.getAppStoreLink(any()))
             .thenReturn(
-                Intent(Intent.ACTION_SHOW_APP_INFO).also {
-                    it.setPackage("installer.package.name")
-                })
+                Intent(Intent.ACTION_SHOW_APP_INFO).also { it.setPackage("installer.package.name") }
+            )
         whenever(navigationUtils.startActivity(any(), any())).thenCallRealMethod()
         launchFragment<AppUpdateRequiredFragment>(Bundle())
         onView(withText("Update")).check(matches(isDisplayed()))
         onView(withText("Update")).perform(click())
 
         intended(
-            allOf(hasAction(Intent.ACTION_SHOW_APP_INFO), hasPackage("installer.package.name")))
+            allOf(hasAction(Intent.ACTION_SHOW_APP_INFO), hasPackage("installer.package.name"))
+        )
         verify(healthConnectLogger)
             .logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_UPDATE_BUTTON)
     }

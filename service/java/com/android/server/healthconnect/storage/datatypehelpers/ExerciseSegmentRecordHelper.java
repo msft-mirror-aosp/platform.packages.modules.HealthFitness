@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.isNullValue;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.internal.datatypes.ExerciseSegmentInternal;
@@ -79,7 +78,7 @@ public class ExerciseSegmentRecordHelper {
     }
 
     static void updateSetWithRecordedSegment(
-            @NonNull Cursor cursor, ArraySet<ExerciseSegmentInternal> segmentsSet) {
+            Cursor cursor, ArraySet<ExerciseSegmentInternal> segmentsSet) {
         if (isNullValue(cursor, EXERCISE_SEGMENT_START_TIME)) {
             return;
         }

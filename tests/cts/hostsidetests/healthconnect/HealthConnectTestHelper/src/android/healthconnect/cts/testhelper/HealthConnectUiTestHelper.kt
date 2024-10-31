@@ -23,13 +23,14 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.NonApiTest
 import com.android.compatibility.common.util.SystemUtil
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-
 /**
  * These tests are run by statsdatom/healthconnect to log atoms by triggering Health Connect APIs.
  *
@@ -37,6 +38,8 @@ import org.junit.Test
  */
 @NonApiTest(exemptionReasons = [], justification = "METRIC")
 class HealthConnectUiTestHelper {
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val mHealthConnectManager: HealthConnectManager? =
@@ -54,6 +57,7 @@ class HealthConnectUiTestHelper {
 
     @Before
     fun before() {
+        // TODO inert app here
         TestHelperUtils.deleteAllRecordsAddedByTestApp(mHealthConnectManager)
     }
 
@@ -88,18 +92,15 @@ class HealthConnectUiTestHelper {
             listOf(
                 TestHelperUtils.getBloodPressureRecord(),
                 TestHelperUtils.getHeartRateRecord(),
-                TestHelperUtils.getStepsRecord()),
-            mHealthConnectManager)
+                TestHelperUtils.getStepsRecord(),
+            ),
+            mHealthConnectManager,
+        )
         context.launchMainActivity {
             UiTestUtils.skipOnboardingIfAppears()
-            UiTestUtils.waitDisplayed(By.text("Data and access"))
+            UiTestUtils.waitDisplayed(By.text("App permissions"))
             UiTestUtils.scrollDownTo(By.text("Manage data"))
-            UiTestUtils.clickOnText("Data and access")
-
-            UiTestUtils.waitDisplayed(By.text("Browse data"))
-            UiTestUtils.waitDisplayed(By.text("Manage data"))
-
-            UiTestUtils.waitDisplayed(By.text("Delete all data"))
+            UiTestUtils.clickOnText("Manage data")
         }
     }
 }

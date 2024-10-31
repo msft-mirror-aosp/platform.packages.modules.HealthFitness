@@ -51,14 +51,13 @@ class DeletionFragment : Hilt_DeletionFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_deletion, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.deletionProgress.observe(viewLifecycleOwner) { deletion ->
             when (deletion) {
                 DeletionViewModel.DeletionProgress.NOT_STARTED -> {
@@ -104,8 +103,8 @@ class DeletionFragment : Hilt_DeletionFragment() {
     }
 
     private fun showConfirmationDialog() {
-        NewDeletionConfirmationDialogFragment()
-            .show(childFragmentManager, NewDeletionConfirmationDialogFragment.TAG)
+        DeletionConfirmationDialogFragment()
+            .show(childFragmentManager, DeletionConfirmationDialogFragment.TAG)
     }
 
     private fun showSuccessDialog() {

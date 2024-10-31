@@ -20,7 +20,7 @@ import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Use case to get health permissions flags for an app. */
+/** Use case to get permission flags for the declared health permissions of an app. */
 @Singleton
 class GetHealthPermissionsFlagsUseCase
 @Inject

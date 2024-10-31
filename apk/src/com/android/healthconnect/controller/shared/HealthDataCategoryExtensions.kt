@@ -26,7 +26,6 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.shared.CategoriesMappers.ACTIVITY_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.BODY_MEASUREMENTS_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.CYCLE_TRACKING_PERMISSION_GROUPS
-import com.android.healthconnect.controller.shared.CategoriesMappers.MEDICAL_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.NUTRITION_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.SLEEP_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.VITALS_PERMISSION_GROUPS
@@ -47,7 +46,7 @@ object HealthDataCategoryExtensions {
             HealthDataCategory.SLEEP -> SLEEP_PERMISSION_GROUPS
             HealthDataCategory.VITALS -> VITALS_PERMISSION_GROUPS
             HealthDataCategory.WELLNESS -> WELLNESS_PERMISSION_GROUPS
-            MEDICAL -> MEDICAL_PERMISSION_GROUPS
+            MEDICAL -> MedicalPermissionType.entries
             else -> throw IllegalArgumentException("Category $this is not supported.")
         }
     }
@@ -173,9 +172,6 @@ private object CategoriesMappers {
         )
 
     val WELLNESS_PERMISSION_GROUPS = listOf(FitnessPermissionType.MINDFULNESS)
-
-    val MEDICAL_PERMISSION_GROUPS =
-        listOf(MedicalPermissionType.IMMUNIZATION, MedicalPermissionType.ALL_MEDICAL_DATA)
 }
 
 /** List of available Health data categories. */

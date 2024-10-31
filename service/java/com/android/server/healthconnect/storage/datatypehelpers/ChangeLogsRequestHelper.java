@@ -28,7 +28,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorStringList;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -65,19 +64,23 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
     private static final String ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME = "row_id_change_logs_table";
     private static final String TIME_COLUMN_NAME = "time";
 
+    private final TransactionManager mTransactionManager;
+
+    public ChangeLogsRequestHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+    }
+
     @Override
     protected String getMainTableName() {
         return TABLE_NAME;
     }
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
-    @NonNull
-    public static String getToken(
-            @NonNull String packageName, @NonNull ChangeLogTokenRequest request) {
+    public String getToken(
+            long latestChangeLogRowId, String packageName, ChangeLogTokenRequest request) {
         ContentValues contentValues = new ContentValues();
 
         /**
@@ -92,39 +95,14 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                 RECORD_TYPES_COLUMN_NAME,
                 StorageUtils.flattenIntArray(request.getRecordTypesArray()));
         contentValues.put(PACKAGE_NAME_COLUMN_NAME, packageName);
-        contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, ChangeLogsHelper.getLatestRowId());
+        contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, latestChangeLogRowId);
         contentValues.put(TIME_COLUMN_NAME, Instant.now().toEpochMilli());
 
         return String.valueOf(
-                TransactionManager.getInitialisedInstance()
-                        .insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+                mTransactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
     }
 
-    public static DeleteTableRequest getDeleteRequestForAutoDelete() {
-        return new DeleteTableRequest(TABLE_NAME)
-                .setTimeFilter(
-                        TIME_COLUMN_NAME,
-                        Instant.EPOCH.toEpochMilli(),
-                        Instant.now()
-                                .minus(DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
-                                .toEpochMilli());
-    }
-
-    @NonNull
-    private static List<Pair<String, String>> getColumnInfo() {
-        List<Pair<String, String>> columnInfo = new ArrayList<>();
-        columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY));
-        columnInfo.add(new Pair<>(PACKAGES_TO_FILTERS_COLUMN_NAME, TEXT_NOT_NULL));
-        columnInfo.add(new Pair<>(PACKAGE_NAME_COLUMN_NAME, TEXT_NOT_NULL));
-        columnInfo.add(new Pair<>(RECORD_TYPES_COLUMN_NAME, TEXT_NULL));
-        columnInfo.add(new Pair<>(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, INTEGER));
-        columnInfo.add(new Pair<>(TIME_COLUMN_NAME, INTEGER));
-
-        return columnInfo;
-    }
-
-    @NonNull
-    public static TokenRequest getRequest(@NonNull String packageName, @NonNull String token) {
+    public TokenRequest getRequest(String packageName, String token) {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
                         .setWhereClause(
@@ -132,8 +110,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                                         .addWhereEqualsClause(PRIMARY_COLUMN_NAME, token)
                                         .addWhereEqualsClause(
                                                 PACKAGE_NAME_COLUMN_NAME, packageName));
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             if (!cursor.moveToFirst()) {
                 throw new IllegalArgumentException("Invalid token");
             }
@@ -146,8 +123,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         }
     }
 
-    @NonNull
-    public static String getNextPageToken(TokenRequest changeLogTokenRequest, long nextRowId) {
+    public String getNextPageToken(TokenRequest changeLogTokenRequest, long nextRowId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
                 PACKAGES_TO_FILTERS_COLUMN_NAME,
@@ -160,8 +136,29 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, nextRowId);
 
         return String.valueOf(
-                TransactionManager.getInitialisedInstance()
-                        .insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+                mTransactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+    }
+
+    public static DeleteTableRequest getDeleteRequestForAutoDelete() {
+        return new DeleteTableRequest(TABLE_NAME)
+                .setTimeFilter(
+                        TIME_COLUMN_NAME,
+                        Instant.EPOCH.toEpochMilli(),
+                        Instant.now()
+                                .minus(DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
+                                .toEpochMilli());
+    }
+
+    private static List<Pair<String, String>> getColumnInfo() {
+        List<Pair<String, String>> columnInfo = new ArrayList<>();
+        columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY));
+        columnInfo.add(new Pair<>(PACKAGES_TO_FILTERS_COLUMN_NAME, TEXT_NOT_NULL));
+        columnInfo.add(new Pair<>(PACKAGE_NAME_COLUMN_NAME, TEXT_NOT_NULL));
+        columnInfo.add(new Pair<>(RECORD_TYPES_COLUMN_NAME, TEXT_NULL));
+        columnInfo.add(new Pair<>(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, INTEGER));
+        columnInfo.add(new Pair<>(TIME_COLUMN_NAME, INTEGER));
+
+        return columnInfo;
     }
 
     /** A class to represent the request corresponding to a token */
@@ -178,9 +175,9 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
          * @param rowIdChangeLogs row id of change log table after which the logs are to be fetched
          */
         public TokenRequest(
-                @NonNull List<String> packageNamesToFilter,
-                @NonNull List<Integer> recordTypes,
-                @NonNull String requestingPackageName,
+                List<String> packageNamesToFilter,
+                List<Integer> recordTypes,
+                String requestingPackageName,
                 long rowIdChangeLogs) {
             mPackageNamesToFilter = packageNamesToFilter;
             mRecordTypes = recordTypes;
@@ -192,17 +189,14 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
             return mRowIdChangeLogs;
         }
 
-        @NonNull
         public String getRequestingPackageName() {
             return mRequestingPackageName;
         }
 
-        @NonNull
         public List<String> getPackageNamesToFilter() {
             return mPackageNamesToFilter;
         }
 
-        @NonNull
         public List<Integer> getRecordTypes() {
             return mRecordTypes;
         }

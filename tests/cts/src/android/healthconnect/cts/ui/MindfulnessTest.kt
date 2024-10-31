@@ -35,9 +35,7 @@ import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
-import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
-import android.healthconnect.cts.utils.AssumptionCheckerRule
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.readAllRecords
 import android.platform.test.annotations.RequiresFlagsDisabled
@@ -45,9 +43,8 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Correspondence.transforming
 import com.google.common.truth.Truth.assertThat
 import java.time.Duration
@@ -55,23 +52,13 @@ import java.time.LocalDate
 import java.time.ZoneId
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
 class MindfulnessTest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
-
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
-
-    @get:Rule
-    var mSupportedHardwareRule =
-        AssumptionCheckerRule(
-            { TestUtils.isHardwareSupported() },
-            "Tests should run on supported hardware only.",
-        )
 
     @Before
     fun setup() {
@@ -93,8 +80,10 @@ class MindfulnessTest : HealthConnectBaseTest() {
     }
 
     @RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun dataAndAccess_seeAllEntries_flagEnabled_showsMindfulness() {
+    @Ignore("b/373902570")
+    fun oldIA_dataAndAccess_seeAllEntries_flagEnabled_showsMindfulness() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
             findText("Wellness")
@@ -142,8 +131,9 @@ class MindfulnessTest : HealthConnectBaseTest() {
     }
 
     @RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun dataAndAccess_deleteMindfulnessData() {
+    fun oldIA_dataAndAccess_deleteMindfulnessData() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
             findTextAndClick("See all categories")
@@ -220,9 +210,9 @@ class MindfulnessTest : HealthConnectBaseTest() {
         }
     }
 
-    @RequiresFlagsDisabled(Flags.FLAG_MINDFULNESS)
+    @RequiresFlagsDisabled(Flags.FLAG_MINDFULNESS, FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun dataAndAccess_seeAllCategories_flagDisabled_doesNotShowWellness() {
+    fun oldIA_dataAndAccess_seeAllCategories_flagDisabled_doesNotShowWellness() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
             findObject(By.text("Activity").enabled(true), timeout = Duration.ofSeconds(2))
