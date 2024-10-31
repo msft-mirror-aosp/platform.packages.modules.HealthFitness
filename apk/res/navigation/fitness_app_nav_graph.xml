@@ -18,6 +18,8 @@
     android:id="@+id/fitness_app_nav_graph"
     app:startDestination="@id/fitnessAppFragment">
 
+    <include app:graph="@navigation/app_data_nav_graph"/>
+
     <fragment
         android:id="@+id/fitnessAppFragment"
         android:label="@string/app_access_title"
@@ -27,42 +29,13 @@
             app:argType="string" />
         <action
             android:id="@+id/action_fitnessApp_to_appData"
-            app:destination="@id/appDataFragment" />
+            app:destination="@id/app_data_nav_graph" />
         <action
             android:id="@+id/action_fitnessAppFragment_to_additionalAccessFragment"
             app:destination="@id/additionalAccessFragment" />
         <action
             android:id="@+id/action_connectedAppFragment_to_connectedApps"
             app:destination="@+id/connected_apps_nav_graph"/>
-    </fragment>
-
-    <fragment
-        android:id="@+id/appDataFragment"
-        android:label="@string/app_data_title"
-        android:name="com.android.healthconnect.controller.data.appdata.AppDataFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_appData_to_appEntries"
-            app:destination="@id/appEntriesFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/appEntriesFragment"
-        android:label="App entries"
-        android:name="com.android.healthconnect.controller.data.entries.AppEntriesFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_appEntriesFragment_to_dataEntryDetailsFragment"
-            app:destination="@id/dataEntryDetailsFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/dataEntryDetailsFragment" android:name="com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment"
-        android:label="@string/entry_details_title" >
     </fragment>
 
     <fragment

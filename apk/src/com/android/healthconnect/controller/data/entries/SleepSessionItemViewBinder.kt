@@ -24,8 +24,7 @@ import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -33,7 +32,7 @@ import dagger.hilt.android.EntryPointAccessors
 /** ViewBinder for [SleepSessionEntry]. */
 class SleepSessionItemViewBinder(
     private val onItemClickedListener: OnClickEntryListener?,
-    private val onDeleteEntryListener: OnDeleteEntryListener? = null
+    private val onSelectEntryListener: OnSelectEntryListener? = null,
 ) : DeletionViewBinder<SleepSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
@@ -42,24 +41,29 @@ class SleepSessionItemViewBinder(
         val context = parent.context.applicationContext
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
             .inflate(R.layout.item_sleep_session_entry_new_ia, parent, false)
     }
 
-    override fun bind(view: View, data: SleepSessionEntry, index: Int, isDeletionState: Boolean, isChecked: Boolean) {
+    override fun bind(
+        view: View,
+        data: SleepSessionEntry,
+        index: Int,
+        isDeletionState: Boolean,
+        isChecked: Boolean,
+    ) {
         val container = view.findViewById<RelativeLayout>(R.id.item_data_entry_container)
         val divider = view.findViewById<LinearLayout>(R.id.item_data_entry_divider)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val notes = view.findViewById<TextView>(R.id.item_data_entry_notes)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
-        logger.logImpression(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
+        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
 
-        title.text = data.title
-        title.contentDescription = data.titleA11y
         header.text = data.header
         header.contentDescription = data.headerA11y
         notes.isVisible = !data.notes.isNullOrBlank()
@@ -67,17 +71,40 @@ class SleepSessionItemViewBinder(
         divider.isVisible = false
         container.setOnClickListener {
             if (isDeletionState) {
-                onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
+                onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
+                title.contentDescription =
+                    getUpdatedContentDescription(
+                        title.resources,
+                        data.titleA11y,
+                        isDeletionState,
+                        checkBox.isChecked,
+                    )
             } else {
-                logger.logInteraction(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
+                logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
                 onItemClickedListener?.onItemClicked(data.uuid, index)
             }
         }
         checkBox.isVisible = isDeletionState
         checkBox.isChecked = isChecked
-        checkBox.setOnClickListener{
-            onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
+        checkBox.setOnClickListener {
+            onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+            title.contentDescription =
+                getUpdatedContentDescription(
+                    title.resources,
+                    data.titleA11y,
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
+
+        title.text = data.title
+        title.contentDescription =
+            getUpdatedContentDescription(
+                title.resources,
+                data.titleA11y,
+                isDeletionState,
+                isChecked,
+            )
     }
 }

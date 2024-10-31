@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Pamahalaan ang data ng kalusugan at fitness sa iyong device, at kontrolin kung aling mga app ang makaka-access nito"</string>
     <string name="data_title" msgid="4456619761533380816">"Data at access"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Mag-browse sa mga health record"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Tingnan ang iyong mga health record at kung aling mga app ang puwedeng maka-access sa mga ito"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Lahat ng kategorya"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Tingnan ang lahat ng kategorya"</string>
     <string name="no_data" msgid="1906986019249068659">"Walang data"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"i-access ang iyong data ng kalusugan"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"I-read ang na-burn na calorie"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Pinapayagan ang app na i-read ang mga na-burn na calorie"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"I-access ang data sa background"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang data sa background?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang data sa background?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Kung papayagan mo, maa-access ng app na ito ang data ng fitness at wellness at mga health record kapag hindi mo ginagamit ang app."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Kung papayagan mo, maa-access ng app na ito ang mga health record kapag hindi mo ginagamit ang app."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Kung papayagan mo, maa-access ng app na ito ang data sa fitness at wellness kapag hindi mo ginagamit ang app."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Kung papayagan mo, maa-access ng app na ito ang data ng Health Connect kapag hindi mo ginagamit ang app."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang nakaraang data?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Kung papayagan mo, maa-access ng app na ito ang data sa fitness at wellness na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Kung papayagan mo, maa-access ng app na ito ang lahat ng dating data sa fitness at wellness."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Kung papayagan mo, maa-access ng app na ito ang data ng Health Connect na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Kung papayagan mo, maa-access ng app na ito ang lahat ng nakaraang data ng Health Connect."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Payagan ang karagdagang access para sa <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"Gusto ring i-access ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang mga setting ng Health Connect na ito"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"I-access ang lahat ng data sa background"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"I-access ang mga health record sa background"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"I-access ang data sa fitness at wellness sa background"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Payagan ang app na ito na i-access ang data ng fitness at wellness at mga health record kapag hindi mo ginagamit ang app."</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Payagan ang app na ito na i-access ang data na ito kapag hindi mo ginagamit ang app"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Payagan ang app na ito na i-access ang data na ito kapag hindi mo ginagamit ang app"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"I-access ang data sa background"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Payagan ang app na ito na i-access ang data ng Health Connect kapag hindi mo ginagamit ang app"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"I-access ang nakaraang data ng fitness at wellness"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Payagan ang app na ito na i-access ang data na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Payagan ang app na ito na i-access ang lahat ng nakaraang data"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"I-access ang dating data"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Payagan ang app na ito na i-access ang data ng Health Connect na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Payagan ang app na ito na i-access ang lahat ng nakaraang data ng Health Connect"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"Maa-access na ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang nakaraang data mula sa iyong mga health record"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Magbasa pa tungkol sa mga pahintulot"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"I-access ang lahat ng data sa background"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"I-access ang mga health record sa background"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"I-access ang data sa fitness at wellness sa background"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Payagan ang app na ito na i-access ang data ng fitness at wellness at mga health record kapag hindi mo ginagamit ang app."</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Payagan ang app na ito na i-access ang data na ito kapag hindi mo ginagamit ang app"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Payagan ang app na ito na i-access ang data na ito kapag hindi mo ginagamit ang app"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"I-access ang data sa background"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Payagan ang app na ito na i-access ang data ng Health Connect kapag hindi mo ginagamit ang app"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"I-access ang nakaraang data ng fitness at wellness"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Payagan ang app na ito na i-access ang data na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Payagan ang app na ito na i-access ang lahat ng nakaraang data"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"I-access ang dating data"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Payagan ang app na ito na i-access ang data ng Health Connect na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Payagan ang app na ito na i-access ang lahat ng dating data sa Health Connect"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Walang data ng fitness ang kasalukuyang binabasa dahil walang naka-on na read permission ang <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"Maa-access na ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang nakaraang data mula sa iyong mga health record. Para baguhin ito, i-off ang mga pahintulot sa health record para sa app na ito"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Pamahalaan ang mga pahintulot sa health record"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background o access sa dating data para sa app na ito"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background para sa app na ito"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Mag-enable ng kahit man lang isang read permission para ma-on ang access sa dating data para sa app na ito"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Payagan ang app na ito na i-access ang lahat ng nakaraang data ng Health Connect"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Payagan ang app na ito na i-access ang data ng Health Connect kapag hindi mo ginagamit ang app"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Kung papayagan mo, maa-access ng app na ito ang data ng Health Connect kapag hindi mo ginagamit ang app."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"I-access ang nakaraang data"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang nakaraang data?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Payagan ang app na ito na i-access ang data ng Health Connect na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Payagan ang app na ito na i-access ang lahat ng nakaraang data ng Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Kung papayagan mo, maa-access ng app na ito ang data ng Health Connect na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Kung papayagan mo, maa-access ng app na ito ang lahat ng nakaraang data ng Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Mga calorie na na-burn habang aktibo"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"mga calorie na na-burn habang aktibo"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"I-read ang mga calorie na na-burn habang aktibo"</string>
@@ -155,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"mga pagtulak ng wheelchair"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"I-read ang mga pagtulak ng wheelchair"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"I-write ang mga pagtulak ng wheelchair"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Basal metabolic rate"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"basal metabolic rate"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"I-read ang basal metabolic rate"</string>
@@ -267,34 +316,70 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura ng balat"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Basahin ang temperatura ng balat"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"I-write ang temperatura ng balat"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Lahat ng medikal na data"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"lahat ng medikal na data"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"I-write ang lahat ng medikal na data"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunization"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunization"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"I-read ang immunization"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Lahat ng health record"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"lahat ng health record"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"I-write ang lahat ng health record"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Mga Allergy"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"mga allergy"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"I-read ang mga allergy"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Mga Kundisyon"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"mga kundisyon"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"I-read ang mga kundisyon"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Mga Bakuna"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"mga bakuna"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"I-read ang mga bakuna"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Mga lab result"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"mga lab result"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"I-read ang mga lab result"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Mga Gamot"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"mga gamot"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"I-read ang mga gamot"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Mga personal na detalye"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"mga personal na detalye"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"I-read ang mga personal na detalye"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Mga detalye ng practitioner"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"mga detalye ng practitioner"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"I-read ang mga detalye ng practitioner"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Pagbubuntis"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"pagbubuntis"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"I-read ang pagbubuntis"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Mga Procedure"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"mga procedure"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"I-read ang mga procedure"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Kasaysayang panlipunan"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"panlipunang history"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Basahin ang panlipunang history"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Mga Pagpapatingin"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"mga pagpapatingin"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"I-read ang mga pagpapatingin"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Vital signs"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"vital signs"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"I-read ang vital signs"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Pagiging Maintindihin"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"pagiging maintindihin"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"I-read ang pagiging maintindihin"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Mag-write sa pagiging maintindihin"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Payagang mag-read ang “<xliff:g id="APP_NAME">%1$s</xliff:g>”"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Payagang mag-write ang “<xliff:g id="APP_NAME">%1$s</xliff:g>”"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Kanselahin"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Payagan"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Payagan ang lahat"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Huwag payagan"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Piliin ang data na gusto mong i-read o i-write ng app na ito sa Health Connect"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Piliin ang data na gusto mong i-read o i-write ng app na ito sa Health Connect"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Piliin ang data na gusto mong i-read ng app na ito sa Health Connect"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Piliin ang data na gusto mong i-write ng app na ito sa Health Connect"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Kung magbibigay ka ng access sa pag-read, mari-read ng app ang bagong data at data mula sa nakalipas na 30 araw"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Kung magbibigay ka ng access sa pag-read, mari-read ng app ang bago at nakaraang data"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang Health Connect?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Puwede mong alamin kung paano pinapangasiwaan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang iyong data sa <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> ng developer"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang data ng fitness at wellness?"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Puwede mong alamin kung paano pinapangasiwaan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang iyong data sa <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> nila"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"patakaran sa privacy"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Bigyan ang <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa iyong mga health record?"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Kung magbibigay ka ng access, puwedeng mag-read at mag-write ng data ang app gaya ng mga allergy, resulta ng lab, vaccine, at higit pa\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Kung magbibigay ka ng access, puwedeng mag-read ng data ang app gaya ng mga allergy, resulta ng lab, vaccine, at higit pa\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Tungkol sa mga health record"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Data na ibabahagi"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Kung papayagan mo, puwedeng ibahagi ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang iyong mga health record sa Health Connect."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"I-sync ang iyong mga health record mula sa iba\'t ibang app at source para mapanatili ang mga ito sa iisang lugar"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Alisin ang lahat ng pahintulot?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Alisin lahat"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
@@ -302,10 +387,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang data sa background at dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"I-delete din ang data ng <xliff:g id="APP_NAME">%1$s</xliff:g> mula sa Health Connect"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Alisin ang lahat ng pahintulot sa fitness at wellness?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"I-delete din sa Health Connect ang data ng fitness mula sa <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Alisin ang lahat ng pahintulot sa health record?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"I-delete din sa Health Connect ang mga health record mula sa <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data na ito mula sa Health Connect.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data na ito mula sa Health Connect, kabilang ang data sa background.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data na ito mula sa Health Connect, kabilang ang dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data na ito mula sa Health Connect, kabilang ang data sa background at dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Alisin ang lahat ng pahintulot?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data mula sa Health Connect.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data mula sa Health Connect, kabilang ang data sa background.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data mula sa Health Connect, kabilang ang dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data mula sa Health Connect, kabilang ang data sa background at dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"I-delete din sa Health Connect ang data ng fitness at mga health record mula sa <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Inalis ang mga pahintulot para sa app na ito"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"I-delete din ang lahat ng data ng Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Kinabukasan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Piniling araw"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Nakaraang araw"</string>
     <string name="default_error" msgid="7966868260616403475">"Nagkaproblema. Subukan ulit."</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"Hindi Alam na Resource"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Pinagmumulang data"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Pambukas na bracket."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Pansarang bracket."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Field <xliff:g id="FIELD">%2$s</xliff:g> Value"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Detalyadong source code: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Magagawa ng mga app na mayroon ng pahintulot na ito na mag-read at mag-write ng iyong data ng kalusugan at fitness."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolin kung aling mga app ang makaka-access sa data na naka-store sa Health Connect. Mag-tap ng app para suriin ang data na puwede nitong i-read o i-write."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Pinapayagan ang access"</string>
@@ -322,6 +430,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Alisin lahat"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Pamahalaan ang app"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Tingnan ang data ng app"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Alisin ang access para sa app na ito"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"I-delete ang data ng app"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Mga hindi aktibong app"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Wala nang access ang mga app na ito, pero mayroon pa ring data ang mga ito na naka-store sa Health Connect"</string>
@@ -334,13 +443,14 @@
     <string name="app_access_title" msgid="7137018424885371763">"Access ng app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Wala kang anumang compatible na naka-install na app sa kasalukuyan"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Karagdagang access"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Dating data, data sa background"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Inalis ang mga karagdagang pahintulot para sa app na ito"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Mga Pahintulot"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitness at wellness"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Ehersisyo, tulog, nutrisyon, at iba pa"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Mga health record"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"mga health record"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Lab results, gamot, immunizations, atbp"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Mga lab result, gamot, bakuna, at iba pa"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Inalis ang mga pahintulot sa app"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA_0">%1$s</xliff:g> at <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -389,6 +499,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"Piliin kung saan ise-save ang pag-export"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Pumili ng cloud storage app para sa pag-export ng iyong data"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"I-import ang file na ito?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"Mai-import sa Health Connect ang <xliff:g id="FILE_NAME">%1$s</xliff:g>"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Kanselahin"</string>
@@ -408,6 +519,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Buksan"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Pumili ng file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Magbakante ng space"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Ang nakaiskedyul na pag-export ay sa"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"\'Di na-export ng Health Connect ang data"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Kailangan ng higit pang space"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Nagkaproblema sa pag-export para sa <xliff:g id="DATE">%1$s</xliff:g>. Mag-set up ng bagong nakaiskedyul na pag-export at subukan ulit."</string>
@@ -430,6 +542,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Pumunta sa Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Magsimula sa Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Sino-store ng Health Connect ang iyong data ng kalusugan at fitness, na nagbibigay sa iyo ng simpleng paraan para i-sync ang iba\'t ibang app sa device mo"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Sino-store at sini-sync ng Health Connect ang iyong data ng kalusugan at fitness mula sa iba\'t ibang app.\n\n"<b>"Data ng fitness at wellness,"</b>" kabilang ang mga session ng pag-eehersisyo, pagtulog, at higit pa\n\n"<b>"Mga health record,"</b>" kabilang ang mga bakuna, lab result, at higit pa"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Gamit ang Health Connect, magagawa mong"</string>
     <string name="share_data" msgid="3481932156368883946">"Magbahagi ng data sa iyong mga app"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Piliin ang data na puwedeng i-read o i-write ng bawat app sa Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Pamahalaan ang iyong mga setting at privacy"</string>
@@ -474,7 +588,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Permanenteng i-delete ang lahat ng data ng <xliff:g id="DATA_TYPE">%1$s</xliff:g> na idinagdag ng <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Permanenteng i-delete ang entry na ito mula sa Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Hindi na maa-access ng mga nakakonektang app ang data na ito mula sa Health Connect"</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Ide-delete nito ang lahat ng entry sa regla mula <xliff:g id="START_DATE">%1$s</xliff:g> hanggang <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"Ide-delete nito ang lahat ng entry sa regla mula <xliff:g id="START_DATE">%1$s</xliff:g> hanggang <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"I-delete"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Bumalik"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Tapos na"</string>
@@ -530,7 +644,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Mahina"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Katamtaman"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Malakas"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Hindi alam na flow"</string>
     <string name="period_day" msgid="3821944462093965882">"Araw <xliff:g id="DAY">%1$d</xliff:g> ng <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> ng buwanang-dalaw"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Period (1 araw)}one{Period (# araw)}other{Period (# na araw)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positibo"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatibo"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Mataas"</string>
@@ -999,7 +1115,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"I-edit ang mga source ng app"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Default ng device"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Data ng app"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Lalabas ang data mula sa mga app na may access sa Health Connect dito"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Lalabas dito ang data mula sa <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Lalabas dito ang data mula sa mga app na may access sa Health Connect"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Araw"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Linggo"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Buwan"</string>
@@ -1009,17 +1126,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Nakaraang buwan"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Mga Entry"</string>
     <string name="tab_access" msgid="7818197975407243701">"Access"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Payagan ang karagdagang access para sa <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Gusto ring i-access ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang mga settng ng Health Connect na ito"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background o access sa dating data para sa app na ito"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background para sa app na ito"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Mag-enable ng kahit man lang isang read permission para ma-on ang access sa dating data para sa app na ito"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Permanenteng i-delete ang lahat ng data mula sa Health Connect?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Permanenteng i-delete ang napiling data mula sa Health Connect?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Na-delete ang lahat ng data"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Na-delete ang data ng <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> (na) item ang na-delete"</string>
-    <string name="select_all" msgid="837499881590001166">"Piliin lahat"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Simulan ang paggamit ng Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"I-sync ang iyong mga unang app para magbahagi ng data ng kalusugan at fitness sa pagitan ng mga ito"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"I-set up"</string>
@@ -1029,4 +1135,30 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Tingnan ang mga compatible na app"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Maghanap ng higit pang app na isi-sync sa <xliff:g id="APP_NAME">%s</xliff:g> sa pamamagitan ng Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Tingnan sa app store"</string>
+    <string name="select_all" msgid="837499881590001166">"Piliin lahat"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Hindi na mare-read ng mga nakakonektang app ang data na ito mula sa Health Connect"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Permanenteng i-delete ang lahat ng data?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Permanenteng i-delete ang napiling data?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Permanenteng i-delete ang lahat ng data ng <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Permanenteng i-delete ang napiling data ng <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Permanenteng i-delete ang lahat ng entry para sa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Permanenteng i-delete ang lahat ng entry para sa linggo ng <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Permanenteng i-delete ang lahat ng entry para sa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Permanenteng i-delete ang mga napiling entry para sa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Permanenteng i-delete ang mga napiling entry para sa linggo ng <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Permanenteng i-delete ang mga napiling entry para sa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Permanenteng i-delete ang entry na ito?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Permanenteng i-delete ang lahat ng entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Permanenteng i-delete ang lahat ng entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa linggo ng <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Permanenteng i-delete ang lahat ng entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Permanenteng i-delete ang mga napiling entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Permanenteng i-delete ang mga napiling entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa linggo ng <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Permanenteng i-delete ang mga napiling entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Permanenteng i-delete ang entry ng <xliff:g id="APP_NAME">%s</xliff:g> na ito?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Permanenteng i-delete ang data ng <xliff:g id="DATA_TYPE">%1$s</xliff:g> para sa <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
+    <string name="on" msgid="8266542510798355807">"Naka-on"</string>
+    <string name="off" msgid="6996623844428550649">"Naka-off"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Na-access noong <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Na-access kahapon nang <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Na-access noong <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

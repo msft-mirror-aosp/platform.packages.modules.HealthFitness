@@ -15,20 +15,27 @@
  */
 package android.healthconnect.cts.ui
 
-import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.TestAppProxy
-import android.healthconnect.cts.lib.UiTestUtils.clickOnText
-import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.lib.UiTestUtils.findObject
+import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
+import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
+import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
+import android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest
 import android.healthconnect.cts.utils.TestUtils
-import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
-import androidx.test.filters.FlakyTest
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
-import java.time.Duration
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
+import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
+import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
@@ -39,9 +46,7 @@ import org.junit.Test
 /** CTS test for HealthConnect Home screen. */
 class HomeFragmentTest : HealthConnectBaseTest() {
 
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     companion object {
 
@@ -51,12 +56,21 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            TestUtils.deleteAllStagedRemoteData()
+            TestUtils.deleteAllMedicalData()
+
             if (!TestUtils.isHardwareSupported()) {
                 return
             }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
-                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build())
+                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
+            )
+            val dataSource =
+                APP_A_WITH_READ_WRITE_PERMS.createMedicalDataSource(
+                    getCreateMedicalDataSourceRequest()
+                )
+            APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, FHIR_DATA_IMMUNIZATION)
         }
 
         @JvmStatic
@@ -65,65 +79,93 @@ class HomeFragmentTest : HealthConnectBaseTest() {
             if (!TestUtils.isHardwareSupported()) {
                 return
             }
-            verifyDeleteRecords(
-                StepsRecord::class.java,
-                TimeInstantRangeFilter.Builder()
-                    .setStartTime(Instant.EPOCH)
-                    .setEndTime(Instant.now())
-                    .build())
+            TestUtils.deleteAllStagedRemoteData()
+            TestUtils.deleteAllMedicalData()
         }
     }
 
     @Test
-    @FlakyTest(bugId = 328200136)
-    fun homeFragment_openAppPermissions() {
+    fun homeFragment_opensAppPermissions() {
         context.launchMainActivity {
-            clickOnText("App permissions")
+            findTextAndClick("App permissions")
 
-            waitDisplayed(By.text("Allowed access"))
-            waitDisplayed(By.text("Not allowed access"), waitTimeout = Duration.ofSeconds(10))
+            findText("Allowed access")
+            scrollDownTo(By.text("Not allowed access"))
+            findText("Not allowed access")
         }
     }
 
     @Test
-    fun homeFragment_openDataManagement() {
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun homeFragment_oldIa_opensDataManagement() {
         context.launchMainActivity {
-            clickOnText("Data and access")
+            findTextAndClick("Data and access")
 
-            waitDisplayed(By.text("Browse data"))
-            waitDisplayed(By.text("Manage data"))
+            findText("Browse data")
+            scrollToEnd()
+            findText("Manage data")
 
-            waitDisplayed(By.text("Delete all data"))
+            findText("Delete all data")
         }
     }
 
     @Test
-    fun homeFragment_openManageData() {
+    @RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun homeFragment_newIa_opensDataManagement() {
         context.launchMainActivity {
-            clickOnText("Manage data")
+            findTextAndClick("Data and access")
 
-            waitDisplayed(By.text("Auto-delete"))
-            waitDisplayed(By.text("Data sources and priority"))
-            waitDisplayed(By.text("Set units"))
+            findText("Activity")
+            findText("Steps")
+        }
+    }
+
+    @Test
+    fun homeFragment_opensManageData() {
+        context.launchMainActivity {
+            scrollToEnd()
+            findTextAndClick("Manage data")
+
+            findText("Auto-delete")
+            findText("Data sources and priority")
+            findText("Set units")
         }
     }
 
     @Test
     fun homeFragment_recentAccessShownOnHomeScreen() {
         context.launchMainActivity {
-            waitDisplayed(By.textContains("CtsHealthConnectTest"))
-            waitDisplayed(By.text("See all recent access"))
+            findObject(By.textContains("CtsHealthConnectTest"))
+            findObject(By.text("See all recent access"))
         }
     }
 
     @Test
-    @FlakyTest(bugId = 328200136)
-    fun homeFragment_navigateToRecentAccess() {
+    fun homeFragment_navigatesToRecentAccess() {
         context.launchMainActivity {
-            clickOnText("See all recent access")
+            findTextAndClick("See all recent access")
 
-            waitDisplayed(By.text("Today"))
-            waitDisplayed(By.textContains("CtsHealthConnectTest"))
+            findText("Today")
+            findObject(By.textContains("CtsHealthConnectTest"))
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    fun homeFragment_withMedicalData_opensBrowseMedicalRecords() {
+        context.launchMainActivity {
+            scrollToEnd()
+            findTextAndClick("Browse health records")
+            findText("Vaccines")
+        }
+    }
+
+    @Test
+    @RequiresFlagsDisabled(FLAG_PERSONAL_HEALTH_RECORD)
+    fun homeFragment_withMedicalData_flagOff_hidesBrowseMedicalRecords() {
+        context.launchMainActivity {
+            scrollToEnd()
+            verifyTextNotFound("Browse health records")
         }
     }
 }

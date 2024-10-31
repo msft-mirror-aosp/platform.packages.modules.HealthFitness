@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -67,7 +66,6 @@ public final class ActiveCaloriesBurnedRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return ACTIVE_CALORIES_BURNED_RECORD_TABLE_NAME;
     }
@@ -88,20 +86,18 @@ public final class ActiveCaloriesBurnedRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
+            Cursor cursor, ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
         activeCaloriesBurnedRecord.setEnergy(getCursorDouble(cursor, ENERGY_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
+            ContentValues contentValues,
+            ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
         contentValues.put(ENERGY_COLUMN_NAME, activeCaloriesBurnedRecord.getEnergy());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(ENERGY_COLUMN_NAME, REAL));
     }

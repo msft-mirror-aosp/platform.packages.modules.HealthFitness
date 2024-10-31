@@ -30,7 +30,7 @@ class LoadScheduledExportStatusUseCase
 @Inject
 constructor(
     private val healthDataExportManager: HealthDataExportManager,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ILoadScheduledExportStatusUseCase {
 
     companion object {
@@ -41,7 +41,9 @@ constructor(
         val scheduledExportStatus: ScheduledExportStatus =
             suspendCancellableCoroutine { continuation ->
                 healthDataExportManager.getScheduledExportStatus(
-                    Runnable::run, continuation.asOutcomeReceiver())
+                    Runnable::run,
+                    continuation.asOutcomeReceiver(),
+                )
             }
         val dataExportError: ScheduledExportUiState.DataExportError =
             when (scheduledExportStatus.dataExportError) {
@@ -63,7 +65,9 @@ constructor(
             scheduledExportStatus.lastExportAppName,
             scheduledExportStatus.nextExportFileName,
             scheduledExportStatus.nextExportAppName,
-            scheduledExportStatus.lastFailedExportTime)
+            scheduledExportStatus.lastFailedExportTime,
+            scheduledExportStatus.nextExportSequentialNumber,
+        )
     }
 
     override suspend operator fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState> =

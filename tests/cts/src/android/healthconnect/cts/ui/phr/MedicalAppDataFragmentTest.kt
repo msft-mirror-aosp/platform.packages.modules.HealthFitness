@@ -1,0 +1,161 @@
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package android.healthconnect.cts.ui.phr
+
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.MenstruationPeriodRecord
+import android.health.connect.datatypes.Record
+import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsRecord
+import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
+import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
+import android.healthconnect.cts.lib.TestAppProxy
+import android.healthconnect.cts.lib.UiTestUtils.findObject
+import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
+import android.healthconnect.cts.ui.HealthConnectBaseTest
+import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY
+import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
+import android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest
+import android.healthconnect.cts.utils.TestUtils
+import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.test.uiautomator.By
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
+import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
+import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+import java.time.Instant
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+@RequiresFlagsEnabled(
+    FLAG_NEW_INFORMATION_ARCHITECTURE,
+    FLAG_PERSONAL_HEALTH_RECORD,
+    FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+)
+class MedicalAppDataFragmentTest : HealthConnectBaseTest() {
+
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
+    private val APP_A_WITH_READ_WRITE_PERMS: TestAppProxy =
+        TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A")
+
+    @Before
+    fun setup() {
+        TestUtils.deleteAllStagedRemoteData()
+        TestUtils.deleteAllMedicalData()
+        insertMedicalData()
+    }
+
+    @After
+    fun tearDown() {
+        TestUtils.deleteAllStagedRemoteData()
+        TestUtils.deleteAllMedicalData()
+    }
+
+    private fun insertMedicalData() {
+        val dataSource =
+            APP_A_WITH_READ_WRITE_PERMS.createMedicalDataSource(getCreateMedicalDataSourceRequest())
+        APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, FHIR_DATA_IMMUNIZATION)
+        APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, FHIR_DATA_ALLERGY)
+    }
+
+    @Test
+    fun medicalAppData_showsAvailableDataTypes() {
+        context.launchMainActivity {
+            scrollDownTo(By.text("App permissions"))
+            findTextAndClick("App permissions")
+            findTextAndClick("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+
+            scrollDownTo(By.text("See app data"))
+            findTextAndClick("See app data")
+
+            findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+            findText("Allergies")
+            findText("Vaccines")
+        }
+    }
+
+    @Test
+    fun appWithFitnessAndMedicalData_showsBothTypes() {
+        val NOW = Instant.now()
+        APP_A_WITH_READ_WRITE_PERMS.insertRecords(
+            mutableListOf(
+                StepsRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(2), 10).build(),
+                HeartRateRecord.Builder(
+                        newEmptyMetadata(),
+                        NOW,
+                        NOW.plusSeconds(10),
+                        listOf(HeartRateRecord.HeartRateSample(140, NOW)),
+                    )
+                    .build(),
+                MenstruationPeriodRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(10))
+                    .build(),
+                SleepSessionRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(1000)).build(),
+            )
+                as List<Record>?
+        )
+        context.launchMainActivity {
+            scrollDownTo(By.text("App permissions"))
+            findTextAndClick("App permissions")
+            findTextAndClick("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+
+            scrollToEnd()
+            findTextAndClick("See app data")
+
+            findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+
+            findText("Activity")
+            findText("Steps")
+            scrollDownTo(By.text("Cycle tracking"))
+            findText("Cycle tracking")
+            findText("Menstruation")
+            scrollDownTo(By.text("Sleep"))
+            findText("Sleep")
+            scrollDownTo(By.text("Vitals"))
+            findText("Vitals")
+            findText("Heart rate")
+            scrollDownTo(By.text("Health records"))
+            scrollDownTo(By.text("Allergies"))
+            findText("Allergies")
+            scrollDownTo(By.text("Vaccines"))
+            findText("Vaccines")
+        }
+    }
+
+    @Test
+    fun clickOnMedicalAppDataType_navigatesToMedicalAppEntries() {
+        context.launchMainActivity {
+            scrollDownTo(By.text("App permissions"))
+            findTextAndClick("App permissions")
+            findTextAndClick("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+
+            scrollDownTo(By.text("See app data"))
+            findTextAndClick("See app data")
+
+            findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+            findTextAndClick("Allergies")
+
+            findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+            findObject(By.textContains("Hospital X"))
+        }
+    }
+}

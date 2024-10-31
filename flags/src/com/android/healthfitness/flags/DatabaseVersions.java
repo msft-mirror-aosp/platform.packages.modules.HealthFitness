@@ -30,6 +30,11 @@ public final class DatabaseVersions {
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
     public static final int DB_VERSION_MINDFULNESS_SESSION = 14;
 
+    /** The DB version in which the schema changes for PHR MVP were added. */
+    public static final int DB_VERSION_PERSONAL_HEALTH_RECORD = 15;
+
+    public static final int DB_VERSION_ACTIVITY_INTENSITY = 16;
+
     // For historical reasons, we do not support versions below this
     // See go/hc-mainline-dev/trunk_stable/db-and-aconfig#a-bit-of-history
     public static final int MIN_SUPPORTED_DB_VERSION = DB_VERSION_UUID_BLOB;

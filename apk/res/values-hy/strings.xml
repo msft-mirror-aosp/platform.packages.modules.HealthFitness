@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Կառավարեք առողջության և ֆիզիկական ակտիվության տվյալները ձեր սարքում և ընտրեք, թե որ հավելվածներին կարող են դրանք հասանելի լինել"</string>
     <string name="data_title" msgid="4456619761533380816">"Տվյալներ և հասանելիություն"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Դիտել առողջության մասին տեղեկությունները"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Դիտել առողջության մասին տեղեկությունները և հավելվածները, որոնց հասանելի են այդ տվյալները"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Բոլոր կատեգորիաները"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Տեսնել բոլոր կատեգորիաները"</string>
     <string name="no_data" msgid="1906986019249068659">"Տվյալներ չկան"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"ձեր առողջության մասին տվյալների հասանելիություն"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Կարդալ՝ որքան կալորիա է այրվել"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Թույլ է տալիս հավելվածին կարդալ այրված կալորիաների մասին տվյալները"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Թույլատրել տվյալների օգտագործումը ֆոնային ռեժիմում"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել տվյալները ֆոնային ռեժիմում"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել տվյալները ֆոնային ռեժիմում"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Թույլատրել այս հավելվածին օգտագործել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ տվյալները և առողջության մասին տեղեկությունները, երբ չեք օգտագործում այս հավելվածը։"</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել առողջության մասին տեղեկությունները, երբ չեք օգտագործի հավելվածը։"</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ տվյալները, երբ չեք օգտագործի հավելվածը։"</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործի հավելվածը։"</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել պահված տվյալները"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>։"</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ բոլոր պահված տվյալները։"</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>։"</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի բոլոր պահված տվյալները։"</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Ընդլայնված հասանելիություն տա՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը նաև հայցում է Health Connect-ի այս կարգավորումների օգտագործման թույլտվություն"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Հասանելի դարձնել բոլոր տվյալները ֆոնային ռեժիմում"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Հասանելի դարձնել առողջության մասին տեղեկությունները ֆոնային ռեժիմում"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Հասանելի դարձնել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ տվյալները ֆոնային ռեժիմում"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Թույլատրել այս հավելվածին օգտագործել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ տվյալները և առողջության մասին տեղեկությունները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Թույլատրել այս հավելվածին օգտագործել այս տվյալները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Թույլատրել այս հավելվածին օգտագործել այս տվյալները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"Թույլատրել տվյալների օգտագործումը ֆոնային ռեժիմում"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Թույլատրեք այս հավելվածին օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Հասանելի դարձնել ֆիզիկական ակտիվության և ապրելակերպի մասին պահված տվյալները"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Թույլատրել այս հավելվածին օգտագործել տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Թույլատրել այս հավելվածին օգտագործել բոլոր պահված տվյալները"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Հասանելի դարձնել պահված տվյալները"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի բոլոր նախկին տվյալները"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին արդեն հասանելի են ձեր առողջության մասին պահված տեղեկությունները"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Կարդալ ավելին թույլտվությունների մասին"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Հասանելի դարձնել բոլոր տվյալները ֆոնային ռեժիմում"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Հասանելի դարձնել առողջության մասին տեղեկությունները ֆոնային ռեժիմում"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Հասանելի դարձնել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ տվյալները ֆոնային ռեժիմում"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Թույլատրել այս հավելվածին օգտագործել ֆիզիկական ակտիվության և ապրելակերպի վերաբերյալ տվյալները և առողջության մասին տեղեկությունները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Թույլատրել այս հավելվածին օգտագործել այս տվյալները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Թույլատրել այս հավելվածին օգտագործել այս տվյալները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Թույլատրել տվյալների օգտագործումը ֆոնային ռեժիմում"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Թույլատրեք այս հավելվածին օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Հասանելի դարձնել ֆիզիկական ակտիվության և ապրելակերպի մասին պահված տվյալները"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Թույլատրել այս հավելվածին օգտագործել տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Թույլատրել այս հավելվածին օգտագործել բոլոր պահված տվյալները"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"Հասանելի դարձնել պահված տվյալները"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի բոլոր պահված տվյալները"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Ֆիզիկական ակտիվության տվյալները ներկայումս չեն ընթերցվում, քանի որ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը կարդալու թույլտվություններ չունի"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին արդեն հասանելի են առողջության մասին գրանցված ձեր նախկին տվյալները։ Սա փոխելու համար անջատեք առողջության մասին տեղեկությունների օգտագործման թույլտվությունները այս հավելվածի համար"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Կառավարել առողջության մասին տեղեկությունների օգտագործման թույլտվությունները"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Տրամադրեք կարդալու նվազագույնը մեկ թույլտվություն, որպեսզի այս հավելվածը ստանա ֆոնային ռեժիմում կամ պահված տվյալների հասանելիություն"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Տրամադրեք կարդալու նվազագույնը մեկ թույլտվություն, որպեսզի այս հավելվածը ստանա ֆոնային ռեժիմում հասանելիություն"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Տրամադրեք կարդալու նվազագույնը մեկ թույլտվություն, որպեսզի այս հավելվածը ստանա պահված տվյալների հասանելիություն"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի բոլոր նախկին տվյալները"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Թույլատրեք այս հավելվածին օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործում հավելվածը"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործի հավելվածը։"</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Թույլատրել ավելի վաղ տվյալների հասանելիությունը"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել պահված տվյալները"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի բոլոր նախկին տվյալները"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>։"</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի բոլոր նախկին տվյալները։"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Ակտիվ գործողությունների ժամանակ այրված կալորիաներ"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ակտիվ գործողությունների ժամանակ այրված կալորիաներ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Կարդալ ակտիվ գործողությունների ժամանակ այրված կալորիաների մասին տվյալները"</string>
@@ -155,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"անվասայլակի հրումներ"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Կարդալ անվասայլակի հրումների մասին տվյալները"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Գրանցել անվասայլակի հրումների մասին տվյալները"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Հիմնական նյութափոխանակության ինտենսիվություն"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"հիմնական նյութափոխանակության ինտենսիվություն"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Կարդալ հիմնական նյութափոխանակության ինտենսիվության մասին տվյալները"</string>
@@ -267,34 +316,70 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"մաշկի ջերմաստիճան"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Կարդալ մարմնի ջերմաստիճանի տվյալները"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Գրել մարմնի ջերմաստիճանի տվյալները"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Բոլոր բժշկական տվյալները"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"բոլոր բժշկական տվյալները"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Բոլոր բժշկական տվյալների գրանցում"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Պատվաստումներ"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"պատվաստումներ"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Պատվաստումների մասին տվյալների դիտում"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Առողջության մասին բոլոր տեղեկությունները"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"առողջության մասին բոլոր տեղեկությունները"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Գրանցել առողջության մասին բոլոր տեղեկությունները"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Ալերգիաներ"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"ալերգիաներ"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Կարդալ ալերգիաների մասին տվյալները"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Ախտաբանական վիճակներ"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"ախտաբանական վիճակներ"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Կարդալ ախտաբանական վիճակների տվյալները"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Պատվաստանյութեր"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"պատվաստանյութեր"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"Կարդալ պատվաստանյութերի մասին տվյալները"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Լաբորատոր արդյունքներ"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"լաբորատոր արդյունքներ"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Կարդալ լաբորատոր արդյունքները"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Դեղորայք"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"դեղորայք"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"Կարդալ դեղորայքի մասին տվյալները"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Անձնական տվյալներ"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"անձնական տվյալներ"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Կարդալ անձնական տվյալները"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Մասնագետների մասին տեղեկություններ"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"մասնագետների մասին տեղեկություններ"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Կարդալ մասնագետների մասին տեղեկությունները"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Հղիություն"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"հղիություն"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Հղիության մասին տվյալների ընթերցում"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Բժշկական միջամտություններ"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"բժշկական միջամտություններ"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Բժշկական միջամտությունների մասին տվյալների ընթերցում"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Սոցիալական անամնեզ"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"սոցիալական անամնեզ"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Սոցիալական անամնեզի տվյալների ընթերցում"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Այցելություններ"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"այցելություններ"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Կարդալ այցելությունների մասին տվյալները"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Կենսական ցուցանիշներ"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"կենսական ցուցանիշներ"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"Կենսական ցուցանիշների ընթերցում"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Գիտակցականություն"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"գիտակցականություն"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Կարդալ գիտակցականության ժամանակաշրջանի տվյալները"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Գրանցել գիտակցականության ժամանակաշրջանի տվյալները"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Թույլատրել <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին կարդալ"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Թույլատրել <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին գրանցել"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Չեղարկել"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Թույլատրել"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Թույլատրել բոլորը"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Չթույլատրել"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը կարդա կամ գրանցի Health Connect-ում"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը կարդա կամ գրանցի Health Connect-ում"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը կարդա Health Connect-ից"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը գրանցի Health Connect-ում"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Եթե տրամադրեք կարդալու թույլտվություն, այս հավելվածը կկարողանա կարդալ նոր և նախորդ 30 օրվա տվյալները"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Եթե տրամադրեք կարդալու թույլտվություն, հավելվածը կկարողանա կարդալ նոր և հին տվյալները"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Հասանելի դարձնե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին Health Connect-ը"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Կարդացեք մշակողի <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>ը՝ տեղեկանալու, թե ինչպես է <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը մշակում ձեր տվյալները"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել ֆիզիկական ակտիվության և ապրելակերպի մասին պահված տվյալները"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Կարդացեք մշակողի <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>ը՝ տեղեկանալու, թե ինչպես է <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը մշակում ձեր տվյալները"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"գաղտնիության քաղաքականություն"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Հասանելի դարձնե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին ձեր առողջության մասին տեղեկությունները"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Եթե տրամադրեք հասանելիություն, հավելվածը կկարողանա կարդալ և գրանցել տվյալներ, օրինակ՝ ալերգիաների, լաբորատոր արդյունքների, պատվաստանյութերի մասին և ոչ միայն\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Եթե տրամադրեք հասանելիություն, հավելվածը կկարողանա կարդալ տվյալները, օրինակ՝ ալերգիաների, լաբորատոր արդյունքների, պատվաստանյութերի մասին և ոչ միայն\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Առողջության մասին տեղեկությունների վերաբերյալ"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Տվյալներ, որոնցով պատրաստ եք կիսվել"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Եթե թույլատրեք, <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը կկարողանա ձեր առողջության մասին տեղեկությունները փոխանցել Health Connect-ին։"</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Համաժամացրեք ձեր առողջության մասին տեղեկությունները տարբեր հավելվածներից և աղբյուրներից և պահեք դրանք մեկ տեղում"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Հեռացնե՞լ բոլոր թույլտվությունները"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Հեռացնել բոլորը"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա որևէ տվյալ կարդալ կամ գրանցել Health Connect-ում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
@@ -302,10 +387,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա որևէ տվյալ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեղորոշման, տեսախցիկի կամ խոսափողի։"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա որևէ տվյալ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեղորոշման, տեսախցիկի կամ խոսափողի։"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect-ից ջնջել նաև <xliff:g id="APP_NAME">%1$s</xliff:g>-ի տվյալները"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Հեռացնե՞լ ֆիթնեսին/առողջությանը վերաբերող թույլտվությունները"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Health Connect-ից նաև ջնջել <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածի գրանցած՝ ֆիզիկական ակտիվության տվյալները"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Հեռացնե՞լ առողջության մասին տվյալների թույլտվությունները"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Health Connect-ից նաև ջնջել <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածի գրանցած՝ ֆիզիկական ակտիվության տվյալները"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա այս տվյալները կարդալ կամ գրանցել Health Connect-ում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա այս տվյալները կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա այս տվյալները կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա այս տվյալները կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեղորոշման, տեսախցիկի կամ խոսափողի։"</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Հեռացնե՞լ բոլոր թույլտվությունները"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա տվյալներ կարդալ կամ գրանցել Health Connect-ում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա տվյալներ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա տվյալներ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա տվյալներ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեղորոշման, տեսախցիկի կամ խոսափողի։"</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connect-ից նաև ջնջել <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածի գրանցած՝ ֆիզիկական ակտիվության տվյալները և առողջության մասին տեղեկությունները։"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Այս հավելվածի թույլտվությունները հեռացվեցին"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Նաև ջնջել Health Connect-ի բոլոր տվյալները"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Հաջորդ օրը"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Ընտրված օրը"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Նախորդ օրը"</string>
     <string name="default_error" msgid="7966868260616403475">"Սխալ առաջացավ։ Նորից փորձեք։"</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"Անհայտ ռեսուրս"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Աղբյուրի տվյալներ"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Ձախ փակագիծ։"</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Աջ փակագիծ։"</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> <xliff:g id="FIELD">%2$s</xliff:g> դաշտի արժեքը"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>՝ <xliff:g id="VALUE">%2$s</xliff:g>։"</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Մանրամասն սկզբնական կոդ՝ <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Այս թույլտվությունն ունեցող հավելվածները կարող են կարդալ և գրանցել ձեր առողջության և ֆիզիկական ակտիվության վերաբերյալ տվյալները"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Ընտրեք, թե որ հավելվածներին կարող են հասանելի լինել Health Connect-ում պահվող տվյալները։ Հպեք հավելվածին՝ դիտելու տվյալները, որոնք այն կարող է կարդալ կամ գրանցել։"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Թույլատրված մուտք"</string>
@@ -322,6 +430,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Հեռացնել բոլորը"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Հավելվածի կառավարում"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Տեսնել հավելվածի տվյալները"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Հեռացնել այս հավելվածի թույլտվությունները"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Ջնջել հավելվածի տվյալները"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Անգործուն հավելվածներ"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Այս հավելվածներն այլևս չունեն հասանելիություն, սակայն դրանց տվյալները նախկինի պես պահվում են Health Connect-ում"</string>
@@ -334,13 +443,14 @@
     <string name="app_access_title" msgid="7137018424885371763">"Հասանելիություն հավելվածների համար"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Դուք այս պահին չունեք տեղադրված համատեղելի հավելվածներ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Լրացուցիչ թույլտվություններ"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Նախկին տվյալներ, ֆոնային տվյալներ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Այս հավելվածի համար լրացուցիչ թույլտվությունները հեռացվել են։"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Թույլտվություններ"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Ֆիթնես և առողջություն"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Վարժություններ, քուն, սննդակարգ և այլն"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Առողջության մասին տեղեկություններ"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"առողջության մասին տեղեկություններ"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Լաբ․ արդյունքներ, դեղորայք, պատվաստումներ և այլն"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Լաբ․ արդյունքներ, դեղորայք, պատվաստանյութեր և այլն"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Հավելվածների թույլտվությունները հեռացված են"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect-ը հեռացրել է <xliff:g id="APP_DATA">%s</xliff:g> հավելվածի թույլտվությունները"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect-ը հեռացրել է <xliff:g id="APP_DATA_0">%1$s</xliff:g> և <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> հավելվածների թույլտվությունները"</string>
@@ -389,6 +499,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"Նշեք՝ որտեղ պահել արտահանված տվյալները"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Ընտրեք ամպային տարածքով հավելված՝ ձեր տվյալներն արտահանելու համար"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Ներմուծե՞լ այս ֆայլը"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> ֆայլը կներմուծվի Health Connect"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Չեղարկել"</string>
@@ -407,13 +518,14 @@
     <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Նորից փորձել"</string>
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Բացել"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Ընտրել ֆայլը"</string>
-    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Ազատել տարածք"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Տարածք ազատել"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Պլանավորված արտահանումը միացված է"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect-ը չարտահանեց տվյալները"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Անհայտ խնդրի պատճառով <xliff:g id="DATE">%1$s</xliff:g>-ին պլանավորված արտահանումը չհաջողվեց կատարել։ Կարգավորեք նոր պլանավորված արտահանում և նորից փորձեք։"</string>
     <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Պլանավորված արտահանումը շարունակելու համար Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում։"</string>
     <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Կարգավորել"</string>
-    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Ազատել տարածք"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Տարածք ազատել"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Հետ"</string>
     <string name="export_next_button" msgid="657930567137105172">"Առաջ"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Չեղարկել"</string>
@@ -430,6 +542,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Անցնել Play Խանութ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Ներկայացնում ենք Health Connect-ը"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect-ը պահում է ձեր առողջության և ֆիզիկական ակտիվության տվյալները և համաժամացնում տարբեր հավելվածների աշխատանքը ձեր սարքում"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect-ը տարբեր հավելվածներից պահում և համաժամացնում է ձեր առողջության և ֆիզիկական ակտիվության տվյալները։\n\n"<b>"Ֆիթնեսի և առողջության տվյալներ"</b>", այդ թվում՝ մարզումների, քայլերի, սննդի, քնի և այլ բաների մասին\n\n"<b>"Առողջության մասին տեղեկություններ"</b>", այդ թվում՝ պատվաստանյութերի, լաբորատոր արդյունքների և այլ բաների մասին"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect-ի միջոցով դուք կարող եք՝"</string>
     <string name="share_data" msgid="3481932156368883946">"Կիսվեք տվյալներով հավելվածների հետ"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Ընտրեք տվյալները, որոնք յուրաքանչյուր հավելված կարող է կարդալ և գրանցել Health Connect-ում"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Կառավարեք կարգավորումները և գաղտնիությունը"</string>
@@ -474,7 +588,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Ընդմիշտ ջնջե՞լ «<xliff:g id="DATA_TYPE">%1$s</xliff:g>» ցուցանիշի բոլոր տվյալները, որոնք ավելացրել է <xliff:g id="APP_DATA">%2$s</xliff:g> հավելվածը"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Ընդմիշտ ջնջե՞լ այս տվյալները Health Connect-ից"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Կապված հավելվածներին այլևս հասանելի չեն լինի Health Connect-ի այս տվյալները"</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Դաշտանի վերաբերյալ բոլոր տվյալները, որոնք մուտքագրվել են <xliff:g id="START_DATE">%1$s</xliff:g> – <xliff:g id="END_DATE">%2$s</xliff:g> ժամանակահատվածում, կջնջվեն։"</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"Դաշտանի վերաբերյալ բոլոր տվյալները, որոնք մուտքագրվել են <xliff:g id="START_DATE">%1$s</xliff:g> – <xliff:g id="END_DATE">%2$s</xliff:g> ժամանակահատվածում, կջնջվեն։"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Ջնջել"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Հետ"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Պատրաստ է"</string>
@@ -530,7 +644,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Թույլ արտազատում"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Միջին արտազատում"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Ուժեղ արտազատում"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Անհայտ"</string>
     <string name="period_day" msgid="3821944462093965882">"Դաշտանի օր <xliff:g id="DAY">%1$d</xliff:g>՝ <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>-ից"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Դաշտան (1 օր)}one{Դաշտան (# օր)}other{Դաշտան (# օր)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Դրական"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Բացասական"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Բարձր"</string>
@@ -943,7 +1059,7 @@
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում, որպեսզի ինտեգրումը շարունակվի։.\n\nՄաքրեք որոշ տարածք հեռախոսում և նորից փորձեք։"</string>
     <string name="try_again_button" msgid="8745496819992160789">"Նորից փորձել"</string>
-    <string name="free_up_space_button" msgid="4141013808635654695">"Ազատել տարածք"</string>
+    <string name="free_up_space_button" msgid="4141013808635654695">"Տարածք ազատել"</string>
     <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում՝ ինտեգրումը շարունակելու համար։"</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Ինտեգրումը դադարեցվել է"</string>
@@ -999,7 +1115,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Հավելվածների աղբյուրների փոփոխում"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Կանխադրված տարբերակ"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Հավելվածի տվյալներ"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Health Connect-ին հասանելիություն ունեցող հավելվածների տվյալները կցուցադրվեն այստեղ"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Այստեղ կցուցադրվեն տվյալներ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածից"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect-ի հասանելիություն ունեցող հավելվածների տվյալները կցուցադրվեն այստեղ"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Օր"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Շաբաթ"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Ամիս"</string>
@@ -1009,17 +1126,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Անցած ամիս"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Մուտքագրված տվյալներ"</string>
     <string name="tab_access" msgid="7818197975407243701">"Հասանելիություն"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Ընդլայնված հասանելիություն տա՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը նաև հայցում է Health Connect-ի այս կարգավորումների օգտագորման թույլտվություն"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Տրամադրեք կարդալու նվազագույնը մեկ թույլտվություն, որպեսզի այս հավելվածը ստանա ֆոնային ռեժիմում կամ պահված տվյալների հասանելիություն"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Տրամադրեք կարդալու նվազագույնը մեկ թույլտվություն, որպեսզի այս հավելվածը ստանա ֆոնային ռեժիմում հասանելիություն"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Տրամադրեք կարդալու նվազագույնը մեկ թույլտվություն, որպեսզի այս հավելվածը ստանա պահված տվյալների հասանելիություն"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Ընդմիշտ ջնջե՞լ բոլոր տվյալները Health Connect-ից"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Ընդմիշտ ջնջե՞լ ընտրված տվյալները Health Connect-ից"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Բոլոր տվյալները ջնջվեցին"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Տվյալները ջնջվեցին (<xliff:g id="PERMISSION_TYPE">%s</xliff:g>)"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Ջնջվեց <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> տարր"</string>
-    <string name="select_all" msgid="837499881590001166">"Ընտրել բոլորը"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Սկսեք օգտագործել Health Connect-ը"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Համաժամացրեք ձեր առաջին հավելվածները՝ նրանց միջև առողջության և ֆիզիկական ակտիվության տվյալները փոխանակելու համար"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Կարգավորել"</string>
@@ -1029,4 +1135,30 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Տեսեք համատեղելի հավելվածները"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Գտեք այլ հավելվածներ՝ Health Connect-ի միջոցով <xliff:g id="APP_NAME">%s</xliff:g> հավելվածի հետ համաժամացնելու համար"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Տեսնել հավելվածների խանութում"</string>
+    <string name="select_all" msgid="837499881590001166">"Ընտրել բոլորը"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Կապված հավելվածներն այլևս չեն կարողանա կարդալ Health Connect-ի այս տվյալները"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Ընդմիշտ ջնջե՞լ բոլոր տվյալները"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Ընդմիշտ ջնջե՞լ ընտրված տվյալները"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%s</xliff:g> հավելվածի բոլոր տվյալները"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%s</xliff:g> հավելվածի ընտրված տվյալները"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Ընդմիշտ ջնջե՞լ այս գրառումը"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%s</xliff:g> հավելվածում կատարած այս գրառումը"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Ընդմիշտ ջնջե՞լ ընտրված տվյալները (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) <xliff:g id="APP_NAME">%2$s</xliff:g> հավելվածի համար"</string>
+    <string name="on" msgid="8266542510798355807">"Միացված է"</string>
+    <string name="off" msgid="6996623844428550649">"Անջատված է"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Բացվել է <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Բացվել է երեկ, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Բացվել է <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>
