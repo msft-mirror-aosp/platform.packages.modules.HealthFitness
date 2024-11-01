@@ -322,6 +322,68 @@ public class MedicalResourceValidatorTest {
     }
 
     @Test
+    public void testValidateAndCreateInternalRequest_containedResourceInResource_throws() {
+        String resourceId = "id1";
+        String medicationStatementWithContainedResource =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .setContainedMedication(new MedicationsBuilder.MedicationBuilder())
+                        .toJson();
+        MedicalResourceValidator validator =
+                makeValidator(medicationStatementWithContainedResource);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Contained resources are not supported. Found contained resource for"
+                                + " resource with id "
+                                + resourceId);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_containedFieldNotArray_throws()
+            throws JSONException {
+        String resourceId = "id1";
+        String medicationStatementWithInvalidContained =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .set("contained", new JSONObject("{}"))
+                        .toJson();
+        MedicalResourceValidator validator = makeValidator(medicationStatementWithInvalidContained);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Contained resources are not supported. Found contained field for resource"
+                                + " with id "
+                                + resourceId);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_emptyContainedArray_succeeds()
+            throws JSONException {
+        String resourceId = "id1";
+        String medicationStatementWithEmptyContained =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .set("contained", new JSONArray("[]"))
+                        .toJson();
+
+        MedicalResourceValidator validator = makeValidator(medicationStatementWithEmptyContained);
+
+        assertThat(validator.validateAndCreateInternalRequest().getData())
+                .isEqualTo(medicationStatementWithEmptyContained);
+    }
+
+    @Test
     public void testCalculateMedicalResourceType_allergy() {
         MedicalResourceValidator validator = makeValidator(FHIR_DATA_ALLERGY);
 
