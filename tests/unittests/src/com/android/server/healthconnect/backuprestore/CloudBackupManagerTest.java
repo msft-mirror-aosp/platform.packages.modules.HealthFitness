@@ -15,6 +15,8 @@
  */
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
+
 import static com.android.server.healthconnect.backuprestore.BackupRestoreDatabaseHelper.MAXIMUM_PAGE_SIZE;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
@@ -42,6 +44,7 @@ import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -49,6 +52,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDat
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import org.junit.After;
@@ -182,6 +186,36 @@ public class CloudBackupManagerTest {
         GetChangesForBackupResponse secondResponse =
                 mCloudBackupManager.getChangesForBackup(response.getNextChangeToken());
         assertThat(secondResponse.getChanges().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void getChangesForBackup_changeLogsTokenInvalid_invalidateToken() {
+        List<RecordInternal<?>> records = new ArrayList<>();
+        // Use MAXIMUM_PAGE_SIZE + 1 to make sure the returned change token, which to be used for
+        // the second call of getChangesForBackup, is not empty.
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE + 1; recordNumber++) {
+            records.add(
+                    createStepsRecord(
+                            // Add offsets to start time and end time for distinguishing different
+                            // records.
+                            TEST_START_TIME_IN_MILLIS + recordNumber,
+                            TEST_END_TIME_IN_MILLIS + recordNumber,
+                            TEST_STEP_COUNT));
+        }
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
+        GetChangesForBackupResponse response = mCloudBackupManager.getChangesForBackup(null);
+        // Delete change logs.
+        mTransactionManager.delete(new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME));
+
+        GetChangesForBackupResponse secondResponse =
+                mCloudBackupManager.getChangesForBackup(response.getNextChangeToken());
+        assertThat(secondResponse.getChanges()).isEmpty();
+        BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, secondResponse.getNextChangeToken());
+        assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo(null);
+        assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(EMPTY_PAGE_TOKEN.encode());
+        assertThat(backupChangeToken.getDataTableName()).isEqualTo(null);
     }
 
     @Test
