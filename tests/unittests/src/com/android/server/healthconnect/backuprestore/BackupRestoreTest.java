@@ -74,12 +74,15 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.PersistableBundle;
 import android.os.UserHandle;
+import android.platform.test.annotations.DisableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.ArrayMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -117,7 +120,10 @@ public class BackupRestoreTest {
     private static final String DATABASE_NAME = "healthconnect.db";
     private static final String GRANT_TIME_FILE_NAME = "health-permissions-first-grant-times.xml";
 
-    @Rule
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(Environment.class)
@@ -209,6 +215,7 @@ public class BackupRestoreTest {
     }
 
     @Test
+    @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_D2D})
     public void testGetAllBackupData_forDeviceToDevice_copiesAllData() throws Exception {
         File dbFileToBackup = createAndGetNonEmptyFile(mMockDataDirectory, DATABASE_NAME);
         File dbFileBacked = createAndGetEmptyFile(mMockBackedDataDirectory, STAGED_DATABASE_NAME);
