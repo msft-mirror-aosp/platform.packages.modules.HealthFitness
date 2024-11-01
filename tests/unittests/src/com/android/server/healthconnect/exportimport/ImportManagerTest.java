@@ -147,11 +147,8 @@ public class ImportManagerTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
 
         mContext = mDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
@@ -210,7 +207,6 @@ public class ImportManagerTest {
         }
         testDir.delete();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 
@@ -410,7 +406,7 @@ public class ImportManagerTest {
 
         File databaseDir =
                 StorageContext.create(mContext, mContext.getUser(), IMPORT_DATABASE_DIR_NAME)
-                        .getDatabaseDir();
+                        .getDataDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }
 

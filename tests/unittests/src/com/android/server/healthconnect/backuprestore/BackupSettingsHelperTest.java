@@ -113,7 +113,6 @@ public class BackupSettingsHelperTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
         HealthConnectInjector.resetInstanceForTest();
 

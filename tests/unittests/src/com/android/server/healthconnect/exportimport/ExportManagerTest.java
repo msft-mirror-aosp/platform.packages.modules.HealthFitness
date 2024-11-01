@@ -64,7 +64,6 @@ import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -158,7 +157,6 @@ public class ExportManagerTest {
                 mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
         mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME).delete();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
     }
 
     @Test
@@ -287,8 +285,8 @@ public class ExportManagerTest {
     public void deleteLocalExportFiles_deletesLocalCopies() {
         StorageContext storageContext =
                 StorageContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
-        new File(storageContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
-        new File(storageContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
+        new File(storageContext.getDataDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
+        new File(storageContext.getDataDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
 
         mExportManager.deleteLocalExportFiles(mContext.getUser());
 

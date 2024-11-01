@@ -24,6 +24,7 @@ import static com.google.common.truth.Truth.assertThat;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
@@ -49,6 +50,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import org.junit.After;
@@ -116,7 +118,6 @@ public class BackupRestoreDatabaseHelperTest {
         MockitoAnnotations.initMocks(this);
 
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
 
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
@@ -158,7 +159,6 @@ public class BackupRestoreDatabaseHelperTest {
     @After
     public void tearDown() {
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 
@@ -374,5 +374,69 @@ public class BackupRestoreDatabaseHelperTest {
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(7468);
         assertThat(backupChangeToken.getDataTableName()).isEqualTo("blood_pressure_record_table");
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo("1");
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_tokenIsNull_invalid() {
+        assertThat(mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(null)).isFalse();
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_nextChangeLogNoLongerExists_invalid() {
+        RecordInternal<StepsRecord> stepRecord =
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        // Insert a blood pressure record and generate a change log so the previous returned token
+        // does not point to the end of the table.
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
+
+        // Delete some change logs.
+        mTransactionManager.delete(
+                new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME, stepRecord.getRecordType()));
+
+        assertThat(
+                        mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(
+                                response.getNextChangeToken()))
+                .isFalse();
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_nextChangeLogExists_valid() {
+        RecordInternal<StepsRecord> stepRecord =
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        // Insert a blood pressure record and generate a change log so the previous returned token
+        // does not point to the end of the table.
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
+
+        assertThat(
+                        mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(
+                                response.getNextChangeToken()))
+                .isTrue();
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_tokenPointsToEndOfTable_valid() {
+        RecordInternal<StepsRecord> stepRecord =
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+
+        assertThat(
+                        mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(
+                                response.getNextChangeToken()))
+                .isTrue();
     }
 }

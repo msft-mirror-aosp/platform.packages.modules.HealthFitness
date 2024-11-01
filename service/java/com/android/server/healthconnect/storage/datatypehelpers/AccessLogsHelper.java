@@ -87,13 +87,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile AccessLogsHelper sAccessLogsHelper;
-
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
 
-    private AccessLogsHelper(TransactionManager transactionManager, AppInfoHelper appInfoHelper) {
+    public AccessLogsHelper(TransactionManager transactionManager, AppInfoHelper appInfoHelper) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
     }
@@ -354,28 +351,5 @@ public final class AccessLogsHelper extends DatabaseHelper {
     @Override
     protected String getMainTableName() {
         return TABLE_NAME;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static AccessLogsHelper getInstance() {
-        return getInstance(
-                TransactionManager.getInitialisedInstance(), AppInfoHelper.getInstance());
-    }
-
-    /** Returns an instance of AccessLogsHelper initialised using the given dependencies. */
-    public static synchronized AccessLogsHelper getInstance(
-            TransactionManager transactionManager, AppInfoHelper appInfoHelper) {
-        if (sAccessLogsHelper == null) {
-            sAccessLogsHelper = new AccessLogsHelper(transactionManager, appInfoHelper);
-        }
-        return sAccessLogsHelper;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void resetInstanceForTest() {
-        sAccessLogsHelper = null;
     }
 }
