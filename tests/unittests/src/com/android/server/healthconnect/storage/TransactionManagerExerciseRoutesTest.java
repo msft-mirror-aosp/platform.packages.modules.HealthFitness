@@ -106,7 +106,6 @@ public class TransactionManagerExerciseRoutesTest {
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
         DeviceInfoHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         StorageContext context = testRule.getDatabaseContext();
         mTransactionManager = testRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =

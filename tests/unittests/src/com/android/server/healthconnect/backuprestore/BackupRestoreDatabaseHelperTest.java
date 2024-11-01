@@ -118,7 +118,6 @@ public class BackupRestoreDatabaseHelperTest {
         MockitoAnnotations.initMocks(this);
 
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
 
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
@@ -160,7 +159,6 @@ public class BackupRestoreDatabaseHelperTest {
     @After
     public void tearDown() {
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 

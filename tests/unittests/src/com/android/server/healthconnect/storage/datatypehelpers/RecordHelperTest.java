@@ -93,7 +93,6 @@ public class RecordHelperTest {
         DatabaseHelper.clearAllData(mTransactionManager);
         DeviceInfoHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setTransactionManager(mTransactionManager)

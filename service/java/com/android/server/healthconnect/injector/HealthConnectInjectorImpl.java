@@ -154,7 +154,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mDeviceInfoHelper;
         mAccessLogsHelper =
                 builder.mAccessLogsHelper == null
-                        ? AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper)
+                        ? new AccessLogsHelper(mTransactionManager, mAppInfoHelper)
                         : builder.mAccessLogsHelper;
         mActivityDateHelper =
                 builder.mActivityDateHelper == null

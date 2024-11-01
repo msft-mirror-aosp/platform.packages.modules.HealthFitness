@@ -154,7 +154,6 @@ public class MedicalResourceHelperTest {
 
     @Before
     public void setup() {
-        AccessLogsHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
