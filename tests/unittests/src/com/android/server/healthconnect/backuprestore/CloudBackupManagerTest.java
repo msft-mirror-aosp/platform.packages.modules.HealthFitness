@@ -57,7 +57,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestU
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -146,12 +145,6 @@ public class CloudBackupManagerTest {
                         priorityHelper,
                         preferenceHelper,
                         exportImportSettingsStorage);
-    }
-
-    @After
-    public void tearDown() {
-
-        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test

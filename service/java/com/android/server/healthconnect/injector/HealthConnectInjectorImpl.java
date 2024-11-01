@@ -150,7 +150,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
-                        ? DeviceInfoHelper.getInstance(mTransactionManager)
+                        ? new DeviceInfoHelper(mTransactionManager)
                         : builder.mDeviceInfoHelper;
         mAccessLogsHelper =
                 builder.mAccessLogsHelper == null

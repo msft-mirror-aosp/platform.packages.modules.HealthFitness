@@ -146,8 +146,6 @@ public class ImportManagerTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        DeviceInfoHelper.resetInstanceForTest();
-
         mContext = mDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
@@ -204,8 +202,6 @@ public class ImportManagerTest {
             }
         }
         testDir.delete();
-
-        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test
