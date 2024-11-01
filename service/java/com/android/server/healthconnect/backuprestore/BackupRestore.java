@@ -266,7 +266,7 @@ public final class BackupRestore {
             UserHandle userHandle,
             IDataStagingFinishedCallback callback) {
         StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
-        File stagedRemoteDataDir = dbContext.getDatabaseDir();
+        File stagedRemoteDataDir = dbContext.getDataDir();
         try {
             stagedRemoteDataDir.mkdirs();
 
@@ -412,7 +412,7 @@ public final class BackupRestore {
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
             dbContext.deleteDatabase(STAGED_DATABASE_NAME);
-            FilesUtil.deleteDir(dbContext.getDatabaseDir());
+            FilesUtil.deleteDir(dbContext.getDataDir());
         }
         setDataDownloadState(DATA_DOWNLOAD_STATE_UNKNOWN, true /* force */);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_UNKNOWN, true /* force */);
@@ -463,7 +463,7 @@ public final class BackupRestore {
     @VisibleForTesting
     public Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
         StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
-        File[] allFiles = dbContext.getDatabaseDir().listFiles();
+        File[] allFiles = dbContext.getDataDir().listFiles();
         if (allFiles == null) {
             return Collections.emptySet();
         }
@@ -976,7 +976,7 @@ public final class BackupRestore {
     }
 
     private void mergeGrantTimes(StorageContext dbContext) {
-        File restoredGrantTimeFile = new File(dbContext.getDatabaseDir(), GRANT_TIME_FILE_NAME);
+        File restoredGrantTimeFile = new File(dbContext.getDataDir(), GRANT_TIME_FILE_NAME);
         Slog.i(TAG, "Merging grant times.");
 
         UserGrantTimeState userGrantTimeState =

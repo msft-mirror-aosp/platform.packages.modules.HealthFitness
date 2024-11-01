@@ -71,10 +71,8 @@ public class PriorityMigrationHelperTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        PriorityMigrationHelper.clearInstanceForTest();
         mPriorityMigrationHelper =
-                PriorityMigrationHelper.getInstance(
-                        mHealthDataCategoryPriorityHelper, mTransactionManager);
+                new PriorityMigrationHelper(mHealthDataCategoryPriorityHelper, mTransactionManager);
     }
 
     @Test

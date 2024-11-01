@@ -148,6 +148,7 @@ public class HealthConnectManagerService extends SystemService {
                         firstGrantTimeManager,
                         mMigrationStateManager,
                         mMigrationUiStateManager,
+                        mContext,
                         new MedicalResourceHelper(
                                 mTransactionManager,
                                 appInfoHelper,
@@ -155,7 +156,6 @@ public class HealthConnectManagerService extends SystemService {
                                 timeSource,
                                 accessLogsHelper),
                         medicalDataSourceHelper,
-                        mContext,
                         mExportManager,
                         mExportImportSettingsStorage,
                         accessLogsHelper,
@@ -163,7 +163,8 @@ public class HealthConnectManagerService extends SystemService {
                         activityDateHelper,
                         changeLogsHelper,
                         changeLogsRequestHelper,
-                        internalHealthConnectMappings);
+                        internalHealthConnectMappings,
+                        mHealthConnectInjector.getPriorityMigrationHelper());
     }
 
     @Override
