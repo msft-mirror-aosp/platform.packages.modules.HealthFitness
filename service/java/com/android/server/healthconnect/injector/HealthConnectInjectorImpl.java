@@ -108,7 +108,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mAppInfoHelper;
         mPackageInfoUtils =
                 builder.mPackageInfoUtils == null
-                        ? PackageInfoUtils.getInstance()
+                        ? new PackageInfoUtils()
                         : builder.mPackageInfoUtils;
         mPreferenceHelper =
                 builder.mPreferenceHelper == null
@@ -118,7 +118,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
-                        ? HealthDataCategoryPriorityHelper.getInstance(
+                        ? new HealthDataCategoryPriorityHelper(
                                 mAppInfoHelper,
                                 mTransactionManager,
                                 mHealthConnectDeviceConfigManager,
