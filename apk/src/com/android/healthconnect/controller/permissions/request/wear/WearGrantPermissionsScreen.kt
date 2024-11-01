@@ -55,7 +55,7 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
  * Wear Grant Permissions Screen. This screen includes: grant single health permission, grant
  * multiple health permission, grant background health permission.
  *
- * TODO: b/364643447 - Grant single health permission, Grant background health permission.
+ * TODO: b/364643447 - Grant background health permission.
  * TODO: b/376514553 - Write tests for Wear UI.
  */
 @Composable
@@ -69,13 +69,18 @@ fun WearGrantPermissionsScreen(viewModel: RequestPermissionViewModel, onButtonCl
         FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType).uppercaseLabel
       )
     }
-  GrantMultipleFitnessPermissions(
-    fitnessPermissions,
-    appName,
-    dataTypes,
-    onButtonClicked,
-    viewModel,
-  )
+
+  if (dataTypes.size > 1) {
+    GrantMultipleFitnessPermissions(
+      fitnessPermissions,
+      appName,
+      dataTypes,
+      onButtonClicked,
+      viewModel,
+    )
+  } else if (dataTypes.size == 1) {
+    GrantSingleFitnessPermission(appName, dataTypes[0], onButtonClicked, viewModel)
+  }
 }
 
 @Composable
@@ -176,6 +181,45 @@ fun GrantMultipleFitnessPermissions(
         border = ChipDefaults.chipBorder(),
         colors = ChipDefaults.chipColors(backgroundColor = Color.Black, contentColor = Color.White),
         contentPadding = PaddingValues(0.dp), // Remove Chip's default contentPadding
+      )
+    }
+  }
+}
+
+@Composable
+fun GrantSingleFitnessPermission(
+  appName: String,
+  dataType: String,
+  onButtonClicked: () -> Unit,
+  viewModel: RequestPermissionViewModel,
+) {
+  val res = LocalContext.current.resources
+  ScrollableScreen(
+    showTimeText = false,
+    title = res.getString(R.string.wear_request_single_data_type_permission, appName, dataType),
+  ) {
+    // Allow button.
+    item {
+      Chip(
+        label = res.getString(R.string.request_permissions_allow),
+        onClick = {
+          viewModel.updateFitnessPermissions(true)
+          onButtonClicked()
+        },
+        modifier = Modifier.fillMaxWidth(),
+        labelMaxLines = Integer.MAX_VALUE,
+      )
+    }
+    // Deny button.
+    item {
+      Chip(
+        label = res.getString(R.string.request_permissions_dont_allow),
+        onClick = {
+          viewModel.updateFitnessPermissions(false)
+          onButtonClicked()
+        },
+        modifier = Modifier.fillMaxWidth(),
+        labelMaxLines = Integer.MAX_VALUE,
       )
     }
   }
