@@ -60,8 +60,15 @@ public final class StorageContext extends ContextWrapper {
         }
     }
 
-    /** Returns the directory in which the database is stored */
-    public File getDatabaseDir() {
+    /**
+     * Returns the data directory where files are stored.
+     *
+     * <p>HealthConnect stores files in the directory returned by this method, and doesn't use the
+     * files and cache sub-directories.
+     */
+    @Override
+    public File getDataDir() {
+        mDatabaseDir.mkdirs();
         return mDatabaseDir;
     }
 
@@ -83,7 +90,7 @@ public final class StorageContext extends ContextWrapper {
     /** Returns the file of the staged database with the given name */
     @Override
     public File getDatabasePath(String name) {
-        return new File(mDatabaseDir, name);
+        return new File(getDataDir(), name);
     }
 
     /** Factory method */
@@ -94,8 +101,6 @@ public final class StorageContext extends ContextWrapper {
     /** Factory method */
     public static StorageContext create(
             Context context, UserHandle userHandle, @Nullable String databaseDirName) {
-        StorageContext storageContext = new StorageContext(context, userHandle, databaseDirName);
-        storageContext.mDatabaseDir.mkdirs();
-        return storageContext;
+        return new StorageContext(context, userHandle, databaseDirName);
     }
 }
