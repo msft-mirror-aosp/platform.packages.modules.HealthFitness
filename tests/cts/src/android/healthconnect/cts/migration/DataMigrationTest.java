@@ -25,6 +25,7 @@ import static android.health.connect.HealthPermissions.READ_HEIGHT;
 import static android.health.connect.HealthPermissions.WRITE_HEIGHT;
 import static android.health.connect.datatypes.units.Length.fromMeters;
 import static android.health.connect.datatypes.units.Power.fromWatts;
+import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
@@ -34,18 +35,13 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.health.connect.ApplicationInfoResponse;
-import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
-import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
@@ -78,7 +74,6 @@ import android.health.connect.migration.RecordMigrationPayload;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.Build;
-import android.os.OutcomeReceiver;
 import android.os.UserHandle;
 import android.os.ext.SdkExtensions;
 
@@ -103,10 +98,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -134,7 +125,6 @@ public class DataMigrationTest {
 
     @Rule public final Expect mExpect = Expect.create();
 
-    private final Executor mOutcomeExecutor = newSingleThreadExecutor();
     private final Instant mEndTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     private final Instant mStartTime = mEndTime.minus(Duration.ofHours(1));
 
@@ -150,25 +140,6 @@ public class DataMigrationTest {
     private String mEnableCompletionJobsBackup;
     private String mEnablePauseJobsBackup;
     private String mStateChangeJobAdbDumpsys;
-
-    private static <T, E extends RuntimeException> T blockingCall(
-            Consumer<OutcomeReceiver<T, E>> action) {
-        final BlockingOutcomeReceiver<T, E> outcomeReceiver = new BlockingOutcomeReceiver<>();
-        action.accept(outcomeReceiver);
-        return outcomeReceiver.await();
-    }
-
-    private static <T, E extends RuntimeException> T blockingCallWithPermissions(
-            Consumer<OutcomeReceiver<T, E>> action, String... permissions) {
-        try {
-            return runWithShellPermissionIdentity(() -> blockingCall(action), permissions);
-        } catch (RuntimeException e) {
-            // runWithShellPermissionIdentity wraps and rethrows all exceptions as RuntimeException,
-            // but we need the original RuntimeException if there is one.
-            final Throwable cause = e.getCause();
-            throw cause instanceof RuntimeException ? (RuntimeException) cause : e;
-        }
-    }
 
     private static Metadata getMetadata(UUID id, String clientRecordId, String packageName) {
         return new Metadata.Builder()
@@ -217,17 +188,12 @@ public class DataMigrationTest {
     public void setUp() {
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mManager = mTargetContext.getSystemService(HealthConnectManager.class);
-        clearData();
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @After
     public void tearDown() {
-        clearData();
-    }
-
-    private void clearData() {
-        deleteAllStagedRemoteData();
-        deleteAllRecords();
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @Test
@@ -238,7 +204,7 @@ public class DataMigrationTest {
                 new HeightRecord.Builder(getMetadata(entityId), mEndTime, fromMeters(3D)).build(),
                 entityId);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         final HeightRecord record = getRecord(HeightRecord.class, entityId);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getHeight().getInMeters()).isEqualTo(3D);
@@ -258,7 +224,7 @@ public class DataMigrationTest {
                 new HeightRecord.Builder(getMetadata(uuid), mEndTime, fromMeters(3D)).build(),
                 entityId);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         final HeightRecord record = getRecord(HeightRecord.class, uuid);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getHeight().getInMeters()).isEqualTo(3D);
@@ -285,7 +251,7 @@ public class DataMigrationTest {
         }
 
         migrate(inputMigrationEntityList.toArray(MigrationEntity[]::new));
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<HeightRecord> outputRecords = getRecords(HeightRecord.class);
 
@@ -316,7 +282,7 @@ public class DataMigrationTest {
                 new StepsRecord.Builder(getMetadata(entityId), mStartTime, mEndTime, 10).build(),
                 entityId);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         final StepsRecord record = getRecord(StepsRecord.class, entityId);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getCount()).isEqualTo(10);
@@ -337,7 +303,7 @@ public class DataMigrationTest {
                 new StepsRecord.Builder(getMetadata(uuid), mStartTime, mEndTime, 10).build(),
                 entityId);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         final StepsRecord record = getRecord(StepsRecord.class, uuid);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getCount()).isEqualTo(10);
@@ -365,7 +331,7 @@ public class DataMigrationTest {
                         .build(),
                 entityId);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         final PowerRecord record = getRecord(PowerRecord.class, entityId);
 
         mExpect.that(record).isNotNull();
@@ -395,7 +361,7 @@ public class DataMigrationTest {
         final Length height2 = fromMeters(1D);
         migrate(new HeightRecord.Builder(getMetadata(), mStartTime, height2).build(), entityId);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<HeightRecord> records = getRecords(HeightRecord.class);
         mExpect.that(records.stream().map(HeightRecord::getHeight).toList())
@@ -424,7 +390,7 @@ public class DataMigrationTest {
                 new StepsRecord.Builder(getMetadata(), mStartTime, mEndTime, steps2).build(),
                 entityId2);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<StepsRecord> records = getRecords(StepsRecord.class);
         mExpect.that(records.stream().map(StepsRecord::getCount).toList()).containsExactly(steps1);
@@ -453,7 +419,7 @@ public class DataMigrationTest {
                         .build(),
                 entityId2);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<StepsRecord> records = getRecords(StepsRecord.class);
         mExpect.that(records.stream().map(StepsRecord::getCount).toList())
@@ -476,7 +442,7 @@ public class DataMigrationTest {
         final Length height2 = fromMeters(2.0);
         migrate(new HeightRecord.Builder(getMetadata(), mEndTime, height2).build(), entityId2);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<HeightRecord> records = getRecords(HeightRecord.class);
         mExpect.that(records.stream().map(HeightRecord::getHeight).toList())
@@ -504,7 +470,7 @@ public class DataMigrationTest {
                 new HeightRecord.Builder(getMetadata(entityId2), mEndTime, height2).build(),
                 entityId2);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<HeightRecord> records = getRecords(HeightRecord.class);
         mExpect.that(records.stream().map(HeightRecord::getHeight).toList())
@@ -532,7 +498,7 @@ public class DataMigrationTest {
                 new HydrationRecord.Builder(getMetadata(), mStartTime, mEndTime, volume2).build(),
                 entityId2);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<HydrationRecord> records = getRecords(HydrationRecord.class);
         mExpect.that(records.stream().map(HydrationRecord::getVolume).toList())
@@ -564,7 +530,7 @@ public class DataMigrationTest {
                         .build(),
                 entityId2);
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         final List<NutritionRecord> records = getRecords(NutritionRecord.class);
         mExpect.that(records.stream().map(NutritionRecord::getProtein).toList())
@@ -578,7 +544,8 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migratePermissions_hasValidPermissions_validPermissionsGranted() {
+    public void migratePermissions_hasValidPermissions_validPermissionsGranted()
+            throws InterruptedException {
         assumeFalse(TestUtils.isHardwareAutomotive());
 
         revokeHealthPermissions(APP_PACKAGE_NAME);
@@ -594,14 +561,15 @@ public class DataMigrationTest {
                                 .addPermission(INVALID_PERMISSION_2)
                                 .addPermission(WRITE_HEIGHT)
                                 .build()));
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         final List<String> grantedPermissions = getGrantedAppPermissions();
         mExpect.that(grantedPermissions).containsAtLeast(READ_HEIGHT, WRITE_HEIGHT);
         mExpect.that(grantedPermissions).containsNoneOf(INVALID_PERMISSION_1, INVALID_PERMISSION_2);
     }
 
     @Test
-    public void migratePermissions_allInvalidPermissions_throwsMigrationException() {
+    public void migratePermissions_allInvalidPermissions_throwsMigrationException()
+            throws InterruptedException {
         assumeFalse(TestUtils.isHardwareAutomotive());
 
         revokeHealthPermissions(APP_PACKAGE_NAME);
@@ -623,13 +591,14 @@ public class DataMigrationTest {
             mExpect.that(e.getFailedEntityId()).isEqualTo(entityId);
             mExpect.that(getGrantedAppPermissions())
                     .containsNoneOf(INVALID_PERMISSION_1, INVALID_PERMISSION_2);
-            finishMigration();
+            TestUtils.finishMigrationWithShellPermissionIdentity();
         }
     }
 
     /** Test metadata migration, migrating record retention period. */
     @Test
-    public void migrateMetadata_migratingRetentionPeriod_metadataSaved() {
+    public void migrateMetadata_migratingRetentionPeriod_metadataSaved()
+            throws InterruptedException {
 
         final String entityId = "metadata";
 
@@ -639,14 +608,15 @@ public class DataMigrationTest {
                         new MetadataMigrationPayload.Builder()
                                 .setRecordRetentionPeriodDays(100)
                                 .build()));
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         assertThat(getRecordRetentionPeriodInDays()).isEqualTo(100);
     }
 
     /** Test priority migration where migration payload have additional apps. */
     @Test
-    public void migratePriority_additionalAppsInMigrationPayload_prioritySaved() {
+    public void migratePriority_additionalAppsInMigrationPayload_prioritySaved()
+            throws InterruptedException {
         assumeFalse(TestUtils.isHardwareAutomotive());
 
         revokeHealthPermissions(APP_PACKAGE_NAME);
@@ -688,7 +658,7 @@ public class DataMigrationTest {
                                                 .build())
                                 .build()));
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
 
         List<String> activityPriorityList =
                 getHealthDataCategoryPriority(HealthDataCategory.BODY_MEASUREMENTS);
@@ -817,7 +787,7 @@ public class DataMigrationTest {
                                 .setAppIcon(iconBytes)
                                 .build()));
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         // When recordTypes are modified the appInfo also gets updated and this update happens on
         // a background thread. To ensure the test has the latest values for appInfo, add a wait
         // time before fetching it.
@@ -830,7 +800,8 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migrateAppInfo_notInstalledAppAndRecordsNotMigrated_appInfoNotSaved() {
+    public void migrateAppInfo_notInstalledAppAndRecordsNotMigrated_appInfoNotSaved()
+            throws InterruptedException {
         final String entityId = "appInfo";
         final Bitmap icon = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
         final byte[] iconBytes = getBitmapBytes(icon);
@@ -843,7 +814,7 @@ public class DataMigrationTest {
                                 .setAppIcon(iconBytes)
                                 .build()));
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         final AppInfo appInfo = getContributorApplicationInfo(PACKAGE_NAME_NOT_INSTALLED);
 
         assertThat(appInfo).isNull();
@@ -872,7 +843,7 @@ public class DataMigrationTest {
                                 .setAppIcon(iconBytes)
                                 .build()));
 
-        finishMigration();
+        TestUtils.finishMigrationWithShellPermissionIdentity();
         // When recordTypes are modified the appInfo also gets updated and this update happens on
         // a background thread. To ensure the test has the latest values for appInfo, add a wait
         // time before fetching it.
@@ -973,24 +944,17 @@ public class DataMigrationTest {
                 .isFalse();
     }
 
-    private void migrate(MigrationEntity... entities) {
-        DataMigrationTest.<Void, MigrationException>blockingCallWithPermissions(
-                callback -> mManager.startMigration(mOutcomeExecutor, callback),
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
-
-        DataMigrationTest.<Void, MigrationException>blockingCallWithPermissions(
-                callback ->
-                        mManager.writeMigrationData(List.of(entities), mOutcomeExecutor, callback),
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+    private void migrate(MigrationEntity... entities) throws InterruptedException {
+        TestUtils.startMigrationWithShellPermissionIdentity();
+        Void unused =
+                callAndGetResponseWithShellPermissionIdentity(
+                        MigrationException.class,
+                        (executor, receiver) ->
+                                mManager.writeMigrationData(List.of(entities), executor, receiver),
+                        Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    private void finishMigration() {
-        DataMigrationTest.<Void, MigrationException>blockingCallWithPermissions(
-                callback -> mManager.finishMigration(mOutcomeExecutor, callback),
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
-    }
-
-    private void migrate(Record record, String entityId) {
+    private void migrate(Record record, String entityId) throws InterruptedException {
         migrate(getRecordEntity(record, entityId));
     }
 
@@ -1004,44 +968,8 @@ public class DataMigrationTest {
                         .build());
     }
 
-    private <T extends Record> List<T> getRecords(Class<T> clazz) {
-        final Consumer<OutcomeReceiver<ReadRecordsResponse<T>, HealthConnectException>> action =
-                callback -> getRecordsAsync(clazz, callback);
-
-        final ReadRecordsResponse<T> response =
-                blockingCallWithPermissions(
-                        action, HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
-
-        return response.getRecords();
-    }
-
-    private <T extends Record> T getRecord(Class<T> clazz, String clientRecordId) {
-        return getRecord(
-                new ReadRecordsRequestUsingIds.Builder<>(clazz)
-                        .addClientRecordId(clientRecordId)
-                        .build());
-    }
-
-    private <T extends Record> T getRecord(Class<T> clazz, UUID uuid) {
-        return getRecord(
-                new ReadRecordsRequestUsingIds.Builder<>(clazz).addId(uuid.toString()).build());
-    }
-
-    private <T extends Record> T getRecord(ReadRecordsRequest<T> request) {
-        final Consumer<OutcomeReceiver<ReadRecordsResponse<T>, HealthConnectException>> action =
-                callback -> mManager.readRecords(request, mOutcomeExecutor, callback);
-
-        final ReadRecordsResponse<T> response =
-                blockingCallWithPermissions(
-                        action, HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
-
-        return response.getRecords().stream().findFirst().orElse(null);
-    }
-
-    private <T extends Record> void getRecordsAsync(
-            Class<T> clazz,
-            OutcomeReceiver<ReadRecordsResponse<T>, HealthConnectException> callback) {
-        mManager.readRecords(
+    private <T extends Record> List<T> getRecords(Class<T> clazz) throws InterruptedException {
+        ReadRecordsRequestUsingFilters<T> request =
                 new ReadRecordsRequestUsingFilters.Builder<>(clazz)
                         .setTimeRangeFilter(
                                 new TimeInstantRangeFilter.Builder()
@@ -1052,33 +980,34 @@ public class DataMigrationTest {
                                         // amount of ms.
                                         .setEndTime(mEndTime.plusMillis(1))
                                         .build())
-                        .build(),
-                mOutcomeExecutor,
-                callback);
+                        .build();
+        ReadRecordsResponse<T> response =
+                callAndGetResponseWithShellPermissionIdentity(
+                        (executor, receiver) -> mManager.readRecords(request, executor, receiver),
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
+        return response.getRecords();
     }
 
-    private void deleteAllRecords() {
-        runWithShellPermissionIdentity(
-                () -> blockingCall(this::deleteAllRecordsAsync),
-                HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
+    private <T extends Record> T getRecord(Class<T> clazz, String clientRecordId)
+            throws InterruptedException {
+        return getRecord(
+                new ReadRecordsRequestUsingIds.Builder<>(clazz)
+                        .addClientRecordId(clientRecordId)
+                        .build());
     }
 
-    private void deleteAllRecordsAsync(OutcomeReceiver<Void, HealthConnectException> callback) {
-        mManager.deleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addDataOrigin(
-                                new DataOrigin.Builder().setPackageName(APP_PACKAGE_NAME).build())
-                        .build(),
-                mOutcomeExecutor,
-                callback);
+    private <T extends Record> T getRecord(Class<T> clazz, UUID uuid) throws InterruptedException {
+        return getRecord(
+                new ReadRecordsRequestUsingIds.Builder<>(clazz).addId(uuid.toString()).build());
     }
 
-    private void deleteAllStagedRemoteData() {
-        runWithShellPermissionIdentity(
-                () ->
-                        // TODO(b/241542162): Avoid reflection once TestApi can be called from CTS
-                        mManager.getClass().getMethod("deleteAllStagedRemoteData").invoke(mManager),
-                "android.permission.DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA");
+    private <T extends Record> T getRecord(ReadRecordsRequest<T> request)
+            throws InterruptedException {
+        ReadRecordsResponse<T> response =
+                callAndGetResponseWithShellPermissionIdentity(
+                        (executor, receiver) -> mManager.readRecords(request, executor, receiver),
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
+        return response.getRecords().stream().findFirst().orElse(null);
     }
 
     private void revokeHealthPermissions(String packageName) {
@@ -1136,61 +1065,18 @@ public class DataMigrationTest {
                                         APP_PACKAGE_NAME, PackageInfoFlags.of(GET_PERMISSIONS)));
     }
 
-    private AppInfo getContributorApplicationInfo(String packageName) {
-        return getContributorApplicationsInfo().stream()
+    private AppInfo getContributorApplicationInfo(String packageName) throws InterruptedException {
+        return getContributorApplicationInfos().stream()
                 .filter(ai -> ai.getPackageName().equals(packageName))
                 .findFirst()
                 .orElse(null);
     }
 
-    private List<AppInfo> getContributorApplicationsInfo() {
-        final ApplicationInfoResponse response =
-                runWithShellPermissionIdentity(
-                        () -> blockingCall(this::getContributorApplicationsInfoAsync));
-        return response.getApplicationInfoList();
-    }
-
-    private void getContributorApplicationsInfoAsync(
-            OutcomeReceiver<ApplicationInfoResponse, HealthConnectException> callback) {
-        mManager.getContributorApplicationsInfo(mOutcomeExecutor, callback);
-    }
-
-    @SuppressWarnings("NewClassNamingConvention") // False positive
-    private static class BlockingOutcomeReceiver<T, E extends Throwable>
-            implements OutcomeReceiver<T, E> {
-        private final Object[] mResult = new Object[1];
-        private final Throwable[] mError = new Throwable[1];
-        private final CountDownLatch mCountDownLatch = new CountDownLatch(1);
-
-        @Override
-        public void onResult(T result) {
-            mResult[0] = result;
-            mCountDownLatch.countDown();
-        }
-
-        @Override
-        public void onError(E error) {
-            mError[0] = error;
-            mCountDownLatch.countDown();
-        }
-
-        public T await() throws E {
-            try {
-                if (!mCountDownLatch.await(10, TimeUnit.SECONDS)) {
-                    throw new RuntimeException("Timeout waiting for outcome");
-                }
-
-                if (mError[0] != null) {
-                    //noinspection unchecked
-                    throw (E) mError[0];
-                }
-
-                //noinspection unchecked
-                return (T) mResult[0];
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    private List<AppInfo> getContributorApplicationInfos() throws InterruptedException {
+        return callAndGetResponseWithShellPermissionIdentity(
+                        mManager::getContributorApplicationsInfo,
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION)
+                .getApplicationInfoList();
     }
 
     /**
@@ -1217,33 +1103,17 @@ public class DataMigrationTest {
      * @param dataCategory category for which priority is being fetched
      * @return list of packages ordered in priority.
      */
-    private List<String> getHealthDataCategoryPriority(int dataCategory) {
-        return runWithShellPermissionIdentity(
-                () ->
-                        DataMigrationTest
-                                .<FetchDataOriginsPriorityOrderResponse, HealthConnectException>
-                                        blockingCall(
-                                                callback ->
-                                                        getHealthDataCategoryPriorityAsync(
-                                                                dataCategory, callback))
-                                .getDataOriginsPriorityOrder()
-                                .stream()
-                                .map(dataOrigin -> dataOrigin.getPackageName())
-                                .collect(Collectors.toList()),
-                HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
-    }
-
-    /**
-     * Fetches data category's priority of packages asynchronously
-     *
-     * @param dataCategory category for which priority is being fetched
-     * @param callback called after receiving results.
-     */
-    private void getHealthDataCategoryPriorityAsync(
-            int dataCategory,
-            OutcomeReceiver<FetchDataOriginsPriorityOrderResponse, HealthConnectException>
-                    callback) {
-        mManager.fetchDataOriginsPriorityOrder(dataCategory, newSingleThreadExecutor(), callback);
+    private List<String> getHealthDataCategoryPriority(int dataCategory)
+            throws InterruptedException {
+        FetchDataOriginsPriorityOrderResponse response =
+                callAndGetResponseWithShellPermissionIdentity(
+                        (executor, receiver) ->
+                                mManager.fetchDataOriginsPriorityOrder(
+                                        dataCategory, executor, receiver),
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
+        return response.getDataOriginsPriorityOrder().stream()
+                .map(DataOrigin::getPackageName)
+                .collect(Collectors.toList());
     }
 
     /**
