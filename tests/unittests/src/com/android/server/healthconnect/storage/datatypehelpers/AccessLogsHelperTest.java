@@ -106,7 +106,6 @@ public class AccessLogsHelperTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        AccessLogsHelper.resetInstanceForTest();
 
         AppInfoHelper.resetInstanceForTest();
         Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();

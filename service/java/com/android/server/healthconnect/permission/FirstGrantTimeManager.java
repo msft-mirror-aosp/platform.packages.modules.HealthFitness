@@ -414,8 +414,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
             // TODO(b/260691599): consider removing mapping when getUidForSharedUser is
             Map<String, Set<Integer>> sharedUserNamesToUid =
-                    mPackageInfoHelper.collectSharedUserNameToUidsMappingForUser(
-                            validHealthApps, user);
+                    mPackageInfoHelper.collectSharedUserNameToUidsMappingForUser(validHealthApps);
 
             mUidToGrantTimeCache.populateFromUserGrantTimeState(
                     restoredState, sharedUserNamesToUid, user);

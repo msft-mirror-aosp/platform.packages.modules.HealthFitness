@@ -51,13 +51,13 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -104,7 +104,8 @@ public class HealthConnectDatabaseTest {
     @DisableFlags({
         FLAG_DEVELOPMENT_DATABASE,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_ACTIVITY_INTENSITY_DB
+        FLAG_ACTIVITY_INTENSITY_DB,
+        Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES
     })
     public void onCreate_dbWithLatestSchemaCreated() {
         SQLiteDatabase sqliteDatabase =
@@ -263,7 +264,6 @@ public class HealthConnectDatabaseTest {
 
     private static HealthConnectInjector getHealthConnectInjector(Context context) {
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
         TransactionManager.clearInstanceForTest();
         return HealthConnectInjectorImpl.newBuilderForTest(context)
