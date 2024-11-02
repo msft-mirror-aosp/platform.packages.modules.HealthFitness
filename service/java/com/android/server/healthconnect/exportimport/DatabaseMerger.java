@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.HealthDat
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.PRIORITY_TABLE_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
@@ -234,7 +235,8 @@ public final class DatabaseMerger {
             int recordType,
             Class<T> recordTypeClass) {
         RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
-        if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
+        if (!checkTableExists(
+                stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
             return;
         }
 
@@ -290,7 +292,8 @@ public final class DatabaseMerger {
     private <T extends Record> void deleteRecordsOfType(
             HealthConnectDatabase stagedDatabase, int recordType, Class<T> recordTypeClass) {
         RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
-        if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
+        if (!checkTableExists(
+                stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
             return;
         }
 

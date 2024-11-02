@@ -100,7 +100,7 @@ public class ExportImportApiTest {
         // TODO(b/318484678): Improve tests using Uri from a different app.
         mRemoteExportFileUri =
                 Uri.fromFile(
-                        new File(mExportedDbContext.getDatabaseDir(), REMOTE_EXPORT_ZIP_FILE_NAME));
+                        new File(mExportedDbContext.getDataDir(), REMOTE_EXPORT_ZIP_FILE_NAME));
     }
 
     @After

@@ -137,7 +137,8 @@ public class FirstGrantTimeUnitTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setMigrationStateManager(mMigrationStateManager)
                         .setFirstGrantTimeDatastore(mDatastore)
-                        .setHealthPermissionIntentAppsTracker(mTracker);
+                        .setHealthPermissionIntentAppsTracker(mTracker)
+                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper);
     }
 
     @After
@@ -165,7 +166,7 @@ public class FirstGrantTimeUnitTest {
             when(mPackageInfoUtils.getPackageUid(
                             eq(packageName), any(UserHandle.class), any(Context.class)))
                     .thenReturn(uid);
-            when(mPackageInfoUtils.getPackageNameFromUid(eq(uid)))
+            when(mPackageInfoUtils.getPackageNameForUid(eq(mContext), eq(uid)))
                     .thenReturn(Optional.of(packageName));
         }
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(
@@ -262,15 +263,13 @@ public class FirstGrantTimeUnitTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                 };
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackageNamesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(packageInfo));
         when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
                 .thenReturn(true);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(true);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
 
         FirstGrantTimeManager firstGrantTimeManager =
                 createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
@@ -298,15 +297,13 @@ public class FirstGrantTimeUnitTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                 };
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackageNamesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(packageInfo));
         when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
                 .thenReturn(true);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(false);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
 
         FirstGrantTimeManager firstGrantTimeManager =
                 createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);

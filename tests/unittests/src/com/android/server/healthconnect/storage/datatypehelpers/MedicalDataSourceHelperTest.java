@@ -57,7 +57,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import android.content.ContentValues;
@@ -82,6 +84,11 @@ import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
@@ -135,17 +142,28 @@ public class MedicalDataSourceHelperTest {
     private AccessLogsHelper mAccessLogsHelper;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
-    @Mock private Context mContext;
+    private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private Drawable mDrawable;
 
     @Before
     public void setup() throws NameNotFoundException {
-        AccessLogsHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
+
+        mContext = spy(mHealthConnectDatabaseTestRule.getDatabaseContext());
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
-        mAppInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
-        mAccessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(new FakePreferenceHelper())
+                        .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         mMedicalDataSourceHelper =
                 new MedicalDataSourceHelper(

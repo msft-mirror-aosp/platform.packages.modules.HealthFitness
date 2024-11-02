@@ -2126,6 +2126,7 @@ public class HealthConnectManager {
      *   <li>The FHIR resource contains an "id" and "resourceType" field.
      *   <li>The FHIR resource type is in our accepted list of resource types. See {@link
      *       FhirResource} for the accepted types.
+     *   <li>The FHIR resource does not contain any "contained" resources.
      *   <li>The resource can be mapped to one of the READ_MEDICAL_DATA_ {@link HealthPermissions}
      *       categories.
      *   <li>The {@link UpsertMedicalResourceRequest#getDataSourceId()} is valid.

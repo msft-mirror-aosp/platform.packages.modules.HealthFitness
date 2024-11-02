@@ -15,6 +15,8 @@
  */
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
+
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 
 import android.annotation.FlaggedApi;
@@ -30,12 +32,15 @@ import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+
+import java.util.List;
 
 /**
  * Manages Cloud Backup operations.
@@ -47,6 +52,7 @@ public final class CloudBackupManager {
 
     private static final String TAG = "CloudBackupManager";
 
+    private final TransactionManager mTransactionManager;
     private final BackupRestoreDatabaseHelper mDatabaseHelper;
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
@@ -64,6 +70,7 @@ public final class CloudBackupManager {
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper,
             ExportImportSettingsStorage exportImportSettingsStorage) {
+        mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
         mExportImportSettingsStorage = exportImportSettingsStorage;
@@ -94,7 +101,24 @@ public final class CloudBackupManager {
     @NonNull
     public GetChangesForBackupResponse getChangesForBackup(@Nullable String changeToken) {
         if (changeToken != null) {
-            // TODO: b/369799948 - handles the case when still reading records from data tables.
+            // TODO: b/369799948 - error handling?
+            BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                    BackupChangeTokenHelper.getBackupChangeToken(mTransactionManager, changeToken);
+            boolean isChangeLogsTokenValid =
+                    mDatabaseHelper.isChangeLogsTokenValid(
+                            backupChangeToken.getChangeLogsRequestToken());
+            if (!isChangeLogsTokenValid) {
+                String emptyChangeToken =
+                        BackupChangeTokenHelper.getBackupChangeTokenRowId(
+                                mTransactionManager, null, EMPTY_PAGE_TOKEN.encode(), null);
+                return new GetChangesForBackupResponse(List.of(), emptyChangeToken);
+            }
+            if (backupChangeToken.getDataTableName() != null) {
+                return mDatabaseHelper.getChangesAndTokenFromDataTables(
+                        backupChangeToken.getDataTableName(),
+                        backupChangeToken.getDataTablePageToken(),
+                        backupChangeToken.getChangeLogsRequestToken());
+            }
             throw new UnsupportedOperationException();
         }
         return mDatabaseHelper.getChangesAndTokenFromDataTables();
