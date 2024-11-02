@@ -17,10 +17,10 @@
 package android.healthconnect.cts.phr;
 
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.R4B_VERSION_STRING;
-import static android.healthconnect.cts.utils.PhrDataFactory.R4_VERSION_STRING;
-import static android.healthconnect.cts.utils.PhrDataFactory.UNSUPPORTED_VERSION_STRING;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.R4B_VERSION_STRING;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.R4_VERSION_STRING;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.UNSUPPORTED_VERSION_STRING;
 
 import static com.google.common.truth.Truth.assertThat;
 

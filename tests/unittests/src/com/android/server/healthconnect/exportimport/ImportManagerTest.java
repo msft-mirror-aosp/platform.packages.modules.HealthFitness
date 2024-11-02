@@ -63,6 +63,7 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -124,7 +125,7 @@ public class ImportManagerTest {
 
     private ImportManager mImportManagerSpy;
 
-    private DatabaseContext mContext;
+    private StorageContext mContext;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
@@ -146,20 +147,11 @@ public class ImportManagerTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
 
         mContext = mDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
-        mNotificationSender = mock(HealthConnectNotificationSender.class);
-
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
@@ -167,6 +159,11 @@ public class ImportManagerTest {
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
+        mNotificationSender = mock(HealthConnectNotificationSender.class);
 
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
@@ -210,7 +207,6 @@ public class ImportManagerTest {
         }
         testDir.delete();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 
@@ -409,8 +405,8 @@ public class ImportManagerTest {
                         DEFAULT_USER_HANDLE);
 
         File databaseDir =
-                DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())
-                        .getDatabaseDir();
+                StorageContext.create(mContext, mContext.getUser(), IMPORT_DATABASE_DIR_NAME)
+                        .getDataDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }
 

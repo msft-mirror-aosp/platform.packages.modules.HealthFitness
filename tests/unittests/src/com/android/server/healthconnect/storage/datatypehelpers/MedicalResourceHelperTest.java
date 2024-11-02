@@ -23,25 +23,25 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
-import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
-import static android.healthconnect.cts.utils.PhrDataFactory.createAllergyMedicalResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResources;
-import static android.healthconnect.cts.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceBuilder;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceDifferentImmunization;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
-import static android.healthconnect.cts.utils.PhrDataFactory.getUpdatedAllergyFhirResource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getUpdatedImmunizationFhirResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.addCompletedStatus;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createAllergyMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createImmunizationMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createImmunizationMedicalResources;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceAllergy;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceBuilder;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceDifferentImmunization;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpdatedAllergyFhirResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpdatedImmunizationFhirResource;
 
 import static com.android.server.healthconnect.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
 import static com.android.server.healthconnect.storage.PhrTestUtils.makeUpsertRequest;
@@ -67,6 +67,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getHex
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.mock;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -79,7 +80,7 @@ import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
-import android.healthconnect.cts.utils.PhrDataFactory;
+import android.healthconnect.cts.phr.utils.PhrDataFactory;
 import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -87,10 +88,14 @@ import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.PhrTestUtils;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -143,21 +148,27 @@ public class MedicalResourceHelperTest {
     private TransactionTestUtils mTransactionTestUtils;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
-    private DatabaseContext mContext;
+    private StorageContext mContext;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
 
     @Before
     public void setup() {
-        AccessLogsHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mAppInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
-        mAccessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper);
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         mMedicalDataSourceHelper =
                 new MedicalDataSourceHelper(
@@ -169,7 +180,6 @@ public class MedicalResourceHelperTest {
                         mMedicalDataSourceHelper,
                         mFakeTimeSource,
                         mAccessLogsHelper);
-
         mUtil =
                 new PhrTestUtils(
                         mContext,

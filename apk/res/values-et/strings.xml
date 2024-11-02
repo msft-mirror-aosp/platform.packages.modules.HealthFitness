@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ratastooli lükkamised"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Ratastooli lükkamiste lugemine"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Ratastooli lükkamiste kirjutamine"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Ainevahetuse baaskiirus"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"ainevahetuse baaskiirus"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Ainevahetuse baaskiiruse lugemine"</string>
@@ -668,7 +676,7 @@
     <string name="boot_camp" msgid="1554811887379786226">"Treeninglaager"</string>
     <string name="boxing" msgid="2200194516739940317">"Poks"</string>
     <string name="burpee" msgid="1434605818712603589">"Kosmonaut"</string>
-    <string name="calisthenics" msgid="9080623890020954493">"Võimlemisharjutused"</string>
+    <string name="calisthenics" msgid="9080623890020954493">"Kalisteenika"</string>
     <string name="cricket" msgid="7543586707938752011">"Kriket"</string>
     <string name="crunch" msgid="4265356947720591896">"Kõhulihaste harjutus"</string>
     <string name="dancing" msgid="4099572666298130171">"Tantsimine"</string>
@@ -1129,6 +1137,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Kuva rakenduste poes"</string>
     <string name="select_all" msgid="837499881590001166">"Vali kõik"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Ühendatud rakendused ei saa enam neid andmeid rakendusest Health Connect lugeda."</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Kas kustutada kõik andmed jäädavalt?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Kas kustutada valitud andmed jäädavalt?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Kas kustutada kõik rakenduse <xliff:g id="APP_NAME">%s</xliff:g> andmed jäädavalt?"</string>
@@ -1148,12 +1174,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Kas kustutada valitud rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> kuu <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> kirjed jäädavalt?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Kas kustutada see rakenduse <xliff:g id="APP_NAME">%s</xliff:g> kirje jäädavalt?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Kas kustutada rakenduse <xliff:g id="APP_NAME">%2$s</xliff:g> kategooria <xliff:g id="DATA_TYPE">%1$s</xliff:g> andmed?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Sees"</string>
+    <string name="off" msgid="6996623844428550649">"Väljas"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Juurde pääsetud <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Juurde pääsetud eile <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Juurde pääsetud <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

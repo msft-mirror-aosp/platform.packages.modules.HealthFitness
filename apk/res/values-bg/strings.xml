@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"бутания на инвалидна количка"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Четене на бутанията на инвалидна количка"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Записване на бутанията на инвалидна количка"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Основна обмяна на веществата"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"основна обмяна на веществата"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Четене на данните за основната обмяна на веществата"</string>
@@ -1129,6 +1137,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Преглед в магазина за приложения"</string>
     <string name="select_all" msgid="837499881590001166">"Избиране на всички"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Свързаните приложения вече няма да могат да четат тези данни от Health Connect"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Да се изтрият ли за постоянно всички данни?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Да се изтрият ли за постоянно избраните данни?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Да се изтрият ли за постоянно всички данни от <xliff:g id="APP_NAME">%s</xliff:g>?"</string>

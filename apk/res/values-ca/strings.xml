@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"impulsos en cadira de rodes"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Llegir els impulsos en cadira de rodes"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Escriure els impulsos en cadira de rodes"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensitat de l\'activitat"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensitat de l\'activitat"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Llegir la intensitat de l\'activitat"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Escriure la intensitat de l\'activitat"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Metabolisme basal"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"metabolisme basal"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Llegir el metabolisme basal"</string>
@@ -1022,7 +1026,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permet totes les rutes"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"No permetis"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permet sempre"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Accedeix a les rutes d\'exercici"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accedir a les rutes d\'exercici"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les rutes"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pregunta sempre"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"No permetis"</string>
@@ -1129,6 +1133,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Mostra a la botiga d\'aplicacions"</string>
     <string name="select_all" msgid="837499881590001166">"Selecciona-ho tot"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Les aplicacions connectades ja no podran llegir aquestes dades de Salut connectada"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Vols suprimir permanentment totes les dades?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Vols suprimir permanentment les dades seleccionades?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Vols suprimir permanentment totes les dades de l\'aplicació <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1148,12 +1170,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vols suprimir permanentment les entrades seleccionades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vols suprimir permanentment aquesta entrada de l\'aplicació <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Vols suprimir permanentment les dades de <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Activat"</string>
+    <string name="off" msgid="6996623844428550649">"Desactivat"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"S\'hi ha accedit a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"S\'hi va accedir ahir a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"S\'hi ha accedit el dia <xliff:g id="TIME_DATE_0">%1$s</xliff:g> a les <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

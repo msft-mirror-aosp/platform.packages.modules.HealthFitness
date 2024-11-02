@@ -38,9 +38,11 @@ import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.NoDataPreference
 import com.android.healthconnect.controller.utils.logging.DataAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setTitle
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -53,6 +55,7 @@ class AccessFragment : Hilt_AccessFragment() {
         private const val CAN_READ_SECTION = "can_read"
         private const val CAN_WRITE_SECTION = "can_write"
         private const val INACTIVE_SECTION = "inactive"
+        private const val NO_DATA = "no_data_preference"
         private const val DELETION_TAG = "DeletionTag"
     }
 
@@ -67,17 +70,13 @@ class AccessFragment : Hilt_AccessFragment() {
 
     private lateinit var permissionType: HealthPermissionType
 
-    private val mCanReadSection: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(CAN_READ_SECTION)
-    }
+    private val mCanReadSection: PreferenceGroup by pref(CAN_READ_SECTION)
 
-    private val mCanWriteSection: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(CAN_WRITE_SECTION)
-    }
+    private val mCanWriteSection: PreferenceGroup by pref(CAN_WRITE_SECTION)
 
-    private val mInactiveSection: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(INACTIVE_SECTION)
-    }
+    private val mInactiveSection: PreferenceGroup by pref(INACTIVE_SECTION)
+
+    private val noDataPreference: NoDataPreference by pref(NO_DATA)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -88,16 +87,13 @@ class AccessFragment : Hilt_AccessFragment() {
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
             permissionType = fromPermissionTypeName(permissionTypeName)
         }
-        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
-            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
-        }
 
-        mCanReadSection?.isVisible = false
-        mCanWriteSection?.isVisible = false
-        mInactiveSection?.isVisible = false
-        mCanReadSection?.title =
+        mCanReadSection.isVisible = false
+        mCanWriteSection.isVisible = false
+        mInactiveSection.isVisible = false
+        mCanReadSection.title =
             getString(R.string.can_read, getString(permissionType.lowerCaseLabel()))
-        mCanWriteSection?.title =
+        mCanWriteSection.title =
             getString(R.string.can_write, getString(permissionType.lowerCaseLabel()))
     }
 
@@ -105,6 +101,9 @@ class AccessFragment : Hilt_AccessFragment() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
         viewModel.loadAppMetaDataMap(permissionType)
+        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
+            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,39 +124,47 @@ class AccessFragment : Hilt_AccessFragment() {
                 }
             }
         }
+
+        deletionViewModel.inactiveAppsReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
+            if (isReloadNeeded) {
+                viewModel.loadAppMetaDataMap(permissionType)
+                deletionViewModel.resetInactiveAppsReloadNeeded()
+            }
+        }
     }
 
     private fun updateDataAccess(appMetadataMap: Map<AppAccessState, List<AppAccessMetadata>>) {
-        mCanReadSection?.removeAll()
-        mCanWriteSection?.removeAll()
-        mInactiveSection?.removeAll()
+        mCanReadSection.removeAll()
+        mCanWriteSection.removeAll()
+        mInactiveSection.removeAll()
+        noDataPreference.isVisible = false
 
         if (appMetadataMap.containsKey(AppAccessState.Read)) {
             if (appMetadataMap[AppAccessState.Read]!!.isEmpty()) {
-                mCanReadSection?.isVisible = false
+                mCanReadSection.isVisible = false
             } else {
-                mCanReadSection?.isVisible = true
+                mCanReadSection.isVisible = true
                 appMetadataMap[AppAccessState.Read]!!.forEach { appAccessMetadata ->
-                    mCanReadSection?.addPreference(createAppPreference(appAccessMetadata))
+                    mCanReadSection.addPreference(createAppPreference(appAccessMetadata))
                 }
             }
         }
         if (appMetadataMap.containsKey(AppAccessState.Write)) {
             if (appMetadataMap[AppAccessState.Write]!!.isEmpty()) {
-                mCanWriteSection?.isVisible = false
+                mCanWriteSection.isVisible = false
             } else {
-                mCanWriteSection?.isVisible = true
+                mCanWriteSection.isVisible = true
                 appMetadataMap[AppAccessState.Write]!!.forEach { appAccessMetadata ->
-                    mCanWriteSection?.addPreference(createAppPreference(appAccessMetadata))
+                    mCanWriteSection.addPreference(createAppPreference(appAccessMetadata))
                 }
             }
         }
         if (appMetadataMap.containsKey(AppAccessState.Inactive)) {
             if (appMetadataMap[AppAccessState.Inactive]!!.isEmpty()) {
-                mInactiveSection?.isVisible = false
+                mInactiveSection.isVisible = false
             } else {
-                mInactiveSection?.isVisible = true
-                mInactiveSection?.addPreference(
+                mInactiveSection.isVisible = true
+                mInactiveSection.addPreference(
                     Preference(requireContext()).also {
                         it.summary =
                             getString(
@@ -168,7 +175,7 @@ class AccessFragment : Hilt_AccessFragment() {
                 )
                 appMetadataMap[AppAccessState.Inactive]?.forEach { appAccessMetadata ->
                     val appMetadata = appAccessMetadata.appMetadata
-                    mInactiveSection?.addPreference(
+                    mInactiveSection.addPreference(
                         InactiveAppPreference(requireContext()).also {
                             it.title = appMetadata.appName
                             it.icon = appMetadata.icon
@@ -191,6 +198,9 @@ class AccessFragment : Hilt_AccessFragment() {
                 }
             }
         }
+
+        noDataPreference.isVisible =
+            !mCanReadSection.isVisible && !mCanWriteSection.isVisible && !mInactiveSection.isVisible
     }
 
     private fun createAppPreference(appAccessMetadata: AppAccessMetadata): HealthAppPreference {
@@ -222,5 +232,13 @@ class AccessFragment : Hilt_AccessFragment() {
                     EXTRA_APP_NAME to appAccessMetadata.appMetadata.appName,
                 ),
             )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val deletionFragment = childFragmentManager.findFragmentByTag(DELETION_TAG)
+        if (deletionFragment != null) {
+            childFragmentManager.commitNow { remove(deletionFragment) }
+        }
     }
 }

@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage.utils;
 
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__ACTIVE_CALORIES_BURNED;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__ACTIVITY_INTENSITY;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__BASAL_BODY_TEMPERATURE;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__BASAL_METABOLIC_RATE;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__BLOOD_GLUCOSE;
@@ -56,6 +57,7 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__D
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__WEIGHT;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__WHEELCHAIR_PUSHES;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVITY_INTENSITY;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_BODY_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_GLUCOSE;
@@ -99,6 +101,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 
 import static com.android.internal.annotations.VisibleForTesting.Visibility.PACKAGE;
 import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid.RECORD_TYPE_ID_FOR_UUID_ACTIVE_CALORIES_BURNED;
+import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid.RECORD_TYPE_ID_FOR_UUID_ACTIVITY_INTENSITY;
 import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid.RECORD_TYPE_ID_FOR_UUID_BASAL_BODY_TEMPERATURE;
 import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid.RECORD_TYPE_ID_FOR_UUID_BASAL_METABOLIC_RATE;
 import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid.RECORD_TYPE_ID_FOR_UUID_BLOOD_GLUCOSE;
@@ -140,11 +143,14 @@ import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid
 import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid.RECORD_TYPE_ID_FOR_UUID_WEIGHT;
 import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid.RECORD_TYPE_ID_FOR_UUID_WHEELCHAIR_PUSHES;
 
+import android.annotation.Nullable;
 import android.health.HealthFitnessStatsLog;
 
+import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.ActiveCaloriesBurnedRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityIntensityRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BasalBodyTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BasalMetabolicRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BloodGlucoseRecordHelper;
@@ -186,15 +192,20 @@ import com.android.server.healthconnect.storage.datatypehelpers.Vo2MaxRecordHelp
 import com.android.server.healthconnect.storage.datatypehelpers.WeightRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.WheelchairPushesRecordHelper;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /** @hide */
 @VisibleForTesting(visibility = PACKAGE)
 public class InternalDataTypeDescriptors {
 
-    // Using an alias to satisfy the Java style line length limit below, otherwise doesn't fit.
+    // Using aliases to satisfy the Java style line length limit below, otherwise doesn't fit.
     private static final int LOGGING_ENUM_HEART_RATE_VARIABILITY_RMSSD =
             HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__HEART_RATE_VARIABILITY_RMSSD;
+
+    private static final int LOGGING_ENUM_ACTIVITY_INTENSITY =
+            HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__ACTIVITY_INTENSITY;
 
     @VisibleForTesting(visibility = PACKAGE)
     public static List<InternalDataTypeDescriptor> getAllInternalDataTypeDescriptors() {
@@ -202,7 +213,7 @@ public class InternalDataTypeDescriptors {
             return List.of();
         }
 
-        return List.of(
+        return listOfNonNull(
                 InternalDataTypeDescriptor.builder()
                         .setRecordTypeIdentifier(RECORD_TYPE_ACTIVE_CALORIES_BURNED)
                         .setRecordHelper(new ActiveCaloriesBurnedRecordHelper())
@@ -210,6 +221,14 @@ public class InternalDataTypeDescriptors {
                         .setLoggingEnum(
                                 HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__ACTIVE_CALORIES_BURNED)
                         .build(),
+                AconfigFlagHelper.isActivityIntensityEnabled()
+                        ? InternalDataTypeDescriptor.builder()
+                                .setRecordTypeIdentifier(RECORD_TYPE_ACTIVITY_INTENSITY)
+                                .setRecordHelper(new ActivityIntensityRecordHelper())
+                                .setRecordTypeIdForUuid(RECORD_TYPE_ID_FOR_UUID_ACTIVITY_INTENSITY)
+                                .setLoggingEnum(LOGGING_ENUM_ACTIVITY_INTENSITY)
+                                .build()
+                        : null,
                 InternalDataTypeDescriptor.builder()
                         .setRecordTypeIdentifier(RECORD_TYPE_BASAL_BODY_TEMPERATURE)
                         .setRecordHelper(new BasalBodyTemperatureRecordHelper())
@@ -469,5 +488,10 @@ public class InternalDataTypeDescriptors {
                         .setLoggingEnum(
                                 HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__WHEELCHAIR_PUSHES)
                         .build());
+    }
+
+    @SafeVarargs
+    private static <T> List<T> listOfNonNull(@Nullable T... values) {
+        return Arrays.stream(values).filter(Objects::nonNull).toList();
     }
 }
