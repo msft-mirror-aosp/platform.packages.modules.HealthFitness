@@ -15,6 +15,8 @@
  */
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
+
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 
 import android.annotation.FlaggedApi;
@@ -37,6 +39,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+
+import java.util.List;
 
 /**
  * Manages Cloud Backup operations.
@@ -100,6 +104,15 @@ public final class CloudBackupManager {
             // TODO: b/369799948 - error handling?
             BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                     BackupChangeTokenHelper.getBackupChangeToken(mTransactionManager, changeToken);
+            boolean isChangeLogsTokenValid =
+                    mDatabaseHelper.isChangeLogsTokenValid(
+                            backupChangeToken.getChangeLogsRequestToken());
+            if (!isChangeLogsTokenValid) {
+                String emptyChangeToken =
+                        BackupChangeTokenHelper.getBackupChangeTokenRowId(
+                                mTransactionManager, null, EMPTY_PAGE_TOKEN.encode(), null);
+                return new GetChangesForBackupResponse(List.of(), emptyChangeToken);
+            }
             if (backupChangeToken.getDataTableName() != null) {
                 return mDatabaseHelper.getChangesAndTokenFromDataTables(
                         backupChangeToken.getDataTableName(),

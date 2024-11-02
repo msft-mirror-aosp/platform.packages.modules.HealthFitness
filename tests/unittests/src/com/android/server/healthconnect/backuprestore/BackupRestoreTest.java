@@ -90,7 +90,6 @@ import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.utils.FilesUtil;
@@ -188,7 +187,6 @@ public class BackupRestoreTest {
         FilesUtil.deleteDir(mMockStagedDataDirectory);
         mFakePreferenceHelper.clearCache();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
     }
 
     @Test
