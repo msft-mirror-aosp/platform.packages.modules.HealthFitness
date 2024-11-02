@@ -185,6 +185,7 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.permission.MedicalDataPermissionEnforcer;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
+import com.android.server.healthconnect.phr.validations.FhirResourceValidator;
 import com.android.server.healthconnect.phr.validations.MedicalResourceValidator;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
@@ -282,6 +283,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final MigrationEntityHelper mMigrationEntityHelper;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthConnectMappings mHealthConnectMappings;
+    // This will be null if the phr_fhir_structural_validation flag is false.
+    @Nullable private FhirResourceValidator mFhirResourceValidator;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -292,45 +295,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
-            MedicalResourceHelper medicalResourceHelper,
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            Context context,
-            ExportManager exportManager,
-            ExportImportSettingsStorage exportImportSettingsStorage,
-            AccessLogsHelper accessLogsHelper,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            ActivityDateHelper activityDateHelper,
-            ChangeLogsHelper changeLogsHelper,
-            ChangeLogsRequestHelper changeLogsRequestHelper,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
-        this(
-                transactionManager,
-                permissionHelper,
-                migrationCleaner,
-                firstGrantTimeManager,
-                migrationStateManager,
-                migrationUiStateManager,
-                context,
-                medicalResourceHelper,
-                medicalDataSourceHelper,
-                exportManager,
-                exportImportSettingsStorage,
-                accessLogsHelper,
-                healthDataCategoryPriorityHelper,
-                activityDateHelper,
-                changeLogsHelper,
-                changeLogsRequestHelper,
-                internalHealthConnectMappings);
-    }
-
-    @VisibleForTesting
-    HealthConnectServiceImpl(
-            TransactionManager transactionManager,
-            HealthConnectPermissionHelper permissionHelper,
-            MigrationCleaner migrationCleaner,
-            FirstGrantTimeManager firstGrantTimeManager,
-            MigrationStateManager migrationStateManager,
-            MigrationUiStateManager migrationUiStateManager,
             Context context,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
@@ -341,7 +305,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            PriorityMigrationHelper priorityMigrationHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -390,7 +355,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mExportManager = exportManager;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
-        mPriorityMigrationHelper = PriorityMigrationHelper.getInstance();
+        mPriorityMigrationHelper = priorityMigrationHelper;
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
@@ -2607,11 +2572,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                             attributionSource);
 
+                    // Initialise validator when upsertMedicalResources is called for the
+                    // first time to avoid unnecessary initialisation when PHR apis are not used.
+                    if (Flags.phrFhirStructuralValidation() && mFhirResourceValidator == null) {
+                        mFhirResourceValidator = new FhirResourceValidator();
+                    }
+
                     List<UpsertMedicalResourceInternalRequest> validatedMedicalResourcesToUpsert =
                             new ArrayList<>();
                     for (UpsertMedicalResourceRequest upsertMedicalResourceRequest : requests) {
                         MedicalResourceValidator validator =
-                                new MedicalResourceValidator(upsertMedicalResourceRequest);
+                                new MedicalResourceValidator(
+                                        upsertMedicalResourceRequest, mFhirResourceValidator);
                         validatedMedicalResourcesToUpsert.add(
                                 validator.validateAndCreateInternalRequest());
                     }

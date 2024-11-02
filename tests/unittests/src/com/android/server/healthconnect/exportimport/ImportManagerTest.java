@@ -147,20 +147,11 @@ public class ImportManagerTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
 
         mContext = mDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
-        mNotificationSender = mock(HealthConnectNotificationSender.class);
-
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
@@ -168,6 +159,11 @@ public class ImportManagerTest {
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
+        mNotificationSender = mock(HealthConnectNotificationSender.class);
 
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
@@ -211,7 +207,6 @@ public class ImportManagerTest {
         }
         testDir.delete();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 
@@ -411,7 +406,7 @@ public class ImportManagerTest {
 
         File databaseDir =
                 StorageContext.create(mContext, mContext.getUser(), IMPORT_DATABASE_DIR_NAME)
-                        .getDatabaseDir();
+                        .getDataDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }
 

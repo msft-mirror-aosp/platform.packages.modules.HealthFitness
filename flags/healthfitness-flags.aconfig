@@ -82,6 +82,48 @@ flag {
 }
 
 flag {
+    name: "personal_health_record_enable_d2d_and_export_import"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for merging PHR data in both device to device transfer and export/import flows."
+    bug: "369809932"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "personal_health_record_disable_d2d"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for excluding PHR tables from device to device transfer flow."
+    bug: "369809932"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+    is_exported: true
+}
+
+flag {
+    name: "personal_health_record_disable_export_import"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for excluding PHR tables from export/import flow."
+    bug: "369809932"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_structural_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    bug: "350010200"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
     name: "export_import"
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."
@@ -278,4 +320,30 @@ flag {
     bug: "318484000"
     is_fixed_read_only: true
     is_exported: true
+}
+
+flag {
+    name: "expressive_theming_enabled"
+    namespace: "health_fitness_aconfig"
+    description: "Enables expressive theming for the UI."
+    bug: "376085738"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "architecture_improvement"
+    namespace: "health_fitness_aconfig"
+    description: "Enables architecture and testing improvement for HC."
+    bug: "376085738"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "replace_body_sensor_permission_enabled"
+    is_fixed_read_only: true
+    namespace: "android_health_services"
+    description: "This fixed read-only flag is used to enable replacing permission BODY_SENSORS (and BODY_SENSORS_BACKGROUND) with granular health permission READ_HEART_RATE (and READ_HEALTH_DATA_IN_BACKGROUND)"
+    bug: "364638912"
 }

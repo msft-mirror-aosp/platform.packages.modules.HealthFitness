@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,10 +44,12 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_RESOURCE_T
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpsertMedicalResourceRequestBuilder;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -58,6 +60,7 @@ import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.ConditionBuilder;
 import android.healthconnect.cts.phr.utils.EncountersBuilder;
+import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
 import android.healthconnect.cts.phr.utils.MedicationsBuilder;
 import android.healthconnect.cts.phr.utils.ObservationBuilder;
 import android.healthconnect.cts.phr.utils.ObservationBuilder.QuantityUnits;
@@ -66,8 +69,6 @@ import android.healthconnect.cts.phr.utils.PractitionerBuilder;
 import android.healthconnect.cts.phr.utils.ProcedureBuilder;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
-
-import androidx.annotation.NonNull;
 
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
@@ -83,10 +84,16 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-@EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+@EnableFlags({
+    FLAG_PERSONAL_HEALTH_RECORD,
+    FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+    FLAG_PHR_FHIR_STRUCTURAL_VALIDATION
+})
 @RunWith(TestParameterInjector.class)
 public class MedicalResourceValidatorTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    private FhirResourceValidator mFhirResourceValidator = null;
 
     @Test
     public void testValidateAndCreateInternalRequest_validAndR4_populatesInternalRequest() {
@@ -103,7 +110,8 @@ public class MedicalResourceValidatorTest {
                         .setFhirVersion(FHIR_VERSION_R4)
                         .setData(FHIR_DATA_IMMUNIZATION);
 
-        MedicalResourceValidator validator = new MedicalResourceValidator(upsertRequest);
+        MedicalResourceValidator validator =
+                new MedicalResourceValidator(upsertRequest, getFhirResourceValidator());
         UpsertMedicalResourceInternalRequest validatedRequest =
                 validator.validateAndCreateInternalRequest();
 
@@ -125,11 +133,85 @@ public class MedicalResourceValidatorTest {
                         .setFhirVersion(FHIR_VERSION_R4B)
                         .setData(FHIR_DATA_IMMUNIZATION);
 
-        MedicalResourceValidator validator = new MedicalResourceValidator(upsertRequest);
+        MedicalResourceValidator validator =
+                new MedicalResourceValidator(upsertRequest, getFhirResourceValidator());
         UpsertMedicalResourceInternalRequest validatedRequest =
                 validator.validateAndCreateInternalRequest();
 
         assertThat(validatedRequest).isEqualTo(expected);
+    }
+
+    @Test
+    public void testConstructor_nullValidator_succeeds() {
+        new MedicalResourceValidator(getUpsertMedicalResourceRequest(), null);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nullValidator_succeeds() {
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+        UpsertMedicalResourceInternalRequest expected =
+                new UpsertMedicalResourceInternalRequest()
+                        .setDataSourceId(DATA_SOURCE_ID)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
+                        .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
+                        .setFhirVersion(FHIR_VERSION_R4)
+                        .setData(FHIR_DATA_IMMUNIZATION);
+
+        MedicalResourceValidator validator = new MedicalResourceValidator(upsertRequest, null);
+        UpsertMedicalResourceInternalRequest validatedRequest =
+                validator.validateAndCreateInternalRequest();
+
+        assertThat(validatedRequest).isEqualTo(expected);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nullValidator_unknownFieldSucceeds() {
+        String immunizationWithUnknownField =
+                new ImmunizationBuilder()
+                        .setId(FHIR_RESOURCE_ID_IMMUNIZATION)
+                        .set("unknown", "test")
+                        .toJson();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, immunizationWithUnknownField)
+                        .build();
+        UpsertMedicalResourceInternalRequest expected =
+                new UpsertMedicalResourceInternalRequest()
+                        .setDataSourceId(DATA_SOURCE_ID)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
+                        .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
+                        .setFhirVersion(FHIR_VERSION_R4)
+                        .setData(immunizationWithUnknownField);
+
+        MedicalResourceValidator validator = new MedicalResourceValidator(upsertRequest, null);
+        UpsertMedicalResourceInternalRequest validatedRequest =
+                validator.validateAndCreateInternalRequest();
+
+        assertThat(validatedRequest).isEqualTo(expected);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nonNullValidator_unknownFieldThrows() {
+        String immunizationWithUnknownField =
+                new ImmunizationBuilder().set("unknown", "test").toJson();
+
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, immunizationWithUnknownField)
+                        .build();
+        MedicalResourceValidator validator =
+                new MedicalResourceValidator(request, getFhirResourceValidator());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> validator.validateAndCreateInternalRequest());
+        assertThat(thrown).hasMessageThat().contains("Found unexpected field ");
     }
 
     @Test
@@ -151,6 +233,23 @@ public class MedicalResourceValidatorTest {
     @Test
     public void testValidateAndCreateInternalRequest_fhirResourceWithoutId_throws() {
         MedicalResourceValidator validator = makeValidator(FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown).hasMessageThat().contains("Resource is missing id field");
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nullValidatorMissingId_throws() {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS)
+                        .build();
+        MedicalResourceValidator validator = new MedicalResourceValidator(request, null);
 
         var thrown =
                 assertThrows(
@@ -188,7 +287,8 @@ public class MedicalResourceValidatorTest {
                 getUpsertMedicalResourceRequestBuilder()
                         .setFhirVersion(FHIR_VERSION_UNSUPPORTED)
                         .build();
-        MedicalResourceValidator validator = new MedicalResourceValidator(upsertRequest);
+        MedicalResourceValidator validator =
+                new MedicalResourceValidator(upsertRequest, getFhirResourceValidator());
 
         var thrown =
                 assertThrows(
@@ -219,6 +319,68 @@ public class MedicalResourceValidatorTest {
                                 + FHIR_RESOURCE_TYPE_UNSUPPORTED
                                 + " for resource with id "
                                 + FHIR_RESOURCE_ID_IMMUNIZATION);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_containedResourceInResource_throws() {
+        String resourceId = "id1";
+        String medicationStatementWithContainedResource =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .setContainedMedication(new MedicationsBuilder.MedicationBuilder())
+                        .toJson();
+        MedicalResourceValidator validator =
+                makeValidator(medicationStatementWithContainedResource);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Contained resources are not supported. Found contained resource for"
+                                + " resource with id "
+                                + resourceId);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_containedFieldNotArray_throws()
+            throws JSONException {
+        String resourceId = "id1";
+        String medicationStatementWithInvalidContained =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .set("contained", new JSONObject("{}"))
+                        .toJson();
+        MedicalResourceValidator validator = makeValidator(medicationStatementWithInvalidContained);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Contained resources are not supported. Found contained field for resource"
+                                + " with id "
+                                + resourceId);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_emptyContainedArray_succeeds()
+            throws JSONException {
+        String resourceId = "id1";
+        String medicationStatementWithEmptyContained =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .set("contained", new JSONArray("[]"))
+                        .toJson();
+
+        MedicalResourceValidator validator = makeValidator(medicationStatementWithEmptyContained);
+
+        assertThat(validator.validateAndCreateInternalRequest().getData())
+                .isEqualTo(medicationStatementWithEmptyContained);
     }
 
     @Test
@@ -695,11 +857,17 @@ public class MedicalResourceValidatorTest {
         assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS);
     }
 
-    @NonNull
-    private static MedicalResourceValidator makeValidator(String fhirData) {
+    private MedicalResourceValidator makeValidator(String fhirData) {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_ID, FHIR_VERSION_R4, fhirData)
                         .build();
-        return new MedicalResourceValidator(request);
+        return new MedicalResourceValidator(request, getFhirResourceValidator());
+    }
+
+    private FhirResourceValidator getFhirResourceValidator() {
+        if (mFhirResourceValidator == null) {
+            mFhirResourceValidator = new FhirResourceValidator();
+        }
+        return mFhirResourceValidator;
     }
 }

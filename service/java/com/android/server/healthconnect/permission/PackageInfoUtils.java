@@ -18,8 +18,6 @@ package com.android.server.healthconnect.permission;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
-import static java.util.Objects.requireNonNull;
-
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -44,30 +42,10 @@ import java.util.Set;
 public final class PackageInfoUtils {
     private static final String TAG = "HCPackageInfoUtils";
 
-    @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
-
-    /**
-     * Store PackageManager for each user. Keys are users, values are PackageManagers which get from
-     * each user.
-     */
-    private final Map<UserHandle, PackageManager> mUsersPackageManager = new ArrayMap<>();
-
-    private PackageInfoUtils() {}
-
-    /** Returns singleton instance of PackageInfoUtils */
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static synchronized PackageInfoUtils getInstance() {
-        if (sPackageInfoUtils == null) {
-            sPackageInfoUtils = new PackageInfoUtils();
-        }
-
-        return requireNonNull(sPackageInfoUtils);
-    }
+    public PackageInfoUtils() {}
 
     Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
-            List<PackageInfo> packageInfos, UserHandle user) {
+            List<PackageInfo> packageInfos) {
         Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
         for (PackageInfo info : packageInfos) {
             if (info.sharedUserId != null) {
@@ -83,7 +61,7 @@ public final class PackageInfoUtils {
     public List<PackageInfo> getPackagesHoldingHealthPermissions(UserHandle user, Context context) {
         // TODO(b/260707328): replace with getPackagesHoldingPermissions
         List<PackageInfo> allInfos =
-                getPackageManagerAsUser(user, context)
+                getPackageManagerAsUser(context, user)
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
         List<PackageInfo> healthAppsInfos = new ArrayList<>();
 
@@ -109,7 +87,7 @@ public final class PackageInfoUtils {
 
     @Nullable
     String[] getPackagesForUid(int packageUid, UserHandle user, Context context) {
-        return getPackageManagerAsUser(user, context).getPackagesForUid(packageUid);
+        return getPackageManagerAsUser(context, user).getPackagesForUid(packageUid);
     }
 
     /**
@@ -142,7 +120,7 @@ public final class PackageInfoUtils {
     public PackageInfo getPackageInfoWithPermissionsAsUser(
             String packageName, UserHandle user, Context context) {
         try {
-            return getPackageManagerAsUser(user, context)
+            return getPackageManagerAsUser(context, user)
                     .getPackageInfo(
                             packageName, PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
         } catch (PackageManager.NameNotFoundException e) {
@@ -155,7 +133,7 @@ public final class PackageInfoUtils {
     @Nullable
     String getSharedUserNameFromUid(int uid, Context context) {
         UserHandle user = UserHandle.getUserHandleForUid(uid);
-        PackageManager packageManager = getPackageManagerAsUser(user, context);
+        PackageManager packageManager = getPackageManagerAsUser(context, user);
         String[] packages = packageManager.getPackagesForUid(uid);
         if (packages == null || packages.length == 0) {
             Log.e(TAG, "Can't get package names for UID: " + uid);
@@ -172,8 +150,8 @@ public final class PackageInfoUtils {
         }
     }
 
-    Optional<String> getPackageNameFromUid(int uid) {
-        String[] packages = getPackageNamesForUid(uid);
+    Optional<String> getPackageNameForUid(Context context, int uid) {
+        String[] packages = getPackageNamesForUid(context, uid);
         if (packages.length != 1) {
             Log.w(TAG, "Can't get one package name for UID: " + uid);
             return Optional.empty();
@@ -181,9 +159,9 @@ public final class PackageInfoUtils {
         return Optional.of(packages[0]);
     }
 
-    String[] getPackageNamesForUid(int uid) {
+    String[] getPackageNamesForUid(Context context, int uid) {
         PackageManager packageManager =
-                mUsersPackageManager.get(UserHandle.getUserHandleForUid(uid));
+                getPackageManagerAsUser(context, UserHandle.getUserHandleForUid(uid));
         if (packageManager == null) {
             return new String[] {};
         }
@@ -196,7 +174,7 @@ public final class PackageInfoUtils {
         Integer uid = null;
         try {
             uid =
-                    getPackageManagerAsUser(user, context)
+                    getPackageManagerAsUser(context, user)
                             .getPackageUid(
                                     packageName,
                                     PackageManager.PackageInfoFlags.of(/* flags= */ 0));
@@ -269,12 +247,7 @@ public final class PackageInfoUtils {
         }
     }
 
-    private PackageManager getPackageManagerAsUser(UserHandle user, Context context) {
-        PackageManager packageManager = mUsersPackageManager.get(user);
-        if (packageManager == null) {
-            packageManager = context.getPackageManager();
-            mUsersPackageManager.put(user, packageManager);
-        }
-        return packageManager;
+    private PackageManager getPackageManagerAsUser(Context context, UserHandle user) {
+        return context.createContextAsUser(user, /* flags */ 0).getPackageManager();
     }
 }

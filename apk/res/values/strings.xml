@@ -1578,7 +1578,15 @@
     <!-- region Selectable deletion -->
     <string name="select_all" description="Label for a button that selects all data for deletion [CHAR_LIMIT=40]">Select all</string>
     <string name="deletion_confirmation_dialog_body" description="Text for dialog asking the user to confirm they want to delete all data">Connected apps will no longer be able to read this data from Health&#160;Connect</string>
-
+    <string name="a11y_checked" description="A11y title for an entry that has a checkbox showing and the checkbox is checked">Checked</string>
+    <string name="a11y_unchecked" description="A11y title for an entry that has a checkbox showing and the checkbox is not checked">Not checked</string>
+    <string name="a11y_map_description" description="Generic description of map to indicate it is present in an exercise entry view">Exercise map route available</string>
+    <string name="a11y_next_day" description="Content description for the next day button in the entries screen">Next day</string>
+    <string name="a11y_next_week" description="Content description for the next week button in the entries screen">Next week</string>
+    <string name="a11y_next_month" description="Content description for the next month button in the entries screen">Next month</string>
+    <string name="a11y_previous_day" description="Content description for the previous day button in the entries screen">Previous day</string>
+    <string name="a11y_previous_week" description="Content description for the previous week button in the entries screen">Previous week</string>
+    <string name="a11y_previous_month" description="Content description for the previous month button in the entries screen">Previous month</string>
     <!-- region All data -->
     <string name="all_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all data">Permanently delete all data?</string>
     <string name="some_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete some data">Permanently delete selected data?</string>
@@ -1632,6 +1640,14 @@
 
     <!-- Summary for showing the last access text for 7 days for Wear [CHAR LIMIT=50] -->
     <string name="wear_app_perms_7d_access">Accessed <xliff:g id="time_date" example="Jan 3">%1$s</xliff:g> <xliff:g id="time_date" example="12:42 PM">%2$s</xliff:g></string>
+    <!-- endregion -->
+
+    <!-- region Grant permission  -->
+    <string name="request_permissions_allow_selected" description="Label for button to allow an app to have the selected permissions for the user's data [CHAR_LIMIT=20]">Allow selected</string>
+    <string name="request_permissions_deny_all" description="Label for button to deny an app to have all the requested permissions for the user's data [CHAR_LIMIT=20]">Deny all</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" description="Title shown for allowing fitness permissions.">Allow <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> to access fitness and wellness data?</string>
+    <string name="wear_request_multiple_data_type_permissions" description="Subtitle shown for allowing multiple fitness permissions. "><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> is requesting access to <xliff:g id="data_types" example="Heart rate, Skin temp">%2$s</xliff:g>.\n\nChoose to allow all or control them individually.</string>
+    <string name="wear_request_single_data_type_permission" description="Title shown for allowing single fitness permission. ">Allow <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> to access <xliff:g id="data_type" example="heart rate">%2$s</xliff:g>?</string>
     <!-- endregion -->
 
     <!-- endregion -->

@@ -48,6 +48,7 @@ import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellP
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -62,6 +63,7 @@ import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
+import android.healthconnect.cts.phr.utils.MedicationsBuilder;
 import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
@@ -76,6 +78,8 @@ import com.android.compatibility.common.util.SystemUtil;
 
 import com.google.common.base.Strings;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -296,6 +300,46 @@ public class UpsertMedicalResourcesCtsTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_validationEnabledUnknownField_throws() throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder().set("unknown_field", "value").toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_resourceWithPrimitiveTypeExtension_succeeds()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .set("_status", new JSONObject("{\"id\": \"1234\"}"))
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).hasSize(1);
+    }
+
+    @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_dataSourceOwnedByOtherApp_throws() throws Exception {
         // Create data source with different package name
@@ -451,6 +495,52 @@ public class UpsertMedicalResourcesCtsTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_resourceIncludesContainedResource_throws()
+            throws InterruptedException {
+        String medicationStatementWithContainedResource =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setContainedMedication(new MedicationsBuilder.MedicationBuilder())
+                        .toJson();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                medicationStatementWithContainedResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_containedFieldIsNotArray_throws()
+            throws InterruptedException, JSONException {
+        String medicationStatementWithContainedResource =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .set("contained", new JSONObject("{}"))
+                        .toJson();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                medicationStatementWithContainedResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testUpsertMedicalResources_unsupportedVersion_throws() throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -468,8 +558,7 @@ public class UpsertMedicalResourcesCtsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testUpsertMedicalResources_hasDataManagementPermission_throws()
-            throws InterruptedException {
+    public void testUpsertMedicalResources_hasDataManagementPermission_throws() {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
         SystemUtil.runWithShellPermissionIdentity(

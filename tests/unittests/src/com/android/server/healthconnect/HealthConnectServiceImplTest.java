@@ -313,9 +313,7 @@ public class HealthConnectServiceImplTest {
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
         mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
 
-        mContext =
-                new HealthConnectUserContext(
-                        InstrumentationRegistry.getInstrumentation().getContext(), mUserHandle);
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
         mAttributionSource = mContext.getAttributionSource();
         mTestPackageName = mAttributionSource.getPackageName();
@@ -357,7 +355,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getActivityDateHelper(),
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
-                        healthConnectInjector.getInternalHealthConnectMappings());
+                        healthConnectInjector.getInternalHealthConnectMappings(),
+                        healthConnectInjector.getPriorityMigrationHelper());
     }
 
     @After
