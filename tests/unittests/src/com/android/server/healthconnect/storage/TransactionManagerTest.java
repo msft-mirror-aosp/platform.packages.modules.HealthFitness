@@ -125,13 +125,13 @@ public class TransactionManagerTest {
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
+    private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
@@ -146,6 +146,8 @@ public class TransactionManagerTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
+        mHealthDataCategoryPriorityHelper =
+                healthConnectInjector.getHealthDataCategoryPriorityHelper();
     }
 
     @Test
@@ -489,7 +491,7 @@ public class TransactionManagerTest {
                         aggregationType,
                         TEST_PACKAGE_NAME,
                         /* packageFilters= */ List.of(),
-                        HealthDataCategoryPriorityHelper.getInstance(),
+                        mHealthDataCategoryPriorityHelper,
                         mInternalHealthConnectMappings,
                         mAppInfoHelper,
                         mTransactionManager,

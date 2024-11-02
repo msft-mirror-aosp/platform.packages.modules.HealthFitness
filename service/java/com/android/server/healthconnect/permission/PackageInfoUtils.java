@@ -18,8 +18,6 @@ package com.android.server.healthconnect.permission;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
-import static java.util.Objects.requireNonNull;
-
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -44,24 +42,10 @@ import java.util.Set;
 public final class PackageInfoUtils {
     private static final String TAG = "HCPackageInfoUtils";
 
-    @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
-
-    private PackageInfoUtils() {}
-
-    /** Returns singleton instance of PackageInfoUtils */
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static synchronized PackageInfoUtils getInstance() {
-        if (sPackageInfoUtils == null) {
-            sPackageInfoUtils = new PackageInfoUtils();
-        }
-
-        return requireNonNull(sPackageInfoUtils);
-    }
+    public PackageInfoUtils() {}
 
     Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
-            List<PackageInfo> packageInfos, UserHandle user) {
+            List<PackageInfo> packageInfos) {
         Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
         for (PackageInfo info : packageInfos) {
             if (info.sharedUserId != null) {
