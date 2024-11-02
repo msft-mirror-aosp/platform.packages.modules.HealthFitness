@@ -63,6 +63,7 @@ import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
+import android.healthconnect.cts.phr.utils.MedicationsBuilder;
 import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
@@ -77,6 +78,7 @@ import com.android.compatibility.common.util.SystemUtil;
 
 import com.google.common.base.Strings;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -483,6 +485,52 @@ public class UpsertMedicalResourcesCtsTest {
                                 DATA_SOURCE_ID,
                                 FHIR_VERSION_R4,
                                 FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_resourceIncludesContainedResource_throws()
+            throws InterruptedException {
+        String medicationStatementWithContainedResource =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setContainedMedication(new MedicationsBuilder.MedicationBuilder())
+                        .toJson();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                medicationStatementWithContainedResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_containedFieldIsNotArray_throws()
+            throws InterruptedException, JSONException {
+        String medicationStatementWithContainedResource =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .set("contained", new JSONObject("{}"))
+                        .toJson();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                medicationStatementWithContainedResource)
                         .build();
 
         mManager.upsertMedicalResources(

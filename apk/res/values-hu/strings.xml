@@ -1137,6 +1137,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Megtekintés alkalmazásboltban"</string>
     <string name="select_all" msgid="837499881590001166">"Összes kijelölése"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"A társított alkalmazások a továbbiakban nem tudják majd írni a Health Connect szolgáltatásból származó adatokat"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Véglegesen törli az összes adatot?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Véglegesen törli a kijelölt adatokat?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Véglegesen törli a(z) <xliff:g id="APP_NAME">%s</xliff:g> típusú adatokat?"</string>

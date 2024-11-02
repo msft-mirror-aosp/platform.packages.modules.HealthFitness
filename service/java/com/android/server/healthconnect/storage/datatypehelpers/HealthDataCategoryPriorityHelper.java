@@ -36,6 +36,8 @@ import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
 
+import androidx.annotation.Nullable;
+
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
@@ -81,17 +83,15 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private final PreferenceHelper mPreferenceHelper;
     private final HealthConnectMappings mHealthConnectMappings;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile HealthDataCategoryPriorityHelper sHealthDataCategoryPriorityHelper;
-
     /**
      * map of {@link HealthDataCategory} to list of app ids from {@link AppInfoHelper}, in the order
      * of their priority
      */
+    @Nullable
     private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private HealthDataCategoryPriorityHelper(
+    public HealthDataCategoryPriorityHelper(
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
@@ -306,6 +306,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return PRIORITY_TABLE_NAME;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private Map<Integer, List<Long>> getHealthDataCategoryToAppIdPriorityMap() {
         if (mHealthDataCategoryToAppIdPriorityMap == null) {
             populateDataCategoryToAppIdPriorityMap();
@@ -390,47 +391,6 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(APP_ID_PRIORITY_ORDER_COLUMN_NAME, TEXT_NOT_NULL));
 
         return columnInfo;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static HealthDataCategoryPriorityHelper getInstance() {
-        return getInstance(
-                AppInfoHelper.getInstance(),
-                TransactionManager.getInitialisedInstance(),
-                HealthConnectDeviceConfigManager.getInitialisedInstance(),
-                PreferenceHelper.getInstance(),
-                PackageInfoUtils.getInstance(),
-                HealthConnectMappings.getInstance());
-    }
-
-    public static synchronized HealthDataCategoryPriorityHelper getInstance(
-            AppInfoHelper appInfoHelper,
-            TransactionManager transactionManager,
-            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
-            PreferenceHelper preferenceHelper,
-            PackageInfoUtils packageInfoUtils,
-            HealthConnectMappings healthConnectMappings) {
-        if (sHealthDataCategoryPriorityHelper == null) {
-            sHealthDataCategoryPriorityHelper =
-                    new HealthDataCategoryPriorityHelper(
-                            appInfoHelper,
-                            transactionManager,
-                            healthConnectDeviceConfigManager,
-                            preferenceHelper,
-                            packageInfoUtils,
-                            healthConnectMappings);
-        }
-
-        return sHealthDataCategoryPriorityHelper;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        sHealthDataCategoryPriorityHelper = null;
     }
 
     /** Syncs priority table with the permissions and data. */

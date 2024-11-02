@@ -137,7 +137,8 @@ public class FirstGrantTimeUnitTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setMigrationStateManager(mMigrationStateManager)
                         .setFirstGrantTimeDatastore(mDatastore)
-                        .setHealthPermissionIntentAppsTracker(mTracker);
+                        .setHealthPermissionIntentAppsTracker(mTracker)
+                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper);
     }
 
     @After
@@ -269,8 +270,6 @@ public class FirstGrantTimeUnitTest {
                 .thenReturn(true);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(true);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
 
         FirstGrantTimeManager firstGrantTimeManager =
                 createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
@@ -305,8 +304,6 @@ public class FirstGrantTimeUnitTest {
                 .thenReturn(true);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(false);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
 
         FirstGrantTimeManager firstGrantTimeManager =
                 createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
