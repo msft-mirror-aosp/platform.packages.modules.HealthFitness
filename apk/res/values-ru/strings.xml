@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"толчки коляски"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Чтение количества толчков коляски"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Запись количества толчков коляски"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Интенсивность занятий"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"интенсивность занятий"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Чтение данных об интенсивности занятий"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Запись данных об интенсивности занятий"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Интенсивность основного обмена"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"интенсивность основного обмена"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Чтение данных об интенсивности основного обмена"</string>
@@ -536,9 +540,9 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Приложение \"Здоровье и спорт\" надежно хранит ваши данные о физической активности и здоровье, а также синхронизирует работу разных приложений на устройстве."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Платформа \"Здоровье и спорт\" объединяет и синхронизирует сведения из всех ваших приложений для отслеживания физической активности и состояния здоровья, а именно:\n\n"<b>"Информацию о самочувствии и физической активности,"</b>" в том числе о занятиях спортом, количестве пройденных шагов, питании, сне и не только.\n\n"<b>"Информацию о здоровье,"</b>" включая данные о вакцинации, результаты анализов и многое другое."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Благодаря платформе \"Здоровье и спорт\" вы можете:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Делитесь данными с приложениями"</string>
+    <string name="share_data" msgid="3481932156368883946">"Делиться данными с приложениями"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Выбирайте, какую информацию каждое приложение сможет читать и сохранять в сервисе \"Здоровье и спорт\"."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Управляйте настройками и конфиденциальностью"</string>
+    <string name="manage_your_settings" msgid="7391184508015127137">"Управлять настройками и конфиденциальностью"</string>
     <string name="manage_your_settings_description" msgid="557943168930365334">"Настраивайте разрешения для приложений и управляйте своими данными."</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Начать"</string>
@@ -1129,6 +1133,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Открыть магазин"</string>
     <string name="select_all" msgid="837499881590001166">"Выбрать все"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Связанные приложения больше не смогут читать эти данные платформы \"Здоровье и спорт\"."</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Навсегда удалить все данные?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Навсегда удалить выбранные данные?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Навсегда удалить все данные приложения \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
@@ -1148,12 +1170,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Навсегда удалить выбранные записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Навсегда удалить эту запись в приложении \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) приложения \"<xliff:g id="APP_NAME">%2$s</xliff:g>\" без возможности восстановления?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Включено"</string>
+    <string name="off" msgid="6996623844428550649">"Отключено"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Последний доступ в <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Последний доступ вчера: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Последний доступ: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

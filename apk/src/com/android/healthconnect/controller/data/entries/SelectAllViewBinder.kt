@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
 
@@ -39,16 +40,31 @@ class SelectAllViewBinder(private val onClickSelectAllListener: OnClickSelectAll
     ) {
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
         val container = view.findViewById<LinearLayout>(R.id.item_select_all_container)
+        val selectAllText = view.findViewById<TextView>(R.id.select_all_text)
 
         container.setOnClickListener {
             checkBox.toggle()
             onClickSelectAllListener.onClicked(checkBox.isChecked)
+            container.contentDescription =
+                getUpdatedContentDescription(
+                    container.resources,
+                    selectAllText.text.toString(),
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
 
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             // check all entries
             onClickSelectAllListener.onClicked(checkBox.isChecked)
+            container.contentDescription =
+                getUpdatedContentDescription(
+                    container.resources,
+                    selectAllText.text.toString(),
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
         checkBox.tag = if (isDeletionState) "checkbox" else ""
     }

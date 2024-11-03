@@ -156,16 +156,14 @@ public class HealthDataCategoryPriorityHelperTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setAppInfoHelper(mAppInfoHelper)
+                        .setTransactionManager(mTransactionManager)
+                        .setHealthConnectDeviceConfigManager(mHealthConnectDeviceConfigManager)
+                        .setPreferenceHelper(mPreferenceHelper)
+                        .setPackageInfoUtils(mPackageInfoUtils)
                         .build();
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mHealthDataCategoryPriorityHelper =
-                HealthDataCategoryPriorityHelper.getInstance(
-                        mAppInfoHelper,
-                        mTransactionManager,
-                        mHealthConnectDeviceConfigManager,
-                        mPreferenceHelper,
-                        mPackageInfoUtils,
-                        healthConnectInjector.getHealthConnectMappings());
+                healthConnectInjector.getHealthDataCategoryPriorityHelper();
     }
 
     @After

@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"împingerile scaunului cu rotile"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Să citească împingerile scaunului cu rotile"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Să scrie împingerile scaunului cu rotile"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensitatea activității"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensitatea activității"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Să citească date despre intensitatea activității"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Să scrie date despre intensitatea activității"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Rata metabolismului bazal"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"rata metabolismului bazal"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Să citească rata metabolismului bazal"</string>
@@ -534,8 +538,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Accesează Magazinul Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Noțiuni introductive despre Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect îți stochează datele despre sănătate și fitness, oferindu-ți o metodă simplă de a sincroniza aplicațiile diverse de pe dispozitiv"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect stochează și sincronizează datele despre sănătate și fitness din diferite aplicații.\n\n"<b>"Date despre fitness și starea de bine,"</b>" inclusiv sesiunile de exerciții, pașii, nutriția, somnul și altele\n\n"<b>"Înregistrări de sănătate,"</b>" inclusiv vaccinările, rezultatele analizelor și altele"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Cu Health Connect, poți"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect stochează și sincronizează datele despre sănătate și fitness din diferite aplicații.\n\n"<b>"Date despre fitness și wellness,"</b>" inclusiv sesiunile de exerciții, pașii, nutriția, somnul și altele\n\n"<b>"Înregistrări de sănătate,"</b>" inclusiv vaccinările, rezultatele analizelor și altele"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Cu Health Connect"</string>
     <string name="share_data" msgid="3481932156368883946">"Permite accesul aplicațiilor la date"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Alege datele pe care fiecare aplicație le poate citi sau scrie în Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Gestionează-ți setările și confidențialitatea"</string>
@@ -1129,6 +1133,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Vezi în magazinul de aplicații"</string>
     <string name="select_all" msgid="837499881590001166">"Selectează tot"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Aplicațiile conectate nu vor mai putea să acceseze aceste date din Health Connect"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Ștergi definitiv toate datele?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Ștergi definitiv datele selectate?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Ștergi definitiv toate datele <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1148,12 +1170,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ștergi definitiv <xliff:g id="APP_NAME">%1$s</xliff:g> intrări selectate pentru <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Ștergi definitiv intrarea din <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Ștergi definitiv datele despre <xliff:g id="DATA_TYPE">%1$s</xliff:g> pentru <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Activat"</string>
+    <string name="off" msgid="6996623844428550649">"Dezactivat"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Data ultimei accesări: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Data accesării: ieri, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Data accesării: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

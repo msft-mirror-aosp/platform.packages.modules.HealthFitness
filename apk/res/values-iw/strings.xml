@@ -142,7 +142,7 @@
     <string name="additional_access_background_footer" msgid="1638739578431818525">"צריך לתת הרשאת קריאה אחת לפחות כדי לאפשר לאפליקציה הזו גישה ברקע"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"צריך לתת הרשאת קריאה אחת לפחות כדי לאפשר לאפליקציה הזו גישה לנתונים קודמים"</string>
     <string name="historic_access_description" msgid="3309195636349468633">"האפליקציה הזו יכולה לגשת לכל הנתונים הקודמים של Health Connect"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"מתן הרשאה לאפליקציה הזו לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"האפליקציה הזו יכולה לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"קלוריות שנשרפו בזמן פעילות"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"קלוריות שנשרפו בזמן פעילות"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"קריאה של נתוני הקלוריות שנשרפו בזמן פעילות"</string>
@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"דחיפות כיסא גלגלים"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"קריאה של נתוני דחיפות כיסא גלגלים"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"כתיבה של נתוני דחיפות כיסא גלגלים"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"עצימות הפעילות"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"עצימות הפעילות"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"קריאה של נתוני עצימות הפעילות"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"כתיבה של נתוני עצימות הפעילות"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"קצב חילוף החומרים הבסיסי"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"קצב חילוף החומרים הבסיסי"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"קריאה של נתוני קצב חילוף החומרים הבסיסי"</string>
@@ -1129,6 +1133,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"לעיון בחנות האפליקציות"</string>
     <string name="select_all" msgid="837499881590001166">"בחירת הכול"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"האפליקציות המקושרות לא יוכלו יותר לקרוא את הנתונים האלה מ-Health Connect"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"למחוק סופית את כל הנתונים?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"למחוק סופית את הנתונים שנבחרו?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"למחוק סופית את כל הנתונים של <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1148,12 +1170,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"למחוק סופית את רשומות <xliff:g id="APP_NAME">%1$s</xliff:g> שנבחרו מחודש <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"למחוק סופית את הרשומה הזו של <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"למחוק לתמיד את הנתונים מסוג <xliff:g id="DATA_TYPE">%1$s</xliff:g> של <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"מופעל"</string>
+    <string name="off" msgid="6996623844428550649">"כבוי"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"הגישה האחרונה נעשתה בתאריך: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"גישה אתמול: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"תאריך גישה: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> ב-<xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

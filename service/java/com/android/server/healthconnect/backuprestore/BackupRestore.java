@@ -64,13 +64,13 @@ import android.util.Slog;
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.exportimport.DatabaseMerger;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -265,9 +265,8 @@ public final class BackupRestore {
             Map<String, HealthConnectException> exceptionsByFileName,
             UserHandle userHandle,
             IDataStagingFinishedCallback callback) {
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
-        File stagedRemoteDataDir = dbContext.getDatabaseDir();
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
+        File stagedRemoteDataDir = dbContext.getDataDir();
         try {
             stagedRemoteDataDir.mkdirs();
 
@@ -408,13 +407,12 @@ public final class BackupRestore {
     /** Deletes all the staged data and resets all the states. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(UserHandle userHandle) {
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
 
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
             dbContext.deleteDatabase(STAGED_DATABASE_NAME);
-            FilesUtil.deleteDir(dbContext.getDatabaseDir());
+            FilesUtil.deleteDir(dbContext.getDataDir());
         }
         setDataDownloadState(DATA_DOWNLOAD_STATE_UNKNOWN, true /* force */);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_UNKNOWN, true /* force */);
@@ -464,9 +462,8 @@ public final class BackupRestore {
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
     public Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
-        File[] allFiles = dbContext.getDatabaseDir().listFiles();
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
+        File[] allFiles = dbContext.getDataDir().listFiles();
         if (allFiles == null) {
             return Collections.emptySet();
         }
@@ -605,8 +602,8 @@ public final class BackupRestore {
         }
 
         int currentDbVersion = mTransactionManager.getDatabaseVersion();
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, mCurrentForegroundUser);
+        StorageContext dbContext =
+                StorageContext.create(mContext, mCurrentForegroundUser, STAGED_DATABASE_DIR);
         File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
         if (stagedDbFile.exists()) {
             try (SQLiteDatabase stagedDb =
@@ -978,8 +975,8 @@ public final class BackupRestore {
         return new File(hcDirectoryForUser, dirName);
     }
 
-    private void mergeGrantTimes(DatabaseContext dbContext) {
-        File restoredGrantTimeFile = new File(dbContext.getDatabaseDir(), GRANT_TIME_FILE_NAME);
+    private void mergeGrantTimes(StorageContext dbContext) {
+        File restoredGrantTimeFile = new File(dbContext.getDataDir(), GRANT_TIME_FILE_NAME);
         Slog.i(TAG, "Merging grant times.");
 
         UserGrantTimeState userGrantTimeState =
@@ -993,7 +990,7 @@ public final class BackupRestore {
         }
     }
 
-    private void mergeDatabase(DatabaseContext dbContext) {
+    private void mergeDatabase(StorageContext dbContext) {
         synchronized (mMergingLock) {
             if (!dbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
                 Slog.i(TAG, "No staged db found.");
