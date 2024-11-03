@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"tekerlekli sandalye şınavları"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Tekerlekli sandalye şınavlarını oku"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Tekerlekli sandalye şınavlarını yaz"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Bazal metabolizma hızı"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"bazal metabolizma hızı"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Bazal metabolizma hızını oku"</string>
@@ -1129,6 +1137,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Uygulama mağazasında göster"</string>
     <string name="select_all" msgid="837499881590001166">"Tümünü seç"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Bağlı uygulamalar Health Connect\'teki bu verileri artık okuyamayacak"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Tüm verilerini kalıcı olarak silin"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Seçili veriler kalıcı olarak silinsin mi?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Tüm <xliff:g id="APP_NAME">%s</xliff:g> verileri kalıcı olarak silinsin mi?"</string>
@@ -1148,12 +1174,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ayına ait seçili <xliff:g id="APP_NAME">%1$s</xliff:g> girişleri kalıcı olarak silinsin mi?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"<xliff:g id="APP_NAME">%s</xliff:g> girişi kalıcı olarak silinsin mi?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> için <xliff:g id="DATA_TYPE">%1$s</xliff:g> verileri kalıcı olarak silinsin mi?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Açık"</string>
+    <string name="off" msgid="6996623844428550649">"Kapalı"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Erişim zamanı: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Dün saat <xliff:g id="TIME_DATE">%1$s</xliff:g> itibarıyla erişildi"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Erişim tarihi: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

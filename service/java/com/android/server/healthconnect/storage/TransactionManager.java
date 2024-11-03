@@ -47,7 +47,6 @@ import android.util.Slog;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -73,7 +72,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 /**
@@ -85,8 +83,6 @@ import java.util.function.BiConsumer;
  */
 public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
-    private static final ConcurrentHashMap<UserHandle, HealthConnectDatabase>
-            mUserHandleToDatabaseMap = new ConcurrentHashMap<>();
 
     @Nullable private static volatile TransactionManager sTransactionManager;
 
@@ -95,23 +91,25 @@ public final class TransactionManager {
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     private TransactionManager(
-            DatabaseContext databaseContext,
+            StorageContext storageContext,
             InternalHealthConnectMappings internalHealthConnectMappings) {
-        mHealthConnectDatabase = new HealthConnectDatabase(databaseContext);
-        mUserHandle = databaseContext.getUser();
-        mUserHandleToDatabaseMap.put(mUserHandle, mHealthConnectDatabase);
+        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
+        mUserHandle = storageContext.getUser();
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
-    /** Setup the transaction manager for the new user. */
-    public void onUserUnlocked(DatabaseContext databaseContext) {
-        if (!mUserHandleToDatabaseMap.containsKey(databaseContext.getUser())) {
-            mUserHandleToDatabaseMap.put(
-                    databaseContext.getUser(), new HealthConnectDatabase(databaseContext));
-        }
+    /** Called when we are switching users. */
+    public void onUserSwitching() {
+        mHealthConnectDatabase.close();
+    }
 
-        mHealthConnectDatabase = mUserHandleToDatabaseMap.get(databaseContext.getUser());
-        mUserHandle = databaseContext.getUser();
+    /** Setup the transaction manager for the new user. */
+    public void onUserUnlocked(StorageContext storageContext) {
+        if (mUserHandle.equals(storageContext.getUser())) {
+            return;
+        }
+        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
+        mUserHandle = storageContext.getUser();
     }
 
     /**
@@ -716,10 +714,6 @@ public final class TransactionManager {
                 });
     }
 
-    public void onUserSwitching() {
-        mHealthConnectDatabase.close();
-    }
-
     private void insertAll(
             List<UpsertTableRequest> upsertTableRequests,
             BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
@@ -1061,11 +1055,11 @@ public final class TransactionManager {
      * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
      */
     public static synchronized TransactionManager initializeInstance(
-            DatabaseContext databaseContext) {
+            StorageContext storageContext) {
         if (sTransactionManager == null) {
             sTransactionManager =
                     new TransactionManager(
-                            databaseContext, InternalHealthConnectMappings.getInstance());
+                            storageContext, InternalHealthConnectMappings.getInstance());
         }
 
         return sTransactionManager;
@@ -1084,7 +1078,9 @@ public final class TransactionManager {
     @com.android.internal.annotations.VisibleForTesting
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public static synchronized void clearInstanceForTest() {
-        sTransactionManager = null;
+        if (sTransactionManager != null) {
+            sTransactionManager = null;
+        }
     }
 
     /** Cleans up the database and this manager, so unit tests can run correctly. */

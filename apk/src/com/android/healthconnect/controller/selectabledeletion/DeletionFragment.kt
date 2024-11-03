@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.deletion.FailedDialogFragment
-import com.android.healthconnect.controller.deletion.SuccessDialogFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.CONFIRMATION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.TRY_AGAIN_EVENT
@@ -58,7 +57,6 @@ class DeletionFragment : Hilt_DeletionFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.deletionProgress.observe(viewLifecycleOwner) { deletion ->
             when (deletion) {
                 DeletionViewModel.DeletionProgress.NOT_STARTED -> {

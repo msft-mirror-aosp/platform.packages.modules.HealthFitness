@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts.utils;
+package android.healthconnect.cts.phr.utils;
 
 import android.net.Uri;
 
@@ -222,15 +222,6 @@ public final class ObservationBuilder extends FhirResourceBuilder<ObservationBui
     public ObservationBuilder() {
         super(DEFAULT_JSON);
         setBloodGlucose(6.3);
-    }
-
-    /**
-     * Sets the id field for this observation.
-     *
-     * @return this builder.
-     */
-    public ObservationBuilder setId(String id) {
-        return set("id", id);
     }
 
     /**

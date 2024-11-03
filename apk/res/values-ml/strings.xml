@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"വീൽചെയർ പുഷുകൾ"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"വീൽചെയർ പുഷുകൾ സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"വീൽചെയർ പുഷുകൾ സംബന്ധിച്ച ഡാറ്റ റൈറ്റ് ചെയ്യുക"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"ആക്റ്റിവിറ്റിയുടെ തീവ്രത"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"ആക്റ്റിവിറ്റിയുടെ തീവ്രത"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"ആക്റ്റിവിറ്റി തീവ്രതയുടെ ഡാറ്റ വായിക്കുക"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"ആക്റ്റിവിറ്റിയുടെ തീവ്രതയുടെ ഡാറ്റ രേഖപ്പെടുത്തുക"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"അടിസ്ഥാന മെറ്റാബോളിക് നിരക്ക്"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"അടിസ്ഥാന മെറ്റാബോളിക് നിരക്ക്"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"അടിസ്ഥാന മെറ്റാബോളിക് നിരക്ക് സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
@@ -1129,6 +1133,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"ആപ്പ് സ്‌റ്റോറിൽ കാണുക"</string>
     <string name="select_all" msgid="837499881590001166">"എല്ലാം തിരഞ്ഞെടുക്കുക"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"കണക്‌റ്റ് ചെയ്‌തിട്ടുള്ള ആപ്പുകൾക്ക് ഇനി Health Connect-ൽ നിന്ന് ഈ ഡാറ്റ വായിക്കാനാകില്ല"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"എല്ലാ ഡാറ്റയും ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"തിരഞ്ഞെടുത്ത ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"എല്ലാ <xliff:g id="APP_NAME">%s</xliff:g> ഡാറ്റയും ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
@@ -1148,12 +1170,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> എന്ന മാസത്തേക്കുള്ള തിരഞ്ഞെടുത്ത <xliff:g id="APP_NAME">%1$s</xliff:g> എൻട്രികൾ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ഈ <xliff:g id="APP_NAME">%s</xliff:g> എൻട്രി ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> എന്നതിനുള്ള <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ശാശ്വതമായി നീക്കം ചെയ്യണോ?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"ഓണാണ്"</string>
+    <string name="off" msgid="6996623844428550649">"ഓഫാണ്"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"ഇന്നലെ <xliff:g id="TIME_DATE">%1$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
 </resources>

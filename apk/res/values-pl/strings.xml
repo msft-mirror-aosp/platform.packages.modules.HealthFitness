@@ -196,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"pchnięcia wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Odczytuj dane o pchnięciach wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Zapisuj dane o pchnięciach wózka inwalidzkiego"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Podstawowa przemiana materii"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"podstawowa przemiana materii"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Odczytuj dane o podstawowej przemianie materii"</string>
@@ -1129,6 +1137,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Zobacz w sklepie z aplikacjami"</string>
     <string name="select_all" msgid="837499881590001166">"Zaznacz wszystko"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Połączone aplikacje nie będą już mogły odczytywać tych danych z Health Connect"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Trwale usunąć wszystkie te dane?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Trwale usunąć wybrane dane?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Trwale usunąć wszystkie dane aplikacji <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1148,12 +1174,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Trwale usunąć wybrane wpisy z aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> dotyczące tego miesiąca: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Trwale usunąć ten wpis z aplikacji <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Trwale usunąć te dane (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) w przypadku aplikacji <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Włączony"</string>
+    <string name="off" msgid="6996623844428550649">"Wyłączony"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Ostatni dostęp: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Ostatni dostęp wczoraj, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Ostatni dostęp <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

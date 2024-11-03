@@ -30,9 +30,9 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * Collects Health Connect usage stats.
@@ -45,7 +45,7 @@ final class UsageStatsCollector {
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
     private final Context mContext;
-    private final List<PackageInfo> mAllPackagesInstalledForUser;
+    private final Map<String, PackageInfo> mPackageNameToPackageInfo = new HashMap<>();
 
     private final PreferenceHelper mPreferenceHelper;
     private final AccessLogsHelper mAccessLogsHelper;
@@ -55,16 +55,16 @@ final class UsageStatsCollector {
             UserHandle userHandle,
             PreferenceHelper preferenceHelper,
             AccessLogsHelper accessLogsHelper) {
-        Objects.requireNonNull(userHandle);
-        Objects.requireNonNull(context);
-
         mContext = context;
-        mAllPackagesInstalledForUser =
+        mPreferenceHelper = preferenceHelper;
+        mAccessLogsHelper = accessLogsHelper;
+        List<PackageInfo> allPackagesInstalledForUser =
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
-        mPreferenceHelper = preferenceHelper;
-        mAccessLogsHelper = accessLogsHelper;
+        for (PackageInfo packageInfo : allPackagesInstalledForUser) {
+            mPackageNameToPackageInfo.put(packageInfo.packageName, packageInfo);
+        }
     }
 
     /**
@@ -77,7 +77,7 @@ final class UsageStatsCollector {
      */
     int getNumberOfAppsCompatibleWithHealthConnect() {
         int numberOfAppsGrantedHealthPermissions = 0;
-        for (PackageInfo info : mAllPackagesInstalledForUser) {
+        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
             if (hasRequestedHealthPermission(info)) {
                 numberOfAppsGrantedHealthPermissions++;
             }
@@ -88,20 +88,20 @@ final class UsageStatsCollector {
     /**
      * Returns the list of apps that are connected to Health Connect.
      *
-     * @return List of apps that are connected (have read/write) to Health Connect
+     * @return Map of package name to permissions granted for apps that are connected (have
+     *     read/write) to Health Connect
      */
-    List<String> getPackagesHoldingHealthPermissions() {
-        // TODO(b/260707328): replace with getPackagesHoldingPermissions
-        List<String> packageNames = new ArrayList<>();
-
-        for (PackageInfo info : mAllPackagesInstalledForUser) {
-            if (PackageInfoUtils.anyRequestedHealthPermissionGranted(mContext, info)) {
-                packageNames.add(info.packageName);
+    Map<String, List<String>> getPackagesHoldingHealthPermissions() {
+        Map<String, List<String>> packageNameToPermissionsGranted = new HashMap<>();
+        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
+            List<String> grantedHealthPermissions =
+                    PackageInfoUtils.getGrantedHealthPermissions(mContext, info);
+            if (!grantedHealthPermissions.isEmpty()) {
+                packageNameToPermissionsGranted.put(info.packageName, grantedHealthPermissions);
             }
         }
-        return packageNames;
+        return packageNameToPermissionsGranted;
     }
-
 
     /**
      * Returns the configured export frequency of the user.

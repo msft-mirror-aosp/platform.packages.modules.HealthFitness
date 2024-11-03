@@ -59,16 +59,17 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
         logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
 
-        title.text = data.title
-        title.contentDescription = data.titleA11y
-
-        header.text = data.header
-        header.contentDescription = data.headerA11y
-
         if (isDeletionState) {
             container.setOnClickListener {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
+                title.contentDescription =
+                    getUpdatedContentDescription(
+                        title.resources,
+                        data.titleA11y,
+                        isDeletionState,
+                        checkBox.isChecked,
+                    )
             }
         }
 
@@ -76,7 +77,26 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+            title.contentDescription =
+                getUpdatedContentDescription(
+                    title.resources,
+                    data.titleA11y,
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
         checkBox.tag = if (isDeletionState) "checkbox" else ""
+
+        title.text = data.title
+        title.contentDescription =
+            getUpdatedContentDescription(
+                title.resources,
+                data.titleA11y,
+                isDeletionState,
+                isChecked,
+            )
+
+        header.text = data.header
+        header.contentDescription = data.headerA11y
     }
 }

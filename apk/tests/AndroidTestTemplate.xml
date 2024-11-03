@@ -33,6 +33,13 @@
     <option name="test-file-name" value="OldPermissionsTestApp.apk"/>
     <option name="test-file-name" value="MedicalPermissionsTestApp.apk"/>
   </target_preparer>
+  <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
+    <!-- Reset display and font -->
+    <option name="run-command" value="settings put system font_scale 0.85" />
+    <option name="run-command" value="wm density reset" />
+    <!-- disable DeprecatedAbi warning -->
+    <option name="run-command" value="setprop debug.wm.disable_deprecated_abi_dialog 1" />
+  </target_preparer>
   <test class="com.android.tradefed.testtype.AndroidJUnitTest">
     <option name="runner" value="com.android.healthconnect.controller.tests.HiltTestRunner"/>
     <option name="package" value="{PACKAGE}"/>

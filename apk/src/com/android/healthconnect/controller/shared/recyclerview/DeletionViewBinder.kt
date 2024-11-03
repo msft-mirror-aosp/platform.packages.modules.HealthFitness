@@ -13,9 +13,38 @@
  */
 package com.android.healthconnect.controller.shared.recyclerview
 
+import android.content.res.Resources
 import android.view.View
+import com.android.healthconnect.controller.R
 
 interface DeletionViewBinder<T, V : View> : ViewBinder<T, V> {
     /** Populate a view with data. */
-    fun bind(view: View, data: T, index: Int, isDeletionState: Boolean = false, isChecked: Boolean = false)
+    fun bind(
+        view: View,
+        data: T,
+        index: Int,
+        isDeletionState: Boolean = false,
+        isChecked: Boolean = false,
+    )
+
+    /**
+     * Content description which includes the information about the checked state of the checkbox
+     */
+    fun getUpdatedContentDescription(
+        resources: Resources,
+        a11yTitle: String,
+        isDeletionState: Boolean,
+        isChecked: Boolean,
+    ): String {
+        val separator = ", "
+        val checkedState =
+            if (isDeletionState) {
+                if (isChecked) {
+                    separator + resources.getString(R.string.a11y_checked)
+                } else {
+                    separator + resources.getString(R.string.a11y_unchecked)
+                }
+            } else ""
+        return a11yTitle + checkedState
+    }
 }
