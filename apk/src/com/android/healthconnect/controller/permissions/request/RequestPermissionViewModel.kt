@@ -79,6 +79,10 @@ constructor(
 
     /** List of grantable [FitnessPermission]s */
     private val _fitnessPermissionsList = MutableLiveData<List<FitnessPermission>>()
+    // TODO: b/376526849 - Use FitnessScreenState and AdditionalScreenState in Wear UI
+    val fitnessPermissionsList: LiveData<List<FitnessPermission>>
+        get() = _fitnessPermissionsList
+
 
     /** List of grantable [AdditionalPermission]s */
     private val _additionalPermissionsList = MutableLiveData<List<AdditionalPermission>>()

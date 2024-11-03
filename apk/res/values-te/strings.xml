@@ -116,7 +116,7 @@
     <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"గతంలోని ఫిట్‌నెస్, వెల్‌నెస్ డేటాను యాక్సెస్ చేయండి"</string>
     <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> తేదీ కంటే ముందు జోడించిన డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
     <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"గతంలోని డేటా మొత్తాన్ని యాక్సెస్ చేయడానికి ఈ యాప్‌నకు అనుమతినివ్వండి"</string>
-    <string name="history_read_combined_request_title" msgid="9023811767370482028">"మునుపటి డేటాను యాక్సెస్ చేయండి"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"మునుపటి డేటాను యాక్సెస్ చేయడానికి అనుమతి"</string>
     <string name="history_read_combined_request_description" msgid="1437787086896636484">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> తేదీలోపు జోడించిన Health Connect డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
     <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"గతంలోని Health Connect డేటా మొత్తాన్ని యాక్సెస్ చేయడానికి ఈ యాప్‌నకు అనుమతినివ్వండి"</string>
     <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"మీ ఆరోగ్య సమాచారానికి సంబంధించి మునుపటి డేటాను <xliff:g id="APP_NAME">%1$s</xliff:g> ఇప్పటికే యాక్సెస్ చేసింది"</string>
@@ -127,7 +127,7 @@
     <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"మీరు యాప్‌ను ఉపయోగించనప్పుడు ఫిట్‌నెస్, వెల్‌నెస్ డేటాను, ఆరోగ్య సమాచారాన్ని యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"మీరు యాప్‌ను ఉపయోగించనప్పుడు ఈ డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"మీరు యాప్‌ను ఉపయోగించనప్పుడు ఈ డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
-    <string name="background_read_access_title" msgid="4184498185599147117">"బ్యాక్‌గ్రౌండ్‌లో డేటాను యాక్సెస్ చేయండి"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"బ్యాక్‌గ్రౌండ్‌లో డేటాను యాక్సెస్ చేయడానికి అనుమతి"</string>
     <string name="background_read_access_description" msgid="2360433029368320323">"మీరు యాప్‌ను ఉపయోగించనప్పుడు Health Connect డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
     <string name="history_read_medical_access_title" msgid="1375462150672418692">"గతంలోని ఫిట్‌నెస్, వెల్‌నెస్ డేటాను యాక్సెస్ చేయండి"</string>
     <string name="history_read_medical_access_description" msgid="5615959269427106141">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> తేదీ కంటే ముందు జోడించిన డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"వీల్‌చెయిర్ పుష్‌ల డేటా"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"వీల్‌చెయిర్ పుష్‌ల డేటాను చదువుతుంది"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"వీల్‌చెయిర్ పుష్‌ల డేటాను రాస్తుంది"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"యాక్టివిటీ తీవ్రత"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"యాక్టివిటీ తీవ్రత"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"యాక్టివిటీ తీవ్రత గురించి చదవండి"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"యాక్టివిటీ తీవ్రత గురించి రాయండి"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"మౌలిక జీవక్రియ రేటు డేటా"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"మౌలిక జీవక్రియ రేటు డేటా"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"మౌలిక జీవక్రియ రేటు డేటాను చదువుతుంది"</string>
@@ -1022,9 +1026,9 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"అన్ని మార్గాలను అనుమతించండి"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"అనుమతించవద్దు"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"ఎల్లవేళలా అనుమతించబడుతుంది"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"వ్యాయామ మార్గాలను యాక్సెస్ చేయండి"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"వ్యాయామ మార్గాలను యాక్సెస్ చేయడానికి అనుమతి"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"మార్గాలను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>ను అనుమతించండి"</string>
-    <string name="route_permissions_ask" msgid="3927020960754781917">"ప్రతిసారి అడగండి"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ప్రతిసారి అడగాలి"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"అనుమతించవద్దు"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"రెండు రకాల డేటాను ఎనేబుల్ చేయాలా?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"రెండు రకాల డేటాను డిజేబుల్ చేయాలా?"</string>
@@ -1129,6 +1133,24 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"యాప్ స్టోర్‌లో చూడండి"</string>
     <string name="select_all" msgid="837499881590001166">"అన్నింటినీ ఎంచుకోండి"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"కనెక్ట్ అయి ఉన్న యాప్‌లు ఇకపై Health Connect నుండి ఈ డేటాను చదవలేవు"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"మొత్తం డేటాను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"ఎంపిక చేసిన డేటాను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"మొత్తం <xliff:g id="APP_NAME">%s</xliff:g> డేటాను శాశ్వతంగా తొలగించాలా?"</string>
@@ -1148,12 +1170,9 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>లో పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ఈ <xliff:g id="APP_NAME">%s</xliff:g> ఎంట్రీని శాశ్వతంగా తొలగించాలా?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g>‌కు సంబంధించిన <xliff:g id="DATA_TYPE">%1$s</xliff:g> డేటాను శాశ్వతంగా తొలగించాలా?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"ఆన్‌లో ఉంది"</string>
+    <string name="off" msgid="6996623844428550649">"ఆఫ్‌లో ఉంది"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g>‌కు యాక్సెస్ చేశారు"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"నిన్న <xliff:g id="TIME_DATE">%1$s</xliff:g>‌కు యాక్సెస్‌ చేశారు"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g>‌న<xliff:g id="TIME_DATE_1">%2$s</xliff:g>‌కు యాక్సెస్‌ చేశారు"</string>
 </resources>

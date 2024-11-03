@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.cts.utils;
+package android.healthconnect.cts.phr.utils;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
@@ -70,6 +70,8 @@ public class PhrDataFactory {
     public static final FhirVersion FHIR_VERSION_UNSUPPORTED =
             parseFhirVersion(UNSUPPORTED_VERSION_STRING);
 
+    public static final String RESOURCE_ID_FIELD_NAME = "id";
+
     public static final UUID DATA_SOURCE_UUID = UUID.randomUUID();
     public static final String DATA_SOURCE_ID = DATA_SOURCE_UUID.toString();
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
@@ -97,43 +99,40 @@ public class PhrDataFactory {
             Instant.parse("2023-01-01T00:02:00Z");
     public static final FhirVersion DIFFERENT_DATA_SOURCE_FHIR_VERSION = FHIR_VERSION_R4B;
 
+    public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
     public static final String FHIR_DATA_IMMUNIZATION =
-            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
-    public static final String DIFFERENT_FHIR_DATA_IMMUNIZATION =
-            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization2\"}";
+            new ImmunizationBuilder().setId(FHIR_RESOURCE_ID_IMMUNIZATION).toJson();
     public static final String DIFFERENT_FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization2";
+    public static final String DIFFERENT_FHIR_DATA_IMMUNIZATION =
+            new ImmunizationBuilder().setId(DIFFERENT_FHIR_RESOURCE_ID_IMMUNIZATION).toJson();
 
     public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
-            "{\"resourceType\" : \"Immunization\"}";
+            new ImmunizationBuilder().removeField(RESOURCE_ID_FIELD_NAME).toJson();
     public static final String FHIR_DATA_IMMUNIZATION_ID_EMPTY =
-            "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"\"}";
+            new ImmunizationBuilder().setId("").toJson();
     public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
-            "{\"id\" : \"Immunization1\"}";
+            new ImmunizationBuilder()
+                    .setId(FHIR_RESOURCE_ID_IMMUNIZATION)
+                    .removeField("resourceType")
+                    .toJson();
     public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
     public static final String FHIR_RESOURCE_TYPE_UNSUPPORTED = "StructureDefinition";
     public static final String FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE =
             "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"Immunization1\"}";
-    public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
-    public static final String FHIR_DATA_ALLERGY =
-            "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy1\"}";
-    public static final String DIFFERENT_FHIR_DATA_ALLERGY =
-            "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy2\"}";
     public static final String FHIR_RESOURCE_ID_ALLERGY = "Allergy1";
+    public static final String FHIR_DATA_ALLERGY =
+            new AllergyBuilder().setId(FHIR_RESOURCE_ID_ALLERGY).toJson();
     public static final String DIFFERENT_FHIR_RESOURCE_ID_ALLERGY = "Allergy2";
-    public static final String FHIR_DATA_CONDITION =
-            "{\"resourceType\" : \"Condition\", \"id\" : \"Condition1\", \"category\" :"
-                    + " [\"Condition1\"]}";
+    public static final String DIFFERENT_FHIR_DATA_ALLERGY =
+            new AllergyBuilder().setId(DIFFERENT_FHIR_RESOURCE_ID_ALLERGY).toJson();
+    public static final String FHIR_DATA_CONDITION = new ConditionBuilder().toJson();
     public static final String FHIR_DATA_MEDICATION =
-            "{\"resourceType\" : \"Medication\", \"id\" : \"Medication1\"}";
-    public static final String FHIR_DATA_Patient =
-            "{\"resourceType\" : \"Patient\", \"id\" : \"Patient1\"}";
-    public static final String FHIR_DATA_PRACTITIONER =
-            "{\"resourceType\" : \"Practitioner\", \"id\" : \"Practitioner1\"}";
-    public static final String FHIR_DATA_ENCOUNTER =
-            "{\"resourceType\" : \"Encounter\", \"id\" : \"Encounter1\"}";
-    public static final String FHIR_DATA_PROCEDURE =
-            "{\"resourceType\" : \"Procedure\", \"id\" : \"Procedure1\"}";
+            new MedicationsBuilder.MedicationBuilder().toJson();
+    public static final String FHIR_DATA_Patient = new PatientBuilder().toJson();
+    public static final String FHIR_DATA_PRACTITIONER = new PractitionerBuilder().toJson();
+    public static final String FHIR_DATA_ENCOUNTER = EncountersBuilder.encounter().toJson();
+    public static final String FHIR_DATA_PROCEDURE = new ProcedureBuilder().toJson();
     public static final String FHIR_DATA_OBSERVATION_PREGNANCY =
             new ObservationBuilder()
                     .setId("1")
@@ -154,8 +153,6 @@ public class PhrDataFactory {
                     .setId("4")
                     .setCategory(ObservationBuilder.ObservationCategory.LABORATORY)
                     .toJson();
-
-    public static final String RESOURCE_ID_FIELD_NAME = "id";
 
     public static final String PAGE_TOKEN = "111";
 

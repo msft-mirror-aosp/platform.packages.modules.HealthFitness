@@ -23,11 +23,14 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -137,6 +140,21 @@ public abstract class HealthConnectInjector {
      * Connect Injector.
      */
     public abstract HealthPermissionIntentAppsTracker getHealthPermissionIntentAppsTracker();
+
+    /**
+     * Getter for {@link PermissionPackageChangesOrchestrator} instance initialised by the Health
+     * Connect Injector.
+     */
+    public abstract PermissionPackageChangesOrchestrator getPermissionPackageChangesOrchestrator();
+
+    /**
+     * Getter for {@link HealthConnectPermissionHelper} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract HealthConnectPermissionHelper getHealthConnectPermissionHelper();
+
+    /** Getter for {@link MigrationCleaner} instance initialised by the Health Connect Injector. */
+    public abstract MigrationCleaner getMigrationCleaner();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

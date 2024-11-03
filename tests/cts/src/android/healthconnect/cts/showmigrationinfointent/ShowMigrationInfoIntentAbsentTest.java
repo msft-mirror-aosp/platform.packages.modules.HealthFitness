@@ -17,17 +17,17 @@
 package android.healthconnect.cts.showmigrationinfointent;
 
 import static android.Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA;
+import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
-import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.migration.MigrationException;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestOutcomeReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.Build;
-import android.os.OutcomeReceiver;
 import android.os.ext.SdkExtensions;
 import android.platform.test.annotations.AppModeFull;
 
@@ -40,18 +40,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class ShowMigrationInfoIntentAbsentTest {
-    private Context mContext;
     private HealthConnectManager mManager;
-    UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -60,8 +54,8 @@ public class ShowMigrationInfoIntentAbsentTest {
 
     @Before
     public void setUp() {
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        mManager = mContext.getSystemService(HealthConnectManager.class);
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        mManager = context.getSystemService(HealthConnectManager.class);
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -70,57 +64,49 @@ public class ShowMigrationInfoIntentAbsentTest {
         TestUtils.deleteAllStagedRemoteData();
     }
 
-    @Test(expected = MigrationException.class)
-    public void testInsertMinDataMigrationSdkExtensionVersion_throwsException()
-            throws InterruptedException {
+    @Test
+    public void testInsertMinDataMigrationSdkExtensionVersion_throwsException() {
+        TestOutcomeReceiver<Void, MigrationException> receiver = new TestOutcomeReceiver<>();
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) + 1;
-        TestUtils.insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(version);
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.insertMinDataMigrationSdkExtensionVersion(
+                            version, outcomeExecutor(), receiver);
+                    receiver.assertAndGetException();
+                },
+                MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    @Test(expected = MigrationException.class)
-    public void testStartMigration_throwsException() throws InterruptedException {
-        uiAutomation.adoptShellPermissionIdentity(MIGRATE_HEALTH_CONNECT_DATA);
-        TestUtils.startMigration();
-        uiAutomation.dropShellPermissionIdentity();
+    @Test
+    public void testStartMigration_throwsException() {
+        TestOutcomeReceiver<Void, MigrationException> receiver = new TestOutcomeReceiver<>();
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.startMigration(outcomeExecutor(), receiver);
+                    receiver.assertAndGetException();
+                },
+                MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    @Test(expected = MigrationException.class)
-    public void testFinishMigration_throwsException() throws InterruptedException {
-        uiAutomation.adoptShellPermissionIdentity(MIGRATE_HEALTH_CONNECT_DATA);
-        TestUtils.finishMigration();
-        uiAutomation.dropShellPermissionIdentity();
+    @Test
+    public void testFinishMigration_throwsException() {
+        TestOutcomeReceiver<Void, MigrationException> receiver = new TestOutcomeReceiver<>();
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.finishMigration(outcomeExecutor(), receiver);
+                    receiver.assertAndGetException();
+                },
+                MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    @Test(expected = MigrationException.class)
-    public void testWriteMigrationData_throwsException() throws InterruptedException {
-        uiAutomation.adoptShellPermissionIdentity(MIGRATE_HEALTH_CONNECT_DATA);
-        writeMigrationData();
-        uiAutomation.dropShellPermissionIdentity();
-    }
-
-    private void writeMigrationData() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<MigrationException> migrationExceptionAtomicReference =
-                new AtomicReference<>();
-        mManager.writeMigrationData(
-                Collections.emptyList(),
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-
-                    @Override
-                    public void onResult(Void result) {
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onError(MigrationException exception) {
-                        migrationExceptionAtomicReference.set(exception);
-                        latch.countDown();
-                    }
-                });
-        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
-        if (migrationExceptionAtomicReference.get() != null) {
-            throw migrationExceptionAtomicReference.get();
-        }
+    @Test
+    public void testWriteMigrationData_throwsException() {
+        TestOutcomeReceiver<Void, MigrationException> receiver = new TestOutcomeReceiver<>();
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.writeMigrationData(List.of(), outcomeExecutor(), receiver);
+                    receiver.assertAndGetException();
+                },
+                MIGRATE_HEALTH_CONNECT_DATA);
     }
 }

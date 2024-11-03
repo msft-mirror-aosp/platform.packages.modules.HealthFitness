@@ -21,16 +21,21 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -45,6 +50,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import org.junit.After;
@@ -53,6 +59,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -62,6 +69,7 @@ import java.util.List;
 
 /** Unit test for class {@link BackupRestoreDatabaseHelper}. */
 @RunWith(AndroidJUnit4.class)
+@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
 public class BackupRestoreDatabaseHelperTest {
 
     private static final String TEST_PACKAGE_NAME = "test.package.name";
@@ -71,6 +79,8 @@ public class BackupRestoreDatabaseHelperTest {
     private static final int TEST_TIME_IN_MILLIS = 1234;
     private static final double TEST_SYSTOLIC = 60.2;
     private static final double TEST_DIASTOLIC = 92.6;
+    private static final String ACTIVE_CALORIES_BURNED_RECORD_TABLE =
+            "active_calories_burned_record_table";
 
     private static Object deserializeRecordInternal(byte[] bytes)
             throws IOException, ClassNotFoundException {
@@ -81,10 +91,16 @@ public class BackupRestoreDatabaseHelperTest {
     }
 
     @Rule(order = 1)
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(Environment.class).build();
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Rule(order = 2)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .build();
+
+    @Rule(order = 3)
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
@@ -99,8 +115,9 @@ public class BackupRestoreDatabaseHelperTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
 
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
@@ -142,7 +159,6 @@ public class BackupRestoreDatabaseHelperTest {
     @After
     public void tearDown() {
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
     }
 
@@ -189,9 +205,9 @@ public class BackupRestoreDatabaseHelperTest {
     }
 
     @Test
-    public void getChangesFromDataTables_recordsExceedPageSize_correctResponseReturned() {
+    public void getChangesFromDataTables_singleRecordsExceedPageSize_correctResponseReturned() {
         List<RecordInternal<?>> records = new ArrayList<>();
-        for (int recordNumber = 0; recordNumber < 10000; recordNumber++) {
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE * 2; recordNumber++) {
             records.add(
                     createStepsRecord(
                             // Add offsets to start time and end time for distinguishing different
@@ -204,7 +220,6 @@ public class BackupRestoreDatabaseHelperTest {
 
         GetChangesForBackupResponse response =
                 mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
-        mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
 
         assertThat(response.getChanges().size()).isEqualTo(MAXIMUM_PAGE_SIZE);
         String nextChangeTokenRowId = response.getNextChangeToken();
@@ -219,9 +234,48 @@ public class BackupRestoreDatabaseHelperTest {
     }
 
     @Test
+    public void getChangesFromDataTables_withSingleRecords_usingToken_correctResponseReturned() {
+        List<RecordInternal<?>> records = new ArrayList<>();
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE * 2; recordNumber++) {
+            records.add(
+                    createStepsRecord(
+                            // Add offsets to start time and end time for distinguishing different
+                            // records.
+                            TEST_START_TIME_IN_MILLIS + recordNumber,
+                            TEST_END_TIME_IN_MILLIS + recordNumber,
+                            TEST_STEP_COUNT));
+        }
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
+
+        GetChangesForBackupResponse firstResponse =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, firstResponse.getNextChangeToken());
+        GetChangesForBackupResponse secondResponse =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables(
+                        backupChangeToken.getDataTableName(),
+                        backupChangeToken.getDataTablePageToken(),
+                        backupChangeToken.getChangeLogsRequestToken());
+
+        assertThat(secondResponse.getChanges().size()).isEqualTo(MAXIMUM_PAGE_SIZE);
+        String secondChangeTokenRowId = secondResponse.getNextChangeToken();
+        assertThat(secondChangeTokenRowId).isEqualTo("2");
+        BackupChangeTokenHelper.BackupChangeToken secondBackupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, secondChangeTokenRowId);
+        assertThat(secondBackupChangeToken.getDataTablePageToken()).isEqualTo(-1);
+        assertThat(secondBackupChangeToken.getDataTableName())
+                .isEqualTo(ACTIVE_CALORIES_BURNED_RECORD_TABLE);
+        // Change logs token is still the same.
+        assertThat(secondBackupChangeToken.getChangeLogsRequestToken())
+                .isEqualTo(backupChangeToken.getChangeLogsRequestToken());
+    }
+
+    @Test
     public void getChangesFromDataTables_mixedRecordsNotInSamePage_correctChangeTokenReturned() {
         List<RecordInternal<?>> records = new ArrayList<>();
-        for (int recordNumber = 0; recordNumber < 5000; recordNumber++) {
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE; recordNumber++) {
             records.add(
                     createStepsRecord(
                             // Add offsets to start time and end time for distinguishing different
@@ -235,7 +289,6 @@ public class BackupRestoreDatabaseHelperTest {
 
         GetChangesForBackupResponse response =
                 mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
-        mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
 
         assertThat(response.getChanges().size()).isEqualTo(MAXIMUM_PAGE_SIZE);
         String nextChangeTokenRowId = response.getNextChangeToken();
@@ -246,15 +299,14 @@ public class BackupRestoreDatabaseHelperTest {
         // All data in step_record_table has been returned, page token reset as -1.
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(-1);
         assertThat(backupChangeToken.getDataTableName())
-                .isEqualTo("active_calories_burned_record_table");
+                .isEqualTo(ACTIVE_CALORIES_BURNED_RECORD_TABLE);
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo("1");
     }
 
     @Test
-    public void getChangesFromDataTables_mixedRecordsWithinSamePage_correctChangeTokenReturned() {
+    public void getChangesFromDataTables_mixedRecordsNotInSamePage_usingToken_responseReturned() {
         List<RecordInternal<?>> records = new ArrayList<>();
-        // Create 2500 step records and 2501 blood pressure records.
-        for (int recordNumber = 0; recordNumber < 2500; recordNumber++) {
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE; recordNumber++) {
             records.add(
                     createStepsRecord(
                             // Add offsets to start time and end time for distinguishing different
@@ -263,7 +315,47 @@ public class BackupRestoreDatabaseHelperTest {
                             TEST_END_TIME_IN_MILLIS + recordNumber,
                             TEST_STEP_COUNT));
         }
-        for (int recordNumber = 0; recordNumber < 2501; recordNumber++) {
+        records.add(createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
+
+        GetChangesForBackupResponse firstResponse =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, firstResponse.getNextChangeToken());
+        GetChangesForBackupResponse secondResponse =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables(
+                        backupChangeToken.getDataTableName(),
+                        backupChangeToken.getDataTablePageToken(),
+                        backupChangeToken.getChangeLogsRequestToken());
+
+        assertThat(secondResponse.getChanges().size()).isEqualTo(1);
+        String secondChangeTokenRowId = secondResponse.getNextChangeToken();
+        assertThat(secondChangeTokenRowId).isEqualTo("2");
+        BackupChangeTokenHelper.BackupChangeToken secondBackupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, secondChangeTokenRowId);
+        assertThat(secondBackupChangeToken.getDataTablePageToken()).isEqualTo(-1);
+        assertThat(secondBackupChangeToken.getDataTableName()).isEqualTo(null);
+        // Change logs token is still the same.
+        assertThat(secondBackupChangeToken.getChangeLogsRequestToken())
+                .isEqualTo(backupChangeToken.getChangeLogsRequestToken());
+    }
+
+    @Test
+    public void getChangesFromDataTables_mixedRecordsWithinSamePage_correctChangeTokenReturned() {
+        List<RecordInternal<?>> records = new ArrayList<>();
+        // Create 2500 step records and 2501 blood pressure records.
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE / 2; recordNumber++) {
+            records.add(
+                    createStepsRecord(
+                            // Add offsets to start time and end time for distinguishing different
+                            // records.
+                            TEST_START_TIME_IN_MILLIS + recordNumber,
+                            TEST_END_TIME_IN_MILLIS + recordNumber,
+                            TEST_STEP_COUNT));
+        }
+        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE / 2 + 1; recordNumber++) {
             records.add(
                     createBloodPressureRecord(
                             TEST_TIME_IN_MILLIS + recordNumber, TEST_SYSTOLIC, TEST_DIASTOLIC));
@@ -272,7 +364,6 @@ public class BackupRestoreDatabaseHelperTest {
 
         GetChangesForBackupResponse response =
                 mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
-        mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
 
         assertThat(response.getChanges().size()).isEqualTo(MAXIMUM_PAGE_SIZE);
         String nextChangeTokenRowId = response.getNextChangeToken();
@@ -283,5 +374,69 @@ public class BackupRestoreDatabaseHelperTest {
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(7468);
         assertThat(backupChangeToken.getDataTableName()).isEqualTo("blood_pressure_record_table");
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo("1");
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_tokenIsNull_invalid() {
+        assertThat(mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(null)).isFalse();
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_nextChangeLogNoLongerExists_invalid() {
+        RecordInternal<StepsRecord> stepRecord =
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        // Insert a blood pressure record and generate a change log so the previous returned token
+        // does not point to the end of the table.
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
+
+        // Delete some change logs.
+        mTransactionManager.delete(
+                new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME, stepRecord.getRecordType()));
+
+        assertThat(
+                        mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(
+                                response.getNextChangeToken()))
+                .isFalse();
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_nextChangeLogExists_valid() {
+        RecordInternal<StepsRecord> stepRecord =
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        // Insert a blood pressure record and generate a change log so the previous returned token
+        // does not point to the end of the table.
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
+
+        assertThat(
+                        mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(
+                                response.getNextChangeToken()))
+                .isTrue();
+    }
+
+    @Test
+    public void isChangeLogsTokenValid_tokenPointsToEndOfTable_valid() {
+        RecordInternal<StepsRecord> stepRecord =
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+
+        assertThat(
+                        mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(
+                                response.getNextChangeToken()))
+                .isTrue();
     }
 }

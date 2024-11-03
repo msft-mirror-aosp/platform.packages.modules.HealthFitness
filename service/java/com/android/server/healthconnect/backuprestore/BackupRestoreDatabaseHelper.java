@@ -18,6 +18,11 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
+
+import android.annotation.Nullable;
+import android.database.Cursor;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.backuprestore.BackupChange;
@@ -37,8 +42,10 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -85,25 +92,69 @@ public class BackupRestoreDatabaseHelper {
         mChangeLogsRequestHelper = changeLogsRequestHelper;
     }
 
-    /** Retrieve backup changes from the data tables. */
+    /**
+     * Verifies whether the provided change logs token is still valid. The token is valid if the
+     * next change log still exists or the token points to the end of the change logs table.
+     */
+    boolean isChangeLogsTokenValid(@Nullable String changeLogsPageToken) {
+        if (changeLogsPageToken == null) {
+            return false;
+        }
+        ChangeLogsRequestHelper.TokenRequest tokenRequest =
+                mChangeLogsRequestHelper.getRequest(/* packageName= */ "", changeLogsPageToken);
+        if (tokenRequest.getRowIdChangeLogs() == mChangeLogsHelper.getLatestRowId()) {
+            return true;
+        }
+        WhereClauses whereClauses =
+                new WhereClauses(AND)
+                        .addWhereEqualsClause(
+                                PRIMARY_COLUMN_NAME,
+                                String.valueOf(tokenRequest.getRowIdChangeLogs() + 1));
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(ChangeLogsHelper.TABLE_NAME).setWhereClause(whereClauses);
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return cursor.getCount() == 1;
+        }
+    }
+
+    /**
+     * Retrieves backup changes from the data tables, used for the initial call of a full data
+     * backup.
+     */
     GetChangesForBackupResponse getChangesAndTokenFromDataTables() {
-        // Return changeLogsToken for the first call of a full back up to prepare for
-        // incremental backups later on.
-        String changeLogsTablePageToken = getChangeLogsPageToken();
+        return getChangesAndTokenFromDataTables(null, EMPTY_PAGE_TOKEN.encode(), null);
+    }
+
+    /**
+     * Retrieves backup changes from data tables, used for the subsequent calls of a full data
+     * backup.
+     */
+    GetChangesForBackupResponse getChangesAndTokenFromDataTables(
+            @Nullable String dataTableName,
+            long dataTablePageToken,
+            @Nullable String changeLogsPageToken) {
+        // For the first call of a full data backup, page token of the chane logs is passed as null
+        // so we generate one to be used for incremental backups. In subsequent calls of a full data
+        // backup, we just need to preserve the previous page token instead of creating a new one.
+        String changeLogsTablePageToken =
+                changeLogsPageToken == null ? getChangeLogsPageToken() : changeLogsPageToken;
 
         //  TODO: b/369799948 - find a better approach to force the dependent data type orders
         List<Integer> recordTypes = getRecordTypes();
 
         List<BackupChange> backupChanges = new ArrayList<>();
-        long nextDataTablePageToken = EMPTY_PAGE_TOKEN.encode();
+        long nextDataTablePageToken = dataTablePageToken;
         int pageSize = MAXIMUM_PAGE_SIZE;
-        String dataTableName = null;
+        String nextDataTableName = dataTableName;
 
-        // TODO: b/369799948 - this is still not complete. Pass table name and page token to resume
-        // from the previous backup point.
         for (var recordType : recordTypes) {
             RecordHelper<?> recordHelper =
                     mInternalHealthConnectMappings.getRecordHelper(recordType);
+            if (nextDataTableName != null
+                    && !recordHelper.getMainTableName().equals(nextDataTableName)) {
+                // Skip the current record type as it has already been backed up.
+                continue;
+            }
             Set<String> grantedExtraReadPermissions =
                     Set.copyOf(recordHelper.getExtraReadPermissions());
             while (pageSize > 0) {
@@ -118,13 +169,16 @@ public class BackupRestoreDatabaseHelper {
                 ReadTransactionRequest readTransactionRequest =
                         new ReadTransactionRequest(
                                 mAppInfoHelper,
-                                // TODO: b/369799948 - revisit what should be passed.
+                                // Keep as empty to avoid package name filters.
                                 /* callingPackageName= */ "",
                                 readRecordsRequest.toReadRecordsRequestParcel(),
+                                // Avoid start date access based filters.
                                 /* startDateAccessMillis= */ DEFAULT_LONG,
+                                // Avoid package name filters.
                                 /* enforceSelfRead= */ false,
                                 grantedExtraReadPermissions,
-                                // TODO: b/369799948 - copied, revisit what this means.
+                                // Only used when querying the API call quota. Cloud backup &
+                                // restore APIs enforce no quota limits so this value is irrelevant.
                                 /* isInForeground= */ true);
                 Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                         mTransactionManager.readRecordsAndPageToken(
@@ -132,22 +186,25 @@ public class BackupRestoreDatabaseHelper {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
+                                // TODO: b/369799948 - the parameter name is confusing as it's
+                                // actually about recording read access logs. Confirm whether we
+                                // need it or not.
                                 /* shouldRecordDeleteAccessLogs= */ false);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
                 pageSize = MAXIMUM_PAGE_SIZE - backupChanges.size();
-                dataTableName = recordHelper.getMainTableName();
+                nextDataTableName = recordHelper.getMainTableName();
                 if (nextDataTablePageToken == EMPTY_PAGE_TOKEN.encode()) {
                     int recordIndex = recordTypes.indexOf(recordType);
                     // An empty page token indicates no more data in one data table, update the
                     // table name to the next data type.
                     if (recordIndex + 1 >= recordTypes.size()) {
-                        dataTableName = null;
+                        nextDataTableName = null;
                     } else {
                         RecordHelper<?> nextRecordHelper =
                                 mInternalHealthConnectMappings.getRecordHelper(
                                         recordTypes.get(recordIndex + 1));
-                        dataTableName = nextRecordHelper.getMainTableName();
+                        nextDataTableName = nextRecordHelper.getMainTableName();
                     }
                     break;
                 }
@@ -160,22 +217,22 @@ public class BackupRestoreDatabaseHelper {
         String backupChangeTokenRowId =
                 BackupChangeTokenHelper.getBackupChangeTokenRowId(
                         mTransactionManager,
-                        dataTableName,
+                        nextDataTableName,
                         nextDataTablePageToken,
                         changeLogsTablePageToken);
         return new GetChangesForBackupResponse(backupChanges, backupChangeTokenRowId);
     }
 
     private String getChangeLogsPageToken() {
-        long nextRowId = mChangeLogsHelper.getLatestRowId() + 1;
+        long rowId = mChangeLogsHelper.getLatestRowId();
         ChangeLogsRequestHelper.TokenRequest tokenRequest =
                 new ChangeLogsRequestHelper.TokenRequest(
                         List.of(),
                         getRecordTypes(),
-                        // TODO: b/369799948 - revisit what should be passed.
+                        // Pass empty string to avoid package filters.
                         /* requestingPackageName= */ "",
-                        nextRowId);
-        return mChangeLogsRequestHelper.getNextPageToken(tokenRequest, nextRowId);
+                        rowId);
+        return mChangeLogsRequestHelper.getNextPageToken(tokenRequest, rowId);
     }
 
     private List<BackupChange> convertRecordsToBackupChange(List<RecordInternal<?>> records) {

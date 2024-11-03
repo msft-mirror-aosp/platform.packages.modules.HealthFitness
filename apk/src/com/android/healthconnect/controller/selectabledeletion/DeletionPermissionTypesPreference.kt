@@ -64,6 +64,7 @@ class DeletionPermissionTypesPreference(context: Context) :
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         widgetFrame = holder.findViewById(android.R.id.widget_frame) as ViewGroup?
+        widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
         showCheckbox(isShowCheckbox)
 
         checkBox = holder.findViewById(R.id.checkbox_button) as CheckBox
@@ -93,6 +94,7 @@ class DeletionPermissionTypesPreference(context: Context) :
                 checkBox?.toggle()
                 // Set local variable to current value of whether checkBox is checked
                 isChecked = checkBox?.isChecked ?: false
+                widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
                 method()
                 logger.logInteraction(logNameCheckbox)
             } else {
@@ -104,6 +106,7 @@ class DeletionPermissionTypesPreference(context: Context) :
 
         checkboxButtonListener = OnClickListener {
             isChecked = !isChecked
+            widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
             method()
             logger.logInteraction(logNameCheckbox)
         }
@@ -163,5 +166,13 @@ class DeletionPermissionTypesPreference(context: Context) :
 
     override fun isSameItem(preference: Preference): Boolean {
         return preference == this
+    }
+
+    private fun getUpdatedContentDescription(isChecked: Boolean): String {
+        return if (isChecked) {
+            context.getString(R.string.a11y_checked)
+        } else {
+            context.getString(R.string.a11y_unchecked)
+        }
     }
 }
