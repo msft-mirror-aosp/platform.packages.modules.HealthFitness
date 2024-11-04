@@ -20,6 +20,7 @@ import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.MenstruationFlowRecord;
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -60,4 +61,10 @@ public final class MenstruationFlowRecordInternal
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeInt(mFlow);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }

@@ -22,6 +22,7 @@ import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.units.Velocity;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -82,6 +83,12 @@ public class SpeedRecordInternal
             parcel.writeLong(speedRecordSample.getEpochMillis());
         }
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     private List<SpeedRecord.SpeedRecordSample> getExternalSamples() {
         List<SpeedRecord.SpeedRecordSample> speedRecords =
