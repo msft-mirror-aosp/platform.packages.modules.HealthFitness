@@ -30,6 +30,8 @@
         <option name="test-file-name" value="HealthFitnessPermsTestApp.apk"/>
         <option name="test-file-name" value="HCPermsTestAppNoUsageIntent.apk"/>
         <option name="test-file-name" value="HCSharedUserPermsTestApp.apk"/>
+        <option name="test-file-name" value="RequestReadHeartRateTestApp.apk"/>
+        <option name="test-file-name" value="RequestBodySensorsTestApp.apk"/>
     </target_preparer>
     <test class="com.android.tradefed.testtype.AndroidJUnitTest">
         <option name="package" value="android.healthconnect.integrationtests"/>
