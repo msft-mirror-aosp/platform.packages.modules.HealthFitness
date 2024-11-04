@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Phatha idatha yezempilo nokufaneleka edivayisini yakho, futhi ulawule ukuthi yimaphi ama-app angafinyelela kuyo"</string>
     <string name="data_title" msgid="4456619761533380816">"Idatha kanye nokufinyelela"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Bhrawuza amarekhodi ezempilo"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Buka amarekhodi akho ezempilo nokuthi yimaphi ama-app angawafinyelela"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Zonke izigaba"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Bona zonke izigaba"</string>
     <string name="no_data" msgid="1906986019249068659">"Ayikho idatha"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"finyelela idatha yakho yezempilo"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Funda amakholari ashisiwe"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Ivumela i-app ukufunda amakholari ashisiwe"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Finyelela idatha engemuva"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Vumela <xliff:g id="APP_NAME">%1$s</xliff:g> ukuthi ifinyelele idatha ingemuva?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ukuthi ifinyelele idatha kungemuva?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Uma uyivumela, le app ingafinyelela idatha yokufaneleka nenhlalakahle kanye namarekhodi ezempilo uma ungayisebenzisi i-app."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Uma uyivumela, le app ingafinyelela amarekhodi empilo uma ungayisebenzisi i-app."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Uma uyivumela, le app ingafinyelela idatha yokufaneleka kanye nedatha yenhlalakahle uma ungayisebenzisi i-app."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Uma uyivumela, le app izofinyelela kudatha yeHealth Connect uma ungayisebenzisi i-app."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ukuthi ifinyelele kudatha eyedlule?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Uma uyivumela, le app ingafinyelela idatha yokufaneleka nenhlalakahle efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Uma uyivumela, le app ingafinyelela yonke idatha eyedlule yokufaneleka nenhlalakahle."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Uma uyivumela, le app izofinyelela kudatha yeHealth Connect efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Uma uyivumela, le app izofinyelela yonke idatha yesikhathi esidlule yeHealth Connect."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Vumela ukufinyelela okwengeziwe kwe-<xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> nayo ifuna ukufinyelela kulawa masethingi eHealth Connect"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Finyelela yonke idatha engemuva"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Finyelela amarekhodi ezempilo engemuva"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Finyelela idatha yokufaneleka nenhlalakahle engemuva"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Vumela le app ukuthi ifinyelele idatha yokufaneleka nokuphila kahle kanye namarekhodi ezempilo uma ungasebenzisi i-app"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Vumela le app ifinyelele le datha uma ungayisebenzisi i-app"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Vumela le app ifinyelele le datha uma ungayisebenzisi i-app"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"Finyelela idatha engemuva"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Vumela le app ifinyelele kudatha yakho yeHealth Connect uma ungayisebenzisi i-app"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Finyelela idatha yesikhathi esidlule yokufaneleka nenhlalakahle"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Vumela le app ukuthi ifinyelele idatha efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Vumela le app ukuthi ifinyelele yonke idatha yangaphambili"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Finyelela idatha eyedlule"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Vumela le app ukuthi ifinyelele idatha yeHealth Connect efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Vumela le app ukuthi ifinyelele yonke idatha edlule yeHealth Connect"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ingavele ifinyelele idatha yangaphambilini yamarekhodi akho ezempilo"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Funda kabanzi mayelana nezimvume"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Finyelela yonke idatha engemuva"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Finyelela amarekhodi ezempilo engemuva"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Finyelela idatha yokufaneleka nenhlalakahle engemuva"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Vumela le app ukuthi ifinyelele idatha yokufaneleka nokuphila kahle kanye namarekhodi ezempilo uma ungasebenzisi i-app"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Vumela le app ifinyelele le datha uma ungayisebenzisi i-app"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Vumela le app ifinyelele le datha uma ungayisebenzisi i-app"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Finyelela idatha engemuva"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Vumela le app ifinyelele kudatha yakho yeHealth Connect uma ungayisebenzisi i-app"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Finyelela idatha yesikhathi esidlule yokufaneleka nenhlalakahle"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Vumela le app ukuthi ifinyelele idatha efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Vumela le app ukuthi ifinyelele yonke idatha yangaphambili"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"Finyelela idatha eyedlule"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Vumela le app ukuthi ifinyelele idatha yeHealth Connect efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Vumela le app ukuthi ifinyelele yonke idatha eyedlule yeHealth Connect"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Ayikho idatha yokufaneleka efundwayo okwamanje ngoba i-<xliff:g id="APP_NAME">%1$s</xliff:g> ayinazo izimvume zokufunda ezivuliwe"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ingavele ifinyelele idatha yangaphambilini yamarekhodi akho ezempilo Ukuze ushintshe lokhu, vala izimvume zerekhodi lezempilo zale app"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Phatha izimvume zerekhodi lezempilo"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Nika amandla okungenani i-read permission eyodwa ukuze uvule ukufinyelela kwangemuva noma okwedatha yangaphambilini yale app"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Nika amandla okungenani i-read permission eyodwa ukuze uvule ukufinyelela kwangemuva kwale app"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Nika amandla okungenani i-read permission eyodwa ukuze uvule ukufinyelela kwedatha yangaphambilini yale app"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Vumela le app ukuthi ifinyelele yonke idatha edlule yeHealth Connect"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Vumela le app ifinyelele kudatha yakho ye-Health Connect uma ungayisebenzisi i-app"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Uma uyivumela, le app izofinyelela kudatha ye-Health Connect uma ungayisebenzisi i-app."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Finyelela idatha eyedlule"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ifinyelele kudatha eyedlule?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Vumela le app ukuthi ifinyelele idatha ye-Health Connect efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Vumela le app ukuthi ifinyelele yonke idatha edlule ye-Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Uma uyivumela, le app izofinyelela kudatha ye-Health Connect efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Uma uyivumela, le app izofinyelela yonke idatha edlule ye-Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Amakhalari asebenzayo ashisiwe"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"amakhalari asebenzayo ashisiwe"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Funda amakhalari asebenzayo ashisiwe"</string>
@@ -155,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ukuphusha isihlalo sabakhubazekile"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Funda ukuphusha kwesihlalo sabakhubazekile"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Bhala ukuphusha kwesihlalo sabakhubazekile"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Isilinganiselo se-Basal metabolic"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"isilinganiselo se-Basal metabolic"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Funda isilinganiselo se-basal metabolic"</string>
@@ -267,34 +316,70 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"izinga lokushisa lesikhumba"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Funda izinga lokushisa lesikhumba"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Bhala izinga lokushisa lesikhumba"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Yonke idatha yezokwelashwa"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"yonke idatha yezokwelashwa"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Bhala yonke idatha yezokwelashwa"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Ukugoma"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"ukugoma"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Funda ngokugoma"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Wonke amarekhodi ezempilo"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"wonke amarekhodi ezempilo"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Bhala wonke amarekhodi ezempilo"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Okugulisayo"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"okugulisayo"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Funda okugulisayo"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Izimo"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"izimo"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Izimo zokufunda"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Imigomo"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"imigomo"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"Funda imigomo"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Imiphumela yelebhu"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"imiphumela yelebhu"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Funda imiphumela yelebhu"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Amakhambi emithi"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"amakhambi emithi"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"Funda amakhambi emithi"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Imininingwane yomuntu siqu"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"imininingwane yomuntu siqu"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Ukufunda imininingwane yomuntu siqu"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Imininingwane kadokotela"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"imininingwane kadokotela"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Ukufunda imininingwane kadokotela"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Ukukhulelwa"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ukukhulelwa"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Funda ukukhulelwa"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Izinqubo"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"izinqubo"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Funda izinqubo"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Umlando womphakathi"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"umlando womphakathi"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Funda ngomlando womphakathi"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Ukuvakasha"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"ukuvakasha"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Ukufunda ukuvakashelwa"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Izimpawu ezisemqoka"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"izimpawu ezisemqoka"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"Funda izimpawu ezisemqoka"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Ukugcwala kwengqondo"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ukugcwala kwengqondo"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Funda ukugcwala kwengqondo"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Bhala ukugcwala kwengqondo"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Vumela i-“<xliff:g id="APP_NAME">%1$s</xliff:g>” ukuba ifunde"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Vumela i-“<xliff:g id="APP_NAME">%1$s</xliff:g>” ukuba ibhale"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Khansela"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Vumela"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Vumela konke"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ungavumeli"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Khetha idatha ofuna ukuthi le-app iyifunde noma iyibhale ku-Health Connect"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Khetha idatha ofuna ukuthi le-app iyifunde noma iyibhale ku-Health Connect"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Khetha idatha ofuna le app iyifunde kuHealth Connect"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Khetha idatha ofuna le app ukuthi iyibhale kuHealth Connect"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Uma unikeza ukufinyelela kokufunda, i-app ingafunda idatha entsha nedatha yezinsukwini ezingu-30 ezedlule"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Uma unikeza ukufinyelela kokufunda, i-app ungafunda idatha entsha neyesikhathi esedlule"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ukuthi ifinyelele i-Health Connect?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Ungafunda ukuthi i-<xliff:g id="APP_NAME">%1$s</xliff:g> iyiphatha kanjani idatha yakho ku-<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> yonjiniyela"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ukuthi ifinyelele idatha yokufaneleka nenhlalakahle?"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Ungafunda ukuthi i-<xliff:g id="APP_NAME">%1$s</xliff:g> iyiphatha kanjani idatha yakho kokuthi <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"inqubomgomo yobumfihlo"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ukuze ufinyelele amarekhodi akho ezempilo?"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Uma unikeza ukufinyelela, i-app ingafunda futhi ibhale idatha efana nokungezwani komzimba nezinto ezithile, imiphumela yalebhu, imithi yokugoma nokunye.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Uma unikeza ukufinyelela, i-app ingafunda idatha efana nokungezwani komzimba nezinto ezithile, imiphumela yalebhu, imithi yokugoma nokunye.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Mayelana namarekhodi ezempilo"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Idatha ongabelana ngayo"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Uma uyivumela, i-<xliff:g id="APP_NAME">%1$s</xliff:g> ingabelana ngamarekhodi akho ezempilo neHealth Connect."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Vumelanisa amarekhodi akho ezempilo avela kuma-app nemithombo ehlukene ukuze uwagcine endaweni eyodwa"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Susa zonke izimvume?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Susa konke"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ibhale idatha evela ku-Health Connect.\n\nLokhu akuthinti ezinye izimvume le app okungenzeka inazo, njengekhamera, imakrofoni, noma indawo."</string>
@@ -302,10 +387,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ibhale noma iyiphi idatha kusuka ku-Health Connect, okufaka idatha yangaphambilini.\n\nLokhu akufaki ezinye izimvume le app engaba nazo, njengendawo, ikhamera, noma imakrofoni."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ibhale noma iyiphi idatha evela ku-Health Connect, okufaka idatha yokungemuva neyangaphambilini.\n\nLokhu akufaki ezinye izimvume le app engaba nazo, njengendawo, ikhamera, noma imakrofoni."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Futhi sula idatha ye-<xliff:g id="APP_NAME">%1$s</xliff:g> ku-Health Connect"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Susa zonke izimvume zempilo enhle nenhlalakahle?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Phinde usule idatha yokufaneleka evela ku-<xliff:g id="APP_NAME">%1$s</xliff:g> kuHealth Connect"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Susa zonke izimvume zerekhodi lezempilo?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Phinde usule amarekhodi ezempilo avela ku-<xliff:g id="APP_NAME">%1$s</xliff:g> kuHealth Connect"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ibhale le datha evela kuHealth Connect.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe inazo, njengekhamera, imakrofoni, noma indawo."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ukubhala le datha evela kuHealth Connect, kuhlanganise idatha yokungemuva.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe nazo, njengekhamera, imakrofoni noma indawo."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ukubhala le datha evela kuHealth Connect, kuhlanganise idatha edlule.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe nazo, njengekhamera, imakrofoni noma indawo."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ukubhala le datha evela kuHealth Connect, kuhlanganise idatha yokungemuva kanye nedlule.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe nazo, njengekhamera, imakrofoni noma indawo."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Susa zonke izimvume?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ibhale idatha evela kuHealth Connect.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe inazo, njengekhamera, imakrofoni, noma indawo."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ukubhala kuHealth Connect, kuhlanganise idatha yokungemuva.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe nazo, njengekhamera, imakrofoni noma indawo."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ukubhala kuHealth Connect, kuhlanganise idatha edlule.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe nazo, njengekhamera, imakrofoni noma indawo."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> ngeke isakwazi ukufunda noma ukubhala idatha evela kuHealth Connect, kuhlanganise idatha yokungemuva kanye nedlule.\n\nLokhu akuzithinti ezinye izimvume le app engase ibe nazo, njengekhamera, imakrofoni noma indawo."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Phinde usule idatha yokuzivocavoca namarekhodi ezempilo avela ku-<xliff:g id="APP_NAME">%1$s</xliff:g> kuHealth Connect"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Kususwe izimvume zale app"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Futhi sula yonke idatha yeHealth Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Usuku olulandelayo"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Usuku olukhethiwe"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Usuku lwangaphambilini"</string>
     <string name="default_error" msgid="7966868260616403475">"Kukhona okungahambanga kahle. Sicela uzame futhi."</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"Insiza Engaziwa."</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Idatha engumthombo"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Abakaki abavuliwe."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Abakaki abavaliwe."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Inkambu <xliff:g id="FIELD">%2$s</xliff:g> Inani"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Ikhodi yomthombo enemininingwane: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Ama-app anale mvume angakwazi ukufunda futhi abhale idatha yakho yezempilo nokufaneleka."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Lawula ukuthi yimaphi ama-app angafinyelela kudatha egcinwe ku-Health Connect. Thepha i-app ukuze ubuyekeze idatha ekwazi ukuyifunda noma ukuyibhala."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Ukufinyelela okuvunyelwe"</string>
@@ -322,6 +430,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Susa konke"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Phatha i-app"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Bona idatha ye-app"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Susa ukufinyelela kule app"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Sula idatha ye-app"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Izinhlelo zokusebenza ezingasebenzi"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Lawa ma-app awasenakho ukufinyelela, kodwa asenayo idatha egcinwe ku-Health Connect"</string>
@@ -334,13 +443,14 @@
     <string name="app_access_title" msgid="7137018424885371763">"Ukufinyelela kwe-app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Okwamanje awunawo ama-app ahambelanayo afakiwe."</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Ukufinyelela okungeziwe"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Idatha edlule, idatha yasemuva"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Izimvume ezisusiwe ezengeziwe zale app"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Izimvume"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Ukufaneleka nempilo enhle"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Ukujima, ukulala, ukudla okunomsoco nokunye"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Amarekhodi ezempilo"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"amarekhodi ezempilo"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Imiphumela yaselebhu, imithi, ukugonywa nokunye"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Imiphumela yelebhu, imithi, imigomo nokunye"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Izimvume zama-app ezisusiwe"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"I-Health Connect isuse izimvume ze-<xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"I-Health Connect isuse izimvume ze-<xliff:g id="APP_DATA_0">%1$s</xliff:g>, ne-<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -389,6 +499,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"Khetha ukuthi ungakulondoloza kuphi okukhishiwe okushejuliwe"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Sicela ukhethe i-app yesitoreji secloud ukuze uthumele idatha yakho"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"IHealth Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Ngenisa leli fayela?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"Okuthi <xliff:g id="FILE_NAME">%1$s</xliff:g> kuzongeniswa kuHealth Connect"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Khansela"</string>
@@ -408,6 +519,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Vula"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Khetha ifayela"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Khulula isikhala"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Ukuthunyelwa okuhleliwe kuvuliwe"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"IHealth Connect ayikwazanga ukuthumela idatha"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Isikhala esengeziwe siyadingeka"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Kube nenkinga ngokuthumela ngomhla ka-<xliff:g id="DATE">%1$s</xliff:g>. Sicela usethe ukuthunyelwa okusha okuhleliwe bese uzama futhi."</string>
@@ -430,6 +542,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Iya kuPlay Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Qalisa nge-Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"IHealth Connect igcina ngokuvikelekile idatha yakho yezempilo nokufaneleka, okukunikeza indlela elula yokuvumelanisa ama-app ahlukile edivayisini yakho"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"IHealth Connect igcina futhi ivumelanise idatha yakho yezempilo nokufaneleka okuvela kuma-app ahlukene.\n\n"<b>"Idatha yokufaneleka nokuphila kahle,"</b>" okuhlanganisa izikhathi zokujima, izinyathelo, ukudla okunomsoco, ukulala nokuningi\n\n"<b>"Amarekhodi ezempilo,"</b>" okuhlanganisa ukugoma, imiphumela yelebhu nokunye"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"NgeHealth Connect ungakwazi"</string>
     <string name="share_data" msgid="3481932156368883946">"Yabelana ngedatha nama-app akho"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Khetha idatha i-app ngayinye engayifunda noma iyibhalele ku-Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Phatha amasethingi akho nobumfihlo"</string>
@@ -474,7 +588,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Sula unaphakade yonke idatha ye-<xliff:g id="DATA_TYPE">%1$s</xliff:g> engezwe i-<xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Sula unomphela lokhu okufakiwe kuHealth Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Ama-app axhumene ngeke esakwazi ukufinyelela le datha ukusuka ku-Health Connect"</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Lokhu kuzosusa konke okufakiwe kokuya esikhathini ukusuka ngomhla ka-<xliff:g id="START_DATE">%1$s</xliff:g> ukuya ku-<xliff:g id="END_DATE">%2$s</xliff:g>."</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"Lokhu kuzosula konke okufakiwe kokuya esikhathini kusukela ngomhla ka-<xliff:g id="START_DATE">%1$s</xliff:g> kuye ku-<xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Sula"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Iya emuva"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Kwenziwe"</string>
@@ -530,7 +644,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Ukopha kancane"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Ukopha ngokumaphakathi"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Ukopha kakhulu"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Ukopha okungaziwa"</string>
     <string name="period_day" msgid="3821944462093965882">"Usuku lwenkathi olu-<xliff:g id="DAY">%1$d</xliff:g> kwangu-<xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Ukuya esikhathini (usuku olu-1)}one{Ukuya esikhathini (izinsuku ezingu-#)}other{Ukuya esikhathini (izinsuku ezingu-#)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Okuhle"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Okubi"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Phezulu"</string>
@@ -999,7 +1115,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Hlela izinsiza ze-app"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Idivayisi ezenzakalelayo"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Idatha ye-app"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Idatha ekuma-app akwazi ukufinyelela ku-Health Connect izovela lapha"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Idatha evela ku-<xliff:g id="APP_NAME">%1$s</xliff:g> izobonakala lapha"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Idatha ekuma-app akwazi ukufinyelela kuHealth Connect izovela lapha"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Usuku"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Iviki"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Inyanga"</string>
@@ -1009,17 +1126,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Inyanga edlule"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Ukungena"</string>
     <string name="tab_access" msgid="7818197975407243701">"Ukufinyelela"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Vumela ukufinyelela okwengeziwe kwe-<xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> nayo ifuna ukufinyelela kulawa masethingi e-Health Connect"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Nika amandla okungenani i-read permission eyodwa ukuze uvule ukufinyelela kwangemuva noma okwedatha yangaphambilini yale app"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Nika amandla okungenani i-read permission eyodwa ukuze uvule ukufinyelela kwangemuva kwale app"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Nika amandla okungenani i-read permission eyodwa ukuze uvule ukufinyelela kwedatha yangaphambilini yale app"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Sula unomphela yonke idatha ku-Health Connect?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Sula unomphela idatha ekhethiwe ku-Health Connect?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Yonke idatha isuliwe"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Idatha ye-<xliff:g id="PERMISSION_TYPE">%s</xliff:g> isuliwe"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Izinto ezingu-<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> zisuliwe."</string>
-    <string name="select_all" msgid="837499881590001166">"Khetha konke"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Qala ukusebenzisa iHealth Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Vumelanisa ama-app akho okuqala ukuze wabelana ngedatha yezempilo nokufaneleka phakathi kwawo"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Setha"</string>
@@ -1029,4 +1135,48 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Bona ama-app ahambelanayo"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Thola ama-app amaningi ukuze uvumelanise ne-<xliff:g id="APP_NAME">%s</xliff:g> nge-Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Bheka ku-app store"</string>
+    <string name="select_all" msgid="837499881590001166">"Khetha konke"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Ama-app axhumene ngeke esakwazi ukufunda le datha kuHealth Connect"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
+    <skip />
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
+    <skip />
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
+    <skip />
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
+    <skip />
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
+    <skip />
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
+    <skip />
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
+    <skip />
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
+    <skip />
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
+    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Sula unomphela yonke idatha?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Sula unomphela idatha ekhethiwe?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Sula unomphela yonke idatha ye-<xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Sula unomphela idatha ekhethiwe ye-<xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Sula unomphela konke okukhona komhla ka-<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Sula unomphela konke okukhona kweviki lomhla ka-<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Sula unomphela konke okukhona komhla ka-<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Sula unomphela okukhona okukhethiwe kwangomhla ka-<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Sula unomphela okukhona okukhethiwe kwangeviki lomhla ka-<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Sula unomphela okukhona okukhethiwe kwangomhla ka-<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Sula unomphela lokhu?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Sula unomphela konke okukhona ku-<xliff:g id="APP_NAME">%1$s</xliff:g> komhla ka-<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Sula unomphela konke okukhona ku-<xliff:g id="APP_NAME">%1$s</xliff:g> komhla ka-<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Sula unomphela konke okukhona ku-<xliff:g id="APP_NAME">%1$s</xliff:g> komhla ka-<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Sula unomphela okukhona okukhethiwe ku-<xliff:g id="APP_NAME">%1$s</xliff:g> kwangomhla ka-<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Sula unomphela okukhona okukhethiwe ku-<xliff:g id="APP_NAME">%1$s</xliff:g> kwangeviki lomhla ka-<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Sula unomphela okukhona okukhethiwe ku-<xliff:g id="APP_NAME">%1$s</xliff:g> kwangomhla ka-<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Sula unomphela lokhu ku-<xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Sula ngokuzenzakalela idatha ye-<xliff:g id="DATA_TYPE">%1$s</xliff:g> ye-<xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
+    <string name="on" msgid="8266542510798355807">"Vuliwe"</string>
+    <string name="off" msgid="6996623844428550649">"Valiwe"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Kufinyelelwe ngo-<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Kufinyelelwe izolo ngo-<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Kufinyelelwe ngo-<xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

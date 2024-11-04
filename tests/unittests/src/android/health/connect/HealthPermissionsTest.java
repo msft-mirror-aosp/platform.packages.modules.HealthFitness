@@ -18,11 +18,22 @@ package android.health.connect;
 
 import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -108,8 +119,18 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_RESTING_HEART_RATE,
                     HealthPermissions.READ_SKIN_TEMPERATURE,
                     HealthPermissions.READ_MINDFULNESS,
-                    HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
-                    HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
+                    HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                    HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
+                    HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                    HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
+                    HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
+                    HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS,
+                    HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
+                    HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
+                    HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                    HealthPermissions.READ_MEDICAL_DATA_VISITS,
+                    HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
                     HealthPermissions.WRITE_ELEVATION_GAINED,
@@ -278,18 +299,28 @@ public class HealthPermissionsTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalPermissions_returnsValidPermissions() {
         Set<String> permissions = HealthPermissions.getAllMedicalPermissions();
         assertThat(permissions)
                 .containsAtLeast(
                         WRITE_MEDICAL_DATA,
-                        READ_MEDICAL_DATA_IMMUNIZATION,
-                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+                        READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                        READ_MEDICAL_DATA_CONDITIONS,
+                        READ_MEDICAL_DATA_IMMUNIZATIONS,
+                        READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                        READ_MEDICAL_DATA_MEDICATIONS,
+                        READ_MEDICAL_DATA_PERSONAL_DETAILS,
+                        READ_MEDICAL_DATA_PRACTITIONER_DETAILS,
+                        READ_MEDICAL_DATA_PREGNANCY,
+                        READ_MEDICAL_DATA_PROCEDURES,
+                        READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                        READ_MEDICAL_DATA_VISITS,
+                        READ_MEDICAL_DATA_VITAL_SIGNS);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalPermissions_returnsAllMedicalPermissions() throws Exception {
         Set<String> permissions = HealthPermissions.getAllMedicalPermissions();
 

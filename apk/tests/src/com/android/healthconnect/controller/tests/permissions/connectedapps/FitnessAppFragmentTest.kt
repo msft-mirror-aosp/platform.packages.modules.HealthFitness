@@ -17,6 +17,8 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.content.Intent
 import android.content.Intent.*
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,6 +34,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -44,28 +47,29 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.FitnessAppFragment
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.EXERCISE
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags
 import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -75,21 +79,26 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import javax.inject.Inject
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.atLeast
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class FitnessAppFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue val viewModel: AppPermissionViewModel = mock()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
@@ -104,7 +113,6 @@ class FitnessAppFragmentTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         navHostController = TestNavHostController(context)
         hiltRule.inject()
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(false)
 
         whenever(viewModel.revokeAllHealthPermissionsState).then { MutableLiveData(NotStarted) }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(false) }
@@ -126,7 +134,9 @@ class FitnessAppFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
 
         whenever(additionalAccessViewModel.additionalAccessState).then {
@@ -156,22 +166,19 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
-            val fragment =
-                activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                    as FitnessAppFragment
-            val readCategory =
-                fragment.preferenceScreen.findPreference("read_permission_category")
-                    as PreferenceCategory?
-            val writeCategory =
-                fragment.preferenceScreen.findPreference("write_permission_category")
-                    as PreferenceCategory?
+            val fragment = getFragment(activity)
+            val readCategory = getPreferenceCategory(fragment, "read_permission_category")
+
+            val writeCategory = getPreferenceCategory(fragment, "write_permission_category")
             assertThat(readCategory?.preferenceCount).isEqualTo(0)
             assertThat(writeCategory?.preferenceCount).isEqualTo(0)
         }
-        onView(withText("See app data")).check(doesNotExist())
     }
 
     @Test
@@ -183,24 +190,21 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
-            val fragment =
-                activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                    as FitnessAppFragment
-            val readCategory =
-                fragment.preferenceScreen.findPreference("read_permission_category")
-                    as PreferenceCategory?
-            val writeCategory =
-                fragment.preferenceScreen.findPreference("write_permission_category")
-                    as PreferenceCategory?
+            val fragment = getFragment(activity)
+            val readCategory = getPreferenceCategory(fragment, "read_permission_category")
+
+            val writeCategory = getPreferenceCategory(fragment, "write_permission_category")
             assertThat(readCategory?.preferenceCount).isEqualTo(1)
             assertThat(writeCategory?.preferenceCount).isEqualTo(0)
         }
+
         onView(withText("Distance")).check(matches(isDisplayed()))
-        onView(withText("See app data")).check(doesNotExist())
-        onView(withText("Delete app data")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -212,23 +216,20 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
-            val fragment =
-                activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                    as FitnessAppFragment
-            val readCategory =
-                fragment.preferenceScreen.findPreference("read_permission_category")
-                    as PreferenceCategory?
-            val writeCategory =
-                fragment.preferenceScreen.findPreference("write_permission_category")
-                    as PreferenceCategory?
+            val fragment = getFragment(activity)
+            val readCategory = getPreferenceCategory(fragment, "read_permission_category")
+            val writeCategory = getPreferenceCategory(fragment, "write_permission_category")
+
             assertThat(readCategory?.preferenceCount).isEqualTo(0)
             assertThat(writeCategory?.preferenceCount).isEqualTo(1)
         }
         onView(withText("Exercise")).check(matches(isDisplayed()))
-        onView(withText("See app data")).check(doesNotExist())
     }
 
     @Test
@@ -245,24 +246,21 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
-            val fragment =
-                activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                    as FitnessAppFragment
-            val readCategory =
-                fragment.preferenceScreen.findPreference("read_permission_category")
-                    as PreferenceCategory?
-            val writeCategory =
-                fragment.preferenceScreen.findPreference("write_permission_category")
-                    as PreferenceCategory?
+            val fragment = getFragment(activity)
+            val readCategory = getPreferenceCategory(fragment, "read_permission_category")
+            val writeCategory = getPreferenceCategory(fragment, "write_permission_category")
+
             assertThat(readCategory?.preferenceCount).isEqualTo(1)
             assertThat(writeCategory?.preferenceCount).isEqualTo(1)
         }
         onView(withText("Exercise")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
-        onView(withText("See app data")).check(doesNotExist())
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ACCESS_PAGE)
         verify(healthConnectLogger).logPageImpression()
@@ -288,12 +286,13 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
-            val fragment =
-                activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                    as FitnessAppFragment
+            val fragment = getFragment(activity)
             val mainSwitchPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
                     as MainSwitchPreference?
@@ -303,7 +302,6 @@ class FitnessAppFragmentTest {
         // TODO (b/325680041) investigate why not active
         verify(healthConnectLogger)
             .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
-        onView(withText("See app data")).check(doesNotExist())
     }
 
     @Test
@@ -318,12 +316,13 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
-            val fragment =
-                activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                    as FitnessAppFragment
+            val fragment = getFragment(activity)
 
             val mainSwitchPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
@@ -334,18 +333,40 @@ class FitnessAppFragmentTest {
     }
 
     @Test
-    fun allowAll_toggleOff_showsDisconnectDialog() {
+    fun allowAll_toggleOff_withAdditional_andMedicalPermissions_showsDisconnectDialog() {
         val writePermission = FitnessPermission(EXERCISE, WRITE)
         val readPermission = FitnessPermission(DISTANCE, READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
-        onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
+        onView(withText("Remove all fitness and wellness permissions?"))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect, including background and past data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete fitness data from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         verify(healthConnectLogger)
             .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
         verify(healthConnectLogger)
@@ -354,12 +375,25 @@ class FitnessAppFragmentTest {
             .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
         verify(healthConnectLogger)
             .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
-
-        onView(withText("See app data")).check(doesNotExist())
     }
+
+    // TODO (b/369796531) Add more tests for dialogs
+    // allowAll_toggleOff_withBackground_andMedicalPermissions_showsDisconnectDialog
+    // allowAll_toggleOff_withPastData_andMedicalPermissions_showsDisconnectDialog
+    // allowAll_toggleOff_noAdditional_andMedicalPermissions_showsDisconnectDialog
+    // allowAll_toggleOff_withAdditional_andNoMedicalPermissions_showsDisconnectDialog
+    // allowAll_toggleOff_withBackground_andNoMedicalPermissions_showsDisconnectDialog
+    // allowAll_toggleOff_noAdditional_andNoMedical_showsDisconnectDialog
 
     @Test
     fun allowAll_toggleOff_onDialogRemoveAllClicked_disconnectAllPermissions() {
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         val writePermission = FitnessPermission(EXERCISE, WRITE)
         val readPermission = FitnessPermission(DISTANCE, READ)
         whenever(viewModel.fitnessPermissions).then {
@@ -370,7 +404,8 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all")).perform(click())
@@ -379,10 +414,10 @@ class FitnessAppFragmentTest {
 
         onView(withText("Exercise")).check(matches(not(isChecked())))
         onView(withText("Distance")).check(matches(not(isChecked())))
-        onView(withText("See app data")).check(doesNotExist())
     }
 
     @Test
+    @Ignore("b/369796531 - unignore when more tests added")
     fun allowAll_toggleOff_deleteDataSelected_onDialogRemoveAllClicked_deleteIsCalled() {
         val writePermission = FitnessPermission(EXERCISE, WRITE)
         val readPermission = FitnessPermission(DISTANCE, READ)
@@ -394,7 +429,8 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withId(R.id.dialog_checkbox)).perform(click())
@@ -404,7 +440,7 @@ class FitnessAppFragmentTest {
         verify(healthConnectLogger)
             .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
 
-        verify(viewModel).deleteAppData(safeEq(TEST_APP_PACKAGE_NAME), safeEq(TEST_APP_NAME))
+        verify(viewModel).deleteAppData(eq(TEST_APP_PACKAGE_NAME), eq(TEST_APP_NAME))
     }
 
     @Test
@@ -417,7 +453,8 @@ class FitnessAppFragmentTest {
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(
                 withText(
@@ -426,7 +463,9 @@ class FitnessAppFragmentTest {
                         "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -447,10 +486,16 @@ class FitnessAppFragmentTest {
                 AdditionalAccessViewModel.State(
                     historyReadUIState =
                         AdditionalAccessViewModel.AdditionalPermissionState(
-                            isDeclared = true, isEnabled = false, isGranted = false)))
+                            isDeclared = true,
+                            isEnabled = false,
+                            isGranted = false,
+                        )
+                )
+            )
         }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
@@ -458,7 +503,9 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -478,7 +525,8 @@ class FitnessAppFragmentTest {
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
@@ -486,7 +534,9 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -510,14 +560,17 @@ class FitnessAppFragmentTest {
             .thenReturn(Intent(rationaleAction))
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(
                 withText(
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -528,8 +581,8 @@ class FitnessAppFragmentTest {
     }
 
     @Test
-    fun seeAppData_isEnabled_buttonDisplayed() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(true)
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun seeAppData_showManageAppSectionEnabled_isEnabled_buttonDisplayed() {
 
         val writePermission = FitnessPermission(EXERCISE, WRITE)
         val readPermission = FitnessPermission(DISTANCE, READ)
@@ -541,9 +594,37 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                EXTRA_APP_NAME to TEST_APP_NAME,
+                SHOW_MANAGE_APP_SECTION to true, // shows manage app permission
+            )
+        )
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Delete app data")).check(doesNotExist())
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun seeAppData_hideManageAppPermissionEnabled_isEnabled_buttonDisplayed() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        launchFragment<FitnessAppFragment>(
+            bundleOf(
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                EXTRA_APP_NAME to TEST_APP_NAME,
+                SHOW_MANAGE_APP_SECTION to false, // hides manage app permission
+            )
+        )
+        onView(withText("Manage app")).check(doesNotExist())
+        onView(withText("See app data")).check(doesNotExist())
     }
 
     @Test
@@ -553,7 +634,8 @@ class FitnessAppFragmentTest {
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(doesNotExist())
     }
@@ -563,13 +645,15 @@ class FitnessAppFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label))
             .perform(scrollTo())
@@ -582,13 +666,18 @@ class FitnessAppFragmentTest {
             AdditionalAccessViewModel.State(
                 backgroundReadUIState =
                     AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = true, isEnabled = false, isGranted = false))
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label))
             .perform(scrollTo())
@@ -597,23 +686,24 @@ class FitnessAppFragmentTest {
     }
 
     @Test
-    @Ignore //TODO(b/352003559): Unignore when fixed flakiness.
+    @Ignore // TODO(b/352003559): Unignore when fixed flakiness.
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(
-                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)) {
-                navHostController.setGraph(R.navigation.nav_graph)
-                navHostController.setCurrentDestination(R.id.fitnessAppFragment)
-                Navigation.setViewNavController(requireView(), navHostController)
-            }
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        ) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.fitnessAppFragment)
+            Navigation.setViewNavController(requireView(), navHostController)
+        }
         onView(withText(R.string.additional_access_label)).perform(scrollTo()).perform(click())
 
         onIdle()
@@ -621,4 +711,17 @@ class FitnessAppFragmentTest {
             .isEqualTo(R.id.additionalAccessFragment)
         verify(healthConnectLogger).logInteraction(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
     }
+
+    private fun getFragment(activity: TestActivity): HealthPreferenceFragment {
+        return activity.supportFragmentManager.findFragmentById(android.R.id.content)
+            as HealthPreferenceFragment
+    }
+
+    private fun getPreferenceCategory(
+        fragment: HealthPreferenceFragment,
+        id: String,
+    ): PreferenceCategory? {
+        return fragment.preferenceScreen.findPreference(id) as PreferenceCategory?
+    }
+    // TODO (b/369832891) add tests for deletion dialogs for old IA
 }

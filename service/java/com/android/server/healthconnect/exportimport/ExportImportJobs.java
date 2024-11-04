@@ -24,6 +24,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -47,32 +48,49 @@ public class ExportImportJobs {
 
     public static final String PERIODIC_EXPORT_JOB_NAME = "periodic_export_job";
 
+    /** Checks if the rescheduling is needed and schedules the periodic export job if so. */
+    public static void schedulePeriodicJobIfNotScheduled(
+            UserHandle userHandle,
+            Context context,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            ExportManager exportManager) {
+        if (!exportImportFastFollow()
+                || Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                        .forNamespace(NAMESPACE)
+                        .getAllPendingJobs()
+                        .isEmpty()) {
+            schedulePeriodicExportJob(
+                    userHandle, context, exportImportSettingsStorage, exportManager);
+        }
+    }
+
     /** Schedule the periodic export job. */
     public static void schedulePeriodicExportJob(
-            int userId,
+            UserHandle userHandle,
             Context context,
             ExportImportSettingsStorage exportImportSettingsStorage,
             ExportManager exportManager) {
         int periodInDays = exportImportSettingsStorage.getScheduledExportPeriodInDays();
-        if (exportImportFastFollow() && periodInDays <= 0) {
-            // If period is 0 the user has turned export off, so we should cancel the job.
+        if (exportImportFastFollow()) {
+            // We should always cancel the job as we are persisting the job now.
             Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                     .forNamespace(NAMESPACE)
                     .cancelAll();
+
+            // TODO(b/364855153): Move to next condition once fast follow flag is enabled.
             // If export is off we try to delete the local files, just in case it happened the
             // rare case where those files weren't delete after the last export.
-            exportManager.deleteLocalExportFiles();
-
-            return;
+            if (periodInDays <= 0) {
+                exportManager.deleteLocalExportFiles(userHandle);
+            }
         }
-        // TODO(b/325599089): Remove once exportImportFastFollow flag has been deployed and
-        //  without concerns of needing to roll-back.
+        // If period is 0 the user has turned export off, we should no longer schedule a new job
         if (periodInDays <= 0) {
             return;
         }
 
         PersistableBundle extras = new PersistableBundle();
-        extras.putInt(HealthConnectDailyService.EXTRA_USER_ID, userId);
+        extras.putInt(HealthConnectDailyService.EXTRA_USER_ID, userHandle.getIdentifier());
         extras.putString(HealthConnectDailyService.EXTRA_JOB_NAME_KEY, PERIODIC_EXPORT_JOB_NAME);
 
         long periodInMillis = Duration.ofDays(periodInDays).toMillis();
@@ -102,7 +120,7 @@ public class ExportImportJobs {
 
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         JobInfo.Builder builder =
-                new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
+                new JobInfo.Builder(MIN_JOB_ID + userHandle.getIdentifier(), componentName)
                         .setRequiresCharging(true)
                         .setRequiresDeviceIdle(true)
                         .setPeriodic(
@@ -112,11 +130,14 @@ public class ExportImportJobs {
                                 // Flex is the max of the specified time, or 5% of periodInMillis.
                                 flexInMillis)
                         .setExtras(extras);
+        if (exportImportFastFollow()) {
+            builder = builder.setPersisted(true);
+        }
 
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(NAMESPACE),
-                userId,
+                userHandle,
                 builder.build());
     }
 
@@ -127,7 +148,7 @@ public class ExportImportJobs {
     // TODO(b/318484778): Use dependency injection instead of passing an instance to the method.
     public static boolean executePeriodicExportJob(
             Context context,
-            int userId,
+            UserHandle userHandle,
             PersistableBundle extras,
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage) {
@@ -137,10 +158,11 @@ public class ExportImportJobs {
             return true;
         }
 
-        boolean exportSuccess = exportManager.runExport();
+        boolean exportSuccess = exportManager.runExport(userHandle);
         boolean firstExport = extras.getBoolean(IS_FIRST_EXPORT, false);
         if (exportSuccess && firstExport) {
-            schedulePeriodicExportJob(userId, context, exportImportSettingsStorage, exportManager);
+            schedulePeriodicExportJob(
+                    userHandle, context, exportImportSettingsStorage, exportManager);
         }
         return exportSuccess;
 

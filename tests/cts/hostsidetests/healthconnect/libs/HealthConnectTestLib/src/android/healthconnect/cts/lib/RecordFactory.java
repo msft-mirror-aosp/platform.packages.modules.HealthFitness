@@ -21,6 +21,7 @@ import static android.health.connect.datatypes.Device.DEVICE_TYPE_WATCH;
 import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_AUTOMATICALLY_RECORDED;
 import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_MANUAL_ENTRY;
 
+import android.health.connect.datatypes.ActivityIntensityRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Metadata;
@@ -228,7 +229,9 @@ public abstract class RecordFactory<T extends Record> {
     /** Returns a record test helper for given data type. */
     @Nullable
     public static RecordFactory<? extends Record> forDataType(Class<? extends Record> recordClass) {
-        if (recordClass.equals(MindfulnessSessionRecord.class)) {
+        if (recordClass.equals(ActivityIntensityRecord.class)) {
+            return new ActivityIntensityRecordFactory();
+        } else if (recordClass.equals(MindfulnessSessionRecord.class)) {
             return new MindfulnessSessionRecordFactory();
         }
         return null;

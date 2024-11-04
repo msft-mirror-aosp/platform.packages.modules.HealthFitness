@@ -21,6 +21,10 @@
         android:key="manage_permissions"
         android:title="@string/permissions_header">
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="manage_app"
+        android:title="@string/manage_permissions_manage_app_header">
+    </PreferenceCategory>
     <com.android.settingslib.widget.FooterPreference
         android:key="manage_app_permission_footer" />
 </PreferenceScreen>

@@ -25,13 +25,13 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.Device.DeviceType;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Pair;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @hide
  */
 public class DeviceInfoHelper extends DatabaseHelper {
-    private static final String TABLE_NAME = "device_info_table";
+    public static final String TABLE_NAME = "device_info_table";
     private static final String MANUFACTURER_COLUMN_NAME = "manufacturer";
     private static final String MODEL_COLUMN_NAME = "model";
     private static final String DEVICE_TYPE_COLUMN_NAME = "device_type";
@@ -67,17 +67,22 @@ public class DeviceInfoHelper extends DatabaseHelper {
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private volatile ConcurrentHashMap<DeviceInfo, Long> mDeviceInfoMap;
 
+    private final TransactionManager mTransactionManager;
+
+    private DeviceInfoHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+    }
+
     /**
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
     /** Populates record with deviceInfoId */
-    public void populateDeviceInfoId(@NonNull RecordInternal<?> recordInternal) {
+    public void populateDeviceInfoId(RecordInternal<?> recordInternal) {
         String manufacturer = recordInternal.getManufacturer();
         String model = recordInternal.getModel();
         int deviceType = recordInternal.getDeviceType();
@@ -95,7 +100,7 @@ public class DeviceInfoHelper extends DatabaseHelper {
      * @param deviceInfoId rowId from {@code device_info_table }
      * @param record The record to be populated with values
      */
-    public void populateRecordWithValue(long deviceInfoId, @NonNull RecordInternal<?> record) {
+    public void populateRecordWithValue(long deviceInfoId, RecordInternal<?> record) {
         DeviceInfo deviceInfo = getIdDeviceInfoMap().get(deviceInfoId);
         if (deviceInfo != null) {
             record.setDeviceType(deviceInfo.mDeviceType);
@@ -123,8 +128,7 @@ public class DeviceInfoHelper extends DatabaseHelper {
 
         ConcurrentHashMap<DeviceInfo, Long> deviceInfoMap = new ConcurrentHashMap<>();
         ConcurrentHashMap<Long, DeviceInfo> idDeviceInfoMap = new ConcurrentHashMap<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
                 String manufacturer = getCursorString(cursor, MANUFACTURER_COLUMN_NAME);
@@ -162,20 +166,18 @@ public class DeviceInfoHelper extends DatabaseHelper {
         }
 
         long rowId =
-                TransactionManager.getInitialisedInstance()
-                        .insert(
-                                new UpsertTableRequest(
-                                        TABLE_NAME,
-                                        getContentValues(
-                                                deviceInfo.mManufacturer,
-                                                deviceInfo.mModel,
-                                                deviceInfo.mDeviceType)));
+                mTransactionManager.insert(
+                        new UpsertTableRequest(
+                                TABLE_NAME,
+                                getContentValues(
+                                        deviceInfo.mManufacturer,
+                                        deviceInfo.mModel,
+                                        deviceInfo.mDeviceType)));
         getDeviceInfoMap().put(deviceInfo, rowId);
         getIdDeviceInfoMap().put(rowId, deviceInfo);
         return rowId;
     }
 
-    @NonNull
     private ContentValues getContentValues(String manufacturer, String model, int deviceType) {
         ContentValues contentValues = new ContentValues();
 
@@ -194,7 +196,6 @@ public class DeviceInfoHelper extends DatabaseHelper {
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
@@ -205,9 +206,24 @@ public class DeviceInfoHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    public static synchronized DeviceInfoHelper getInstance() {
+    /** Clears instance for test. */
+    @VisibleForTesting
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void resetInstanceForTest() {
+        sDeviceInfoHelper = null;
+    }
+
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
+    public static DeviceInfoHelper getInstance() {
+        return getInstance(TransactionManager.getInitialisedInstance());
+    }
+
+    /** Returns an instance of DeviceInfoHelper initialised using the given dependencies. */
+    public static synchronized DeviceInfoHelper getInstance(TransactionManager transactionManager) {
         if (sDeviceInfoHelper == null) {
-            sDeviceInfoHelper = new DeviceInfoHelper();
+            sDeviceInfoHelper = new DeviceInfoHelper(transactionManager);
         }
         return sDeviceInfoHelper;
     }

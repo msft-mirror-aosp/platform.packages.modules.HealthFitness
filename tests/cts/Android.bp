@@ -59,6 +59,7 @@ android_test {
         "healthfitness-exported-aconfig-flags-lib",
         "cts-healthconnect-utils",
         "cts-healthconnect-lib",
+        "cts-healthconnect-phr-lib",
         "flag-junit",
     ],
     min_sdk_version: "34",
@@ -83,6 +84,7 @@ android_test {
     ],
     srcs: [
         "src/android/healthconnect/cts/nopermission/HealthConnectManagerNoPermissionsGrantedTest.java",
+        "src/android/healthconnect/cts/nopermission/*NoPermissionsDeclaredTest.java",
     ],
     // Tag this module as a cts test artifact
     test_suites: [
@@ -117,9 +119,9 @@ android_test {
     team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
+        "android.test.runner.stubs.system",
+        "android.test.base.stubs.system",
+        "framework-healthfitness.stubs.module_lib",
     ],
     srcs: [
         "src/android/healthconnect/cts/nopermission/HealthConnectManagerNotAllPermissionsAreGrantedTest.java",
@@ -221,6 +223,7 @@ android_test {
         "cts-wm-util",
         "testng",
         "cts-healthconnect-lib",
+        "cts-healthconnect-phr-lib",
         "cts-install-lib",
         "cts-healthconnect-utils",
     ],

@@ -48,14 +48,12 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.SettingsMedicalAppFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -65,7 +63,6 @@ import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
@@ -75,7 +72,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
@@ -83,6 +79,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class SettingsMedicalAppFragmentTest {
@@ -118,7 +115,9 @@ class SettingsMedicalAppFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
 
         whenever(additionalAccessViewModel.additionalAccessState).then {
@@ -129,7 +128,8 @@ class SettingsMedicalAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -137,7 +137,10 @@ class SettingsMedicalAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
 
@@ -155,7 +158,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun fragment_starts() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -165,7 +168,8 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -181,8 +185,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun doesNotShowWriteHeader_whenNoWritePermissions() {
-        val readPermission =
-            MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(readPermission)) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(setOf(readPermission))
@@ -190,7 +193,8 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -202,8 +206,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun doesNotShowReadHeader_whenNoReadPermissions() {
-        val writePermission =
-            MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(writePermission)) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(setOf(writePermission))
@@ -211,7 +214,8 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -223,7 +227,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun unsupportedPackage_grantedPermissionsNotLoaded_onOrientationChange() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -236,16 +240,17 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
         onView(withText("Allow all")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).check(matches(isDisplayed()))
-        onView(withText("All medical data")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(click())
-        onView(withText("Immunization")).check(matches(not(isChecked())))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
+        onView(withText("All health records")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(click())
+        onView(withText("Vaccines")).check(matches(not(isChecked())))
 
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -254,12 +259,12 @@ class SettingsMedicalAppFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
         onIdle()
-        onView(withText("Immunization")).perform(scrollTo()).check(matches(not(isChecked())))
+        onView(withText("Vaccines")).perform(scrollTo()).check(matches(not(isChecked())))
     }
 
     @Test
     fun unsupportedPackage_doesNotShowFooter() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -272,15 +277,15 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
-        onView(
-                withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
             .check(doesNotExist())
         onView(withText("Read privacy policy")).check(doesNotExist())
     }
@@ -288,7 +293,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenNoHistoryRead_showsFooterWithGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -299,13 +304,13 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(
-                withText( "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -314,7 +319,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenHistoryRead_showsFooterWithoutGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -325,13 +330,13 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(
-                withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -344,7 +349,8 @@ class SettingsMedicalAppFragmentTest {
         }
 
         launchFragment<SettingsMedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(doesNotExist())
     }
@@ -354,13 +360,15 @@ class SettingsMedicalAppFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<SettingsMedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(matches(isDisplayed()))
     }
@@ -371,13 +379,18 @@ class SettingsMedicalAppFragmentTest {
             AdditionalAccessViewModel.State(
                 backgroundReadUIState =
                     AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = true, isEnabled = false, isGranted = false))
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<SettingsMedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(matches(isDisplayed()))
     }
@@ -387,20 +400,23 @@ class SettingsMedicalAppFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<SettingsMedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
         onView(withText(R.string.additional_access_label)).perform(click())
 
         verify(navigationUtils)
             .navigate(
                 fragment = any(),
                 action = eq(R.id.action_settingsMedicalApp_to_additionalAccessFragment),
-                bundle = any())
+                bundle = any(),
+            )
     }
 
     @Test
@@ -409,7 +425,8 @@ class SettingsMedicalAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -417,12 +434,13 @@ class SettingsMedicalAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
-        val writePermission =
-            MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission =
-            MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -432,11 +450,14 @@ class SettingsMedicalAppFragmentTest {
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
 
         launchFragment<SettingsMedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(
                 withText(
-                    "Health Connect is ready to be integrated with your Android system. If you give $TEST_APP_NAME access now, some features may not work until integration is complete."))
+                    "Health Connect is ready to be integrated with your Android system. If you give $TEST_APP_NAME access now, some features may not work until integration is complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         // TODO (b/322495982) check navigation to Migration activity
@@ -461,7 +482,8 @@ class SettingsMedicalAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IN_PROGRESS,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -469,12 +491,13 @@ class SettingsMedicalAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
-        val writePermission =
-            MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission =
-            MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -485,11 +508,14 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
 
         onView(
                 withText(
-                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."))
+                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -513,7 +539,8 @@ class SettingsMedicalAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -521,12 +548,13 @@ class SettingsMedicalAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
-        val writePermission =
-            MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission =
-            MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -537,14 +565,17 @@ class SettingsMedicalAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsMedicalAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
 
         onView(withText("Health Connect restore in progress"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health Connect is restoring data and permissions. This may take some time to complete."))
+                    "Health Connect is restoring data and permissions. This may take some time to complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))

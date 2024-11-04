@@ -16,7 +16,8 @@
 
 package android.health.connect;
 
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -31,7 +32,7 @@ import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
 import android.health.connect.datatypes.MedicalDataSource;
-import android.healthconnect.cts.utils.PhrDataFactory;
+import android.healthconnect.cts.phr.utils.PhrDataFactory;
 import android.os.OutcomeReceiver;
 import android.os.RemoteException;
 
@@ -143,7 +144,8 @@ public class HealthConnectManagerTest {
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
         String id = "id";
-        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        List<MedicalDataSource> response =
+                List.of(PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly());
         doAnswer(
                         (Answer<Void>)
                                 invocation -> {
@@ -197,7 +199,8 @@ public class HealthConnectManagerTest {
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        List<MedicalDataSource> response =
+                List.of(PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly());
         doAnswer(
                         (Answer<Void>)
                                 invocation -> {
@@ -301,7 +304,7 @@ public class HealthConnectManagerTest {
                 .when(mService)
                 .deleteMedicalResourcesByRequest(any(), any(), any());
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
 
         healthConnectManager.deleteMedicalResources(
                 request, Executors.newSingleThreadExecutor(), receiver);
@@ -326,7 +329,7 @@ public class HealthConnectManagerTest {
                 .when(mService)
                 .deleteMedicalResourcesByRequest(any(), any(), any());
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
 
         healthConnectManager.deleteMedicalResources(
                 request, Executors.newSingleThreadExecutor(), receiver);

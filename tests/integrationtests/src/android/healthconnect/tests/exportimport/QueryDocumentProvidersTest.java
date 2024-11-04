@@ -54,6 +54,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+// When running these tests locally make sure to disable/uninstall any apps on the device that
+// implement the document provider API. The tests will fail otherwise as they're only expecting the
+// document providers configured by the tests.
 @RunWith(AndroidJUnit4.class)
 public final class QueryDocumentProvidersTest {
     private static final String TEST_DOCUMENT_PROVIDER_APP_PACKAGE_NAME =

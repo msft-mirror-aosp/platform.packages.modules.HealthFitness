@@ -16,22 +16,14 @@
 
 package com.android.server.healthconnect.storage;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
-import com.android.server.healthconnect.storage.request.AlterTableRequest;
-
-import java.util.List;
+import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 
 /**
  * Code to manage development features of the Health Connect database before they are ready for
@@ -50,7 +42,7 @@ public final class DevelopmentDatabaseHelper {
      * The current version number for the development database features. Increment this whenever you
      * make a breaking schema change to a development feature.
      */
-    @VisibleForTesting static final int CURRENT_VERSION = 4;
+    @VisibleForTesting static final int CURRENT_VERSION = 10;
 
     /** The name of the table to store development specific key value pairs. */
     private static final String SETTINGS_TABLE_NAME = "development_database_settings";
@@ -72,7 +64,7 @@ public final class DevelopmentDatabaseHelper {
      * android.database.sqlite.SQLiteOpenHelper#onDowngrade} but uses different versioning which
      * only depends on features still in development.
      */
-    public static void onOpen(@NonNull SQLiteDatabase db) {
+    public static void onOpen(SQLiteDatabase db) {
         if (db.isReadOnly()) {
             return;
         }
@@ -96,11 +88,19 @@ public final class DevelopmentDatabaseHelper {
 
         // Beyond this point are the development database changes
         dropAndCreateDevelopmentSettingsTable(db, CURRENT_VERSION);
-        phrForceUpdate(db);
+
+        // Code for under development schema changes goes in this method but below this comment
+        // TODO: b/375150124 - remove upgrade logic after DB schema is finalized
+        backupTokenForceUpgrade(db);
+    }
+
+    private static void backupTokenForceUpgrade(SQLiteDatabase db) {
+        dropTableIfExists(db, BackupChangeTokenHelper.getTableName());
+        BackupChangeTokenHelper.applyBackupTokenUpgrade(db);
     }
 
     @VisibleForTesting
-    static void dropAndCreateDevelopmentSettingsTable(@NonNull SQLiteDatabase db, int version) {
+    static void dropAndCreateDevelopmentSettingsTable(SQLiteDatabase db, int version) {
         // We are now on a development device moving either from a prod version to a development
         // version, or between two development versions. Drop and recreate the relevant tables.
         dropDevelopmentSettingsTable(db);
@@ -114,55 +114,23 @@ public final class DevelopmentDatabaseHelper {
     }
 
     @VisibleForTesting
-    static void dropDevelopmentSettingsTable(@NonNull SQLiteDatabase db) {
+    static void dropDevelopmentSettingsTable(SQLiteDatabase db) {
         dropTableIfExists(db, SETTINGS_TABLE_NAME);
     }
 
-    private static void phrForceUpdate(@NonNull SQLiteDatabase db) {
-        dropTableIfExists(db, MedicalResourceIndicesHelper.getTableName());
-        dropTableIfExists(db, MedicalResourceHelper.getMainTableName());
-        dropTableIfExists(db, MedicalDataSourceHelper.getMainTableName());
-        MedicalDataSourceHelper.onInitialUpgrade(db);
-        MedicalResourceHelper.onInitialUpgrade(db);
-        addPhrColumnsToAccessLogsTable(db);
-    }
-
-    private static void addPhrColumnsToAccessLogsTable(@NonNull SQLiteDatabase db) {
-        // Alter the table to add new columns.
-        // Adding columns is not idempotent. When this is moved to production, this code
-        // should be guarded by checking the existence of a PHR table.
-        // For now in development, just catch any SQLite exception, and ignore anything with
-        // duplicate column name
-        List<Pair<String, String>> columns = AccessLogsHelper.getPhrAccessLogsColumnInfo();
-        for (Pair<String, String> columnInfo : columns) {
-            try {
-                DatabaseUpgradeHelper.executeSqlStatements(
-                        db,
-                        new AlterTableRequest(AccessLogsHelper.TABLE_NAME, List.of(columnInfo))
-                                .getAlterTableAddColumnsCommands());
-            } catch (SQLException ex) {
-                String message = ex.getMessage();
-                // swallow any duplicate column exceptions.
-                if (message == null || !message.contains("duplicate column name")) {
-                    throw ex;
-                }
-            }
-        }
-    }
-
     @VisibleForTesting
-    static int getOldVersionIfExists(@NonNull SQLiteDatabase db) {
+    static int getOldVersionIfExists(SQLiteDatabase db) {
         if (!settingsTableExists(db)) {
             return NO_DEV_VERSION;
         }
         return readIntSetting(db, NO_DEV_VERSION);
     }
 
-    private static void dropTableIfExists(@NonNull SQLiteDatabase db, String table) {
+    private static void dropTableIfExists(SQLiteDatabase db, String table) {
         db.execSQL("DROP TABLE IF EXISTS " + table);
     }
 
-    private static int readIntSetting(@NonNull SQLiteDatabase db, int defaultValue) {
+    private static int readIntSetting(SQLiteDatabase db, int defaultValue) {
         try (Cursor cursor =
                 db.rawQuery(
                         "SELECT value FROM " + SETTINGS_TABLE_NAME + " WHERE name=?",
@@ -179,7 +147,7 @@ public final class DevelopmentDatabaseHelper {
         }
     }
 
-    private static boolean settingsTableExists(@NonNull SQLiteDatabase db) {
+    private static boolean settingsTableExists(SQLiteDatabase db) {
         try (Cursor cursor =
                 db.rawQuery(
                         "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",

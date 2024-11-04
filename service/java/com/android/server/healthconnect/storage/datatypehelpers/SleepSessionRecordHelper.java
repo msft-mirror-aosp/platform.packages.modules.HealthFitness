@@ -22,7 +22,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.AggregationType;
@@ -53,8 +52,6 @@ public final class SleepSessionRecordHelper
     // Sleep session columns names
     private static final String NOTES_COLUMN_NAME = "notes";
     private static final String TITLE_COLUMN_NAME = "title";
-
-    private static final int NO_SLEEP_TABLE_DB_VERSION = 1;
 
     public SleepSessionRecordHelper() {
         super(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION);
@@ -87,8 +84,7 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull SleepSessionRecordInternal sleepSessionRecord) {
+    void populateSpecificRecordValue(Cursor cursor, SleepSessionRecordInternal sleepSessionRecord) {
         UUID uuid = getCursorUUID(cursor, UUID_COLUMN_NAME);
         sleepSessionRecord.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
         sleepSessionRecord.setTitle(getCursorString(cursor, TITLE_COLUMN_NAME));
@@ -105,8 +101,7 @@ public final class SleepSessionRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull SleepSessionRecordInternal sleepSessionRecord) {
+            ContentValues contentValues, SleepSessionRecordInternal sleepSessionRecord) {
         contentValues.put(NOTES_COLUMN_NAME, sleepSessionRecord.getNotes());
         contentValues.put(TITLE_COLUMN_NAME, sleepSessionRecord.getTitle());
     }
@@ -118,8 +113,7 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    List<UpsertTableRequest> getChildTableUpsertRequests(
-            @NonNull SleepSessionRecordInternal record) {
+    List<UpsertTableRequest> getChildTableUpsertRequests(SleepSessionRecordInternal record) {
         if (record.getSleepStages() != null) {
             return SleepStageRecordHelper.getStagesUpsertRequests(record.getSleepStages());
         }
@@ -128,7 +122,6 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(NOTES_COLUMN_NAME, TEXT_NULL), new Pair<>(TITLE_COLUMN_NAME, TEXT_NULL));

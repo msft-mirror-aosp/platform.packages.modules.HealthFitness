@@ -24,8 +24,14 @@ import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.TestUtils.connectAppsWithGrantedPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 
+import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
+
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.util.Objects.requireNonNull;
+
+import android.app.ActivityManager;
+import android.content.Context;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -34,8 +40,9 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.DeviceConfigRule;
 import android.healthconnect.cts.utils.TestUtils;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,12 +65,17 @@ public class ExerciseRouteBackgroundReadTest {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
-    @Rule
-    public DeviceConfigRule mDeviceConfigRule =
-            new DeviceConfigRule(BACKGROUND_READ_FEATURE_FLAG, "true");
-
     @Before
     public void setUp() {
+        // Ensure that the test app hasn't been left in the foreground by a prior test.
+        Context context = ApplicationProvider.getApplicationContext();
+        ActivityManager activityManager =
+                requireNonNull(context.getSystemService(ActivityManager.class));
+        runWithShellPermissionIdentity(
+                () ->
+                        activityManager.forceStopPackage(
+                                ROUTES_READER_WRITER_BACKGROUND_APP.getPackageName()));
+
         assertCorrectHealthPermissions();
         connectAppsWithGrantedPermissions();
     }

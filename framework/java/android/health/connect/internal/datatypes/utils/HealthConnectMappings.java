@@ -33,6 +33,7 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 
 import com.android.healthfitness.flags.Flags;
+import com.android.internal.annotations.VisibleForTesting;
 
 import java.util.Collection;
 import java.util.List;
@@ -57,56 +58,100 @@ public final class HealthConnectMappings {
 
     private final RecordMapper mRecordMapper = RecordMapper.getInstance();
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
+    private static volatile HealthConnectMappings sHealthConnectMappings;
+
+    /** Exists for compatibility with classes which don't support injections yet. */
+    // TODO(b/353283052): inject where possible instead of using the singleton.
+    public static HealthConnectMappings getInstance() {
+        if (sHealthConnectMappings == null) {
+            sHealthConnectMappings = new HealthConnectMappings();
+        }
+        return sHealthConnectMappings;
+    }
+
+    /**
+     * Resets the singleton instance.
+     *
+     * <p>Useful for unit tests where flag values might change between test cases.
+     */
+    @VisibleForTesting
+    public static void resetInstanceForTesting() {
+        sHealthConnectMappings = new HealthConnectMappings();
+    }
+
+    /**
+     * Use {@link #getInstance()} to avoid creating multiple instances until it gets migrated off.
+     */
+    @VisibleForTesting
     public HealthConnectMappings() {
         var dataTypeDescriptors = DataTypeDescriptors.getAllDataTypeDescriptors();
 
         mRecordIdToDescriptorMap =
-                toArrayMap(
-                        dataTypeDescriptors,
-                        DataTypeDescriptor::getRecordTypeIdentifier,
-                        Function.identity());
+                Flags.healthConnectMappings()
+                        ? toArrayMap(
+                                dataTypeDescriptors,
+                                DataTypeDescriptor::getRecordTypeIdentifier,
+                                Function.identity())
+                        : new ArrayMap<>();
 
         mPermissionCategoryToReadPermissionMap =
-                toArrayMap(
-                        dataTypeDescriptors,
-                        DataTypeDescriptor::getPermissionCategory,
-                        DataTypeDescriptor::getReadPermission);
+                Flags.healthConnectMappings()
+                        ? toArrayMap(
+                                dataTypeDescriptors,
+                                DataTypeDescriptor::getPermissionCategory,
+                                DataTypeDescriptor::getReadPermission)
+                        : new ArrayMap<>();
 
         mPermissionCategoryToWritePermissionMap =
-                toArrayMap(
-                        dataTypeDescriptors,
-                        DataTypeDescriptor::getPermissionCategory,
-                        DataTypeDescriptor::getWritePermission);
+                Flags.healthConnectMappings()
+                        ? toArrayMap(
+                                dataTypeDescriptors,
+                                DataTypeDescriptor::getPermissionCategory,
+                                DataTypeDescriptor::getWritePermission)
+                        : new ArrayMap<>();
 
         mWritePermissionToDataCategoryMap =
-                toArrayMap(
-                        dataTypeDescriptors,
-                        DataTypeDescriptor::getWritePermission,
-                        DataTypeDescriptor::getDataCategory);
+                Flags.healthConnectMappings()
+                        ? toArrayMap(
+                                dataTypeDescriptors,
+                                DataTypeDescriptor::getWritePermission,
+                                DataTypeDescriptor::getDataCategory)
+                        : new ArrayMap<>();
 
         mDataCategoryToWritePermissionsMap =
-                getDataCategoryToWritePermissionsMap(dataTypeDescriptors);
+                Flags.healthConnectMappings()
+                        ? getDataCategoryToWritePermissionsMap(dataTypeDescriptors)
+                        : new ArrayMap<>();
 
         mRecordIdToInternalRecordClassMap =
-                toArrayMap(
-                        dataTypeDescriptors,
-                        DataTypeDescriptor::getRecordTypeIdentifier,
-                        DataTypeDescriptor::getRecordInternalClass);
+                Flags.healthConnectMappings()
+                        ? toArrayMap(
+                                dataTypeDescriptors,
+                                DataTypeDescriptor::getRecordTypeIdentifier,
+                                DataTypeDescriptor::getRecordInternalClass)
+                        : new ArrayMap<>();
 
         mRecordIdToRecordClassMap =
-                toArrayMap(
-                        dataTypeDescriptors,
-                        DataTypeDescriptor::getRecordTypeIdentifier,
-                        DataTypeDescriptor::getRecordClass);
+                Flags.healthConnectMappings()
+                        ? toArrayMap(
+                                dataTypeDescriptors,
+                                DataTypeDescriptor::getRecordTypeIdentifier,
+                                DataTypeDescriptor::getRecordClass)
+                        : new ArrayMap<>();
 
         mRecordClassToRecordIdMap =
-                toArrayMap(
-                        dataTypeDescriptors,
-                        DataTypeDescriptor::getRecordClass,
-                        DataTypeDescriptor::getRecordTypeIdentifier);
+                Flags.healthConnectMappings()
+                        ? toArrayMap(
+                                dataTypeDescriptors,
+                                DataTypeDescriptor::getRecordClass,
+                                DataTypeDescriptor::getRecordTypeIdentifier)
+                        : new ArrayMap<>();
 
         mHealthDataCategories =
-                toArraySet(dataTypeDescriptors, DataTypeDescriptor::getDataCategory);
+                Flags.healthConnectMappings()
+                        ? toArraySet(dataTypeDescriptors, DataTypeDescriptor::getDataCategory)
+                        : new ArraySet<>();
     }
 
     /**
@@ -205,7 +250,7 @@ public final class HealthConnectMappings {
     /** Returns record type id for give record class. */
     @RecordTypeIdentifier.RecordType
     public int getRecordType(Class<? extends Record> recordClass) {
-        if (Flags.healthConnectMappings()) {
+        if (!Flags.healthConnectMappings()) {
             return mRecordMapper.getRecordType(recordClass);
         }
 
@@ -252,7 +297,7 @@ public final class HealthConnectMappings {
     /** Returns a set of all supported data categories. */
     public Set<Integer> getAllHealthDataCategories() {
         if (!Flags.healthConnectMappings()) {
-            List.of(
+            return Set.of(
                     HealthDataCategory.ACTIVITY,
                     HealthDataCategory.BODY_MEASUREMENTS,
                     HealthDataCategory.CYCLE_TRACKING,
