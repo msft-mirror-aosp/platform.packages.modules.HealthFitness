@@ -48,7 +48,7 @@ class MedicalPermissionTypeTest {
     @Test
     fun fromMedicalResourceType_immunization() {
         assertThat(fromMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS))
-            .isEqualTo(MedicalPermissionType.IMMUNIZATIONS)
+            .isEqualTo(MedicalPermissionType.VACCINES)
     }
 
     @Test
@@ -60,7 +60,7 @@ class MedicalPermissionTypeTest {
 
     @Test
     fun toMedicalResourceType_immunization() {
-        assertThat(toMedicalResourceType(MedicalPermissionType.IMMUNIZATIONS))
+        assertThat(toMedicalResourceType(MedicalPermissionType.VACCINES))
             .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
     }
 

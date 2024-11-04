@@ -18,7 +18,6 @@ package com.android.server.healthconnect.permission;
 
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS;
@@ -26,6 +25,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTIT
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
@@ -97,7 +97,7 @@ public class MedicalDataPermissionEnforcerTest {
     @Test
     public void testEnforceMedicalReadAccessAndGetEnforceSelfRead_permissionGranted_returnsFalse() {
         when(mPermissionManager.checkPermissionForDataDelivery(
-                        READ_MEDICAL_DATA_IMMUNIZATIONS, mAttributionSource, null))
+                        READ_MEDICAL_DATA_VACCINES, mAttributionSource, null))
                 .thenReturn(PERMISSION_GRANTED);
 
         boolean selfRead =
@@ -110,7 +110,7 @@ public class MedicalDataPermissionEnforcerTest {
     @Test
     public void testEnforceMedicalReadAccessAndGetEnforceSelfRead_onlyWriteGranted_returnsTrue() {
         when(mPermissionManager.checkPermissionForDataDelivery(
-                        READ_MEDICAL_DATA_IMMUNIZATIONS, mAttributionSource, null))
+                        READ_MEDICAL_DATA_VACCINES, mAttributionSource, null))
                 .thenReturn(PERMISSION_HARD_DENIED);
         when(mPermissionManager.checkPermissionForDataDelivery(
                         WRITE_MEDICAL_DATA, mAttributionSource, null))
@@ -136,7 +136,6 @@ public class MedicalDataPermissionEnforcerTest {
         assertThat(permissions)
                 .containsExactly(
                         READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS,
                         READ_MEDICAL_DATA_LABORATORY_RESULTS,
                         READ_MEDICAL_DATA_MEDICATIONS,
                         READ_MEDICAL_DATA_PERSONAL_DETAILS,
@@ -145,6 +144,7 @@ public class MedicalDataPermissionEnforcerTest {
                         READ_MEDICAL_DATA_CONDITIONS,
                         READ_MEDICAL_DATA_PROCEDURES,
                         READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                        READ_MEDICAL_DATA_VACCINES,
                         READ_MEDICAL_DATA_VISITS,
                         READ_MEDICAL_DATA_VITAL_SIGNS,
                         WRITE_MEDICAL_DATA);
@@ -156,14 +156,14 @@ public class MedicalDataPermissionEnforcerTest {
         when(mPermissionManager.checkPermissionForPreflight(anyString(), eq(mAttributionSource)))
                 .thenReturn(PERMISSION_HARD_DENIED);
         when(mPermissionManager.checkPermissionForPreflight(
-                        eq(READ_MEDICAL_DATA_IMMUNIZATIONS), eq(mAttributionSource)))
+                        eq(READ_MEDICAL_DATA_VACCINES), eq(mAttributionSource)))
                 .thenReturn(PERMISSION_GRANTED);
 
         Set<String> permissions =
                 mMedicalDataPermissionEnforcer.getGrantedMedicalPermissionsForPreflight(
                         mAttributionSource);
 
-        assertThat(permissions).containsExactly(READ_MEDICAL_DATA_IMMUNIZATIONS);
+        assertThat(permissions).containsExactly(READ_MEDICAL_DATA_VACCINES);
     }
 
     @Test

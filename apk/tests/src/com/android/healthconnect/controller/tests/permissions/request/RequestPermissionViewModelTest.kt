@@ -23,7 +23,7 @@ import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_HEART_RATE
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.READ_SLEEP
 import android.health.connect.HealthPermissions.READ_STEPS
@@ -148,7 +148,7 @@ class RequestPermissionViewModelTest {
         runTest {
             val permissions =
                 arrayOf(
-                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    READ_MEDICAL_DATA_VACCINES,
                     WRITE_MEDICAL_DATA,
                     READ_EXERCISE,
                     READ_SLEEP,
@@ -308,7 +308,7 @@ class RequestPermissionViewModelTest {
     fun init_withMedicalReadPermissions_loadsMedicalScreenStateShowMedicalRead() = runTest {
         val permissions =
             arrayOf(
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 READ_EXERCISE,
                 READ_HEALTH_DATA_IN_BACKGROUND,
@@ -327,7 +327,7 @@ class RequestPermissionViewModelTest {
         assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(result.medicalPermissions)
             .containsExactlyElementsIn(
-                listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES)
+                listOf(READ_MEDICAL_DATA_VACCINES, READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES)
                     .map { fromPermissionString(it) }
             )
     }
@@ -337,7 +337,7 @@ class RequestPermissionViewModelTest {
         runTest {
             val permissions =
                 arrayOf(
-                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    READ_MEDICAL_DATA_VACCINES,
                     READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                     WRITE_MEDICAL_DATA,
                     READ_EXERCISE,
@@ -358,7 +358,7 @@ class RequestPermissionViewModelTest {
             assertThat(result.medicalPermissions)
                 .containsExactlyElementsIn(
                     listOf(
-                            READ_MEDICAL_DATA_IMMUNIZATIONS,
+                            READ_MEDICAL_DATA_VACCINES,
                             READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                             WRITE_MEDICAL_DATA,
                         )
@@ -371,7 +371,7 @@ class RequestPermissionViewModelTest {
     fun init_withNoFitnessPermissions_loadsFitnessScreenStateNoFitnessData() = runTest {
         val permissions =
             arrayOf(
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 READ_HEALTH_DATA_IN_BACKGROUND,
                 READ_HEALTH_DATA_HISTORY,
@@ -896,7 +896,7 @@ class RequestPermissionViewModelTest {
             val permissions = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND)
             (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
                 TEST_APP_PACKAGE_NAME,
-                listOf(READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS),
+                listOf(READ_SLEEP, READ_MEDICAL_DATA_VACCINES),
             )
             val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
             viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
@@ -970,7 +970,7 @@ class RequestPermissionViewModelTest {
             val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
             (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
                 TEST_APP_PACKAGE_NAME,
-                listOf(READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS),
+                listOf(READ_SLEEP, READ_MEDICAL_DATA_VACCINES),
             )
             val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
             viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
@@ -1097,10 +1097,10 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun isPermissionLocallyGranted_medicalPermissionGranted_returnsTrue() = runTest {
-        val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS)
+        val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_MEDICAL_DATA_VACCINES)
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
 
-        val readImmunizationPermission = fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS)
+        val readImmunizationPermission = fromPermissionString(READ_MEDICAL_DATA_VACCINES)
         viewModel.updateHealthPermission(readImmunizationPermission, grant = true)
 
         assertThat(viewModel.isPermissionLocallyGranted(readImmunizationPermission)).isTrue()
@@ -1130,10 +1130,10 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun isPermissionLocallyGranted_medicalPermissionRevoked_returnsFalse() = runTest {
-        val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS)
+        val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_MEDICAL_DATA_VACCINES)
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
 
-        val readImmunizationPermission = fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS)
+        val readImmunizationPermission = fromPermissionString(READ_MEDICAL_DATA_VACCINES)
         viewModel.updateHealthPermission(readImmunizationPermission, grant = false)
 
         assertThat(viewModel.isPermissionLocallyGranted(readImmunizationPermission)).isFalse()
@@ -1188,7 +1188,7 @@ class RequestPermissionViewModelTest {
             )
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
 

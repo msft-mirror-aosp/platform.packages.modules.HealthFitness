@@ -230,7 +230,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadMedicalAppData(TEST_APP_PACKAGE_NAME)
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.VACCINES)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -253,7 +253,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadMedicalAppData(TEST_APP_PACKAGE_NAME)
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.VACCINES)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -319,7 +319,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadAllMedicalData()
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.VACCINES)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -342,7 +342,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadAllMedicalData()
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.VACCINES)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
