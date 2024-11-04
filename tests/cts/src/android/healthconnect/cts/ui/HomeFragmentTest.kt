@@ -66,11 +66,6 @@ class HomeFragmentTest : HealthConnectBaseTest() {
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
                 StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
             )
-            val dataSource =
-                APP_A_WITH_READ_WRITE_PERMS.createMedicalDataSource(
-                    getCreateMedicalDataSourceRequest()
-                )
-            APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, FHIR_DATA_IMMUNIZATION)
         }
 
         @JvmStatic
@@ -153,6 +148,9 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun homeFragment_withMedicalData_opensBrowseMedicalRecords() {
+        val dataSource =
+            APP_A_WITH_READ_WRITE_PERMS.createMedicalDataSource(getCreateMedicalDataSourceRequest())
+        APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, FHIR_DATA_IMMUNIZATION)
         context.launchMainActivity {
             scrollToEnd()
             findTextAndClick("Browse health records")
