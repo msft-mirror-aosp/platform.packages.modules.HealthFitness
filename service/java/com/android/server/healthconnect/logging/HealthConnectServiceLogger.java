@@ -110,6 +110,32 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__D
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__VO2_MAX;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__WEIGHT;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__WHEELCHAIR_PUSHES;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_CONDITIONS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PREGNANCY;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PROCEDURES;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VISITS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_BODY_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
@@ -173,9 +199,11 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 
 import android.annotation.IntDef;
 import android.health.HealthFitnessStatsLog;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.ratelimiter.RateLimiter;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.lang.annotation.Retention;
@@ -205,10 +233,14 @@ public class HealthConnectServiceLogger {
     private final int mRateLimit;
     private final int mNumberOfRecords;
     private final int[] mRecordTypes;
+    private Set<Integer> mMedicalResourceTypes;
     private final String mPackageName;
     private final int mCallerForegroundState;
     private static final int MAX_NUMBER_OF_LOGGED_DATA_TYPES = 6;
     private static final int RECORD_TYPE_NOT_ASSIGNED_DEFAULT_VALUE = -1;
+
+    @VisibleForTesting
+    public static final int MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE = -1;
 
     /** See {@link Builder#setShouldLog(boolean)}. */
     private final boolean mIsLogDisabled;
@@ -444,6 +476,7 @@ public class HealthConnectServiceLogger {
         private int mNumberOfRecords;
         private final boolean mHoldsDataManagementPermission;
         private int[] mRecordTypes;
+        private Set<Integer> mMedicalResourceTypes;
         private String mPackageName;
         private int mCallerForegroundState;
         private boolean mIsLogDisabled;
@@ -458,6 +491,7 @@ public class HealthConnectServiceLogger {
             mNumberOfRecords = 0;
             mRecordTypes = new int[MAX_NUMBER_OF_LOGGED_DATA_TYPES];
             Arrays.fill(mRecordTypes, RECORD_TYPE_NOT_ASSIGNED_DEFAULT_VALUE);
+            mMedicalResourceTypes = new HashSet<>();
             mPackageName = "UNKNOWN";
             mCallerForegroundState =
                     HEALTH_CONNECT_API_CALLED__CALLER_FOREGROUND_STATE__UNSPECIFIED;
@@ -527,6 +561,12 @@ public class HealthConnectServiceLogger {
                     i++) {
                 mRecordTypes[i] = recordTypeSortedByNumberOfRecords.get(i).getKey();
             }
+            return this;
+        }
+
+        /** Sets medical resource types to be logged. */
+        public Builder setMedicalResourceTypes(Set<Integer> medicalResourceTypes) {
+            mMedicalResourceTypes = new HashSet<>(medicalResourceTypes);
             return this;
         }
 
@@ -734,6 +774,7 @@ public class HealthConnectServiceLogger {
         mRateLimit = builder.mRateLimit;
         mNumberOfRecords = builder.mNumberOfRecords;
         mRecordTypes = builder.mRecordTypes;
+        mMedicalResourceTypes = builder.mMedicalResourceTypes;
         mPackageName = builder.mPackageName;
         mCallerForegroundState = builder.mCallerForegroundState;
         mIsLogDisabled = builder.mIsLogDisabled;
@@ -768,7 +809,13 @@ public class HealthConnectServiceLogger {
 
         // For PHR APIs.
         if (isPhrApi) {
-            // TODO(b/375157800): implement private west world logging for PHR
+            if (mMedicalResourceTypes.isEmpty()) {
+                writePhrApiInvoked(MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE);
+            } else {
+                for (int medicalResourceType : mMedicalResourceTypes) {
+                    writePhrApiInvoked(getMedicalResourceTypeLoggingEnum(medicalResourceType));
+                }
+            }
             return;
         }
 
@@ -788,6 +835,47 @@ public class HealthConnectServiceLogger {
                 getRecordTypeEnumToLog(mRecordTypes, 3),
                 getRecordTypeEnumToLog(mRecordTypes, 4),
                 getRecordTypeEnumToLog(mRecordTypes, 5));
+    }
+
+    private void writePhrApiInvoked(int medicalResourceTypeLoggingEnum) {
+        HealthFitnessStatsLog.write(
+                HEALTH_CONNECT_PHR_API_INVOKED,
+                mHealthDataServiceApiMethod,
+                mHealthDataServiceApiStatus,
+                mPackageName,
+                medicalResourceTypeLoggingEnum);
+    }
+
+    private static int getMedicalResourceTypeLoggingEnum(
+            @MedicalResource.MedicalResourceType int medicalResourceType) {
+        return switch (medicalResourceType) {
+            case MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+            case MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+            case MEDICAL_RESOURCE_TYPE_PREGNANCY ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PREGNANCY;
+            case MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+            case MEDICAL_RESOURCE_TYPE_VITAL_SIGNS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
+            case MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+            case MEDICAL_RESOURCE_TYPE_CONDITIONS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_CONDITIONS;
+            case MEDICAL_RESOURCE_TYPE_PROCEDURES ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PROCEDURES;
+            case MEDICAL_RESOURCE_TYPE_MEDICATIONS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+            case MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+            case MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
+            case MEDICAL_RESOURCE_TYPE_VISITS ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VISITS;
+            default ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_UNKNOWN;
+        };
     }
 
     private int getRecordTypeEnumToLog(int[] recordTypes, int index) {
