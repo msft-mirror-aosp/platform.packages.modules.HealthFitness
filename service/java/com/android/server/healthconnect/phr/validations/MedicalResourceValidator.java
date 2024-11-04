@@ -50,6 +50,7 @@ import android.annotation.Nullable;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirVersion;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import org.json.JSONArray;
@@ -66,6 +67,8 @@ import java.util.Set;
  * @hide
  */
 public class MedicalResourceValidator {
+    private static final String CONTAINED_FIELD = "contained";
+
     // For the values in these codes see
     // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-pregnancy-status-uv-ips.html
     private static final Set<String> PREGNANCY_LOINC_CODES =
@@ -111,6 +114,7 @@ public class MedicalResourceValidator {
      *   <li>The extracted FHIR resource id cannot be empty
      *   <li>Fhir version needs to be a supported version
      *   <li>The extracted FHIR resource type needs to be a supported type
+     *   <li>The FHIR resource id cannot contain any "contained" resources
      *   <li>The resource needs to map to one of our permission categories
      * </ul>
      *
@@ -129,6 +133,9 @@ public class MedicalResourceValidator {
 
         validateResourceId(extractedFhirResourceId);
         validateFhirVersion(mFhirVersion, extractedFhirResourceId);
+        if (Flags.phrFhirStructuralValidation()) {
+            validateNoContainedResourcesPresent(parsedFhirJsonObj, extractedFhirResourceId);
+        }
 
         @FhirResourceType
         int fhirResourceTypeInt =
@@ -193,6 +200,30 @@ public class MedicalResourceValidator {
                     "Unsupported FHIR version "
                             + fhirVersion
                             + " for resource with id "
+                            + resourceId);
+        }
+    }
+
+    private static void validateNoContainedResourcesPresent(
+            JSONObject fhirJsonObject, String resourceId) {
+        if (!fhirJsonObject.has(CONTAINED_FIELD)) {
+            return;
+        }
+
+        JSONArray contained;
+        try {
+            contained = fhirJsonObject.getJSONArray(CONTAINED_FIELD);
+        } catch (JSONException exception) {
+            throw new IllegalArgumentException(
+                    "Contained resources are not supported. Found contained field for resource"
+                            + " with id "
+                            + resourceId);
+        }
+
+        if (contained.length() != 0) {
+            throw new IllegalArgumentException(
+                    "Contained resources are not supported. Found contained resource for resource"
+                            + " with id "
                             + resourceId);
         }
     }

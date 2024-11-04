@@ -41,7 +41,6 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -82,7 +81,6 @@ public class ReadTransactionRequestTest {
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
 
-        AccessLogsHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =

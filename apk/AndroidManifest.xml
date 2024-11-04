@@ -128,6 +128,11 @@
         </activity>
 
         <activity
+            android:name=".permissions.request.wear.WearGrantPermissionsActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
             android:name=".route.RouteRequestActivity"
             android:excludeFromRecents="true"
             android:exported="true"

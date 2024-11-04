@@ -149,7 +149,6 @@ public class MedicalDataSourceHelperTest {
     @Before
     public void setup() throws NameNotFoundException {
         AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
 
         mContext = spy(mHealthConnectDatabaseTestRule.getDatabaseContext());
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
