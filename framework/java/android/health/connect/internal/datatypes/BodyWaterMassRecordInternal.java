@@ -21,7 +21,6 @@ import android.health.connect.datatypes.BodyWaterMassRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Mass;
-import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /** @hide */
@@ -38,12 +37,6 @@ public final class BodyWaterMassRecordInternal extends InstantRecordInternal<Bod
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mBodyWaterMass);
     }
-
-    @Override
-    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
-
-    @Override
-    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 
     public double getBodyWaterMass() {
         return mBodyWaterMass;
