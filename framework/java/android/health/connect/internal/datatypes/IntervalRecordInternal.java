@@ -17,7 +17,6 @@ package android.health.connect.internal.datatypes;
 
 import android.annotation.NonNull;
 import android.health.connect.datatypes.IntervalRecord;
-import android.health.connect.proto.backuprestore.Record;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -73,33 +72,6 @@ public abstract class IntervalRecordInternal<T extends IntervalRecord> extends R
         mEndZoneOffset = parcel.readInt();
 
         populateIntervalRecordFrom(parcel);
-    }
-
-    @Override
-    void populateToRecordProto(Record.Builder builder) {
-        android.health.connect.proto.backuprestore.IntervalRecord.Builder intervalRecord =
-                android.health.connect.proto.backuprestore.IntervalRecord.newBuilder()
-                        .setStartTime(mStartTime)
-                        .setStartZoneOffset(mStartZoneOffset)
-                        .setEndTime(mEndTime)
-                        .setEndZoneOffset(mEndZoneOffset);
-
-        populateToIntervalRecordProto(intervalRecord);
-
-        builder.setIntervalRecord(intervalRecord);
-    }
-
-    @Override
-    void populateFromRecordProto(Record recordProto) {
-        android.health.connect.proto.backuprestore.IntervalRecord intervalRecord =
-                recordProto.getIntervalRecord();
-
-        mStartTime = intervalRecord.getStartTime();
-        mStartZoneOffset = intervalRecord.getStartZoneOffset();
-        mEndTime = intervalRecord.getEndTime();
-        mEndZoneOffset = intervalRecord.getEndZoneOffset();
-
-        populateFromIntervalRecordProto(intervalRecord);
     }
 
     Instant getStartTime() {
@@ -162,10 +134,4 @@ public abstract class IntervalRecordInternal<T extends IntervalRecord> extends R
      * transmissions
      */
     abstract void populateIntervalRecordTo(@NonNull Parcel parcel);
-
-    abstract void populateToIntervalRecordProto(
-            android.health.connect.proto.backuprestore.IntervalRecord.Builder intervalRecord);
-
-    abstract void populateFromIntervalRecordProto(
-            android.health.connect.proto.backuprestore.IntervalRecord intervalRecord);
 }
