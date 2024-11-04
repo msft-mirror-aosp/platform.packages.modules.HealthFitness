@@ -20,6 +20,7 @@ import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Energy;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -64,4 +65,10 @@ public final class ActiveCaloriesBurnedRecordInternal
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mEnergy);
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 }
