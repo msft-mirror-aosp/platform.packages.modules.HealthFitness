@@ -22,7 +22,7 @@ import android.health.connect.HealthPermissionCategory
 import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.HeartRateRecord
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -209,7 +209,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -254,7 +254,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -290,7 +290,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP),
                 )
             )

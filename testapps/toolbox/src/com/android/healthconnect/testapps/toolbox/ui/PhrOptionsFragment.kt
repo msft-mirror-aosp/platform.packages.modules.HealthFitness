@@ -26,7 +26,7 @@ import android.health.connect.UpsertMedicalResourceRequest
 import android.health.connect.datatypes.FhirVersion
 import android.health.connect.datatypes.MedicalDataSource
 import android.health.connect.datatypes.MedicalResource
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.net.Uri
 import android.os.Bundle
 import android.os.OutcomeReceiver
@@ -288,7 +288,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
         var receiver: OutcomeReceiver<ReadMedicalResourcesResponse, HealthConnectException>
         val request: ReadMedicalResourcesInitialRequest =
-            ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS).build()
+            ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES).build()
         val resources =
             suspendCancellableCoroutine<ReadMedicalResourcesResponse> { continuation ->
                     receiver = continuation.asOutcomeReceiver()

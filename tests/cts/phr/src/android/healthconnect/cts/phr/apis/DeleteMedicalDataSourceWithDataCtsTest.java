@@ -18,7 +18,7 @@ package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
@@ -188,7 +188,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                     assertThat(dataSourceReadReceiver.getResponse()).isEmpty();
                     mManager.readMedicalResources(
                             new ReadMedicalResourcesInitialRequest.Builder(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                            MEDICAL_RESOURCE_TYPE_VACCINES)
                                     .build(),
                             Executors.newSingleThreadExecutor(),
                             resourceReadReceiver);
@@ -265,7 +265,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                     assertThat(dataSourceReadReceiver.getResponse()).isEmpty();
                     mManager.readMedicalResources(
                             new ReadMedicalResourcesInitialRequest.Builder(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                            MEDICAL_RESOURCE_TYPE_VACCINES)
                                     .build(),
                             Executors.newSingleThreadExecutor(),
                             resourceReadReceiver);

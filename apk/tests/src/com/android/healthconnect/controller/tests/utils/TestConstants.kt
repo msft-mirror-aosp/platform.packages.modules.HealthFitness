@@ -562,7 +562,7 @@ val TEST_FHIR_RESOURCE_INVALID_JSON: FhirResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION,
@@ -570,7 +570,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION_2: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION_2,
@@ -578,7 +578,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION_2: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION_3: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION_3,
@@ -586,7 +586,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION_3: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION_LONG: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION_LONG,
@@ -594,7 +594,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION_LONG: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_INVALID_JSON: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_INVALID_JSON,
