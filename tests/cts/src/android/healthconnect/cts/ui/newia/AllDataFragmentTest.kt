@@ -89,6 +89,7 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
     fun allDataFragment_clickOnDataSourcesIcon_navigatesToDataSources() {
         context.launchDataActivity {
             findObjectAndClick(By.desc("Data sources and priority"))
+            scrollDownTo(By.text("App sources"))
             findText("App sources")
         }
     }
