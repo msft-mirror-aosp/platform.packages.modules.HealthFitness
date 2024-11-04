@@ -78,7 +78,9 @@ java_sdk_library {
         "healthfitness-statsd",
         "healthfitness-aconfig-flags-lib",
         "healthfitness-aconfig-flags-helper",
+        "backup-data-proto",
     ],
+    jarjar_rules: "jarjar-rules.txt",
     aconfig_declarations: [
         "healthconnect-aconfig-flags",
     ],
