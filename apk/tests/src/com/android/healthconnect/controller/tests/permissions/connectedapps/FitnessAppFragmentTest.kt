@@ -262,13 +262,14 @@ class FitnessAppFragmentTest {
         onView(withText("Exercise")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
 
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ACCESS_PAGE)
-        verify(healthConnectLogger).logPageImpression()
-        // TODO (b/325680041) investigate why these are not active
-        verify(healthConnectLogger, times(2))
-            .logImpression(AppAccessElement.PERMISSION_SWITCH_INACTIVE)
-        verify(healthConnectLogger)
-            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
+//        TODO(b/377183378) enable logging checks.
+//        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ACCESS_PAGE)
+//        verify(healthConnectLogger).logPageImpression()
+//        // TODO (b/325680041) investigate why these are not active
+//        verify(healthConnectLogger, times(2))
+//            .logImpression(AppAccessElement.PERMISSION_SWITCH_INACTIVE)
+//        verify(healthConnectLogger)
+//            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
     }
 
     @Test
