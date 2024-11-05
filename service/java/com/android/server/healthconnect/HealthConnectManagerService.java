@@ -166,7 +166,8 @@ public class HealthConnectManagerService extends SystemService {
                         internalHealthConnectMappings,
                         mHealthConnectInjector.getPriorityMigrationHelper(),
                         appInfoHelper,
-                        mHealthConnectInjector.getDeviceInfoHelper());
+                        mHealthConnectInjector.getDeviceInfoHelper(),
+                        mPreferenceHelper);
     }
 
     @Override
