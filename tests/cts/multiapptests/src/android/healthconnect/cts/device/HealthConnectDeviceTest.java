@@ -455,18 +455,21 @@ public class HealthConnectDeviceTest {
 
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-        updateDataOriginPriorityOrder(
-                new UpdateDataOriginPriorityOrderRequest(
-                        dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
-        List<String> oldPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+        try {
+            updateDataOriginPriorityOrder(
+                    new UpdateDataOriginPriorityOrderRequest(
+                            dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
+            List<String> oldPriorityList =
+                    fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                            .getDataOriginsPriorityOrder()
+                            .stream()
+                            .map(dataOrigin -> dataOrigin.getPackageName())
+                            .collect(Collectors.toList());
 
-        assertThat(oldPriorityList).contains(mContext.getPackageName());
-        uiAutomation.dropShellPermissionIdentity();
+            assertThat(oldPriorityList).contains(mContext.getPackageName());
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
 
         AggregateRecordsResponse<Long> response =
                 TestUtils.getAggregateResponse(
