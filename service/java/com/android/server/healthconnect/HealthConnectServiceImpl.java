@@ -306,7 +306,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
             InternalHealthConnectMappings internalHealthConnectMappings,
-            PriorityMigrationHelper priorityMigrationHelper) {
+            PriorityMigrationHelper priorityMigrationHelper,
+            AppInfoHelper appInfoHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -325,7 +326,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mPermissionManager, mContext, internalHealthConnectMappings);
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
-        mAppInfoHelper = AppInfoHelper.getInstance();
+        mAppInfoHelper = appInfoHelper;
         mBackupRestore =
                 new BackupRestore(
                         mAppInfoHelper,
@@ -2590,6 +2591,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     List<MedicalResource> medicalResources =
                             mMedicalResourceHelper.upsertMedicalResources(
                                     callingPackageName, validatedMedicalResourcesToUpsert);
+                    logger.setMedicalResourceTypes(
+                            medicalResources.stream()
+                                    .map(MedicalResource::getType)
+                                    .collect(toSet()));
                     logger.setNumberOfRecords(medicalResources.size());
 
                     tryAndReturnResult(callback, medicalResources, logger);
@@ -2761,6 +2766,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     throwExceptionIfDataSyncInProgress();
 
                     PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request);
+                    logger.setMedicalResourceTypes(
+                            Set.of(pageTokenWrapper.getRequest().getMedicalResourceType()));
                     ReadMedicalResourcesInternalResponse response;
 
                     if (holdsDataManagementPermission) {
@@ -2941,8 +2948,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
-                    if (request.getDataSourceIds().isEmpty()
-                            && request.getMedicalResourceTypes().isEmpty()) {
+                    Set<Integer> medicalResourceTypes = request.getMedicalResourceTypes();
+                    logger.setMedicalResourceTypes(medicalResourceTypes);
+                    if (request.getDataSourceIds().isEmpty() && medicalResourceTypes.isEmpty()) {
                         tryAndReturnResult(callback, logger);
                         return;
                     }

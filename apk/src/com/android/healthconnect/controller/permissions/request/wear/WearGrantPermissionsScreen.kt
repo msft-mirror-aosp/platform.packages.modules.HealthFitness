@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
@@ -45,6 +46,7 @@ import androidx.wear.compose.material3.SwitchButton
 import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
+import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.permissions.request.wear.elements.Chip
@@ -55,7 +57,6 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
  * Wear Grant Permissions Screen. This screen includes: grant single health permission, grant
  * multiple health permission, grant background health permission.
  *
- * TODO: b/364643447 - Grant background health permission.
  * TODO: b/376514553 - Write tests for Wear UI.
  */
 @Composable
@@ -69,6 +70,8 @@ fun WearGrantPermissionsScreen(viewModel: RequestPermissionViewModel, onButtonCl
         FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType).uppercaseLabel
       )
     }
+  val additionalPermissions = viewModel.additionalPermissionsList.observeAsState(emptyList())
+  val backgroundPermission = additionalPermissions.value.filter { it.isBackgroundReadPermission() }
 
   if (dataTypes.size > 1) {
     GrantMultipleFitnessPermissions(
@@ -80,6 +83,8 @@ fun WearGrantPermissionsScreen(viewModel: RequestPermissionViewModel, onButtonCl
     )
   } else if (dataTypes.size == 1) {
     GrantSingleFitnessPermission(appName, dataTypes[0], onButtonClicked, viewModel)
+  } else if (dataTypes.size == 0 && !backgroundPermission.isEmpty()) {
+    GrantReadBackgroundHealthPermission(appName, onButtonClicked, viewModel)
   }
 }
 
@@ -216,6 +221,62 @@ fun GrantSingleFitnessPermission(
         label = res.getString(R.string.request_permissions_dont_allow),
         onClick = {
           viewModel.updateFitnessPermissions(false)
+          onButtonClicked()
+        },
+        modifier = Modifier.fillMaxWidth(),
+        labelMaxLines = Integer.MAX_VALUE,
+      )
+    }
+  }
+}
+
+@Composable
+fun GrantReadBackgroundHealthPermission(
+  appName: String,
+  onButtonClicked: () -> Unit,
+  viewModel: RequestPermissionViewModel,
+) {
+  val res = LocalContext.current.resources
+  val grantedAdditionalPermissions =
+    viewModel.grantedAdditionalPermissions.observeAsState(emptySet())
+  // Wait until the grantedAdditionalPermission value has been posted then return to Activity and
+  // handle permission results.
+  LaunchedEffect(grantedAdditionalPermissions.value) {
+    if (
+      HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND in
+      grantedAdditionalPermissions.value
+    ) {
+      onButtonClicked()
+    }
+  }
+
+  ScrollableScreen(
+    showTimeText = false,
+    title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
+  ) {
+    // Allow all the time button.
+    item {
+      Chip(
+        label = res.getString(R.string.request_permissions_allow_all_the_time),
+        onClick = {
+          viewModel.updateHealthPermission(
+            HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+            true,
+          )
+        },
+        modifier = Modifier.fillMaxWidth(),
+        labelMaxLines = Integer.MAX_VALUE,
+      )
+    }
+    // Allow while in use button. (Deny background read permission.)
+    item {
+      Chip(
+        label = res.getString(R.string.request_permissions_while_using_the_app),
+        onClick = {
+          viewModel.updateHealthPermission(
+            HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+            false,
+          )
           onButtonClicked()
         },
         modifier = Modifier.fillMaxWidth(),

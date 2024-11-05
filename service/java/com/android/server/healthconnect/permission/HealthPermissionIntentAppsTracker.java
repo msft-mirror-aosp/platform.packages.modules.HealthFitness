@@ -75,10 +75,38 @@ public class HealthPermissionIntentAppsTracker {
             }
 
             if (!mUserToHealthPackageNamesMap.get(userHandle).contains(packageName)) {
-                updateStateAndGetIfIntentWasRemoved(packageName, userHandle);
+                return updateAndGetSupportsPackageUsageIntent(packageName, userHandle);
             }
 
             return mUserToHealthPackageNamesMap.get(userHandle).contains(packageName);
+        }
+    }
+
+    /**
+     * Updates package state if needed, returns whether activity for {@link
+     * android.content.Intent#ACTION_VIEW_PERMISSION_USAGE} with {@link
+     * HealthConnectManager#CATEGORY_HEALTH_PERMISSIONS} support is currently disabled.
+     */
+    boolean updateAndGetSupportsPackageUsageIntent(String packageName, UserHandle userHandle) {
+        synchronized (mLock) {
+            if (!mUserToHealthPackageNamesMap.containsKey(userHandle)) {
+                mUserToHealthPackageNamesMap.put(userHandle, new ArraySet<>());
+            }
+
+            Intent permissionPackageUsageIntent = getHealthPermissionsUsageIntent();
+            permissionPackageUsageIntent.setPackage(packageName);
+            if (mPackageManager
+                    .queryIntentActivitiesAsUser(
+                            permissionPackageUsageIntent,
+                            PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL),
+                            userHandle)
+                    .isEmpty()) {
+                mUserToHealthPackageNamesMap.get(userHandle).remove(packageName);
+                return false;
+            } else {
+                mUserToHealthPackageNamesMap.get(userHandle).add(packageName);
+                return true;
+            }
         }
     }
 

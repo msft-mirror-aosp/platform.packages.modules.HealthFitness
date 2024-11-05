@@ -78,8 +78,11 @@ public class HealthPermissionIntentAppsTrackerTest {
         assertThat(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isTrue();
         setSelfIntentSupport(/* intentSupported= */ false);
-        assertThat(mTracker.updateStateAndGetIfIntentWasRemoved(SELF_PACKAGE_NAME, CURRENT_USER))
+        // This call doesn't update the cache and continues returning true.
+        assertThat(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isTrue();
+        assertThat(mTracker.updateAndGetSupportsPackageUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
+                .isFalse();
         assertThat(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isFalse();
     }

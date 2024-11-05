@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -147,7 +146,6 @@ public class ImportManagerTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        AppInfoHelper.resetInstanceForTest();
         DeviceInfoHelper.resetInstanceForTest();
 
         mContext = mDatabaseTestRule.getDatabaseContext();
@@ -206,7 +204,7 @@ public class ImportManagerTest {
             }
         }
         testDir.delete();
-        AppInfoHelper.resetInstanceForTest();
+
         DeviceInfoHelper.resetInstanceForTest();
     }
 
@@ -236,7 +234,7 @@ public class ImportManagerTest {
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
         ReadTransactionRequest request =
-                getReadTransactionRequest(
+                mTransactionTestUtils.getReadTransactionRequest(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 stepsUuids,
@@ -370,7 +368,7 @@ public class ImportManagerTest {
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
         ReadTransactionRequest request =
-                getReadTransactionRequest(
+                mTransactionTestUtils.getReadTransactionRequest(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 stepsUuids,

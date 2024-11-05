@@ -154,6 +154,18 @@ flag {
 }
 
 flag {
+    name: "permission_tracker_fix_mapping_init"
+    namespace: "health_fitness_aconfig"
+    description: "Fixes a bug when setting up intent tracker for a new user."
+    bug: "301926710"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+    is_exported: true
+}
+
+flag {
     name: "dependency_injection"
     namespace: "health_fitness_aconfig"
     description: "Enables dependency injection."

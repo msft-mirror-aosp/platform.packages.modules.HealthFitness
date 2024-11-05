@@ -830,6 +830,7 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestAdditional_clickOnAllow_includesAllInResponse() {
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
@@ -855,6 +856,7 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestAdditional_clickOnDontAllow_includesAllInResponse() {
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
