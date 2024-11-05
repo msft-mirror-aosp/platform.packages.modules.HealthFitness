@@ -18,12 +18,16 @@ package com.android.server.healthconnect.logging;
 
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PERMISSION_STATS;
 
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
+
 import android.content.Context;
 import android.health.HealthFitnessStatsLog;
 import android.os.UserHandle;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.List;
@@ -41,7 +45,9 @@ final class UsageStatsLogger {
             Context context,
             UserHandle userHandle,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper) {
         UsageStatsCollector usageStatsCollector =
                 new UsageStatsCollector(context, userHandle, preferenceHelper, accessLogsHelper);
         usageStatsCollector.upsertLastAccessLogTimeStamp();
@@ -61,12 +67,30 @@ final class UsageStatsLogger {
 
         logExportImportStats(usageStatsCollector);
         logPermissionStats(context, packageNameToPermissionsGranted);
+        logPhrStats(medicalDataSourceHelper, medicalResourceHelper);
 
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS,
                 numberOfConnectedApps,
                 numberOfAvailableApps,
                 isUserMonthlyActive);
+    }
+
+    private static void logPhrStats(
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper) {
+        if (!personalHealthRecordTelemetry()) {
+            return;
+        }
+
+        int medicalDataSourcesCount = medicalDataSourceHelper.getMedicalDataSourcesCount();
+        int medicalResourcesCount = medicalResourceHelper.getMedicalResourcesCount();
+        HealthFitnessStatsLog.write(
+                HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS,
+                medicalDataSourcesCount,
+                medicalResourcesCount,
+                0,
+                0);
     }
 
     static void logExportImportStats(UsageStatsCollector usageStatsCollector) {
