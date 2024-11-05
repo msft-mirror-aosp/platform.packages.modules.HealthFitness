@@ -27,6 +27,7 @@ import android.os.UserManager;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.GuardedBy;
 
 import java.util.HashMap;
@@ -38,6 +39,9 @@ import java.util.Set;
  * Tracks apps which support {@link android.content.Intent#ACTION_VIEW_PERMISSION_USAGE} with {@link
  * HealthConnectManager#CATEGORY_HEALTH_PERMISSIONS}.
  *
+ * <p>This class stores a mapping for all UserHandles on the device, since this can be called for
+ * the non-foreground users.
+ *
  * @hide
  */
 public class HealthPermissionIntentAppsTracker {
@@ -48,11 +52,23 @@ public class HealthPermissionIntentAppsTracker {
     private final Object mLock = new Object();
 
     @GuardedBy("mLock")
-    private Map<UserHandle, Set<String>> mUserToHealthPackageNamesMap;
+    private final Map<UserHandle, Set<String>> mUserToHealthPackageNamesMap;
 
     public HealthPermissionIntentAppsTracker(Context context) {
         mPackageManager = context.getPackageManager();
-        initPerUserMapping(context);
+        synchronized (mLock) {
+            mUserToHealthPackageNamesMap = new HashMap<>();
+        }
+        if (!Flags.permissionTrackerFixMappingInit()) {
+            initPerUserMapping(context);
+        }
+    }
+
+    /** Setup the for the new user. */
+    public void onUserUnlocked(UserHandle userHandle) {
+        if (Flags.permissionTrackerFixMappingInit()) {
+            initPackageSetForUser(userHandle);
+        }
     }
 
     /**
@@ -63,22 +79,24 @@ public class HealthPermissionIntentAppsTracker {
      * @param userHandle: the user to query
      */
     boolean supportsPermissionUsageIntent(String packageName, UserHandle userHandle) {
-        // Consider readWrite lock if this is performance bottleneck.
         synchronized (mLock) {
             if (!mUserToHealthPackageNamesMap.containsKey(userHandle)) {
-                Log.w(
-                        TAG,
-                        "Requested user handle: "
-                                + userHandle.toString()
-                                + " is not present in the state.");
-                return false;
+                if (Flags.permissionTrackerFixMappingInit()) {
+                    mUserToHealthPackageNamesMap.put(userHandle, new ArraySet<>());
+                } else {
+                    Log.w(
+                            TAG,
+                            "Requested user handle: "
+                                    + userHandle.toString()
+                                    + " is not present in the state.");
+                    return false;
+                }
             }
 
-            if (!mUserToHealthPackageNamesMap.get(userHandle).contains(packageName)) {
-                return updateAndGetSupportsPackageUsageIntent(packageName, userHandle);
+            if (mUserToHealthPackageNamesMap.get(userHandle).contains(packageName)) {
+                return true;
             }
-
-            return mUserToHealthPackageNamesMap.get(userHandle).contains(packageName);
+            return updateAndGetSupportsPackageUsageIntent(packageName, userHandle);
         }
     }
 
@@ -151,9 +169,6 @@ public class HealthPermissionIntentAppsTracker {
     }
 
     private void initPerUserMapping(Context context) {
-        synchronized (mLock) {
-            mUserToHealthPackageNamesMap = new HashMap<>();
-        }
         List<UserHandle> userHandles =
                 context.getSystemService(UserManager.class)
                         .getUserHandles(/* excludeDying= */ true);
