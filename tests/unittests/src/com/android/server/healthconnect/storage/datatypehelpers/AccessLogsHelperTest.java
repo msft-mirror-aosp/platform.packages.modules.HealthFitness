@@ -19,8 +19,8 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BODY_FAT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_DISTANCE;
@@ -28,18 +28,21 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.MEDICAL_RESOURCE_TYPE_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.populateCommonColumns;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -55,14 +58,20 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
@@ -89,22 +98,26 @@ public class AccessLogsHelperTest {
     private TransactionManager mTransactionManager;
     private AccessLogsHelper mAccessLogsHelper;
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     @Before
     public void setup() {
-        AccessLogsHelper.resetInstanceForTest();
+        MockitoAnnotations.initMocks(this);
 
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mHealthConnectDatabaseTestRule.getUserContext(),
-                        mHealthConnectDatabaseTestRule.getTransactionManager());
+        Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(
-                                mHealthConnectDatabaseTestRule.getUserContext())
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setPreferenceHelper(new FakePreferenceHelper())
                         .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }
 
@@ -159,7 +172,7 @@ public class AccessLogsHelperTest {
                                         db,
                                         DATA_SOURCE_PACKAGE_NAME,
                                         Set.of(
-                                                MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
@@ -171,7 +184,9 @@ public class AccessLogsHelperTest {
         assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog.getMedicalResourceTypes())
                 .isEqualTo(
-                        Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
+                        Set.of(
+                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
         assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
@@ -283,6 +298,18 @@ public class AccessLogsHelperTest {
     }
 
     @Test
+    public void queryAccessLogs_invalidAppId_excluded() {
+        ContentValues contentValues =
+                populateCommonColumns(-2, List.of(RECORD_TYPE_BLOOD_PRESSURE), OPERATION_TYPE_READ);
+        UpsertTableRequest request =
+                new UpsertTableRequest(AccessLogsHelper.TABLE_NAME, contentValues);
+        mTransactionManager.insert(request);
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     public void recordDeleteAccessLog_success() {
         Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_STEPS_CADENCE);
         mTransactionManager.runAsTransaction(
@@ -297,6 +324,18 @@ public class AccessLogsHelperTest {
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(StepsCadenceRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+    }
+
+    @Test
+    public void recordDeleteAccessLog_packageNameNotFound_noOp() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_STEPS_CADENCE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordDeleteAccessLog(db, "unknown.app", recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -318,6 +357,18 @@ public class AccessLogsHelperTest {
     }
 
     @Test
+    public void recordReadAccessLog_packageNameNotFound_noOp() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordReadAccessLog(db, "unknown.app", recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     public void recordUpsertAccessLog_success() {
         Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_BODY_FAT, RECORD_TYPE_HEIGHT);
         mTransactionManager.runAsTransaction(
@@ -332,6 +383,18 @@ public class AccessLogsHelperTest {
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(BodyFatRecord.class, HeightRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+    }
+
+    @Test
+    public void recordUpsertAccessLog_packageNameNotFound_noOp() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_BODY_FAT, RECORD_TYPE_HEIGHT);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordUpsertAccessLog(db, "unknown.app", recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
     }
 
     @Test

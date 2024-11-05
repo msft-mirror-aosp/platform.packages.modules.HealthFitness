@@ -54,11 +54,14 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.utils.toInstant
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -72,7 +75,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
-    // TODO(b/291249677): Add logging.
+    @Inject lateinit var timeSource: TimeSource
 
     private lateinit var permissionType: HealthPermissionType
     private val entriesViewModel: EntriesViewModel by activityViewModels()
@@ -229,6 +232,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
@@ -240,6 +244,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
 
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
+        setDateNavigationViewMaxDate()
         if (permissionType is MedicalPermissionType) {
             dateNavigationView.isVisible = false
         }
@@ -280,9 +285,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 it.layoutManager = LinearLayoutManager(context, VERTICAL, false)
             }
 
-        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
-            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
-        }
         return view
     }
 
@@ -338,9 +340,11 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 dateNavigationView.getPeriod(),
             )
         }
-        //
-        //        logger.setPageId(pageName)
-        //        logger.logPageImpression()
+        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
+            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
+        }
+        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+        logger.logPageImpression()
     }
 
     private fun updateMenu(
@@ -408,6 +412,14 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         childFragmentManager.setFragmentResult(DeletionConstants.START_DELETION_KEY, bundleOf())
     }
 
+    private fun setDateNavigationViewMaxDate() {
+        if (permissionType == FitnessPermissionType.PLANNED_EXERCISE) {
+            dateNavigationView.setMaxDate(null)
+        } else {
+            dateNavigationView.setMaxDate(timeSource.currentTimeMillis().toInstant())
+        }
+    }
+
     private fun observeEntriesUpdates() {
         entriesViewModel.entries.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -459,6 +471,14 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     entriesRecyclerView.isVisible = false
                 }
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val deletionFragment = childFragmentManager.findFragmentByTag(DELETION_TAG)
+        if (deletionFragment != null) {
+            childFragmentManager.commitNow { remove(deletionFragment) }
         }
     }
 }

@@ -37,16 +37,18 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Ad
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessWritePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalWritePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -72,39 +74,86 @@ constructor(
     val appMetadata: LiveData<AppMetadata>
         get() = _appMetaData
 
+    /** List of grantable [MedicalPermission]s */
+    private val _medicalPermissionsList = MutableLiveData<List<MedicalPermission>>()
+
     /** List of grantable [FitnessPermission]s */
     private val _fitnessPermissionsList = MutableLiveData<List<FitnessPermission>>()
+    // TODO: b/376526849 - Use FitnessScreenState and AdditionalScreenState in Wear UI
     val fitnessPermissionsList: LiveData<List<FitnessPermission>>
         get() = _fitnessPermissionsList
 
-    /** List of grantable [MedicalPermission]s */
-    private val _medicalPermissionsList = MutableLiveData<List<MedicalPermission>>()
-    val medicalPermissionsList: LiveData<List<MedicalPermission>>
-        get() = _medicalPermissionsList
 
     /** List of grantable [AdditionalPermission]s */
     private val _additionalPermissionsList = MutableLiveData<List<AdditionalPermission>>()
+    // TODO: b/376526849 - Use FitnessScreenState and AdditionalScreenState in Wear UI
     val additionalPermissionsList: LiveData<List<AdditionalPermission>>
         get() = _additionalPermissionsList
 
     /** List of grantable [HealthPermissions]s */
     private val _healthPermissionsList = MutableLiveData<List<HealthPermission>>()
-    val healthPermissionsList: LiveData<List<HealthPermission>>
-        get() = _healthPermissionsList
+
+    /** Screen states */
+    private val _medicalScreenState =
+        MediatorLiveData<MedicalScreenState>().apply {
+            addSource(_appMetaData) { appMetadata ->
+                this.postValue(
+                    getMedicalScreenState(appMetadata, _medicalPermissionsList.value.orEmpty())
+                )
+            }
+            addSource(_medicalPermissionsList) { medicalPermissions ->
+                this.postValue(getMedicalScreenState(appMetadata.value, medicalPermissions))
+            }
+        }
+    val medicalScreenState: LiveData<MedicalScreenState>
+        get() = _medicalScreenState
+
+    private val _fitnessScreenState =
+        MediatorLiveData<FitnessScreenState>().apply {
+            addSource(_appMetaData) { appMetadata ->
+                this.postValue(
+                    getFitnessScreenState(appMetadata, _healthPermissionsList.value.orEmpty())
+                )
+            }
+            addSource(_healthPermissionsList) { healthPermissions ->
+                this.postValue(getFitnessScreenState(appMetadata.value, healthPermissions))
+            }
+        }
+    val fitnessScreenState: LiveData<FitnessScreenState>
+        get() = _fitnessScreenState
+
+    private val _additionalScreenState =
+        MediatorLiveData<AdditionalScreenState>().apply {
+            addSource(_appMetaData) { appMetadata ->
+                this.postValue(
+                    getAdditionalScreenState(
+                        appMetadata,
+                        _additionalPermissionsList.value.orEmpty(),
+                    )
+                )
+            }
+            addSource(_additionalPermissionsList) { additionalPermissions ->
+                this.postValue(getAdditionalScreenState(appMetadata.value, additionalPermissions))
+            }
+        }
+
+    val additionalScreenState: LiveData<AdditionalScreenState>
+        get() = _additionalScreenState
 
     private val _permissionsActivityState = MutableLiveData<PermissionsActivityState>()
     val permissionsActivityState: LiveData<PermissionsActivityState>
         get() = _permissionsActivityState
 
+    /** Permission grants */
+    /** [MedicalPermission]s that have been granted locally via a toggle, but not yet requested */
+    private val _grantedMedicalPermissions = MutableLiveData<Set<MedicalPermission>>(emptySet())
+    val grantedMedicalPermissions: LiveData<Set<MedicalPermission>>
+        get() = _grantedMedicalPermissions
+
     /** [FitnessPermission]s that have been granted locally via a toggle, but not yet requested */
     private val _grantedFitnessPermissions = MutableLiveData<Set<FitnessPermission>>(emptySet())
     val grantedFitnessPermissions: LiveData<Set<FitnessPermission>>
         get() = _grantedFitnessPermissions
-
-    /** [FitnessPermission]s that have been granted locally via a toggle, but not yet requested */
-    private val _grantedMedicalPermissions = MutableLiveData<Set<MedicalPermission>>(emptySet())
-    val grantedMedicalPermissions: LiveData<Set<MedicalPermission>>
-        get() = _grantedMedicalPermissions
 
     /**
      * [AdditionalPermission]s that have been granted locally via a toggle, but not yet requested
@@ -115,61 +164,38 @@ constructor(
         get() = _grantedAdditionalPermissions
 
     /** Used to control the enabled state of the Allow all switch */
-    private val _allFitnessPermissionsGranted =
-        MediatorLiveData(false).apply {
-            addSource(_fitnessPermissionsList) {
-                postValue(
-                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions)
-                )
-            }
-            addSource(_grantedFitnessPermissions) {
-                postValue(
-                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions)
-                )
-            }
-        }
-    val allFitnessPermissionsGranted: LiveData<Boolean>
-        get() = _allFitnessPermissionsGranted
-
-    /** Used to control the enabled state of the Allow all switch */
     private val _allMedicalPermissionsGranted =
         MediatorLiveData(false).apply {
             addSource(_medicalPermissionsList) {
                 postValue(
-                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions)
+                    areAllPermissionsGranted(_medicalPermissionsList, grantedMedicalPermissions)
                 )
             }
             addSource(_grantedFitnessPermissions) {
                 postValue(
-                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions)
+                    areAllPermissionsGranted(_medicalPermissionsList, grantedMedicalPermissions)
                 )
             }
         }
     val allMedicalPermissionsGranted: LiveData<Boolean>
         get() = _allMedicalPermissionsGranted
 
-    /**
-     * MediatorLiveData to hold the caller app info and the requested additional permissions needed
-     * for the [AdditionalPermissionsRequestFragment]
-     */
-    private val _additionalPermissionsInfo =
-        MediatorLiveData<AdditionalPermissionsInfo>().apply {
-            addSource(_additionalPermissionsList) { additionalPermissionsList ->
-                this.postValue(
-                    AdditionalPermissionsInfo(additionalPermissionsList, _appMetaData.value)
+    /** Used to control the enabled state of the Allow all switch */
+    private val _allFitnessPermissionsGranted =
+        MediatorLiveData(false).apply {
+            addSource(_fitnessPermissionsList) {
+                postValue(
+                    areAllPermissionsGranted(_fitnessPermissionsList, grantedFitnessPermissions)
                 )
             }
-            addSource(_appMetaData) { appMetadata ->
-                val additionalPermissionsRequestList =
-                    additionalPermissionsList.value.orEmpty().toMutableList()
-                this.postValue(
-                    AdditionalPermissionsInfo(additionalPermissionsRequestList, appMetadata)
+            addSource(_grantedFitnessPermissions) {
+                postValue(
+                    areAllPermissionsGranted(_fitnessPermissionsList, grantedFitnessPermissions)
                 )
             }
         }
-
-    val additionalPermissionsInfo: LiveData<AdditionalPermissionsInfo>
-        get() = _additionalPermissionsInfo
+    val allFitnessPermissionsGranted: LiveData<Boolean>
+        get() = _allFitnessPermissionsGranted
 
     /** Retains the originally requested permissions and their state. */
     private var requestedPermissions: MutableMap<HealthPermission, PermissionState> = mutableMapOf()
@@ -180,15 +206,6 @@ constructor(
      */
     private var grants: MutableMap<HealthPermission, PermissionState> = mutableMapOf()
 
-    /** Indicates whether the fitness data type request has been concluded. */
-    private var fitnessPermissionsConcluded = false
-
-    fun isFitnessPermissionRequestConcluded(): Boolean = fitnessPermissionsConcluded
-
-    fun setFitnessPermissionRequestConcluded(boolean: Boolean) {
-        fitnessPermissionsConcluded = boolean
-    }
-
     /** Indicates whether the medical data type request has been concluded. */
     private var medicalPermissionsConcluded = false
 
@@ -196,6 +213,15 @@ constructor(
 
     fun setMedicalPermissionRequestConcluded(boolean: Boolean) {
         medicalPermissionsConcluded = boolean
+    }
+
+    /** Indicates whether the fitness data type request has been concluded. */
+    private var fitnessPermissionsConcluded = false
+
+    fun isFitnessPermissionRequestConcluded(): Boolean = fitnessPermissionsConcluded
+
+    fun setFitnessPermissionRequestConcluded(boolean: Boolean) {
+        fitnessPermissionsConcluded = boolean
     }
 
     /**
@@ -207,15 +233,18 @@ constructor(
 
     private var anyFitnessReadPermissionsGranted: Boolean = false
 
+    private var anyMedicalReadPermissionsGranted: Boolean = false
+
     /** Whether to modify the historic access text on the [FitnessPermissionsFragment] */
     private var historyAccessGranted: Boolean = false
 
     fun isHistoryAccessGranted(): Boolean = historyAccessGranted
 
-    fun loadAccessDate(packageName: String) = loadAccessDateUseCase.invoke(packageName)
+    private fun loadAccessDate(packageName: String) = loadAccessDateUseCase.invoke(packageName)
 
-    private var initialRequestedPermissions: Array<out String> = arrayOf<String>()
+    private var initialRequestedPermissions: Array<out String> = arrayOf()
     private lateinit var packageName: String
+    private var anyMedicalPermissionsDeclared: Boolean = false
 
     fun init(packageName: String, permissions: Array<out String>) {
         initialRequestedPermissions = permissions
@@ -259,21 +288,16 @@ constructor(
 
     /** Mark a permission as locally granted */
     fun updateHealthPermission(permission: HealthPermission, grant: Boolean) {
-        if (permission is FitnessPermission) {
-            updateFitnessPermission(permission, grant)
-        } else if (permission is MedicalPermission) {
-            updateMedicalPermission(permission, grant)
-        } else if (permission is AdditionalPermission) {
-            updateAdditionalPermission(permission, grant)
-        }
-    }
-
-    /** Mark all [FitnessPermission]s as locally granted */
-    fun updateFitnessPermissions(grant: Boolean) {
-        if (grant) {
-            _grantedFitnessPermissions.setValue(_fitnessPermissionsList.value.orEmpty().toSet())
-        } else {
-            _grantedFitnessPermissions.setValue(emptySet())
+        when (permission) {
+            is FitnessPermission -> {
+                updateFitnessPermission(permission, grant)
+            }
+            is MedicalPermission -> {
+                updateMedicalPermission(permission, grant)
+            }
+            is AdditionalPermission -> {
+                updateAdditionalPermission(permission, grant)
+            }
         }
     }
 
@@ -286,24 +310,21 @@ constructor(
         }
     }
 
+    /** Mark all [FitnessPermission]s as locally granted */
+    fun updateFitnessPermissions(grant: Boolean) {
+        if (grant) {
+            _grantedFitnessPermissions.setValue(_fitnessPermissionsList.value.orEmpty().toSet())
+        } else {
+            _grantedFitnessPermissions.setValue(emptySet())
+        }
+    }
+
     /** Mark all [AdditionalPermission]s as locally granted */
     fun updateAdditionalPermissions(grant: Boolean) {
         if (grant) {
             _grantedAdditionalPermissions.value = _additionalPermissionsList.value.orEmpty().toSet()
         } else {
             _grantedAdditionalPermissions.value = emptySet()
-        }
-    }
-
-    /** Grants/Revokes all the [FitnessPermission]s sent by the caller. */
-    fun requestFitnessPermissions(packageName: String) {
-        requestedPermissions
-            .filterKeys { it is FitnessPermission }
-            .forEach { (permission, permissionState) ->
-                internalGrantOrRevokePermission(packageName, permission, permissionState)
-            }
-        if (isPersonalHealthRecordEnabled()) {
-            reloadPermissions()
         }
     }
 
@@ -314,9 +335,17 @@ constructor(
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }
-        if (isPersonalHealthRecordEnabled()) {
-            reloadPermissions()
-        }
+        reloadPermissions()
+    }
+
+    /** Grants/Revokes all the [FitnessPermission]s sent by the caller. */
+    fun requestFitnessPermissions(packageName: String) {
+        requestedPermissions
+            .filterKeys { it is FitnessPermission }
+            .forEach { (permission, permissionState) ->
+                internalGrantOrRevokePermission(packageName, permission, permissionState)
+            }
+        reloadPermissions()
     }
 
     /** Grants/Revokes all the [AdditionalPermission]s sent by the caller. */
@@ -385,16 +414,16 @@ constructor(
     private fun loadPermissions(packageName: String, permissions: Array<out String>) {
         val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
 
-        anyFitnessReadPermissionsGranted =
-            grantedPermissions.any { permission -> isFitnessReadPermission(permission) }
+        anyFitnessReadPermissionsGranted = grantedPermissions.any { isFitnessReadPermission(it) }
+        anyMedicalReadPermissionsGranted = grantedPermissions.any { isMedicalReadPermission(it) }
 
         anyReadPermissionsGranted =
-            anyFitnessReadPermissionsGranted ||
-                grantedPermissions.any { permission -> isMedicalReadPermission(permission) }
+            anyFitnessReadPermissionsGranted || anyMedicalReadPermissionsGranted
 
         historyAccessGranted =
             grantedPermissions.any { permission -> isHistoryReadPermission(permission) }
         val validPermissions = loadDeclaredHealthPermissionUseCase.invoke(packageName)
+        anyMedicalPermissionsDeclared = validPermissions.any { isMedicalPermission(it) }
 
         val filteredPermissions =
             permissions
@@ -469,11 +498,108 @@ constructor(
             } else if (anyFitnessRequested) {
                 PermissionsActivityState.ShowFitness
             } else if (anyAdditionalRequested) {
-                PermissionsActivityState.ShowAdditional
+                PermissionsActivityState.ShowAdditional(additionalNotGrantedPermissions.size == 1)
             } else {
                 PermissionsActivityState.NoPermissions
             }
         _permissionsActivityState.value = permissionsActivityState
+    }
+
+    private fun getMedicalScreenState(
+        appMetadata: AppMetadata?,
+        medicalPermissions: List<MedicalPermission>,
+    ): MedicalScreenState {
+        val containsReadMedical = medicalPermissions.any { isMedicalReadPermission(it) }
+        val containsWriteMedical = medicalPermissions.any { isMedicalWritePermission(it) }
+        val isMedicalOnlyWrite = medicalPermissions.size == 1 && containsWriteMedical
+        if (appMetadata == null) {
+            return MedicalScreenState.NoMedicalData
+        }
+
+        return if (isMedicalOnlyWrite) {
+            MedicalScreenState.ShowMedicalWrite(appMetadata, medicalPermissions)
+        } else if (containsReadMedical && containsWriteMedical) {
+            MedicalScreenState.ShowMedicalReadWrite(appMetadata, medicalPermissions)
+        } else if (containsReadMedical) {
+            MedicalScreenState.ShowMedicalRead(appMetadata, medicalPermissions)
+        } else {
+            MedicalScreenState.NoMedicalData
+        }
+    }
+
+    private fun getFitnessScreenState(
+        appMetadata: AppMetadata?,
+        healthPermissions: List<HealthPermission>,
+    ): FitnessScreenState {
+        if (appMetadata == null) {
+            return FitnessScreenState.NoFitnessData
+        }
+
+        val containsFitnessRead = healthPermissions.any { isFitnessReadPermission(it) }
+        val containsFitnessWrite = healthPermissions.any { isFitnessWritePermission(it) }
+        val fitnessPermissions = healthPermissions.filterIsInstance<FitnessPermission>()
+        return if (containsFitnessRead && containsFitnessWrite) {
+            FitnessScreenState.ShowFitnessReadWrite(
+                hasMedical = anyMedicalPermissionsDeclared,
+                appMetadata = appMetadata,
+                fitnessPermissions = fitnessPermissions,
+                historyGranted = historyAccessGranted,
+            )
+        } else if (containsFitnessRead) {
+            FitnessScreenState.ShowFitnessRead(
+                hasMedical = anyMedicalPermissionsDeclared,
+                appMetadata = appMetadata,
+                fitnessPermissions = fitnessPermissions,
+                historyGranted = historyAccessGranted,
+            )
+        } else if (containsFitnessWrite) {
+            FitnessScreenState.ShowFitnessWrite(
+                hasMedical = anyMedicalPermissionsDeclared,
+                appMetadata = appMetadata,
+                fitnessPermissions = fitnessPermissions,
+            )
+        } else {
+            FitnessScreenState.NoFitnessData
+        }
+    }
+
+    private fun getAdditionalScreenState(
+        appMetadata: AppMetadata?,
+        additionalPermissions: List<AdditionalPermission>,
+    ): AdditionalScreenState {
+        if (appMetadata == null) {
+            return AdditionalScreenState.NoAdditionalData
+        }
+
+        val containsBackground = additionalPermissions.any { it.isBackgroundReadPermission() }
+        val containsHistory = additionalPermissions.any { it.isHistoryReadPermission() }
+        val dataAccessDate = loadAccessDate(packageName)
+
+        return if (containsBackground && containsHistory) {
+            AdditionalScreenState.ShowCombined(
+                hasMedical = anyMedicalPermissionsDeclared,
+                appMetadata = appMetadata,
+                isMedicalReadGranted = anyMedicalReadPermissionsGranted,
+                isFitnessReadGranted = anyFitnessReadPermissionsGranted,
+                dataAccessDate = dataAccessDate,
+            )
+        } else if (containsBackground) {
+            AdditionalScreenState.ShowBackground(
+                hasMedical = anyMedicalPermissionsDeclared,
+                appMetadata = appMetadata,
+                isMedicalReadGranted = anyMedicalReadPermissionsGranted,
+                isFitnessReadGranted = anyFitnessReadPermissionsGranted,
+            )
+        } else if (containsHistory) {
+            AdditionalScreenState.ShowHistory(
+                hasMedical = anyMedicalPermissionsDeclared,
+                appMetadata = appMetadata,
+                isMedicalReadGranted = anyMedicalReadPermissionsGranted,
+                dataAccessDate = dataAccessDate,
+            )
+        } else {
+            AdditionalScreenState.NoAdditionalData
+        }
     }
 
     /** Adds a permission to the [requestedPermissions] map with its original granted state */
@@ -537,6 +663,7 @@ constructor(
         }
     }
 
+    /** Grants or revokes permissions according to the state in the internal [grants] variable. */
     private fun internalGrantOrRevokePermission(
         packageName: String,
         permission: HealthPermission,
@@ -561,17 +688,93 @@ constructor(
     }
 }
 
-data class AdditionalPermissionsInfo(
-    val additionalPermissions: List<AdditionalPermission>?,
-    val appInfo: AppMetadata?,
-)
-
+/** Represents a UI state for the [PermissionsActivity] */
 sealed class PermissionsActivityState {
     data class ShowMedical(val isWriteOnly: Boolean) : PermissionsActivityState()
 
     data object ShowFitness : PermissionsActivityState()
 
-    data object ShowAdditional : PermissionsActivityState()
+    data class ShowAdditional(val singlePermission: Boolean) : PermissionsActivityState()
 
     data object NoPermissions : PermissionsActivityState()
 }
+
+/**
+ * Represents a UI state for the [MedicalPermissionsFragment] and [MedicalWritePermissionFragment]
+ */
+sealed class MedicalScreenState : RequestPermissionsScreenState() {
+    data object NoMedicalData : MedicalScreenState()
+
+    data class ShowMedicalWrite(
+        val appMetadata: AppMetadata,
+        val medicalPermissions: List<MedicalPermission>,
+    ) : MedicalScreenState()
+
+    data class ShowMedicalRead(
+        val appMetadata: AppMetadata,
+        val medicalPermissions: List<MedicalPermission>,
+    ) : MedicalScreenState()
+
+    data class ShowMedicalReadWrite(
+        val appMetadata: AppMetadata,
+        val medicalPermissions: List<MedicalPermission>,
+    ) : MedicalScreenState()
+}
+
+/** Represents a UI state for the [FitnessPermissionsFragment] */
+sealed class FitnessScreenState(open val hasMedical: Boolean) : RequestPermissionsScreenState() {
+    data object NoFitnessData : FitnessScreenState(hasMedical = false)
+
+    data class ShowFitnessRead(
+        override val hasMedical: Boolean,
+        val appMetadata: AppMetadata,
+        val fitnessPermissions: List<FitnessPermission>,
+        val historyGranted: Boolean,
+    ) : FitnessScreenState(hasMedical)
+
+    data class ShowFitnessWrite(
+        override val hasMedical: Boolean,
+        val appMetadata: AppMetadata,
+        val fitnessPermissions: List<FitnessPermission>,
+    ) : FitnessScreenState(hasMedical)
+
+    data class ShowFitnessReadWrite(
+        override val hasMedical: Boolean,
+        val appMetadata: AppMetadata,
+        val fitnessPermissions: List<FitnessPermission>,
+        val historyGranted: Boolean,
+    ) : FitnessScreenState(hasMedical)
+}
+
+/**
+ * Represents a UI state for the [SingleAdditionalPermissionFragment] and
+ * [CombinedAdditionalPermissionsFragment]
+ */
+sealed class AdditionalScreenState(open val hasMedical: Boolean) : RequestPermissionsScreenState() {
+    data object NoAdditionalData : AdditionalScreenState(hasMedical = false)
+
+    data class ShowHistory(
+        override val hasMedical: Boolean,
+        val appMetadata: AppMetadata,
+        val isMedicalReadGranted: Boolean,
+        val dataAccessDate: Instant?,
+    ) : AdditionalScreenState(hasMedical)
+
+    data class ShowBackground(
+        override val hasMedical: Boolean,
+        val appMetadata: AppMetadata,
+        val isMedicalReadGranted: Boolean,
+        val isFitnessReadGranted: Boolean,
+    ) : AdditionalScreenState(hasMedical)
+
+    data class ShowCombined(
+        override val hasMedical: Boolean,
+        val appMetadata: AppMetadata,
+        val isMedicalReadGranted: Boolean,
+        val isFitnessReadGranted: Boolean,
+        val dataAccessDate: Instant?,
+    ) : AdditionalScreenState(hasMedical)
+}
+
+/** Parent class for permission-related screen states */
+open class RequestPermissionsScreenState

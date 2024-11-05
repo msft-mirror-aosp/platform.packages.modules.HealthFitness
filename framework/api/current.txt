@@ -132,6 +132,7 @@ package android.health.connect {
 
   public final class HealthPermissions {
     field public static final String READ_ACTIVE_CALORIES_BURNED = "android.permission.health.READ_ACTIVE_CALORIES_BURNED";
+    field @FlaggedApi("com.android.healthfitness.flags.activity_intensity") public static final String READ_ACTIVITY_INTENSITY = "android.permission.health.READ_ACTIVITY_INTENSITY";
     field public static final String READ_BASAL_BODY_TEMPERATURE = "android.permission.health.READ_BASAL_BODY_TEMPERATURE";
     field public static final String READ_BASAL_METABOLIC_RATE = "android.permission.health.READ_BASAL_METABOLIC_RATE";
     field public static final String READ_BLOOD_GLUCOSE = "android.permission.health.READ_BLOOD_GLUCOSE";
@@ -185,6 +186,7 @@ package android.health.connect {
     field public static final String READ_WEIGHT = "android.permission.health.READ_WEIGHT";
     field public static final String READ_WHEELCHAIR_PUSHES = "android.permission.health.READ_WHEELCHAIR_PUSHES";
     field public static final String WRITE_ACTIVE_CALORIES_BURNED = "android.permission.health.WRITE_ACTIVE_CALORIES_BURNED";
+    field @FlaggedApi("com.android.healthfitness.flags.activity_intensity") public static final String WRITE_ACTIVITY_INTENSITY = "android.permission.health.WRITE_ACTIVITY_INTENSITY";
     field public static final String WRITE_BASAL_BODY_TEMPERATURE = "android.permission.health.WRITE_BASAL_BODY_TEMPERATURE";
     field public static final String WRITE_BASAL_METABOLIC_RATE = "android.permission.health.WRITE_BASAL_METABOLIC_RATE";
     field public static final String WRITE_BLOOD_GLUCOSE = "android.permission.health.WRITE_BLOOD_GLUCOSE";
@@ -451,6 +453,19 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.ActiveCaloriesBurnedRecord.Builder clearStartZoneOffset();
     method @NonNull public android.health.connect.datatypes.ActiveCaloriesBurnedRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
     method @NonNull public android.health.connect.datatypes.ActiveCaloriesBurnedRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.activity_intensity") public final class ActivityIntensityRecord extends android.health.connect.datatypes.IntervalRecord {
+    method public int getActivityIntensityType();
+    field public static final int ACTIVITY_INTENSITY_TYPE_MODERATE = 0; // 0x0
+    field public static final int ACTIVITY_INTENSITY_TYPE_VIGOROUS = 1; // 0x1
+  }
+
+  public static final class ActivityIntensityRecord.Builder {
+    ctor public ActivityIntensityRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, @NonNull java.time.Instant, @NonNull java.time.Instant, int);
+    method @NonNull public android.health.connect.datatypes.ActivityIntensityRecord build();
+    method @NonNull public android.health.connect.datatypes.ActivityIntensityRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.ActivityIntensityRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
   }
 
   public final class AggregationType<T> {
@@ -1054,7 +1069,6 @@ package android.health.connect.datatypes {
     field public static final int FHIR_RESOURCE_TYPE_PRACTITIONER = 10; // 0xa
     field public static final int FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE = 11; // 0xb
     field public static final int FHIR_RESOURCE_TYPE_PROCEDURE = 5; // 0x5
-    field public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
   }
 
   public static final class FhirResource.Builder {
@@ -1239,7 +1253,6 @@ package android.health.connect.datatypes {
     field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
     field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8
     field public static final int MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY = 4; // 0x4
-    field public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
     field public static final int MEDICAL_RESOURCE_TYPE_VISITS = 12; // 0xc
     field public static final int MEDICAL_RESOURCE_TYPE_VITAL_SIGNS = 5; // 0x5
   }

@@ -42,12 +42,13 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
 import com.android.healthconnect.controller.permissions.data.PermissionState
+import com.android.healthconnect.controller.permissions.request.wear.WearGrantPermissionsActivity
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthfitness.flags.Flags.personalHealthRecord
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
+import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -65,8 +66,6 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
-    @Inject lateinit var featureUtils: FeatureUtils
-
     private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
 
     private val migrationViewModel: MigrationViewModel by viewModels()
@@ -80,6 +79,22 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // If device is enabled on watch, redirect to WearGrantPermissionsActivity.
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+            if (!Flags.replaceBodySensorPermissionEnabled()) {
+                Log.e(TAG, "Health connect is not available on watch, finishing!")
+                finish()
+                return
+            }
+            val wearIntent = Intent(this, WearGrantPermissionsActivity::class.java).apply {
+                putExtra(EXTRA_PACKAGE_NAME, getPackageNameExtra())
+                putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, getPermissionStrings())
+            }
+            startActivity(wearIntent)
+            finish()
+            return
+        }
 
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
         window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
@@ -121,7 +136,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 getPermissionStrings(),
             )
         ) {
-            if (personalHealthRecord()) {
+            if (isPersonalHealthRecordEnabled()) {
                 // First check if we are already in a permission request flow.
                 // Without this check, if any permissions from the previous screen
                 // were USER_FIXED, we would terminate the request without showing
@@ -154,7 +169,11 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                     showFragment(FitnessPermissionsFragment())
                 }
                 is PermissionsActivityState.ShowAdditional -> {
-                    showFragment(AdditionalPermissionsFragment())
+                    if (screenState.singlePermission) {
+                        showFragment(SingleAdditionalPermissionFragment())
+                    } else {
+                        showFragment(CombinedAdditionalPermissionsFragment())
+                    }
                 }
                 else -> {
                     // No permissions

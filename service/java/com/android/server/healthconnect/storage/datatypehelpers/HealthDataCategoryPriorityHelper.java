@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.HealthPermissions.getDataCategoriesWithWritePermissionsForPackage;
 import static android.health.connect.HealthPermissions.getPackageHasWriteHealthPermissionsForCategory;
-import static android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType;
 
 import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
@@ -32,11 +31,12 @@ import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.HealthPermissions;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
+
+import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
@@ -83,17 +83,15 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private final PreferenceHelper mPreferenceHelper;
     private final HealthConnectMappings mHealthConnectMappings;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile HealthDataCategoryPriorityHelper sHealthDataCategoryPriorityHelper;
-
     /**
      * map of {@link HealthDataCategory} to list of app ids from {@link AppInfoHelper}, in the order
      * of their priority
      */
+    @Nullable
     private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private HealthDataCategoryPriorityHelper(
+    public HealthDataCategoryPriorityHelper(
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
@@ -176,7 +174,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
         final List<String> grantedPermissions =
                 permissionHelper.getGrantedHealthPermissions(packageName, userHandle);
-        for (String permission : HealthPermissions.getWriteHealthPermissionsFor(dataCategory)) {
+        for (String permission :
+                mHealthConnectMappings.getWriteHealthPermissionsFor(dataCategory)) {
             if (grantedPermissions.contains(permission)) {
                 return;
             }
@@ -307,6 +306,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return PRIORITY_TABLE_NAME;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private Map<Integer, List<Long>> getHealthDataCategoryToAppIdPriorityMap() {
         if (mHealthDataCategoryToAppIdPriorityMap == null) {
             populateDataCategoryToAppIdPriorityMap();
@@ -391,47 +391,6 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(APP_ID_PRIORITY_ORDER_COLUMN_NAME, TEXT_NOT_NULL));
 
         return columnInfo;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static HealthDataCategoryPriorityHelper getInstance() {
-        return getInstance(
-                AppInfoHelper.getInstance(),
-                TransactionManager.getInitialisedInstance(),
-                HealthConnectDeviceConfigManager.getInitialisedInstance(),
-                PreferenceHelper.getInstance(),
-                PackageInfoUtils.getInstance(),
-                HealthConnectMappings.getInstance());
-    }
-
-    public static synchronized HealthDataCategoryPriorityHelper getInstance(
-            AppInfoHelper appInfoHelper,
-            TransactionManager transactionManager,
-            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
-            PreferenceHelper preferenceHelper,
-            PackageInfoUtils packageInfoUtils,
-            HealthConnectMappings healthConnectMappings) {
-        if (sHealthDataCategoryPriorityHelper == null) {
-            sHealthDataCategoryPriorityHelper =
-                    new HealthDataCategoryPriorityHelper(
-                            appInfoHelper,
-                            transactionManager,
-                            healthConnectDeviceConfigManager,
-                            preferenceHelper,
-                            packageInfoUtils,
-                            healthConnectMappings);
-        }
-
-        return sHealthDataCategoryPriorityHelper;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        sHealthDataCategoryPriorityHelper = null;
     }
 
     /** Syncs priority table with the permissions and data. */
@@ -557,14 +516,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * contributing apps present.
      */
     private synchronized void maybeAddContributingAppsIfEmpty(Context context) {
-        List.of(
-                        HealthDataCategory.ACTIVITY,
-                        HealthDataCategory.BODY_MEASUREMENTS,
-                        HealthDataCategory.CYCLE_TRACKING,
-                        HealthDataCategory.NUTRITION,
-                        HealthDataCategory.SLEEP,
-                        HealthDataCategory.VITALS,
-                        HealthDataCategory.WELLNESS)
+        mHealthConnectMappings
+                .getAllHealthDataCategories()
                 .forEach(
                         (category) ->
                                 getHealthDataCategoryToAppIdPriorityMap()
@@ -679,7 +632,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         for (Map.Entry<Integer, Set<String>> entry : recordTypeToContributingPackages.entrySet()) {
             Integer recordType = entry.getKey();
             Set<String> contributingPackages = entry.getValue();
-            int recordCategory = getRecordCategoryForRecordType(recordType);
+            int recordCategory = mHealthConnectMappings.getRecordCategoryForRecordType(recordType);
             boolean isPackageNameContributor = contributingPackages.contains(packageName);
             if (isPackageNameContributor) {
                 dataCategoriesWithData.add(recordCategory);
@@ -700,7 +653,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         Map<Integer, Set<String>> allContributorApps = new HashMap<>();
 
         for (Map.Entry<Integer, Set<String>> entry : recordTypeToContributingPackages.entrySet()) {
-            int recordCategory = getRecordCategoryForRecordType(entry.getKey());
+            int recordCategory =
+                    mHealthConnectMappings.getRecordCategoryForRecordType(entry.getKey());
             Set<String> contributingPackages = entry.getValue();
 
             Set<String> currentPackages =

@@ -38,30 +38,46 @@
         style="?attr/textAppearanceHeadline4" />
 
     <TextView
+        android:id="@+id/summary"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="?attr/chooseDataIcon"
-        android:paddingBottom="@dimen/spacing_small"
-        android:text="@string/request_permissions_header_desc"
-        style="?attr/textAppearanceSummaryLarge"/>
+        android:textAppearance="?attr/textAppearanceSummaryLarge"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/access_info"
+    <LinearLayout
+        android:id="@+id/detailed_permissions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="?attr/accessHistoryIcon"
-        android:paddingBottom="@dimen/spacing_small"
-        android:text="@string/request_permissions_header_time_frame_desc"
-        style="?attr/textAppearanceSummaryLarge" />
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/data_access_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="?attr/chooseDataIcon"
+            android:paddingBottom="@dimen/spacing_small"
+            style="?attr/textAppearanceSummaryLarge"/>
 
-    <TextView
-        android:id="@+id/privacy_policy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="?attr/privacyPolicyIcon"
-        android:paddingBottom="@dimen/spacing_small"
-        style="?attr/textAppearanceSummaryLarge"/>
+        <TextView
+            android:id="@+id/access_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="?attr/accessHistoryIcon"
+            android:paddingBottom="@dimen/spacing_small"
+            style="?attr/textAppearanceSummaryLarge" />
+
+        <TextView
+            android:id="@+id/privacy_policy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="?attr/privacyPolicyIcon"
+            android:paddingBottom="@dimen/spacing_small"
+            style="?attr/textAppearanceSummaryLarge"/>
+    </LinearLayout>
+
 </LinearLayout>

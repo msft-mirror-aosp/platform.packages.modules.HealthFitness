@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.HealthDat
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.PRIORITY_TABLE_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
@@ -39,7 +40,7 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
@@ -54,7 +55,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
@@ -77,7 +78,8 @@ public final class DatabaseMerger {
     private final Context mContext;
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
-    private final RecordMapper mRecordMapper;
+    private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final DeviceInfoHelper mDeviceInfoHelper;
 
@@ -104,7 +106,8 @@ public final class DatabaseMerger {
         mContext = context;
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
-        mRecordMapper = RecordMapper.getInstance();
+        mHealthConnectMappings = HealthConnectMappings.getInstance();
+        mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mDeviceInfoHelper = deviceInfoHelper;
     }
@@ -138,7 +141,7 @@ public final class DatabaseMerger {
         List<Integer> recordTypesWithOrderingOverrides =
                 RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream().flatMap(List::stream).toList();
         List<Integer> recordTypesWithoutOrderingOverrides =
-                mRecordMapper.getRecordIdToExternalRecordClassMap().keySet().stream()
+                mHealthConnectMappings.getRecordIdToExternalRecordClassMap().keySet().stream()
                         .filter(it -> !recordTypesWithOrderingOverrides.contains(it))
                         .toList();
 
@@ -149,7 +152,7 @@ public final class DatabaseMerger {
                         stagedDatabase,
                         stagedPackageNamesByAppIds,
                         recordTypeToMigrate,
-                        mRecordMapper
+                        mHealthConnectMappings
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -160,7 +163,7 @@ public final class DatabaseMerger {
                 deleteRecordsOfType(
                         stagedDatabase,
                         recordTypeToMigrate,
-                        mRecordMapper
+                        mHealthConnectMappings
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -168,7 +171,9 @@ public final class DatabaseMerger {
         // Migrate remaining record types in no particular order.
         for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
             Class<? extends Record> recordClass =
-                    mRecordMapper.getRecordIdToExternalRecordClassMap().get(recordTypeToMigrate);
+                    mHealthConnectMappings
+                            .getRecordIdToExternalRecordClassMap()
+                            .get(recordTypeToMigrate);
             mergeRecordsOfType(
                     stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate, recordClass);
             deleteRecordsOfType(stagedDatabase, recordTypeToMigrate, recordClass);
@@ -229,8 +234,9 @@ public final class DatabaseMerger {
             Map<Long, String> stagedPackageNamesByAppIds,
             int recordType,
             Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
-        if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
+        RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
+        if (!checkTableExists(
+                stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
             return;
         }
 
@@ -285,8 +291,9 @@ public final class DatabaseMerger {
 
     private <T extends Record> void deleteRecordsOfType(
             HealthConnectDatabase stagedDatabase, int recordType, Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
-        if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
+        RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
+        if (!checkTableExists(
+                stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
             return;
         }
 

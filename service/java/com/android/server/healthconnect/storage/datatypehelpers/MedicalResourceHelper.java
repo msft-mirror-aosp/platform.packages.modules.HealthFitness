@@ -334,9 +334,6 @@ public final class MedicalResourceHelper {
      * @throws IllegalArgumentException if any of the ids has a data source id which is not valid
      *     (not a String form of a UUID)
      */
-    // TODO(b/358105031): add CTS test coverage for read by ids with/without permission
-    // checks.
-
     public List<MedicalResource> readMedicalResourcesByIdsWithPermissionChecks(
             List<MedicalResourceId> medicalResourceIds,
             Set<Integer> grantedReadMedicalResourceTypes,
@@ -345,16 +342,16 @@ public final class MedicalResourceHelper {
             boolean isCalledFromBgWithoutBgRead)
             throws SQLiteException {
 
+        Pair<String, String[]> sqlAndArgs =
+                getSqlAndArgsBasedOnPermissionFilters(
+                        medicalResourceIds,
+                        grantedReadMedicalResourceTypes,
+                        callingPackageName,
+                        hasWritePermission,
+                        isCalledFromBgWithoutBgRead);
         return mTransactionManager.runAsTransaction(
                 db -> {
                     List<MedicalResource> medicalResources;
-                    Pair<String, String[]> sqlAndArgs =
-                            getSqlAndArgsBasedOnPermissionFilters(
-                                    medicalResourceIds,
-                                    grantedReadMedicalResourceTypes,
-                                    callingPackageName,
-                                    hasWritePermission,
-                                    isCalledFromBgWithoutBgRead);
                     try (Cursor cursor = db.rawQuery(sqlAndArgs.first, sqlAndArgs.second)) {
                         medicalResources = getMedicalResources(cursor);
                     }
@@ -530,8 +527,6 @@ public final class MedicalResourceHelper {
      * @param pageTokenWrapper a {@link PhrPageTokenWrapper}.
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
-    // TODO(b/354872929): Add cts tests for read by request.
-
     public ReadMedicalResourcesInternalResponse
             readMedicalResourcesByRequestWithoutPermissionChecks(
                     PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
@@ -550,8 +545,6 @@ public final class MedicalResourceHelper {
      *
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
-    // TODO(b/360833189): Support request.getDataSourceIds().
-    // TODO(b/354872929): Add cts tests for read by request.
     // TODO(b/360352345): Add cts tests for access logs being created per API call.
 
     public ReadMedicalResourcesInternalResponse readMedicalResourcesByRequestWithPermissionChecks(
@@ -673,8 +666,10 @@ public final class MedicalResourceHelper {
                         List.of(MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()))
                 .setJoinClause(
                         getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
-                                dataSourceIds, appId, joinWithMedicalResourceIndicesTable()))
-                .setWhereClause(getMedicalResourceTypeWhereClause(medicalResourceTypes));
+                                dataSourceIds,
+                                appId,
+                                getJoinWithIndicesTableFilterOnMedicalResourceTypes(
+                                        medicalResourceTypes)));
     }
 
     /**
@@ -770,11 +765,19 @@ public final class MedicalResourceHelper {
      * Creates {@link SqlJoin} that is an inner join from medical_resource_table to
      * medical_resource_indices_table filtering on {@code medicalResourceTypes} followed by {@code
      * extraJoin} attached to it.
+     *
+     * <p>If the list of {@code medicalResourceTypes} is empty, then the {@link WhereClauses} will
+     * be empty.
      */
     static SqlJoin getJoinWithIndicesTableFilterOnMedicalResourceTypes(
             Set<Integer> medicalResourceTypes) {
+        WhereClauses medicalResourceTypeWhereClause =
+                new WhereClauses(AND)
+                        .addWhereInIntsClause(
+                                getMedicalResourceTypeColumnName(),
+                                new ArrayList<>(medicalResourceTypes));
         return joinWithMedicalResourceIndicesTable()
-                .setSecondTableWhereClause(getMedicalResourceTypeWhereClause(medicalResourceTypes));
+                .setSecondTableWhereClause(medicalResourceTypeWhereClause);
     }
 
     static SqlJoin getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
@@ -883,17 +886,6 @@ public final class MedicalResourceHelper {
     }
 
     /**
-     * Creates a {@link WhereClauses} filtering on {@code medicalResourceTypes}. If {@code
-     * medicalResourceTypes} is empty, then it returns an empty {@link WhereClauses}.
-     */
-    private static WhereClauses getMedicalResourceTypeWhereClause(
-            Set<Integer> medicalResourceTypes) {
-        return new WhereClauses(AND)
-                .addWhereInIntsClause(
-                        getMedicalResourceTypeColumnName(), new ArrayList<>(medicalResourceTypes));
-    }
-
-    /**
      * Upserts (insert/update) a list of {@link MedicalResource}s created based on the given list of
      * {@link UpsertMedicalResourceInternalRequest}s into the HealthConnect database.
      *
@@ -917,8 +909,6 @@ public final class MedicalResourceHelper {
                             + UpsertMedicalResourceInternalRequest.class.getSimpleName()
                             + "(s).");
         }
-
-        // TODO(b/350697473): Add cts tests covering upsert journey with data source creation.
         return mTransactionManager.runAsTransaction(
                 (TransactionRunnableWithReturn<List<MedicalResource>, RuntimeException>)
                         db ->
@@ -1325,9 +1315,8 @@ public final class MedicalResourceHelper {
         SqlJoin dataSourceJoin = joinWithMedicalDataSourceTable();
         dataSourceJoin.setSecondTableWhereClause(dataSourceWhereClauses);
 
-        SqlJoin indexJoin = joinWithMedicalResourceIndicesTable();
-        indexJoin.setSecondTableWhereClause(
-                getMedicalResourceTypeWhereClause(medicalResourceTypes));
+        SqlJoin indexJoin =
+                getJoinWithIndicesTableFilterOnMedicalResourceTypes(medicalResourceTypes);
         indexJoin.attachJoin(dataSourceJoin);
 
         ReadTableRequest innerRead =

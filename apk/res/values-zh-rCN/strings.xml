@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"管理设备上的健康与健身数据，并控制哪些应用可以访问这些数据"</string>
     <string name="data_title" msgid="4456619761533380816">"数据和访问权限"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"浏览健康记录"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"查看您的健康记录，并了解哪些应用可以访问这些记录"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"所有类别"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"查看所有类别"</string>
     <string name="no_data" msgid="1906986019249068659">"无数据"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"访问您的健康数据"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"读取消耗的卡路里数"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"允许该应用读取消耗的卡路里数"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"访问后台数据"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"要允许 <xliff:g id="APP_NAME">%1$s</xliff:g> 访问后台数据吗？"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"要允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”在后台访问数据吗？"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"如果您允许，此应用将可以在您未使用它时访问健身与健康数据以及健康记录。"</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"如果您允许，此应用将可以在您未使用它时访问健康记录。"</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"如果您允许，此应用将可以在您未使用它时访问健身与健康数据。"</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"如果您允许，此应用将可以在您未使用它时访问“健康数据共享”数据。"</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"要允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问过往数据吗？"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"如果您允许，此应用将可以访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的健身与健康数据。"</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"如果您允许，此应用将可以访问所有过往的健身与健康数据。"</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"如果您允许，此应用将可以访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据。"</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"如果您允许，此应用将可以访问所有过往的“健康数据共享”数据。"</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"要允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”获得额外访问权限吗？"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”还想访问这些“健康数据共享”设置"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"在后台访问所有数据"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"在后台访问健康记录"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"在后台访问健身与健康数据"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"允许此应用在您未使用它时访问健身与健康数据以及健康记录"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"允许此应用在您未使用它时访问此类数据"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"允许此应用在您未使用它时访问此类数据"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"在后台访问数据"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"允许此应用在您未使用它时访问“健康数据共享”数据"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"访问过往的健身与健康数据"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"允许此应用访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的数据"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"允许此应用访问所有过往数据"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"访问过往数据"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"允许此应用访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"允许此应用访问所有过往的“健康数据共享”数据"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”已拥有访问过往的健康记录数据的权限"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"详细了解权限"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"在后台访问所有数据"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"在后台访问健康记录"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"在后台访问健身与健康数据"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"允许此应用在您未使用它时访问健身与健康数据以及健康记录"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"允许此应用在您未使用它时访问此类数据"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"允许此应用在您未使用它时访问此类数据"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"在后台访问数据"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"允许此应用在您未使用它时访问“健康数据共享”数据"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"访问过往的健身与健康数据"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"允许此应用访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的数据"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"允许此应用访问所有过往数据"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"访问过往数据"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"允许此应用访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"允许此应用访问所有过往的“健康数据共享”数据"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"目前未读取任何健身数据，因为“<xliff:g id="APP_NAME">%1$s</xliff:g>”没有读取此类数据的权限"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”已经能够访问您过往的健康记录数据。如需更改此设置，请为此应用关闭健康记录相关权限"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"管理健康记录相关权限"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"请至少启用一项读取权限，以便为此应用开启后台或历史数据访问权"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"请至少启用一项读取权限，以便为此应用开启后台数据访问权"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"请至少启用一项读取权限，以便为此应用开启历史数据访问权"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"允许此应用访问所有过往的“健康数据共享”数据"</string>
     <string name="background_read_description" msgid="3203594555849969283">"允许此应用在后台访问“健康数据共享”数据"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"如果您允许，此应用可以在您不使用此应用时访问“健康数据共享”数据。"</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"访问历史数据"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问过去的数据？"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"允许此应用访问在<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"允许此应用访问“健康数据共享”的所有历史数据"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"如果您允许，此应用可以访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据。"</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"如果您允许，此应用可以访问“健康数据共享”的所有历史数据。"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"运动消耗的卡路里"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"运动消耗的卡路里"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"读取运动消耗的卡路里数据"</string>
@@ -155,6 +196,14 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"推轮椅次数"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"读取推轮椅次数数据"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"写入推轮椅次数数据"</string>
+    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
+    <skip />
+    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
+    <skip />
+    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
+    <skip />
+    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
+    <skip />
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"基础代谢率"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"基础代谢率"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"读取基础代谢率数据"</string>
@@ -267,58 +316,43 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"体表温度"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"读取体表温度"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"写入体表温度"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
-    <skip />
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"过敏反应"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"过敏反应"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"读取过敏反应数据"</string>
-    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
-    <skip />
-    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
-    <skip />
-    <!-- no translation found for conditions_content_description (3230552343616193829) -->
-    <skip />
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"疫苗接种数据"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"疫苗接种数据"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"读取疫苗接种数据"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"实验室结果"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"实验室结果"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"读取实验室结果"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"所有健康记录"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"所有健康记录"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"写入所有健康记录"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"过敏反应"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"过敏反应"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"读取过敏反应数据"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"病症数据"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"病症数据"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"读取病症数据"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"疫苗接种"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"疫苗接种"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"读取疫苗接种数据"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"化验结果"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"化验结果"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"读取化验结果"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"用药"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"用药"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"读取用药数据"</string>
-    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
-    <skip />
-    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
-    <skip />
-    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
-    <skip />
-    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
-    <skip />
-    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
-    <skip />
-    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
-    <skip />
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"个人详细信息"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"个人详细信息"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"读取个人详细信息"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"医师详细信息"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"医师详细信息"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"读取医师详细信息"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"怀孕数据"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"怀孕数据"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"读取怀孕数据"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"医疗程序数据"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"医疗程序数据"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"读取医疗程序数据"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"社交媒体历史记录"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"社交媒体历史记录"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"社交媒体历史记录"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"读取社交媒体历史记录"</string>
-    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
-    <skip />
-    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
-    <skip />
-    <!-- no translation found for visits_content_description (6336796415049565697) -->
-    <skip />
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"生命体征数据"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"就医数据"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"就医数据"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"读取就医数据"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"生命体征数据"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"生命体征数据"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"读取生命体征数据"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"正念"</string>
@@ -327,16 +361,25 @@
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"写入正念数据"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”读取"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”写入"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"取消"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"允许"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"全部允许"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"不允许"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"选择允许此应用对健康数据共享读取或写入数据"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"选择您希望允许此应用从“健康数据共享”读取或写入到“健康数据共享”的数据"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"选择您希望允许此应用从“健康数据共享”读取的数据"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"选择您希望允许此应用写入到“健康数据共享”的数据"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"如果您授予读取权限，该应用可以读取新数据和过去 30 天的数据"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"如果您授予读取权限，该应用可以读取新数据和过去的数据"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"要允许<xliff:g id="APP_NAME">%1$s</xliff:g>访问健康数据共享吗？"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"你可以参阅开发者的<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>，了解<xliff:g id="APP_NAME">%1$s</xliff:g>如何处理你的数据"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"要允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问健身与健康数据吗？"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"您可以参阅“<xliff:g id="APP_NAME">%1$s</xliff:g>”的<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>，了解该应用如何处理您的数据"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"隐私权政策"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"要允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问您的健康记录吗？"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"如果您授予访问权限，此应用将可以读取和写入过敏反应、化验结果、疫苗接种等数据\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"如果您授予访问权限，此应用将可以读取过敏反应、化验结果、疫苗接种等数据\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"关于健康记录"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"要共享的数据"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"如果您允许，“<xliff:g id="APP_NAME">%1$s</xliff:g>”将可以与“健康数据共享”共享您的健康记录。"</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"同步来自不同应用和来源的健康记录，将其集中存放在一个位置"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"要撤消所有权限吗？"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"全部移除"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的任何数据或向其中写入数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头、麦克风或位置信息使用权。"</string>
@@ -344,33 +387,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的任何数据或向其中写入数据，包括历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如位置信息、摄像头或麦克风使用权。"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的任何数据或向其中写入数据，包括后台和历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如位置信息、摄像头或麦克风使用权。"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"同时删除“健康数据共享”中的“<xliff:g id="APP_NAME">%1$s</xliff:g>”数据"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"要移除所有权限吗？"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"要移除所有的健康记录相关权限吗？"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"要移除所有的健身和健康相关权限吗？"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"同时从“健康数据共享”中删除来自“<xliff:g id="APP_NAME">%1$s</xliff:g>”的健身数据"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"要移除所有的健康记录相关权限吗？"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"同时从“健康数据共享”中删除来自“<xliff:g id="APP_NAME">%1$s</xliff:g>”的健康记录"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的此类数据，也无法再向其中写入此类数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的此类数据，也无法再向其中写入此类数据，包括后台数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的此类数据，也无法再向其中写入此类数据，包括历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的此类数据，也无法再向其中写入此类数据，包括后台数据和历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"要移除所有权限吗？"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的数据，也无法再向其中写入数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的数据，也无法再向其中写入数据，包括后台数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的数据，也无法再向其中写入数据，包括历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的数据，也无法再向其中写入数据，包括后台数据和历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头使用权限、麦克风使用权限或位置信息访问权限。"</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"同时从“健康数据共享”中删除来自“<xliff:g id="APP_NAME">%1$s</xliff:g>”的健身数据和健康记录"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"已移除此应用的权限"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"同时删除所有来自“健康数据共享”的数据"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"后一天"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"选定的日期"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"前一天"</string>
     <string name="default_error" msgid="7966868260616403475">"出了点问题。请重试。"</string>
-    <!-- no translation found for unkwown_resource (7932225227431922125) -->
-    <skip />
-    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
-    <skip />
-    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
-    <skip />
-    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
-    <skip />
-    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
-    <skip />
-    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
-    <skip />
-    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
-    <skip />
+    <string name="unkwown_resource" msgid="7932225227431922125">"未知资源"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"源数据"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>左花括号。"</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>右花括号。"</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> 字段 <xliff:g id="FIELD">%2$s</xliff:g> 值"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>：<xliff:g id="VALUE">%2$s</xliff:g>。"</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"详细源代码：<xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"具有此权限的应用可以读写您的健康与健身数据。"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"控制哪些应用可以访问存储在“健康数据共享”中的数据。点按应用即可查看其可以读取或写入的数据。"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"允许访问"</string>
@@ -400,13 +443,14 @@
     <string name="app_access_title" msgid="7137018424885371763">"应用访问权限"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"您目前没有安装任何兼容应用"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"其他访问权限"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"历史数据、后台数据"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"已撤消此应用的其他权限"</string>
     <string name="permissions_header" msgid="6519976063360071569">"权限"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"健身和健康"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"锻炼、睡眠、营养等"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"健康记录"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"健康记录"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"实验室结果、药物、免疫等"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"化验结果、药物、疫苗接种等"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"已撤消应用权限"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"健康数据共享已撤消“<xliff:g id="APP_DATA">%s</xliff:g>”的权限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"健康数据共享已撤消“<xliff:g id="APP_DATA_0">%1$s</xliff:g>”和“<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>”的权限"</string>
@@ -498,10 +542,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"转到 Play 商店"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"开始使用健康数据共享"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"“健康数据共享”会存储您的健康与健身数据，让您可以轻松同步设备上各应用的数据"</string>
-    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
-    <skip />
-    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"“健康数据共享”会存储和同步来自不同应用的健康与健身数据。\n\n"<b>"健康与健身数据，"</b>"包括锻炼时段、步数、营养、睡眠等\n\n"<b>"健康记录，"</b>"包括疫苗接种、化验结果等"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"借助“健康数据共享”，您可以"</string>
     <string name="share_data" msgid="3481932156368883946">"与应用分享数据"</string>
     <string name="share_data_description" msgid="2919871301634375092">"选择每个应用可以从健康数据共享中读取或向其中写入的数据"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"管理设置和隐私"</string>
@@ -602,7 +644,9 @@
     <string name="flow_light" msgid="1937543318146228793">"月经量：少"</string>
     <string name="flow_medium" msgid="3783688724668943154">"月经量：中"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"月经量：多"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"出血量未知"</string>
     <string name="period_day" msgid="3821944462093965882">"经期第 <xliff:g id="DAY">%1$d</xliff:g> 天（共 <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> 天）"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{经期（1 天）}other{经期（# 天）}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"阳性"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"阴性"</string>
     <string name="ovulation_high" msgid="205362931427158291">"高"</string>
@@ -1071,7 +1115,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"编辑应用来源"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"设备默认设置"</string>
     <string name="app_data_title" msgid="6499967982291000837">"应用数据"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"具有健康数据共享访问权的应用中的数据将显示在此处"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"来自“<xliff:g id="APP_NAME">%1$s</xliff:g>”的数据将显示在此处"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"来自以下应用的数据将显示在此处：具有“健康数据共享”访问权限的应用"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"日"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"周"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"月"</string>
@@ -1081,11 +1126,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"上个月"</string>
     <string name="tab_entries" msgid="3402700951602029493">"条目"</string>
     <string name="tab_access" msgid="7818197975407243701">"有访问权限的应用"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"允许 <xliff:g id="APP_NAME">%1$s</xliff:g> 获得额外访问权限？"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> 还想访问这些“健康数据共享”设置"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"请至少启用一项读取权限，以便为此应用开启后台或历史数据访问权"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"请至少启用一项读取权限，以便为此应用开启后台数据访问权"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"请至少启用一项读取权限，以便为此应用开启历史数据访问权"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"开始使用“健康数据共享”"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"同步您的首批应用，以便在它们之间共享健康与健身数据"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"设置"</string>
@@ -1096,42 +1136,47 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"通过“健康数据共享”查找更多要与<xliff:g id="APP_NAME">%s</xliff:g>同步的应用"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"在应用商店中查看"</string>
     <string name="select_all" msgid="837499881590001166">"全选"</string>
-    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"关联的应用将无法再通过“健康数据共享”读取这些数据"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
     <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
     <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
     <skip />
-    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
     <skip />
-    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
     <skip />
-    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
     <skip />
-    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
     <skip />
-    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
     <skip />
-    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
     <skip />
-    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
-    <skip />
-    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
-    <skip />
-    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"要永久删除所有数据吗？"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"要永久删除所选数据吗？"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"要永久删除所有“<xliff:g id="APP_NAME">%s</xliff:g>”数据吗？"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"要永久删除所选的“<xliff:g id="APP_NAME">%s</xliff:g>”数据吗？"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有条目吗？"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>这一周的所有条目吗？"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有条目吗？"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所选条目吗？"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>这一周的所选条目吗？"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所选条目吗？"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"要永久删除此条目吗？"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所有“<xliff:g id="APP_NAME">%1$s</xliff:g>”条目吗？"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>这一周的所有“<xliff:g id="APP_NAME">%1$s</xliff:g>”条目吗？"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所有“<xliff:g id="APP_NAME">%1$s</xliff:g>”条目吗？"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所选“<xliff:g id="APP_NAME">%1$s</xliff:g>”条目吗？"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>这一周的所选“<xliff:g id="APP_NAME">%1$s</xliff:g>”条目吗？"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"要永久删除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所选“<xliff:g id="APP_NAME">%1$s</xliff:g>”条目吗？"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"要永久删除此“<xliff:g id="APP_NAME">%s</xliff:g>”条目吗？"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"要永久删除“<xliff:g id="APP_NAME">%2$s</xliff:g>”的<xliff:g id="DATA_TYPE">%1$s</xliff:g>数据吗？"</string>
+    <string name="on" msgid="8266542510798355807">"开"</string>
+    <string name="off" msgid="6996623844428550649">"关"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"上次访问时间：<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"昨天<xliff:g id="TIME_DATE">%1$s</xliff:g>访问过"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g><xliff:g id="TIME_DATE_1">%2$s</xliff:g>访问过"</string>
 </resources>

@@ -16,6 +16,8 @@
 
 package com.android.healthfitness.flags;
 
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ACTIVITY_INTENSITY;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
@@ -123,6 +125,9 @@ public final class AconfigFlagHelper {
 
         DB_VERSION_TO_DB_FLAG_MAP.put(
                 DB_VERSION_PERSONAL_HEALTH_RECORD, Flags::personalHealthRecordDatabase);
+        DB_VERSION_TO_DB_FLAG_MAP.put(DB_VERSION_ACTIVITY_INTENSITY, Flags::activityIntensityDb);
+        DB_VERSION_TO_DB_FLAG_MAP.put(
+                DB_VERSION_ECOSYSTEM_METRICS, Flags::ecosystemMetricsDbChanges);
 
         return DB_VERSION_TO_DB_FLAG_MAP;
     }
@@ -130,5 +135,17 @@ public final class AconfigFlagHelper {
     /** Returns a boolean indicating whether PHR feature is enabled. */
     public static synchronized boolean isPersonalHealthRecordEnabled() {
         return Flags.personalHealthRecord() && isDbFlagEnabled(DB_VERSION_PERSONAL_HEALTH_RECORD);
+    }
+
+    /** Returns a boolean indicating whether Activity Intensity data type is enabled. */
+    public static boolean isActivityIntensityEnabled() {
+        return Flags.activityIntensity()
+                && isDbFlagEnabled(DB_VERSION_ACTIVITY_INTENSITY)
+                && Flags.healthConnectMappings();
+    }
+
+    /** Returns a boolean indicating whether Ecosystem Metrics is enabled. */
+    public static boolean isEcosystemMetricsEnabled() {
+        return Flags.ecosystemMetrics() && isDbFlagEnabled(DB_VERSION_ECOSYSTEM_METRICS);
     }
 }

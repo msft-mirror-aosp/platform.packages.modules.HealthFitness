@@ -23,8 +23,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.healthconnect.controller.deletion.DeletionType
-import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
+import com.android.healthconnect.controller.deletion.DeletionType.DeletionTypeAppData
+import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase as OldDeleteAppDataUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
@@ -38,12 +38,15 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Fi
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteAppData
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.Flags.newInformationArchitecture
+import com.android.healthfitness.flags.Flags.personalHealthRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
 import javax.inject.Inject
@@ -62,11 +65,11 @@ constructor(
     private val revokePermissionsStatusUseCase: RevokeHealthPermissionUseCase,
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase,
     private val deleteAppDataUseCase: DeleteAppDataUseCase,
+    private val oldDeleteAppDataUseCase: OldDeleteAppDataUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
     private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
     private val loadExerciseRoutePermissionUseCase: ILoadExerciseRoutePermissionUseCase,
     private val healthPermissionReader: HealthPermissionReader,
-    private val featureUtils: FeatureUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -241,6 +244,8 @@ constructor(
     private val _lastReadPermissionDisconnected = MutableLiveData(false)
     val lastReadPermissionDisconnected: LiveData<Boolean>
         get() = _lastReadPermissionDisconnected
+
+    private val newDeletionFlow = personalHealthRecord() || newInformationArchitecture()
 
     fun loadPermissionsForPackage(packageName: String) {
         // clear app permissions
@@ -489,10 +494,7 @@ constructor(
         packageName: String,
         fitnessPermission: FitnessPermission,
     ): Boolean {
-        if (
-            !featureUtils.isExerciseRouteReadAllEnabled() ||
-                fitnessPermission.toString() != READ_EXERCISE
-        ) {
+        if (fitnessPermission.toString() != READ_EXERCISE) {
             return false
         }
 
@@ -573,18 +575,20 @@ constructor(
 
     fun revokeAllFitnessAndMaybeAdditionalPermissions(packageName: String): Boolean {
         try {
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
-            _fitnessPermissions.value?.forEach {
-                revokePermissionsStatusUseCase.invoke(packageName, it.toString())
-            }
-            if (!atLeastOneMedicalReadPermissionGranted()) {
-                _grantedAdditionalPermissions.value?.forEach {
-                    revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+            viewModelScope.launch(ioDispatcher) {
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
+                _fitnessPermissions.value?.forEach {
+                    revokePermissionsStatusUseCase.invoke(packageName, it.toString())
                 }
-                _grantedAdditionalPermissions.postValue(emptySet())
+                if (!atLeastOneMedicalReadPermissionGranted()) {
+                    _grantedAdditionalPermissions.value?.forEach {
+                        revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+                    }
+                    _grantedAdditionalPermissions.postValue(emptySet())
+                }
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
+                _grantedFitnessPermissions.postValue(emptySet())
             }
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
-            _grantedFitnessPermissions.postValue(emptySet())
             return true
         } catch (ex: Exception) {
             Log.e(TAG, "Failed to revoke fitness permissions!", ex)
@@ -594,18 +598,20 @@ constructor(
 
     fun revokeAllMedicalAndMaybeAdditionalPermissions(packageName: String): Boolean {
         try {
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
-            _medicalPermissions.value?.forEach {
-                revokePermissionsStatusUseCase.invoke(packageName, it.toString())
-            }
-            if (!atLeastOneFitnessReadPermissionGranted()) {
-                _grantedAdditionalPermissions.value?.forEach {
-                    revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+            viewModelScope.launch(ioDispatcher) {
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
+                _medicalPermissions.value?.forEach {
+                    revokePermissionsStatusUseCase.invoke(packageName, it.toString())
                 }
-                _grantedAdditionalPermissions.postValue(emptySet())
+                if (!atLeastOneFitnessReadPermissionGranted()) {
+                    _grantedAdditionalPermissions.value?.forEach {
+                        revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+                    }
+                    _grantedAdditionalPermissions.postValue(emptySet())
+                }
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
+                _grantedMedicalPermissions.postValue(emptySet())
             }
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
-            _grantedMedicalPermissions.postValue(emptySet())
             return true
         } catch (ex: Exception) {
             Log.e(TAG, "Failed to revoke medical permissions!", ex)
@@ -614,14 +620,26 @@ constructor(
     }
 
     fun deleteAppData(packageName: String, appName: String) {
+        if (newDeletionFlow) {
+            newDeleteAppData(packageName, appName)
+        } else {
+            oldDeleteAppData(packageName, appName)
+        }
+    }
+
+    private fun newDeleteAppData(packageName: String, appName: String) {
+        viewModelScope.launch { deleteAppDataUseCase.invoke(DeleteAppData(packageName, appName)) }
+    }
+
+    private fun oldDeleteAppData(packageName: String, appName: String) {
         viewModelScope.launch {
-            val appData = DeletionType.DeletionTypeAppData(packageName, appName)
+            val appData = DeletionTypeAppData(packageName, appName)
             val timeRangeFilter =
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.ofEpochMilli(Long.MAX_VALUE))
                     .build()
-            deleteAppDataUseCase.invoke(appData, timeRangeFilter)
+            oldDeleteAppDataUseCase.invoke(appData, timeRangeFilter)
         }
     }
 

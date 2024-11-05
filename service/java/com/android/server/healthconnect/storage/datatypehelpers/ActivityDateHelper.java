@@ -25,7 +25,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
@@ -35,7 +35,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.LocalDate;
@@ -59,11 +59,15 @@ public final class ActivityDateHelper extends DatabaseHelper {
     private static final String RECORD_TYPE_ID_COLUMN_NAME = "record_type_id";
 
     private final TransactionManager mTransactionManager;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     @Nullable private static volatile ActivityDateHelper sActivityDateHelper;
 
-    private ActivityDateHelper(TransactionManager transactionManager) {
+    private ActivityDateHelper(
+            TransactionManager transactionManager,
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mTransactionManager = transactionManager;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
     /**
@@ -93,9 +97,11 @@ public final class ActivityDateHelper extends DatabaseHelper {
 
     /** Returns a list of all dates with database writes for the given record types */
     public List<LocalDate> getActivityDates(List<Class<? extends Record>> recordTypes) {
-        RecordMapper recordMapper = RecordMapper.getInstance();
+        HealthConnectMappings healthConnectMappings = HealthConnectMappings.getInstance();
         List<Integer> recordTypeIds =
-                recordTypes.stream().map(recordMapper::getRecordType).collect(Collectors.toList());
+                recordTypes.stream()
+                        .map(healthConnectMappings::getRecordType)
+                        .collect(Collectors.toList());
 
         return readDates(
                 new ReadTableRequest(TABLE_NAME)
@@ -110,7 +116,10 @@ public final class ActivityDateHelper extends DatabaseHelper {
     /** Updates the activity dates cache for all records */
     public void reSyncForAllRecords() {
         List<Integer> recordTypeIds =
-                RecordMapper.getInstance().getRecordIdToExternalRecordClassMap().keySet().stream()
+                HealthConnectMappings.getInstance()
+                        .getRecordIdToExternalRecordClassMap()
+                        .keySet()
+                        .stream()
                         .toList();
 
         reSyncByRecordTypeIds(recordTypeIds);
@@ -158,7 +167,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
         RecordHelper<?> recordHelper;
         HashMap<Integer, List<Long>> recordTypeIdToEpochDays = new HashMap<>();
         for (int recordTypeId : recordTypeIds) {
-            recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordTypeId);
             request =
                     new ReadTableRequest(recordHelper.getMainTableName())
                             .setColumnNames(List.of(recordHelper.getPeriodGroupByColumnName()))
@@ -223,7 +232,9 @@ public final class ActivityDateHelper extends DatabaseHelper {
     public static synchronized ActivityDateHelper getInstance(
             TransactionManager transactionManager) {
         if (sActivityDateHelper == null) {
-            sActivityDateHelper = new ActivityDateHelper(transactionManager);
+            sActivityDateHelper =
+                    new ActivityDateHelper(
+                            transactionManager, InternalHealthConnectMappings.getInstance());
         }
         return sActivityDateHelper;
     }

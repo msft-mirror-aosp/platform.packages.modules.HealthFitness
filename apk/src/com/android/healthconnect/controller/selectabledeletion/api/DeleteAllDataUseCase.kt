@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -15,12 +15,12 @@
  */
 package com.android.healthconnect.controller.selectabledeletion.api
 
-import android.health.connect.DeleteUsingFiltersRequest
-import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.service.IoDispatcher
+import com.android.healthfitness.flags.Flags.personalHealthRecord
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 /** Use case to delete all records stored in Health Connect without any filter. */
@@ -28,12 +28,19 @@ import kotlinx.coroutines.withContext
 class DeleteAllDataUseCase
 @Inject
 constructor(
-    private val healthConnectManager: HealthConnectManager,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    private val deleteAllFitnessDataUseCase: DeleteAllFitnessDataUseCase,
+    private val deleteAllMedicalDataUseCase: DeleteAllMedicalDataUseCase,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     suspend fun invoke() =
         withContext(dispatcher) {
-            healthConnectManager.deleteRecords(
-                DeleteUsingFiltersRequest.Builder().build(), Runnable::run) {}
+            val deleteFitnessData = async { deleteAllFitnessDataUseCase.invoke() }
+            val deleteMedicalData = async {
+                if (personalHealthRecord()) {
+                    deleteAllMedicalDataUseCase.invoke()
+                }
+            }
+            deleteFitnessData.await()
+            deleteMedicalData.await()
         }
 }

@@ -33,7 +33,7 @@ import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACK
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.OnboardingElement
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthfitness.flags.Flags.personalHealthRecord
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -88,7 +88,7 @@ class OnboardingActivity : Hilt_OnboardingActivity() {
         val onboardingDescription = findViewById<TextView>(R.id.onboarding_description)
         val withHealthConnectTitle =
             findViewById<TextView>(R.id.onboarding_description_with_health_connect)
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             onboardingDescription.setText(R.string.onboarding_description_health_records)
             withHealthConnectTitle.setVisibility(View.VISIBLE)
         } else {

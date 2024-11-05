@@ -57,6 +57,7 @@ import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
+import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
@@ -160,6 +161,15 @@ public final class HealthPermissions {
      */
     public static final String READ_ACTIVE_CALORIES_BURNED =
             "android.permission.health.READ_ACTIVE_CALORIES_BURNED";
+
+    /**
+     * Allows an application to read the user's activity intensity data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_ACTIVITY_INTENSITY)
+    public static final String READ_ACTIVITY_INTENSITY =
+            "android.permission.health.READ_ACTIVITY_INTENSITY";
 
     /**
      * Allows an application to read the user's distance data.
@@ -478,6 +488,15 @@ public final class HealthPermissions {
      */
     public static final String WRITE_ACTIVE_CALORIES_BURNED =
             "android.permission.health.WRITE_ACTIVE_CALORIES_BURNED";
+
+    /**
+     * Allows an application to write the user's activity intensity data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_ACTIVITY_INTENSITY)
+    public static final String WRITE_ACTIVITY_INTENSITY =
+            "android.permission.health.WRITE_ACTIVITY_INTENSITY";
 
     /**
      * Allows an application to write the user's distance data.
@@ -984,8 +1003,10 @@ public final class HealthPermissions {
     /**
      * @return {@link HealthDataCategory} for {@code permissionName}. -1 if permission category for
      *     {@code permissionName} is not found
+     * @deprecated Use {@link HealthConnectMappings#getWriteHealthPermissionsFor(int)}
      * @hide
      */
+    @Deprecated
     public static String[] getWriteHealthPermissionsFor(@HealthDataCategory.Type int dataCategory) {
         if (sDataCategoryToWritePermissionsMap.isEmpty()) {
             populateWriteHealthPermissionToHealthDataCategoryMap();

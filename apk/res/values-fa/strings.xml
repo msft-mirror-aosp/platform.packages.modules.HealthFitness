@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"داده‌های سلامتی و تناسب اندام را در دستگاهتان مدیریت کنید و کنترل کنید کدام برنامه‌ها می‌توانند به این داده‌ها دسترسی داشته باشند"</string>
     <string name="data_title" msgid="4456619761533380816">"داده‌ها و دسترسی"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"مرور سوابق سلامتی"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"سوابق سلامتی خود و برنامه‌هایی را که می‌توانند به آن‌ها دسترسی داشته باشند مشاهده کنید"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"همه دسته‌ها"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"دیدن همه دسته‌ها"</string>
     <string name="no_data" msgid="1906986019249068659">"داده‌ای وجود ندارد"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"دسترسی به داده‌های سلامت شما"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"خواندن داده کالری سوزانده‌شده"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"به برنامه اجازه می‌دهد کالری سوزانده‌شده را بخواند"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"دسترسی به داده‌ها در پس‌زمینه"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه می‌دهید به داده‌ها در پس‌زمینه دسترسی داشته باشد؟"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه می‌دهید به داده‌ها در پس‌زمینه دسترسی داشته باشد؟"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"اگر اجازه دهید، این برنامه می‌تواند وقتی از آن استفاده نمی‌کنید به داده‌های تناسب اندام و تندرستی و سوابق سلامتی دسترسی داشته باشد."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"اگر اجازه دهید، این برنامه می‌تواند وقتی از آن استفاده نمی‌کنید به سوابق سلامتی دسترسی داشته باشد."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"اگر اجازه دهید، این برنامه می‌تواند وقتی از آن استفاده نمی‌کنید به داده‌های تناسب اندام و تندرستی داشته باشد."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"اگر اجازه دهید، این برنامه می‌تواند وقتی از آن استفاده نمی‌کنید به داده‌های Health Connect دسترسی داشته باشد."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه می‌دهید به داده‌های قبلی دسترسی داشته باشد؟"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"اگر اجازه دهید، این برنامه می‌تواند به داده‌های تناسب اندام و تندرستی اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> دسترسی داشته باشد."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"اگر اجازه دهید، این برنامه می‌تواند به داده‌های تناسب اندام و تندرستی دسترسی داشته باشد."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"اگر اجازه دهید، این برنامه می‌تواند به داده‌های Health Connect اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> دسترسی داشته باشد."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"اگر اجازه دهید، این برنامه می‌تواند به همه داده‌های قبلی Health Connect دسترسی داشته باشد."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه دسترسی اضافی داده شود؟"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> می‌خواهد به این تنظیمات Health Connect نیز دسترسی داشته باشد"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"دسترسی به همه داده‌ها در پس‌زمینه"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"دسترسی به سوابق سلامتی در پس‌زمینه"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"دسترسی به داده‌های تناسب اندام و تندرستی در پس‌زمینه"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به داده‌های تناسب اندام و تندرستی و سوابق سلامتی دسترسی داشته باشد"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به این داده‌ها دسترسی داشته باشد"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به این داده‌ها دسترسی داشته باشد"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"دسترسی به داده‌ها در پس‌زمینه"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به داده‌های Health Connect دسترسی داشته باشد"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"دسترسی به داده‌های تناسب اندام و تندرستی قبلی"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"به این برنامه اجازه داده می‌شود به داده‌های اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> دسترسی داشته باشد"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"به این برنامه اجازه داده می‌شود به همه داده‌های قبلی دسترسی داشته باشد"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"دسترسی به داده‌های قبلی"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"به این برنامه اجازه داده می‌شود به داده‌های Health Connect اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> دسترسی داشته باشد"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"به این برنامه اجازه داده می‌شود به همه داده‌های قبلی Health Connect دسترسی داشته باشد"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> درحال‌حاضر می‌تواند به داده‌های قبلی سوابق سلامتی‌تان دسترسی داشته باشد"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"درباره اجازه‌ها بیشتر بدانید"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"دسترسی به همه داده‌ها در پس‌زمینه"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"دسترسی به سوابق سلامتی در پس‌زمینه"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"دسترسی به داده‌های تناسب اندام و تندرستی در پس‌زمینه"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به داده‌های تناسب اندام و تندرستی و سوابق سلامتی دسترسی داشته باشد"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به این داده‌ها دسترسی داشته باشد"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به این داده‌ها دسترسی داشته باشد"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"دسترسی به داده‌ها در پس‌زمینه"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"به این برنامه اجازه داده می‌شود وقتی از آن استفاده نمی‌کنید به داده‌های Health Connect دسترسی داشته باشد"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"دسترسی به داده‌های تناسب اندام و تندرستی قبلی"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"به این برنامه اجازه داده می‌شود به داده‌های اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> دسترسی داشته باشد"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"به این برنامه اجازه داده می‌شود به همه داده‌های قبلی دسترسی داشته باشد"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"دسترسی به داده‌های قبلی"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"به این برنامه اجازه داده می‌شود به داده‌های Health Connect اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> دسترسی داشته باشد"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"به این برنامه اجازه داده می‌شود به همه داده‌های قبلی Health Connect دسترسی داشته باشد"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"درحال‌حاضر هیچ داده تناسب اندامی خوانده نمی‌شود چون <xliff:g id="APP_NAME">%1$s</xliff:g> هیچ اجازه خواندن روشنی ندارد"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> درحال‌حاضر می‌تواند به داده‌های گذشته سوابق سلامتی شما دسترسی پیدا کند. برای تغییر این مورد، اجازه‌های سابقه سلامتی را برای این برنامه خاموش کنید"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"مدیریت کردن اجازه‌های سابقه سلامتی"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"برای روشن کردن دسترسی پس‌زمینه‌ای یا دسترسی به داده‌های قبلی برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"برای روشن کردن دسترسی پس‌زمینه‌ای برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"برای روشن کردن دسترسی به داده‌های قبلی برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"به این برنامه اجازه داده می‌شود به همه داده‌های قبلی Health Connect دسترسی داشته باشد"</string>
     <string name="background_read_description" msgid="3203594555849969283">"اجازه دادن به این برنامه برای دسترسی به داده‌های Health Connect وقتی از برنامه استفاده نمی‌کنید"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"اگر اجازه دهید، این برنامه می‌تواند وقتی از آن استفاده نمی‌کنید، به داده‌های Health Connect دسترسی داشته باشد."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"دسترسی به داده‌های قبلی"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه می‌دهید به داده‌های قبلی دسترسی داشته باشد؟"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"اجازه دادن به این برنامه برای دسترسی به داده‌های Health Connect اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"اجازه دادن به این برنامه برای دسترسی به همه داده‌های قبلی Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"اگر اجازه دهید، این برنامه می‌تواند به داده‌های Health Connect اضافه‌شده قبل‌از <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> دسترسی داشته باشد."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"اگر اجازه دهید، این برنامه می‌تواند به همه داده‌های قبلی Health Connect دسترسی داشته باشد."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"کالری سوزانده‌شده درطول فعالیت"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"کالری سوزانده‌شده درطول فعالیت"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"خواندن کالری سوزانده‌شده درطول فعالیت"</string>
@@ -155,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"دفعات هل دادن صندلی چرخدار"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"خواندن داده هل دادن صندلی چرخدار"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"نوشتن داده هل دادن صندلی چرخدار"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"شدت فعالیت"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"شدت فعالیت"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"خواندن شدت فعالیت"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"نوشتن شدت فعالیت"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"سرعت سوخت‌وساز پایه"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"سرعت سوخت‌وساز پایه"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"خواندن داده سرعت سوخت‌وساز پایه"</string>
@@ -267,58 +312,43 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"دمای پوست"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"خواندن دمای پوست"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"نوشتن دمای پوست"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
-    <skip />
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"حساسیت‌ها"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"حساسیت‌ها"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"خواندن حساسیت‌ها"</string>
-    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
-    <skip />
-    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
-    <skip />
-    <!-- no translation found for conditions_content_description (3230552343616193829) -->
-    <skip />
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"ایمن‌سازی"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"ایمن‌سازی"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"خواندن وضعیت ایمن‌سازی"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"نتایج آزمایشگاه"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"نتایج آزمایشگاه"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"خواندن نتایج آزمایشگاه"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"همه سوابق سلامتی"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"همه سوابق سلامتی"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"نوشتن همه سوابق سلامتی"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"حساسیت‌ها"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"حساسیت‌ها"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"خواندن حساسیت‌ها"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"عارضه‌ها"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"عارضه‌ها"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"خواندن عارضه‌ها"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"واکسن‌ها"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"واکسن‌ها"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"خواندن واکسن‌ها"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"نتایج آزمایشگاه"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"نتایج آزمایشگاه"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"خواندن نتایج آزمایشگاه"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"داروها"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"داروها"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"خواندن داروها"</string>
-    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
-    <skip />
-    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
-    <skip />
-    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
-    <skip />
-    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
-    <skip />
-    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
-    <skip />
-    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
-    <skip />
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"جزئیات شخصی"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"جزئیات شخصی"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"خواندن جزئیات شخصی"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"جزئیات درمانگر"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"جزئیات درمانگر"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"خواندن جزئیات درمانگر"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"بارداری"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"بارداری"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"خواندن داده‌های بارداری"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"اقدامات درمانی"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"اقدامات درمانی"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"خواندن اقدامات درمانی"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"سابقه اجتماعی"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"سابقه اجتماعی"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"سابقه اجتماعی"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"خواندن سابقه اجتماعی"</string>
-    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
-    <skip />
-    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
-    <skip />
-    <!-- no translation found for visits_content_description (6336796415049565697) -->
-    <skip />
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"علائم حیاتی"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"مراجعه‌ها"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"مراجعه‌ها"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"خواندن مراجعه‌ها"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"علائم حیاتی"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"علائم حیاتی"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"خواندن علائم حیاتی"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ذهن‌آگاهی"</string>
@@ -327,16 +357,25 @@
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"نوشتن ذهن‌آگاهی"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"اجازه دادن به «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای خواندن"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"اجازه دادن به «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای نوشتن"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"لغو کردن"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"اجازه دادن"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"مجاز کردن همه موارد"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"اجازه ندادن"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"داده‌هایی را که می‌خواهید این برنامه بخواند یا در Health Connect بنویسد انتخاب کنید"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"داده‌هایی را که می‌خواهید این برنامه بخواند یا در Health Connect بنویسد انتخاب کنید"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"داده‌هایی را که می‌خواهید این برنامه از Health Connect بخواند انتخاب کنید"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"داده‌هایی را که می‌خواهید این برنامه در Health Connect بنویسد انتخاب کنید"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"اگر دسترسی خواندن را اعطا کنید، این برنامه می‌تواند داده‌های جدید و داده‌های ۳۰ روز گذشته را بخواند"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"اگر دسترسی خواندن را اعطا کنید، این برنامه می‌تواند داده‌های جدید و قبلی را بخواند"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه دسترسی به Health Connect داده شود؟"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"در <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> توسعه‌دهنده می‌توانید متوجه شوید <xliff:g id="APP_NAME">%1$s</xliff:g> چگونه از داده‌هایتان استفاده می‌کند"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه می‌دهید به داده‌های تناسب اندام و تندرستی دسترسی داشته باشد؟"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"در <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> می‌توانید ببینید <xliff:g id="APP_NAME">%1$s</xliff:g> چگونه داده‌های شما را مدیریت می‌کند"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"خط‌مشی رازداری"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه می‌دهید به سوابق سلامتی شما دسترسی داشته باشد؟"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"اگر اجازه دسترسی بدهید، این برنامه می‌تواند داده‌هایی مثل حساسیت‌ها، نتایج آزمایشگاه، واکسن‌ها، و موارد دیگر را بخواند و بنویسد\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"اگر اجازه دسترسی بدهید، این برنامه می‌تواند داده‌هایی مثل حساسیت‌ها، نتایج آزمایشگاه، واکسن‌ها، و موارد دیگر را بخواند\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"درباره سوابق سلامتی"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"داده‌هایی که هم‌رسانی می‌شود"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"اگر اجازه دهید، <xliff:g id="APP_NAME">%1$s</xliff:g> می‌تواند سوابق سلامتی شما را با Health Connect هم‌رسانی کند."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"سوابق سلامتی خود را از برنامه‌ها و منابع مختلف همگام‌سازی کنید تا آن‌ها را در یک مکان داشته باشید"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"همه اجازه‌ها برداشته شود؟"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"برداشتن همه موارد"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
@@ -344,33 +383,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect را (ازجمله داده‌های قبلی) بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً مکان، دوربین، یا میکروفون) اثر نمی‌گذارد."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect ازجمله داده‌های پس‌زمینه و داده‌های قبلی را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً مکان، دوربین، یا میکروفون) اثر نمی‌گذارد."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"داده‌های <xliff:g id="APP_NAME">%1$s</xliff:g> نیز از Health Connect حذف شود"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"همه اجازه‌ها برداشته شود؟"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"همه اجازه‌های سابقه سلامتی برداشته شود؟"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"همه اجازه‌های تناسب اندام و سلامتی برداشته شود؟"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"داده‌های تناسب اندام <xliff:g id="APP_NAME">%1$s</xliff:g> نیز از Health Connect حذف شود"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"همه اجازه‌های سابقه سلامتی برداشته شود؟"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"سابقه‌های سلامتی <xliff:g id="APP_NAME">%1$s</xliff:g> نیز از Health Connect حذف شود"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند این داده‌های Health Connect را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند این داده‌های Health Connect شامل داده‌های پس‌زمینه را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند این داده‌های Health Connect شامل داده‌های قبلی را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند این داده‌های Health Connect شامل داده‌های پس‌زمینه و داده‌های قبلی را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"همه اجازه‌ها برداشته شود؟"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند داده‌های Health Connect را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند داده‌های Health Connect شامل داده‌های پس‌زمینه را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند داده‌های Health Connect شامل داده‌های قبلی را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند داده‌های Health Connect شامل داده‌های پس‌زمینه و داده‌های قبلی را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"داده‌های تناسب اندام و سابقه‌های سلامتی <xliff:g id="APP_NAME">%1$s</xliff:g> نیز از Health Connect حذف شود"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"اجازه‌های این برنامه برداشته شد"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"همه داده‌های Health Connect نیز حذف شود"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"روز بعد"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"روز انتخاب‌شده"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"روز قبل"</string>
     <string name="default_error" msgid="7966868260616403475">"مشکلی پیش آمد. لطفاً دوباره امتحان کنید."</string>
-    <!-- no translation found for unkwown_resource (7932225227431922125) -->
-    <skip />
-    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
-    <skip />
-    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
-    <skip />
-    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
-    <skip />
-    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
-    <skip />
-    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
-    <skip />
-    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
-    <skip />
+    <string name="unkwown_resource" msgid="7932225227431922125">"منبع نامشخص"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"داده‌های منبع"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>کروشه باز."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>کروشه بسته."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"‫<xliff:g id="PREFIX">%1$s</xliff:g> فیلد <xliff:g id="FIELD">%2$s</xliff:g> مقدار"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"‫<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"کد منبع مشروح: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"برنامه‌هایی که این اجازه را دارند می‌توانند داده‌های سلامتی و تناسب اندام شما را بخوانند و بنویسند."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"کنترل کنید کدام برنامه‌ها می‌توانند به داده‌های ذخیره‌شده در Health Connect دسترسی داشته باشند. با ضربه زدن روی برنامه موردنظر، مرور کنید این برنامه چه داده‌هایی را می‌تواند بخواند یا بنویسد."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"دسترسی دارند"</string>
@@ -400,13 +439,14 @@
     <string name="app_access_title" msgid="7137018424885371763">"دسترسی برنامه"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"درحال‌حاضر هیچ برنامه سازگاری نصب نکرده‌اید"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"دسترسی اضافی"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"داده‌های قبلی، داده‌های پس‌زمینه"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"اجازه‌های اضافی این برنامه برداشته شد"</string>
     <string name="permissions_header" msgid="6519976063360071569">"اجازه‌ها"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"تناسب اندام و تندرستی"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"تمرین، خواب، تغذیه، و غیره"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"سوابق سلامتی"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"سوابق سلامتی"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"نتایج آزمایش، داروها، واکسن‌ها، و غیره"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"نتایج آزمایشگاه، داروها، واکسن‌ها و غیره"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"اجازه‌های برنامه‌هایی که برداشته شده‌اند"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect اجازه‌های مربوط به <xliff:g id="APP_DATA">%s</xliff:g> را برداشته است"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect اجازه‌های مربوط به <xliff:g id="APP_DATA_0">%1$s</xliff:g> و <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> را برداشته است"</string>
@@ -498,10 +538,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"رفتن به فروشگاه Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"شروع کار با Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"‏Health Connect داده‌های سلامتی و تناسب اندام شما را ذخیره می‌کند و روشی ساده برای همگام‌سازی برنامه‌های مختلف دستگاه دراختیارتان می‌گذارد"</string>
-    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
-    <skip />
-    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"‫Health Connect داده‌های سلامتی و تناسب اندام شما را از برنامه‌های مختلف ذخیره و همگام‌سازی می‌کند.\n\n"<b>"داده‌های تناسب اندام و تندرستی،"</b>" ازجمله جلسه‌های تمرین، تعداد قدم‌ها، تغذیه، خواب، و غیره\n\n"<b>"سابقه سلامتی،"</b>" ازجمله واکسن‌ها، نتایج آزمایش، و غیره"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"با Health Connect می‌توانید کارهای زیر را انجام دهید"</string>
     <string name="share_data" msgid="3481932156368883946">"هم‌رسانی داده‌ها با برنامه‌ها"</string>
     <string name="share_data_description" msgid="2919871301634375092">"می‌توانید داده‌هایی را که هر برنامه اجازه دارد در Health Connect بخواند یا بنویسد انتخاب کنید"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"مدیریت تنظیمات و حریم خصوصی"</string>
@@ -602,7 +640,9 @@
     <string name="flow_light" msgid="1937543318146228793">"خون‌ریزی کم"</string>
     <string name="flow_medium" msgid="3783688724668943154">"خون‌ریزی متوسط"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"خون‌ریزی زیاد"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"جریان نامشخص"</string>
     <string name="period_day" msgid="3821944462093965882">"روز <xliff:g id="DAY">%1$d</xliff:g> از <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> روز عادت ماهانه"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{قاعدگی (۱ روز)}one{قاعدگی (# روز)}other{قاعدگی (# روز)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"مثبت"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"منفی"</string>
     <string name="ovulation_high" msgid="205362931427158291">"بالا"</string>
@@ -1071,7 +1111,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ویرایش منابع برنامه"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"پیش‌فرض دستگاه"</string>
     <string name="app_data_title" msgid="6499967982291000837">"داده‌های برنامه"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"داده‌ها از برنامه‌هایی که به Health Connect دسترسی دارند اینجا نشان داده خواهد شد"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"داده‌های «<xliff:g id="APP_NAME">%1$s</xliff:g>» در اینجا نشان داده خواهد شد"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"داده‌های برنامه‌هایی که به Health Connect دسترسی دارند در اینجا نشان داده خواهد شد"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"روز"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"هفته"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"ماه"</string>
@@ -1081,11 +1122,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"ماه گذشته"</string>
     <string name="tab_entries" msgid="3402700951602029493">"ورودی‌ها"</string>
     <string name="tab_access" msgid="7818197975407243701">"دسترسی"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه دسترسی اضافی داده شود؟"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> می‌خواهد به این تنظیمات Health Connect نیز دسترسی داشته باشد"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"برای روشن کردن دسترسی پس‌زمینه‌ای یا دسترسی به داده‌های قبلی برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"برای روشن کردن دسترسی پس‌زمینه‌ای برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"برای روشن کردن دسترسی به داده‌های قبلی برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"استفاده از Health Connect را شروع کنید"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"اولین برنامه‌هایتان را همگام‌سازی کنید تا داده‌های سلامتی و تناسب اندام بین آن‌ها هم‌رسانی شود"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"راه‌اندازی"</string>
@@ -1096,42 +1132,47 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"برنامه‌های بیشتری را برای همگام‌سازی با <xliff:g id="APP_NAME">%s</xliff:g> ازطریق Health Connect پیدا کنید"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"مشاهده در فروشگاه برنامه"</string>
     <string name="select_all" msgid="837499881590001166">"انتخاب همه"</string>
-    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"برنامه‌های متصل دیگر نمی‌توانند این داده‌ها را از Health Connect بخوانند"</string>
+    <!-- no translation found for a11y_checked (3685413382346589880) -->
     <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
+    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
     <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
+    <!-- no translation found for a11y_map_description (4992907698581164434) -->
     <skip />
-    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
+    <!-- no translation found for a11y_next_day (7298174378837366410) -->
     <skip />
-    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
+    <!-- no translation found for a11y_next_week (6692230156318350735) -->
     <skip />
-    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
+    <!-- no translation found for a11y_next_month (4462534553687997396) -->
     <skip />
-    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
+    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
     <skip />
-    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
+    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
     <skip />
-    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
+    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
     <skip />
-    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
-    <skip />
-    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
-    <skip />
-    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"همه داده‌ها به‌طور دائمی حذف شود؟"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"داده‌های انتخابی به‌طور دائمی حذف شود؟"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"همه داده‌های «<xliff:g id="APP_NAME">%s</xliff:g>» به‌طور دائمی حذف شود؟"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"داده‌های انتخابی «<xliff:g id="APP_NAME">%s</xliff:g>» به‌طور دائمی حذف شود؟"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"همه ورودی‌های <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"همه ورودی‌های هفته <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"همه ورودی‌های <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"ورودی‌های انتخابی <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"ورودی‌های انتخابی هفته <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"ورودی‌های انتخابی <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"این ورودی به‌طور دائمی حذف شود؟"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"همه ورودی‌های «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"همه ورودی‌های «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای هفته <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"همه ورودی‌های «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"ورودی‌های انتخابی «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"ورودی‌های انتخابی «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای هفته <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"ورودی‌های انتخابی «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"این ورودی «<xliff:g id="APP_NAME">%s</xliff:g>» به‌طور دائمی حذف شود؟"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> مربوط به «<xliff:g id="APP_NAME">%2$s</xliff:g>» برای همیشه حذف شود؟"</string>
+    <string name="on" msgid="8266542510798355807">"روشن"</string>
+    <string name="off" msgid="6996623844428550649">"خاموش"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"آخرین دسترسی: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"دسترسی در روز گذشته ساعت <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"دسترسی در <xliff:g id="TIME_DATE_0">%1$s</xliff:g> ساعت <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
 </resources>

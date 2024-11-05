@@ -303,6 +303,8 @@ public class MedicalDataSourceHelper {
     public MedicalDataSource createMedicalDataSource(
             Context context, CreateMedicalDataSourceRequest request, String packageName) {
         try {
+            // Get the appInfoId outside the transaction
+            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName, context);
             return mTransactionManager.runAsTransaction(
                     (TransactionManager.TransactionRunnableWithReturn<
                                     MedicalDataSource, RuntimeException>)
@@ -311,6 +313,7 @@ public class MedicalDataSourceHelper {
                                             db,
                                             context,
                                             request,
+                                            appInfoId,
                                             packageName,
                                             mTimeSource.getInstantNow()));
         } catch (SQLiteConstraintException e) {
@@ -326,9 +329,9 @@ public class MedicalDataSourceHelper {
             SQLiteDatabase db,
             Context context,
             CreateMedicalDataSourceRequest request,
+            long appInfoId,
             String packageName,
             Instant instant) {
-        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName, context);
 
         if (getMedicalDataSourcesCount(appInfoId) >= MAX_ALLOWED_MEDICAL_DATA_SOURCES) {
             throw new IllegalArgumentException(
@@ -392,7 +395,6 @@ public class MedicalDataSourceHelper {
             boolean isCalledFromBgWithoutBgRead,
             AppInfoHelper appInfoHelper)
             throws SQLiteException {
-        // TODO(b/359892459): Add CTS tests once it is properly implemented.
         if (!hasWritePermission && grantedReadMedicalResourceTypes.isEmpty()) {
             throw new IllegalStateException("no read or write permission");
         }
@@ -584,7 +586,6 @@ public class MedicalDataSourceHelper {
      *     self data and the app is filtering using {@code packageNames} but the app itself is not
      *     included in it.
      */
-    // TODO(b/359892459): Add CTS tests once it is properly implemented.
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
             Set<String> packageNames,
             Set<Integer> grantedReadMedicalResourceTypes,

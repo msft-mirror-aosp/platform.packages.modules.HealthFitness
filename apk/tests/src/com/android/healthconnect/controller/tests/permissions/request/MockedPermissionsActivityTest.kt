@@ -47,7 +47,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToLastPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -68,21 +67,22 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Ad
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
-import com.android.healthconnect.controller.permissions.request.AdditionalPermissionsInfo
+import com.android.healthconnect.controller.permissions.request.AdditionalScreenState
+import com.android.healthconnect.controller.permissions.request.FitnessScreenState
+import com.android.healthconnect.controller.permissions.request.MedicalScreenState
 import com.android.healthconnect.controller.permissions.request.PermissionsActivity
 import com.android.healthconnect.controller.permissions.request.PermissionsActivityState
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
@@ -92,13 +92,11 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.anyArray
@@ -118,22 +116,26 @@ class MockedPermissionsActivityTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue
-    val viewModel: RequestPermissionViewModel = Mockito.mock(RequestPermissionViewModel::class.java)
-    @BindValue
-    val migrationViewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
-    @BindValue
-    val healthConnectLogger: HealthConnectLogger = Mockito.mock(HealthConnectLogger::class.java)
+    val viewModel: RequestPermissionViewModel = mock(RequestPermissionViewModel::class.java)
+    @BindValue val migrationViewModel: MigrationViewModel = mock(MigrationViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock(HealthConnectLogger::class.java)
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
     @BindValue
     val healthPermissionReader: HealthPermissionReader = mock(HealthPermissionReader::class.java)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     private lateinit var context: Context
+    private lateinit var appMetadata: AppMetadata
 
     @Before
     fun setup() {
         hiltRule.inject()
         context = getInstrumentation().context
+        appMetadata =
+            AppMetadata(
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                context.getDrawable(R.drawable.health_connect_logo),
+            )
         val permissionsList =
             listOf(
                 fromPermissionString(READ_STEPS),
@@ -141,19 +143,11 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(WRITE_DISTANCE),
                 fromPermissionString(WRITE_EXERCISE),
             )
+        whenever(viewModel.appMetadata).then { MutableLiveData(appMetadata) }
         whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(permissionsList.toSet())
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MutableLiveData(true) }
-        whenever(viewModel.appMetadata).then {
-            MutableLiveData(
-                AppMetadata(
-                    TEST_APP_PACKAGE_NAME,
-                    TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo),
-                )
-            )
-        }
         whenever(viewModel.isAnyPermissionUserFixed(anyString(), anyArray())).thenReturn(false)
         whenever(viewModel.isAnyReadPermissionGranted()).thenReturn(true)
         whenever(migrationViewModel.migrationState).then {
@@ -170,11 +164,18 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.grantedAdditionalPermissions).then {
             MutableLiveData<Set<AdditionalPermission>>(setOf())
         }
+        whenever(viewModel.medicalScreenState).then {
+            MutableLiveData(MedicalScreenState.NoMedicalData)
+        }
+        whenever(viewModel.fitnessScreenState).then {
+            MutableLiveData(FitnessScreenState.NoFitnessData)
+        }
+        whenever(viewModel.additionalScreenState).then {
+            MutableLiveData(AdditionalScreenState.NoAdditionalData)
+        }
 
         whenever(healthPermissionReader.isRationaleIntentDeclared(anyString())).thenReturn(true)
 
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         (deviceInfoUtils as FakeDeviceInfoUtils).setHealthConnectAvailable(true)
         showOnboarding(context, false)
         // disable animations
@@ -231,6 +232,19 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowMedical(isWriteOnly = true))
         }
+        whenever(viewModel.medicalScreenState).then {
+            MutableLiveData(
+                MedicalScreenState.ShowMedicalWrite(
+                    appMetadata = appMetadata,
+                    medicalPermissions =
+                        listOf(
+                            HealthPermission.MedicalPermission.fromPermissionString(
+                                WRITE_MEDICAL_DATA
+                            )
+                        ),
+                )
+            )
+        }
         val permissions = arrayOf(WRITE_MEDICAL_DATA)
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
@@ -244,10 +258,10 @@ class MockedPermissionsActivityTest {
             )
             .check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(2))
+            .perform(scrollToPosition<RecyclerView.ViewHolder>(2))
         onView(withText("Data to share")).check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(3))
+            .perform(scrollToPosition<RecyclerView.ViewHolder>(3))
         val availableMedicalPermissionsString =
             "Allergies\n" +
                 "Conditions\n" +
@@ -287,13 +301,14 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowMedical(isWriteOnly = false))
         }
-        whenever(viewModel.medicalPermissionsList).then {
+        whenever(viewModel.medicalScreenState).then {
             MutableLiveData(
-                listOf(
-                    HealthPermission.MedicalPermission.fromPermissionString(WRITE_MEDICAL_DATA),
-                    HealthPermission.MedicalPermission.fromPermissionString(
-                        READ_MEDICAL_DATA_IMMUNIZATIONS
-                    ),
+                MedicalScreenState.ShowMedicalReadWrite(
+                    appMetadata = appMetadata,
+                    medicalPermissions =
+                        listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA).map {
+                            fromPermissionString(it) as HealthPermission.MedicalPermission
+                        },
                 )
             )
         }
@@ -336,11 +351,16 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowFitness)
         }
-        whenever(viewModel.fitnessPermissionsList).then {
+        whenever(viewModel.fitnessScreenState).then {
             MutableLiveData(
-                listOf(
-                    FitnessPermission.fromPermissionString(READ_STEPS),
-                    FitnessPermission.fromPermissionString(WRITE_DISTANCE),
+                FitnessScreenState.ShowFitnessReadWrite(
+                    appMetadata = appMetadata,
+                    fitnessPermissions =
+                        listOf(READ_STEPS, WRITE_DISTANCE).map {
+                            fromPermissionString(it) as HealthPermission.FitnessPermission
+                        },
+                    hasMedical = false,
+                    historyGranted = false,
                 )
             )
         }
@@ -380,22 +400,16 @@ class MockedPermissionsActivityTest {
     @Test
     fun showAdditionalPermissionRequest() {
         whenever(viewModel.permissionsActivityState).then {
-            MutableLiveData(PermissionsActivityState.ShowAdditional)
+            MutableLiveData(PermissionsActivityState.ShowAdditional(false))
         }
-        whenever(viewModel.additionalPermissionsInfo).then {
+        whenever(viewModel.additionalScreenState).then {
             MutableLiveData(
-                AdditionalPermissionsInfo(
-                    additionalPermissions =
-                        listOf(
-                            AdditionalPermission.READ_HEALTH_DATA_HISTORY,
-                            AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-                        ),
-                    appInfo =
-                        AppMetadata(
-                            TEST_APP_PACKAGE_NAME,
-                            TEST_APP_NAME,
-                            context.getDrawable(R.drawable.health_connect_logo),
-                        ),
+                AdditionalScreenState.ShowCombined(
+                    hasMedical = false,
+                    appMetadata = appMetadata,
+                    isMedicalReadGranted = false,
+                    isFitnessReadGranted = true,
+                    dataAccessDate = NOW,
                 )
             )
         }
@@ -430,7 +444,7 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun whenPermissionUserFixed_noFlowConcluded_sendsResultOk() {
         whenever(viewModel.isAnyPermissionUserFixed(anyString(), anyArray())).thenReturn(true)
         whenever(viewModel.isFitnessPermissionRequestConcluded()).thenReturn(false)
@@ -456,19 +470,24 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun whenPermissionUserFixed_flowConcluded_showsRequest() {
         whenever(viewModel.isAnyPermissionUserFixed(anyString(), anyArray())).thenReturn(true)
-        whenever(viewModel.isFitnessPermissionRequestConcluded()).thenReturn(true)
-        whenever(viewModel.isMedicalPermissionRequestConcluded()).thenReturn(false)
+        whenever(viewModel.isFitnessPermissionRequestConcluded()).thenReturn(false)
+        whenever(viewModel.isMedicalPermissionRequestConcluded()).thenReturn(true)
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowFitness)
         }
-        whenever(viewModel.fitnessPermissionsList).then {
+        whenever(viewModel.fitnessScreenState).then {
             MutableLiveData(
-                listOf(
-                    FitnessPermission.fromPermissionString(READ_STEPS),
-                    FitnessPermission.fromPermissionString(WRITE_DISTANCE),
+                FitnessScreenState.ShowFitnessReadWrite(
+                    hasMedical = true,
+                    appMetadata = appMetadata,
+                    fitnessPermissions =
+                        listOf(READ_STEPS, WRITE_DISTANCE).map {
+                            fromPermissionString(it) as FitnessPermission
+                        },
+                    historyGranted = false,
                 )
             )
         }
@@ -481,7 +500,7 @@ class MockedPermissionsActivityTest {
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)
         Espresso.onIdle()
-        onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
+        onView(withText("Allow $TEST_APP_NAME to access fitness and wellness data?"))
             .check(matches(isDisplayed()))
     }
 
@@ -532,11 +551,16 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowFitness)
         }
-        whenever(viewModel.fitnessPermissionsList).then {
+        whenever(viewModel.fitnessScreenState).then {
             MutableLiveData(
-                listOf(
-                    FitnessPermission.fromPermissionString(READ_STEPS),
-                    FitnessPermission.fromPermissionString(WRITE_DISTANCE),
+                FitnessScreenState.ShowFitnessReadWrite(
+                    hasMedical = true,
+                    appMetadata = appMetadata,
+                    fitnessPermissions =
+                        listOf(READ_STEPS, WRITE_DISTANCE).map {
+                            fromPermissionString(it) as FitnessPermission
+                        },
+                    historyGranted = false,
                 )
             )
         }
@@ -597,11 +621,16 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowFitness)
         }
-        whenever(viewModel.fitnessPermissionsList).then {
+        whenever(viewModel.fitnessScreenState).then {
             MutableLiveData(
-                listOf(
-                    FitnessPermission.fromPermissionString(READ_STEPS),
-                    FitnessPermission.fromPermissionString(WRITE_DISTANCE),
+                FitnessScreenState.ShowFitnessReadWrite(
+                    hasMedical = true,
+                    appMetadata = appMetadata,
+                    fitnessPermissions =
+                        listOf(READ_STEPS, WRITE_DISTANCE).map {
+                            fromPermissionString(it) as FitnessPermission
+                        },
+                    historyGranted = false,
                 )
             )
         }
@@ -662,11 +691,16 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowFitness)
         }
-        whenever(viewModel.fitnessPermissionsList).then {
+        whenever(viewModel.fitnessScreenState).then {
             MutableLiveData(
-                listOf(
-                    FitnessPermission.fromPermissionString(READ_STEPS),
-                    FitnessPermission.fromPermissionString(WRITE_DISTANCE),
+                FitnessScreenState.ShowFitnessReadWrite(
+                    hasMedical = true,
+                    appMetadata = appMetadata,
+                    fitnessPermissions =
+                        listOf(READ_STEPS, WRITE_DISTANCE).map {
+                            fromPermissionString(it) as FitnessPermission
+                        },
+                    historyGranted = false,
                 )
             )
         }
@@ -708,8 +742,4 @@ class MockedPermissionsActivityTest {
             .putExtra(Intent.EXTRA_PACKAGE_NAME, TEST_APP_PACKAGE_NAME)
             .addFlags(FLAG_ACTIVITY_NEW_TASK)
             .addFlags(FLAG_ACTIVITY_CLEAR_TASK)
-
-    private fun Array<String>.toPermissionsList(): List<HealthPermission> {
-        return this.map { fromPermissionString(it) }.toList()
-    }
 }

@@ -33,7 +33,7 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -79,10 +79,10 @@ public final class AccessLog implements Parcelable {
         requireNonNull(recordTypes);
 
         mPackageName = packageName;
-        RecordMapper recordMapper = RecordMapper.getInstance();
+        HealthConnectMappings healthConnectMappings = HealthConnectMappings.getInstance();
         for (@RecordTypeIdentifier.RecordType int recordType : recordTypes) {
             mRecordTypesList.add(
-                    recordMapper.getRecordIdToExternalRecordClassMap().get(recordType));
+                    healthConnectMappings.getRecordIdToExternalRecordClassMap().get(recordType));
         }
         mAccessTime = Instant.ofEpochMilli(accessTimeInMillis);
         mOperationType = operationType;
@@ -123,11 +123,12 @@ public final class AccessLog implements Parcelable {
     }
 
     private AccessLog(Parcel in) {
-        RecordMapper recordMapper = RecordMapper.getInstance();
+        HealthConnectMappings healthConnectMappings = HealthConnectMappings.getInstance();
+
         int[] recordTypes = requireNonNull(in.createIntArray());
         for (@RecordTypeIdentifier.RecordType int recordType : recordTypes) {
             mRecordTypesList.add(
-                    recordMapper.getRecordIdToExternalRecordClassMap().get(recordType));
+                    healthConnectMappings.getRecordIdToExternalRecordClassMap().get(recordType));
         }
         mPackageName = requireNonNull(in.readString());
         mAccessTime = Instant.ofEpochMilli(in.readLong());
@@ -240,10 +241,10 @@ public final class AccessLog implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         int recordTypeCount = mRecordTypesList.size();
-        RecordMapper recordMapper = RecordMapper.getInstance();
+        HealthConnectMappings healthConnectMappings = HealthConnectMappings.getInstance();
         @RecordTypeIdentifier.RecordType int[] recordTypes = new int[recordTypeCount];
         for (int i = 0; i < recordTypeCount; i++) {
-            recordTypes[i] = recordMapper.getRecordType(mRecordTypesList.get(i));
+            recordTypes[i] = healthConnectMappings.getRecordType(mRecordTypesList.get(i));
         }
         dest.writeIntArray(recordTypes);
         dest.writeString(mPackageName);

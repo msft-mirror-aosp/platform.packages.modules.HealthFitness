@@ -47,7 +47,6 @@ import android.util.Slog;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -60,7 +59,7 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TableColumnPair;
 
@@ -73,7 +72,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 /**
@@ -85,31 +83,33 @@ import java.util.function.BiConsumer;
  */
 public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
-    private static final ConcurrentHashMap<UserHandle, HealthConnectDatabase>
-            mUserHandleToDatabaseMap = new ConcurrentHashMap<>();
 
     @Nullable private static volatile TransactionManager sTransactionManager;
 
     private volatile HealthConnectDatabase mHealthConnectDatabase;
     private UserHandle mUserHandle;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    private TransactionManager(HealthConnectUserContext context) {
-        mHealthConnectDatabase = new HealthConnectDatabase(context);
-        mUserHandleToDatabaseMap.put(context.getCurrentUserHandle(), mHealthConnectDatabase);
-        mUserHandle = context.getCurrentUserHandle();
+    private TransactionManager(
+            StorageContext storageContext,
+            InternalHealthConnectMappings internalHealthConnectMappings) {
+        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
+        mUserHandle = storageContext.getUser();
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
-    public void onUserUnlocked(HealthConnectUserContext healthConnectUserContext) {
-        if (!mUserHandleToDatabaseMap.containsKey(
-                healthConnectUserContext.getCurrentUserHandle())) {
-            mUserHandleToDatabaseMap.put(
-                    healthConnectUserContext.getCurrentUserHandle(),
-                    new HealthConnectDatabase(healthConnectUserContext));
-        }
+    /** Called when we are switching users. */
+    public void onUserSwitching() {
+        mHealthConnectDatabase.close();
+    }
 
-        mHealthConnectDatabase =
-                mUserHandleToDatabaseMap.get(healthConnectUserContext.getCurrentUserHandle());
-        mUserHandle = healthConnectUserContext.getCurrentUserHandle();
+    /** Setup the transaction manager for the new user. */
+    public void onUserUnlocked(StorageContext storageContext) {
+        if (mUserHandle.equals(storageContext.getUser())) {
+            return;
+        }
+        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
+        mUserHandle = storageContext.getUser();
     }
 
     /**
@@ -233,7 +233,7 @@ public final class TransactionManager {
                     int numberOfRecordsDeleted = 0;
                     for (DeleteTableRequest deleteTableRequest : request.getDeleteTableRequests()) {
                         final RecordHelper<?> recordHelper =
-                                RecordHelperProvider.getRecordHelper(
+                                mInternalHealthConnectMappings.getRecordHelper(
                                         deleteTableRequest.getRecordType());
                         int innerRequestRecordsDeleted;
                         if (deleteTableRequest.requiresRead()) {
@@ -675,7 +675,8 @@ public final class TransactionManager {
         final SQLiteDatabase db = getReadableDb();
         HashMap<Integer, Set<Long>> recordTypeToPackageIdsMap = new HashMap<>();
         for (Integer recordType : recordTypes) {
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordType);
             HashSet<Long> packageIds = new HashSet<>();
             try (Cursor cursorForDistinctPackageNames =
                     db.rawQuery(
@@ -711,10 +712,6 @@ public final class TransactionManager {
                 db -> {
                     deleteTableRequests.forEach(request -> db.execSQL(request.getDeleteCommand()));
                 });
-    }
-
-    public void onUserSwitching() {
-        mHealthConnectDatabase.close();
     }
 
     private void insertAll(
@@ -1019,7 +1016,7 @@ public final class TransactionManager {
         // Carries out read requests provided by the record helper and uses the results to add
         // changelogs to the transaction.
         final RecordHelper<?> recordHelper =
-                RecordHelperProvider.getRecordHelper(upsertRequest.getRecordType());
+                mInternalHealthConnectMappings.getRecordHelper(upsertRequest.getRecordType());
         for (ReadTableRequest additionalChangelogUuidRequest :
                 recordHelper.getReadRequestsForRecordsModifiedByUpsertion(
                         upsertRequest.getRecordInternal().getUuid(),
@@ -1058,9 +1055,11 @@ public final class TransactionManager {
      * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
      */
     public static synchronized TransactionManager initializeInstance(
-            HealthConnectUserContext context) {
+            StorageContext storageContext) {
         if (sTransactionManager == null) {
-            sTransactionManager = new TransactionManager(context);
+            sTransactionManager =
+                    new TransactionManager(
+                            storageContext, InternalHealthConnectMappings.getInstance());
         }
 
         return sTransactionManager;
@@ -1079,7 +1078,9 @@ public final class TransactionManager {
     @com.android.internal.annotations.VisibleForTesting
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public static synchronized void clearInstanceForTest() {
-        sTransactionManager = null;
+        if (sTransactionManager != null) {
+            sTransactionManager = null;
+        }
     }
 
     /** Cleans up the database and this manager, so unit tests can run correctly. */

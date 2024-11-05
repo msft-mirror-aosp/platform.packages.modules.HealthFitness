@@ -163,6 +163,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         timeSource,
                         false,
                     )
+
                 if (selectedPeriod == DateNavigationPeriod.PERIOD_DAY) {
                     if (deletionMapSize < deletionType.totalEntries) {
                         getString(
@@ -208,8 +209,18 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 }
             }
             is DeletionType.DeleteAppData -> {
-                // TODO
-                ""
+                val appName = deletionType.appName
+                getString(R.string.all_app_data_selected_deletion_confirmation_dialog, appName)
+            }
+            is DeletionType.DeleteInactiveAppData -> {
+                val appName = deletionType.appName
+                val healthPermissionType =
+                    getString(deletionType.healthPermissionType.lowerCaseLabel())
+                getString(
+                    R.string.inactive_app_data_selected_deletion_confirmation_dialog,
+                    healthPermissionType,
+                    appName,
+                )
             }
         }
     }

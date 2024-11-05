@@ -20,7 +20,6 @@ import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.health.connect.HealthPermissions.READ_ACTIVE_CALORIES_BURNED;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES;
-import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_STEPS;
 import static android.health.connect.HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED;
 import static android.health.connect.HealthPermissions.WRITE_EXERCISE;
@@ -32,20 +31,23 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
 import static android.permission.PermissionManager.PERMISSION_HARD_DENIED;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import android.content.AttributionSource;
 import android.content.Context;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
-import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.os.UserHandle;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,9 +63,10 @@ public class DataPermissionEnforcerTest {
 
     @Mock private Context mContext;
 
-    @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
-
-    private final HealthConnectMappings mHealthConnectMappings = new HealthConnectMappings();
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     private AttributionSource mAttributionSource;
 
@@ -75,9 +78,19 @@ public class DataPermissionEnforcerTest {
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
 
         mAttributionSource = buildAttributionSource();
+
+        when(mContext.getUser()).thenReturn(UserHandle.CURRENT);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(getInstrumentation().getContext())
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .build();
+
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
-                        mPermissionManager, mContext, mDeviceConfigManager, mHealthConnectMappings);
+                        mPermissionManager,
+                        mContext,
+                        healthConnectInjector.getInternalHealthConnectMappings());
     }
 
     /** enforceRecordIdsWritePermissions */
@@ -274,34 +287,6 @@ public class DataPermissionEnforcerTest {
         when(mContext.checkCallingPermission(WRITE_STEPS)).thenReturn(PERMISSION_DENIED);
 
         mDataPermissionEnforcer.enforceAnyOfPermissions(READ_STEPS, WRITE_STEPS);
-    }
-
-    /** enforceBackgroundReadRestrictions */
-    @Test
-    public void testEnforceBackgroundReadRestrictions_permissionGranted_doesNotThrow() {
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-
-        mDataPermissionEnforcer.enforceBackgroundReadRestrictions(1, 2, "error");
-    }
-
-    @Test(expected = SecurityException.class)
-    public void testEnforceBackgroundReadRestrictions_permissionDenied_throwsSecurityException() {
-        int pid = 1;
-        int uid = 2;
-        String message = "error";
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        doThrow(SecurityException.class)
-                .when(mContext)
-                .enforcePermission(READ_HEALTH_DATA_IN_BACKGROUND, pid, uid, message);
-
-        mDataPermissionEnforcer.enforceBackgroundReadRestrictions(uid, pid, message);
-    }
-
-    @Test(expected = SecurityException.class)
-    public void testEnforceBackgroundReadRestrictions_featureDisabled_throwsSecurityException() {
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(false);
-
-        mDataPermissionEnforcer.enforceBackgroundReadRestrictions(1, 1, "error");
     }
 
     /** collectGrantedExtraReadPermissions */

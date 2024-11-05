@@ -179,6 +179,33 @@
             android:text="@string/request_medical_write_and_other_health_permissions" />
 
         <Button
+            android:id="@+id/request_medical_read"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/request_medical_read" />
+
+        <Button
+            android:id="@+id/request_fitness_read"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/request_fitness_read" />
+
+        <Button
+            android:id="@+id/request_fitness_write"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/request_fitness_write" />
+
+        <Button
             android:id="@+id/read_data_in_background_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

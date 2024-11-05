@@ -18,6 +18,9 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.content.Context
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -62,10 +65,10 @@ import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
-import com.android.healthconnect.controller.utils.logging.DeletionDialogConfirmationElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -91,6 +94,7 @@ import org.mockito.kotlin.whenever
 class ConnectedAppsFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @Inject lateinit var manager: HealthConnectManager
 
@@ -258,6 +262,34 @@ class ConnectedAppsFragmentTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun allowedApps_newIAEnabled_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText("Also delete all Health Connect data"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    fun allowedApps_phrEnabled_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText("Also delete all Health Connect data"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
     fun noAllowedApps_removeAccessDisabled() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = DENIED))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
@@ -411,8 +443,41 @@ class ConnectedAppsFragmentTest {
         onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
     }
 
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun whenClickOnInactiveApp_showsDeleteDataDialog() {
+    fun whenClickOnInactiveApp_newIaFlagEnabled_showsDeleteDataDialog() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
+        onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
+
+        onView(withText("Permanently delete all $TEST_APP_NAME data?"))
+            .check(matches(isDisplayed()))
+    }
+
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @Test
+    fun whenClickOnInactiveApp_phrFlagEnabled_showsDeleteDataDialog() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
+        onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
+
+        onView(withText("Permanently delete all $TEST_APP_NAME data?"))
+            .check(matches(isDisplayed()))
+    }
+
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun whenClickOnInactiveApp_oldDeletion_showsDeleteDataDialog() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
@@ -424,17 +489,6 @@ class ConnectedAppsFragmentTest {
 
         onView(withText("Permanently delete $TEST_APP_NAME data from all time?"))
             .check(matches(isDisplayed()))
-
-        verify(healthConnectLogger)
-            .logImpression(DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
-        verify(healthConnectLogger)
-            .logImpression(
-                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON
-            )
-        verify(healthConnectLogger)
-            .logImpression(
-                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CANCEL_BUTTON
-            )
     }
 
     @Test

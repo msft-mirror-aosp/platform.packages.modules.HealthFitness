@@ -47,6 +47,8 @@ public final class FhirResourceTypeStringToIntMapper {
     /**
      * Returns the corresponding {@code IntDef} {@link FhirResourceType} from a {@code String}
      * {@code fhirResourceType}.
+     *
+     * @throws IllegalArgumentException if the type is not supported.
      */
     @FhirResourceType
     public static int getFhirResourceTypeInt(@NonNull String fhirResourceType) {
@@ -56,8 +58,14 @@ public final class FhirResourceTypeStringToIntMapper {
 
         populateFhirResourceTypeStringToIntMap();
 
-        return sFhirResourceTypeStringToIntMap.getOrDefault(
-                fhirResourceType.toUpperCase(Locale.ROOT), FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
+        Integer fhirResourceTypeInt =
+                sFhirResourceTypeStringToIntMap.get(fhirResourceType.toUpperCase(Locale.ROOT));
+        if (fhirResourceTypeInt == null) {
+            throw new IllegalArgumentException(
+                    "Unsupported FHIR resource type: " + fhirResourceType);
+        }
+
+        return fhirResourceTypeInt;
     }
 
     @SuppressWarnings("FlaggedApi") // Initial if statement checks flag, but lint can't know that

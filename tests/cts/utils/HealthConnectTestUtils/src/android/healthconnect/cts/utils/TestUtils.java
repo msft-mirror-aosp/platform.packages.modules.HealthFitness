@@ -16,8 +16,6 @@
 
 package android.healthconnect.cts.utils;
 
-import static android.Manifest.permission.READ_DEVICE_CONFIG;
-import static android.Manifest.permission.WRITE_ALLOWLISTED_DEVICE_CONFIG;
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.BODY_MEASUREMENTS;
 import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
@@ -31,6 +29,7 @@ import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
+import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_EXERCISE_RECORD;
@@ -71,7 +70,6 @@ import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.GetMedicalDataSourcesRequest;
-import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
@@ -134,13 +132,11 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.Vo2MaxRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.WheelchairPushesRecord;
-import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.MigrationException;
 import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
-import android.provider.DeviceConfig;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -590,50 +586,33 @@ public final class TestUtils {
         }
     }
 
-    /** Calls {@link #startMigration()} ()} with shell permission identity. */
-    public static void startMigrationWithShellPermissionIdentity() {
-        runWithShellPermissionIdentity(
-                () -> {
-                    startMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                },
+    /** Calls {@link HealthConnectManager#startMigration} ()} with shell permission identity. */
+    public static void startMigrationWithShellPermissionIdentity() throws InterruptedException {
+        callAndGetResponseWithShellPermissionIdentity(
+                MigrationException.class,
+                getHealthConnectManager()::startMigration,
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    public static void startMigration() throws InterruptedException {
-        MigrationReceiver receiver = new MigrationReceiver();
-        getHealthConnectManager().startMigration(Executors.newSingleThreadExecutor(), receiver);
-        receiver.verifyNoExceptionOrThrow();
+    /** Calls {@link HealthConnectManager#finishMigration} with shell permission identity. */
+    public static void finishMigrationWithShellPermissionIdentity() throws InterruptedException {
+        callAndGetResponseWithShellPermissionIdentity(
+                MigrationException.class,
+                getHealthConnectManager()::finishMigration,
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    public static void writeMigrationData(List<MigrationEntity> entities)
-            throws InterruptedException {
-        MigrationReceiver receiver = new MigrationReceiver();
-        getHealthConnectManager()
-                .writeMigrationData(entities, Executors.newSingleThreadExecutor(), receiver);
-        receiver.verifyNoExceptionOrThrow();
-    }
-
-    public static void finishMigration() throws InterruptedException {
-        MigrationReceiver receiver = new MigrationReceiver();
-        getHealthConnectManager().finishMigration(Executors.newSingleThreadExecutor(), receiver);
-        receiver.verifyNoExceptionOrThrow();
-    }
-
-    /** Calls {@link #finishMigration()} with shell permission identity. */
-    public static void finishMigrationWithShellPermissionIdentity() {
-        runWithShellPermissionIdentity(
-                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
-    }
-
-    public static void insertMinDataMigrationSdkExtensionVersion(int version)
-            throws InterruptedException {
-        MigrationReceiver receiver = new MigrationReceiver();
-        getHealthConnectManager()
-                .insertMinDataMigrationSdkExtensionVersion(
-                        version, Executors.newSingleThreadExecutor(), receiver);
-        receiver.verifyNoExceptionOrThrow();
+    /** Calls insertMinDataMigrationSdkExtensionVersion with shell permission identity. */
+    public static void insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(
+            int version) throws InterruptedException {
+        Void unused =
+                callAndGetResponseWithShellPermissionIdentity(
+                        MigrationException.class,
+                        (executor, receiver) ->
+                                getHealthConnectManager()
+                                        .insertMinDataMigrationSdkExtensionVersion(
+                                                version, executor, receiver),
+                        Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
     public static void deleteAllStagedRemoteData() {
@@ -666,21 +645,15 @@ public final class TestUtils {
     }
 
     public static int getHealthConnectDataMigrationState() throws InterruptedException {
-        HealthConnectReceiver<HealthConnectDataState> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .getHealthConnectDataState(Executors.newSingleThreadExecutor(), receiver);
-        return receiver.getResponse().getDataMigrationState();
+        return callAndGetResponseWithShellPermissionIdentity(
+                        getHealthConnectManager()::getHealthConnectDataState, MANAGE_HEALTH_DATA)
+                .getDataMigrationState();
     }
 
     public static int getHealthConnectDataRestoreState() throws InterruptedException {
-        HealthConnectReceiver<HealthConnectDataState> receiver = new HealthConnectReceiver<>();
-        runWithShellPermissionIdentity(
-                () ->
-                        getHealthConnectManager()
-                                .getHealthConnectDataState(
-                                        Executors.newSingleThreadExecutor(), receiver),
-                MANAGE_HEALTH_DATA);
-        return receiver.getResponse().getDataRestoreState();
+        return callAndGetResponseWithShellPermissionIdentity(
+                        getHealthConnectManager()::getHealthConnectDataState, MANAGE_HEALTH_DATA)
+                .getDataRestoreState();
     }
 
     public static List<AppInfo> getApplicationInfo() throws InterruptedException {
@@ -931,6 +904,8 @@ public final class TestUtils {
             }
         } catch (FileNotFoundException e) {
             Log.e(TAG, e.getMessage());
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
         }
 
         return output.toString();
@@ -944,20 +919,6 @@ public final class TestUtils {
     @NonNull
     public static HealthConnectManager getHealthConnectManager(Context context) {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
-    }
-
-    public static String getDeviceConfigValue(String key) {
-        return runWithShellPermissionIdentity(
-                () -> DeviceConfig.getProperty(DeviceConfig.NAMESPACE_HEALTH_FITNESS, key),
-                READ_DEVICE_CONFIG);
-    }
-
-    public static void setDeviceConfigValue(String key, String value) {
-        runWithShellPermissionIdentity(
-                () ->
-                        DeviceConfig.setProperty(
-                                DeviceConfig.NAMESPACE_HEALTH_FITNESS, key, value, false),
-                WRITE_ALLOWLISTED_DEVICE_CONFIG);
     }
 
     /** Reads {@link StepsRecord}s using record IDs. */
@@ -1315,12 +1276,27 @@ public final class TestUtils {
 
     /**
      * Sets value for a field using reflection. This can be used to set fields for immutable class.
+     *
+     * <p>This method recursively looks for the field in the object's class and its superclasses.
      */
     public static void setFieldValueUsingReflection(Object object, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
-        Field field = object.getClass().getDeclaredField(fieldName);
+        Field field = findFieldUsingReflection(object.getClass(), fieldName);
         field.setAccessible(true);
         field.set(object, value);
+    }
+
+    private static Field findFieldUsingReflection(Class<?> type, String fieldName) {
+        try {
+            return type.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            // If field isn't present, recursively look for it in the class's superclass.
+            Class<?> superClass = type.getSuperclass();
+            if (superClass != null) {
+                return findFieldUsingReflection(superClass, fieldName);
+            }
+        }
+        throw new IllegalArgumentException("Could not find field " + fieldName);
     }
 
     // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
@@ -1385,9 +1361,6 @@ public final class TestUtils {
             return mContributingPackages;
         }
     }
-
-    public static final class MigrationReceiver
-            extends TestOutcomeReceiver<Void, MigrationException> {}
 
     /**
      * A {@link Consumer} that allows throwing checked exceptions from its single abstract method.

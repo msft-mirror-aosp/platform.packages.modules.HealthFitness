@@ -27,6 +27,7 @@ import android.os.UserManager;
 import android.util.Log;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.BackgroundThread;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -89,12 +90,23 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
             return;
         }
 
-        boolean isHealthIntentRemoved =
-                mPermissionIntentTracker.updateStateAndGetIfIntentWasRemoved(
-                        packageName, userHandle);
         boolean isPackageRemoved =
                 intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)
                         && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+
+        // This call also has a (unintended?) positive side-effect of removing the package from
+        // the intent tracker, if the package was removed. Keep calling this even if
+        // isPackageRemoved is true.
+        boolean removePermissions;
+        if (Flags.permissionTrackerFixMappingInit()) {
+            removePermissions =
+                    !mPermissionIntentTracker.updateAndGetSupportsPackageUsageIntent(
+                            packageName, userHandle);
+        } else {
+            removePermissions =
+                    mPermissionIntentTracker.updateStateAndGetIfIntentWasRemoved(
+                            packageName, userHandle);
+        }
         // If the package was removed, we reset grant time. If the package is present but the health
         // intent support removed we revoke all health permissions and also reset grant time
         // (is done via onPermissionChanged callback)
@@ -112,7 +124,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                                         .maybeRemoveAppWithoutWritePermissionsFromPriorityList(
                                                 packageName));
             }
-        } else if (isHealthIntentRemoved) {
+        } else if (removePermissions) {
             // Revoke all health permissions as we don't grant health permissions if permissions
             // usage intent is not supported.
             if (Constants.DEBUG) {

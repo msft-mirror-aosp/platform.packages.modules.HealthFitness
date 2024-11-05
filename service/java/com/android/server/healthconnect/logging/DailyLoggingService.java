@@ -24,8 +24,6 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
-import java.util.Objects;
-
 /**
  * Class to log Health Connect metrics logged every 24hrs.
  *
@@ -43,9 +41,6 @@ public class DailyLoggingService {
             PreferenceHelper preferenceHelper,
             AccessLogsHelper accessLogsHelper,
             TransactionManager transactionManager) {
-        Objects.requireNonNull(context);
-        Objects.requireNonNull(userHandle);
-
         logDatabaseStats(context, transactionManager);
         logUsageStats(context, userHandle, preferenceHelper, accessLogsHelper);
     }
