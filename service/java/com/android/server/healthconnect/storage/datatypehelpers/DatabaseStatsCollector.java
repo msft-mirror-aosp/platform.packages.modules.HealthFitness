@@ -19,7 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import android.content.Context;
 
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 /**
  * Helper class to collect Health Connect database stats for logging.
@@ -28,21 +28,29 @@ import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
  */
 public class DatabaseStatsCollector {
 
+    private final TransactionManager mTransactionManager;
+    private final Context mContext;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings =
+            InternalHealthConnectMappings.getInstance();
+
+    public DatabaseStatsCollector(TransactionManager transactionManager, Context context) {
+        mTransactionManager = transactionManager;
+        mContext = context;
+    }
+
     /** Get the size of Health Connect database. */
-    public static long getDatabaseSize(Context context) {
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        return transactionManager.getDatabaseSize(context);
+    public long getDatabaseSize() {
+        return mTransactionManager.getDatabaseSize(mContext);
     }
 
     /** Get the number of interval record entries in Health Connect database. */
-    public static long getNumberOfIntervalRecordRows() {
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+    public long getNumberOfIntervalRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof IntervalRecordHelper
                     && !(recordHelper instanceof SeriesRecordHelper)) {
                 count +=
-                        transactionManager.getNumberOfEntriesInTheTable(
+                        mTransactionManager.getNumberOfEntriesInTheTable(
                                 recordHelper.getMainTableName());
             }
         }
@@ -50,13 +58,12 @@ public class DatabaseStatsCollector {
     }
 
     /** Get the number of series record entries in Health Connect database. */
-    public static long getNumberOfSeriesRecordRows() {
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+    public long getNumberOfSeriesRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof SeriesRecordHelper) {
                 count +=
-                        transactionManager.getNumberOfEntriesInTheTable(
+                        mTransactionManager.getNumberOfEntriesInTheTable(
                                 recordHelper.getMainTableName());
             }
         }
@@ -64,13 +71,12 @@ public class DatabaseStatsCollector {
     }
 
     /** Get the number of instant record entries in Health Connect database. */
-    public static long getNumberOfInstantRecordRows() {
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+    public long getNumberOfInstantRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof InstantRecordHelper) {
                 count +=
-                        transactionManager.getNumberOfEntriesInTheTable(
+                        mTransactionManager.getNumberOfEntriesInTheTable(
                                 recordHelper.getMainTableName());
             }
         }
@@ -78,8 +84,7 @@ public class DatabaseStatsCollector {
     }
 
     /** Get the number of change log entries in Health Connect database. */
-    public static long getNumberOfChangeLogs() {
-        return TransactionManager.getInitialisedInstance()
-                .getNumberOfEntriesInTheTable(ChangeLogsHelper.TABLE_NAME);
+    public long getNumberOfChangeLogs() {
+        return mTransactionManager.getNumberOfEntriesInTheTable(ChangeLogsHelper.TABLE_NAME);
     }
 }

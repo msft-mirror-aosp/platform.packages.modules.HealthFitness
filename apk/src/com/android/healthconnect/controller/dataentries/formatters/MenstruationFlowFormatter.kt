@@ -20,6 +20,7 @@ import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_HEAVY
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_LIGHT
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_MEDIUM
+import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_UNKNOWN
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.dataentries.formatters.shared.EntryFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
@@ -34,12 +35,13 @@ constructor(@ApplicationContext private val context: Context) :
 
     override suspend fun formatValue(
         record: MenstruationFlowRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return when (record.flow) {
             FLOW_LIGHT -> return context.getString(R.string.flow_light)
             FLOW_MEDIUM -> return context.getString(R.string.flow_medium)
             FLOW_HEAVY -> return context.getString(R.string.flow_heavy)
+            FLOW_UNKNOWN -> return context.getString(R.string.flow_unknown)
             else -> {
                 ""
             }
@@ -48,7 +50,7 @@ constructor(@ApplicationContext private val context: Context) :
 
     override suspend fun formatA11yValue(
         record: MenstruationFlowRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return formatValue(record, unitPreferences)
     }

@@ -16,6 +16,9 @@
 
 package com.android.healthfitness.flags;
 
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ACTIVITY_INTENSITY;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ECOSYSTEM_METRICS;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 
@@ -23,6 +26,7 @@ import com.android.internal.annotations.VisibleForTesting;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.BooleanSupplier;
 
 /**
  * A helper class to act as the source of truth for whether a feature is enabled or not by taking
@@ -38,7 +42,9 @@ public final class AconfigFlagHelper {
     // framework. See
     // https://groups.google.com/a/google.com/g/android-chatty-eng/c/TymmRzs3UcY/m/_JeFcynRBwAJ.
     @VisibleForTesting(visibility = PRIVATE)
-    public static final TreeMap<Integer, Boolean> DB_VERSION_TO_DB_FLAG_MAP = new TreeMap<>();
+    // Using BooleanSupplier instead of Boolean due to b/370447278#comment2
+    public static final TreeMap<Integer, BooleanSupplier> DB_VERSION_TO_DB_FLAG_MAP =
+            new TreeMap<>();
 
     /**
      * Returns the DB version based on DB flag values, this DB version is used to initialize {@link
@@ -50,8 +56,8 @@ public final class AconfigFlagHelper {
         }
 
         int dbVersion = LAST_ROLLED_OUT_DB_VERSION;
-        for (Map.Entry<Integer, Boolean> entry : getDbVersionToDbFlagMap().entrySet()) {
-            if (!entry.getValue()) {
+        for (Map.Entry<Integer, BooleanSupplier> entry : getDbVersionToDbFlagMap().entrySet()) {
+            if (!entry.getValue().getAsBoolean()) {
                 break;
             }
             dbVersion = entry.getKey();
@@ -62,26 +68,30 @@ public final class AconfigFlagHelper {
 
     /**
      * Returns whether the DB flag of a feature is enabled.
-     * <p>
-     * A DB flag is deemed to be enabled if and only if the DB flag as well as all other features
+     *
+     * <p>A DB flag is deemed to be enabled if and only if the DB flag as well as all other features
      * with smaller version numbers have their DB flags enabled.
-     * <p>
-     * For example, if DB_VERSION_TO_DB_FLAG_MAP contains these:
+     *
+     * <p>For example, if DB_VERSION_TO_DB_FLAG_MAP contains these:
+     *
      * <pre>{@code
-     *   DB_F1 = true
-     *   DB_F2 = true
-     *   DB_F3 = true
-     *   DB_F4 = false
+     * DB_F1 = true
+     * DB_F2 = true
+     * DB_F3 = true
+     * DB_F4 = false
      * }</pre>
+     *
      * Then isDbFlagEnabled(3) will return true and isDbFlagEnabled(4) will return false.
-     * <p>
-     * In case the map contains a disconnected line of "true"s before the last "false" like this:
+     *
+     * <p>In case the map contains a disconnected line of "true"s before the last "false" like this:
+     *
      * <pre>{@code
-     *   DB_F1 = true
-     *   DB_F2 = false
-     *   DB_F3 = true
-     *   DB_F4 = false
+     * DB_F1 = true
+     * DB_F2 = false
+     * DB_F3 = true
+     * DB_F4 = false
      * }</pre>
+     *
      * Then isDbFlagEnabled(3) will return false even though DB_F3 is mapped to true.
      *
      * @see #getDbVersion()
@@ -108,25 +118,34 @@ public final class AconfigFlagHelper {
      * the <code>@EnableFlags</code> annotations won't work in unit tests due to its evaluation
      * being done after the map has already been initialized.
      */
-    private static Map<Integer, Boolean> getDbVersionToDbFlagMap() {
+    private static Map<Integer, BooleanSupplier> getDbVersionToDbFlagMap() {
         if (!DB_VERSION_TO_DB_FLAG_MAP.isEmpty()) {
             return DB_VERSION_TO_DB_FLAG_MAP;
         }
 
-        // TODO(b/357062401): When PHR DB schema changes is finalized, we'll create
-        // DB_VERSION_TO_DB_FLAG_MAP, add the following line, then move advance the PHR DB flag to
-        // trunk-food first, then PHR feature flag:
-        // DB_VERSION_TO_DB_FLAG_MAP.put(DB_VERSION_PERSONAL_HEALTH_RECORD,
-        //                                                  Flags.personalHealthRecordDatabase());
+        DB_VERSION_TO_DB_FLAG_MAP.put(
+                DB_VERSION_PERSONAL_HEALTH_RECORD, Flags::personalHealthRecordDatabase);
+        DB_VERSION_TO_DB_FLAG_MAP.put(DB_VERSION_ACTIVITY_INTENSITY, Flags::activityIntensityDb);
+        DB_VERSION_TO_DB_FLAG_MAP.put(
+                DB_VERSION_ECOSYSTEM_METRICS, Flags::ecosystemMetricsDbChanges);
 
         return DB_VERSION_TO_DB_FLAG_MAP;
     }
 
     /** Returns a boolean indicating whether PHR feature is enabled. */
     public static synchronized boolean isPersonalHealthRecordEnabled() {
-        // TODO(b/357062401): When PHR DB schema changes is finalized:
-        // return Flags.personalHealthRecord() &&
-        // isDbFlagEnabled(DB_VERSION_PERSONAL_HEALTH_RECORD);
-        return Flags.personalHealthRecord();
+        return Flags.personalHealthRecord() && isDbFlagEnabled(DB_VERSION_PERSONAL_HEALTH_RECORD);
+    }
+
+    /** Returns a boolean indicating whether Activity Intensity data type is enabled. */
+    public static boolean isActivityIntensityEnabled() {
+        return Flags.activityIntensity()
+                && isDbFlagEnabled(DB_VERSION_ACTIVITY_INTENSITY)
+                && Flags.healthConnectMappings();
+    }
+
+    /** Returns a boolean indicating whether Ecosystem Metrics is enabled. */
+    public static boolean isEcosystemMetricsEnabled() {
+        return Flags.ecosystemMetrics() && isDbFlagEnabled(DB_VERSION_ECOSYSTEM_METRICS);
     }
 }

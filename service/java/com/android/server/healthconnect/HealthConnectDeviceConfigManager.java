@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.health.connect.ratelimiter.RateLimiter;
@@ -85,11 +84,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @VisibleForTesting
     public static final String ENABLE_MIGRATION_NOTIFICATIONS_FLAG =
             "enable_migration_notifications";
-
-    @VisibleForTesting
-    public static final String BACKGROUND_READ_FEATURE_FLAG = "background_read_enable";
-
-    @VisibleForTesting public static final String HISTORY_READ_FEATURE_FLAG = "history_read_enable";
 
     @VisibleForTesting
     public static final String ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG =
@@ -217,14 +211,11 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
-    private boolean mBackgroundReadFeatureEnabled = true;
-
-    @GuardedBy("mLock")
-    private boolean mHistoryReadFeatureEnabled = true;
-
-    @GuardedBy("mLock")
     private boolean mAggregationSourceControlsEnabled = true;
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static HealthConnectDeviceConfigManager initializeInstance(Context context) {
         if (sDeviceConfigManager == null) {
             sDeviceConfigManager = new HealthConnectDeviceConfigManager();
@@ -235,8 +226,11 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         return sDeviceConfigManager;
     }
 
-    /** Returns initialised instance of this class. */
-    @NonNull
+    /**
+     * Returns initialised instance of this class.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static HealthConnectDeviceConfigManager getInitialisedInstance() {
         Objects.requireNonNull(sDeviceConfigManager);
 
@@ -258,8 +252,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         sFlagsToTrack.add(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_MIGRATION_NOTIFICATIONS_FLAG);
-        sFlagsToTrack.add(BACKGROUND_READ_FEATURE_FLAG);
-        sFlagsToTrack.add(HISTORY_READ_FEATURE_FLAG);
         sFlagsToTrack.add(ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG);
     }
 
@@ -402,26 +394,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         }
     }
 
-    /** Returns whether reading in background is enabled or not. */
-    public boolean isBackgroundReadFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mBackgroundReadFeatureEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
-
-    /** Returns whether full history reading is enabled or not. */
-    public boolean isHistoryReadFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mHistoryReadFeatureEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
-
     /** Returns whether the new aggregation source control feature is enabled or not. */
     public boolean isAggregationSourceControlsEnabled() {
         mLock.readLock().lock();
@@ -533,12 +505,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                 properties.getBoolean(
                                         ENABLE_MIGRATION_NOTIFICATIONS_FLAG,
                                         ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
-                        break;
-                    case BACKGROUND_READ_FEATURE_FLAG:
-                        mBackgroundReadFeatureEnabled = true;
-                        break;
-                    case HISTORY_READ_FEATURE_FLAG:
-                        mHistoryReadFeatureEnabled = true;
                         break;
                     case ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG:
                         mAggregationSourceControlsEnabled = true;

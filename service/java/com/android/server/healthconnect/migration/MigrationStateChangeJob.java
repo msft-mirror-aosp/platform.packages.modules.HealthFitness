@@ -28,12 +28,12 @@ import static com.android.server.healthconnect.migration.MigrationConstants.MIGR
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_PAUSE_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_STATE_CHANGE_NAMESPACE;
 
-import android.annotation.NonNull;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 
 import com.android.server.healthconnect.HealthConnectDailyService;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
@@ -54,44 +54,48 @@ public final class MigrationStateChangeJob {
 
     /** Schedules a job to complete migration. */
     public static void scheduleMigrationCompletionJob(
-            HealthConnectDeviceConfigManager deviceConfigManager, Context context, int userId) {
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            Context context,
+            UserHandle userHandle) {
         if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
             return;
         }
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         final PersistableBundle extras = new PersistableBundle();
-        extras.putInt(EXTRA_USER_ID, userId);
+        extras.putInt(EXTRA_USER_ID, userHandle.getIdentifier());
         extras.putString(EXTRA_JOB_NAME_KEY, MIGRATION_COMPLETE_JOB_NAME);
         JobInfo.Builder builder =
-                new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
+                new JobInfo.Builder(MIN_JOB_ID + userHandle.getIdentifier(), componentName)
                         .setPeriodic(deviceConfigManager.getMigrationCompletionJobRunInterval())
                         .setExtras(extras);
 
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE),
-                userId,
+                userHandle,
                 builder.build());
     }
 
     /** Schedules a job to pause migration. */
     public static void scheduleMigrationPauseJob(
-            HealthConnectDeviceConfigManager deviceConfigManager, Context context, int userId) {
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            Context context,
+            UserHandle userHandle) {
         if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
             return;
         }
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         final PersistableBundle extras = new PersistableBundle();
-        extras.putInt(EXTRA_USER_ID, userId);
+        extras.putInt(EXTRA_USER_ID, userHandle.getIdentifier());
         extras.putString(EXTRA_JOB_NAME_KEY, MIGRATION_PAUSE_JOB_NAME);
         JobInfo.Builder builder =
-                new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
+                new JobInfo.Builder(MIN_JOB_ID + userHandle.getIdentifier(), componentName)
                         .setPeriodic(deviceConfigManager.getMigrationPauseJobRunInterval())
                         .setExtras(extras);
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE),
-                userId,
+                userHandle,
                 builder.build());
     }
 
@@ -179,7 +183,7 @@ public final class MigrationStateChangeJob {
         }
     }
 
-    public static boolean existsAStateChangeJob(@NonNull Context context, @NonNull String jobName) {
+    public static boolean existsAStateChangeJob(Context context, String jobName) {
         JobScheduler jobScheduler =
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE);
@@ -192,7 +196,7 @@ public final class MigrationStateChangeJob {
         return false;
     }
 
-    public static void cancelAllJobs(@NonNull Context context) {
+    public static void cancelAllJobs(Context context) {
         JobScheduler jobScheduler =
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE);

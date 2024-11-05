@@ -94,6 +94,17 @@ fun Instant.isAtLeastOneDayAfter(other: Instant): Boolean {
     return localDate1.isAfter(localDate2.plusDays(1)) || localDate1 == localDate2.plusDays(1)
 }
 
+fun Instant.isLessThanOneYearAgo(timeSource: TimeSource): Boolean {
+    val oneYearAgo =
+        timeSource
+            .currentLocalDateTime()
+            .minusYears(1)
+            .toLocalDate()
+            .atStartOfDay(timeSource.deviceZoneOffset())
+            .toInstant()
+    return this.isAfter(oneYearAgo)
+}
+
 fun LocalDate.toInstantAtStartOfDay(): Instant {
     return this.atStartOfDay(ZoneId.systemDefault()).toInstant()
 }

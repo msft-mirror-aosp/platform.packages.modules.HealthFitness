@@ -19,7 +19,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.BodyWaterMassRecord;
@@ -45,28 +44,25 @@ public final class BodyWaterMassRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return BODY_WATER_MASS_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull BodyWaterMassRecordInternal bodyWaterMassRecordInternal) {
+            ContentValues contentValues, BodyWaterMassRecordInternal bodyWaterMassRecordInternal) {
         contentValues.put(
                 BODY_WATER_MASS_RECORD_COLUMN_NAME, bodyWaterMassRecordInternal.getBodyWaterMass());
     }
 
     @Override
     protected void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull BodyWaterMassRecordInternal recordInternal) {
+            Cursor cursor, BodyWaterMassRecordInternal recordInternal) {
         recordInternal.setBodyWaterMass(
                 getCursorDouble(cursor, BODY_WATER_MASS_RECORD_COLUMN_NAME));
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Collections.singletonList(
                 new Pair<>(BODY_WATER_MASS_RECORD_COLUMN_NAME, REAL_NOT_NULL));

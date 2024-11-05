@@ -39,8 +39,6 @@ import static com.android.server.healthconnect.migration.MigrationConstants.PREM
 import static com.android.server.healthconnect.migration.MigrationUtils.filterIntent;
 import static com.android.server.healthconnect.migration.MigrationUtils.filterPermissions;
 
-import android.annotation.NonNull;
-import android.annotation.UserIdInt;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -51,6 +49,7 @@ import android.health.connect.Constants;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectManager;
 import android.os.Build;
+import android.os.UserHandle;
 import android.os.ext.SdkExtensions;
 import android.util.Slog;
 
@@ -93,14 +92,14 @@ public final class MigrationStateManager {
 
     private final Object mLock = new Object();
     private volatile MigrationBroadcastScheduler mMigrationBroadcastScheduler;
-    private int mUserId;
+    private UserHandle mUserHandle;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private MigrationStateManager(
-            @UserIdInt int userId,
+            UserHandle userHandle,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
             PreferenceHelper preferenceHelper) {
-        mUserId = userId;
+        mUserHandle = userHandle;
         mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
         mPreferenceHelper = preferenceHelper;
     }
@@ -108,17 +107,18 @@ public final class MigrationStateManager {
     /**
      * Initialises {@link MigrationStateManager} with the provided arguments and returns the
      * instance.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
      */
-    @NonNull
     public static MigrationStateManager initializeInstance(
-            @UserIdInt int userId,
+            UserHandle userHandle,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
             PreferenceHelper preferenceHelper) {
         synchronized (sInstanceLock) {
             if (Objects.isNull(sMigrationStateManager)) {
                 sMigrationStateManager =
                         new MigrationStateManager(
-                                userId, healthConnectDeviceConfigManager, preferenceHelper);
+                                userHandle, healthConnectDeviceConfigManager, preferenceHelper);
             }
 
             return sMigrationStateManager;
@@ -126,15 +126,18 @@ public final class MigrationStateManager {
     }
 
     /** Re-initialize this class instance with the new user */
-    public void onUserSwitching(@NonNull Context context, @UserIdInt int userId) {
+    public void onUserSwitching(Context context, UserHandle userHandle) {
         synchronized (mLock) {
             MigrationStateChangeJob.cancelAllJobs(context);
-            mUserId = userId;
+            mUserHandle = userHandle;
         }
     }
 
-    /** Returns initialised instance of this class. */
-    @NonNull
+    /**
+     * Returns initialised instance of this class.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static MigrationStateManager getInitialisedInstance() {
         synchronized (sInstanceLock) {
             Objects.requireNonNull(sMigrationStateManager);
@@ -155,7 +158,7 @@ public final class MigrationStateManager {
     }
 
     /** Registers {@link StateChangedListener} for observing migration state changes. */
-    public void addStateChangedListener(@NonNull StateChangedListener listener) {
+    public void addStateChangedListener(StateChangedListener listener) {
         synchronized (mLock) {
             mStateChangedListeners.add(listener);
         }
@@ -171,7 +174,7 @@ public final class MigrationStateManager {
      *
      * @param minVersion the desired sdk version.
      */
-    public void setMinDataMigrationSdkExtensionVersion(@NonNull Context context, int minVersion) {
+    public void setMinDataMigrationSdkExtensionVersion(Context context, int minVersion) {
         synchronized (mLock) {
             if (minVersion <= getUdcSdkExtensionVersion()) {
                 updateMigrationState(context, MIGRATION_STATE_ALLOWED);
@@ -200,7 +203,7 @@ public final class MigrationStateManager {
         return Integer.parseInt(migrationState);
     }
 
-    public void switchToSetupForUser(@NonNull Context context) {
+    public void switchToSetupForUser(Context context) {
         synchronized (mLock) {
             resetMigrationStateIfNeeded(context);
             MigrationStateChangeJob.cancelAllJobs(context);
@@ -211,7 +214,7 @@ public final class MigrationStateManager {
 
     /** Updates the migration state. */
     public void updateMigrationState(
-            @NonNull Context context, @HealthConnectDataState.DataMigrationState int state) {
+            Context context, @HealthConnectDataState.DataMigrationState int state) {
         synchronized (mLock) {
             updateMigrationStateGuarded(context, state, false);
         }
@@ -223,7 +226,7 @@ public final class MigrationStateManager {
      * @param timeoutReached Whether the previous state has timed out.
      */
     void updateMigrationState(
-            @NonNull Context context,
+            Context context,
             @HealthConnectDataState.DataMigrationState int state,
             boolean timeoutReached) {
         synchronized (mLock) {
@@ -238,7 +241,7 @@ public final class MigrationStateManager {
      */
     @GuardedBy("mLock")
     private void updateMigrationStateGuarded(
-            @NonNull Context context,
+            Context context,
             @HealthConnectDataState.DataMigrationState int state,
             boolean timeoutReached) {
 
@@ -256,14 +259,14 @@ public final class MigrationStateManager {
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(context, state, timeoutReached);
                 MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                        mHealthConnectDeviceConfigManager, context, mUserId);
+                        mHealthConnectDeviceConfigManager, context, mUserHandle);
                 return;
             case MIGRATION_STATE_IN_PROGRESS:
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(
                         context, MIGRATION_STATE_IN_PROGRESS, timeoutReached);
                 MigrationStateChangeJob.scheduleMigrationPauseJob(
-                        mHealthConnectDeviceConfigManager, context, mUserId);
+                        mHealthConnectDeviceConfigManager, context, mUserHandle);
                 updateMigrationStartsCount();
                 return;
             case MIGRATION_STATE_ALLOWED:
@@ -276,7 +279,7 @@ public final class MigrationStateManager {
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(context, MIGRATION_STATE_ALLOWED, timeoutReached);
                 MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                        mHealthConnectDeviceConfigManager, context, mUserId);
+                        mHealthConnectDeviceConfigManager, context, mUserHandle);
                 return;
             case MIGRATION_STATE_COMPLETE:
                 updateMigrationStatePreference(context, MIGRATION_STATE_COMPLETE, timeoutReached);
@@ -288,7 +291,7 @@ public final class MigrationStateManager {
         }
     }
 
-    public void clearCaches(@NonNull Context context) {
+    public void clearCaches(Context context) {
         synchronized (mLock) {
             updateMigrationStatePreference(context, MIGRATION_STATE_IDLE, false);
             mPreferenceHelper.insertOrReplacePreference(
@@ -309,7 +312,7 @@ public final class MigrationStateManager {
      * current state. If migration can be started, it will change the state to
      * MIGRATION_STATE_IN_PROGRESS
      */
-    public void startMigration(@NonNull Context context) throws IllegalMigrationStateException {
+    public void startMigration(Context context) throws IllegalMigrationStateException {
         synchronized (mLock) {
             validateStartMigrationGuarded();
             updateMigrationStateGuarded(context, MIGRATION_STATE_IN_PROGRESS, false);
@@ -339,7 +342,7 @@ public final class MigrationStateManager {
      * current state. If migration can be finished, it will change the state to
      * MIGRATION_STATE_COMPLETE
      */
-    public void finishMigration(@NonNull Context context) throws IllegalMigrationStateException {
+    public void finishMigration(Context context) throws IllegalMigrationStateException {
         synchronized (mLock) {
             throwIfMigrationIsComplete();
             if (getMigrationState() != MIGRATION_STATE_IN_PROGRESS
@@ -377,15 +380,14 @@ public final class MigrationStateManager {
         }
     }
 
-    void onPackageInstalledOrChanged(@NonNull Context context, @NonNull String packageName) {
+    void onPackageInstalledOrChanged(Context context, String packageName) {
         synchronized (mLock) {
             onPackageInstalledOrChangedGuarded(context, packageName);
         }
     }
 
     @GuardedBy("mLock")
-    private void onPackageInstalledOrChangedGuarded(
-            @NonNull Context context, @NonNull String packageName) {
+    private void onPackageInstalledOrChangedGuarded(Context context, String packageName) {
 
         String hcMigratorPackage = getDataMigratorPackageName(context);
         if (!Objects.equals(hcMigratorPackage, packageName)) {
@@ -415,14 +417,14 @@ public final class MigrationStateManager {
         }
     }
 
-    void onPackageRemoved(@NonNull Context context, @NonNull String packageName) {
+    void onPackageRemoved(Context context, String packageName) {
         synchronized (mLock) {
             onPackageRemovedGuarded(context, packageName);
         }
     }
 
     @GuardedBy("mLock")
-    private void onPackageRemovedGuarded(@NonNull Context context, @NonNull String packageName) {
+    private void onPackageRemovedGuarded(Context context, String packageName) {
         String hcMigratorPackage = getDataMigratorPackageName(context);
         if (!Objects.equals(hcMigratorPackage, packageName)) {
             return;
@@ -444,7 +446,7 @@ public final class MigrationStateManager {
      */
     @GuardedBy("mLock")
     private void updateMigrationStatePreference(
-            @NonNull Context context,
+            Context context,
             @HealthConnectDataState.DataMigrationState int migrationState,
             boolean timeoutReached) {
 
@@ -578,7 +580,7 @@ public final class MigrationStateManager {
 
     /** Reconcile the current state with its appropriate state change job. */
     @GuardedBy("mLock")
-    private void reconcileStateChangeJob(@NonNull Context context) {
+    private void reconcileStateChangeJob(Context context) {
         switch (getMigrationState()) {
             case MIGRATION_STATE_IDLE:
             case MIGRATION_STATE_APP_UPGRADE_REQUIRED:
@@ -586,7 +588,7 @@ public final class MigrationStateManager {
                 if (!MigrationStateChangeJob.existsAStateChangeJob(
                         context, MIGRATION_COMPLETE_JOB_NAME)) {
                     MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                            mHealthConnectDeviceConfigManager, context, mUserId);
+                            mHealthConnectDeviceConfigManager, context, mUserHandle);
                 }
                 return;
             case MIGRATION_STATE_MODULE_UPGRADE_REQUIRED:
@@ -597,7 +599,7 @@ public final class MigrationStateManager {
                 if (!MigrationStateChangeJob.existsAStateChangeJob(
                         context, MIGRATION_PAUSE_JOB_NAME)) {
                     MigrationStateChangeJob.scheduleMigrationPauseJob(
-                            mHealthConnectDeviceConfigManager, context, mUserId);
+                            mHealthConnectDeviceConfigManager, context, mUserHandle);
                 }
                 return;
 
@@ -612,7 +614,7 @@ public final class MigrationStateManager {
      * update job.}
      */
     @GuardedBy("mLock")
-    private void handleIsUpgradeStillRequired(@NonNull Context context) {
+    private void handleIsUpgradeStillRequired(Context context) {
         if (Integer.parseInt(
                         mPreferenceHelper.getPreference(
                                 MIN_DATA_MIGRATION_SDK_EXTENSION_VERSION_KEY))
@@ -622,7 +624,7 @@ public final class MigrationStateManager {
         }
         if (!MigrationStateChangeJob.existsAStateChangeJob(context, MIGRATION_COMPLETE_JOB_NAME)) {
             MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                    mHealthConnectDeviceConfigManager, context, mUserId);
+                    mHealthConnectDeviceConfigManager, context, mUserHandle);
         }
     }
 
@@ -663,12 +665,12 @@ public final class MigrationStateManager {
                 String.valueOf(Integer.parseInt(migrationStartsCount) + 1));
     }
 
-    private String getDataMigratorPackageName(@NonNull Context context) {
+    private String getDataMigratorPackageName(Context context) {
         return context.getString(
                 context.getResources().getIdentifier(HC_PACKAGE_NAME_CONFIG_NAME, null, null));
     }
 
-    private void completeMigrationIfNoMigratorPackageAvailable(@NonNull Context context) {
+    private void completeMigrationIfNoMigratorPackageAvailable(Context context) {
         if (existsMigrationAwarePackage(context)) {
             if (Constants.DEBUG) {
                 Slog.d(TAG, "There is a migration aware package.");
@@ -693,7 +695,7 @@ public final class MigrationStateManager {
     }
 
     /** Returns whether there exists a package that is aware of migration. */
-    public boolean existsMigrationAwarePackage(@NonNull Context context) {
+    public boolean existsMigrationAwarePackage(Context context) {
         List<String> filteredPackages =
                 filterIntent(
                         context,
@@ -712,7 +714,7 @@ public final class MigrationStateManager {
      * Returns whether there exists a package that is signed with the correct signatures for
      * migration.
      */
-    public boolean existsMigratorPackage(@NonNull Context context) {
+    public boolean existsMigratorPackage(Context context) {
         // Search through all packages by known signer certificate.
         List<PackageInfo> allPackages =
                 context.getPackageManager()
@@ -727,7 +729,7 @@ public final class MigrationStateManager {
         return false;
     }
 
-    private boolean isMigrationAware(@NonNull Context context, @NonNull String packageName) {
+    private boolean isMigrationAware(Context context, String packageName) {
         List<String> permissionFilteredPackages = filterPermissions(context);
         List<String> filteredPackages =
                 filterIntent(
@@ -745,7 +747,7 @@ public final class MigrationStateManager {
     }
 
     /** Checks whether the APK migration flag is on. */
-    boolean doesMigratorHandleInfoIntent(@NonNull Context context) {
+    boolean doesMigratorHandleInfoIntent(Context context) {
         String packageName = getDataMigratorPackageName(context);
         Intent intent =
                 new Intent(HealthConnectManager.ACTION_SHOW_MIGRATION_INFO).setPackage(packageName);
@@ -757,7 +759,7 @@ public final class MigrationStateManager {
     }
 
     private static boolean hasMigratorPackageKnownSignerSignature(
-            @NonNull Context context, @NonNull String packageName) {
+            Context context, String packageName) {
         List<String> stringSignatures;
         try {
             stringSignatures =
@@ -814,7 +816,7 @@ public final class MigrationStateManager {
      * Resets migration state to IDLE state for early users whose migration might have timed out
      * before they migrate data.
      */
-    void resetMigrationStateIfNeeded(@NonNull Context context) {
+    void resetMigrationStateIfNeeded(Context context) {
 
         if (!Boolean.parseBoolean(mPreferenceHelper.getPreference(HAVE_RESET_MIGRATION_STATE_KEY))
                 && hasMigrationTimedOutPrematurely()) {

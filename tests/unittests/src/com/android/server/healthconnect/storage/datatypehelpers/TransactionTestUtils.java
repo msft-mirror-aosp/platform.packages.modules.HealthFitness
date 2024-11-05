@@ -43,6 +43,7 @@ import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 
+import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -53,6 +54,7 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 import com.google.common.collect.ImmutableList;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,10 +67,12 @@ public final class TransactionTestUtils {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
     private final Context mContext;
+    private final HealthConnectInjector mHealthConnectInjector;
 
-    public TransactionTestUtils(Context context, TransactionManager transactionManager) {
+    public TransactionTestUtils(Context context, HealthConnectInjector injector) {
         mContext = context;
-        mTransactionManager = transactionManager;
+        mTransactionManager = injector.getTransactionManager();
+        mHealthConnectInjector = injector;
     }
 
     public void insertApp(String packageName) {
@@ -77,8 +81,8 @@ public final class TransactionTestUtils {
         mTransactionManager.insert(
                 new UpsertTableRequest(
                         AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
-        AppInfoHelper.clearInstanceForTest();
-        assertThat(AppInfoHelper.getInstance().getAppInfoId(packageName))
+        mHealthConnectInjector.getAppInfoHelper().clearCache();
+        assertThat(mHealthConnectInjector.getAppInfoHelper().getAppInfoId(packageName))
                 .isNotEqualTo(DEFAULT_LONG);
     }
 
@@ -89,30 +93,67 @@ public final class TransactionTestUtils {
 
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, List<RecordInternal<?>> records) {
+        AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
         return mTransactionManager.insertAll(
+                appInfoHelper,
+                mHealthConnectInjector.getAccessLogsHelper(),
                 new UpsertTransactionRequest(
                         packageName,
                         records,
+                        mHealthConnectInjector.getDeviceInfoHelper(),
                         mContext,
                         /* isInsertRequest= */ true,
-                        /* useProvidedUuid= */ false,
-                        /* skipPackageNameAndLogs= */ false));
+                        /* extraPermsStateMap= */ Collections.emptyMap(),
+                        mHealthConnectInjector.getAppInfoHelper()));
     }
 
-    public static ReadTransactionRequest getReadTransactionRequest(
+    /** Creates a {@link ReadTransactionRequest} from the given record to id map. */
+    public ReadTransactionRequest getReadTransactionRequest(
             Map<Integer, List<UUID>> recordTypeToUuids) {
+        return getReadTransactionRequest(TEST_PACKAGE_NAME, recordTypeToUuids);
+    }
+
+    /**
+     * Creates a {@link ReadTransactionRequest} from the given package name and record to id map.
+     */
+    public ReadTransactionRequest getReadTransactionRequest(
+            String packageName, Map<Integer, List<UUID>> recordTypeToUuids) {
+        return getReadTransactionRequest(
+                packageName, recordTypeToUuids, /* isReadingSelfData= */ false);
+    }
+
+    /** Creates a {@link ReadTransactionRequest} from the given parameters. */
+    public ReadTransactionRequest getReadTransactionRequest(
+            String packageName,
+            Map<Integer, List<UUID>> recordTypeToUuids,
+            boolean isReadingSelfData) {
         return new ReadTransactionRequest(
-                TEST_PACKAGE_NAME,
+                mHealthConnectInjector.getAppInfoHelper(),
+                packageName,
                 recordTypeToUuids,
                 /* startDateAccessMillis= */ 0,
                 NO_EXTRA_PERMS,
-                /* isInForeground= */ true);
+                /* isInForeground= */ true,
+                isReadingSelfData);
     }
 
-    public static ReadTransactionRequest getReadTransactionRequest(
-            ReadRecordsRequestParcel request) {
+    /**
+     * Creates a {@link ReadTransactionRequest} from the given {@link ReadRecordsRequestParcel
+     * request}.
+     */
+    public ReadTransactionRequest getReadTransactionRequest(ReadRecordsRequestParcel request) {
+        return getReadTransactionRequest(TEST_PACKAGE_NAME, request);
+    }
+
+    /**
+     * Creates a {@link ReadTransactionRequest} from the given package name and {@link
+     * ReadRecordsRequestParcel request}.
+     */
+    public ReadTransactionRequest getReadTransactionRequest(
+            String packageName, ReadRecordsRequestParcel request) {
         return new ReadTransactionRequest(
-                TEST_PACKAGE_NAME,
+                mHealthConnectInjector.getAppInfoHelper(),
+                packageName,
                 request,
                 /* startDateAccessMillis= */ 0,
                 /* enforceSelfRead= */ false,

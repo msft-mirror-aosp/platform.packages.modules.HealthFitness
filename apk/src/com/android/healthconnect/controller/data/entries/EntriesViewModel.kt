@@ -72,28 +72,39 @@ constructor(
     val appInfo: LiveData<AppMetadata>
         get() = _appInfo
 
-    private val _setOfEntriesToBeDeleted = MutableLiveData<Set<String>>()
+    private val _mapOfEntriesToBeDeleted = MutableLiveData<Map<String, DataType>>()
 
-    val setOfEntriesToBeDeleted: LiveData<Set<String>>
-        get() = _setOfEntriesToBeDeleted
+    val mapOfEntriesToBeDeleted: LiveData<Map<String, DataType>>
+        get() = _mapOfEntriesToBeDeleted
 
-    private var dataType: DataType? = null
-
-    private val _screenState = MutableLiveData<EntriesDeletionScreenState>(EntriesDeletionScreenState.VIEW)
-    val screenState:LiveData<EntriesDeletionScreenState>
+    private val _screenState = MutableLiveData(EntriesDeletionScreenState.VIEW)
+    val screenState: LiveData<EntriesDeletionScreenState>
         get() = _screenState
 
     private var dateNavigationText: String? = null
 
+    private val _allEntriesSelected = MutableLiveData<Boolean>()
+    val allEntriesSelected: LiveData<Boolean>
+        get() = _allEntriesSelected
+
+    private var numOfEntries: Int = 0
+
+    private var entriesList: MutableList<FormattedEntry> = mutableListOf()
+
     fun loadEntries(
         permissionType: HealthPermissionType,
         selectedDate: Instant,
-        period: DateNavigationPeriod
+        period: DateNavigationPeriod,
     ) {
         when (permissionType) {
             is FitnessPermissionType ->
                 loadData(
-                    permissionType, packageName = null, selectedDate, period, showDataOrigin = true)
+                    permissionType,
+                    packageName = null,
+                    selectedDate,
+                    period,
+                    showDataOrigin = true,
+                )
             is MedicalPermissionType ->
                 loadData(permissionType, packageName = null, showDataOrigin = true)
         }
@@ -103,7 +114,7 @@ constructor(
         permissionType: HealthPermissionType,
         packageName: String,
         selectedDate: Instant,
-        period: DateNavigationPeriod
+        period: DateNavigationPeriod,
     ) {
         when (permissionType) {
             is FitnessPermissionType ->
@@ -118,7 +129,7 @@ constructor(
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ) {
         _entries.postValue(EntriesFragmentState.Loading)
         currentSelectedDate.postValue(selectedDate)
@@ -134,18 +145,31 @@ constructor(
                     }
                     else -> {
                         loadAppEntries(
-                            permissionType, packageName, selectedDate, period, showDataOrigin)
+                            permissionType,
+                            packageName,
+                            selectedDate,
+                            period,
+                            showDataOrigin,
+                        )
                     }
                 }
             when (entriesResults) {
                 is UseCaseResults.Success -> {
                     list.addAll(entriesResults.data)
+                    numOfEntries = list.size
                     if (list.isEmpty()) {
                         _entries.postValue(EntriesFragmentState.Empty)
                     } else {
                         addAggregation(
-                            permissionType, packageName, selectedDate, period, list, showDataOrigin)
+                            permissionType,
+                            packageName,
+                            selectedDate,
+                            period,
+                            list,
+                            showDataOrigin,
+                        )
                         _entries.postValue(EntriesFragmentState.With(list))
+                        entriesList = list.toMutableList()
                     }
                 }
                 is UseCaseResults.Failed -> {
@@ -159,7 +183,7 @@ constructor(
     private fun loadData(
         permissionType: MedicalPermissionType,
         packageName: String?,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ) {
         _entries.postValue(EntriesFragmentState.Loading)
 
@@ -187,7 +211,7 @@ constructor(
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ): UseCaseResults<List<FormattedEntry>> {
         val input =
             LoadDataEntriesInput(permissionType, packageName, selectedDate, period, showDataOrigin)
@@ -197,7 +221,7 @@ constructor(
     private suspend fun loadAppEntries(
         permissionType: MedicalPermissionType,
         packageName: String?,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ): UseCaseResults<List<FormattedEntry>> {
         val input = LoadMedicalEntriesInput(permissionType, packageName, showDataOrigin)
         return loadMedicalEntriesUseCase.invoke(input)
@@ -207,7 +231,7 @@ constructor(
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ): UseCaseResults<List<FormattedEntry>> {
         val input = LoadMenstruationDataInput(packageName, selectedDate, period, showDataOrigin)
         return loadMenstruationDataUseCase.invoke(input)
@@ -218,11 +242,16 @@ constructor(
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ): UseCaseResults<FormattedEntry.FormattedAggregation> {
         val input =
             LoadAggregationInput.PeriodAggregation(
-                permissionType, packageName, selectedDate, period, showDataOrigin)
+                permissionType,
+                packageName,
+                selectedDate,
+                period,
+                showDataOrigin,
+            )
         return loadDataAggregationsUseCase.invoke(input)
     }
 
@@ -236,12 +265,19 @@ constructor(
         selectedDate: Instant,
         period: DateNavigationPeriod,
         list: ArrayList<FormattedEntry>,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ) {
         if (permissionType in AGGREGATE_HEADER_DATA_TYPES) {
-            when (val aggregationResult =
-                loadAggregation(
-                    permissionType, packageName, selectedDate, period, showDataOrigin)) {
+            when (
+                val aggregationResult =
+                    loadAggregation(
+                        permissionType,
+                        packageName,
+                        selectedDate,
+                        period,
+                        showDataOrigin,
+                    )
+            ) {
                 is UseCaseResults.Success -> {
                     list.add(0, aggregationResult.data)
                 }
@@ -252,44 +288,52 @@ constructor(
         }
     }
 
-    fun addToDeleteSet(entryID: String){
-        val deleteSet = _setOfEntriesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.add(entryID)
-        _setOfEntriesToBeDeleted.value = deleteSet.toSet()
-    }
-
-    fun removeFromDeleteSet(entryID: String){
-        val deleteSet = _setOfEntriesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.remove(entryID)
-        _setOfEntriesToBeDeleted.value = deleteSet.toSet()
-    }
-
-    private fun resetDeleteSet() {
-        _setOfEntriesToBeDeleted.value = emptySet()
-    }
-
-    fun setScreenState(screenState: EntriesDeletionScreenState){
-        _screenState.value = screenState
-        if(_screenState.value == EntriesDeletionScreenState.VIEW){
-            resetDeleteSet()
+    fun addToDeleteMap(entryID: String, dataType: DataType) {
+        val deleteMap = _mapOfEntriesToBeDeleted.value.orEmpty().toMutableMap()
+        deleteMap[entryID] = dataType
+        _mapOfEntriesToBeDeleted.value = deleteMap.toMap()
+        if (numOfEntries == deleteMap.size) {
+            _allEntriesSelected.postValue(true)
         }
     }
 
-    fun setDataType(dataType: DataType){
-        this.dataType = dataType
+    fun removeFromDeleteMap(entryID: String) {
+        val deleteMap = _mapOfEntriesToBeDeleted.value.orEmpty().toMutableMap()
+        deleteMap.remove(entryID)
+        _mapOfEntriesToBeDeleted.value = deleteMap.toMap()
+        if (numOfEntries != deleteMap.size) {
+            _allEntriesSelected.postValue(false)
+        }
     }
 
-    fun getDataType(): DataType? {
-        return dataType
+    private fun resetDeleteMap() {
+        _mapOfEntriesToBeDeleted.value = emptyMap()
     }
 
-    fun setDateNavigationText(text: String){
+    fun setScreenState(screenState: EntriesDeletionScreenState) {
+        _screenState.value = screenState
+        if (_screenState.value == EntriesDeletionScreenState.VIEW) {
+            resetDeleteMap()
+        }
+    }
+
+    fun setDateNavigationText(text: String) {
         this.dateNavigationText = text
     }
 
     fun getDateNavigationText(): String? {
         return dateNavigationText
     }
+
+    fun setAllEntriesSelectedValue(boolean: Boolean) {
+        _allEntriesSelected.postValue(boolean)
+    }
+
+    fun getEntriesList(): MutableList<FormattedEntry> {
+        return this.entriesList
+    }
+
+    fun getNumOfEntries(): Int = numOfEntries
 
     sealed class EntriesFragmentState {
         object Loading : EntriesFragmentState()
@@ -303,6 +347,6 @@ constructor(
 
     enum class EntriesDeletionScreenState {
         VIEW,
-        DELETE
+        DELETE,
     }
 }

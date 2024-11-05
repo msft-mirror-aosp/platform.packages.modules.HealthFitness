@@ -134,9 +134,7 @@ class RawFhirFragment : Hilt_RawFhirFragment() {
         override fun bind(view: View, data: FormattedFhir, index: Int) {
             val rawFhir = view.findViewById<TextView>(R.id.item_raw_fhir)
             rawFhir.text = data.fhir
-            // TODO(b/364239927): Finalize content description with UX.
-            rawFhir.contentDescription =
-                view.context.getString(R.string.raw_fhir_content_description)
+            rawFhir.contentDescription = data.fhirContentDescription
             // TODO(b/342159144): Log impression.
         }
     }

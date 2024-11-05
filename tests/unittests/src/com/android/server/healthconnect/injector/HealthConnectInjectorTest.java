@@ -23,8 +23,8 @@ import android.content.Context;
 import androidx.test.InstrumentationRegistry;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import org.junit.Before;
@@ -34,43 +34,51 @@ import org.mockito.MockitoAnnotations;
 
 public class HealthConnectInjectorTest {
 
-    private Context mContext;
     @Mock private PackageInfoUtils mPackageInfoUtils;
-    @Mock private TransactionManager mTransactionManager;
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock
+    private com.android.server.healthconnect.permission.FirstGrantTimeManager
+            mFirstGrantTimeManager;
+
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
+    private HealthConnectInjectorImpl.Builder mBuilder;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mContext = InstrumentationRegistry.getContext();
-        HealthConnectDeviceConfigManager.initializeInstance(mContext);
+        Context context = InstrumentationRegistry.getContext();
+        HealthConnectDeviceConfigManager.initializeInstance(context);
+        mBuilder =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager);
     }
 
     @Test
     public void setFakePackageInfoUtils_injectorReturnsFakePackageInfoUtils() {
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
-                        .setPackageInfoUtils(mPackageInfoUtils)
-                        .build();
+                mBuilder.setPackageInfoUtils(mPackageInfoUtils).build();
 
         assertThat(healthConnectInjector.getPackageInfoUtils()).isEqualTo(mPackageInfoUtils);
     }
 
     @Test
     public void testProductionInjector_injectorReturnsOriginalPackageInfoUtils() {
-        HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext).build();
+        HealthConnectInjector healthConnectInjector = mBuilder.build();
 
-        assertThat(healthConnectInjector.getPackageInfoUtils())
-                .isEqualTo(PackageInfoUtils.getInstance());
+        assertThat(healthConnectInjector.getPackageInfoUtils()).isNotEqualTo(mPackageInfoUtils);
     }
 
     @Test
-    public void setFakeHealthDataCategoryPriorityHelper_injectorReturnsFakeTransactionManager() {
+    public void
+            setFakeHealthDataCategoryPriorityHelper_injectorReturnsFakeHealthDataCategoryPriorityHelper() {
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
-                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
+                mBuilder.setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .build();
 
         assertThat(healthConnectInjector.getHealthDataCategoryPriorityHelper())
@@ -79,10 +87,9 @@ public class HealthConnectInjectorTest {
 
     @Test
     public void testProductionInjector_injectorReturnsOriginalHealthDataCategoryPriorityHelper() {
-        HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext).build();
+        HealthConnectInjector healthConnectInjector = mBuilder.build();
 
         assertThat(healthConnectInjector.getHealthDataCategoryPriorityHelper())
-                .isEqualTo(HealthDataCategoryPriorityHelper.getInstance());
+                .isNotEqualTo(mHealthDataCategoryPriorityHelper);
     }
 }

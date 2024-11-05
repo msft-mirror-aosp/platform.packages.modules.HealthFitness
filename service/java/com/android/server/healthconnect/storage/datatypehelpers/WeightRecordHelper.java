@@ -22,7 +22,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -70,7 +69,6 @@ public final class WeightRecordHelper extends InstantRecordHelper<WeightRecordIn
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return WEIGHT_RECORD_TABLE_NAME;
     }
@@ -92,19 +90,17 @@ public final class WeightRecordHelper extends InstantRecordHelper<WeightRecordIn
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull WeightRecordInternal weightRecord) {
+    void populateSpecificRecordValue(Cursor cursor, WeightRecordInternal weightRecord) {
         weightRecord.setWeight(getCursorDouble(cursor, WEIGHT_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull WeightRecordInternal weightRecord) {
+            ContentValues contentValues, WeightRecordInternal weightRecord) {
         contentValues.put(WEIGHT_COLUMN_NAME, weightRecord.getWeight());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(new Pair<>(WEIGHT_COLUMN_NAME, REAL));
     }

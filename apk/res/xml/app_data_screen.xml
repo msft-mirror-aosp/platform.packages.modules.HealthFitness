@@ -15,15 +15,19 @@
   limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:key="access_screen">
-    <PreferenceCategory
-        android:key="can_read">
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="can_write">
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="inactive"
-        android:title="@string/inactive_apps">
-    </PreferenceCategory>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.android.settingslib.widget.AppHeaderPreference
+        android:key="key_header"/>
+    <com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
+        android:order="1"
+        android:key="key_select_all"
+        android:title="@string/select_all"
+        app:isPreferenceVisible="false"/>
+    <com.android.healthconnect.controller.shared.preference.EmptyPreferenceCategory
+        android:key="key_permission_types"/>
+    <com.android.healthconnect.controller.shared.preference.NoDataPreference
+        app:isPreferenceVisible="false"/>
+    <com.android.settingslib.widget.FooterPreference
+        android:key="key_footer"
+        app:isPreferenceVisible="false"/>
 </PreferenceScreen>

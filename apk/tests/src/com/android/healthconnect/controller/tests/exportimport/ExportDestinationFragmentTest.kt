@@ -16,13 +16,17 @@
 
 package com.android.healthconnect.controller.tests.exportimport
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
 import android.health.connect.exportimport.ExportImportDocumentProvider
+import android.health.connect.exportimport.ScheduledExportStatus
 import android.net.Uri
 import android.os.Bundle
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import android.provider.DocumentsContract
 import android.view.View
 import androidx.navigation.Navigation
@@ -50,6 +54,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportDestinationFragment
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
@@ -60,6 +65,7 @@ import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.logging.ExportDestinationElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -116,6 +122,7 @@ class ExportDestinationFragmentTest {
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue val healthDataExportManager: HealthDataExportManager = FakeHealthDataExportManager()
     private val fakeHealthDataExportManager = healthDataExportManager as FakeHealthDataExportManager
@@ -129,6 +136,10 @@ class ExportDestinationFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        // Required for aconfig flag reading for tests run on pre V devices
+        InstrumentationRegistry.getInstrumentation()
+            .getUiAutomation()
+            .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG)
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
         Intents.init()
@@ -1183,6 +1194,35 @@ class ExportDestinationFragmentTest {
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
         intended(hasExtra(Intent.EXTRA_TITLE, DEFAULT_FILE_NAME))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    fun exportDestinationFragment_nextExportSequentialNumberPresent_showsDefaultNameWithNumber() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        fakeHealthDataExportManager.setScheduledExportStatus(
+            ScheduledExportStatus.Builder()
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+                .setNextExportSequentialNumber(42)
+                .build()
+        )
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withId(R.id.export_import_next_button)).perform(click())
+
+        intended(hasExtra(Intent.EXTRA_TITLE, "Health Connect (42).zip"))
     }
 
     private fun documentProviderWithTitle(title: String): Matcher<View>? =

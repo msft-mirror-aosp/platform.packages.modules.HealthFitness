@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.utils;
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.ArrayMap;
 
@@ -65,12 +64,14 @@ import com.android.server.healthconnect.storage.datatypehelpers.Vo2MaxRecordHelp
 import com.android.server.healthconnect.storage.datatypehelpers.WeightRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.WheelchairPushesRecordHelper;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
 /**
  * Store for all the record helpers
  *
+ * @deprecated Use {@link InternalHealthConnectMappings}.
  * @hide
  */
 public final class RecordHelperProvider {
@@ -182,12 +183,20 @@ public final class RecordHelperProvider {
     // Private constructor to prevent initialisation.
     private RecordHelperProvider() {}
 
-    @NonNull
-    public static Map<Integer, RecordHelper<?>> getRecordHelpers() {
-        return RECORD_ID_TO_HELPER_MAP;
+    /**
+     * Returns an immutable collection of all the record helpers.
+     *
+     * @deprecated Use {@link InternalHealthConnectMappings#getRecordHelpers()}
+     */
+    @Deprecated
+    public static Collection<RecordHelper<?>> getRecordHelpers() {
+        return RECORD_ID_TO_HELPER_MAP.values();
     }
 
-    @NonNull
+    /**
+     * @deprecated {@link InternalHealthConnectMappings#getRecordHelper(int)}
+     */
+    @Deprecated
     public static RecordHelper<?> getRecordHelper(int recordType) {
         return requireNonNull(RECORD_ID_TO_HELPER_MAP.get(recordType));
     }

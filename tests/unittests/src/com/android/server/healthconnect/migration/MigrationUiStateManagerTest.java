@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,7 +36,6 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.migration.notification.MigrationNotificationSender;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,7 +58,6 @@ public class MigrationUiStateManagerTest {
     @Mock private Context mContext;
     @Mock private MigrationStateManager mMigrationStateManager;
     @Mock private MigrationNotificationSender mMigrationNotificationSender;
-    @Mock private PreferenceHelper mPreferenceHelper;
 
     private MigrationUiStateManager mMigrationUiStateManager;
     private static final UserHandle DEFAULT_USER_HANDLE = UserHandle.of(UserHandle.myUserId());
@@ -70,8 +67,6 @@ public class MigrationUiStateManagerTest {
     @Before
     public void setUp() {
         mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
-
         mMigrationUiStateManager =
                 new MigrationUiStateManager(
                         mContext,
@@ -79,11 +74,6 @@ public class MigrationUiStateManagerTest {
                         mMigrationStateManager,
                         mMigrationNotificationSender);
         mMigrationUiStateManager.attachTo(mMigrationStateManager);
-    }
-
-    @After
-    public void tearDown() {
-        clearInvocations(mPreferenceHelper);
     }
 
     @Test

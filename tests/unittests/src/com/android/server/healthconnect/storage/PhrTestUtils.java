@@ -16,12 +16,18 @@
 
 package com.android.server.healthconnect.storage;
 
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+
+import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -30,35 +36,32 @@ import android.net.Uri;
 
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
+import com.google.common.truth.Correspondence;
+
 import java.util.List;
+import java.util.Objects;
 
 public class PhrTestUtils {
+    public static final Correspondence<AccessLog, AccessLog> ACCESS_LOG_EQUIVALENCE =
+            Correspondence.from(PhrTestUtils::isAccessLogEqual, "isAccessLogEqual");
 
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
+    private final TransactionManager mTransactionManager;
     private final Context mContext;
 
     public PhrTestUtils(
             Context context,
+            TransactionManager transactionManager,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper) {
         mContext = context;
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
-    }
-
-    /**
-     * Upsert a {@link MedicalResource} using the given {@link MedicalResourceCreator} and the
-     * {@code dataSourceId}.
-     */
-    public MedicalResource upsertResource(MedicalResourceCreator creator, String dataSourceId) {
-        MedicalResource medicalResource = creator.create(dataSourceId);
-        return mMedicalResourceHelper
-                .upsertMedicalResources(
-                        DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(medicalResource)))
-                .get(0);
+        mTransactionManager = transactionManager;
     }
 
     /**
@@ -76,13 +79,13 @@ public class PhrTestUtils {
 
     /**
      * Upsert {@link MedicalResource}s using the given {@link MedicalResourcesCreator}, the {@code
-     * numOfResources} and {@code dataSourceId}.
+     * numOfResources} and {@link MedicalDataSource}.
      */
     public List<MedicalResource> upsertResources(
-            MedicalResourcesCreator creator, int numOfResources, String dataSourceId) {
-        List<MedicalResource> medicalResources = creator.create(numOfResources, dataSourceId);
+            MedicalResourcesCreator creator, int numOfResources, MedicalDataSource dataSource) {
+        List<MedicalResource> medicalResources = creator.create(numOfResources, dataSource.getId());
         return mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME,
+                dataSource.getPackageName(),
                 medicalResources.stream().map(PhrTestUtils::makeUpsertRequest).toList());
     }
 
@@ -116,13 +119,16 @@ public class PhrTestUtils {
     /**
      * Insert and return a {@link MedicalDataSource} where the display name, and URI will contain
      * the given name.
+     *
+     * <p>The FHIR version is set to R4.
      */
-    public MedicalDataSource insertMedicalDataSource(String name, String packageName) {
+    public MedicalDataSource insertR4MedicalDataSource(String name, String packageName) {
         Uri uri = Uri.parse(String.format("%s/%s", DATA_SOURCE_FHIR_BASE_URI, name));
         String displayName = String.format("%s %s", DATA_SOURCE_DISPLAY_NAME, name);
 
         CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
-                new CreateMedicalDataSourceRequest.Builder(uri, displayName).build();
+                new CreateMedicalDataSourceRequest.Builder(uri, displayName, FHIR_VERSION_R4)
+                        .build();
         return mMedicalDataSourceHelper.createMedicalDataSource(
                 mContext, createMedicalDataSourceRequest, packageName);
     }
@@ -140,5 +146,32 @@ public class PhrTestUtils {
          * dataSourceId}.
          */
         List<MedicalResource> create(int num, String dataSourceId);
+    }
+
+    /** Reads the last_modified_time column for the given {@code tableName}. */
+    public long readLastModifiedTimestamp(String tableName) {
+        long timestamp = DEFAULT_LONG;
+        ReadTableRequest readTableRequest = new ReadTableRequest(tableName);
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    timestamp = getCursorLong(cursor, LAST_MODIFIED_TIME_COLUMN_NAME);
+                } while (cursor.moveToNext());
+            }
+            return timestamp;
+        }
+    }
+
+    /**
+     * Given two {@link AccessLog}s, compare whether they are equal or not. This ignores the {@link
+     * AccessLog#getAccessTime()}.
+     */
+    public static boolean isAccessLogEqual(AccessLog actual, AccessLog expected) {
+        return Objects.equals(actual.getPackageName(), expected.getPackageName())
+                && actual.getOperationType() == expected.getOperationType()
+                && Objects.equals(
+                        actual.getMedicalResourceTypes(), expected.getMedicalResourceTypes())
+                && Objects.equals(actual.getRecordTypes(), expected.getRecordTypes())
+                && actual.isMedicalDataSourceAccessed() == expected.isMedicalDataSourceAccessed();
     }
 }

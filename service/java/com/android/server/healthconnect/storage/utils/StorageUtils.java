@@ -30,26 +30,23 @@ import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIV
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.CLIENT_RECORD_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.utils.RecordTypeForUuidMappings.getRecordTypeIdForUuid;
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
@@ -119,7 +116,7 @@ public final class StorageUtils {
      * dataSourceId}.
      */
     public static UUID generateMedicalResourceUUID(
-            @NonNull String resourceId, int resourceType, @NonNull String dataSourceId) {
+            String resourceId, int resourceType, String dataSourceId) {
         final byte[] resourceIdBytes = resourceId.getBytes();
         final byte[] dataSourceIdBytes = dataSourceId.getBytes();
 
@@ -134,24 +131,12 @@ public final class StorageUtils {
     }
 
     /**
-     * Sets {@link UUID} for the given {@code upsertMedicalResourceInternalRequest}. Since the rest
-     * of the fields in {@link UpsertMedicalResourceInternalRequest} are not yet created, the UUID
-     * is randomly generated.
-     */
-    public static void addNameBasedUUIDTo(
-            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
-        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
-        // resource_id.
-        upsertMedicalResourceInternalRequest.setUuid(UUID.randomUUID());
-    }
-
-    /**
      * Sets UUID for the given record. If {@link RecordInternal#getClientRecordId()} is null or
      * empty, then the UUID is randomly generated. Otherwise, the UUID is generated as a combination
      * of {@link RecordInternal#getPackageName()}, {@link RecordInternal#getClientRecordId()} and
      * {@link RecordInternal#getRecordType()}.
      */
-    public static void addNameBasedUUIDTo(@NonNull RecordInternal<?> recordInternal) {
+    public static void addNameBasedUUIDTo(RecordInternal<?> recordInternal) {
         final String clientRecordId = recordInternal.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             recordInternal.setUuid(UUID.randomUUID());
@@ -167,7 +152,7 @@ public final class StorageUtils {
     }
 
     /** Updates the uuid using the clientRecordID if the clientRecordId is present. */
-    public static void updateNameBasedUUIDIfRequired(@NonNull RecordInternal<?> recordInternal) {
+    public static void updateNameBasedUUIDIfRequired(RecordInternal<?> recordInternal) {
         final String clientRecordId = recordInternal.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             // If clientRecordID is absent, use the uuid already set in the input record and
@@ -189,8 +174,7 @@ public final class StorageUtils {
      * RecordIdFilter#getId()}. Otherwise, the UUID is generated as a combination of the package
      * name, {@link RecordIdFilter#getClientRecordId()} and {@link RecordIdFilter#getRecordType()}.
      */
-    public static UUID getUUIDFor(
-            @NonNull RecordIdFilter recordIdFilter, @NonNull String packageName) {
+    public static UUID getUUIDFor(RecordIdFilter recordIdFilter, String packageName) {
         final String clientRecordId = recordIdFilter.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             return UUID.fromString(recordIdFilter.getId());
@@ -199,11 +183,10 @@ public final class StorageUtils {
         return getUUID(
                 packageName,
                 clientRecordId,
-                RecordMapper.getInstance().getRecordType(recordIdFilter.getRecordType()));
+                HealthConnectMappings.getInstance().getRecordType(recordIdFilter.getRecordType()));
     }
 
-    public static void addPackageNameTo(
-            @NonNull RecordInternal<?> recordInternal, @NonNull String packageName) {
+    public static void addPackageNameTo(RecordInternal<?> recordInternal, String packageName) {
         recordInternal.setPackageName(packageName);
     }
 
@@ -292,7 +275,7 @@ public final class StorageUtils {
     }
 
     @Nullable
-    public static String getMaxPrimaryKeyQuery(@NonNull String tableName) {
+    public static String getMaxPrimaryKeyQuery(String tableName) {
         return "SELECT MAX("
                 + PRIMARY_COLUMN_NAME
                 + ") as "
@@ -318,7 +301,7 @@ public final class StorageUtils {
 
     /** Encodes record properties participating in deduplication into a byte array. */
     @Nullable
-    public static byte[] getDedupeByteBuffer(@NonNull RecordInternal<?> record) {
+    public static byte[] getDedupeByteBuffer(RecordInternal<?> record) {
         if (!isEmpty(record.getClientRecordId())) {
             return null; // If dedupe by clientRecordId then don't dedupe by hash
         }
@@ -334,8 +317,7 @@ public final class StorageUtils {
         throw new IllegalArgumentException("Unexpected record type: " + record);
     }
 
-    @NonNull
-    private static byte[] getDedupeByteBuffer(@NonNull InstantRecordInternal<?> record) {
+    private static byte[] getDedupeByteBuffer(InstantRecordInternal<?> record) {
         return ByteBuffer.allocate(Long.BYTES * 3)
                 .putLong(record.getAppInfoId())
                 .putLong(record.getDeviceInfoId())
@@ -344,7 +326,7 @@ public final class StorageUtils {
     }
 
     @Nullable
-    private static byte[] getDedupeByteBuffer(@NonNull IntervalRecordInternal<?> record) {
+    private static byte[] getDedupeByteBuffer(IntervalRecordInternal<?> record) {
         final int type = record.getRecordType();
         if ((type == RECORD_TYPE_HYDRATION) || (type == RECORD_TYPE_NUTRITION)) {
             return null; // Some records are exempt from deduplication
@@ -359,8 +341,7 @@ public final class StorageUtils {
     }
 
     /** Returns a UUID for the given package name, client record id and record type id. */
-    private static UUID getUUID(
-            @NonNull String packageName, @NonNull String clientRecordId, int recordTypeId) {
+    private static UUID getUUID(String packageName, String clientRecordId, int recordTypeId) {
         final byte[] packageNameBytes = packageName.getBytes();
         final byte[] clientRecordIdBytes = clientRecordId.getBytes();
 
@@ -370,7 +351,9 @@ public final class StorageUtils {
                                         + Integer.BYTES
                                         + clientRecordIdBytes.length)
                         .put(packageNameBytes)
-                        .putInt(getRecordTypeIdForUuid(recordTypeId))
+                        .putInt(
+                                InternalHealthConnectMappings.getInstance()
+                                        .getRecordTypeIdForUuid(recordTypeId))
                         .put(clientRecordIdBytes)
                         .array();
         return UUID.nameUUIDFromBytes(bytes);
@@ -379,7 +362,10 @@ public final class StorageUtils {
     /**
      * Returns if priority of apps needs to be considered to compute the aggregate request for the
      * record type.
+     *
+     * @deprecated use {@link InternalHealthConnectMappings#supportsPriority(int, int)}
      */
+    @Deprecated
     public static boolean supportsPriority(int recordType, int operationType) {
         if (operationType != SUM) {
             return false;
@@ -391,7 +377,12 @@ public final class StorageUtils {
         return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
-    /** Returns if derivation needs to be done to calculate aggregate */
+    /**
+     * Returns if derivation needs to be done to calculate aggregate.
+     *
+     * @deprecated use {@link InternalHealthConnectMappings#isDerivedType(int)}
+     */
+    @Deprecated
     public static boolean isDerivedType(int recordType) {
         return recordType == RECORD_TYPE_BASAL_METABOLIC_RATE
                 || recordType == RECORD_TYPE_TOTAL_CALORIES_BURNED;
@@ -469,8 +460,7 @@ public final class StorageUtils {
     }
 
     /** Converts a list of {@link UUID} strings to a list of hex strings. */
-    @NonNull
-    public static List<String> convertUuidStringsToHexStrings(@NonNull List<String> ids) {
+    public static List<String> convertUuidStringsToHexStrings(List<String> ids) {
         return StorageUtils.getListOfHexStrings(toUuids(ids));
     }
 
@@ -554,12 +544,12 @@ public final class StorageUtils {
         return id;
     }
 
-    public static boolean checkTableExists(HealthConnectDatabase database, String tableName) {
+    /** Checks whether {@code tableName} exists in the {@code database}. */
+    public static boolean checkTableExists(SQLiteDatabase database, String tableName) {
         try (Cursor cursor =
-                database.getReadableDatabase()
-                        .rawQuery(
-                                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
-                                new String[] {tableName})) {
+                database.rawQuery(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                        new String[] {tableName})) {
             if (cursor.getCount() == 0) {
                 Slog.d(TAG, "Table does not exist: " + tableName);
             }

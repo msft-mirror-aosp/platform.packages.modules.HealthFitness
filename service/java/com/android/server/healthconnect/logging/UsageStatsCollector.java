@@ -18,7 +18,6 @@ package com.android.server.healthconnect.logging;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -31,8 +30,9 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * Collects Health Connect usage stats.
@@ -45,20 +45,26 @@ final class UsageStatsCollector {
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
     private final Context mContext;
-    private final List<PackageInfo> mAllPackagesInstalledForUser;
+    private final Map<String, PackageInfo> mPackageNameToPackageInfo = new HashMap<>();
 
     private final PreferenceHelper mPreferenceHelper;
+    private final AccessLogsHelper mAccessLogsHelper;
 
-    UsageStatsCollector(Context context, UserHandle userHandle, PreferenceHelper preferenceHelper) {
-        Objects.requireNonNull(userHandle);
-        Objects.requireNonNull(context);
-
+    UsageStatsCollector(
+            Context context,
+            UserHandle userHandle,
+            PreferenceHelper preferenceHelper,
+            AccessLogsHelper accessLogsHelper) {
         mContext = context;
-        mAllPackagesInstalledForUser =
+        mPreferenceHelper = preferenceHelper;
+        mAccessLogsHelper = accessLogsHelper;
+        List<PackageInfo> allPackagesInstalledForUser =
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
-        mPreferenceHelper = preferenceHelper;
+        for (PackageInfo packageInfo : allPackagesInstalledForUser) {
+            mPackageNameToPackageInfo.put(packageInfo.packageName, packageInfo);
+        }
     }
 
     /**
@@ -71,7 +77,7 @@ final class UsageStatsCollector {
      */
     int getNumberOfAppsCompatibleWithHealthConnect() {
         int numberOfAppsGrantedHealthPermissions = 0;
-        for (PackageInfo info : mAllPackagesInstalledForUser) {
+        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
             if (hasRequestedHealthPermission(info)) {
                 numberOfAppsGrantedHealthPermissions++;
             }
@@ -80,20 +86,21 @@ final class UsageStatsCollector {
     }
 
     /**
-     * Returns the number of apps that are connected to Health Connect.
+     * Returns the list of apps that are connected to Health Connect.
      *
-     * @return Number of apps that are connected (have read/write) to Health Connect
+     * @return Map of package name to permissions granted for apps that are connected (have
+     *     read/write) to Health Connect
      */
-    int getPackagesHoldingHealthPermissions() {
-        // TODO(b/260707328): replace with getPackagesHoldingPermissions
-        int count = 0;
-
-        for (PackageInfo info : mAllPackagesInstalledForUser) {
-            if (PackageInfoUtils.anyRequestedHealthPermissionGranted(mContext, info)) {
-                count++;
+    Map<String, List<String>> getPackagesHoldingHealthPermissions() {
+        Map<String, List<String>> packageNameToPermissionsGranted = new HashMap<>();
+        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
+            List<String> grantedHealthPermissions =
+                    PackageInfoUtils.getGrantedHealthPermissions(mContext, info);
+            if (!grantedHealthPermissions.isEmpty()) {
+                packageNameToPermissionsGranted.put(info.packageName, grantedHealthPermissions);
             }
         }
-        return count;
+        return packageNameToPermissionsGranted;
     }
 
     /**
@@ -126,7 +133,8 @@ final class UsageStatsCollector {
 
     void upsertLastAccessLogTimeStamp() {
 
-        long latestAccessLogTimeStamp = AccessLogsHelper.getLatestAccessLogTimeStamp();
+        long latestAccessLogTimeStamp =
+                mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
 
         // Access logs are only stored for 7 days, therefore only update this value if there is an
         // access log. Last access timestamp can be before 7 days and might already exist in
@@ -137,7 +145,7 @@ final class UsageStatsCollector {
         }
     }
 
-    private boolean hasRequestedHealthPermission(@NonNull PackageInfo packageInfo) {
+    private boolean hasRequestedHealthPermission(PackageInfo packageInfo) {
         if (packageInfo == null || packageInfo.requestedPermissions == null) {
             return false;
         }
