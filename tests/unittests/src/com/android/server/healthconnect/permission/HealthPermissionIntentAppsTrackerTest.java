@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.permission;
 
+import static com.android.healthfitness.flags.Flags.FLAG_PERMISSION_TRACKER_FIX_MAPPING_INIT;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,8 +31,11 @@ import android.content.pm.ResolveInfo;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -42,10 +47,11 @@ public class HealthPermissionIntentAppsTrackerTest {
     private static final String SELF_PACKAGE_NAME = "com.android.healthconnect.unittests";
     private static final UserHandle CURRENT_USER = Process.myUserHandle();
 
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
     @Mock private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private UserManager mUserManager;
-    private HealthPermissionIntentAppsTracker mTracker;
 
     @Before
     public void setUp() {
@@ -54,13 +60,14 @@ public class HealthPermissionIntentAppsTrackerTest {
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
         when(mContext.getSystemService(eq(UserManager.class))).thenReturn(mUserManager);
         when(mUserManager.getUserHandles(anyBoolean())).thenReturn(List.of(CURRENT_USER));
-        setSelfIntentSupport(false);
-        mTracker = new HealthPermissionIntentAppsTracker(mContext);
     }
 
     @Test
     public void testCheckPackage_packageSupportsIntent_returnsTrue() {
         setSelfIntentSupport(/* intentSupported= */ true);
+        HealthPermissionIntentAppsTracker mTracker =
+                new HealthPermissionIntentAppsTracker(mContext);
+        mTracker.onUserUnlocked(CURRENT_USER);
         assertThat(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isTrue();
     }
@@ -68,13 +75,29 @@ public class HealthPermissionIntentAppsTrackerTest {
     @Test
     public void testCheckPackage_packageDoesntSupportIntent_returnsFalse() {
         setSelfIntentSupport(/* intentSupported= */ false);
+        HealthPermissionIntentAppsTracker mTracker =
+                new HealthPermissionIntentAppsTracker(mContext);
+        mTracker.onUserUnlocked(CURRENT_USER);
         assertThat(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isFalse();
     }
 
     @Test
+    @EnableFlags({FLAG_PERMISSION_TRACKER_FIX_MAPPING_INIT})
+    public void testCheckPackage_userNotInit_packageSupportsIntent_returnsTrue() {
+        setSelfIntentSupport(/* intentSupported= */ true);
+        HealthPermissionIntentAppsTracker mTracker =
+                new HealthPermissionIntentAppsTracker(mContext);
+        assertThat(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
+                .isTrue();
+    }
+
+    @Test
     public void testUpdatePackageState_packageSupportIntentRemoved_returnsRemovedIntentTrue() {
         setSelfIntentSupport(/* intentSupported= */ true);
+        HealthPermissionIntentAppsTracker mTracker =
+                new HealthPermissionIntentAppsTracker(mContext);
+        mTracker.onUserUnlocked(CURRENT_USER);
         assertThat(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isTrue();
         setSelfIntentSupport(/* intentSupported= */ false);
