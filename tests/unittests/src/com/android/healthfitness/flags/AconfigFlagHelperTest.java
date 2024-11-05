@@ -138,9 +138,11 @@ public class AconfigFlagHelperTest {
                 assertTrue(
                         String.format(
                                 "DB version %d hasn't been rolled out yet, it's likely a mistake to"
-                                    + " set DatabaseVersions#LAST_ROLLED_OUT_DB_VERSION to a number"
-                                    + " greater than %d. Make sure you follow the instructions in"
-                                    + " go/hc-mainline-dev/trunk_stable/add-db-changes.",
+                                        + " set DatabaseVersions#LAST_ROLLED_OUT_DB_VERSION to a "
+                                        + "number"
+                                        + " greater than %d. Make sure you follow the "
+                                        + "instructions in"
+                                        + " go/hc-mainline-dev/trunk_stable/add-db-changes.",
                                 dbVersion, dbVersion),
                         dbVersion > LAST_ROLLED_OUT_DB_VERSION);
             }
@@ -188,7 +190,12 @@ public class AconfigFlagHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_ECOSYSTEM_METRICS, Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES})
+    @EnableFlags({
+        Flags.FLAG_ECOSYSTEM_METRICS,
+        Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_ACTIVITY_INTENSITY_DB
+    })
     public void isEcosystemMetricsEnabled_bothFlagsOn_expectTrue() {
         assertThat(isEcosystemMetricsEnabled()).isTrue();
     }
