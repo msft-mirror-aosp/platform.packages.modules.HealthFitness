@@ -91,8 +91,6 @@ public class RecordHelperTest {
         StorageContext context = testRule.getDatabaseContext();
         mTransactionManager = testRule.getTransactionManager();
         DatabaseHelper.clearAllData(mTransactionManager);
-        DeviceInfoHelper.resetInstanceForTest();
-
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setTransactionManager(mTransactionManager)

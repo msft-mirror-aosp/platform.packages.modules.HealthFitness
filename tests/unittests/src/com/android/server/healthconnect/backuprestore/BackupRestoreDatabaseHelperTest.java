@@ -53,7 +53,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestU
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -117,8 +116,6 @@ public class BackupRestoreDatabaseHelperTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        DeviceInfoHelper.resetInstanceForTest();
-
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
 
         HealthConnectInjector healthConnectInjector =
@@ -153,12 +150,6 @@ public class BackupRestoreDatabaseHelperTest {
                         internalHealthConnectMappings,
                         changeLogsHelper,
                         changeLogsRequestHelper);
-    }
-
-    @After
-    public void tearDown() {
-
-        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test

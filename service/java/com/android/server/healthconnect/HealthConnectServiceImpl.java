@@ -307,7 +307,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ChangeLogsRequestHelper changeLogsRequestHelper,
             InternalHealthConnectMappings internalHealthConnectMappings,
             PriorityMigrationHelper priorityMigrationHelper,
-            AppInfoHelper appInfoHelper) {
+            AppInfoHelper appInfoHelper,
+            DeviceInfoHelper deviceInfoHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -319,7 +320,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mCurrentForegroundUser = context.getUser();
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mMigrationStateManager = migrationStateManager;
-        mDeviceInfoHelper = DeviceInfoHelper.getInstance();
+        mDeviceInfoHelper = deviceInfoHelper;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
