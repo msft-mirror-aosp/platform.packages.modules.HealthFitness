@@ -308,10 +308,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             InternalHealthConnectMappings internalHealthConnectMappings,
             PriorityMigrationHelper priorityMigrationHelper,
             AppInfoHelper appInfoHelper,
-            DeviceInfoHelper deviceInfoHelper) {
+            DeviceInfoHelper deviceInfoHelper,
+            PreferenceHelper preferenceHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
-        mPreferenceHelper = PreferenceHelper.getInstance();
+        mPreferenceHelper = preferenceHelper;
         mChangeLogsRequestHelper = changeLogsRequestHelper;
         mActivityDateHelper = activityDateHelper;
         mPermissionHelper = permissionHelper;
