@@ -102,9 +102,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? TransactionManager.initializeInstance(
                                 StorageContext.create(context, userHandle))
                         : builder.mTransactionManager;
+        mHealthConnectMappings = HealthConnectMappings.getInstance();
         mAppInfoHelper =
                 builder.mAppInfoHelper == null
-                        ? AppInfoHelper.getInstance(mTransactionManager)
+                        ? new AppInfoHelper(mTransactionManager, mHealthConnectMappings)
                         : builder.mAppInfoHelper;
         mPackageInfoUtils =
                 builder.mPackageInfoUtils == null
@@ -114,7 +115,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mPreferenceHelper == null
                         ? PreferenceHelper.getInstance(mTransactionManager)
                         : builder.mPreferenceHelper;
-        mHealthConnectMappings = HealthConnectMappings.getInstance();
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
@@ -150,7 +150,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
-                        ? DeviceInfoHelper.getInstance(mTransactionManager)
+                        ? new DeviceInfoHelper(mTransactionManager)
                         : builder.mDeviceInfoHelper;
         mAccessLogsHelper =
                 builder.mAccessLogsHelper == null

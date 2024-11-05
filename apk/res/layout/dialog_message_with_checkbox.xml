@@ -54,6 +54,8 @@
 
         <CheckBox
             android:id="@+id/dialog_checkbox"
+            android:textAppearance="?attr/textAppearanceSummary"
+            android:textColor="@color/settingslib_text_color_secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false" />

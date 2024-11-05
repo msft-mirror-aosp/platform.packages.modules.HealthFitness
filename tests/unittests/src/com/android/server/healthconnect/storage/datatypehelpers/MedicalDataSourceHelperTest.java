@@ -148,7 +148,6 @@ public class MedicalDataSourceHelperTest {
 
     @Before
     public void setup() throws NameNotFoundException {
-        AppInfoHelper.resetInstanceForTest();
 
         mContext = spy(mHealthConnectDatabaseTestRule.getDatabaseContext());
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
@@ -179,7 +178,7 @@ public class MedicalDataSourceHelperTest {
         // we don't need context for that.
         mTransactionTestUtils =
                 new TransactionTestUtils(
-                        mHealthConnectDatabaseTestRule.getDatabaseContext(), mTransactionManager);
+                        mHealthConnectDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
         mUtil =
                 new PhrTestUtils(
                         mContext,
@@ -209,7 +208,7 @@ public class MedicalDataSourceHelperTest {
         CreateTableRequest expected =
                 new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, columnInfo)
                         .addForeignKey(
-                                AppInfoHelper.getInstance().getMainTableName(),
+                                AppInfoHelper.TABLE_NAME,
                                 List.of(MedicalDataSourceHelper.getAppInfoIdColumnName()),
                                 List.of(PRIMARY_COLUMN_NAME));
 

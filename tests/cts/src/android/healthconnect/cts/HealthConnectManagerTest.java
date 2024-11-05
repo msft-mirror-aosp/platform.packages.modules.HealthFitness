@@ -1115,38 +1115,39 @@ public class HealthConnectManagerTest {
                     .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
         }
 
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         try {
-            uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
             TestUtils.getApplicationInfo();
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
             assertThat(exception.getErrorCode())
                     .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+        } finally {
             uiAutomation.dropShellPermissionIdentity();
         }
 
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         try {
-            uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
             TestUtils.queryAccessLogs();
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
             assertThat(exception.getErrorCode())
                     .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+        } finally {
             uiAutomation.dropShellPermissionIdentity();
         }
 
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         try {
-            uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
             TestUtils.setAutoDeletePeriod(1);
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
             assertThat(exception.getErrorCode())
                     .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+        } finally {
             uiAutomation.dropShellPermissionIdentity();
         }
 

@@ -173,12 +173,13 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        try {
+            mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
 
-        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse()).isEmpty();
-
-        uiAutomation.dropShellPermissionIdentity();
+            assertThat(receiver.getResponse()).isEmpty();
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
     }
 
     @Test
@@ -196,17 +197,18 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        try {
+            mManager.getMedicalDataSources(
+                    new GetMedicalDataSourcesRequest.Builder().build(),
+                    Executors.newSingleThreadExecutor(),
+                    receiver);
 
-        mManager.getMedicalDataSources(
-                new GetMedicalDataSourcesRequest.Builder().build(),
-                Executors.newSingleThreadExecutor(),
-                receiver);
-
-        assertThat(receiver.getResponse())
-                .comparingElementsUsing(MEDICAL_DATA_SOURCE_EQUIVALENCE)
-                .containsExactly(dataSource1, dataSource2);
-
-        uiAutomation.dropShellPermissionIdentity();
+            assertThat(receiver.getResponse())
+                    .comparingElementsUsing(MEDICAL_DATA_SOURCE_EQUIVALENCE)
+                    .containsExactly(dataSource1, dataSource2);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
     }
 
     @Test

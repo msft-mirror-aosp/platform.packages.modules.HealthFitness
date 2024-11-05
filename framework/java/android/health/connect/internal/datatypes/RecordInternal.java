@@ -21,7 +21,6 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
-import android.annotation.SuppressLint;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Identifier;
@@ -30,6 +29,7 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.os.Parcel;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -41,7 +41,7 @@ import java.util.UUID;
  * @param <T> The record type.
  * @hide
  */
-public abstract class RecordInternal<T extends Record> {
+public abstract class RecordInternal<T extends Record> implements Serializable {
     private final int mRecordIdentifier;
     private UUID mUuid;
     private String mPackageName;
@@ -110,68 +110,6 @@ public abstract class RecordInternal<T extends Record> {
         parcel.writeInt(mRecordingMethod);
 
         populateRecordTo(parcel);
-    }
-
-    /** Converts the record to the B&R data format */
-    public final android.health.connect.proto.backuprestore.Record toProto() {
-        android.health.connect.proto.backuprestore.Record.Builder builder =
-                android.health.connect.proto.backuprestore.Record.newBuilder();
-
-        builder.setUuid(mUuid == null ? "" : mUuid.toString());
-        if (mPackageName != null) {
-            builder.setPackageName(mPackageName);
-        }
-        if (mAppName != null) {
-            builder.setAppName(mAppName);
-        }
-        builder.setLastModifiedTime(mLastModifiedTime);
-        if (mClientRecordId != null) {
-            builder.setClientRecordId(mClientRecordId);
-        }
-        builder.setClientRecordVersion(mClientRecordVersion);
-        if (mManufacturer != null) {
-            builder.setManufacturer(mManufacturer);
-        }
-        if (mModel != null) {
-            builder.setModel(mModel);
-        }
-        builder.setDeviceType(mDeviceType);
-        builder.setRecordingMethod(mRecordingMethod);
-
-        populateToRecordProto(builder);
-
-        return builder.build();
-    }
-
-    /** Populates the record from the B&R data format */
-    @SuppressLint("WrongConstant")
-    public final void fromRecordProto(
-            android.health.connect.proto.backuprestore.Record recordProto) {
-        String uuidString = recordProto.getUuid();
-        if (!uuidString.isEmpty()) {
-            mUuid = UUID.fromString(uuidString);
-        }
-        if (recordProto.hasPackageName()) {
-            mPackageName = recordProto.getPackageName();
-        }
-        if (recordProto.hasAppName()) {
-            mAppName = recordProto.getAppName();
-        }
-        mLastModifiedTime = recordProto.getLastModifiedTime();
-        if (recordProto.hasClientRecordId()) {
-            mClientRecordId = recordProto.getClientRecordId();
-        }
-        mClientRecordVersion = recordProto.getClientRecordVersion();
-        if (recordProto.hasManufacturer()) {
-            mManufacturer = recordProto.getManufacturer();
-        }
-        if (recordProto.hasModel()) {
-            mModel = recordProto.getModel();
-        }
-        mDeviceType = recordProto.getDeviceType();
-        mRecordingMethod = recordProto.getRecordingMethod();
-
-        populateFromRecordProto(recordProto);
     }
 
     @Nullable
@@ -377,10 +315,4 @@ public abstract class RecordInternal<T extends Record> {
      * bundle}
      */
     abstract void populateRecordFrom(@NonNull Parcel bundle);
-
-    abstract void populateToRecordProto(
-            android.health.connect.proto.backuprestore.Record.Builder builder);
-
-    abstract void populateFromRecordProto(
-            android.health.connect.proto.backuprestore.Record recordProto);
 }

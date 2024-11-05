@@ -327,7 +327,6 @@ public class HealthConnectServiceImplTest {
     @Before
     public void setUp() throws Exception {
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(UserHandle.of(anyInt())).thenCallRealMethod();
         when(UserHandle.getUserHandleForUid(anyInt())).thenCallRealMethod();
         mUserHandle = UserHandle.of(UserHandle.myUserId());
@@ -357,6 +356,7 @@ public class HealthConnectServiceImplTest {
                         .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setAppInfoHelper(mAppInfoHelper)
                         .build();
 
         mHealthConnectService =
@@ -378,7 +378,9 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
                         healthConnectInjector.getInternalHealthConnectMappings(),
-                        healthConnectInjector.getPriorityMigrationHelper());
+                        healthConnectInjector.getPriorityMigrationHelper(),
+                        healthConnectInjector.getAppInfoHelper(),
+                        healthConnectInjector.getDeviceInfoHelper());
     }
 
     @After
