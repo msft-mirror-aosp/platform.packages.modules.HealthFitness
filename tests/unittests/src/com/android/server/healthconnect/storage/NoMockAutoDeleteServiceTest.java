@@ -31,7 +31,6 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -82,10 +81,7 @@ public class NoMockAutoDeleteServiceTest {
         StorageContext context = testRule.getDatabaseContext();
         mTransactionManager = testRule.getTransactionManager();
         DatabaseHelper.clearAllData(mTransactionManager);
-        mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         DeviceInfoHelper.resetInstanceForTest();
-        AppInfoHelper.resetInstanceForTest();
 
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
@@ -93,6 +89,8 @@ public class NoMockAutoDeleteServiceTest {
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionTestUtils = new TransactionTestUtils(context, mHealthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
     @Test

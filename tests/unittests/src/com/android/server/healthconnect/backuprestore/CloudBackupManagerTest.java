@@ -105,10 +105,6 @@ public class CloudBackupManagerTest {
         MockitoAnnotations.initMocks(this);
 
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mDatabaseTestRule.getDatabaseContext(), mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
@@ -117,6 +113,10 @@ public class CloudBackupManagerTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
 
+        mTransactionTestUtils =
+                new TransactionTestUtils(
+                        mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         DeviceInfoHelper deviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
@@ -150,7 +150,7 @@ public class CloudBackupManagerTest {
 
     @After
     public void tearDown() {
-        AppInfoHelper.resetInstanceForTest();
+
         DeviceInfoHelper.resetInstanceForTest();
     }
 
