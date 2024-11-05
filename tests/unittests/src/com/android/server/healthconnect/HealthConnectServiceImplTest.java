@@ -53,6 +53,7 @@ import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealth
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW;
 import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
@@ -685,7 +686,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testGetMedicalDataSourcesByIds_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -704,7 +708,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testGetMedicalDataSourcesByIds_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -916,7 +921,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testGetMedicalDataSourcesByRequests_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -935,7 +943,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testGetMedicalDataSourcesByRequests_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -1180,7 +1189,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testUpsertMedicalResources_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -1202,7 +1214,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testUpsertMedicalResources_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -1247,7 +1260,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testReadMedicalDataSourcesByRequests_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -1268,7 +1284,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testReadMedicalDataSourcesByRequests_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -1296,7 +1313,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testReadMedicalDataSourcesByIds_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -1315,7 +1335,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testReadMedicalDataSourcesByIds_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -1811,7 +1832,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testCreateMedicalDataSource_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -1830,7 +1854,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testCreateMedicalDataSource_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -1870,7 +1895,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testDeleteMedicalDataSourceWithData_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -1887,7 +1915,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalDataSourceWithData_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -2041,7 +2070,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testDeleteMedicalResourcesByIds_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -2058,7 +2090,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalResourcesByIds_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
@@ -2138,7 +2171,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
     public void testDeleteMedicalResourcesByRequests_telemetryFlagOff_expectNoLogs()
             throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
@@ -2159,7 +2195,8 @@ public class HealthConnectServiceImplTest {
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalResourcesByRequests_telemetryFlagOn_expectCorrectLogs()
             throws InterruptedException {
