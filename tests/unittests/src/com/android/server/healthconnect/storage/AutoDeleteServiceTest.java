@@ -117,7 +117,6 @@ public class AutoDeleteServiceTest {
 
     @Test
     public void testStartAutoDelete_getPreferenceReturnNull() {
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY)).thenReturn(null);
 
         AutoDeleteService.startAutoDelete(
@@ -139,8 +138,6 @@ public class AutoDeleteServiceTest {
 
     @Test
     public void testStartAutoDelete_getPreferenceReturnNonNull() {
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY))
                 .thenReturn(String.valueOf(30));
 

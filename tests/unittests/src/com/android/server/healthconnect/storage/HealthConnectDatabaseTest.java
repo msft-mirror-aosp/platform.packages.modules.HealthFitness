@@ -261,7 +261,6 @@ public class HealthConnectDatabaseTest {
     }
 
     private static HealthConnectInjector getHealthConnectInjector(Context context) {
-        TransactionManager.clearInstanceForTest();
         return HealthConnectInjectorImpl.newBuilderForTest(context)
                 .setHealthPermissionIntentAppsTracker(mock(HealthPermissionIntentAppsTracker.class))
                 .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))

@@ -23,6 +23,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 
 import java.io.File;
@@ -36,7 +38,7 @@ import java.io.File;
 public final class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
 
-    private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
+    @VisibleForTesting public static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
     private final Context mContext;
 
     public HealthConnectDatabase(Context context) {

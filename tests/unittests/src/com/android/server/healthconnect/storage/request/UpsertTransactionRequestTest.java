@@ -74,8 +74,6 @@ public class UpsertTransactionRequestTest {
         mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
-                        .setTransactionManager(
-                                mHealthConnectDatabaseTestRule.getTransactionManager())
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))

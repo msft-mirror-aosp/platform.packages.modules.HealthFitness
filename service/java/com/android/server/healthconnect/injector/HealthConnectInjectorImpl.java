@@ -93,14 +93,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         // update any reference to user when it changes.
         UserHandle userHandle = builder.mUserHandle;
 
+        mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
                         ? HealthConnectDeviceConfigManager.initializeInstance(context)
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
-                        ? TransactionManager.initializeInstance(
-                                StorageContext.create(context, userHandle))
+                        ? new TransactionManager(
+                                StorageContext.create(context, userHandle),
+                                mInternalHealthConnectMappings)
                         : builder.mTransactionManager;
         mHealthConnectMappings = HealthConnectMappings.getInstance();
         mAppInfoHelper =
@@ -115,7 +117,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mPreferenceHelper == null
                         ? new PreferenceHelper(mTransactionManager)
                         : builder.mPreferenceHelper;
-        mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? new HealthDataCategoryPriorityHelper(

@@ -116,18 +116,17 @@ public class BackupSettingsHelperTest {
 
         StorageContext context = mDatabaseTestRule.getDatabaseContext();
         mPreferenceHelper = new FakePreferenceHelper();
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mExportImportSettingsStorage = mock(ExportImportSettingsStorage.class);
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setPreferenceHelper(mPreferenceHelper)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setExportImportSettingsStorage(mExportImportSettingsStorage)
                         .build();
 
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         TransactionTestUtils transactionTestUtils =
                 new TransactionTestUtils(context, healthConnectInjector);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
