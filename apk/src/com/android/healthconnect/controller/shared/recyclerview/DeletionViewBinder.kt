@@ -36,7 +36,7 @@ interface DeletionViewBinder<T, V : View> : ViewBinder<T, V> {
         isDeletionState: Boolean,
         isChecked: Boolean,
     ): String {
-        val separator = ", "
+        val separator = resources.getString(R.string.separator)
         val checkedState =
             if (isDeletionState) {
                 if (isChecked) {
