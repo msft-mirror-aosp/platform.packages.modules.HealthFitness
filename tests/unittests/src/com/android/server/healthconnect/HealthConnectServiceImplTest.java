@@ -327,7 +327,6 @@ public class HealthConnectServiceImplTest {
     @Before
     public void setUp() throws Exception {
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(UserHandle.of(anyInt())).thenCallRealMethod();
         when(UserHandle.getUserHandleForUid(anyInt())).thenCallRealMethod();
         mUserHandle = UserHandle.of(UserHandle.myUserId());
@@ -344,7 +343,6 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mContext.getSystemService(ActivityManager.class));
         mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
@@ -357,6 +355,7 @@ public class HealthConnectServiceImplTest {
                         .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setAppInfoHelper(mAppInfoHelper)
                         .build();
 
         mHealthConnectService =
@@ -378,7 +377,10 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
                         healthConnectInjector.getInternalHealthConnectMappings(),
-                        healthConnectInjector.getPriorityMigrationHelper());
+                        healthConnectInjector.getPriorityMigrationHelper(),
+                        healthConnectInjector.getAppInfoHelper(),
+                        healthConnectInjector.getDeviceInfoHelper(),
+                        mPreferenceHelper);
     }
 
     @After

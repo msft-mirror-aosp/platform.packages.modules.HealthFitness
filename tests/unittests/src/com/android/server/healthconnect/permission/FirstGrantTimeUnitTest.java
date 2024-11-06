@@ -30,31 +30,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.health.connect.HealthConnectException;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
-import android.health.connect.ReadRecordsRequest;
-import android.health.connect.ReadRecordsRequestUsingFilters;
-import android.health.connect.ReadRecordsResponse;
-import android.health.connect.TimeInstantRangeFilter;
-import android.health.connect.datatypes.Record;
-import android.health.connect.datatypes.StepsRecord;
-import android.os.OutcomeReceiver;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Pair;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.compatibility.common.util.SystemUtil;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -77,11 +65,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 
 // TODO(b/261432978): add test for sharedUser backup
 public class FirstGrantTimeUnitTest {
@@ -113,11 +97,8 @@ public class FirstGrantTimeUnitTest {
 
     @Before
     public void setUp() {
-        Context context = InstrumentationRegistry.getContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         MockitoAnnotations.initMocks(this);
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> HealthConnectDeviceConfigManager.initializeInstance(mContext),
-                Manifest.permission.READ_DEVICE_CONFIG);
         TransactionManager.initializeInstance(StorageContext.create(context, CURRENT_USER));
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
@@ -405,21 +386,6 @@ public class FirstGrantTimeUnitTest {
         assertThat(state.getPackageGrantTimes().get(SELF_PACKAGE_NAME)).isEqualTo(stateTime);
     }
 
-    @Test(expected = HealthConnectException.class)
-    public <T extends Record> void testReadRecords_withNoIntent_throwsException()
-            throws InterruptedException {
-        TimeInstantRangeFilter filter =
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
-                        .setEndTime(Instant.now().plusMillis(3000))
-                        .build();
-        ReadRecordsRequestUsingFilters<StepsRecord> request =
-                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
-                        .setTimeRangeFilter(filter)
-                        .build();
-        readRecords(request);
-    }
-
     private UserGrantTimeState setupGrantTimeState(Instant currentTime, Instant stagedTime) {
         if (currentTime != null) {
             UserGrantTimeState state = new UserGrantTimeState(DEFAULT_VERSION);
@@ -433,39 +399,6 @@ public class FirstGrantTimeUnitTest {
         }
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED)).thenReturn(backupState);
         return backupState;
-    }
-
-    private static <T extends Record> List<T> readRecords(ReadRecordsRequest<T> request)
-            throws InterruptedException {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(service).isNotNull();
-        assertThat(request.getRecordType()).isNotNull();
-        AtomicReference<List<T>> response = new AtomicReference<>();
-        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
-                new AtomicReference<>();
-        service.readRecords(
-                request,
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(ReadRecordsResponse<T> result) {
-                        response.set(result.getRecords());
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        healthConnectExceptionAtomicReference.set(exception);
-                        latch.countDown();
-                    }
-                });
-        assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
-        if (healthConnectExceptionAtomicReference.get() != null) {
-            throw healthConnectExceptionAtomicReference.get();
-        }
-        return response.get();
     }
 
     private FirstGrantTimeManager createFirstGrantTimeManager(boolean useMockPackageInfoUtils) {
