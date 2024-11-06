@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"kerekesszéklökés"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Kerekesszéklökésre vonatkozó adatok olvasása"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Kerekesszéklökésre vonatkozó adatok írása"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Tevékenység intenzitása"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"tevékenység intenzitása"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Tevékenységintenzitásra vonatkozó adatok olvasása"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Tevékenységintenzitásra vonatkozó adatok írása"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Alapanyagcsere-sebesség"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"alapanyagcsere-sebesség"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Alapanyagcsere-sebességre vonatkozó adatok olvasása"</string>
@@ -998,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{A Health Connect a(z) # hónapnál régebbi összes adatot törli. Szükség lehet egy napra ahhoz, hogy ezek a változások tükröződjenek a társított alkalmazásokban.}other{A Health Connect a(z) # hónapnál régebbi összes adatot törli. Szükség lehet egy napra ahhoz, hogy ezek a változások tükröződjenek a társított alkalmazásokban.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Ezekből a kategóriákból lesznek törölve adatok"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Kész"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Az Automatikus törlés be van kapcsolva. A(z) # hónapnál régebbi adatok törlésre kerülnek.}other{Az Automatikus törlés be van kapcsolva. A(z) # hónapnál régebbi adatok törlésre kerülnek.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatikus törlés bekapcsolva. A(z) # hónapnál régebbi adatok törlődnek.}other{Automatikus törlés bekapcsolva. A(z) # hónapnál régebbi adatok törlődnek.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automatikus törlés kikapcsolva"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Alkalmazások elsőbbségének beállítása"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ha egynél több alkalmazás ad hozzá <xliff:g id="DATA_TYPE">%s</xliff:g> típusú adatokat, a Health Connect a listában legelöl szereplő alkalmazást részesíti előnyben. Húzással átrendezheti az alkalmazásokat."</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Megtekintés alkalmazásboltban"</string>
     <string name="select_all" msgid="837499881590001166">"Összes kijelölése"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"A társított alkalmazások a továbbiakban nem tudják majd írni a Health Connect szolgáltatásból származó adatokat"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Bejelölve"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Nincs bejelölve"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Rendelkezésre áll edzési térképes útvonal"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Következő nap"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Következő hét"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Következő hónap"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Előző nap"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Előző hét"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Előző hónap"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Véglegesen törli az összes adatot?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Véglegesen törli a kijelölt adatokat?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Véglegesen törli a(z) <xliff:g id="APP_NAME">%s</xliff:g> típusú adatokat?"</string>
@@ -1179,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Hozzáférés: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Hozzáférés: tegnap, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Hozzáférés: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

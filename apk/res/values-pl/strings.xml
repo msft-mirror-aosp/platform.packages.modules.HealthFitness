@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"pchnięcia wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Odczytuj dane o pchnięciach wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Zapisuj dane o pchnięciach wózka inwalidzkiego"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensywność aktywności"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensywność aktywności"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Odczytuj dane o intensywności aktywności"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Zapisuj dane o intensywności aktywności"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Podstawowa przemiana materii"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"podstawowa przemiana materii"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Odczytuj dane o podstawowej przemianie materii"</string>
@@ -998,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect usunie wszystkie dane starsze niż # miesiąc. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}few{Health Connect usunie wszystkie dane starsze niż # miesiące. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}many{Health Connect usunie wszystkie dane starsze niż # miesięcy. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}other{Health Connect usunie wszystkie dane starsze niż # miesiąca. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Zostaną usunięte dane z tych kategorii:"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Gotowe"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatyczne usuwanie jest włączone. Dane starsze niż # miesiąc zostaną usunięte}few{Automatyczne usuwanie jest włączone. Dane starsze niż # miesiące zostaną usunięte}many{Automatyczne usuwanie jest włączone. Dane starsze niż # miesięcy zostaną usunięte}other{Automatyczne usuwanie jest włączone. Dane starsze niż # miesiąca zostaną usunięte}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatyczne usuwanie jest włączone. Dane starsze niż # mies. zostaną usunięte}few{Automatyczne usuwanie jest włączone. Dane starsze niż # mies. zostaną usunięte}many{Automatyczne usuwanie jest włączone. Dane starsze niż # mies. zostaną usunięte}other{Automatyczne usuwanie jest włączone. Dane starsze niż # mies. zostaną usunięte}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automatyczne usuwanie jest wyłączone"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Ustaw priorytet aplikacji"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Jeśli więcej niż 1 aplikacja dodaje określone dane (<xliff:g id="DATA_TYPE">%s</xliff:g>), Health Connect nadaje priorytet aplikacji, która znajduje się najwyżej na tej liście. Przeciągnij aplikacje, aby zmienić ich kolejność."</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Zobacz w sklepie z aplikacjami"</string>
     <string name="select_all" msgid="837499881590001166">"Zaznacz wszystko"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Połączone aplikacje nie będą już mogły odczytywać tych danych z Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Zaznaczono"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Nie zaznaczono"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Dostępna jest trasa ćwiczeń na mapie"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Następny dzień"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Następny tydzień"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Następny miesiąc"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Poprzedni dzień"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Poprzedni tydzień"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Poprzedni miesiąc"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Trwale usunąć wszystkie te dane?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Trwale usunąć wybrane dane?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Trwale usunąć wszystkie dane aplikacji <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1179,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Ostatni dostęp: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Ostatni dostęp wczoraj, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Ostatni dostęp <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>
