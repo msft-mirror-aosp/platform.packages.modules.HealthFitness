@@ -187,6 +187,8 @@ import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_B
 import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND;
 import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND;
 
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetryPrivateWw;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_RESOURCES_BY_IDS;
@@ -241,9 +243,6 @@ public class HealthConnectServiceLogger {
 
     @VisibleForTesting
     public static final int MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE = -1;
-
-    /** See {@link Builder#setShouldLog(boolean)}. */
-    private final boolean mIsLogDisabled;
 
     /**
      * HealthConnectService ApiMethods supported by logging.
@@ -479,7 +478,6 @@ public class HealthConnectServiceLogger {
         private Set<Integer> mMedicalResourceTypes;
         private String mPackageName;
         private int mCallerForegroundState;
-        private boolean mIsLogDisabled;
 
         public Builder(boolean holdsDataManagementPermission, @ApiMethods.ApiMethod int apiMethod) {
             mStartTime = System.currentTimeMillis();
@@ -617,24 +615,6 @@ public class HealthConnectServiceLogger {
                     isCallerInForeground
                             ? HEALTH_CONNECT_API_CALLED__CALLER_FOREGROUND_STATE__FOREGROUND
                             : HEALTH_CONNECT_API_CALLED__CALLER_FOREGROUND_STATE__BACKGROUND;
-            return this;
-        }
-
-        /**
-         * Sets a boolean that indicates whether this log should be logged when {@link
-         * HealthConnectServiceLogger#log() log()} is called. This is typically used when adding new
-         * loggings which is guarded behind a flag.
-         *
-         * <p>E.g. if you have a flag called {@code abcTelemetry()}, instead of conditioning on that
-         * flag to decide whether to build a {@link HealthConnectServiceLogger} and call {@link
-         * HealthConnectServiceLogger#log() log()}, you can just build and call the log() method as
-         * if the flag didn't exist, but before you {@link #build()}, call this method and pass
-         * {@code abcTelemetry()} to it.
-         *
-         * <p>NOTE: this boolean is set to {@code true} by default.
-         */
-        public Builder setShouldLog(boolean shouldLog) {
-            this.mIsLogDisabled = !shouldLog;
             return this;
         }
 
@@ -777,19 +757,21 @@ public class HealthConnectServiceLogger {
         mMedicalResourceTypes = builder.mMedicalResourceTypes;
         mPackageName = builder.mPackageName;
         mCallerForegroundState = builder.mCallerForegroundState;
-        mIsLogDisabled = builder.mIsLogDisabled;
     }
 
     /** Log to statsd. */
     public void log() {
-        if (mIsLogDisabled) {
-            return;
-        }
-
         // Do not log API calls made from the controller
         if (mHoldsDataManagementPermission) {
             return;
         }
+
+        boolean isPhrApi = PHR_APIS.contains(mHealthDataServiceApiMethod);
+        if (isPhrApi) {
+            writePhrLogs();
+            return;
+        }
+
         HealthFitnessStatsLog.write(
                 HEALTH_CONNECT_API_CALLED,
                 mHealthDataServiceApiMethod,
@@ -801,25 +783,6 @@ public class HealthConnectServiceLogger {
                 mCallerForegroundState,
                 mPackageName);
 
-        logToPrivateWestWorld();
-    }
-
-    private void logToPrivateWestWorld() {
-        boolean isPhrApi = PHR_APIS.contains(mHealthDataServiceApiMethod);
-
-        // For PHR APIs.
-        if (isPhrApi) {
-            if (mMedicalResourceTypes.isEmpty()) {
-                writePhrApiInvoked(MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE);
-            } else {
-                for (int medicalResourceType : mMedicalResourceTypes) {
-                    writePhrApiInvoked(getMedicalResourceTypeLoggingEnum(medicalResourceType));
-                }
-            }
-            return;
-        }
-
-        // For non PHR APIs.
         // For private logging, max 6 data types per request are being logged
         // rest will be ignored
         HealthFitnessStatsLog.write(
@@ -835,6 +798,31 @@ public class HealthConnectServiceLogger {
                 getRecordTypeEnumToLog(mRecordTypes, 3),
                 getRecordTypeEnumToLog(mRecordTypes, 4),
                 getRecordTypeEnumToLog(mRecordTypes, 5));
+    }
+
+    private void writePhrLogs() {
+        if (personalHealthRecordTelemetry()) { // normal WW
+            HealthFitnessStatsLog.write(
+                    HEALTH_CONNECT_API_CALLED,
+                    mHealthDataServiceApiMethod,
+                    mHealthDataServiceApiStatus,
+                    mErrorCode,
+                    mDuration,
+                    mNumberOfRecords,
+                    mRateLimit,
+                    mCallerForegroundState,
+                    mPackageName);
+        }
+
+        if (personalHealthRecordTelemetryPrivateWw()) { // private WW
+            if (mMedicalResourceTypes.isEmpty()) {
+                writePhrApiInvoked(MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE);
+            } else {
+                for (int medicalResourceType : mMedicalResourceTypes) {
+                    writePhrApiInvoked(getMedicalResourceTypeLoggingEnum(medicalResourceType));
+                }
+            }
+        }
     }
 
     private void writePhrApiInvoked(int medicalResourceTypeLoggingEnum) {
