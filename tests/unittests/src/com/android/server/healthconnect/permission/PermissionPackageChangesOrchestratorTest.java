@@ -65,7 +65,6 @@ public class PermissionPackageChangesOrchestratorTest {
     @Mock private HealthConnectPermissionHelper mHelper;
     @Mock private HealthPermissionIntentAppsTracker mTracker;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
-    @Mock private TransactionManager mTransactionManager;
     @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     @Mock private UserHandle mUserHandle;
 
@@ -73,7 +72,6 @@ public class PermissionPackageChangesOrchestratorTest {
 
     @Before
     public void setUp() throws PackageManager.NameNotFoundException {
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(HealthConnectDeviceConfigManager.getInitialisedInstance())
                 .thenReturn(mHealthConnectDeviceConfigManager);
         mContext = ApplicationProvider.getApplicationContext();

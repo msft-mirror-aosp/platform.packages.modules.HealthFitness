@@ -73,7 +73,6 @@ public class ExportImportJobsTest {
     @Mock Context mContext;
     @Mock private JobScheduler mJobScheduler;
     @Mock private ExportManager mExportManager;
-    @Mock private TransactionManager mTransactionManager;
     @Mock private HealthConnectNotificationSender mHealthConnectNotificationSender;
 
     @Captor ArgumentCaptor<JobInfo> mJobInfoCaptor;
@@ -90,7 +89,6 @@ public class ExportImportJobsTest {
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn(ANDROID_SERVER_PACKAGE_NAME);
         when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(ExportImportNotificationSender.createSender(any()))
                 .thenReturn(mHealthConnectNotificationSender);
     }

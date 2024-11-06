@@ -108,14 +108,13 @@ public class AccessLogsHelperTest {
         MockitoAnnotations.initMocks(this);
 
         Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
