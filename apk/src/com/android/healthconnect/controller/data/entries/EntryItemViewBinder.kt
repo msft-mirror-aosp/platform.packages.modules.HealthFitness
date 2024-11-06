@@ -16,18 +16,21 @@ package com.android.healthconnect.controller.data.entries
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
+import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
 /** ViewBinder for FormattedDataEntry. */
-class EntryItemViewBinder : ViewBinder<FormattedDataEntry, View> {
+class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListener? = null) :
+    DeletionViewBinder<FormattedDataEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -35,17 +38,27 @@ class EntryItemViewBinder : ViewBinder<FormattedDataEntry, View> {
         val context = parent.context.applicationContext
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
-        return LayoutInflater.from(parent.context).inflate(R.layout.item_data_entry, parent, false)
+        return LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_data_entry_new_ia, parent, false)
     }
 
-    override fun bind(view: View, data: FormattedDataEntry, index: Int) {
+    override fun bind(
+        view: View,
+        data: FormattedDataEntry,
+        index: Int,
+        isDeletionState: Boolean,
+        isChecked: Boolean,
+    ) {
+        val container = view.findViewById<LinearLayout>(R.id.item_data_entry_container)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
-        val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
         logger.logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
         logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
+        val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
 
         title.text = data.title
         title.contentDescription = data.titleA11y
@@ -53,6 +66,18 @@ class EntryItemViewBinder : ViewBinder<FormattedDataEntry, View> {
         header.text = data.header
         header.contentDescription = data.headerA11y
 
-        deleteButton.visibility = View.GONE
+        if (isDeletionState) {
+            container.setOnClickListener {
+                onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+                checkBox.toggle()
+            }
+        }
+
+        checkBox.isVisible = isDeletionState
+        checkBox.isChecked = isChecked
+        checkBox.setOnClickListener {
+            onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+        }
+        checkBox.tag = if (isDeletionState) "checkbox" else ""
     }
 }

@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.utils;
 
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.SLEEP;
+import static android.health.connect.HealthDataCategory.WELLNESS;
 import static android.health.connect.datatypes.AggregationType.SUM;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HYDRATION;
@@ -33,16 +34,13 @@ import static com.android.server.healthconnect.storage.utils.RecordTypeForUuidMa
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.MedicalResourceId;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
@@ -50,12 +48,12 @@ import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -86,6 +84,9 @@ public final class StorageUtils {
     public static final String BLOB_UNIQUE_NON_NULL = "BLOB NOT NULL UNIQUE";
     public static final String BLOB_NON_NULL = "BLOB NOT NULL";
     public static final String SELECT_ALL = "SELECT * FROM ";
+    public static final String SELECT = "SELECT ";
+    public static final String FROM = " FROM ";
+    public static final String DISTINCT = "DISTINCT ";
     public static final String LIMIT_SIZE = " LIMIT ";
     public static final int BOOLEAN_FALSE_VALUE = 0;
     public static final int BOOLEAN_TRUE_VALUE = 1;
@@ -116,33 +117,18 @@ public final class StorageUtils {
      * dataSourceId}.
      */
     public static UUID generateMedicalResourceUUID(
-            @NonNull String resourceId,
-            @NonNull String resourceType,
-            @NonNull String dataSourceId) {
+            String resourceId, int resourceType, String dataSourceId) {
         final byte[] resourceIdBytes = resourceId.getBytes();
-        final byte[] resourceTypeBytes = resourceType.getBytes();
         final byte[] dataSourceIdBytes = dataSourceId.getBytes();
-        return getUUID(resourceIdBytes, resourceTypeBytes, dataSourceIdBytes);
-    }
 
-    private static UUID getUUID(byte[]... byteArrays) {
-        int total = Stream.of(byteArrays).mapToInt(arr -> arr.length).sum();
-        ByteBuffer byteBuffer = ByteBuffer.allocate(total);
-        for (byte[] byteArray : byteArrays) {
-            byteBuffer.put(byteArray);
-        }
-        return UUID.nameUUIDFromBytes(byteBuffer.array());
-    }
-
-    /**
-     * Sets {@link UUID} for the given {@code medicalResourceInternal}. Since the rest of the fields
-     * in {@link MedicalResourceInternal} are not yet created, the UUID is randomly generated.
-     */
-    public static void addNameBasedUUIDTo(
-            @NonNull MedicalResourceInternal medicalResourceInternal) {
-        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
-        // resource_id.
-        medicalResourceInternal.setUuid(UUID.randomUUID());
+        byte[] bytes =
+                ByteBuffer.allocate(
+                                resourceIdBytes.length + Integer.BYTES + dataSourceIdBytes.length)
+                        .put(resourceIdBytes)
+                        .putInt(resourceType)
+                        .put(dataSourceIdBytes)
+                        .array();
+        return UUID.nameUUIDFromBytes(bytes);
     }
 
     /**
@@ -151,7 +137,7 @@ public final class StorageUtils {
      * of {@link RecordInternal#getPackageName()}, {@link RecordInternal#getClientRecordId()} and
      * {@link RecordInternal#getRecordType()}.
      */
-    public static void addNameBasedUUIDTo(@NonNull RecordInternal<?> recordInternal) {
+    public static void addNameBasedUUIDTo(RecordInternal<?> recordInternal) {
         final String clientRecordId = recordInternal.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             recordInternal.setUuid(UUID.randomUUID());
@@ -167,7 +153,7 @@ public final class StorageUtils {
     }
 
     /** Updates the uuid using the clientRecordID if the clientRecordId is present. */
-    public static void updateNameBasedUUIDIfRequired(@NonNull RecordInternal<?> recordInternal) {
+    public static void updateNameBasedUUIDIfRequired(RecordInternal<?> recordInternal) {
         final String clientRecordId = recordInternal.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             // If clientRecordID is absent, use the uuid already set in the input record and
@@ -183,22 +169,13 @@ public final class StorageUtils {
         recordInternal.setUuid(uuid);
     }
 
-    /** Returns a UUID for the given {@link MedicalResourceId}. */
-    public static UUID getUUIDFor(@NonNull MedicalResourceId medicalResourceId) {
-        return generateMedicalResourceUUID(
-                medicalResourceId.getFhirResourceId(),
-                medicalResourceId.getFhirResourceType(),
-                medicalResourceId.getDataSourceId());
-    }
-
     /**
      * Returns a UUID for the given {@link RecordIdFilter} and package name. If {@link
      * RecordIdFilter#getClientRecordId()} is null or empty, then the UUID corresponds to {@link
      * RecordIdFilter#getId()}. Otherwise, the UUID is generated as a combination of the package
      * name, {@link RecordIdFilter#getClientRecordId()} and {@link RecordIdFilter#getRecordType()}.
      */
-    public static UUID getUUIDFor(
-            @NonNull RecordIdFilter recordIdFilter, @NonNull String packageName) {
+    public static UUID getUUIDFor(RecordIdFilter recordIdFilter, String packageName) {
         final String clientRecordId = recordIdFilter.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             return UUID.fromString(recordIdFilter.getId());
@@ -210,8 +187,7 @@ public final class StorageUtils {
                 RecordMapper.getInstance().getRecordType(recordIdFilter.getRecordType()));
     }
 
-    public static void addPackageNameTo(
-            @NonNull RecordInternal<?> recordInternal, @NonNull String packageName) {
+    public static void addPackageNameTo(RecordInternal<?> recordInternal, String packageName) {
         recordInternal.setPackageName(packageName);
     }
 
@@ -300,7 +276,7 @@ public final class StorageUtils {
     }
 
     @Nullable
-    public static String getMaxPrimaryKeyQuery(@NonNull String tableName) {
+    public static String getMaxPrimaryKeyQuery(String tableName) {
         return "SELECT MAX("
                 + PRIMARY_COLUMN_NAME
                 + ") as "
@@ -326,7 +302,7 @@ public final class StorageUtils {
 
     /** Encodes record properties participating in deduplication into a byte array. */
     @Nullable
-    public static byte[] getDedupeByteBuffer(@NonNull RecordInternal<?> record) {
+    public static byte[] getDedupeByteBuffer(RecordInternal<?> record) {
         if (!isEmpty(record.getClientRecordId())) {
             return null; // If dedupe by clientRecordId then don't dedupe by hash
         }
@@ -342,8 +318,7 @@ public final class StorageUtils {
         throw new IllegalArgumentException("Unexpected record type: " + record);
     }
 
-    @NonNull
-    private static byte[] getDedupeByteBuffer(@NonNull InstantRecordInternal<?> record) {
+    private static byte[] getDedupeByteBuffer(InstantRecordInternal<?> record) {
         return ByteBuffer.allocate(Long.BYTES * 3)
                 .putLong(record.getAppInfoId())
                 .putLong(record.getDeviceInfoId())
@@ -352,7 +327,7 @@ public final class StorageUtils {
     }
 
     @Nullable
-    private static byte[] getDedupeByteBuffer(@NonNull IntervalRecordInternal<?> record) {
+    private static byte[] getDedupeByteBuffer(IntervalRecordInternal<?> record) {
         final int type = record.getRecordType();
         if ((type == RECORD_TYPE_HYDRATION) || (type == RECORD_TYPE_NUTRITION)) {
             return null; // Some records are exempt from deduplication
@@ -367,8 +342,7 @@ public final class StorageUtils {
     }
 
     /** Returns a UUID for the given package name, client record id and record type id. */
-    private static UUID getUUID(
-            @NonNull String packageName, @NonNull String clientRecordId, int recordTypeId) {
+    private static UUID getUUID(String packageName, String clientRecordId, int recordTypeId) {
         final byte[] packageNameBytes = packageName.getBytes();
         final byte[] clientRecordIdBytes = clientRecordId.getBytes();
 
@@ -386,7 +360,7 @@ public final class StorageUtils {
 
     /**
      * Returns if priority of apps needs to be considered to compute the aggregate request for the
-     * record type. Priority to be considered only for sleep and Activity categories.
+     * record type.
      */
     public static boolean supportsPriority(int recordType, int operationType) {
         if (operationType != SUM) {
@@ -396,14 +370,7 @@ public final class StorageUtils {
         @HealthDataCategory.Type
         int recordCategory =
                 RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType);
-        return recordCategory == ACTIVITY || recordCategory == SLEEP;
-    }
-
-    /** Returns list of app Ids of contributing apps for the record type in the priority order */
-    public static List<Long> getAppIdPriorityList(int recordType) {
-        return HealthDataCategoryPriorityHelper.getInstance()
-                .getAppIdPriorityOrder(
-                        RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType));
+        return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
     /** Returns if derivation needs to be done to calculate aggregate */
@@ -460,6 +427,32 @@ public final class StorageUtils {
     /** Convert a long value to bytes. */
     public static long convertBytesToLong(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getLong();
+    }
+
+    /**
+     * Creates a list of UUIDs from a collection of the string representation of the UUIDs. Any ids
+     * which cannot be parsed as UUIDs are ignores. It is the responsibility of the caller to handle
+     * the case where a non-empty list becomes empty.
+     *
+     * @param ids the ids to parse
+     * @return a possibly empty list of UUIDs
+     */
+    public static List<UUID> toUuids(Collection<String> ids) {
+        return ids.stream()
+                .flatMap(
+                        id -> {
+                            try {
+                                return Stream.of(UUID.fromString(id));
+                            } catch (IllegalArgumentException ex) {
+                                return Stream.of();
+                            }
+                        })
+                .toList();
+    }
+
+    /** Converts a list of {@link UUID} strings to a list of hex strings. */
+    public static List<String> convertUuidStringsToHexStrings(List<String> ids) {
+        return StorageUtils.getListOfHexStrings(toUuids(ids));
     }
 
     public static String getHexString(byte[] value) {

@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.logging;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.health.HealthFitnessStatsLog;
 
@@ -32,7 +31,7 @@ import java.util.Objects;
 class DatabaseStatsLogger {
 
     /** Write Health Connect database stats to statsd. */
-    static void log(@NonNull Context context) {
+    static void log(Context context) {
 
         long numberOfInstantRecords = DatabaseStatsCollector.getNumberOfInstantRecordRows();
         long numberOfIntervalRecords = DatabaseStatsCollector.getNumberOfIntervalRecordRows();

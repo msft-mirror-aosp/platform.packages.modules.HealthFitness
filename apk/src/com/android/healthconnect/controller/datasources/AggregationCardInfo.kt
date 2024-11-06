@@ -14,12 +14,12 @@
 package com.android.healthconnect.controller.datasources
 
 import com.android.healthconnect.controller.data.entries.FormattedEntry
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import java.time.Instant
 
 /** A data class holding information displayed on a [AggregationDataCard] */
 data class AggregationCardInfo(
-    val healthPermissionType: HealthPermissionType,
+    val fitnessPermissionType: FitnessPermissionType,
     val aggregation: FormattedEntry.FormattedAggregation,
     val startDate: Instant,
     val endDate: Instant? = null

@@ -20,27 +20,29 @@ import android.content.Context
 import android.health.connect.HealthDataCategory
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessFragment
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.tests.utils.*
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.RecentAccessElement
+import com.google.common.truth.Truth
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.time.Instant
-import java.time.ZoneId
-import java.util.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,6 +53,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import java.time.Instant
+import java.time.ZoneId
+import java.util.*
 
 @HiltAndroidTest
 class RecentAccessFragmentTest {
@@ -60,6 +65,7 @@ class RecentAccessFragmentTest {
     @BindValue
     val viewModel: RecentAccessViewModel = Mockito.mock(RecentAccessViewModel::class.java)
     private lateinit var context: Context
+    private lateinit var navHostController: TestNavHostController
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @BindValue val timeSource = TestTimeSource
@@ -68,6 +74,7 @@ class RecentAccessFragmentTest {
     fun setup() {
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
+        navHostController = TestNavHostController(context)
         context.setLocale(Locale.US)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
@@ -211,5 +218,100 @@ class RecentAccessFragmentTest {
         onView(withText("6:40 PM")).check(matches(isDisplayed()))
         onView(withText("Read: Nutrition, Sleep")).check(matches(isDisplayed()))
         onView(withText("Write: Activity, Vitals")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun appName_navigatesToFitnessAppPermissions() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                isInactive = false,
+                dataTypesWritten =
+                mutableSetOf(
+                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                    HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                mutableSetOf(
+                    HealthDataCategory.SLEEP.uppercaseTitle(),
+                    HealthDataCategory.NUTRITION.uppercaseTitle()))
+        whenever(viewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+
+        launchFragment<RecentAccessFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.recentAccessFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
+    }
+
+    @Test
+    fun appName_navigatesToMedicalAppPermissions() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                isInactive = false,
+                dataTypesWritten =
+                mutableSetOf(
+                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                    HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                mutableSetOf(
+                    HealthDataCategory.SLEEP.uppercaseTitle(),
+                    HealthDataCategory.NUTRITION.uppercaseTitle()),
+                appPermissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY)
+        whenever(viewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+
+        launchFragment<RecentAccessFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.recentAccessFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
+    }
+
+    @Test
+    fun appName_navigatesToCombinedPermissions() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                isInactive = false,
+                dataTypesWritten =
+                mutableSetOf(
+                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                    HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                mutableSetOf(
+                    HealthDataCategory.SLEEP.uppercaseTitle(),
+                    HealthDataCategory.NUTRITION.uppercaseTitle()),
+                appPermissionsType = AppPermissionsType.COMBINED_PERMISSIONS)
+        whenever(viewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+
+        launchFragment<RecentAccessFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.recentAccessFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
     }
 }

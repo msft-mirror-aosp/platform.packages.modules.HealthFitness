@@ -19,6 +19,7 @@ import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.TimeInstantRangeFilter
 import com.android.healthconnect.controller.deletion.DeletionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.healthPermissionTypes
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
@@ -45,6 +46,7 @@ constructor(
 
         deleteCategory.category
             .healthPermissionTypes()
+            .filterIsInstance<FitnessPermissionType>()
             .map { healthPermissionType ->
                 HealthPermissionToDatatypeMapper.getDataTypes(healthPermissionType)
             }

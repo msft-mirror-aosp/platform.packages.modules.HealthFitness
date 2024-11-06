@@ -18,6 +18,8 @@ package android.healthconnect.cts.testhelper;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.time.Instant.EPOCH;
+
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -150,7 +152,7 @@ public class TestHelperUtils {
             if (timeRangeFilter == null) {
                 timeRangeFilter =
                         new TimeInstantRangeFilter.Builder()
-                                .setStartTime(Instant.EPOCH)
+                                .setStartTime(EPOCH)
                                 .setEndTime(Instant.now().plus(1200, ChronoUnit.SECONDS))
                                 .build();
             }

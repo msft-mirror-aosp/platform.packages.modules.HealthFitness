@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.migration.notification;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -38,6 +37,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @hide
  */
+// TODO(b/352602201): Refactor to use new HealthConnectNotificationSender
 public final class MigrationNotificationSender {
 
     private static final String TAG = "HealthConnectNS";
@@ -54,17 +54,19 @@ public final class MigrationNotificationSender {
 
     private final Context mContext;
     private final MigrationNotificationFactory mNotificationFactory;
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
-    public MigrationNotificationSender(@NonNull Context context) {
+    public MigrationNotificationSender(
+            Context context, HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
         mContext = context;
         mNotificationFactory = new MigrationNotificationFactory(mContext);
+        mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
     }
 
     /** Sends a notification to the current user based on the notification type. */
     public void sendNotification(
-            @MigrationNotificationType int notificationType, @NonNull UserHandle userHandle) {
-        if (!HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .areMigrationNotificationsEnabled()) {
+            @MigrationNotificationType int notificationType, UserHandle userHandle) {
+        if (!mHealthConnectDeviceConfigManager.areMigrationNotificationsEnabled()) {
             return;
         }
         createNotificationChannel(userHandle);
@@ -81,21 +83,21 @@ public final class MigrationNotificationSender {
     }
 
     /** Cancels all Health Connect notifications. */
-    public void clearNotifications(@NonNull UserHandle userHandle) {
+    public void clearNotifications(UserHandle userHandle) {
         NotificationManager notificationManager = getNotificationManagerForUser(userHandle);
         cancelFromSystem(notificationManager);
     }
 
     /** Returns a {@link NotificationManager} which will send notifications to the given user. */
     @Nullable
-    private NotificationManager getNotificationManagerForUser(@NonNull UserHandle userHandle) {
+    private NotificationManager getNotificationManagerForUser(UserHandle userHandle) {
         Context contextAsUser = mContext.createContextAsUser(userHandle, 0);
         return contextAsUser.getSystemService(NotificationManager.class);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void notifyFromSystem(
-            @Nullable NotificationManager notificationManager, @NonNull Notification notification) {
+            @Nullable NotificationManager notificationManager, Notification notification) {
         // This call is needed to send a notification from the system and this also grants the
         // necessary POST_NOTIFICATIONS permission.
         final long callingId = Binder.clearCallingIdentity();
@@ -123,7 +125,7 @@ public final class MigrationNotificationSender {
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private void createNotificationChannel(@NonNull UserHandle userHandle) {
+    private void createNotificationChannel(UserHandle userHandle) {
 
         final String channelGroupName =
                 mNotificationFactory.getStringResource(CHANNEL_NAME_RESOURCE);

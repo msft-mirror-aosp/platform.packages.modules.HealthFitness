@@ -150,14 +150,12 @@
     },
     {
        "name": "HealthConnectControllerExtraTests"
+    },
+    {
+       "name": "HealthFitnessIntegrationExportImportTests"
+    },
+    {
+       "name": "CtsHealthFitnessDeviceTestCasesRateLimiter"
     }
-  ],
-  "postsubmit": [
-      {
-        "name": "HealthFitnessIntegrationExportImportTests"
-      },
-      {
-        "name": "CtsHealthFitnessDeviceTestCasesRateLimiter"
-      }
   ]
 }

@@ -16,10 +16,12 @@
 
 package com.android.server.healthconnect.logging;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.os.UserHandle;
 import android.util.Slog;
+
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.Objects;
 
@@ -34,15 +36,19 @@ public class DailyLoggingService {
             "HealthConnectDailyLoggingService";
 
     /** Log daily metrics. */
-    public static void logDailyMetrics(@NonNull Context context, @NonNull UserHandle userHandle) {
+    public static void logDailyMetrics(
+            Context context,
+            UserHandle userHandle,
+            PreferenceHelper preferenceHelper,
+            AccessLogsHelper accessLogsHelper) {
         Objects.requireNonNull(context);
         Objects.requireNonNull(userHandle);
 
         logDatabaseStats(context);
-        logUsageStats(context, userHandle);
+        logUsageStats(context, userHandle, preferenceHelper, accessLogsHelper);
     }
 
-    private static void logDatabaseStats(@NonNull Context context) {
+    private static void logDatabaseStats(Context context) {
         try {
             DatabaseStatsLogger.log(context);
         } catch (Exception exception) {
@@ -50,9 +56,13 @@ public class DailyLoggingService {
         }
     }
 
-    private static void logUsageStats(@NonNull Context context, @NonNull UserHandle userHandle) {
+    private static void logUsageStats(
+            Context context,
+            UserHandle userHandle,
+            PreferenceHelper preferenceHelper,
+            AccessLogsHelper accessLogsHelper) {
         try {
-            UsageStatsLogger.log(context, userHandle);
+            UsageStatsLogger.log(context, userHandle, preferenceHelper, accessLogsHelper);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log usage stats", exception);
         }

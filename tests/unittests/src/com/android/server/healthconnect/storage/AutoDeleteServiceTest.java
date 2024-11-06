@@ -16,6 +16,7 @@
 
 package healthconnect.storage;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,12 +24,16 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.os.Process;
 import android.util.ArrayMap;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -79,9 +84,9 @@ import com.android.server.healthconnect.storage.datatypehelpers.Vo2MaxRecordHelp
 import com.android.server.healthconnect.storage.datatypehelpers.WeightRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.WheelchairPushesRecordHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
-import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,20 +113,35 @@ public class AutoDeleteServiceTest {
                     .mockStatic(RecordHelperProvider.class)
                     .mockStatic(AppInfoHelper.class)
                     .mockStatic(ActivityDateHelper.class)
-                    .mockStatic(HealthDataCategoryPriorityHelper.class)
                     .build();
 
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private TransactionManager mTransactionManager;
+    @Mock private ExportManager mExportManager;
 
     @Mock private AppInfoHelper mAppInfoHelper;
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     @Mock Context mContext;
 
+    private HealthConnectInjector mHealthConnectInjector;
+
+    @Before
+    public void setup() {
+        when(mContext.getUser()).thenReturn(Process.myUserHandle());
+        mHealthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
+                        .setPreferenceHelper(mPreferenceHelper)
+                        .setExportManager(mExportManager)
+                        .setTransactionManager(mTransactionManager)
+                        .setAppInfoHelper(mAppInfoHelper)
+                        .build();
+    }
+
     @Test
     public void testSetRecordRetentionPeriodInDays() {
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
-        AutoDeleteService.setRecordRetentionPeriodInDays(30);
+        AutoDeleteService.setRecordRetentionPeriodInDays(
+                30, mHealthConnectInjector.getPreferenceHelper());
 
         verify(mPreferenceHelper)
                 .insertOrReplacePreference(
@@ -131,14 +151,16 @@ public class AutoDeleteServiceTest {
 
     @Test
     public void testStartAutoDelete_getPreferenceReturnNull() {
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY)).thenReturn(null);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
 
-        AutoDeleteService.startAutoDelete(mContext);
+        AutoDeleteService.startAutoDelete(
+                mContext,
+                mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                mHealthConnectInjector.getPreferenceHelper(),
+                mHealthConnectInjector.getAppInfoHelper(),
+                mHealthConnectInjector.getTransactionManager(),
+                mHealthConnectInjector.getAccessLogsHelper());
 
         ExtendedMockito.verify(RecordHelperProvider::getRecordHelpers, never());
         verify(mTransactionManager, Mockito.times(2))
@@ -154,30 +176,34 @@ public class AutoDeleteServiceTest {
 
     @Test
     public void testStartAutoDelete_getPreferenceReturnNonNull() {
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
 
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY))
                 .thenReturn(String.valueOf(30));
         when(RecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers());
 
-        AutoDeleteService.startAutoDelete(mContext);
+        AutoDeleteService.startAutoDelete(
+                mContext,
+                mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                mHealthConnectInjector.getPreferenceHelper(),
+                mHealthConnectInjector.getAppInfoHelper(),
+                mHealthConnectInjector.getTransactionManager(),
+                mHealthConnectInjector.getAccessLogsHelper());
 
         verify(mTransactionManager, Mockito.times(2))
                 .deleteWithoutChangeLogs(
                         Mockito.argThat(
-                                (List<DeleteTableRequest> deleteTableRequestsList) ->
-                                        checkTableNames_getPreferenceReturnNonNull(
-                                                deleteTableRequestsList)));
+                                requestList ->
+                                        checkTableNames_getPreferenceReturnNonNull(requestList)));
         verify(mTransactionManager)
                 .deleteAll(
                         Mockito.argThat(
-                                (DeleteTransactionRequest request) ->
+                                request ->
                                         checkTableNames_getPreferenceReturnNonNull(
-                                                request.getDeleteTableRequests())));
+                                                request.getDeleteTableRequests())),
+                        Mockito.booleanThat(
+                                shouldRecordDeleteAccessLog -> !shouldRecordDeleteAccessLog),
+                        any());
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
         verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);
         ExtendedMockito.verify(ActivityDateHelper::reSyncForAllRecords, times(1));

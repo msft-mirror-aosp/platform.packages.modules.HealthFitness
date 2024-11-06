@@ -3,6 +3,7 @@ package com.android.healthconnect.controller.dataentries
 import com.android.healthconnect.controller.shared.DataType
 import java.time.Instant
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 /** OnDeleteListener for Data entries. */
 interface OnDeleteEntryListener {
     fun onDeleteEntry(

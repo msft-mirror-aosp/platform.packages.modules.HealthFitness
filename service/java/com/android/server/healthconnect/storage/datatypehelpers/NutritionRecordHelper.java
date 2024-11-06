@@ -65,7 +65,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -73,6 +72,8 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.NutritionRecordInternal;
 import android.util.Pair;
+
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
@@ -136,8 +137,8 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
         super(RecordTypeIdentifier.RECORD_TYPE_NUTRITION);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;
@@ -283,7 +284,6 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return NUTRITION_RECORD_TABLE_NAME;
     }
@@ -426,8 +426,7 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull NutritionRecordInternal nutritionRecord) {
+    void populateSpecificRecordValue(Cursor cursor, NutritionRecordInternal nutritionRecord) {
         nutritionRecord.setUnsaturatedFat(getCursorDouble(cursor, UNSATURATED_FAT_COLUMN_NAME));
         nutritionRecord.setPotassium(getCursorDouble(cursor, POTASSIUM_COLUMN_NAME));
         nutritionRecord.setThiamin(getCursorDouble(cursor, THIAMIN_COLUMN_NAME));
@@ -479,8 +478,7 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull NutritionRecordInternal nutritionRecord) {
+            ContentValues contentValues, NutritionRecordInternal nutritionRecord) {
         contentValues.put(UNSATURATED_FAT_COLUMN_NAME, nutritionRecord.getUnsaturatedFat());
         contentValues.put(POTASSIUM_COLUMN_NAME, nutritionRecord.getPotassium());
         contentValues.put(THIAMIN_COLUMN_NAME, nutritionRecord.getThiamin());
@@ -528,7 +526,6 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(UNSATURATED_FAT_COLUMN_NAME, REAL),

@@ -17,8 +17,8 @@
 package com.android.healthconnect.controller.tests.utils.di
 
 import android.health.connect.HealthConnectException
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ImportStatus
+import android.net.Uri
 import android.os.OutcomeReceiver
 import com.android.healthconnect.controller.exportimport.api.HealthDataImportManager
 import java.util.concurrent.Executor
@@ -27,13 +27,36 @@ class FakeHealthDataImportManager : HealthDataImportManager {
     companion object {
         private val DEFAULT_IMPORT_STATUS =
             ImportStatus(
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                ImportStatus.DATA_IMPORT_ERROR_NONE,
                 /** isImportOngoing= */
                 false)
+
+        private val IN_PROGRESS_IMPORT_STATUS =
+            ImportStatus(
+                ImportStatus.DATA_IMPORT_ERROR_NONE,
+                /** isImportOngoing= */
+                true)
     }
 
     private var importStatus: ImportStatus = DEFAULT_IMPORT_STATUS
     private var getImportStatusException: HealthConnectException? = null
+    private var runImportException: HealthConnectException? = null
+
+    private var importFileUri: Uri? = null
+
+    override fun runImport(
+        uri: Uri,
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<Void, HealthConnectException>
+    ) {
+        importStatus
+        runImportException?.let { outcomeReceiver.onError(it) }
+            ?: run { outcomeReceiver.onResult(null) }
+    }
+
+    fun setRunImportException(exception: HealthConnectException?) {
+        runImportException = exception
+    }
 
     override fun getImportStatus(
         executor: Executor,
@@ -54,5 +77,7 @@ class FakeHealthDataImportManager : HealthDataImportManager {
     fun reset() {
         importStatus = DEFAULT_IMPORT_STATUS
         getImportStatusException = null
+        runImportException = null
+        importFileUri = null
     }
 }

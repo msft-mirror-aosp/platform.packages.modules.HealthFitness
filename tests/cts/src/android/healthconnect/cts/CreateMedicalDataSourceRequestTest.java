@@ -17,7 +17,11 @@
 package android.healthconnect.cts;
 
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME_MAX_CHARS;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI_EXCEEDED_CHARS;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI_MAX_CHARS;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
@@ -25,13 +29,16 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDat
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.net.Uri;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -59,7 +66,7 @@ public class CreateMedicalDataSourceRequestTest {
     @Test
     public void testCreateMedicalDataSourceRequestBuilder_setAllFields() {
         CreateMedicalDataSourceRequest request =
-                new CreateMedicalDataSourceRequest.Builder("", "")
+                new CreateMedicalDataSourceRequest.Builder(Uri.EMPTY, "")
                         .setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI)
                         .setDisplayName(DATA_SOURCE_DISPLAY_NAME)
                         .build();
@@ -87,6 +94,56 @@ public class CreateMedicalDataSourceRequestTest {
                 new CreateMedicalDataSourceRequest.Builder(original).build();
 
         assertThat(request).isEqualTo(original);
+    }
+
+    @Test
+    public void testCreateMedicalDataSourceRequestBuilder_maxDisplayNameCharsExceeded_throws() {
+        CreateMedicalDataSourceRequest.Builder requestBuilder =
+                new CreateMedicalDataSourceRequest.Builder(
+                        DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS);
+
+        var thrown = assertThrows(IllegalArgumentException.class, () -> requestBuilder.build());
+        assertThat(thrown).hasMessageThat().contains("Display name cannot be longer than");
+    }
+
+    @Test
+    public void testCreateMedicalDataSourceRequestBuilder_emptyDisplayName_throws() {
+        CreateMedicalDataSourceRequest.Builder requestBuilder =
+                new CreateMedicalDataSourceRequest.Builder(DATA_SOURCE_FHIR_BASE_URI, "");
+
+        var thrown = assertThrows(IllegalArgumentException.class, () -> requestBuilder.build());
+        assertThat(thrown).hasMessageThat().contains("Display name cannot be empty");
+    }
+
+    @Test
+    public void testCreateMedicalDataSourceRequestBuilder_maxBaseUriCharsExceeded_throws() {
+        CreateMedicalDataSourceRequest.Builder requestBuilder =
+                new CreateMedicalDataSourceRequest.Builder(
+                        DATA_SOURCE_FHIR_BASE_URI_EXCEEDED_CHARS, DATA_SOURCE_DISPLAY_NAME);
+
+        var thrown = assertThrows(IllegalArgumentException.class, () -> requestBuilder.build());
+        assertThat(thrown).hasMessageThat().contains("Fhir base uri cannot be longer than");
+    }
+
+    @Test
+    public void testCreateMedicalDataSourceRequestBuilder_emptyBaseUri_throws() {
+        CreateMedicalDataSourceRequest.Builder requestBuilder =
+                new CreateMedicalDataSourceRequest.Builder(Uri.EMPTY, DATA_SOURCE_DISPLAY_NAME);
+
+        var thrown = assertThrows(IllegalArgumentException.class, () -> requestBuilder.build());
+        assertThat(thrown).hasMessageThat().contains("Fhir base uri cannot be empty");
+    }
+
+    @Test
+    public void testCreateMedicalDataSourceRequestBuilder_maxCharacterLimits_succeeds() {
+        CreateMedicalDataSourceRequest request =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI_MAX_CHARS,
+                                DATA_SOURCE_DISPLAY_NAME_MAX_CHARS)
+                        .build();
+
+        assertThat(request.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI_MAX_CHARS);
+        assertThat(request.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME_MAX_CHARS);
     }
 
     @Test
@@ -145,5 +202,33 @@ public class CreateMedicalDataSourceRequestTest {
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();
+    }
+
+    @Test
+    public void testWriteToParcelThenRestore_displayNameExceedsCharLimit_throws() {
+        Parcel parcel = Parcel.obtain();
+        parcel.writeParcelable(DATA_SOURCE_FHIR_BASE_URI, 0);
+        parcel.writeString(DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS);
+        parcel.setDataPosition(0);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> CreateMedicalDataSourceRequest.CREATOR.createFromParcel(parcel));
+        assertThat(thrown).hasMessageThat().contains("Display name cannot be longer than");
+    }
+
+    @Test
+    public void testWriteToParcelThenRestore_fhirBaseUriExceedsCharLimit_throws() {
+        Parcel parcel = Parcel.obtain();
+        parcel.writeParcelable(DATA_SOURCE_FHIR_BASE_URI_EXCEEDED_CHARS, 0);
+        parcel.writeString(DATA_SOURCE_DISPLAY_NAME);
+        parcel.setDataPosition(0);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> CreateMedicalDataSourceRequest.CREATOR.createFromParcel(parcel));
+        assertThat(thrown).hasMessageThat().contains("Fhir base uri cannot be longer than");
     }
 }

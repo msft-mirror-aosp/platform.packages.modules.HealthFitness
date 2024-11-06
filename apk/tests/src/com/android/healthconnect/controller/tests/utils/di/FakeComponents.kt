@@ -19,15 +19,20 @@ import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
 import android.health.connect.exportimport.ScheduledExportSettings
+import android.net.Uri
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
-import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.ILoadFitnessTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.ILoadMedicalTypeContributorAppsUseCase
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.api.ILoadDataAggregationsUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadDataEntriesUseCase
+import com.android.healthconnect.controller.data.entries.api.ILoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadMenstruationDataUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadAggregationInput
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
+import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataInput
 import com.android.healthconnect.controller.datasources.AggregationCardInfo
 import com.android.healthconnect.controller.datasources.api.ILoadLastDateWithPriorityDataUseCase
@@ -44,6 +49,7 @@ import com.android.healthconnect.controller.exportimport.api.ILoadExportSettings
 import com.android.healthconnect.controller.exportimport.api.ILoadImportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.ITriggerImportUseCase
 import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.exportimport.api.ImportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
@@ -52,7 +58,9 @@ import com.android.healthconnect.controller.permissions.additionalaccess.ILoadEx
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.shared.IQueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.recentaccess.ILoadRecentAccessUseCase
@@ -152,7 +160,9 @@ class FakeLoadDataAggregationsUseCase : ILoadDataAggregationsUseCase {
             UseCaseResults.Failed(
                 IllegalStateException(
                     "AggregationResponsesSize = ${this.aggregations.size}, " +
-                        "invocationCount = $invocationCount. Please update aggregation responses before invoking."))
+                        "invocationCount = $invocationCount. Please update aggregation responses before invoking."
+                )
+            )
         } else if (forceFail) {
             UseCaseResults.Failed(IllegalStateException(exceptionMessage))
         } else {
@@ -193,6 +203,24 @@ class FakeLoadMostRecentAggregationsUseCase : ILoadMostRecentAggregationsUseCase
     }
 }
 
+class FakeLoadMedicalEntriesUseCase : ILoadMedicalEntriesUseCase {
+    private var formattedList = listOf<FormattedEntry>()
+
+    fun updateList(list: List<FormattedEntry>) {
+        formattedList = list
+    }
+
+    override suspend fun invoke(
+        input: LoadMedicalEntriesInput
+    ): UseCaseResults<List<FormattedEntry>> {
+        return UseCaseResults.Success(formattedList)
+    }
+
+    override suspend fun execute(input: LoadMedicalEntriesInput): List<FormattedEntry> {
+        return formattedList
+    }
+}
+
 class FakeSleepSessionHelper : ISleepSessionHelper {
 
     private var forceFail = false
@@ -229,8 +257,8 @@ class FakeLoadPriorityEntriesUseCase : ILoadPriorityEntriesUseCase {
     private var exceptionMessage = ""
 
     override suspend fun invoke(
-        healthPermissionType: HealthPermissionType,
-        localDate: LocalDate
+        fitnessPermissionType: FitnessPermissionType,
+        localDate: LocalDate,
     ): UseCaseResults<List<Record>> {
         return if (forceFail) UseCaseResults.Failed(Exception(this.exceptionMessage))
         else UseCaseResults.Success(priorityEntries.getOrDefault(localDate, listOf()))
@@ -323,15 +351,15 @@ class FakeUpdatePriorityListUseCase : IUpdatePriorityListUseCase {
 
 class FakeLoadAccessUseCase : ILoadAccessUseCase {
 
-    private var appDataMap: Map<AppAccessState, List<AppMetadata>> = mutableMapOf()
+    private var appDataMap: Map<AppAccessState, List<AppAccessMetadata>> = mutableMapOf()
 
     override suspend fun invoke(
         permissionType: HealthPermissionType
-    ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> {
+    ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>> {
         return UseCaseResults.Success(appDataMap)
     }
 
-    fun updateMap(map: Map<AppAccessState, List<AppMetadata>>) {
+    fun updateMap(map: Map<AppAccessState, List<AppAccessMetadata>>) {
         appDataMap = map
     }
 
@@ -340,11 +368,28 @@ class FakeLoadAccessUseCase : ILoadAccessUseCase {
     }
 }
 
-class FakeLoadPermissionTypeContributorAppsUseCase : ILoadPermissionTypeContributorAppsUseCase {
+class FakeLoadFitnessTypeContributorAppsUseCase : ILoadFitnessTypeContributorAppsUseCase {
 
     private var contributorApps: List<AppMetadata> = listOf()
 
-    override suspend fun invoke(permissionType: HealthPermissionType): List<AppMetadata> {
+    override suspend fun invoke(permissionType: FitnessPermissionType): List<AppMetadata> {
+        return contributorApps
+    }
+
+    fun updateList(list: List<AppMetadata>) {
+        contributorApps = list
+    }
+
+    fun reset() {
+        this.contributorApps = listOf()
+    }
+}
+
+class FakeLoadMedicalTypeContributorAppsUseCase : ILoadMedicalTypeContributorAppsUseCase {
+
+    private var contributorApps: List<AppMetadata> = listOf()
+
+    override suspend fun invoke(permissionType: MedicalPermissionType): List<AppMetadata> {
         return contributorApps
     }
 
@@ -376,15 +421,15 @@ class FakeGetGrantedHealthPermissionsUseCase : IGetGrantedHealthPermissionsUseCa
 
 class FakeLoadLastDateWithPriorityDataUseCase : ILoadLastDateWithPriorityDataUseCase {
 
-    private var lastDateWithPriorityDataMap = mutableMapOf<HealthPermissionType, LocalDate?>()
+    private var lastDateWithPriorityDataMap = mutableMapOf<FitnessPermissionType, LocalDate?>()
     private var forceFail = false
     private var exceptionMessage = ""
 
     fun setLastDateWithPriorityDataForHealthPermissionType(
-        healthPermissionType: HealthPermissionType,
-        localDate: LocalDate?
+        fitnessPermissionType: FitnessPermissionType,
+        localDate: LocalDate?,
     ) {
-        lastDateWithPriorityDataMap[healthPermissionType] = localDate
+        lastDateWithPriorityDataMap[fitnessPermissionType] = localDate
     }
 
     fun setFailure(exceptionMessage: String) {
@@ -393,11 +438,11 @@ class FakeLoadLastDateWithPriorityDataUseCase : ILoadLastDateWithPriorityDataUse
     }
 
     override suspend fun invoke(
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): UseCaseResults<LocalDate?> {
         if (forceFail) return UseCaseResults.Failed(Exception(this.exceptionMessage))
-        return if (lastDateWithPriorityDataMap.containsKey(healthPermissionType))
-            UseCaseResults.Success(lastDateWithPriorityDataMap[healthPermissionType])
+        return if (lastDateWithPriorityDataMap.containsKey(fitnessPermissionType))
+            UseCaseResults.Success(lastDateWithPriorityDataMap[fitnessPermissionType])
         else UseCaseResults.Success(null)
     }
 
@@ -459,7 +504,9 @@ class FakeLoadExportSettingsUseCase : ILoadExportSettingsUseCase {
 
 class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
     var mostRecentSettings: ScheduledExportSettings =
-        ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+        ScheduledExportSettings.Builder()
+            .setPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+            .build()
 
     override suspend fun invoke(
         settings: ScheduledExportSettings
@@ -470,19 +517,29 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
 
     fun reset() {
         mostRecentSettings =
-            ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+                .build()
     }
 }
 
 class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
     private var exportState: ScheduledExportUiState =
         ScheduledExportUiState(
-            null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
+            null,
+            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+            0,
+            "0",
+        )
 
     fun reset() {
         exportState =
             ScheduledExportUiState(
-                null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
+                null,
+                ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                0,
+                "0",
+            )
     }
 
     fun updateExportStatus(exportState: ScheduledExportUiState) {
@@ -515,7 +572,8 @@ class FakeLoadExerciseRoute : ILoadExerciseRoutePermissionUseCase {
     private var state =
         ExerciseRouteState(
             exercisePermissionState = PermissionUiState.ASK_EVERY_TIME,
-            exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME)
+            exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME,
+        )
 
     fun setExerciseRouteState(state: ExerciseRouteState) {
         this.state = state
@@ -530,19 +588,45 @@ class FakeLoadExerciseRoute : ILoadExerciseRoutePermissionUseCase {
     }
 }
 
+class FakeTriggerImportUseCase : ITriggerImportUseCase {
+
+    private var lastImportCompletionInstant: Instant? = null
+
+    private var importState: ImportUiState =
+        ImportUiState(
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+            /** isImportOngoing= */
+            false,
+        )
+
+    fun reset() {
+        lastImportCompletionInstant = null
+    }
+
+    fun updateLastImportCompletionInstant(instant: Instant) {
+        this.lastImportCompletionInstant = instant
+    }
+
+    override suspend fun invoke(fileToImportUri: Uri): ExportImportUseCaseResult<Unit> {
+        return ExportImportUseCaseResult.Success(Unit)
+    }
+}
+
 class FakeLoadImportStatusUseCase : ILoadImportStatusUseCase {
     private var importState: ImportUiState =
         ImportUiState(
             ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
             /** isImportOngoing= */
-            false)
+            false,
+        )
 
     fun reset() {
         importState =
             ImportUiState(
                 ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
                 /** isImportOngoing= */
-                false)
+                false,
+            )
     }
 
     fun updateExportStatus(importState: ImportUiState) {

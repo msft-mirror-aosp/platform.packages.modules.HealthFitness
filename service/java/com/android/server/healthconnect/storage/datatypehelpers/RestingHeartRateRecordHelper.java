@@ -22,7 +22,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -30,6 +29,8 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RestingHeartRateRecordInternal;
 import android.util.Pair;
+
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
@@ -52,8 +53,8 @@ public final class RestingHeartRateRecordHelper
         super(RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         long aggregateValue;
@@ -71,7 +72,6 @@ public final class RestingHeartRateRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return RESTING_HEART_RATE_RECORD_TABLE_NAME;
     }
@@ -94,21 +94,18 @@ public final class RestingHeartRateRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull RestingHeartRateRecordInternal restingHeartRateRecord) {
+            Cursor cursor, RestingHeartRateRecordInternal restingHeartRateRecord) {
         restingHeartRateRecord.setBeatsPerMinute(
                 getCursorInt(cursor, BEATS_PER_MINUTE_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull RestingHeartRateRecordInternal restingHeartRateRecord) {
+            ContentValues contentValues, RestingHeartRateRecordInternal restingHeartRateRecord) {
         contentValues.put(BEATS_PER_MINUTE_COLUMN_NAME, restingHeartRateRecord.getBeatsPerMinute());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(new Pair<>(BEATS_PER_MINUTE_COLUMN_NAME, INTEGER));
     }

@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -43,26 +42,22 @@ public final class LeanBodyMassRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return LEAN_BODY_MASS_RECORD_TABLE_NAME;
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull LeanBodyMassRecordInternal leanBodyMassRecord) {
+    void populateSpecificRecordValue(Cursor cursor, LeanBodyMassRecordInternal leanBodyMassRecord) {
         leanBodyMassRecord.setMass(getCursorDouble(cursor, MASS_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull LeanBodyMassRecordInternal leanBodyMassRecord) {
+            ContentValues contentValues, LeanBodyMassRecordInternal leanBodyMassRecord) {
         contentValues.put(MASS_COLUMN_NAME, leanBodyMassRecord.getMass());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(new Pair<>(MASS_COLUMN_NAME, REAL));
     }

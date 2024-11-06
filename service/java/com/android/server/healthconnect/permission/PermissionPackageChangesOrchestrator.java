@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.permission;
 
-import android.annotation.NonNull;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,16 +44,19 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private UserHandle mCurrentForegroundUser;
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     public PermissionPackageChangesOrchestrator(
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager grantTimeManager,
             HealthConnectPermissionHelper permissionHelper,
-            @NonNull UserHandle userHandle) {
+            UserHandle userHandle,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mPermissionIntentTracker = permissionIntentTracker;
         mFirstGrantTimeManager = grantTimeManager;
         mPermissionHelper = permissionHelper;
         mCurrentForegroundUser = userHandle;
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
     }
 
     /**
@@ -106,7 +108,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                     && userManager.isUserUnlocked(userHandle)) {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () ->
-                                HealthDataCategoryPriorityHelper.getInstance()
+                                mHealthDataCategoryPriorityHelper
                                         .maybeRemoveAppWithoutWritePermissionsFromPriorityList(
                                                 packageName));
             }
@@ -137,7 +139,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     }
 
     /** Sets the current foreground user handle. */
-    public void setUserHandle(@NonNull UserHandle userHandle) {
+    public void setUserHandle(UserHandle userHandle) {
         mCurrentForegroundUser = userHandle;
     }
 

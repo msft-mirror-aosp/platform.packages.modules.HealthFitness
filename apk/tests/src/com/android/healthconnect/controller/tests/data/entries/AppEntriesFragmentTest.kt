@@ -20,13 +20,12 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.entries.AppEntriesFragment
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Empty
@@ -35,15 +34,13 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthconnect.controller.tests.utils.withIndex
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -80,14 +77,18 @@ class AppEntriesFragmentTest {
                     AppMetadata(
                         TEST_APP_PACKAGE_NAME,
                         TEST_APP_NAME,
-                        context.getDrawable(R.drawable.health_connect_logo))))
+                        context.getDrawable(R.drawable.health_connect_logo),
+                    )
+                )
+            )
+        Mockito.`when`(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
     }
 
     @Test
     fun appEntriesInit_showsDateNavigationPreference() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
     }
@@ -96,7 +97,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_noData_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -105,7 +106,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_error_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -114,7 +115,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_loading_showsLoading() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -123,22 +124,12 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_withData_showsListOfEntries() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun appEntries_withData_notShowingDeleteAction() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
-
-        onView(withIndex(withId(R.id.item_data_entry_delete), 0))
-            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 }
 
@@ -150,11 +141,14 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS),
+            dataType = DataType.STEPS,
+        ),
         FormattedDataEntry(
             uuid = "test_id",
             header = "8:06 - 8:06",
             headerA11y = "from 8:06 to 8:06",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS))
+            dataType = DataType.STEPS,
+        ),
+    )

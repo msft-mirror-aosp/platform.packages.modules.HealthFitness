@@ -62,43 +62,6 @@ public final class ScheduledExportSettings implements Parcelable {
         return Objects.hash(mUri, mPeriodInDays);
     }
 
-    /**
-     * Returns a {@link ScheduledExportSettings} to update the URI to write to when exporting data.
-     */
-    public static ScheduledExportSettings withUri(@NonNull Uri uri) {
-        Objects.requireNonNull(uri);
-
-        return new ScheduledExportSettings(uri, DEFAULT_INT);
-    }
-
-    /**
-     * Returns a {@link ScheduledExportSettings} to update the period in days between scheduled
-     * exports.
-     */
-    public static ScheduledExportSettings withPeriodInDays(
-            @IntRange(from = 0, to = 30) int periodInDays) {
-        if (periodInDays < 0 || periodInDays > 30) {
-            throw new IllegalArgumentException("periodInDays should be between 0 and 30");
-        }
-
-        return new ScheduledExportSettings(null, periodInDays);
-    }
-
-    /**
-     * Returns a {@link ScheduledExportSettings} to update the period in days between scheduled
-     * exports.
-     */
-    public static ScheduledExportSettings withUriAndPeriodInDays(
-            @NonNull Uri uri, @IntRange(from = 0, to = 30) int periodInDays) {
-        // TODO: b/345152760 - change to builder pattern so we can avoid duplicated argument check
-        Objects.requireNonNull(uri);
-        if (periodInDays < 0 || periodInDays > 30) {
-            throw new IllegalArgumentException("periodInDays should be between 0 and 30");
-        }
-
-        return new ScheduledExportSettings(uri, periodInDays);
-    }
-
     private ScheduledExportSettings(@NonNull Parcel in) {
         boolean hasUri = in.readBoolean();
         mUri = hasUri ? Uri.parse(in.readString()) : null;
@@ -138,5 +101,45 @@ public final class ScheduledExportSettings implements Parcelable {
         }
 
         dest.writeInt(mPeriodInDays);
+    }
+
+    /** Builder for {@link ScheduledExportSettings}. */
+    public static final class Builder {
+        @Nullable private Uri mUri;
+        private int mPeriodInDays = DEFAULT_INT;
+
+        /**
+         * Sets the URI to write to when exporting data.
+         *
+         * <p>If not set, the existing URI will be kept.
+         */
+        @NonNull
+        public Builder setUri(@NonNull Uri uri) {
+            Objects.requireNonNull(uri);
+
+            mUri = uri;
+            return this;
+        }
+
+        /**
+         * Sets the period between scheduled exports in days.
+         *
+         * <p>If not set, the existing period will be kept.
+         */
+        @NonNull
+        public Builder setPeriodInDays(@IntRange(from = 0, to = 30) int periodInDays) {
+            if (periodInDays < 0 || periodInDays > 30) {
+                throw new IllegalArgumentException("periodInDays should be between 0 and 30");
+            }
+
+            mPeriodInDays = periodInDays;
+            return this;
+        }
+
+        /** Builds a {@link ScheduledExportSettings} object. */
+        @NonNull
+        public ScheduledExportSettings build() {
+            return new ScheduledExportSettings(mUri, mPeriodInDays);
+        }
     }
 }

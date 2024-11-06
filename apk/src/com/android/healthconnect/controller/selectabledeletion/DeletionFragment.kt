@@ -51,7 +51,7 @@ class DeletionFragment : Hilt_DeletionFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_deletion, container, false)
     }
@@ -104,8 +104,8 @@ class DeletionFragment : Hilt_DeletionFragment() {
     }
 
     private fun showConfirmationDialog() {
-        NewDeletionConfirmationDialogFragment()
-            .show(childFragmentManager, NewDeletionConfirmationDialogFragment.TAG)
+        DeletionConfirmationDialogFragment()
+            .show(childFragmentManager, DeletionConfirmationDialogFragment.TAG)
     }
 
     private fun showSuccessDialog() {

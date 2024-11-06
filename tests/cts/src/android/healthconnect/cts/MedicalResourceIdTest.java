@@ -16,15 +16,18 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_ALLERGY;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.health.connect.MedicalResourceId;
 import android.os.Parcel;
@@ -32,7 +35,7 @@ import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -58,6 +61,41 @@ public class MedicalResourceIdTest {
         assertThat(medicalResourceId.getFhirResourceType())
                 .isEqualTo(FHIR_RESOURCE_TYPE_IMMUNIZATION);
         assertThat(medicalResourceId.getFhirResourceId()).isEqualTo(FHIR_RESOURCE_ID_IMMUNIZATION);
+    }
+
+    @Test
+    public void testMedicalResourceId_fromFhirReference_validReference() {
+        MedicalResourceId medicalResourceId =
+                MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Immunization/034-AB16.0");
+
+        assertThat(medicalResourceId.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
+        assertThat(medicalResourceId.getFhirResourceType())
+                .isEqualTo(FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(medicalResourceId.getFhirResourceId()).isEqualTo("034-AB16.0");
+    }
+
+    @Test
+    public void testMedicalResourceId_fromFhirReference_unknownFhirResourceType() {
+        MedicalResourceId medicalResourceId =
+                MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Patient/034-AB16.0");
+
+        assertThat(medicalResourceId.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
+        assertThat(medicalResourceId.getFhirResourceType()).isEqualTo(FHIR_RESOURCE_TYPE_UNKNOWN);
+        assertThat(medicalResourceId.getFhirResourceId()).isEqualTo("034-AB16.0");
+    }
+
+    @Test
+    public void testMedicalResourceId_fromFhirReference_invalidFhirResourceType() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Patient0/034-AB16.0"));
+    }
+
+    @Test
+    public void testMedicalResourceId_fromFhirReference_invalidFhirResourceId() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Patient/034*AB16#0"));
     }
 
     @Test
@@ -101,7 +139,7 @@ public class MedicalResourceIdTest {
                         FHIR_RESOURCE_ID_IMMUNIZATION);
         MedicalResourceId idWithDifferentFhirResourceType =
                 new MedicalResourceId(
-                        DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_ALLERGY, FHIR_RESOURCE_ID_IMMUNIZATION);
+                        DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_ID_IMMUNIZATION);
         MedicalResourceId idWithDifferentFhirResourceId =
                 new MedicalResourceId(
                         DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_RESOURCE_ID_ALLERGY);
@@ -128,5 +166,20 @@ public class MedicalResourceIdTest {
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();
+    }
+
+    @Test
+    public void testRestoreInvalidMedicalResourceTypeFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResourceId original = getMedicalResourceId();
+        setFieldValueUsingReflection(original, "mFhirResourceType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceId.CREATOR.createFromParcel(parcel));
     }
 }
