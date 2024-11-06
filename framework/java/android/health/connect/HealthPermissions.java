@@ -811,15 +811,6 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_CONDITIONS";
 
     /**
-     * Allows an application to read the user's data about immunizations and vaccinations.
-     *
-     * <p>Protection level: dangerous.
-     */
-    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public static final String READ_MEDICAL_DATA_IMMUNIZATIONS =
-            "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS";
-
-    /**
      * Allows an application to read the user's laboratory result data.
      *
      * <p>Protection level: dangerous.
@@ -888,6 +879,15 @@ public final class HealthPermissions {
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public static final String READ_MEDICAL_DATA_SOCIAL_HISTORY =
             "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
+
+    /**
+     * Allows an application to read the user's data about immunizations and vaccinations.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_VACCINES =
+            "android.permission.health.READ_MEDICAL_DATA_VACCINES";
 
     /**
      * Allows an application to read the user's information about their encounters with health care
@@ -1064,7 +1064,6 @@ public final class HealthPermissions {
         permissions.add(WRITE_MEDICAL_DATA);
         permissions.add(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES);
         permissions.add(READ_MEDICAL_DATA_CONDITIONS);
-        permissions.add(READ_MEDICAL_DATA_IMMUNIZATIONS);
         permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
         permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
         permissions.add(READ_MEDICAL_DATA_PERSONAL_DETAILS);
@@ -1072,6 +1071,7 @@ public final class HealthPermissions {
         permissions.add(READ_MEDICAL_DATA_PREGNANCY);
         permissions.add(READ_MEDICAL_DATA_PROCEDURES);
         permissions.add(READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        permissions.add(READ_MEDICAL_DATA_VACCINES);
         permissions.add(READ_MEDICAL_DATA_VISITS);
         permissions.add(READ_MEDICAL_DATA_VITAL_SIGNS);
         return permissions;

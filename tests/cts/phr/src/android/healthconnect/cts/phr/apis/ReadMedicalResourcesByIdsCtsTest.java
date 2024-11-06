@@ -18,7 +18,6 @@ package android.healthconnect.cts.phr.apis;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS;
@@ -26,6 +25,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTIT
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
@@ -351,11 +351,11 @@ public class ReadMedicalResourcesByIdsCtsTest {
     public void testRead_inForegroundWithReadPermNoWritePerm_onlyReturnsResourcesWithReadPerms()
             throws Exception {
         // Given that we have two data sources from two apps with one immunization and one allergy
-        // each and the calling app only has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // each and the calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
@@ -424,12 +424,12 @@ public class ReadMedicalResourcesByIdsCtsTest {
     public void testRead_inForegroundHasWriteAndReadPerms_returnsSelfDataAndOtherDataWithReadPerms()
             throws Exception {
         // Given that we have two data sources from two apps with one immunization and one allergy
-        // each and the calling app only has WRITE_MEDICAL_DATA and READ_MEDICAL_DATA_IMMUNIZATIONS
+        // each and the calling app only has WRITE_MEDICAL_DATA and READ_MEDICAL_DATA_VACCINES
         // permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
@@ -486,13 +486,13 @@ public class ReadMedicalResourcesByIdsCtsTest {
             throws Exception {
         // Given that we have two data sources from two apps with one immunization and one allergy
         // each and the calling app has READ_HEALTH_DATA_IN_BACKGROUND and
-        // READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
@@ -573,13 +573,13 @@ public class ReadMedicalResourcesByIdsCtsTest {
                     throws Exception {
         // Given that we have two data sources from two apps with one immunization and one allergy
         // each and the calling app has READ_HEALTH_DATA_IN_BACKGROUND, WRITE_MEDICAL_DATA and
-        // READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
@@ -666,10 +666,10 @@ public class ReadMedicalResourcesByIdsCtsTest {
             throws Exception {
         // Given that we have two data sources from two apps with one immunization and one allergy
         // each and the
-        // and the calling app only has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // and the calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
@@ -710,9 +710,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                 mUtil.insertSourceAndOneResourcePerPermissionCategory(PHR_BACKGROUND_APP);
         Map<String, Integer> permissionToExpectedMedicalResourceTypeMap =
                 Map.ofEntries(
-                        Map.entry(
-                                READ_MEDICAL_DATA_IMMUNIZATIONS,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Map.entry(READ_MEDICAL_DATA_VACCINES, MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
                         Map.entry(
                                 READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),

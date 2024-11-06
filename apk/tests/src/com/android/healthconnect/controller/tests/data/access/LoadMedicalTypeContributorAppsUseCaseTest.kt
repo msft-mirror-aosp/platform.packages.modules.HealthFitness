@@ -76,7 +76,7 @@ class LoadMedicalTypeContributorAppsUseCaseTest {
             .`when`(healthConnectManager)
             .queryAllMedicalResourceTypeInfos(ArgumentMatchers.any(), ArgumentMatchers.any())
         val result =
-            loadMedicalTypeContributorAppsUseCase.invoke(MedicalPermissionType.IMMUNIZATIONS)
+            loadMedicalTypeContributorAppsUseCase.invoke(MedicalPermissionType.VACCINES)
         val expected = listOf<AppMetadata>()
         assertThat(result).isEqualTo(expected)
     }
@@ -98,7 +98,7 @@ class LoadMedicalTypeContributorAppsUseCaseTest {
             .`when`(healthConnectManager)
             .queryAllMedicalResourceTypeInfos(ArgumentMatchers.any(), ArgumentMatchers.any())
         val result =
-            loadMedicalTypeContributorAppsUseCase.invoke(MedicalPermissionType.IMMUNIZATIONS)
+            loadMedicalTypeContributorAppsUseCase.invoke(MedicalPermissionType.VACCINES)
         assertThat(result.size).isEqualTo(1)
         assertThat(result[0].packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
     }
