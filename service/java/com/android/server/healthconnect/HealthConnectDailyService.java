@@ -44,7 +44,11 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
+import com.android.server.healthconnect.utils.TimeSourceImpl;
 
 import java.util.Objects;
 
@@ -95,6 +99,17 @@ public class HealthConnectDailyService extends JobService {
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         TransactionManager transactionManager = healthConnectInjector.getTransactionManager();
         ActivityDateHelper activityDateHelper = healthConnectInjector.getActivityDateHelper();
+        TimeSource timeSource = new TimeSourceImpl();
+        MedicalDataSourceHelper medicalDataSourceHelper =
+                new MedicalDataSourceHelper(
+                        transactionManager, appInfoHelper, timeSource, accessLogsHelper);
+        MedicalResourceHelper medicalResourceHelper =
+                new MedicalResourceHelper(
+                        transactionManager,
+                        appInfoHelper,
+                        medicalDataSourceHelper,
+                        timeSource,
+                        accessLogsHelper);
 
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
@@ -110,7 +125,9 @@ public class HealthConnectDailyService extends JobService {
                                     appInfoHelper,
                                     accessLogsHelper,
                                     transactionManager,
-                                    activityDateHelper);
+                                    activityDateHelper,
+                                    medicalDataSourceHelper,
+                                    medicalResourceHelper);
                             jobFinished(params, false);
                         });
                 return true;
