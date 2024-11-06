@@ -86,7 +86,6 @@ public final class ExportImportSettingsStorageTest {
     public void setUp() throws RemoteException {
         mExportImportSettingsStorage = new ExportImportSettingsStorage(mFakePreferenceHelper);
 
-        when(PreferenceHelper.getInstance()).thenReturn(mFakePreferenceHelper);
         when(mContext.getContentResolver()).thenReturn(mContentResolver);
         when(mContentResolver.acquireUnstableContentProviderClient(any(Uri.class)))
                 .thenReturn(mContentProviderClient);

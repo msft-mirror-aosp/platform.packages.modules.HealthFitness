@@ -64,7 +64,6 @@ import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
@@ -127,18 +126,18 @@ public class ExportManagerTest {
     public void setUp() throws Exception {
         mContext = mDatabaseTestRule.getDatabaseContext();
         TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, transactionManager);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(new FakePreferenceHelper())
+                        .setTransactionManager(transactionManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .build();
+        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         mTimeStamp = Instant.parse("2024-06-04T16:39:12Z");
         Clock fakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
-
-        HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
-                        .setPreferenceHelper(new FakePreferenceHelper())
-                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
-                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
-                        .build();
 
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mExportManager =
@@ -156,7 +155,6 @@ public class ExportManagerTest {
         SQLiteDatabase.deleteDatabase(
                 mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
         mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME).delete();
-        AppInfoHelper.resetInstanceForTest();
     }
 
     @Test

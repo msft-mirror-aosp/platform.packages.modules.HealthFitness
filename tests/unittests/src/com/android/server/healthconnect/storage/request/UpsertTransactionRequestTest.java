@@ -23,6 +23,8 @@ import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.Mockito.mock;
+
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.Environment;
@@ -30,6 +32,10 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -61,18 +67,25 @@ public class UpsertTransactionRequestTest {
 
     private StorageContext mContext;
     private AppInfoHelper mAppInfoHelper;
+    private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setup() {
         mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setTransactionManager(
+                                mHealthConnectDatabaseTestRule.getTransactionManager())
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
         TransactionTestUtils transactionTestUtils =
-                new TransactionTestUtils(
-                        mContext, mHealthConnectDatabaseTestRule.getTransactionManager());
+                new TransactionTestUtils(mContext, healthConnectInjector);
         transactionTestUtils.insertApp("package.name");
 
-        AppInfoHelper.resetInstanceForTest();
-        mAppInfoHelper =
-                AppInfoHelper.getInstance(mHealthConnectDatabaseTestRule.getTransactionManager());
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
     }
 
     @Test
@@ -81,7 +94,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name.1",
                         List.of(),
-                        DeviceInfoHelper.getInstance(),
+                        mDeviceInfoHelper,
                         mContext,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
@@ -92,7 +105,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name.2",
                         List.of(),
-                        DeviceInfoHelper.getInstance(),
+                        mDeviceInfoHelper,
                         mContext,
                         /* isInsertRequest= */ false,
                         /* useProvidedUuid= */ false,
@@ -111,7 +124,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name",
                         records,
-                        DeviceInfoHelper.getInstance(),
+                        mDeviceInfoHelper,
                         mContext,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),

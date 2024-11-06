@@ -62,7 +62,6 @@ public class MigratorPackageChangesReceiverTest {
                     .build();
 
     @Mock MigrationStateManager mMigrationStateManager;
-    @Mock PreferenceHelper mPreferenceHelper;
     @Mock private Context mContext;
     @Mock private Context mUserContext;
     @Mock private UserManager mUserManager;
@@ -74,7 +73,6 @@ public class MigratorPackageChangesReceiverTest {
     @Before
     public void setUp() {
         when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         mMigratorPackageChangesReceiver =
                 new MigratorPackageChangesReceiver(mMigrationStateManager);
         when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mUserContext);
@@ -84,7 +82,6 @@ public class MigratorPackageChangesReceiverTest {
 
     @After
     public void tearDown() {
-        clearInvocations(mPreferenceHelper);
         clearInvocations(mMigrationStateManager);
     }
 
