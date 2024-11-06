@@ -22,7 +22,6 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -52,7 +51,6 @@ public class HealthConnectInjectorTest {
         MockitoAnnotations.initMocks(this);
 
         Context context = InstrumentationRegistry.getContext();
-        HealthConnectDeviceConfigManager.initializeInstance(context);
         mBuilder =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)

@@ -22,12 +22,10 @@ import static com.android.server.healthconnect.storage.HealthConnectDatabase.DEF
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.StorageContext;
 
 import org.junit.rules.ExternalResource;
@@ -56,7 +54,7 @@ import java.io.File;
  */
 public class HealthConnectDatabaseTestRule extends ExternalResource {
     private StorageContext mStorageContext;
-    private String mDatabaseName;
+    private final String mDatabaseName;
 
     // Mock Environment using ExtendedMockitoRule in the test using this rule.
     public HealthConnectDatabaseTestRule() {
@@ -77,13 +75,11 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         mStorageContext =
                 StorageContext.create(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-
-        HealthConnectDeviceConfigManager.initializeInstance(mStorageContext);
     }
 
     @Override
     public void after() {
-        SQLiteDatabase.deleteDatabase(mStorageContext.getDatabasePath(mDatabaseName));
+        mStorageContext.deleteDatabase(mDatabaseName);
     }
 
     public StorageContext getDatabaseContext() {

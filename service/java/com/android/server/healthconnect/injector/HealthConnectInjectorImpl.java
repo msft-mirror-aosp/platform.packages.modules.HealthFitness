@@ -96,7 +96,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
-                        ? HealthConnectDeviceConfigManager.initializeInstance(context)
+                        ? new HealthConnectDeviceConfigManager(context)
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null

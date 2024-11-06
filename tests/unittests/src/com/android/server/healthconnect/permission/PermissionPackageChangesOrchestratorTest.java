@@ -65,15 +65,12 @@ public class PermissionPackageChangesOrchestratorTest {
     @Mock private HealthConnectPermissionHelper mHelper;
     @Mock private HealthPermissionIntentAppsTracker mTracker;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
-    @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     @Mock private UserHandle mUserHandle;
 
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     @Before
     public void setUp() throws PackageManager.NameNotFoundException {
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
         mContext = ApplicationProvider.getApplicationContext();
         mCurrentUid = mContext.getPackageManager().getPackageUid(SELF_PACKAGE_NAME, 0);
         mOrchestrator =
@@ -114,8 +111,6 @@ public class PermissionPackageChangesOrchestratorTest {
 
     @Test
     public void testPackageRemoved_removesFromPriorityList_whenNewAggregationOff() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
         mOrchestrator.onReceive(
                 mContext,
                 buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ false));
