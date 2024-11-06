@@ -156,11 +156,13 @@ public class MedicalResourceHelperTest {
     public void setup() {
 
         mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
+                        .setTimeSource(mFakeTimeSource)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
@@ -168,17 +170,8 @@ public class MedicalResourceHelperTest {
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
-        mMedicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        mTransactionManager, mAppInfoHelper, mFakeTimeSource, mAccessLogsHelper);
-        mMedicalResourceHelper =
-                new MedicalResourceHelper(
-                        mTransactionManager,
-                        mAppInfoHelper,
-                        mMedicalDataSourceHelper,
-                        mFakeTimeSource,
-                        mAccessLogsHelper);
+        mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
+        mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
         mUtil =
                 new PhrTestUtils(
                         mContext,
