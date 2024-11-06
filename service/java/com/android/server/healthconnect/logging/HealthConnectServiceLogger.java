@@ -651,7 +651,12 @@ public class HealthConnectServiceLogger {
             return RateLimitingRanges.NOT_DEFINED;
         }
 
-        /** Public so that it can be used by {@link InternalHealthConnectMappings}. */
+        /**
+         * Public so that it can be used by {@link InternalHealthConnectMappings}.
+         *
+         * @deprecated Use {@link InternalHealthConnectMappings#getLoggingEnumForRecordTypeId(int)}.
+         */
+        @Deprecated
         public static int getDataTypeEnumFromRecordType(int recordType) {
             switch (recordType) {
                 case RECORD_TYPE_STEPS:

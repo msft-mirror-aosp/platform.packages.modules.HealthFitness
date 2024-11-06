@@ -57,6 +57,7 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.Vo2MaxRecord
 import android.health.connect.datatypes.WeightRecord
 import android.health.connect.datatypes.WheelchairPushesRecord
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ACTIVE_CALORIES_BURNED
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BASAL_BODY_TEMPERATURE
@@ -96,50 +97,60 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.VO2_MAX
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.WEIGHT
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.WHEELCHAIR_PUSHES
+import com.android.healthconnect.controller.permissions.data.fromHealthPermissionCategory
+import com.android.healthfitness.flags.Flags
 
 object HealthPermissionToDatatypeMapper {
     private val map =
-        mapOf(
-            STEPS to listOf(StepsRecord::class.java, StepsCadenceRecord::class.java),
-            HEART_RATE to listOf(HeartRateRecord::class.java),
-            BASAL_METABOLIC_RATE to listOf(BasalMetabolicRateRecord::class.java),
-            SPEED to listOf(SpeedRecord::class.java),
-            DISTANCE to listOf(DistanceRecord::class.java),
-            POWER to listOf(PowerRecord::class.java),
-            ACTIVE_CALORIES_BURNED to listOf(ActiveCaloriesBurnedRecord::class.java),
-            TOTAL_CALORIES_BURNED to listOf(TotalCaloriesBurnedRecord::class.java),
-            HEIGHT to listOf(HeightRecord::class.java),
-            BODY_FAT to listOf(BodyFatRecord::class.java),
-            OXYGEN_SATURATION to listOf(OxygenSaturationRecord::class.java),
-            BODY_TEMPERATURE to listOf(BodyTemperatureRecord::class.java),
-            BASAL_BODY_TEMPERATURE to listOf(BasalBodyTemperatureRecord::class.java),
-            WHEELCHAIR_PUSHES to listOf(WheelchairPushesRecord::class.java),
-            RESTING_HEART_RATE to listOf(RestingHeartRateRecord::class.java),
-            RESPIRATORY_RATE to listOf(RespiratoryRateRecord::class.java),
-            HYDRATION to listOf(HydrationRecord::class.java),
-            FLOORS_CLIMBED to listOf(FloorsClimbedRecord::class.java),
-            ELEVATION_GAINED to listOf(ElevationGainedRecord::class.java),
-            BONE_MASS to listOf(BoneMassRecord::class.java),
-            LEAN_BODY_MASS to listOf(LeanBodyMassRecord::class.java),
-            WEIGHT to listOf(WeightRecord::class.java),
-            BLOOD_GLUCOSE to listOf(BloodGlucoseRecord::class.java),
-            NUTRITION to listOf(NutritionRecord::class.java),
-            BLOOD_PRESSURE to listOf(BloodPressureRecord::class.java),
-            VO2_MAX to listOf(Vo2MaxRecord::class.java),
-            EXERCISE to
-                listOf(ExerciseSessionRecord::class.java, CyclingPedalingCadenceRecord::class.java),
-            CERVICAL_MUCUS to listOf(CervicalMucusRecord::class.java),
-            SEXUAL_ACTIVITY to listOf(SexualActivityRecord::class.java),
-            OVULATION_TEST to listOf(OvulationTestRecord::class.java),
-            MENSTRUATION to
-                listOf(MenstruationFlowRecord::class.java, MenstruationPeriodRecord::class.java),
-            SLEEP to listOf(SleepSessionRecord::class.java),
-            BODY_WATER_MASS to listOf(BodyWaterMassRecord::class.java),
-            INTERMENSTRUAL_BLEEDING to listOf(IntermenstrualBleedingRecord::class.java),
-            HEART_RATE_VARIABILITY to listOf(HeartRateVariabilityRmssdRecord::class.java),
-            SKIN_TEMPERATURE to listOf(SkinTemperatureRecord::class.java),
-            PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java),
-            MINDFULNESS to listOf(MindfulnessSessionRecord::class.java),
+        if (Flags.healthConnectMappings()) createMap()
+        else
+            mapOf(
+                STEPS to listOf(StepsRecord::class.java, StepsCadenceRecord::class.java),
+                HEART_RATE to listOf(HeartRateRecord::class.java),
+                BASAL_METABOLIC_RATE to listOf(BasalMetabolicRateRecord::class.java),
+                SPEED to listOf(SpeedRecord::class.java),
+                DISTANCE to listOf(DistanceRecord::class.java),
+                POWER to listOf(PowerRecord::class.java),
+                ACTIVE_CALORIES_BURNED to listOf(ActiveCaloriesBurnedRecord::class.java),
+                TOTAL_CALORIES_BURNED to listOf(TotalCaloriesBurnedRecord::class.java),
+                HEIGHT to listOf(HeightRecord::class.java),
+                BODY_FAT to listOf(BodyFatRecord::class.java),
+                OXYGEN_SATURATION to listOf(OxygenSaturationRecord::class.java),
+                BODY_TEMPERATURE to listOf(BodyTemperatureRecord::class.java),
+                BASAL_BODY_TEMPERATURE to listOf(BasalBodyTemperatureRecord::class.java),
+                WHEELCHAIR_PUSHES to listOf(WheelchairPushesRecord::class.java),
+                RESTING_HEART_RATE to listOf(RestingHeartRateRecord::class.java),
+                RESPIRATORY_RATE to listOf(RespiratoryRateRecord::class.java),
+                HYDRATION to listOf(HydrationRecord::class.java),
+                FLOORS_CLIMBED to listOf(FloorsClimbedRecord::class.java),
+                ELEVATION_GAINED to listOf(ElevationGainedRecord::class.java),
+                BONE_MASS to listOf(BoneMassRecord::class.java),
+                LEAN_BODY_MASS to listOf(LeanBodyMassRecord::class.java),
+                WEIGHT to listOf(WeightRecord::class.java),
+                BLOOD_GLUCOSE to listOf(BloodGlucoseRecord::class.java),
+                NUTRITION to listOf(NutritionRecord::class.java),
+                BLOOD_PRESSURE to listOf(BloodPressureRecord::class.java),
+                VO2_MAX to listOf(Vo2MaxRecord::class.java),
+                EXERCISE to
+                        listOf(
+                            ExerciseSessionRecord::class.java,
+                            CyclingPedalingCadenceRecord::class.java,
+                        ),
+                CERVICAL_MUCUS to listOf(CervicalMucusRecord::class.java),
+                SEXUAL_ACTIVITY to listOf(SexualActivityRecord::class.java),
+                OVULATION_TEST to listOf(OvulationTestRecord::class.java),
+                MENSTRUATION to
+                        listOf(
+                            MenstruationFlowRecord::class.java,
+                            MenstruationPeriodRecord::class.java,
+                        ),
+                SLEEP to listOf(SleepSessionRecord::class.java),
+                BODY_WATER_MASS to listOf(BodyWaterMassRecord::class.java),
+                INTERMENSTRUAL_BLEEDING to listOf(IntermenstrualBleedingRecord::class.java),
+                HEART_RATE_VARIABILITY to listOf(HeartRateVariabilityRmssdRecord::class.java),
+                SKIN_TEMPERATURE to listOf(SkinTemperatureRecord::class.java),
+                PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java),
+                MINDFULNESS to listOf(MindfulnessSessionRecord::class.java),
             )
 
     fun getDataTypes(permissionType: FitnessPermissionType): List<Class<out Record>> {
@@ -148,5 +159,17 @@ object HealthPermissionToDatatypeMapper {
 
     fun getAllDataTypes(): Map<FitnessPermissionType, List<Class<out Record>>> {
         return map
+    }
+
+    private fun createMap(): Map<FitnessPermissionType, List<Class<out Record>>> {
+        val healthConnectMappings = HealthConnectMappings.getInstance()
+
+        return healthConnectMappings.allRecordTypeIdentifiers
+            .map { recordTypeId ->
+                fromHealthPermissionCategory(
+                    healthConnectMappings.getHealthPermissionCategoryForRecordType(recordTypeId)
+                ) to healthConnectMappings.recordIdToExternalRecordClassMap[recordTypeId]!!
+            }
+            .groupBy({ it.first as FitnessPermissionType }, { it.second })
     }
 }
