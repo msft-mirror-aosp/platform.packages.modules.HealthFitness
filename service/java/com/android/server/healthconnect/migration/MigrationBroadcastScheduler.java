@@ -54,18 +54,15 @@ public final class MigrationBroadcastScheduler {
 
     private final Object mLock = new Object();
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
-    private final MigrationStateManager mMigrationStateManager;
 
     @GuardedBy("mLock")
     private UserHandle mUserHandle;
 
     public MigrationBroadcastScheduler(
             UserHandle userHandle,
-            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
-            MigrationStateManager migrationStateManager) {
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
         mUserHandle = userHandle;
         mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
-        mMigrationStateManager = migrationStateManager;
     }
 
     /** Sets userId. Invoked when the user is switched. */
@@ -83,9 +80,9 @@ public final class MigrationBroadcastScheduler {
      * periodic jobs, a periodic job is scheduled, else a set of non-periodic jobs are
      * pre-scheduled.
      */
-    public void scheduleNewJobs(Context context) {
+    public void scheduleNewJobs(Context context, MigrationStateManager migrationStateManager) {
         synchronized (mLock) {
-            int migrationState = mMigrationStateManager.getMigrationState();
+            int migrationState = migrationStateManager.getMigrationState();
 
             if (Constants.DEBUG) {
                 Slog.d(TAG, "Current migration state: " + migrationState);

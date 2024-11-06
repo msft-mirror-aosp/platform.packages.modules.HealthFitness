@@ -23,6 +23,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
@@ -172,6 +173,12 @@ public abstract class HealthConnectInjector {
 
     /** Getter for {@link TimeSource} instance initialised by the Health Connect Injector. */
     public abstract TimeSource getTimeSource();
+
+    /**
+     * Getter for {@link MigrationBroadcastScheduler} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract MigrationBroadcastScheduler getMigrationBroadcastScheduler();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
