@@ -19,7 +19,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.CompoundButton.OnCheckedChangeListener
 import com.android.healthconnect.controller.utils.logging.ElementName
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
