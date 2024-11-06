@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"les poussées de fauteuil roulant"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Lecture des données relatives aux poussées de fauteuil roulant"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Écriture des données relatives aux poussées de fauteuil roulant"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensité de l\'activité"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensité de l\'activité"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Lire des données relatives à l\'intensité de l\'activité"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Écriture des données relatives à l\'intensité de l\'activité"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Métabolisme de base"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"le métabolisme de base"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Lecture des données relatives au métabolisme de base"</string>
@@ -998,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Connexion santé supprimera toutes les données de plus de # mois. Les modifications peuvent prendre jusqu\'à un jour pour s\'afficher dans vos applis connectées.}one{Connexion santé supprimera toutes les données de plus de # mois. Les modifications peuvent prendre jusqu\'à un jour pour s\'afficher dans vos applis connectées.}other{Connexion santé supprimera toutes les données de plus de # mois. Les modifications peuvent prendre jusqu\'à un jour pour s\'afficher dans vos applis connectées.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Données à supprimer parmi les suivantes"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"OK"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{La suppression automatique est activée. Les données datant de plus de # mois seront supprimées}one{La suppression automatique est activée. Les données datant de plus de # mois seront supprimées}other{La suppression automatique est activée. Les données datant de plus de # mois seront supprimées}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Suppression automatique activée; les données de plus de # mois seront supprimées}one{Suppression automatique activée; les données de plus de # mois seront supprimées}other{Suppression automatique activée; les données de plus de # mois seront supprimées}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"La suppression automatique est désactivée"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Définir la priorité des applis"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Lorsque plus d\'une appli ajoute des données « <xliff:g id="DATA_TYPE">%s</xliff:g> », Health Connect priorise l\'appli la plus haute dans cette liste. Faites glisser les applis pour personnaliser l\'ordre de priorité."</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Voir dans la boutique d\'applis"</string>
     <string name="select_all" msgid="837499881590001166">"Tout sélectionner"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Les applis connectées ne pourront plus accéder à ces données à partir de Connexion santé"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Sélectionnée"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Non sélectionnée"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Itinéraire d\'exercice sur carte disponible"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Jour suivant"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Semaine suivante"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mois suivant"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Jour précédent"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Semaine précédente"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mois précédent"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Supprimer définitivement toutes les données?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Supprimer définitivement les données sélectionnées?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Supprimer définitivement toutes les données <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1179,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Dernier accès : <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Accès hier (<xliff:g id="TIME_DATE">%1$s</xliff:g>)"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Accès : <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Autoriser la sélect."</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Tout refuser"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux données antérieures d\'activité physique et de bien-être?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> demande l\'accès aux données suivantes : <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChoisissez de les autoriser toutes ou de les contrôler individuellement."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

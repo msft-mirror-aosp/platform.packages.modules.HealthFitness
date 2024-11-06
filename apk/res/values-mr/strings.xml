@@ -557,7 +557,7 @@
     <string name="time_range_message_app_data" msgid="2590800457710603556">"हे निवडलेल्या कालावधीमधील Health Connect मध्ये जोडलेला <xliff:g id="APP_DATA">%s</xliff:g> डेटा कायमचा हटवते"</string>
     <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"यामुळे निवडलेल्या कालावधीत Health Connect मध्ये <xliff:g id="APP_DATA">%2$s</xliff:g> द्वारे जोडलेला <xliff:g id="DATA_TYPE">%1$s</xliff:g> डेटा कायमचा हटवला जातो"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"मागील २४ तासांमधील डेटा हटवा"</string>
-    <string name="time_range_one_week" msgid="8754523384275645434">"मागील सात दिवसांमधील डेटा हटवा"</string>
+    <string name="time_range_one_week" msgid="8754523384275645434">"मागील ७ दिवसांमधील डेटा हटवा"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"मागील ३० दिवसांमधील डेटा हटवा"</string>
     <string name="time_range_all" msgid="8167350212705839943">"सर्व डेटा हटवा"</string>
     <string name="confirming_question_all" msgid="1585414659784742952">"आतापर्यंतचा सर्व डेटा कायमचा हटवायचा आहे का?"</string>
@@ -980,13 +980,13 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"ऑटो-डिलीट"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"ऑटो-डिलीट"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"तुमचा डेटा सेट केलेल्या वेळेनंतर हटवण्यासाठी शेड्युल करून Health Connect मध्ये किती काळ स्टोअर केला जातो ते नियंत्रित करा"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"तुमचा डेटा सेट केलेल्या वेळेनंतर हटवण्यासाठी शेड्यूल करून Health Connect मध्ये किती काळ स्टोअर केला जातो ते नियंत्रित करा"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"ऑटो-डिलीटबद्दल अधिक जाणून घ्या"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"डेटा ऑटो-डिलीट करा"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{# महिन्यानंतर}other{# महिन्यांनंतर}}"</string>
     <string name="range_never" msgid="4429478261788361233">"कधीही नाही"</string>
     <string name="range_off" msgid="8178520557618184215">"बंद आहे"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"तुम्ही ही सेटिंग्ज बदलता, तेव्हा Health Connect तुमची नवीन प्राधान्ये प्रतिबिंबित करण्यासाठी सध्याचा डेटा हटवते"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"तुम्ही ही सेटिंग्ज बदलता, तेव्हा Health Connect तुमची नवीन प्राधान्ये प्रतिबिंबित करण्यासाठी सद्य डेटा हटवते"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# महिन्यानंतर डेटा ऑटो-डिलीट करायचा का?}other{# महिन्यांनंतर डेटा ऑटो-डिलीट करायचा का?}}"</string>
     <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{यामुळे Health Connect वरून # महिन्याहून जुना डेटा देखील हटवला जातो.\n\nतुम्हाला तुमच्या कनेक्ट केलेल्या ॲप्समधील डेटा पूर्णपणे हटवायचा असल्यास, जिथे तुमचा डेटा सेव्ह केला जाऊ शकतो असे प्रत्येक ॲप तपासा.}other{यामुळे Health Connect वरून # महिन्यांहून जुना डेटा देखील हटवला जातो.\n\nतुम्हाला तुमच्या कनेक्ट केलेल्या ॲप्समधील डेटा पूर्णपणे हटवायचा असल्यास, जिथे तुमचा डेटा सेव्ह केला जाऊ शकतो असे प्रत्येक ॲप तपासा.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ऑटो-डिलीट सेट करा"</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"अ‍ॅप स्टोअरवर पहा"</string>
     <string name="select_all" msgid="837499881590001166">"सर्व निवडा"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"कनेक्ट केलेली अ‍ॅप्स यापुढे Health Connect मधील हा डेटा अ‍ॅक्सेस करू शकणार नाहीत"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"खूण केली आहे"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"खूण केली नाही"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"व्यायामाची योजना उपलब्ध आहे"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"पुढील दिवस"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"पुढील आठवडा"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"पुढील महिना"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"मागील दिवस"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"मागील आठवडा"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"मागील महिना"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"सर्व डेटा कायमचा हटवायचा आहे का?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"निवडलेला डेटा कायमचा हटवायचा आहे का?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g> चा सर्व डेटा कायमचा हटवायचा आहे का?"</string>
@@ -1175,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g> वाजता ॲक्सेस केले"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"काल <xliff:g id="TIME_DATE">%1$s</xliff:g> वाजता ॲक्सेस केले"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g> ला <xliff:g id="TIME_DATE_1">%2$s</xliff:g> वाजता ॲक्सेस केले"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"निवडलेल्या अनुमती द्या"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"सर्वांना नकार द्या"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> फिटनेस आणि स्वास्थ्याशी संबंधित डेटा अ‍ॅक्सेस करण्याची अनुमती द्यायची आहे का?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ने <xliff:g id="DATA_TYPES">%2$s</xliff:g> अ‍ॅक्सेस करण्याची विनंती केली आहे.\n\nसर्वांना अनुमती देणे किंवा वैयक्तिकरित्या नियंत्रित करणे निवडा."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

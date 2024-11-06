@@ -994,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{# മാസത്തിൽ കൂടുതൽ പഴക്കമുള്ള ഡാറ്റ Health Connect ഇല്ലാതാക്കും. ഈ മാറ്റങ്ങൾ നിങ്ങളുടെ കണക്റ്റ് ചെയ്ത ആപ്പുകളിൽ ദൃശ്യമാകാൻ ഒരു ദിവസം എടുത്തേക്കാം.}other{# മാസത്തിൽ കൂടുതൽ പഴക്കമുള്ള ഡാറ്റ Health Connect ഇല്ലാതാക്കും. ഈ മാറ്റങ്ങൾ നിങ്ങളുടെ കണക്റ്റ് ചെയ്ത ആപ്പുകളിൽ ദൃശ്യമാകാൻ ഒരു ദിവസം എടുത്തേക്കാം.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"ഇവയിൽ നിന്ന് ഡാറ്റ ഇല്ലാതാക്കും"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"പൂർത്തിയായി"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{സ്വയമേവ-ഇല്ലാതാക്കൽ ഓണാണ്. # മാസത്തിലധികം പഴക്കമുള്ള ഡാറ്റ ഇല്ലാതാക്കും}other{സ്വയമേവ-ഇല്ലാതാക്കൽ ഓണാണ്. # മാസത്തിലധികം പഴക്കമുള്ള ഡാറ്റ ഇല്ലാതാക്കും}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{സ്വയമേവ-ഇല്ലാതാക്കൽ ഓണാണ്. # മാസത്തിലേറെയുള്ള ഡാറ്റ ഇല്ലാതാക്കും}other{സ്വയമേവ-ഇല്ലാതാക്കൽ ഓണാണ്. # മാസത്തിലേറെയുള്ള ഡാറ്റ ഇല്ലാതാക്കും}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"സ്വയമേവ-ഇല്ലാതാക്കൽ ഓഫാണ്"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ആപ്പ് മുൻഗണന സജ്ജീകരിക്കുക"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"ഒന്നിലധികം ആപ്പ് <xliff:g id="DATA_TYPE">%s</xliff:g> ഡാറ്റ ചേർക്കുകയാണെങ്കിൽ, ഈ ലിസ്റ്റിലെ ഏറ്റവും മുകളിലുള്ള ആപ്പിന് Health Connect മുൻഗണന നൽകുന്നു. ആപ്പുകൾ പുനഃക്രമീകരിക്കാൻ അവ വലിച്ചിടുക."</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"ആപ്പ് സ്‌റ്റോറിൽ കാണുക"</string>
     <string name="select_all" msgid="837499881590001166">"എല്ലാം തിരഞ്ഞെടുക്കുക"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"കണക്‌റ്റ് ചെയ്‌തിട്ടുള്ള ആപ്പുകൾക്ക് ഇനി Health Connect-ൽ നിന്ന് ഈ ഡാറ്റ വായിക്കാനാകില്ല"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"ചെക്ക് മാർക്കിട്ടു"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"ചെക്ക് മാർക്കിട്ടിട്ടില്ലാത്തത്"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"വ്യായാമ മാപ്പ് റൂട്ട് ലഭ്യമാണ്"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"അടുത്ത ദിവസം"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"അടുത്ത ആഴ്‌ച"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"അടുത്ത മാസം"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"മുമ്പത്തെ ദിവസം"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"മുമ്പത്തെ ആഴ്‌ച"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"മുമ്പത്തെ മാസം"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"എല്ലാ ഡാറ്റയും ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"തിരഞ്ഞെടുത്ത ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"എല്ലാ <xliff:g id="APP_NAME">%s</xliff:g> ഡാറ്റയും ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
@@ -1175,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"ഇന്നലെ <xliff:g id="TIME_DATE">%1$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>-ന് ആക്‌സസ് ചെയ്തു"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"തിരഞ്ഞെടുത്തവ അനുവദിക്കുക"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"എല്ലാം നിരസിക്കുക"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"ഫിറ്റ്‌നസ്, വെൽനസ് ഡാറ്റ ആക്സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിനെ അനുവദിക്കണോ?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പ് <xliff:g id="DATA_TYPES">%2$s</xliff:g> എന്നതിലേക്ക് ആക്‌സസ് അഭ്യർത്ഥിക്കുന്നു.\n\nഎല്ലാം അനുവദിക്കാൻ തിരഞ്ഞെടുക്കുകയോ അവ ഓരോന്നും പ്രത്യേകം നിയന്ത്രിക്കുകയോ ചെയ്യുക."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

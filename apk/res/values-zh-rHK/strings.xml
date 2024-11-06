@@ -554,7 +554,7 @@
     <string name="time_range_message_all" msgid="7280888587242744729">"此操作會永久刪除所選時段內新增至 Health Connect 的所有資料"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="DATA_TYPE">%s</xliff:g>資料"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="CATEGORY">%s</xliff:g>資料"</string>
-    <string name="time_range_message_app_data" msgid="2590800457710603556">"此操作會永久刪除所選時段內新增至 Health Connect 的「<xliff:g id="APP_DATA">%s</xliff:g>」資料"</string>
+    <string name="time_range_message_app_data" msgid="2590800457710603556">"此操作會永久刪除所選時段內新增至「健康資料同步」的「<xliff:g id="APP_DATA">%s</xliff:g>」資料"</string>
     <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"此操作會永久刪除所選時段內由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增至「健康資料同步」的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"刪除過去 24 小時的資料"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"刪除過去 7 天的資料"</string>
@@ -994,8 +994,8 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect 將刪除 # 個月前的所有資料。這些變更可能一天後才會在已連結的應用程式上顯示。}other{Health Connect 將刪除 # 個月前的所有資料。這些變更可能一天後才會在已連結的應用程式上顯示。}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"系統會刪除以下類別的資料"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"完成"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{已開啟自動刪除。系統會刪除 # 個月前的資料}other{已開啟自動刪除。系統會刪除 # 個月前的資料}}"</string>
-    <string name="auto_delete_off_toast" msgid="6530926709108821768">"已關閉自動刪除"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{已開啟自動刪除功能。系統會刪除 # 個月前的資料}other{已開啟自動刪除功能。系統會刪除 # 個月前的資料}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"已關閉自動刪除功能"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"設定應用程式優先次序"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"如果多個應用程式新增<xliff:g id="DATA_TYPE">%s</xliff:g>資料，Health Connect 會優先處理此清單中排名最高的應用程式。拖曳應用程式即可重新排序。"</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"儲存"</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"在應用程式商店上查看"</string>
     <string name="select_all" msgid="837499881590001166">"全部選取"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"已連結的應用程式將無法在「健康資料同步」中讀取這些資料"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"已勾選"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"未勾選"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"有可用的運動路線"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"下一天"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"下星期"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"下個月"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"上一天"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"上星期"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"上個月"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"要永久刪除所有資料嗎？"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"要永久刪除所選資料嗎？"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"要永久刪除所有「<xliff:g id="APP_NAME">%s</xliff:g>」資料嗎？"</string>
@@ -1175,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"上次存取時間：<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"上次存取時間：昨天<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"上次存取時間：<xliff:g id="TIME_DATE_0">%1$s</xliff:g><xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"允許已選取的權限"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"全部拒絕"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身與健康資料嗎？"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」要求存取<xliff:g id="DATA_TYPES">%2$s</xliff:g>。\n\n請選擇要一律允許還是個別控制權限。"</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

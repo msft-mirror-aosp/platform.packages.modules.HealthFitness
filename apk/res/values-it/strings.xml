@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"spinte in sedia a rotelle"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Lettura delle spinte in sedia a rotelle"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Scrittura delle spinte in sedia a rotelle"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensità dell\'attività"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensità dell\'attività"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Lettura di intensità dell\'attività"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Scrittura di intensità dell\'attività"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Tasso metabolico basale"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"tasso metabolico basale"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Lettura del tasso metabolico basale"</string>
@@ -998,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Connessione Salute eliminerà tutti i dati che risalgono a più di # mese fa. Potrebbe essere necessario un giorno per la visualizzazione di queste modifiche nelle tue app collegate.}other{Connessione Salute eliminerà tutti i dati che risalgono a più di # mesi fa. Potrebbe essere necessario un giorno per la visualizzazione di queste modifiche nelle tue app collegate.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Dati da eliminare da queste"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Fine"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{L\'eliminazione automatica è attiva. I dati che risalgono a più di # mese fa verranno eliminati.}other{L\'eliminazione automatica è attiva. I dati che risalgono a più di # mesi fa verranno eliminati.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{L\'eliminazione automatica è attiva. I dati risalenti a più di # mese fa verranno eliminati.}other{L\'eliminazione automatica è attiva. I dati risalenti a più di # mesi fa verranno eliminati.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"L\'eliminazione automatica è disattivata"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Imposta la priorità delle app"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Se più app aggiungono dati relativi a <xliff:g id="DATA_TYPE">%s</xliff:g>, Connessione Salute dà la priorità all\'app all\'inizio di questo elenco. Trascina le app per cambiarne l\'ordine."</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Vedi nello store"</string>
     <string name="select_all" msgid="837499881590001166">"Seleziona tutto"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Le app collegate non potranno più leggere questi dati di Connessione Salute"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Elemento selezionato"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Elemento non selezionato"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Mappa percorso per allenamento disponibile"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Giorno successivo"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Settimana successiva"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mese successivo"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Giorno precedente"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Settimana precedente"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mese precedente"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Eliminare definitivamente tutti i dati?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Eliminare definitivamente i dati selezionati?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Eliminare definitivamente tutti i dati relativi all\'app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1179,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Ultimo accesso: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Ultimo accesso ieri: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Ultimo accesso: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Consenti selezionate"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Nega tutto"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Consentire all\'app <xliff:g id="APP_NAME">%1$s</xliff:g> di accedere ai dati relativi a benessere e attività fisica?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> richiede l\'accesso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nScegli se consentire l\'accesso a tutti i tipi di dati o controllarli singolarmente."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

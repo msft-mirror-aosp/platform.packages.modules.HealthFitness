@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Прикажи у продавници апликација"</string>
     <string name="select_all" msgid="837499881590001166">"Изабери све"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Повезане апликације више неће моћи да читају ове податке из Повезивања здравља"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Означено"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Није означено"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Доступна је мапа руте вежбања"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Следећи дан"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Следећа недеља"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Следећи месец"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Претходни дан"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Претходна недеља"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Претходни месец"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Желите трајно да избришете све податке?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Желите трајно да избришете изабране податке?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Желите трајно да избришете све податке за: <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1175,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Приступљено: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Приступано јуче: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Приступано: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Дозволи изабрано"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Одбиј све"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Желите да дозволите да <xliff:g id="APP_NAME">%1$s</xliff:g> приступа подацима о фитнесу и велнесу?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> тражи приступ за: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nИзаберите да ли желите да дозволите све или да их контролишете појединачно."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Bekijken in appstore"</string>
     <string name="select_all" msgid="837499881590001166">"Alles selecteren"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Gekoppelde apps kunnen deze gegevens van Health Connect niet meer lezen"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Aangevinkt"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Niet aangevinkt"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Trainingsroute beschikbaar"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Volgende dag"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Volgende week"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Volgende maand"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Vorige dag"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Vorige week"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Vorige maand"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Alle gegevens definitief verwijderen?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"De geselecteerde gegevens definitief verwijderen?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Alle <xliff:g id="APP_NAME">%s</xliff:g>-gegevens definitief verwijderen?"</string>
@@ -1175,4 +1166,11 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Geopend: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Geopend: gisteren om <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Geopend: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> om <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Altijd toestaan"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Selectie toestaan"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Tijdens gebruik van de app"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Alles weigeren"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> toegang geven tot eerdere fitness- en welzijnsgegevens?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> vraagt om toegang tot <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nKies of je alles wilt toestaan of ze afzonderlijk wilt beheren."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> toegang geven tot <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
 </resources>
