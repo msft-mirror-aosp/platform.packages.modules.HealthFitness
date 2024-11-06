@@ -72,7 +72,6 @@ public class MigratorPackageChangesReceiverTest {
 
     @Before
     public void setUp() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         mMigratorPackageChangesReceiver =
                 new MigratorPackageChangesReceiver(mMigrationStateManager);
         when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mUserContext);
