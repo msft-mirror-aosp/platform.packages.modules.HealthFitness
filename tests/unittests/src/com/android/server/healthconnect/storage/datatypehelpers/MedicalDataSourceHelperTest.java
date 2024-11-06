@@ -150,29 +150,22 @@ public class MedicalDataSourceHelperTest {
     public void setup() throws NameNotFoundException {
 
         mContext = spy(mHealthConnectDatabaseTestRule.getDatabaseContext());
+        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
+                        .setTimeSource(mFakeTimeSource)
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
-        mMedicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        mTransactionManager, mAppInfoHelper, mFakeTimeSource, mAccessLogsHelper);
-        mMedicalResourceHelper =
-                new MedicalResourceHelper(
-                        mTransactionManager,
-                        mAppInfoHelper,
-                        mMedicalDataSourceHelper,
-                        mFakeTimeSource,
-                        mAccessLogsHelper);
+        mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
+        mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
         // We set the context to null, because we only use insertApp in this set of tests and
         // we don't need context for that.
         mTransactionTestUtils =
@@ -3366,13 +3359,6 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_DISPLAY_NAME,
                         DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
-        MedicalResourceHelper resourceHelper =
-                new MedicalResourceHelper(
-                        mTransactionManager,
-                        mAppInfoHelper,
-                        mMedicalDataSourceHelper,
-                        new FakeTimeSource(INSTANT_NOW),
-                        mAccessLogsHelper);
         MedicalResource medicalResource = createImmunizationMedicalResource(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertRequest =
                 new UpsertMedicalResourceInternalRequest()
@@ -3383,7 +3369,7 @@ public class MedicalDataSourceHelperTest {
                         .setData(medicalResource.getFhirResource().getData())
                         .setDataSourceId(dataSource.getId());
         MedicalResource resource =
-                resourceHelper
+                mMedicalResourceHelper
                         .upsertMedicalResources(DATA_SOURCE_PACKAGE_NAME, List.of(upsertRequest))
                         .get(0);
 
@@ -3395,7 +3381,7 @@ public class MedicalDataSourceHelperTest {
                         toUuids(List.of(dataSource.getId())));
         assertThat(result).isEmpty();
         List<MedicalResource> resourceResult =
-                resourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
                         List.of(resource.getId()));
         assertThat(resourceResult).isEmpty();
     }
