@@ -53,7 +53,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestU
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -117,14 +116,7 @@ public class BackupRestoreDatabaseHelperTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        AppInfoHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
-
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mDatabaseTestRule.getDatabaseContext(), mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
@@ -132,6 +124,10 @@ public class BackupRestoreDatabaseHelperTest {
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionTestUtils =
+                new TransactionTestUtils(
+                        mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
@@ -154,12 +150,6 @@ public class BackupRestoreDatabaseHelperTest {
                         internalHealthConnectMappings,
                         changeLogsHelper,
                         changeLogsRequestHelper);
-    }
-
-    @After
-    public void tearDown() {
-        AppInfoHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test

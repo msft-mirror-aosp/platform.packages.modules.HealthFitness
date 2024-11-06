@@ -85,14 +85,12 @@ public class PermissionPackageChangesOrchestratorTest {
                         mHelper,
                         mUserHandle,
                         mHealthDataCategoryPriorityHelper);
-        setIntentWasRemoved(/* isIntentRemoved= */ false);
+        setIntentIsPresent(/* isIntentPresent= */ true);
     }
 
     @Test
     public void testPackageAdded_callsTrackerToUpdateState_noGrantTimeOrPermsCalls() {
         mOrchestrator.onReceive(mContext, buildPackageIntent(Intent.ACTION_PACKAGE_ADDED));
-        verify(mTracker)
-                .updateStateAndGetIfIntentWasRemoved(eq(SELF_PACKAGE_NAME), eq(CURRENT_USER));
         verify(mHelper, never())
                 .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
         verify(mFirstGrantTimeManager, never())
@@ -101,10 +99,8 @@ public class PermissionPackageChangesOrchestratorTest {
 
     @Test
     public void testPackageChanged_intentWasRemoved_revokesPerms() {
-        setIntentWasRemoved(/* isIntentRemoved= */ true);
+        setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(mContext, buildPackageIntent(Intent.ACTION_PACKAGE_CHANGED));
-        verify(mTracker)
-                .updateStateAndGetIfIntentWasRemoved(eq(SELF_PACKAGE_NAME), eq(CURRENT_USER));
         verify(mHelper)
                 .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
     }
@@ -144,7 +140,7 @@ public class PermissionPackageChangesOrchestratorTest {
 
     @Test
     public void testPackageReplaced_intentNotSupported_revokesPerms() {
-        setIntentWasRemoved(/* isIntentRemoved= */ true);
+        setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(
                 mContext,
                 buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ true));
@@ -164,8 +160,10 @@ public class PermissionPackageChangesOrchestratorTest {
                 .putExtra(Intent.EXTRA_UID, mCurrentUid);
     }
 
-    private void setIntentWasRemoved(boolean isIntentRemoved) {
+    private void setIntentIsPresent(boolean isIntentPresent) {
+        when(mTracker.updateAndGetSupportsPackageUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
+                .thenReturn(isIntentPresent);
         when(mTracker.updateStateAndGetIfIntentWasRemoved(SELF_PACKAGE_NAME, CURRENT_USER))
-                .thenReturn(isIntentRemoved);
+                .thenReturn(!isIntentPresent);
     }
 }
