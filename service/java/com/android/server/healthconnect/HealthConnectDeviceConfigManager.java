@@ -26,7 +26,6 @@ import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -120,9 +119,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @VisibleForTesting
     public static final boolean ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE = true;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static HealthConnectDeviceConfigManager sDeviceConfigManager;
-
     private final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
     private static final String HEALTH_FITNESS_NAMESPACE = DeviceConfig.NAMESPACE_HEALTH_FITNESS;
 
@@ -213,28 +209,10 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @GuardedBy("mLock")
     private boolean mAggregationSourceControlsEnabled = true;
 
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static HealthConnectDeviceConfigManager initializeInstance(Context context) {
-        if (sDeviceConfigManager == null) {
-            sDeviceConfigManager = new HealthConnectDeviceConfigManager();
-            DeviceConfig.addOnPropertiesChangedListener(
-                    HEALTH_FITNESS_NAMESPACE, context.getMainExecutor(), sDeviceConfigManager);
-            addFlagsToTrack();
-        }
-        return sDeviceConfigManager;
-    }
-
-    /**
-     * Returns initialised instance of this class.
-     *
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static HealthConnectDeviceConfigManager getInitialisedInstance() {
-        Objects.requireNonNull(sDeviceConfigManager);
-
-        return sDeviceConfigManager;
+    public HealthConnectDeviceConfigManager(Context context) {
+        DeviceConfig.addOnPropertiesChangedListener(
+                HEALTH_FITNESS_NAMESPACE, context.getMainExecutor(), this);
+        addFlagsToTrack();
     }
 
     /** Adds flags that need to be updated if their values are changed on the server. */

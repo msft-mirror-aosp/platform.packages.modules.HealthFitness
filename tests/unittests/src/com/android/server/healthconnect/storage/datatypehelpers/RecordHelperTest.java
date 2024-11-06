@@ -96,7 +96,6 @@ public class RecordHelperTest {
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        DatabaseHelper.clearAllData(mTransactionManager);
         mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 

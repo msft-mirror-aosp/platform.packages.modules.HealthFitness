@@ -126,8 +126,6 @@ public class MigrationStateChangeJobTest {
                 .thenReturn(mJobScheduler);
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn(MOCK_CONFIGURED_PACKAGE);
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
         when(mHealthConnectDeviceConfigManager.getExecutionTimeBuffer())
                 .thenReturn(EXECUTION_TIME_BUFFER_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getIdleStateTimeoutPeriod())
@@ -157,7 +155,8 @@ public class MigrationStateChangeJobTest {
     @Test
     public void testExecutePauseJob_timeNotExpired() {
         long mockElapsedTime =
-                IN_PROGRESS_STATE_TIMEOUT_MOCK_VALUE.toMillis() - getTimeoutPeriodBuffer();
+                IN_PROGRESS_STATE_TIMEOUT_MOCK_VALUE.toMillis()
+                        - getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IN_PROGRESS);
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
@@ -174,7 +173,7 @@ public class MigrationStateChangeJobTest {
     public void testExecutePauseJob_timeExpired_shouldChangeState() {
         long mockElapsedTime =
                 IN_PROGRESS_STATE_TIMEOUT_MOCK_VALUE
-                        .plusMillis(getTimeoutPeriodBuffer())
+                        .plusMillis(getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager))
                         .toMillis();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IN_PROGRESS);
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
@@ -215,7 +214,9 @@ public class MigrationStateChangeJobTest {
     /** Expected behavior: No changes to the state */
     @Test
     public void testExecuteCompleteJob_fromIdleState_timeNotExpired() {
-        long mockElapsedTime = IDLE_STATE_TIMEOUT_MOCK_VALUE.toMillis() - getTimeoutPeriodBuffer();
+        long mockElapsedTime =
+                IDLE_STATE_TIMEOUT_MOCK_VALUE.toMillis()
+                        - getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IDLE);
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
@@ -231,7 +232,9 @@ public class MigrationStateChangeJobTest {
     @Test
     public void testExecuteCompleteJob_fromIdleState() {
         long mockElapsedTime =
-                IDLE_STATE_TIMEOUT_MOCK_VALUE.plusMillis(getTimeoutPeriodBuffer()).toMillis();
+                IDLE_STATE_TIMEOUT_MOCK_VALUE
+                        .plusMillis(getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager))
+                        .toMillis();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IDLE);
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
@@ -435,27 +438,31 @@ public class MigrationStateChangeJobTest {
 
     private void setStartTime_notExpired_nonIdleState() {
         long mockElapsedTime =
-                NON_IDLE_STATE_TIMEOUT_MOCK_VALUE.toMillis() - getTimeoutPeriodBuffer();
+                NON_IDLE_STATE_TIMEOUT_MOCK_VALUE.toMillis()
+                        - getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager);
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
     }
 
     private void setStartTime_expired_nonIdleState() {
         long mockElapsedTime =
-                NON_IDLE_STATE_TIMEOUT_MOCK_VALUE.plusMillis(getTimeoutPeriodBuffer()).toMillis();
+                NON_IDLE_STATE_TIMEOUT_MOCK_VALUE
+                        .plusMillis(getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager))
+                        .toMillis();
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
     }
 
     private void setStartTimeAfterAllowedStateTimeout() {
         long mockAllowedStateTimeout =
-                NON_IDLE_STATE_TIMEOUT_MOCK_VALUE.toMillis() - getTimeoutPeriodBuffer();
+                NON_IDLE_STATE_TIMEOUT_MOCK_VALUE.toMillis()
+                        - getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager);
         when(mMigrationStateManager.getAllowedStateTimeout())
                 .thenReturn(Instant.now().minusMillis(mockAllowedStateTimeout).toString());
     }
 
     private void setStartTimeBeforeAllowedStateTimeout() {
-        long timeOutBuffer = getTimeoutPeriodBuffer();
+        long timeOutBuffer = getTimeoutPeriodBuffer(mHealthConnectDeviceConfigManager);
         when(mMigrationStateManager.getAllowedStateTimeout())
                 .thenReturn(Instant.now().plusMillis(timeOutBuffer).toString());
     }

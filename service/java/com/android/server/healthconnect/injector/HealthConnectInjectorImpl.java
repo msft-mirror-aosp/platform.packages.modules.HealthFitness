@@ -104,7 +104,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mTimeSource = builder.mTimeSource == null ? new TimeSourceImpl() : builder.mTimeSource;
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
-                        ? HealthConnectDeviceConfigManager.initializeInstance(context)
+                        ? new HealthConnectDeviceConfigManager(context)
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null

@@ -54,7 +54,6 @@ public class SessionPriorityAggregationTest {
                     .build();
 
     @Mock Cursor mCursor;
-    @Mock HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
     @Before
     public void setUp() {
@@ -72,10 +71,6 @@ public class SessionPriorityAggregationTest {
                                 0,
                                 mParams,
                                 false));
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
     }
 
     @Test
