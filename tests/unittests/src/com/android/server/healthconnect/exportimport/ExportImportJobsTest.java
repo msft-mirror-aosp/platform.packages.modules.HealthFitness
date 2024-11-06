@@ -86,7 +86,6 @@ public class ExportImportJobsTest {
         MockitoAnnotations.initMocks(this);
         mExportImportSettingsStorage = new ExportImportSettingsStorage(mFakePreferenceHelper);
 
-        when(PreferenceHelper.getInstance()).thenReturn(mFakePreferenceHelper);
         when(mJobScheduler.forNamespace(ExportImportJobs.NAMESPACE)).thenReturn(mJobScheduler);
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn(ANDROID_SERVER_PACKAGE_NAME);
