@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.permission;
 
+import android.annotation.Nullable;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -74,6 +75,10 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String packageName = getPackageName(intent);
         UserHandle userHandle = getUserHandle(intent);
+        if (packageName == null || userHandle == null) {
+            Log.w(TAG, "onReceive package change, can't extract info from the input intent");
+            return;
+        }
         if (Constants.DEBUG) {
             Slog.d(
                     TAG,
@@ -85,15 +90,9 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                             + intent.getAction());
         }
 
-        if (packageName == null || userHandle == null) {
-            Log.w(TAG, "can't extract info from the input intent");
-            return;
-        }
-
         boolean isPackageRemoved =
                 intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)
                         && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
-
         // This call also has a (unintended?) positive side-effect of removing the package from
         // the intent tracker, if the package was removed. Keep calling this even if
         // isPackageRemoved is true.
@@ -164,13 +163,13 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
         return filter;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     private String getPackageName(Intent intent) {
         Uri uri = intent.getData();
         return uri != null ? uri.getSchemeSpecificPart() : null;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     private UserHandle getUserHandle(Intent intent) {
         final int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
         if (uid >= 0) {

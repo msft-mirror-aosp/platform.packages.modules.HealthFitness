@@ -113,7 +113,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mPackageInfoUtils;
         mPreferenceHelper =
                 builder.mPreferenceHelper == null
-                        ? PreferenceHelper.getInstance(mTransactionManager)
+                        ? new PreferenceHelper(mTransactionManager)
                         : builder.mPreferenceHelper;
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper =
@@ -150,7 +150,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
-                        ? DeviceInfoHelper.getInstance(mTransactionManager)
+                        ? new DeviceInfoHelper(mTransactionManager)
                         : builder.mDeviceInfoHelper;
         mAccessLogsHelper =
                 builder.mAccessLogsHelper == null
@@ -158,7 +158,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mAccessLogsHelper;
         mActivityDateHelper =
                 builder.mActivityDateHelper == null
-                        ? ActivityDateHelper.getInstance(mTransactionManager)
+                        ? new ActivityDateHelper(
+                                mTransactionManager, mInternalHealthConnectMappings)
                         : builder.mActivityDateHelper;
         mChangeLogsHelper =
                 builder.mChangeLogsHelper == null

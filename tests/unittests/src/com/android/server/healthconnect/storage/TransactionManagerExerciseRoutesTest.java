@@ -104,8 +104,6 @@ public class TransactionManagerExerciseRoutesTest {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-        DeviceInfoHelper.resetInstanceForTest();
-
         StorageContext context = testRule.getDatabaseContext();
         mTransactionManager = testRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =

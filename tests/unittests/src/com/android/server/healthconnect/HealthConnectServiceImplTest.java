@@ -343,7 +343,6 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mContext.getSystemService(ActivityManager.class));
         mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
@@ -379,7 +378,9 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getChangeLogsRequestHelper(),
                         healthConnectInjector.getInternalHealthConnectMappings(),
                         healthConnectInjector.getPriorityMigrationHelper(),
-                        healthConnectInjector.getAppInfoHelper());
+                        healthConnectInjector.getAppInfoHelper(),
+                        healthConnectInjector.getDeviceInfoHelper(),
+                        mPreferenceHelper);
     }
 
     @After

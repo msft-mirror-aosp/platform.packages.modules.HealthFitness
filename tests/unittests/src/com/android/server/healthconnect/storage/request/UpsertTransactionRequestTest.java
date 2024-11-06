@@ -67,6 +67,7 @@ public class UpsertTransactionRequestTest {
 
     private StorageContext mContext;
     private AppInfoHelper mAppInfoHelper;
+    private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setup() {
@@ -84,6 +85,7 @@ public class UpsertTransactionRequestTest {
         transactionTestUtils.insertApp("package.name");
 
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
     }
 
     @Test
@@ -92,7 +94,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name.1",
                         List.of(),
-                        DeviceInfoHelper.getInstance(),
+                        mDeviceInfoHelper,
                         mContext,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
@@ -103,7 +105,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name.2",
                         List.of(),
-                        DeviceInfoHelper.getInstance(),
+                        mDeviceInfoHelper,
                         mContext,
                         /* isInsertRequest= */ false,
                         /* useProvidedUuid= */ false,
@@ -122,7 +124,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name",
                         records,
-                        DeviceInfoHelper.getInstance(),
+                        mDeviceInfoHelper,
                         mContext,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),

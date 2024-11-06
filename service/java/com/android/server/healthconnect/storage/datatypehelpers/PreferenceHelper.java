@@ -53,13 +53,10 @@ public class PreferenceHelper extends DatabaseHelper {
     private static final String VALUE_COLUMN_NAME = "value";
     private final TransactionManager mTransactionManager;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile PreferenceHelper sPreferenceHelper;
-
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    protected PreferenceHelper(TransactionManager transactionManager) {
+    public PreferenceHelper(TransactionManager transactionManager) {
         mTransactionManager = transactionManager;
     }
 
@@ -152,27 +149,5 @@ public class PreferenceHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(VALUE_COLUMN_NAME, TEXT_NULL));
 
         return columnInfo;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        sPreferenceHelper = null;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static PreferenceHelper getInstance() {
-        return getInstance(TransactionManager.getInitialisedInstance());
-    }
-
-    /** Method to get an instance of PreferenceHelper by passing in the dependency. */
-    public static synchronized PreferenceHelper getInstance(TransactionManager transactionManager) {
-        if (sPreferenceHelper == null) {
-            sPreferenceHelper = new PreferenceHelper(transactionManager);
-        }
-
-        return sPreferenceHelper;
     }
 }
