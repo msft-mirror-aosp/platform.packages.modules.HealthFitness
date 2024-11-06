@@ -21,6 +21,7 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PERMISSION_STA
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_STORAGE_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -50,6 +51,7 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BloodPressureRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
 import com.android.server.healthconnect.storage.datatypehelpers.HeartRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HeightRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -101,6 +103,7 @@ public class DailyLoggingServiceTest {
     @Mock private TransactionManager mTransactionManager;
     @Mock private MedicalDataSourceHelper mMedicalDataSourceHelper;
     @Mock private MedicalResourceHelper mMedicalResourceHelper;
+    private FakeTimeSource mFakeTimeSource;
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private static final String NOT_HEALTH_PERMISSION = "NOT_HEALTH_PERMISSION";
     private static final String READ_STEPS = "android.permission.health.READ_STEPS";
@@ -121,6 +124,7 @@ public class DailyLoggingServiceTest {
 
     @Before
     public void mockStatsLog() {
+        mFakeTimeSource = new FakeTimeSource(NOW);
         ExtendedMockito.doReturn(true)
                 .when(() -> HealthConnectManager.isHealthPermission(mContext, READ_STEPS));
         ExtendedMockito.doReturn(false)
@@ -192,7 +196,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -220,7 +225,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -253,7 +259,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         // Makes sure we do not have count any app that does not have Health Connect permission
         // declared in the manifest as a connected or an available app.
@@ -283,7 +290,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -311,7 +319,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -339,7 +348,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -361,7 +371,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -387,7 +398,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -411,7 +423,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -434,7 +447,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -456,7 +470,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -489,7 +504,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -525,7 +541,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -572,7 +589,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -593,7 +611,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -608,9 +627,22 @@ public class DailyLoggingServiceTest {
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
-    public void phrStats_flagEnabled_expectCorrectLogs() {
+    public void phrStats_flagEnabledAndIsMonthlyActiveUser_expectCorrectLogs() {
         when(mMedicalDataSourceHelper.getMedicalDataSourcesCount()).thenReturn(101);
         when(mMedicalResourceHelper.getMedicalResourcesCount()).thenReturn(204);
+        when(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp())
+                .thenReturn(NOW.minus(29, ChronoUnit.DAYS));
+        mFakeTimeSource.setInstant(NOW);
+        // mock connected apps, so UsageStatsLogger#log() does not deem HC as inactive and skip all
+        // the logs
+        when(mContext.createContextAsUser(mCurrentUser, 0)
+                        .getPackageManager()
+                        .getInstalledPackages(any()))
+                .thenReturn(
+                        List.of(
+                                mPackageInfoConnectedApp,
+                                mPackageInfoNotHoldingPermission,
+                                mPackageInfoNotConnectedApp));
 
         DailyLoggingService.logDailyMetrics(
                 mContext,
@@ -619,7 +651,8 @@ public class DailyLoggingServiceTest {
                 mAccessLogsHelper,
                 mTransactionManager,
                 mMedicalDataSourceHelper,
-                mMedicalResourceHelper);
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -627,9 +660,86 @@ public class DailyLoggingServiceTest {
                                 eq(HEALTH_CONNECT_PHR_USAGE_STATS),
                                 eq(101),
                                 eq(204),
-                                anyInt(),
+                                /* isPhrMonthlyActiveUser */ eq(true),
                                 anyInt()),
-                never());
+                times(1));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    public void phrStats_flagEnabledAndIsNotMonthlyActiveUser_expectCorrectLogs() {
+        when(mMedicalDataSourceHelper.getMedicalDataSourcesCount()).thenReturn(101);
+        when(mMedicalResourceHelper.getMedicalResourcesCount()).thenReturn(204);
+        when(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp())
+                .thenReturn(NOW.minus(31, ChronoUnit.DAYS));
+        mFakeTimeSource.setInstant(NOW);
+        // mock connected apps, so UsageStatsLogger#log() does not deem HC as inactive and skip all
+        // the logs
+        when(mContext.createContextAsUser(mCurrentUser, 0)
+                        .getPackageManager()
+                        .getInstalledPackages(any()))
+                .thenReturn(
+                        List.of(
+                                mPackageInfoConnectedApp,
+                                mPackageInfoNotHoldingPermission,
+                                mPackageInfoNotConnectedApp));
+
+        DailyLoggingService.logDailyMetrics(
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_PHR_USAGE_STATS),
+                                eq(101),
+                                eq(204),
+                                /* isPhrMonthlyActiveUser */ eq(false),
+                                anyInt()),
+                times(1));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    public void phrStats_flagEnabledAndIsNotMonthlyActiveUserDueToNoTimeStamp_expectCorrectLogs() {
+        when(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp()).thenReturn(null);
+        mFakeTimeSource.setInstant(NOW);
+        // mock connected apps, so UsageStatsLogger#log() does not deem HC as inactive and skip all
+        // the logs
+        when(mContext.createContextAsUser(mCurrentUser, 0)
+                        .getPackageManager()
+                        .getInstalledPackages(any()))
+                .thenReturn(
+                        List.of(
+                                mPackageInfoConnectedApp,
+                                mPackageInfoNotHoldingPermission,
+                                mPackageInfoNotConnectedApp));
+
+        DailyLoggingService.logDailyMetrics(
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_PHR_USAGE_STATS),
+                                anyInt(),
+                                anyInt(),
+                                /* isPhrMonthlyActiveUser */ eq(false),
+                                anyInt()),
+                times(1));
     }
 
     private long subtractDaysFromInstantNow(int numberOfDays) {

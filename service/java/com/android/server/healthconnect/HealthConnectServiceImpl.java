@@ -34,6 +34,7 @@ import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
@@ -209,6 +210,7 @@ import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInt
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.utils.TimeSource;
 
 import org.json.JSONException;
 
@@ -282,6 +284,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final MigrationEntityHelper mMigrationEntityHelper;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthConnectMappings mHealthConnectMappings;
+    private final TimeSource mTimeSource;
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
 
@@ -308,7 +311,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             PriorityMigrationHelper priorityMigrationHelper,
             AppInfoHelper appInfoHelper,
             DeviceInfoHelper deviceInfoHelper,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            TimeSource timeSource) {
+        mTimeSource = timeSource;
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = preferenceHelper;
@@ -2634,6 +2639,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
+                    // only stores the timestamp for calls made by ANY client, including the
+                    // controller.
+                    if (personalHealthRecordTelemetry()) {
+                        mPreferenceHelper.setLastPhrReadMedicalResourcesApiTimeStamp(
+                                mTimeSource.getInstantNow());
+                    }
+
                     if (medicalResourceIds.isEmpty()) {
                         callback.onResult(new ReadMedicalResourcesResponse(List.of(), null, 0));
                         return;
@@ -2753,6 +2765,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException,
                                 unsupportedException.getErrorCode());
                         return;
+                    }
+
+                    // only stores the timestamp for calls made by ANY client, including the
+                    // controller.
+                    if (personalHealthRecordTelemetry()) {
+                        mPreferenceHelper.setLastPhrReadMedicalResourcesApiTimeStamp(
+                                mTimeSource.getInstantNow());
                     }
 
                     enforceIsForegroundUser(userHandle);

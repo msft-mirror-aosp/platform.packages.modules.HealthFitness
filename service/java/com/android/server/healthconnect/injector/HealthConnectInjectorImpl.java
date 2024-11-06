@@ -355,6 +355,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mMedicalResourceHelper;
     }
 
+    @Override
+    public TimeSource getTimeSource() {
+        return mTimeSource;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
