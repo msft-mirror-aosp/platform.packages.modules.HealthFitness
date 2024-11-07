@@ -34,8 +34,8 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUN
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.createImmunizationMedicalResource;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedVaccineMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResource;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
@@ -231,7 +231,7 @@ public class UpsertMedicalResourcesCtsTest {
             throws InterruptedException {
         MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        MedicalResource expectedResource = createImmunizationMedicalResource(dataSource.getId());
+        MedicalResource expectedResource = createVaccineMedicalResource(dataSource.getId());
         UpsertMedicalResourceRequest upsertRequest =
                 new UpsertMedicalResourceRequest.Builder(
                                 dataSource.getId(),
@@ -260,10 +260,9 @@ public class UpsertMedicalResourcesCtsTest {
     public void testUpsertMedicalResources_forOwnDataSourceAndExistingData_succeedsAndUpdates()
             throws Exception {
         MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource resourceBeforeUpdate =
-                createImmunizationMedicalResource(dataSource.getId());
+        MedicalResource resourceBeforeUpdate = createVaccineMedicalResource(dataSource.getId());
         MedicalResource expectedUpdatedResource =
-                createUpdatedImmunizationMedicalResource(dataSource.getId());
+                createUpdatedVaccineMedicalResource(dataSource.getId());
         UpsertMedicalResourceRequest insertRequest =
                 new UpsertMedicalResourceRequest.Builder(
                                 dataSource.getId(),

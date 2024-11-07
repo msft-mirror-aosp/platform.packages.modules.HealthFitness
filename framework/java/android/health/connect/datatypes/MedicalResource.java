@@ -45,7 +45,7 @@ import java.util.Set;
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResource implements Parcelable {
 
-    /** Medical resource type labelling data as immunizations. */
+    /** Medical resource type labelling data as vaccines. */
     public static final int MEDICAL_RESOURCE_TYPE_VACCINES = 1;
 
     /** Medical resource type labelling data as allergies or intolerances. */
