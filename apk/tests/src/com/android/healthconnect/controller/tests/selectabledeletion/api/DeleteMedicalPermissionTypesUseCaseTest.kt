@@ -64,7 +64,7 @@ class DeleteMedicalPermissionTypesUseCaseTest {
             DeleteHealthPermissionTypes(
                 setOf(
                     MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                    MedicalPermissionType.IMMUNIZATIONS,
+                    MedicalPermissionType.VACCINES,
                 ),
                 8,
             )

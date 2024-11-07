@@ -77,7 +77,7 @@ class DeleteMedicalPermissionTypesFromAppUseCaseTest {
             DeletionType.DeleteHealthPermissionTypesFromApp(
                 setOf(
                     MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                    MedicalPermissionType.IMMUNIZATIONS,
+                    MedicalPermissionType.VACCINES,
                 ),
                 8,
                 packageName = "package.name",

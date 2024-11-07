@@ -65,9 +65,6 @@ public final class MedicalResourceTypePermissionMapper {
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_CONDITIONS, HealthPermissions.READ_MEDICAL_DATA_CONDITIONS);
         sMedicalResourceTypeToReadPermissionMap.put(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS);
-        sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS);
         sMedicalResourceTypeToReadPermissionMap.put(
@@ -85,6 +82,8 @@ public final class MedicalResourceTypePermissionMapper {
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        sMedicalResourceTypeToReadPermissionMap.put(
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, HealthPermissions.READ_MEDICAL_DATA_VACCINES);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_VISITS, HealthPermissions.READ_MEDICAL_DATA_VISITS);
         sMedicalResourceTypeToReadPermissionMap.put(

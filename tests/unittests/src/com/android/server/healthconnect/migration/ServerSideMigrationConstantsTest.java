@@ -65,9 +65,7 @@ public class ServerSideMigrationConstantsTest {
     public void setUp() {
         UI_AUTOMATION.adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        HealthConnectDeviceConfigManager.initializeInstance(context);
-        sHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        sHealthConnectDeviceConfigManager = new HealthConnectDeviceConfigManager(context);
     }
 
     @After

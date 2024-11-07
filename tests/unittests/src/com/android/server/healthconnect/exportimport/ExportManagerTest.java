@@ -63,7 +63,6 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
@@ -125,11 +124,9 @@ public class ExportManagerTest {
     @Before
     public void setUp() throws Exception {
         mContext = mDatabaseTestRule.getDatabaseContext();
-        TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(transactionManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .build();
@@ -142,7 +139,10 @@ public class ExportManagerTest {
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mExportManager =
                 new ExportManager(
-                        mContext, fakeClock, mExportImportSettingsStorage, transactionManager);
+                        mContext,
+                        fakeClock,
+                        mExportImportSettingsStorage,
+                        healthConnectInjector.getTransactionManager());
 
         mExportedDbContext =
                 StorageContext.create(

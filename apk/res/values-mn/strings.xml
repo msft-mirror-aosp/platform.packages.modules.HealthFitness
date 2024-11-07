@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Өчигдөр"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Уншсан: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Бичсэн: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Зөвшөөрлийг удирдах"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Цаг: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Дасгал, хөдөлгөөн"</string>
@@ -988,13 +988,13 @@
     <string name="range_off" msgid="8178520557618184215">"Унтраалттай"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Таныг эдгээр тохиргоог өөрчилсөн үед Health Connect таны шинэ сонголтыг тусгахын тулд одоо байгаа өгөгдлийг устгана"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Өгөгдлийг # сарын дараа автоматаар устгах уу?}other{Өгөгдлийг # сарын дараа автоматаар устгах уу?}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Энэ нь мөн # сараас дээш хугацаатай өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}other{Энэ нь мөн # сараас дээш хугацаатай өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Энэ нь мөн # сараас илүү болсон өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}other{Энэ нь мөн # сараас илүү болсон өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Автоматаар устгах онцлогийг тохируулах"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Одоо байгаа өгөгдлийг устгана"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # сараас дээш хугацаатай хадгалсан бүх өгөгдлийг устгана. Эдгээр өөрчлөлт таны холбогдсон аппуудад гарч ирэхэд нэг өдөр зарцуулж магадгүй.}other{Health Connect # сараас дээш хугацаатай хадгалсан бүх өгөгдлийг устгана. Эдгээр өөрчлөлт таны холбогдсон аппуудад гарч ирэхэд нэг өдөр зарцуулж магадгүй.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Эдгээрээс устгах өгөгдөл"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Болсон"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Автоматаар устгах асаалттай байна. # сараас дээш хугацаатай өгөгдлийг устгана}other{Автоматаар устгах асаалттай байна. # сараас дээш хугацаатай өгөгдлийг устгана}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Автоматаар устгах асаалттай байна. # сараас илүү болсон өгөгдлийг устгана}other{Автоматаар устгах асаалттай байна. # сараас илүү болсон өгөгдлийг устгана}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Автоматаар устгах унтраалттай байна"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Аппын чухал байдлын эрэмбэ тохируулах"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Хэрэв нэгээс олон апп <xliff:g id="DATA_TYPE">%s</xliff:g>-н өгөгдөл нэмбэл Health Connect нь уг жагсаалт дахь хамгийн дээр байх аппыг чухалчилна. Аппуудыг дахин эрэмбэлэхийн тулд чирнэ үү."</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Апп дэлгүүр дээр харах"</string>
     <string name="select_all" msgid="837499881590001166">"Бүгдийг сонгох"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Холбогдсон аппууд цаашид Health Connect-с энэ өгөгдлийг унших боломжгүй болно"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Тэмдэглэсэн"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Тэмдэглээгүй"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Дасгалын газрын зургийн маршрут боломжтой"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Дараагийн өдөр"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Дараагийн долоо хоног"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Дараагийн сар"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Өмнөх өдөр"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Өмнөх долоо хоног"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Өмнөх сар"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Бүх өгөгдлийг бүрмөсөн устгах уу?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Сонгогдсон өгөгдлийг бүрмөсөн устгах уу?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g>-н бүх өгөгдлийг бүрмөсөн устгах уу?"</string>
@@ -1175,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g>-д хандсан"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Өчигдөр <xliff:g id="TIME_DATE">%1$s</xliff:g>-д хандсан"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>-д хандсан"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Сонгосныг зөвшөөрөх"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Бүгдээс нь татгалзах"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g>-д фитнес, эрүүл оршихуйн өгөгдөлд хандахыг зөвшөөрөх үү?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_TYPES">%2$s</xliff:g>-д хандах эрх хүсэж банйа.\n\nТэдгээрийг бүгдийг нь зөвшөөрөхөөр сонгох эсвэл тус тусад нь хянана уу."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>
