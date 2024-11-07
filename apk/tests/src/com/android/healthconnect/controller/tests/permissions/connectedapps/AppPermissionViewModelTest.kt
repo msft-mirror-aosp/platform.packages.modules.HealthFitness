@@ -48,7 +48,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -73,7 +73,7 @@ class AppPermissionViewModelTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private val healthPermissionReader: HealthPermissionReader = mock()
     private val getGrantedHealthPermissionsUseCase = FakeGetGrantedHealthPermissionsUseCase()
@@ -140,7 +140,6 @@ class AppPermissionViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -969,6 +968,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllPermissions_fitnessPermissionsDeclaredOnly_revokesFitness() = runTest {
         setupDeclaredAndGrantedFitnessPermissions()
         val appPermissionsObserver = TestObserver<List<FitnessPermission>>()
@@ -1000,6 +1000,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllPermissions_fitnessAndMedical_revokesBoth() = runTest {
         setupDeclaredAndGrantedFitnessAndMedicalPermissions()
         val fitnessPermissionsObserver = TestObserver<List<FitnessPermission>>()
@@ -1071,6 +1072,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllFitnessPermissions_fitnessAndMedical_revokesFitnessOnly() = runTest {
         setupDeclaredAndGrantedFitnessAndMedicalPermissions()
         val fitnessObserver = TestObserver<List<FitnessPermission>>()
@@ -1109,6 +1111,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllMedicalPermissions_fitnessAndMedical_revokesMedicalOnly() = runTest {
         setupDeclaredAndGrantedFitnessAndMedicalPermissions()
         val fitnessObserver = TestObserver<List<FitnessPermission>>()

@@ -64,7 +64,7 @@ import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -83,7 +83,7 @@ class RequestPermissionViewModelTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @BindValue val permissionManager: HealthPermissionManager = FakeHealthPermissionManager()
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
@@ -120,7 +120,6 @@ class RequestPermissionViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(false)
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
     }
