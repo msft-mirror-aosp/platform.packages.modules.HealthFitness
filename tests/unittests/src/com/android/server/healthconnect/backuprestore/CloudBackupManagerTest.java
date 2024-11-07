@@ -103,15 +103,13 @@ public class CloudBackupManagerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
-
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
 
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils =
                 new TransactionTestUtils(
                         mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);

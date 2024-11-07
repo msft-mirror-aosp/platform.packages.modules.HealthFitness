@@ -32,7 +32,7 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATIONS
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.VACCINES
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -242,7 +242,7 @@ class AppDataViewModelTest {
                 PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
                     Flags.mindfulness()
                 },
-                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATIONS)),
+                PermissionTypesPerCategory(MEDICAL, listOf(VACCINES)),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
@@ -278,7 +278,7 @@ class AppDataViewModelTest {
                 PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
                     Flags.mindfulness()
                 },
-                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATIONS)),
+                PermissionTypesPerCategory(MEDICAL, listOf(VACCINES)),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))

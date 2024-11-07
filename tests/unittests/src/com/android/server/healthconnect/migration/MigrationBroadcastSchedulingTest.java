@@ -99,8 +99,6 @@ public class MigrationBroadcastSchedulingTest {
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn("packageName");
         when(mJobScheduler.forNamespace(MIGRATION_BROADCAST_NAMESPACE)).thenReturn(mJobScheduler);
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
         when(mHealthConnectDeviceConfigManager.getMigrationStateAllowedCount())
                 .thenReturn(MIGRATION_STATE_ALLOWED_COUNT_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getMigrationStateInProgressCount())

@@ -61,7 +61,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
-import com.android.server.healthconnect.utils.TimeSourceImpl;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -203,12 +202,7 @@ public class HealthConnectDatabaseTest {
 
         assertPhrTablesExist(transactionManager);
         // PHR functions should work properly.
-        MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        transactionManager,
-                        injector.getAppInfoHelper(),
-                        new TimeSourceImpl(),
-                        injector.getAccessLogsHelper());
+        MedicalDataSourceHelper medicalDataSourceHelper = injector.getMedicalDataSourceHelper();
         MedicalDataSource originalMedicalDataSource =
                 medicalDataSourceHelper.createMedicalDataSource(
                         mContext,
@@ -261,7 +255,6 @@ public class HealthConnectDatabaseTest {
     }
 
     private static HealthConnectInjector getHealthConnectInjector(Context context) {
-        TransactionManager.clearInstanceForTest();
         return HealthConnectInjectorImpl.newBuilderForTest(context)
                 .setHealthPermissionIntentAppsTracker(mock(HealthPermissionIntentAppsTracker.class))
                 .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))

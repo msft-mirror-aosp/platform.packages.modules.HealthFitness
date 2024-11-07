@@ -115,29 +115,6 @@ public class HealthConnectServiceLoggerTest {
     }
 
     @Test
-    public void testShouldLogIsFalse_expectNoLogs() {
-        new HealthConnectServiceLogger.Builder(false, ApiMethods.CREATE_MEDICAL_DATA_SOURCE)
-                .setPackageName(TEST_APP_PACKAGE_NAME)
-                .setShouldLog(false)
-                .build()
-                .log();
-
-        ExtendedMockito.verify(
-                () ->
-                        HealthFitnessStatsLog.write(
-                                anyInt(),
-                                anyInt(),
-                                anyInt(),
-                                anyInt(),
-                                anyLong(),
-                                anyInt(),
-                                anyInt(),
-                                anyInt(),
-                                anyString()),
-                times(0));
-    }
-
-    @Test
     public void testRateLimiter_foreground15MinRead() {
 
         new HealthConnectServiceLogger.Builder(false, ApiMethods.API_METHOD_UNKNOWN)

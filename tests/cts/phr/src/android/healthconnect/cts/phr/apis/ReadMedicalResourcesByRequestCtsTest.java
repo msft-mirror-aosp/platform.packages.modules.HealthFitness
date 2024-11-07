@@ -17,7 +17,7 @@ package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
@@ -661,8 +661,8 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                            + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS to read"
-                            + " MedicalResource");
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES to read"
+                                + " MedicalResource");
     }
 
     @Test
@@ -670,11 +670,11 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inForegroundWithReadPermNoWritePerm_canReadResourcesWithReadPerms()
             throws Exception {
         // Given that we have two data sources from two apps with one immunization each and the
-        // calling app only has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
@@ -703,7 +703,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundWithReadPermNoWritePerm_throwsForResourcesWithoutReadPerms() {
-        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
@@ -756,12 +756,12 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inForegroundHasWriteAndReadPerms_canReadSelfDataAndOtherDataWithReadPerms()
             throws Exception {
         // Given that we have two data sources from two apps with one immunization and one allergy
-        // each and the calling app only has WRITE_MEDICAL_DATA and READ_MEDICAL_DATA_IMMUNIZATIONS
+        // each and the calling app only has WRITE_MEDICAL_DATA and READ_MEDICAL_DATA_VACCINES
         // permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
@@ -818,8 +818,8 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                            + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS to read"
-                            + " MedicalResource");
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES to read"
+                                + " MedicalResource");
     }
 
     @Test
@@ -827,14 +827,14 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inBgWithBgReadHasReadPermNoWritePerm_canReadResourcesWithReadPerms()
             throws Exception {
         // Given that we have two data sources from two apps with one immunization each and the
-        // calling app has READ_HEALTH_DATA_IN_BACKGROUND and READ_MEDICAL_DATA_IMMUNIZATIONS
+        // calling app has READ_HEALTH_DATA_IN_BACKGROUND and READ_MEDICAL_DATA_VACCINES
         // permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
@@ -866,7 +866,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inBgWithBgReadHasReadPermNoWritePerm_throwsForResourceWithoutReadPerms() {
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
-                List.of(READ_HEALTH_DATA_IN_BACKGROUND, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(READ_HEALTH_DATA_IN_BACKGROUND, READ_MEDICAL_DATA_VACCINES));
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
@@ -923,13 +923,13 @@ public class ReadMedicalResourcesByRequestCtsTest {
                     throws Exception {
         // Given that we have two data sources from two apps with one immunization and one allergy
         // each and the calling app has READ_HEALTH_DATA_IN_BACKGROUND, WRITE_MEDICAL_DATA and
-        // READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
@@ -986,8 +986,8 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                            + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS to read"
-                            + " MedicalResource");
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES to read"
+                                + " MedicalResource");
     }
 
     @Test
@@ -1024,10 +1024,10 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inBgWithoutBgReadOnlyReadPerm_canReadOwnDataWithReadPerms()
             throws Exception {
         // Given that we have two data sources from two apps with one immunization each and the
-        // and the calling app only has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // and the calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
@@ -1055,7 +1055,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithoutBgReadOnlyReadPerm_throwsForResourcesWithoutReadPerms() {
-        grantPermission(PHR_BACKGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        grantPermission(PHR_BACKGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
@@ -1078,11 +1078,11 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_readPermRemovedBeforePageRequest_throws() throws Exception {
         // Given that we have two data sources from two apps with one immunization each and the
-        // and the calling app has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // and the calling app has READ_MEDICAL_DATA_VACCINES permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
@@ -1103,7 +1103,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
                         .build();
         ReadMedicalResourcesResponse initialResponse =
                 PHR_FOREGROUND_APP.readMedicalResources(initialRequest);
-        revokePermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        revokePermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         String nextPageToken = initialResponse.getNextPageToken();
         assertThat(nextPageToken).isNotNull();
         ReadMedicalResourcesPageRequest pageRequest =
@@ -1119,7 +1119,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                                + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES"
                                 + " to read MedicalResource");
     }
 

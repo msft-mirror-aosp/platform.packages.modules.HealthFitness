@@ -373,7 +373,7 @@ class AccessFragmentTest {
     private val immunizationBundle: Bundle
         get() {
             val bundle = Bundle()
-            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.IMMUNIZATIONS.name)
+            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.VACCINES.name)
             return bundle
         }
 

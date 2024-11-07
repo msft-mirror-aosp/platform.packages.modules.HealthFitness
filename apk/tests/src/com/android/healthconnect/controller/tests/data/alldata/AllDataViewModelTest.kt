@@ -223,7 +223,7 @@ class AllDataViewModelTest {
         advanceUntilIdle()
 
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.VACCINES)))
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
     }

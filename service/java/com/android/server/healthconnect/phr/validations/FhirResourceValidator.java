@@ -22,12 +22,12 @@ import android.health.connect.datatypes.FhirVersion;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.proto.FhirDataTypeConfig;
+import com.android.server.healthconnect.proto.FhirFieldConfig;
 
 import org.json.JSONObject;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Performs validation on a FHIR JSON Object, based on the FHIR version R4.
@@ -60,7 +60,7 @@ public class FhirResourceValidator {
         FhirDataTypeConfig config =
                 mFhirSpec.getFhirDataTypeConfigForResourceType(fhirResourceType);
 
-        Set<String> allowedFields = new HashSet<>(config.getFieldNamesList());
+        Map<String, FhirFieldConfig> fieldToConfig = config.getAllowedFieldNamesToConfigMap();
         Iterator<String> fieldIterator = fhirJsonObject.keys();
 
         while (fieldIterator.hasNext()) {
@@ -73,7 +73,7 @@ public class FhirResourceValidator {
             String fieldWithoutLeadingUnderscore =
                     field.startsWith("_") ? field.substring(1) : field;
 
-            if (!allowedFields.contains(fieldWithoutLeadingUnderscore)) {
+            if (!fieldToConfig.containsKey(fieldWithoutLeadingUnderscore)) {
                 // TODO: b/374953896 - Improve error message to include type and id.
                 throw new IllegalArgumentException("Found unexpected field " + field);
             }

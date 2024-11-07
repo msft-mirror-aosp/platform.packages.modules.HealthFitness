@@ -40,7 +40,6 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -76,24 +75,21 @@ public class AppInfoHelperTest {
 
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
-        StorageContext healthConnectUserContext =
+        StorageContext healthConnectStorageContext =
                 mHealthConnectDatabaseTestRule.getDatabaseContext();
-        TransactionManager transactionManager =
-                mHealthConnectDatabaseTestRule.getTransactionManager();
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
         when(mDrawable.getIntrinsicHeight()).thenReturn(200);
         when(mDrawable.getIntrinsicWidth()).thenReturn(200);
 
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(healthConnectUserContext)
-                        .setTransactionManager(transactionManager)
+                HealthConnectInjectorImpl.newBuilderForTest(healthConnectStorageContext)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mTransactionTestUtils =
-                new TransactionTestUtils(healthConnectUserContext, healthConnectInjector);
+                new TransactionTestUtils(healthConnectStorageContext, healthConnectInjector);
     }
 
     @After
