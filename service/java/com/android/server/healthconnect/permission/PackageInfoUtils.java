@@ -84,7 +84,7 @@ public final class PackageInfoUtils {
     }
 
     @Nullable
-    String[] getPackagesForUid(int packageUid, UserHandle user, Context context) {
+    String[] getPackagesForUid(Context context, UserHandle user, int packageUid) {
         return getPackageManagerAsUser(context, user).getPackagesForUid(packageUid);
     }
 
