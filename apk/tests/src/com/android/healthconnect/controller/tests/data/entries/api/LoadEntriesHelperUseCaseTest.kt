@@ -29,7 +29,7 @@ import android.health.connect.datatypes.FloorsClimbedRecord
 import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.MedicalDataSource
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.health.connect.datatypes.OxygenSaturationRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
@@ -880,6 +880,6 @@ class LoadEntriesHelperUseCaseTest {
         Mockito.verify(healthConnectManager, Mockito.times(wantedInvocationCount))
             .readMedicalResources(requestCaptor.capture(), any(), any())
         assertThat(requestCaptor.value.medicalResourceType)
-            .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+            .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES)
     }
 }

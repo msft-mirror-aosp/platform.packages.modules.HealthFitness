@@ -19,7 +19,7 @@ package android.healthconnect.cts.phr.apis;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
@@ -191,7 +191,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest deleteRequest =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         // Change the delete request to use an illegal type for this test.
         setFieldValueUsingReflection(deleteRequest, "mMedicalResourceTypes", Set.of(100));
@@ -269,7 +269,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS + 1)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES + 1)
                         .build();
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
 
@@ -302,7 +302,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
 
@@ -329,7 +329,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
@@ -439,7 +439,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource3.getId())
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         mManager.deleteMedicalResources(
                 deleteRequestDS1andDS3Immunizations, Executors.newSingleThreadExecutor(), callback);
@@ -513,7 +513,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS + 1)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES + 1)
                         .build();
         runWithShellPermissionIdentity(
                 () -> {
@@ -664,7 +664,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         DeleteMedicalResourcesRequest deleteImmunizationsRequest =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         PHR_FOREGROUND_APP.deleteMedicalResources(deleteImmunizationsRequest);
