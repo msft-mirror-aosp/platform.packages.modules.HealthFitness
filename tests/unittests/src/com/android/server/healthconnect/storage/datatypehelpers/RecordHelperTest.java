@@ -89,15 +89,13 @@ public class RecordHelperTest {
     @Before
     public void setup() throws Exception {
         StorageContext context = testRule.getDatabaseContext();
-        mTransactionManager = testRule.getTransactionManager();
-        DatabaseHelper.clearAllData(mTransactionManager);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 

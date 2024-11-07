@@ -85,8 +85,6 @@ public class DeleteTransactionRequestTest {
         HealthConnectInjector injector =
                 HealthConnectInjectorImpl.newBuilderForTest(
                                 mHealthConnectDatabaseTestRule.getDatabaseContext())
-                        .setTransactionManager(
-                                mHealthConnectDatabaseTestRule.getTransactionManager())
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();

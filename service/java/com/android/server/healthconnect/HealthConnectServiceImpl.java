@@ -34,7 +34,6 @@ import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
-import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
@@ -2182,7 +2181,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, CREATE_MEDICAL_DATA_SOURCE)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(packageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2253,7 +2251,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_IDS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2361,7 +2358,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_REQUESTS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2459,7 +2455,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_DATA_SOURCE_WITH_DATA)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2528,7 +2523,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, UPSERT_MEDICAL_RESOURCES)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2623,7 +2617,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_IDS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2745,7 +2738,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_REQUESTS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2860,7 +2852,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_IDS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2932,7 +2923,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_REQUESTS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(

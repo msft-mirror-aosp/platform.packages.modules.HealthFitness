@@ -130,13 +130,12 @@ public class TransactionManagerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();

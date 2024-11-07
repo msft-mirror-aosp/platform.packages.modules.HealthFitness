@@ -57,7 +57,7 @@ public class MedicalResourceTypePermissionMapperTest {
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
                         MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
 
-        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS);
+        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_VACCINES);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class MedicalResourceTypePermissionMapperTest {
     public void testGetMedicalResourceTypeForReadPermission_immunizationType_returns() {
         int medicalResourceType =
                 MedicalResourceTypePermissionMapper.getMedicalResourceType(
-                        HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS);
+                        HealthPermissions.READ_MEDICAL_DATA_VACCINES);
 
         assertThat(medicalResourceType).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
     }

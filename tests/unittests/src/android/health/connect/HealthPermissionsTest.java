@@ -20,7 +20,6 @@ import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS;
@@ -28,6 +27,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTIT
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
@@ -121,7 +121,6 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_MINDFULNESS,
                     HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                     HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
-                    HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS,
                     HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
                     HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
                     HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
@@ -129,6 +128,7 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
                     HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                     HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                    HealthPermissions.READ_MEDICAL_DATA_VACCINES,
                     HealthPermissions.READ_MEDICAL_DATA_VISITS,
                     HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
@@ -307,7 +307,6 @@ public class HealthPermissionsTest {
                         WRITE_MEDICAL_DATA,
                         READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                         READ_MEDICAL_DATA_CONDITIONS,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS,
                         READ_MEDICAL_DATA_LABORATORY_RESULTS,
                         READ_MEDICAL_DATA_MEDICATIONS,
                         READ_MEDICAL_DATA_PERSONAL_DETAILS,
@@ -315,6 +314,7 @@ public class HealthPermissionsTest {
                         READ_MEDICAL_DATA_PREGNANCY,
                         READ_MEDICAL_DATA_PROCEDURES,
                         READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                        READ_MEDICAL_DATA_VACCINES,
                         READ_MEDICAL_DATA_VISITS,
                         READ_MEDICAL_DATA_VITAL_SIGNS);
     }

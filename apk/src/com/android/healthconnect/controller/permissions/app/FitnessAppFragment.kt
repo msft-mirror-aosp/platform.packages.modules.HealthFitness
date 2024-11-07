@@ -119,6 +119,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
 
         allowAllPreference.logNameActive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_ACTIVE
         allowAllPreference.logNameInactive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE
+        allowAllPreference.isChecked = false
 
         if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }

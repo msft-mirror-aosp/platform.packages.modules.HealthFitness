@@ -36,7 +36,6 @@ enum class MedicalPermissionType : HealthPermissionType {
     ALL_MEDICAL_DATA,
     ALLERGIES_INTOLERANCES,
     CONDITIONS,
-    IMMUNIZATIONS,
     LABORATORY_RESULTS,
     MEDICATIONS,
     PERSONAL_DETAILS,
@@ -44,6 +43,7 @@ enum class MedicalPermissionType : HealthPermissionType {
     PREGNANCY,
     PROCEDURES,
     SOCIAL_HISTORY,
+    VACCINES,
     VISITS,
     VITAL_SIGNS;
 
@@ -59,7 +59,6 @@ enum class MedicalPermissionType : HealthPermissionType {
                 ALL_MEDICAL_DATA -> R.attr.medicalServicesIcon
                 ALLERGIES_INTOLERANCES -> R.attr.allergiesIcon
                 CONDITIONS -> R.attr.conditionsIcon
-                IMMUNIZATIONS -> R.attr.immunizationIcon
                 LABORATORY_RESULTS -> R.attr.labResultsIcon
                 MEDICATIONS -> R.attr.medicationsIcon
                 PERSONAL_DETAILS -> R.attr.patientInfoIcon
@@ -67,6 +66,7 @@ enum class MedicalPermissionType : HealthPermissionType {
                 PREGNANCY -> R.attr.pregnancyIcon
                 PROCEDURES -> R.attr.proceduresIcon
                 SOCIAL_HISTORY -> R.attr.socialHistoryIcon
+                VACCINES -> R.attr.immunizationIcon
                 VISITS -> R.attr.pastVisitsIcon
                 VITAL_SIGNS -> R.attr.vitalsIcon
             }
@@ -87,7 +87,6 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
     return when (medicalResourceType) {
         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES -> MedicalPermissionType.ALLERGIES_INTOLERANCES
         MEDICAL_RESOURCE_TYPE_CONDITIONS -> MedicalPermissionType.CONDITIONS
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS -> MedicalPermissionType.IMMUNIZATIONS
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS -> MedicalPermissionType.LABORATORY_RESULTS
         MEDICAL_RESOURCE_TYPE_MEDICATIONS -> MedicalPermissionType.MEDICATIONS
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS -> MedicalPermissionType.PERSONAL_DETAILS
@@ -95,6 +94,7 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
         MEDICAL_RESOURCE_TYPE_PREGNANCY -> MedicalPermissionType.PREGNANCY
         MEDICAL_RESOURCE_TYPE_PROCEDURES -> MedicalPermissionType.PROCEDURES
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY -> MedicalPermissionType.SOCIAL_HISTORY
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS -> MedicalPermissionType.VACCINES
         MEDICAL_RESOURCE_TYPE_VISITS -> MedicalPermissionType.VISITS
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS -> MedicalPermissionType.VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalResourceType is not supported.")
@@ -105,7 +105,6 @@ fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
     return when (medicalPermissionType) {
         MedicalPermissionType.ALLERGIES_INTOLERANCES -> MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
         MedicalPermissionType.CONDITIONS -> MEDICAL_RESOURCE_TYPE_CONDITIONS
-        MedicalPermissionType.IMMUNIZATIONS -> MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
         MedicalPermissionType.LABORATORY_RESULTS -> MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
         MedicalPermissionType.MEDICATIONS -> MEDICAL_RESOURCE_TYPE_MEDICATIONS
         MedicalPermissionType.PERSONAL_DETAILS -> MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS
@@ -113,6 +112,7 @@ fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
         MedicalPermissionType.PREGNANCY -> MEDICAL_RESOURCE_TYPE_PREGNANCY
         MedicalPermissionType.PROCEDURES -> MEDICAL_RESOURCE_TYPE_PROCEDURES
         MedicalPermissionType.SOCIAL_HISTORY -> MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
+        MedicalPermissionType.VACCINES -> MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
         MedicalPermissionType.VISITS -> MEDICAL_RESOURCE_TYPE_VISITS
         MedicalPermissionType.VITAL_SIGNS -> MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalPermissionType does not map to a MedicalResourceType.")

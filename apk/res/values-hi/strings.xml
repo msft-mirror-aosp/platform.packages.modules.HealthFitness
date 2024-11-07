@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"बीता हुआ कल"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"पढ़ें: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"लिखें: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"अनुमतियां मैनेज करें"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"समय: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"गतिविधि"</string>

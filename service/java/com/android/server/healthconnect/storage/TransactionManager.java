@@ -44,8 +44,6 @@ import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -84,13 +82,11 @@ import java.util.function.BiConsumer;
 public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
 
-    @Nullable private static volatile TransactionManager sTransactionManager;
-
     private volatile HealthConnectDatabase mHealthConnectDatabase;
     private UserHandle mUserHandle;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    private TransactionManager(
+    public TransactionManager(
             StorageContext storageContext,
             InternalHealthConnectMappings internalHealthConnectMappings) {
         mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
@@ -1049,50 +1045,6 @@ public final class TransactionManager {
     public interface TransactionRunnableWithReturn<R, E extends Throwable> {
         /** Task to be executed that throws throwable of type E and returns type R. */
         R run(SQLiteDatabase db) throws E;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static synchronized TransactionManager initializeInstance(
-            StorageContext storageContext) {
-        if (sTransactionManager == null) {
-            sTransactionManager =
-                    new TransactionManager(
-                            storageContext, InternalHealthConnectMappings.getInstance());
-        }
-
-        return sTransactionManager;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static TransactionManager getInitialisedInstance() {
-        requireNonNull(sTransactionManager);
-
-        return sTransactionManager;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @com.android.internal.annotations.VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        if (sTransactionManager != null) {
-            sTransactionManager = null;
-        }
-    }
-
-    /** Cleans up the database and this manager, so unit tests can run correctly. */
-    @VisibleForTesting
-    public static void cleanUpForTest() {
-        if (sTransactionManager != null) {
-            // Close the DB before we delete the DB file to avoid the exception in b/333679690.
-            sTransactionManager.getWritableDb().close();
-            sTransactionManager.getReadableDb().close();
-            SQLiteDatabase.deleteDatabase(sTransactionManager.getDatabasePath());
-            sTransactionManager = null;
-        }
     }
 
     public UserHandle getCurrentUserHandle() {

@@ -29,7 +29,7 @@ import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.health.connect.HealthPermissions.READ_HEART_RATE
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import android.health.connect.HealthPermissions.WRITE_EXERCISE
@@ -306,7 +306,7 @@ class MockedPermissionsActivityTest {
                 MedicalScreenState.ShowMedicalReadWrite(
                     appMetadata = appMetadata,
                     medicalPermissions =
-                        listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA).map {
+                        listOf(READ_MEDICAL_DATA_VACCINES, WRITE_MEDICAL_DATA).map {
                             fromPermissionString(it) as HealthPermission.MedicalPermission
                         },
                 )
@@ -314,9 +314,9 @@ class MockedPermissionsActivityTest {
         }
         whenever(viewModel.allMedicalPermissionsGranted).then { MutableLiveData(true) }
         whenever(viewModel.grantedMedicalPermissions).then {
-            MutableLiveData(setOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS))
+            MutableLiveData(setOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES))
         }
-        val permissions = arrayOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS)
+        val permissions = arrayOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES)
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)

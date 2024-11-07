@@ -22,6 +22,8 @@ import android.util.Slog;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 /**
@@ -40,9 +42,17 @@ public class DailyLoggingService {
             UserHandle userHandle,
             PreferenceHelper preferenceHelper,
             AccessLogsHelper accessLogsHelper,
-            TransactionManager transactionManager) {
+            TransactionManager transactionManager,
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper) {
         logDatabaseStats(context, transactionManager);
-        logUsageStats(context, userHandle, preferenceHelper, accessLogsHelper);
+        logUsageStats(
+                context,
+                userHandle,
+                preferenceHelper,
+                accessLogsHelper,
+                medicalDataSourceHelper,
+                medicalResourceHelper);
     }
 
     private static void logDatabaseStats(Context context, TransactionManager transactionManager) {
@@ -57,9 +67,17 @@ public class DailyLoggingService {
             Context context,
             UserHandle userHandle,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper) {
         try {
-            UsageStatsLogger.log(context, userHandle, preferenceHelper, accessLogsHelper);
+            UsageStatsLogger.log(
+                    context,
+                    userHandle,
+                    preferenceHelper,
+                    accessLogsHelper,
+                    medicalDataSourceHelper,
+                    medicalResourceHelper);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log usage stats", exception);
         }
