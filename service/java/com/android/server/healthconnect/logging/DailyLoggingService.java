@@ -17,15 +17,12 @@
 package com.android.server.healthconnect.logging;
 
 import android.content.Context;
-import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.utils.TimeSource;
 
 /**
  * Class to log Health Connect metrics logged every 24hrs.
@@ -40,22 +37,18 @@ public class DailyLoggingService {
     /** Log daily metrics. */
     public static void logDailyMetrics(
             Context context,
-            UserHandle userHandle,
+            UsageStatsCollector usageStatsCollector,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
             TransactionManager transactionManager,
             MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper,
-            TimeSource timeSource) {
+            MedicalResourceHelper medicalResourceHelper) {
         logDatabaseStats(context, transactionManager);
         logUsageStats(
                 context,
-                userHandle,
+                usageStatsCollector,
                 preferenceHelper,
-                accessLogsHelper,
                 medicalDataSourceHelper,
-                medicalResourceHelper,
-                timeSource);
+                medicalResourceHelper);
     }
 
     private static void logDatabaseStats(Context context, TransactionManager transactionManager) {
@@ -68,21 +61,17 @@ public class DailyLoggingService {
 
     private static void logUsageStats(
             Context context,
-            UserHandle userHandle,
+            UsageStatsCollector usageStatsCollector,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper,
-            TimeSource timeSource) {
+            MedicalResourceHelper medicalResourceHelper) {
         try {
             UsageStatsLogger.log(
                     context,
-                    userHandle,
+                    usageStatsCollector,
                     preferenceHelper,
-                    accessLogsHelper,
                     medicalDataSourceHelper,
-                    medicalResourceHelper,
-                    timeSource);
+                    medicalResourceHelper);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log usage stats", exception);
         }
