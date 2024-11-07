@@ -318,6 +318,30 @@ public class UpsertMedicalResourcesCtsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_nonPrimitiveFieldWithUnderscore_throws()
+            throws Exception {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        // The "identifier" field is of type "Identifier", which is a complex type and not a
+        // primitive type. Since only primitive types can have primitive type extensions (fields
+        // starting with "_") this is not a valid field.
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .set("_identifier", new JSONObject("{\"value\": \"test\"}"))
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
     public void testUpsertMedicalResources_missingRequiredField_throws() throws Exception {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         String immunizationResource = new ImmunizationBuilder().removeField("vaccineCode").toJson();
