@@ -78,4 +78,8 @@ class FakeDeviceInfoUtils : DeviceInfoUtils {
     override fun isIntentHandlerAvailable(context: Context, intent: Intent): Boolean {
         return false
     }
+
+    override fun isOnWatch(context: Context): Boolean {
+        return false
+    }
 }

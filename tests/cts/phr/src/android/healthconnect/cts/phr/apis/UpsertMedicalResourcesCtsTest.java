@@ -300,15 +300,14 @@ public class UpsertMedicalResourcesCtsTest {
     }
 
     @Test
-    @RequiresFlagsEnabled({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
     public void testUpsertMedicalResources_validationEnabledUnknownField_throws() throws Exception {
-        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         String immunizationResource =
                 new ImmunizationBuilder().set("unknown_field", "value").toJson();
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, immunizationResource)
                         .build();
 
         mManager.upsertMedicalResources(

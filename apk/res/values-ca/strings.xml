@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Ahir"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lectura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Escriptura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestiona els permisos"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activitat"</string>
@@ -556,9 +556,9 @@
     <string name="time_range_message_category" msgid="1136451418397326356">"Aquesta acció suprimeix permanentment les dades de la categoria <xliff:g id="CATEGORY">%s</xliff:g> que s\'han afegit a Salut connectada durant el període de temps seleccionat"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Aquesta acció suprimeix permanentment les dades de l\'aplicació <xliff:g id="APP_DATA">%s</xliff:g> que s\'han afegit a Salut connectada durant el període de temps seleccionat"</string>
     <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Aquesta acció suprimeix permanentment les dades de la categoria <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_DATA">%2$s</xliff:g> que s\'han afegit a Salut connectada durant el període de temps seleccionat"</string>
-    <string name="time_range_one_day" msgid="7162709826595446727">"Suprimeix les dades de les 24 darreres hores"</string>
-    <string name="time_range_one_week" msgid="8754523384275645434">"Suprimeix les dades dels 7 darrers dies"</string>
-    <string name="time_range_one_month" msgid="3034747870231999766">"Suprimeix les dades dels 30 darrers dies"</string>
+    <string name="time_range_one_day" msgid="7162709826595446727">"Suprimeix les 24 darreres hores"</string>
+    <string name="time_range_one_week" msgid="8754523384275645434">"Suprimeix els 7 darrers dies"</string>
+    <string name="time_range_one_month" msgid="3034747870231999766">"Suprimeix els 30 darrers dies"</string>
     <string name="time_range_all" msgid="8167350212705839943">"Suprimeix totes les dades"</string>
     <string name="confirming_question_all" msgid="1585414659784742952">"Vols suprimir permanentment totes les dades des de sempre?"</string>
     <string name="confirming_question_one_day" msgid="8001434729335611950">"Vols suprimir permanentment totes les dades de les 24 darreres hores?"</string>
@@ -988,7 +988,7 @@
     <string name="range_off" msgid="8178520557618184215">"Desactivat"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Si canvies aquesta configuració, Salut connectada suprimirà les dades existents per reflectir les preferències noves"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Vols suprimir automàticament les dades passat # mes?}other{Vols suprimir automàticament les dades passats # mesos?}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mes.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions on pot haver-hi desades les teves dades.}other{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mesos.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions on pot haver-hi desades les teves dades.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mes.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions en què es puguin haver desat les teves dades.}other{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mesos.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions en què es puguin haver desat les teves dades.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Estableix la supressió automàtica"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Les dades existents se suprimiran"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salut connectada suprimirà totes les dades amb una antiguitat superior a # mes. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}other{Salut connectada suprimirà totes les dades amb una antiguitat superior a # mesos. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}}"</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Mostra a la botiga d\'aplicacions"</string>
     <string name="select_all" msgid="837499881590001166">"Selecciona-ho tot"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Les aplicacions connectades ja no podran llegir aquestes dades de Salut connectada"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Marcat"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Desmarcat"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Ruta del mapa d\'exercici disponible"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Dia següent"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Setmana següent"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mes següent"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Dia anterior"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Setmana anterior"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mes anterior"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Vols suprimir permanentment totes les dades?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Vols suprimir permanentment les dades seleccionades?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Vols suprimir permanentment totes les dades de l\'aplicació <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1175,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"S\'hi ha accedit a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"S\'hi va accedir ahir a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"S\'hi ha accedit el dia <xliff:g id="TIME_DATE_0">%1$s</xliff:g> a les <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

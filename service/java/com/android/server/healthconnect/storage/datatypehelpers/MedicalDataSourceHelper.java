@@ -361,6 +361,12 @@ public class MedicalDataSourceHelper {
         return mTransactionManager.count(readTableRequest);
     }
 
+    /** Returns the total number of medical data sources in HC database. */
+    public int getMedicalDataSourcesCount() {
+        ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
+        return mTransactionManager.count(readTableRequest);
+    }
+
     /**
      * Reads the {@link MedicalDataSource}s stored in the HealthConnect database using the given
      * list of {@code ids}.

@@ -1061,7 +1061,6 @@ public class HealthConnectManagerTest {
     @Test
     public void testDataApis_migrationInProgress_apisBlocked() throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         startMigrationWithShellPermissionIdentity();
 
         StepsRecord testRecord = DataFactory.getStepsRecord();

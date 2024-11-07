@@ -295,11 +295,6 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
-        android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"
-        android:label="@string/immunizations_content_description"
-        android:protectionLevel="dangerous"
-        android:permissionGroup="android.permission-group.HEALTH" />
-    <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS"
         android:label="@string/laboratory_results_content_description"
         android:protectionLevel="dangerous"
@@ -332,6 +327,11 @@
     <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY"
         android:label="@string/social_history_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_VACCINES"
+        android:label="@string/vaccines_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission

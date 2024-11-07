@@ -147,14 +147,13 @@ public class ImportManagerTest {
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
         mContext = mDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);

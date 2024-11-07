@@ -137,8 +137,6 @@ public class MigrationStateManagerTest {
         when(mResources.getIdentifier(anyString(), anyString(), anyString())).thenReturn(1);
         when(mResources.getString(anyInt())).thenReturn(MOCK_CONFIGURED_PACKAGE);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
         when(mHealthConnectDeviceConfigManager.getExecutionTimeBuffer())
                 .thenReturn(EXECUTION_TIME_BUFFER_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getNonIdleStateTimeoutPeriod())
