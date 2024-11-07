@@ -42,7 +42,6 @@ import java.util.List;
 
 public class ValuePriorityAggregationTest {
     @Mock Cursor mCursor;
-    @Mock HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
     PriorityRecordsAggregator mOneGroupAggregator;
     PriorityRecordsAggregator mMultiGroupAggregator;
@@ -72,10 +71,6 @@ public class ValuePriorityAggregationTest {
                                 0,
                                 mParams,
                                 false));
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
     }
 
     @Test

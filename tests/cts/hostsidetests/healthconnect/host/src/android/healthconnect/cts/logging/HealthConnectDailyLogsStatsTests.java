@@ -321,7 +321,7 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
                         "READ_BLOOD_PRESSURE",
                         "READ_HEART_RATE",
                         "WRITE_MEDICAL_DATA",
-                        "READ_MEDICAL_DATA_IMMUNIZATIONS");
+                        "READ_MEDICAL_DATA_VACCINES");
 
         ConfigUtils.uploadConfigForPushedAtoms(
                 getDevice(),

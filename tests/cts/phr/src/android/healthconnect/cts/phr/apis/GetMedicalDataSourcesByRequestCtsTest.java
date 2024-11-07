@@ -18,7 +18,7 @@ package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
@@ -310,7 +310,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -353,7 +353,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
             throws Exception {
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -395,7 +395,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
             throws Exception {
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -443,7 +443,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -492,7 +492,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -536,7 +536,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
             throws Exception {
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -681,8 +681,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
     public void getByPackages_emptyPackageFilter_inBgWithoutBgPermHasWritePermAndReadPerms()
             throws Exception {
         grantPermissions(
-                PHR_BACKGROUND_APP_PKG,
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                PHR_BACKGROUND_APP_PKG, List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -721,8 +720,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
     public void getByPackages_withPackageFilterSelfIncluded_inBgWithoutBgPermHasWriteAndReadPerm()
             throws Exception {
         grantPermissions(
-                PHR_BACKGROUND_APP_PKG,
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                PHR_BACKGROUND_APP_PKG, List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -765,8 +763,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
     public void getByPackages_noPackageFilter_inBgWithoutBgPermHasReadPermNoWritePerm()
             throws Exception {
         grantPermissions(
-                PHR_BACKGROUND_APP_PKG,
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                PHR_BACKGROUND_APP_PKG, List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -807,8 +804,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
     public void getByPackages_withPackageFilterSelfIncluded_inBgWithoutBgPermHasReadPermNoWrite()
             throws Exception {
         grantPermissions(
-                PHR_BACKGROUND_APP_PKG,
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                PHR_BACKGROUND_APP_PKG, List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         MedicalDataSource dataSource1Foreground =
@@ -856,7 +852,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                 PHR_BACKGROUND_APP_PKG,
                 List.of(
                         WRITE_MEDICAL_DATA,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS,
+                        READ_MEDICAL_DATA_VACCINES,
                         READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES));
         grantPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
@@ -902,7 +898,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                 PHR_BACKGROUND_APP_PKG,
                 List.of(
                         WRITE_MEDICAL_DATA,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS,
+                        READ_MEDICAL_DATA_VACCINES,
                         READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES));
         grantPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 

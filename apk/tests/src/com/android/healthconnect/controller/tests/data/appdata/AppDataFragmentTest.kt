@@ -165,7 +165,7 @@ class AppDataFragmentTest {
             listOf(
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.EXERCISE,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -193,7 +193,7 @@ class AppDataFragmentTest {
 
     @Test
     fun medicalDataOnly_populatedDataTypesDisplayed() = runTest {
-        mockData(listOf(MedicalPermissionType.IMMUNIZATIONS))
+        mockData(listOf(MedicalPermissionType.VACCINES))
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -241,7 +241,7 @@ class AppDataFragmentTest {
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
                 MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -300,7 +300,7 @@ class AppDataFragmentTest {
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
                 MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -319,7 +319,7 @@ class AppDataFragmentTest {
         onView(withText("Vaccines")).perform(click())
         onIdle()
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(MedicalPermissionType.IMMUNIZATIONS))
+            .containsExactlyElementsIn(setOf(MedicalPermissionType.VACCINES))
         onView(withText("Vaccines")).perform(click())
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
@@ -698,7 +698,7 @@ class AppDataFragmentTest {
                     FitnessPermissionType.DISTANCE,
                     FitnessPermissionType.STEPS,
                     MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                    MedicalPermissionType.IMMUNIZATIONS,
+                    MedicalPermissionType.VACCINES,
                 )
             )
             val scenario =
@@ -721,7 +721,7 @@ class AppDataFragmentTest {
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.STEPS,
                         MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                        MedicalPermissionType.IMMUNIZATIONS,
+                        MedicalPermissionType.VACCINES,
                     )
                 )
             onView(withText("Select all")).perform(click())
@@ -743,7 +743,7 @@ class AppDataFragmentTest {
                                             FitnessPermissionType.DISTANCE,
                                             FitnessPermissionType.STEPS,
                                             MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                                            MedicalPermissionType.IMMUNIZATIONS,
+                                            MedicalPermissionType.VACCINES,
                                         )
                                 ) {
                                     assertThat(permissionTypePreference.getIsChecked()).isFalse()

@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.MainActivity
 import com.android.healthconnect.controller.data.DataManagementActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
+import com.android.healthconnect.controller.permissions.app.wear.WearViewAppInfoPermissionsActivity
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
@@ -59,17 +60,24 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
             finish()
             return
         }
+        val isOnWatch = deviceInfoUtils.isOnWatch(this)
 
         // Handles large screen support in settings.
-        if (maybeRedirectIntoTwoPaneSettings(this)) {
+        if (!isOnWatch && maybeRedirectIntoTwoPaneSettings(this)) {
             finish()
             return
         }
 
-        val targetIntent = getTargetIntent()
+        val targetIntent =
+            if (isOnWatch) {
+                getWearTargetIntent()
+            } else {
+                getNonWearTargetIntent()
+            }
 
         // Handles showing Health Connect Onboarding.
-        if (shouldRedirectToOnboardingActivity(this)) {
+        // Do not show onboarding UI on watch.
+        if (!isOnWatch && shouldRedirectToOnboardingActivity(this)) {
             startActivity(OnboardingActivity.createIntent(this, targetIntent))
             finish()
             return
@@ -79,7 +87,7 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
         finish()
     }
 
-    private fun getTargetIntent(): Intent {
+    private fun getNonWearTargetIntent(): Intent {
         return when (intent.action) {
             HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS -> {
                 Intent(this, MainActivity::class.java)
@@ -100,6 +108,17 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
                 // Default to open Health Connect MainActivity
                 Intent(this, MainActivity::class.java)
             }
+        }
+    }
+
+    // Returns an intent to handle Wear request.
+    private fun getWearTargetIntent(): Intent {
+        if (intent.action != HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS) {
+            Log.e(TAG, "getWearTargetIntent() has unexpected intent action: " + intent.action)
+        }
+        // TODO: b/364643019 - Redirect to Wear PermissionManager Activity if packageName is null.
+        return Intent(this, WearViewAppInfoPermissionsActivity::class.java).apply {
+            intent.getStringExtra(EXTRA_PACKAGE_NAME)?.let { putExtra(EXTRA_PACKAGE_NAME, it) }
         }
     }
 }

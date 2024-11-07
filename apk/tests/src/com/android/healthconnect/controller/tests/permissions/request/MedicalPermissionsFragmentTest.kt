@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.tests.permissions.request
 
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS
@@ -25,6 +24,7 @@ import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_D
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS
 import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
@@ -114,7 +114,6 @@ class MedicalPermissionsFragmentTest {
             listOf(
                 fromPermissionString(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES),
                 fromPermissionString(READ_MEDICAL_DATA_CONDITIONS),
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
                 fromPermissionString(READ_MEDICAL_DATA_LABORATORY_RESULTS),
                 fromPermissionString(READ_MEDICAL_DATA_MEDICATIONS),
                 fromPermissionString(READ_MEDICAL_DATA_PERSONAL_DETAILS),
@@ -122,6 +121,7 @@ class MedicalPermissionsFragmentTest {
                 fromPermissionString(READ_MEDICAL_DATA_PREGNANCY),
                 fromPermissionString(READ_MEDICAL_DATA_PROCEDURES),
                 fromPermissionString(READ_MEDICAL_DATA_SOCIAL_HISTORY),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(READ_MEDICAL_DATA_VISITS),
                 fromPermissionString(READ_MEDICAL_DATA_VITAL_SIGNS),
             )
@@ -245,7 +245,7 @@ class MedicalPermissionsFragmentTest {
     fun togglesPermissions_callsUpdatePermissions() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -275,7 +275,7 @@ class MedicalPermissionsFragmentTest {
     fun allowAllToggleOn_updatesAllPermissions() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -312,7 +312,7 @@ class MedicalPermissionsFragmentTest {
     fun allowAllToggleOff_updatesAllPermissions() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -345,7 +345,7 @@ class MedicalPermissionsFragmentTest {
     fun allowButton_noMedicalPermissionsSelected_isDisabled() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -368,7 +368,7 @@ class MedicalPermissionsFragmentTest {
     fun allowButton_medicalPermissionsSelected_isEnabled() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -380,7 +380,7 @@ class MedicalPermissionsFragmentTest {
             )
         }
         whenever(viewModel.grantedMedicalPermissions).then {
-            MutableLiveData(setOf(fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS)))
+            MutableLiveData(setOf(fromPermissionString(READ_MEDICAL_DATA_VACCINES)))
         }
 
         launchFragment<MedicalPermissionsFragment>(bundleOf())

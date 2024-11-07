@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Hier"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lecture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Écriture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Heure : <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activité"</string>
@@ -355,16 +355,16 @@
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"pleine conscience"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Lire les données de Pleine conscience"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Écrire les données de Pleine conscience"</string>
-    <string name="read_permission_category" msgid="6002099618259628632">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à lire"</string>
-    <string name="write_permission_category" msgid="1529702804865008111">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à écrire"</string>
+    <string name="read_permission_category" msgid="6002099618259628632">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à lire les données suivantes"</string>
+    <string name="write_permission_category" msgid="1529702804865008111">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à écrire les données suivantes"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Autoriser"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Tout autoriser"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ne pas autoriser"</string>
-    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Sélectionnez les données que cette appli peut lire ou modifier dans Santé Connect"</string>
-    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Sélectionnez les données que cette appli peut lire dans Santé Connect"</string>
-    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Sélectionnez les données que cette appli peut écrire dans Santé Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si vous autorisez un accès en lecture, l\'appli peut lire les nouvelles données et celles des 30 derniers jours"</string>
-    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si vous autorisez un accès en lecture, l\'appli peut lire les nouvelles données ainsi que les données précédentes"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Sélectionnez les données que vous voulez autoriser cette appli à lire ou à écrire dans Santé Connect."</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Sélectionnez les données que vous voulez autoriser cette appli à lire dans Santé Connect."</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Sélectionnez les données que vous voulez autoriser cette appli à écrire dans Santé Connect."</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si vous lui donnez accès en lecture, l\'appli pourra lire les nouvelles données et celles des 30 derniers jours."</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si vous lui donnez accès en lecture, l\'appli pourra lire les anciennes et les nouvelles données."</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à Santé Connect ?"</string>
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à vos données de fitness et de bien-être ?"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Consultez les <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> pour découvrir comment elle gère vos données"</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Afficher sur la plate-forme de téléchargement d\'applications"</string>
     <string name="select_all" msgid="837499881590001166">"Tout sélectionner"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Les applications connectées ne pourront plus accéder à ces données à partir de Santé Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Cochée"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Non cochée"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Parcours sportif disponible"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Jour suivant"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Semaine suivante"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mois suivant"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Jour précédent"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Semaine précédente"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mois précédent"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Supprimer définitivement toutes les données ?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Supprimer définitivement les données sélectionnées de l\'application ?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Supprimer définitivement toutes les données de l\'application <xliff:g id="APP_NAME">%s</xliff:g> ?"</string>
@@ -1175,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Dernière consultation : <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Dernière consultation : hier, à <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Dernière consultation : <xliff:g id="TIME_DATE_0">%1$s</xliff:g><xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

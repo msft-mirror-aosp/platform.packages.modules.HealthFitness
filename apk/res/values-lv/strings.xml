@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Vakar"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lasīšana: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Rakstīšana: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Pārvaldīt atļaujas"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Laiks: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivitāte"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ratiņkrēsla stūmieni"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Lasīt ratiņkrēsla stūmienu datus"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Rakstīt ratiņkrēsla stūmienu datus"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Aktivitāšu intensitāte"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"aktivitāšu intensitāte"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Lasīt aktivitāšu intensitātes datus"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Rakstīt aktivitāšu intensitātes datus"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Vielmaiņas ātrums"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"vielmaiņas ātrums"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Lasīt bazālās vielmaiņas intensitātes datus"</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Skatīt lietotņu veikalā"</string>
     <string name="select_all" msgid="837499881590001166">"Atlasīt visu"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Pievienotās lietotnes vairs nevarēs lasīt šos datus no lietotnes platformas Health Connect."</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Atzīmēta"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Nav atzīmēta"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Ir pieejama treniņu maršruta karte"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Nākamā diena"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Nākamā nedēļa"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Nākamais mēnesis"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Iepriekšējā diena"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Iepriekšējā nedēļa"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Iepriekšējais mēnesis"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Vai neatgriezeniski dzēst visus datus?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Vai neatgriezeniski dzēst atlasītos datus?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Vai neatgriezeniski dzēst visus lietotnes <xliff:g id="APP_NAME">%s</xliff:g> datus?"</string>
@@ -1179,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Pēdējā piekļuves reize: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Pēdējā piekļuves reize vakar: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Pēdējā piekļuves reize: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

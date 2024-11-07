@@ -89,6 +89,20 @@ class FhirSpecExtractorTest(unittest.TestCase):
                   }]
                 },
                 {
+                  "id" : "Immunization.exampleFieldToTestOneToMany",
+                  "path" : "Immunization.exampleFieldToTestOneToMany",
+                  "min" : 1,
+                  "max" : "*",
+                  "base" : {
+                    "path" : "Immunization.exampleFieldToTestOneToMany",
+                    "min" : 1,
+                    "max" : "*"
+                  },
+                  "type" : [{
+                    "code" : "CodeableConcept"
+                  }]
+                },
+                {
                   "id" : "Immunization.occurrence[x]",
                   "path" : "Immunization.occurrence[x]",
                   "min" : 1,
@@ -203,23 +217,32 @@ class FhirSpecExtractorTest(unittest.TestCase):
             {"Immunization"})
         # we expect each top level field to be present, and one ofs that are represented in the spec
         # as e.g. occurrence[x] should be expanded into the individual fields such as
-        # occurrenceDateTime and occurrenceString
-        expected_immunization_allowed_fields = {
-            "resourceType",
-            "id",
-            "status",
-            "vaccineCode",
-            "occurrenceDateTime",
-            "occurrenceString",
-            "performer",
+        # occurrenceDateTime and occurrenceString. Fields with a cardinality of 0..* or 1..* should
+        # have is_array = true set in their config.
+        expected_required_fields = {"status", "vaccineCode", "exampleFieldToTestOneToMany"}
+        expected_field_names_to_array_bool = {
+            "resourceType": False,
+            "id": False,
+            "status": False,
+            "vaccineCode": False,
+            "exampleFieldToTestOneToMany": True,
+            "occurrenceDateTime": False,
+            "occurrenceString": False,
+            "performer""": True,
         }
 
         generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message()
 
         self.assertEqual(len(generated_spec.resource_type_to_config.keys()), 1)
-        received_immunization_allowed_fields = set(
-            generated_spec.resource_type_to_config[self.IMMUNIZATION_RESOURCE_TYPE_INT].field_names)
-        self.assertEqual(expected_immunization_allowed_fields, received_immunization_allowed_fields)
+        immunization_config = (
+            generated_spec.resource_type_to_config[self.IMMUNIZATION_RESOURCE_TYPE_INT])
+        self.assertEquals(set(immunization_config.required_fields), expected_required_fields)
+        self.assertEqual(set(expected_field_names_to_array_bool.keys()),
+                         set(immunization_config.allowed_field_names_to_config.keys()))
+        for expected_field, expected_array_bool in expected_field_names_to_array_bool.items():
+            self.assertEqual(immunization_config.allowed_field_names_to_config[expected_field].is_array,
+                             expected_array_bool,
+                             "Mismatching array bool for field " + expected_field)
 
     def test_fhir_spec_extractor_immunization_and_patient_contains_two_entries(self):
         fhir_spec_extractor = FhirSpecExtractor(

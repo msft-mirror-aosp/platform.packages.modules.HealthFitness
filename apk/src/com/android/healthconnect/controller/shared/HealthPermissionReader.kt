@@ -52,7 +52,6 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
                 HealthPermissions.WRITE_MEDICAL_DATA,
                 HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
                 HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
@@ -60,6 +59,7 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
                 HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
                 HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VACCINES,
                 HealthPermissions.READ_MEDICAL_DATA_VISITS,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
             )
