@@ -42,11 +42,19 @@ fun PerDataTypeScreen(
     viewModel: WearConnectedAppsViewModel,
     permissionStr: String,
     dataTypeStr: String,
+    onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
     val healthPermission = fromPermissionString(permissionStr)
     ScrollableScreen(showTimeText = false, title = dataTypeStr) {
         // Allowed apps.
-        item { AllowedAppsList(viewModel, healthPermission) }
+        item {
+            AllowedAppsList(
+                viewModel,
+                healthPermission,
+                dataTypeStr,
+                onRemoveAllAppAccessButtonClick,
+            )
+        }
 
         // Notes on what this permission is about.
         item {
@@ -61,7 +69,12 @@ fun PerDataTypeScreen(
 }
 
 @Composable
-fun AllowedAppsList(viewModel: WearConnectedAppsViewModel, healthPermission: HealthPermission) {
+fun AllowedAppsList(
+    viewModel: WearConnectedAppsViewModel,
+    healthPermission: HealthPermission,
+    dataTypeStr: String,
+    onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
+) {
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
     val allowedApps = dataTypeToAllowedApps[healthPermission]
     if (allowedApps?.isNotEmpty() == true) {
@@ -85,7 +98,9 @@ fun AllowedAppsList(viewModel: WearConnectedAppsViewModel, healthPermission: Hea
             Chip(
                 label = stringResource(R.string.disconnect_all_apps),
                 labelMaxLines = 3,
-                onClick = {}, // TODO: navigate
+                onClick = {
+                    onRemoveAllAppAccessButtonClick(healthPermission.toString(), dataTypeStr)
+                },
                 icon = R.drawable.ic_remove_access_for_all_apps,
             )
         }

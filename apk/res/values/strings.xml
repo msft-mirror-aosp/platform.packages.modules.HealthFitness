@@ -1676,6 +1676,9 @@
     <string name="allowed" description="Text to indicate an app is allowed for this permission.">Allowed</string>
     <string name="not_allowed" description="Text to indicate an app is not allowed for this permission.">Not allowed</string>
     <string name="access_sensor_note" description="Text to indicate which data types are allowed from device sensors.">Apps with this permission can access <xliff:g example="heart rate" id="data_type">%s</xliff:g> data from your device sensors.</string>
+    <string name="remove_one_permission_for_all" description="Text to indicate removing a data type access for all apps.">Remove <xliff:g example="heart rate" id="data_type">%s</xliff:g> access for all apps on your watch?</string>
+    <string name="icon_content_check_mark" description="Content description for icon to confirm removing one granular health permission for all apps.">Check mark</string>
+    <string name="icon_content_cross_mark" description="Content description for icon to dismiss removing one granular health permission for all apps.">Cross mark</string>
     <!-- endregion -->
 
     <!-- endregion -->
