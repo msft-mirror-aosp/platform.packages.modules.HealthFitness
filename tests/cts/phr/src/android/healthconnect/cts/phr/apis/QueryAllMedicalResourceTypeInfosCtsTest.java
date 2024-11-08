@@ -119,8 +119,8 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testQueryAllMedicalResourceTypeInfos_withManagePerm_hasData_succeeds()
             throws Exception {
-        // Create some data sources with data: ds1 contains [vaccine, differentVaccine,
-        // allergy], ds2 contains [vaccine], and ds3 contains [allergy].
+        // Create some data sources with data: ds1 contains [immunization, differentImmunization,
+        // allergy], ds2 contains [immunization], and ds3 contains [allergy].
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =

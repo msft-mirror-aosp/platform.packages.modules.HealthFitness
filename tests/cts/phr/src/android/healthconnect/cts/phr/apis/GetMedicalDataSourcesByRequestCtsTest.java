@@ -333,10 +333,10 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
         // App is in background with background read perm, has write permission and
-        // has vaccine read permissions.
+        // has immunization read permissions.
         // The packageName set in the request is empty so no filtering based on packageNames.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // vaccine resource types.
+        // immunization resource types.
         List<MedicalDataSource> result =
                 PHR_BACKGROUND_APP.getMedicalDataSources(
                         new GetMedicalDataSourcesRequest.Builder().build());
@@ -375,10 +375,10 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                         getCreateMedicalDataSourceRequest("ds/2"));
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
-        // App is in foreground, has write permission and vaccine read permissions.
+        // App is in foreground, has write permission and immunization read permissions.
         // The packageName set in the request is empty so no filtering based on packageNames.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // vaccine resource types.
+        // immunization resource types.
         List<MedicalDataSource> result =
                 PHR_FOREGROUND_APP.getMedicalDataSources(
                         new GetMedicalDataSourcesRequest.Builder().build());
@@ -422,10 +422,10 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                         .addPackageName(PHR_BACKGROUND_APP_PKG)
                         .build();
 
-        // App is in foreground, has write permission and has vaccine read permissions.
+        // App is in foreground, has write permission and has immunization read permissions.
         // The app's package name is included in the list of packages.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // vaccine resource types written by any of the given packages.
+        // immunization resource types written by any of the given packages.
         List<MedicalDataSource> result = PHR_FOREGROUND_APP.getMedicalDataSources(request);
 
         assertThat(result)
@@ -470,11 +470,11 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                         .addPackageName(PHR_BACKGROUND_APP_PKG)
                         .build();
 
-        // App is in background with background read, has write permission and has vaccine
+        // App is in background with background read, has write permission and has immunization
         // read permissions.
         // The app's package name is included in the list of packages.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // vaccine resource types written by any of the given packages.
+        // immunization resource types written by any of the given packages.
         List<MedicalDataSource> result = PHR_BACKGROUND_APP.getMedicalDataSources(request);
 
         assertThat(result)
@@ -519,9 +519,9 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                         .build();
 
         // App is in background with background read perm, has write permission and
-        // has vaccine read permissions.
+        // has immunization read permissions.
         // The app's package name is not included in the list of packages.
-        // App can read dataSources belonging to vaccine resource types written by any of
+        // App can read dataSources belonging to immunization resource types written by any of
         // the given packages.
         List<MedicalDataSource> result = PHR_BACKGROUND_APP.getMedicalDataSources(request);
 
@@ -558,9 +558,9 @@ public class GetMedicalDataSourcesByRequestCtsTest {
                         getCreateMedicalDataSourceRequest("ds/2"));
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
-        // App is in foreground, has write permission and has vaccine read permissions.
+        // App is in foreground, has write permission and has immunization read permissions.
         // The app's package name is not included in the list of packages.
-        // App can read dataSources belonging to vaccine resource types written by any of
+        // App can read dataSources belonging to immunization resource types written by any of
         // the given packages.
         GetMedicalDataSourcesRequest request =
                 new GetMedicalDataSourcesRequest.Builder()
@@ -704,7 +704,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
         // App is in background without background read perm, has write permission and
-        // has read vaccine permission.
+        // has read immunization permission.
         // The packageNames is empty so no filtering is applied.
         // App can read dataSources they wrote themselves.
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
@@ -743,7 +743,7 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
         // App is in background without background read perm, has write permission and
-        // has read vaccine permission.
+        // has read immunization permission.
         // The app's package name is included in the list of packages.
         // App can read dataSources they wrote themselves.
         GetMedicalDataSourcesRequest request =
@@ -788,9 +788,9 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         revokePermission(PHR_BACKGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         // App is in background without background read perm, has no write permission and
-        // has read vaccine permission.
+        // has read immunization permission.
         // The packageNames is empty so no filtering based on packageNames.
-        // App can read dataSources belonging to vaccines the app wrote itself.
+        // App can read dataSources belonging to immunizations the app wrote itself.
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
         List<MedicalDataSource> result = PHR_BACKGROUND_APP.getMedicalDataSources(request);
 
@@ -829,9 +829,9 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         revokePermission(PHR_BACKGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         // App is in background without background read perm, has no write permission and
-        // has read vaccine permission.
+        // has read immunization permission.
         // The app's package name is included in the list of packages.
-        // App can read dataSources belonging to vaccines the app wrote itself.
+        // App can read dataSources belonging to immunizations the app wrote itself.
         GetMedicalDataSourcesRequest request =
                 new GetMedicalDataSourcesRequest.Builder()
                         .addPackageName(PHR_BACKGROUND_APP_PKG)
@@ -878,10 +878,10 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         revokePermission(PHR_BACKGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         // App is in background without background read perm, no write permission but has
-        // vaccine and allergy read permission.
+        // immunization and allergy read permission.
         // PackageNames is empty so no filtering based on packageNames is applied.
         // App can read dataSources belonging to
-        // vaccines and allergy resource types that the app wrote itself.
+        // immunizations and allergy resource types that the app wrote itself.
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
         List<MedicalDataSource> result = PHR_BACKGROUND_APP.getMedicalDataSources(request);
 
@@ -924,8 +924,8 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         revokePermission(PHR_BACKGROUND_APP_PKG, WRITE_MEDICAL_DATA);
 
         // App is in background without background read perm, no write permission but has
-        // vaccine and allergy read permission. App can read dataSources belonging to
-        // vaccines and allergy resource types that the app wrote itself.
+        // immunization and allergy read permission. App can read dataSources belonging to
+        // immunizations and allergy resource types that the app wrote itself.
         GetMedicalDataSourcesRequest request =
                 new GetMedicalDataSourcesRequest.Builder()
                         .addPackageName(PHR_FOREGROUND_APP_PKG)
