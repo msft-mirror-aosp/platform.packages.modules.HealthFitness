@@ -44,6 +44,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.utils.TimeSource;
 
 /**
  * Interface for Health Connect Dependency Injector.
@@ -168,6 +169,9 @@ public abstract class HealthConnectInjector {
      * Injector.
      */
     public abstract MedicalDataSourceHelper getMedicalDataSourceHelper();
+
+    /** Getter for {@link TimeSource} instance initialised by the Health Connect Injector. */
+    public abstract TimeSource getTimeSource();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

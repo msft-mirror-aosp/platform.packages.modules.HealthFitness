@@ -39,6 +39,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -87,7 +88,8 @@ public class HealthConnectDailyJobs {
             TransactionManager transactionManager,
             ActivityDateHelper activityDateHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper) {
+            MedicalResourceHelper medicalResourceHelper,
+            TimeSource timeSource) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
 
         AutoDeleteService.startAutoDelete(
@@ -105,6 +107,7 @@ public class HealthConnectDailyJobs {
                 accessLogsHelper,
                 transactionManager,
                 medicalDataSourceHelper,
-                medicalResourceHelper);
+                medicalResourceHelper,
+                timeSource);
     }
 }
