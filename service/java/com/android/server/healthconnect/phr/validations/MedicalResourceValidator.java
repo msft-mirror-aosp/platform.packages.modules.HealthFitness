@@ -33,7 +33,6 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_P
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -41,6 +40,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.MedicalResource.MedicalResourceType;
@@ -272,7 +272,7 @@ public class MedicalResourceValidator {
                     FHIR_RESOURCE_TYPE_ORGANIZATION:
                 return MEDICAL_RESOURCE_TYPE_VISITS;
             case FHIR_RESOURCE_TYPE_IMMUNIZATION:
-                return MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+                return MEDICAL_RESOURCE_TYPE_VACCINES;
             case FHIR_RESOURCE_TYPE_OBSERVATION:
                 Integer classification = classifyObservation(json);
                 if (classification != null) {

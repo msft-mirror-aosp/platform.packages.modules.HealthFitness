@@ -203,7 +203,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(),
                 )
             )
@@ -220,7 +220,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -239,7 +239,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(
                         TEST_MEDICAL_DATA_SOURCE,
                         TEST_MEDICAL_DATA_SOURCE_2,
@@ -262,7 +262,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP),
                 )
             )
@@ -292,7 +292,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(),
                 )
             )
@@ -309,7 +309,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -328,7 +328,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(
                         TEST_MEDICAL_DATA_SOURCE,
                         TEST_MEDICAL_DATA_SOURCE_2,

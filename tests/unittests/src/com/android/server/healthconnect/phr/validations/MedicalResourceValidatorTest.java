@@ -104,7 +104,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -127,7 +127,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4B)
@@ -155,7 +155,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -182,7 +182,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)

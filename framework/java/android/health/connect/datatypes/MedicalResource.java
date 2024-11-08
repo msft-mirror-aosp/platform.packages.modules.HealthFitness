@@ -46,7 +46,7 @@ import java.util.Set;
 public final class MedicalResource implements Parcelable {
 
     /** Medical resource type labelling data as immunizations. */
-    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS = 1;
+    public static final int MEDICAL_RESOURCE_TYPE_VACCINES = 1;
 
     /** Medical resource type labelling data as allergies or intolerances. */
     public static final int MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES = 2;
@@ -100,7 +100,6 @@ public final class MedicalResource implements Parcelable {
     @IntDef({
         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
         MEDICAL_RESOURCE_TYPE_CONDITIONS,
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
@@ -108,6 +107,7 @@ public final class MedicalResource implements Parcelable {
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
         MEDICAL_RESOURCE_TYPE_PROCEDURES,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+        MEDICAL_RESOURCE_TYPE_VACCINES,
         MEDICAL_RESOURCE_TYPE_VISITS,
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
     })
@@ -179,7 +179,7 @@ public final class MedicalResource implements Parcelable {
      * Returns the medical resource type, assigned by the Android Health Platform at insertion time.
      *
      * <p>For a list of supported types, see the {@link MedicalResource} type constants, such as
-     * {@link #MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS}. Clients should be aware that this list is non
+     * {@link #MEDICAL_RESOURCE_TYPE_VACCINES}. Clients should be aware that this list is non
      * exhaustive and may increase in future releases when additional types will need to be handled.
      */
     @MedicalResourceType
@@ -235,7 +235,6 @@ public final class MedicalResource implements Parcelable {
             Set.of(
                     MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                     MEDICAL_RESOURCE_TYPE_CONDITIONS,
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
                     MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
@@ -243,6 +242,7 @@ public final class MedicalResource implements Parcelable {
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
                     MEDICAL_RESOURCE_TYPE_PROCEDURES,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+                    MEDICAL_RESOURCE_TYPE_VACCINES,
                     MEDICAL_RESOURCE_TYPE_VISITS,
                     MEDICAL_RESOURCE_TYPE_VITAL_SIGNS);
 
