@@ -52,7 +52,7 @@ public class MedicalResourceTypePermissionMapperTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
-    public void testGetMedicalReadPermissionForResourceType_immunizationType_returns() {
+    public void testGetMedicalReadPermissionForResourceType_vaccineType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
                         MEDICAL_RESOURCE_TYPE_VACCINES);
@@ -170,7 +170,7 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    public void testGetMedicalResourceTypeForReadPermission_immunizationType_returns() {
+    public void testGetMedicalResourceTypeForReadPermission_vaccineType_returns() {
         int medicalResourceType =
                 MedicalResourceTypePermissionMapper.getMedicalResourceType(
                         HealthPermissions.READ_MEDICAL_DATA_VACCINES);
