@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"უნარშეზღუდულის ეტლის ბიძგები"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"უნარშეზღუდულის ეტლის ბიძგების შესახებ ინფორმაციის წაკითხვა"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"უნარშეზღუდულის ეტლის ბიძგების შესახებ ინფორმაციის ჩაწერა"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"აქტივობის ინტენსიურობა"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"აქტივობის ინტენსიურობა"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"აქტივობის ინტენსიურობის წაკითხვა"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"აქტივობის ინტენსიურობის დაწერა"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"ძირითადი მეტაბოლიზმის სიჩქარე"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"ძირითადი მეტაბოლიზმის სიჩქარე"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"ძირითადი მეტაბოლიზმის სიჩქარის შესახებ ინფორმაციის წაკითხვა"</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"აპების მაღაზიაში ნახვა"</string>
     <string name="select_all" msgid="837499881590001166">"ყველას არჩევა"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"დაკავშირებული აპები ვეღარ წაიკითხავს Health Connect-ის ამ მონაცემებს"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"მონიშნულია"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"არ არის მონიშნული"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"ვარჯიშის მარშრუტის რუკა ხელმისაწვდომია"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"შემდეგი დღე"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"შემდეგი კვირა"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"შემდეგი თვე"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"წინა დღე"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"წინა კვირა"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"წინა თვე"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"გსურთ ყველა მონაცემის სამუდამოდ წაშლა?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"გსურთ არჩეული მონაცემების სამუდამოდ წაშლა?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"გსურთ <xliff:g id="APP_NAME">%s</xliff:g>-ის ყველა მონაცემის სამუდამოდ წაშლა?"</string>
@@ -1179,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"წვდომა განხორციელდა: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"წვდომა განხორციელდა გუშინ: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"წვდომა განხორციელდა: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"შერჩეულის დაშვება"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"ყველას უარყოფა"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"გსურთ <xliff:g id="APP_NAME">%1$s</xliff:g>-ისთვის წვდომის დაშვება ფიტნესის და კეთილდღეობის მონაცემებზე?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ითხოვს წვდომას <xliff:g id="DATA_TYPES">%2$s</xliff:g>-ზე.\n\nაირჩიეთ ყველას დაშვება ან გააკონტროლეთ ინდივიდუალურად."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

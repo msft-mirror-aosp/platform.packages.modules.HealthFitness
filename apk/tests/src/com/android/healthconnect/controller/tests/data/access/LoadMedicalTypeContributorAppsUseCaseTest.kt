@@ -86,7 +86,7 @@ class LoadMedicalTypeContributorAppsUseCaseTest {
         val medicalResourceTypeInfos =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE, TEST_MEDICAL_DATA_SOURCE_2),
                 ),
                 MedicalResourceTypeInfo(
@@ -108,7 +108,7 @@ class LoadMedicalTypeContributorAppsUseCaseTest {
         val medicalResourceTypeInfos =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE, TEST_MEDICAL_DATA_SOURCE_2),
                 ),
                 MedicalResourceTypeInfo(

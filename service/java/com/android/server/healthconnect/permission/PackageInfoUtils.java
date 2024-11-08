@@ -73,12 +73,10 @@ public final class PackageInfoUtils {
         return healthAppsInfos;
     }
 
-    @SuppressWarnings("NullAway")
-    // TODO(b/317029272): fix this suppression
     boolean hasGrantedHealthPermissions(String[] packageNames, UserHandle user, Context context) {
         for (String packageName : packageNames) {
             PackageInfo info = getPackageInfoWithPermissionsAsUser(packageName, user, context);
-            if (anyRequestedHealthPermissionGranted(context, info)) {
+            if (info != null && anyRequestedHealthPermissionGranted(context, info)) {
                 return true;
             }
         }
@@ -97,10 +95,9 @@ public final class PackageInfoUtils {
      * @param packageInfo Package to check
      * @return If the given package is connected to Health Connect.
      */
-    public static boolean anyRequestedHealthPermissionGranted(
-            @Nullable Context context, @Nullable PackageInfo packageInfo) {
-        if (context == null || packageInfo == null || packageInfo.requestedPermissions == null) {
-            Log.w(TAG, "Can't extract requested permissions from the package info.");
+    private static boolean anyRequestedHealthPermissionGranted(
+            Context context, PackageInfo packageInfo) {
+        if (packageInfo.requestedPermissions == null) {
             return false;
         }
 

@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"యాప్ స్టోర్‌లో చూడండి"</string>
     <string name="select_all" msgid="837499881590001166">"అన్నింటినీ ఎంచుకోండి"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"కనెక్ట్ అయి ఉన్న యాప్‌లు ఇకపై Health Connect నుండి ఈ డేటాను చదవలేవు"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"ఎంచుకోబడింది"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"ఎంచుకోలేదు"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"వ్యాయామం మ్యాప్ మార్గం అందుబాటులో ఉంది"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"తర్వాతి రోజు"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"తర్వాతి వారం"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"తర్వాతి నెల"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"మునుపటి రోజు"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"మునుపటి వారం"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"మునుపటి నెల"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"మొత్తం డేటాను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"ఎంపిక చేసిన డేటాను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"మొత్తం <xliff:g id="APP_NAME">%s</xliff:g> డేటాను శాశ్వతంగా తొలగించాలా?"</string>
@@ -1175,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g>‌కు యాక్సెస్ చేశారు"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"నిన్న <xliff:g id="TIME_DATE">%1$s</xliff:g>‌కు యాక్సెస్‌ చేశారు"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g>‌న<xliff:g id="TIME_DATE_1">%2$s</xliff:g>‌కు యాక్సెస్‌ చేశారు"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"ఎంపికైనవి అనుమతించు"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"అన్నీ నిరాకరించండి"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"ఫిట్‌నెస్, వెల్‌నెస్ డేటాను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌ను అనుమతించాలా?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="DATA_TYPES">%2$s</xliff:g>‌ను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g> రిక్వెస్ట్ చేస్తోంది.\n\nఅన్నిటినీ అనుమతించడానికి ఎంచుకోండి లేదా వాటిని ఒక్కొక్కటిగా కంట్రోల్ చేయండి."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

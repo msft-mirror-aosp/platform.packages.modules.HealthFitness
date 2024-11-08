@@ -994,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # મહિનાથી વધુ જૂનો બધો ડેટા ડિલીટ કરશે. તમારી કનેક્ટ થયેલી ઍપમાં આ ફેરફારો દેખાવામાં એક દિવસ લાગી શકે છે.}one{Health Connect # મહિનાથી વધુ જૂનો બધો ડેટા ડિલીટ કરશે. તમારી કનેક્ટ થયેલી ઍપમાં આ ફેરફારો દેખાવામાં એક દિવસ લાગી શકે છે.}other{Health Connect # મહિનાથી વધુ જૂનો બધો ડેટા ડિલીટ કરશે. તમારી કનેક્ટ થયેલી ઍપમાં આ ફેરફારો દેખાવામાં એક દિવસ લાગી શકે છે.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"આમાંથી ડેટા ડિલીટ કરવામાં આવશે"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"થઈ ગયું"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{ઑટોમૅટિક રીતે ડિલીટ કરવાની સુવિધા ચાલુ છે. # મહિના કરતાં જૂની તારીખ ડિલીટ કરવામાં આવશે}one{ઑટોમૅટિક રીતે ડિલીટ કરવાની સુવિધા ચાલુ છે. # મહિના કરતાં જૂની તારીખ ડિલીટ કરવામાં આવશે}other{ઑટોમૅટિક રીતે ડિલીટ કરવાની સુવિધા ચાલુ છે. # મહિના કરતાં જૂની તારીખ ડિલીટ કરવામાં આવશે}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{ઑટોમૅટિક રીતે ડિલીટ કરવાની સુવિધા ચાલુ છે. # મહિના કરતાં જૂનો ડેટા ડિલીટ કરવામાં આવશે}one{ઑટોમૅટિક રીતે ડિલીટ કરવાની સુવિધા ચાલુ છે. # મહિના કરતાં જૂનો ડેટા ડિલીટ કરવામાં આવશે}other{ઑટોમૅટિક રીતે ડિલીટ કરવાની સુવિધા ચાલુ છે. # મહિના કરતાં જૂનો ડેટા ડિલીટ કરવામાં આવશે}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"ઑટોમૅટિક રીતે ડિલીટ કરવાની સુવિધા બંધ છે"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ઍપ માટે પ્રાધાન્યતા સેટ કરો"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"જો એક કરતાં વધુ ઍપ <xliff:g id="DATA_TYPE">%s</xliff:g>નો ડેટા ઉમેરે તો, Health Connect આ સૂચિમાં સૌથી ઉપરની ઍપને પ્રાધાન્યતા આપે છે. ઍપને ફરી ક્રમાંકિત કરવા માટે, તેમને ખેંચો."</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"ઍપ સ્ટોર પર જુઓ"</string>
     <string name="select_all" msgid="837499881590001166">"તમામ પસંદ કરો"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"હવે કનેક્ટેડ ઍપ Health Connectમાંથી આ ડેટા વાંચી શકશે નહીં"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"ચેક કર્યું છે"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"ચેક કર્યું નથી"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"વ્યાયામના નકશાનો રસ્તો ઉપલબ્ધ છે"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"આગલો દિવસ"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"આગલું અઠવાડિયું"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"આગલો મહિનો"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"પાછલો દિવસ"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"પાછલું અઠવાડિયું"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"પાછલો મહિનો"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"બધો ડેટા કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"પસંદ કરવામાં આવેલો ડેટા કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g>નો બધો ડેટા કાયમ માટે ડિલીટ કરીએ?"</string>
@@ -1175,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"છેલ્લે <xliff:g id="TIME_DATE">%1$s</xliff:g> વાગ્યે ઍક્સેસ કરી"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"ઍક્સેસ કર્યાનો સમય ગઈકાલે <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"ઍક્સેસ કર્યાનો સમય <xliff:g id="TIME_DATE_0">%1$s</xliff:g>ના રોજ <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"પસંદ કરેલી મંજૂર કરો"</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"બધી નકારો"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"શું <xliff:g id="APP_NAME">%1$s</xliff:g>ને ફિટનેસ અને સુખાકારી સંબંધિત ડેટા ઍક્સેસ કરવાની મંજૂરી આપીએ?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> તમારા <xliff:g id="DATA_TYPES">%2$s</xliff:g>ના ઍક્સેસની વિનંતી કરી રહી છે.\n\nમંજૂરી આપવા માટે બધી પરવાનગીઓને પસંદ કરો અથવા તેમને અલગ-અલગ મેનેજ કરો."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

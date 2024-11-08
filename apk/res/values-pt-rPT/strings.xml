@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"empurrar cadeira de rodas"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Ler dados de empurrar cadeira de rodas"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Escrever dados de empurrar cadeira de rodas"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensidade da atividade"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensidade da atividade"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Ler intensidade da atividade"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Escrever intensidade da atividade"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Taxa metabólica basal"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"taxa metabólica basal"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Ler taxa metabólica basal"</string>
@@ -555,15 +551,15 @@
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Sair da eliminação"</string>
     <string name="time_range_title" msgid="5777596779865648336">"Escolha os dados a eliminar da Saúde Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Seguinte"</string>
-    <string name="time_range_message_all" msgid="7280888587242744729">"Esta ação apaga permanentemente todos os dados adicionados à Saúde Connect no período escolhido"</string>
+    <string name="time_range_message_all" msgid="7280888587242744729">"Esta ação elimina permanentemente todos os dados adicionados à Saúde Connect no período escolhido"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Esta ação apaga permanentemente os dados da app <xliff:g id="DATA_TYPE">%s</xliff:g> adicionados à Saúde Connect no período escolhido"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Esta ação apaga permanentemente os dados da app <xliff:g id="CATEGORY">%s</xliff:g> adicionados à Saúde Connect no período escolhido"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Esta ação apaga permanentemente os dados da app <xliff:g id="APP_DATA">%s</xliff:g> adicionados à Saúde Connect no período escolhido"</string>
     <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Esta ação elimina permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> adicionados pela app <xliff:g id="APP_DATA">%2$s</xliff:g> à Saúde Connect no período escolhido"</string>
-    <string name="time_range_one_day" msgid="7162709826595446727">"Apagar dados das últimas 24 horas"</string>
-    <string name="time_range_one_week" msgid="8754523384275645434">"Apagar dados dos últimos 7 dias"</string>
-    <string name="time_range_one_month" msgid="3034747870231999766">"Apagar dados dos últimos 30 dias"</string>
-    <string name="time_range_all" msgid="8167350212705839943">"Apagar todos os dados"</string>
+    <string name="time_range_one_day" msgid="7162709826595446727">"Eliminar dados das últimas 24 horas"</string>
+    <string name="time_range_one_week" msgid="8754523384275645434">"Eliminar dados dos últimos 7 dias"</string>
+    <string name="time_range_one_month" msgid="3034747870231999766">"Eliminar dados dos últimos 30 dias"</string>
+    <string name="time_range_all" msgid="8167350212705839943">"Eliminar todos os dados"</string>
     <string name="confirming_question_all" msgid="1585414659784742952">"Apagar permanentemente todos os dados desde sempre?"</string>
     <string name="confirming_question_one_day" msgid="8001434729335611950">"Apagar permanentemente todos os dados das últimas 24 horas?"</string>
     <string name="confirming_question_one_week" msgid="5441506951423969587">"Apagar permanentemente todos os dados dos últimos 7 dias?"</string>
@@ -986,12 +982,12 @@
     <string name="auto_delete_title" msgid="8761742828224207826">"Eliminação automática"</string>
     <string name="auto_delete_header" msgid="4258649705159293715">"Agende a eliminação dos dados após um certo período para definir o tempo durante o qual estes ficam armazenados na Saúde Connect"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Saiba mais sobre a Eliminação automática"</string>
-    <string name="auto_delete_section" msgid="7732381000331475082">"Apagar os dados automaticamente"</string>
+    <string name="auto_delete_section" msgid="7732381000331475082">"Eliminação automática dos dados"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Após # mês}other{Após # meses}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Nunca"</string>
     <string name="range_off" msgid="8178520557618184215">"Desativar"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"Quando altera estas definições, a Saúde Connect apaga os dados existentes para refletir as suas novas preferências"</string>
-    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Apagar automaticamente os dados após # mês?}other{Apagar automaticamente os dados após # meses?}}"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"Quando altera estas definições, a Saúde Connect elimina os dados existentes para refletir as suas novas preferências"</string>
+    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Eliminar automaticamente os dados após # mês?}other{Eliminar automaticamente os dados após # meses?}}"</string>
     <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Esta ação também elimina os dados com mais de # mês da Saúde Connect.\n\nSe quiser eliminar completamente os dados das suas apps associadas, verifique todas as apps onde os seus dados podem estar guardados.}other{Esta ação também elimina os dados com mais de # meses da Saúde Connect.\n\nSe quiser eliminar completamente os dados das suas apps associadas, verifique todas as apps onde os seus dados podem estar guardados.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Definir eliminação automática"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Os dados atuais vão ser apagados"</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Ver na loja de apps"</string>
     <string name="select_all" msgid="837499881590001166">"Selecionar tudo"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"As apps associadas deixam de poder ler estes dados da Saúde Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Selecionada"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Não selecionada"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Rota no mapa do exercício disponível"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Dia seguinte"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Semana seguinte"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mês seguinte"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Dia anterior"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Semana anterior"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mês anterior"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Eliminar permanentemente todos os dados?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Eliminar permanentemente os dados selecionados?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Eliminar permanentemente todos os dados da app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1179,4 +1166,11 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Último acesso: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Acedido ontem à(s) <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Acedido a <xliff:g id="TIME_DATE_0">%1$s</xliff:g> à(s) <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Permitir sempre"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Permitir seleção"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Durante a utilização da app"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Recusar tudo"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Permitir que a app <xliff:g id="APP_NAME">%1$s</xliff:g> aceda a dados de fitness e bem-estar?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"A app <xliff:g id="APP_NAME">%1$s</xliff:g> está a pedir acesso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nEscolha permitir tudo ou controlar cada autorização individualmente."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Permitir que a app <xliff:g id="APP_NAME">%1$s</xliff:g> aceda a <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
 </resources>

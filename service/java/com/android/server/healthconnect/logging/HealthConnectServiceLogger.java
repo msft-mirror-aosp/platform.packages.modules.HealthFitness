@@ -113,7 +113,6 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_INVOKED__D
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -122,11 +121,11 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKE
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -134,6 +133,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED;
@@ -651,7 +651,12 @@ public class HealthConnectServiceLogger {
             return RateLimitingRanges.NOT_DEFINED;
         }
 
-        /** Public so that it can be used by {@link InternalHealthConnectMappings}. */
+        /**
+         * Public so that it can be used by {@link InternalHealthConnectMappings}.
+         *
+         * @deprecated Use {@link InternalHealthConnectMappings#getLoggingEnumForRecordTypeId(int)}.
+         */
+        @Deprecated
         public static int getDataTypeEnumFromRecordType(int recordType) {
             switch (recordType) {
                 case RECORD_TYPE_STEPS:
@@ -837,8 +842,8 @@ public class HealthConnectServiceLogger {
     private static int getMedicalResourceTypeLoggingEnum(
             @MedicalResource.MedicalResourceType int medicalResourceType) {
         return switch (medicalResourceType) {
-            case MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS ->
-                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+            case MEDICAL_RESOURCE_TYPE_VACCINES ->
+                    HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VACCINES;
             case MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES ->
                     HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
             case MEDICAL_RESOURCE_TYPE_PREGNANCY ->

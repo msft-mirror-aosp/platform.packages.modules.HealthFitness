@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"عدد دفعات الكرسي المتحرك"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"قراءة بيانات عدد دفعات الكرسي المتحرك"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"كتابة بيانات عدد دفعات الكرسي المتحرك"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"مستوى الجهد عند النشاط"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"مستوى الجهد عند النشاط"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"قراءة بيانات مستوى الجهد عند النشاط"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"كتابة بيانات مستوى الجهد عند النشاط"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"معدّل الأيض الأساسي"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"معدّل الأيض الأساسي"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"قراءة بيانات معدّل الأيض الأساسي"</string>
@@ -594,7 +590,7 @@
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"تم"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"إغلاق"</string>
     <string name="delete_dialog_success_title" msgid="900884533930984889">"تمّ حذف البيانات من Health Connect"</string>
-    <string name="delete_dialog_success_message" msgid="7454086333205881294">"إذا كنت تريد أن تحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها."</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"لحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها."</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"تم"</string>
     <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"الاطّلاع على التطبيقات المرتبطة"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"جارٍ حذف بياناتك"</string>
@@ -990,9 +986,9 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{بعد شهر واحد}zero{بعد # شهر}two{بعد شهرَين}few{بعد # أشهر}many{بعد # شهرًا}other{بعد # شهر}}"</string>
     <string name="range_never" msgid="4429478261788361233">"أبدًا"</string>
     <string name="range_off" msgid="8178520557618184215">"الخيار غير مفعَّل"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"عند تغيير هذه الإعدادات، يحذف تطبيق Health Connect البيانات الحالية لإظهار الإعدادات المفضّلة الجديدة"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"عند تغيير هذه الإعدادات، يحذف تطبيق Health Connect البيانات الحالية بما يتوافق مع الإعدادات المفضّلة الجديدة"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{هل تريد حذف البيانات تلقائيًا بعد شهر واحد؟}zero{هل تريد حذف البيانات تلقائيًا بعد # شهر؟}two{هل تريد حذف البيانات تلقائيًا بعد # شهرَين؟}few{هل تريد حذف البيانات تلقائيًا بعد # أشهر؟}many{هل تريد حذف البيانات تلقائيًا بعد # شهرًا؟}other{هل تريد حذف البيانات تلقائيًا بعد # شهر؟}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من شهر واحد من تطبيق Health Connect.\n\nإذا كنت تريد أن تحذف نهائيًا البيانات من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}zero{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # شهر من تطبيق Health Connect.\n\nإذا كنت تريد أن تحذف نهائيًا البيانات من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}two{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من شهرين من تطبيق Health Connect.\n\nإذا كنت تريد أن تحذف نهائيًا البيانات من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}few{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # أشهر من تطبيق Health Connect.\n\nإذا كنت تريد أن تحذف نهائيًا البيانات من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}many{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # شهرًا من تطبيق Health Connect.\n\nإذا كنت تريد أن تحذف نهائيًا البيانات من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}other{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # شهر من تطبيق Health Connect.\n\nإذا كنت تريد أن تحذف نهائيًا البيانات من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من شهر واحد من تطبيق Health Connect.\n\nلحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}zero{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # شهر من تطبيق Health Connect.\n\nلحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}two{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من شهرين من تطبيق Health Connect.\n\nلحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}few{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # أشهر من تطبيق Health Connect.\n\nلحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}many{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # شهرًا من تطبيق Health Connect.\n\nلحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}other{يؤدي هذا أيضًا إلى حذف البيانات الأقدم من # شهر من تطبيق Health Connect.\n\nلحذف البيانات نهائيًا من التطبيقات المرتبطة، يُرجى اختيار كل التطبيقات التي قد تكون بياناتك محفوظة فيها.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ضبط ميزة \"الحذف التلقائي\""</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"سيتم حذف البيانات الحالية"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{سيحذف تطبيق Health Connect كل البيانات الأقدم من شهر واحد. قد يستغرق ظهور هذه التغييرات في تطبيقاتك المرتبطة يومًا.}zero{سيحذف تطبيق Health Connect كل البيانات الأقدم من # شهر. قد يستغرق ظهور هذه التغييرات في تطبيقاتك المرتبطة يومًا.}two{سيحذف تطبيق Health Connect كل البيانات الأقدم من شهرَين. قد يستغرق ظهور هذه التغييرات في تطبيقاتك المرتبطة يومًا.}few{سيحذف تطبيق Health Connect كل البيانات الأقدم من # أشهر. قد يستغرق ظهور هذه التغييرات في تطبيقاتك المرتبطة يومًا.}many{سيحذف تطبيق Health Connect كل البيانات الأقدم من # شهرًا. قد يستغرق ظهور هذه التغييرات في تطبيقاتك المرتبطة يومًا.}other{سيحذف تطبيق Health Connect كل البيانات الأقدم من # شهر. قد يستغرق ظهور هذه التغييرات في تطبيقاتك المرتبطة يومًا.}}"</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"العرض في متجر التطبيقات"</string>
     <string name="select_all" msgid="837499881590001166">"اختيار الكل"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"لن تتمكَّن التطبيقات المرتبطة بعد الآن من قراءة هذه البيانات من تطبيق Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"تم وضع علامة في مربّع الاختيار"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"لم يتم وضع علامة في مربّع الاختيار"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"يتوفّر مسار التمرين الرياضي على الخريطة"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"اليوم التالي"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"الأسبوع التالي"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"الشهر التالي"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"اليوم السابق"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"الأسبوع السابق"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"الشهر السابق"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"هل تريد حذف جميع البيانات نهائيًا؟"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"هل تريد حذف البيانات المحدّدة نهائيًا؟"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"هل تريد حذف جميع بيانات \"<xliff:g id="APP_NAME">%s</xliff:g>\" نهائيًا؟"</string>
@@ -1179,4 +1166,14 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"آخر استخدام: ‎<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"آخر استخدام للإذن أمس: ‎<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"آخر استخدام للإذن في ‎<xliff:g id="TIME_DATE_0">%1$s</xliff:g>: ‏<xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"تم اختيار \"سماح\""</string>
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"رفض الكل"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"هل تريد السماح لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى بيانات الصحة واللياقة البدنية؟"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"يطلب تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الإذن بالوصول إلى <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nيمكنك السماح بها جميعًا أو التحكّم فيها بشكل فردي."</string>
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>
