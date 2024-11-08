@@ -1664,10 +1664,15 @@
     <string name="view_permissions_while_in_use" description="Text to allow an app to read health data in foreground.">while in use</string>
     <string name="view_permissions_all_the_time_cap" description="Label for button to allow an app to read health data in background.">All the time</string>
     <string name="view_permissions_while_in_use_cap" description="Label for button to allow an app to read health data in foreground.">While in use</string>
-    <string name="view_permissions_mode" description="Text to allow an app to read health data in foreground or background."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g>can access all of your fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
+    <string name="view_permissions_mode" description="Text to allow an app to read health data in foreground or background."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access all of your fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
     <string name="allowed_to_access" description="Text to display view permission mode (all the time or while in use).">Allowed to access</string>
     <string name="allowed_to_read" description="Subtitle to display which permissions are allowed">Allowed to read</string>
     <string name="give_permission_prompt" description="Text to display what permissions are allowed.">These permissions give <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to data from your device sensors.</string>
+    <!-- endregion -->
+
+    <!-- region Permission Manager  -->
+    <string name="allowed_apps_count" description="Text to indicate how many apps are allowed to a permission."><xliff:g id="number" example="2">%1$d</xliff:g> of <xliff:g id="other_number" example="2">%2$d</xliff:g> apps allowed</string>
+    <string name="no_apps_requesting" description="Text to indicate no app is requesting a permission.">No apps requesting</string>
     <!-- endregion -->
 
     <!-- endregion -->
