@@ -21,7 +21,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINE
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MEDICAL_RESOURCE_TYPES_LIST;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
@@ -125,7 +125,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mManager.readMedicalResources(request, executor, receiver);
@@ -144,7 +144,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 mUtil.createDataSource(PhrDataFactory.getCreateMedicalDataSourceRequest());
         mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         // Make the maximum number of calls allowed by quota
         int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mUtil.mLimitsAdjustmentForTesting;
@@ -204,7 +204,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testReadMedicalResourcesByRequest_invalidDataSourceIdsByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         setFieldValueUsingReflection(request, "mDataSourceIds", Set.of("invalid id"));
@@ -223,7 +223,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testReadMedicalResourcesByRequest_invalidResourceTypeByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         setFieldValueUsingReflection(request, "mMedicalResourceType", 100);
@@ -280,7 +280,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
@@ -298,7 +298,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(UUID.randomUUID().toString())
                         .build();
 
@@ -332,7 +332,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest allImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(2)
                         .build();
         mManager.readMedicalResources(
@@ -378,7 +378,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsFromDataSource1Request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource1.getId())
                         .setPageSize(1)
                         .build();
@@ -426,7 +426,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsFromBothDataSourcesRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource2.getId())
                         .setPageSize(1)
@@ -473,7 +473,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         runWithShellPermissionIdentity(
@@ -528,7 +528,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
@@ -573,7 +573,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
@@ -616,7 +616,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
@@ -649,7 +649,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inForegroundWithNoPerms_throws() {
         // App has not been granted any permissions.
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         HealthConnectException exception =
@@ -691,7 +691,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads all immunization resources from the foreground
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_FOREGROUND_APP.readMedicalResources(request);
 
@@ -743,7 +743,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads all immunization resources from the foreground
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_FOREGROUND_APP.readMedicalResources(request);
 
@@ -781,7 +781,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads immunization resources and allergy resources from the foreground
         ReadMedicalResourcesInitialRequest readImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesInitialRequest readAllergiesRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(
@@ -806,7 +806,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         // App has background read permissions, but no other permissions.
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), READ_HEALTH_DATA_IN_BACKGROUND);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         HealthConnectException exception =
@@ -852,7 +852,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads all immunization resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
@@ -908,7 +908,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads all immunization resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
@@ -950,7 +950,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads immunization resources and allergy resources from the background
         ReadMedicalResourcesInitialRequest readImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesInitialRequest readAllergiesRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(
@@ -974,7 +974,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inBackgoundWithNoPerms_throws() {
         // App has not been granted any permissions.
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         HealthConnectException exception =
@@ -1011,7 +1011,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads all immunization resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
@@ -1044,7 +1044,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         // When the app reads immunization resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
@@ -1098,7 +1098,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         // When the app reads the first immunization, but loses read permissions before the second
         // page read
         ReadMedicalResourcesInitialRequest initialRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         ReadMedicalResourcesResponse initialResponse =
