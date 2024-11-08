@@ -413,7 +413,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
             // TODO(b/260691599): consider removing mapping when getUidForSharedUser is
             Map<String, Set<Integer>> sharedUserNamesToUid =
-                    mPackageInfoHelper.collectSharedUserNameToUidsMappingForUser(validHealthApps);
+                    collectSharedUserNameToUidsMappingForUser(validHealthApps);
 
             mUidToGrantTimeCache.populateFromUserGrantTimeState(
                     restoredState, sharedUserNamesToUid, user);
@@ -424,6 +424,20 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         } finally {
             mGrantTimeLock.writeLock().unlock();
         }
+    }
+
+    private static Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
+            List<PackageInfo> packageInfos) {
+        Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
+        for (PackageInfo info : packageInfos) {
+            if (info.sharedUserId != null) {
+                if (sharedUserNameToUids.get(info.sharedUserId) == null) {
+                    sharedUserNameToUids.put(info.sharedUserId, new ArraySet<>());
+                }
+                sharedUserNameToUids.get(info.sharedUserId).add(info.applicationInfo.uid);
+            }
+        }
+        return sharedUserNameToUids;
     }
 
     private boolean userStateIsInitializedReadLocked(UserHandle user) {

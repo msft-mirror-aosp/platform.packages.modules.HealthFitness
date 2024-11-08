@@ -24,13 +24,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
 import android.os.UserHandle;
-import android.util.ArrayMap;
-import android.util.ArraySet;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -43,20 +40,6 @@ public final class PackageInfoUtils {
     private static final String TAG = "HCPackageInfoUtils";
 
     public PackageInfoUtils() {}
-
-    Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
-            List<PackageInfo> packageInfos) {
-        Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
-        for (PackageInfo info : packageInfos) {
-            if (info.sharedUserId != null) {
-                if (sharedUserNameToUids.get(info.sharedUserId) == null) {
-                    sharedUserNameToUids.put(info.sharedUserId, new ArraySet<>());
-                }
-                sharedUserNameToUids.get(info.sharedUserId).add(info.applicationInfo.uid);
-            }
-        }
-        return sharedUserNameToUids;
-    }
 
     public List<PackageInfo> getPackagesHoldingHealthPermissions(UserHandle user, Context context) {
         // TODO(b/260707328): replace with getPackagesHoldingPermissions
@@ -183,15 +166,10 @@ public final class PackageInfoUtils {
 
     /**
      * Returns the list of health permissions granted to a given package name. It does not check if
-     * the given package name is valid. TODO(b/368072570): Make this function non-static once DI
-     * flag is removed.
+     * the given package name is valid.
      */
     public static List<String> getGrantedHealthPermissions(
             Context context, String packageName, UserHandle user) {
-        // Ideally we could've used the Map in the state for this class. However, this function
-        // needs
-        // to be static due to complications around passing Context to the constructor of this
-        // class.
         PackageInfo packageInfo =
                 getPackageInfoUnchecked(
                         packageName,
@@ -235,16 +213,13 @@ public final class PackageInfoUtils {
             PackageManager.PackageInfoFlags flags,
             Context context) {
         try {
-            PackageManager packageManager =
-                    context.createContextAsUser(user, /* flags= */ 0).getPackageManager();
-
-            return packageManager.getPackageInfo(packageName, flags);
+            return getPackageManagerAsUser(context, user).getPackageInfo(packageName, flags);
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalArgumentException("invalid package", e);
         }
     }
 
-    private PackageManager getPackageManagerAsUser(Context context, UserHandle user) {
+    private static PackageManager getPackageManagerAsUser(Context context, UserHandle user) {
         return context.createContextAsUser(user, /* flags */ 0).getPackageManager();
     }
 }
