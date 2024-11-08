@@ -154,7 +154,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mExportManager;
         mMigrationStateManager =
                 builder.mMigrationStateManager == null
-                        ? MigrationStateManager.initializeInstance(
+                        ? new MigrationStateManager(
                                 userHandle, mHealthConnectDeviceConfigManager, mPreferenceHelper)
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =

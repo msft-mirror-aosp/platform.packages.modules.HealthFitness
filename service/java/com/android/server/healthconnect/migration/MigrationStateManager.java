@@ -54,7 +54,6 @@ import android.os.ext.SdkExtensions;
 import android.util.Slog;
 
 import com.android.internal.annotations.GuardedBy;
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -78,11 +77,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @hide
  */
 public final class MigrationStateManager {
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    @GuardedBy("sInstanceLock")
-    private static MigrationStateManager sMigrationStateManager;
 
-    private static final Object sInstanceLock = new Object();
     private static final String TAG = "MigrationStateManager";
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final PreferenceHelper mPreferenceHelper;
@@ -95,7 +90,7 @@ public final class MigrationStateManager {
     private UserHandle mUserHandle;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private MigrationStateManager(
+    public MigrationStateManager(
             UserHandle userHandle,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
             PreferenceHelper preferenceHelper) {
@@ -104,56 +99,11 @@ public final class MigrationStateManager {
         mPreferenceHelper = preferenceHelper;
     }
 
-    /**
-     * Initialises {@link MigrationStateManager} with the provided arguments and returns the
-     * instance.
-     *
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static MigrationStateManager initializeInstance(
-            UserHandle userHandle,
-            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
-            PreferenceHelper preferenceHelper) {
-        synchronized (sInstanceLock) {
-            if (Objects.isNull(sMigrationStateManager)) {
-                sMigrationStateManager =
-                        new MigrationStateManager(
-                                userHandle, healthConnectDeviceConfigManager, preferenceHelper);
-            }
-
-            return sMigrationStateManager;
-        }
-    }
-
     /** Re-initialize this class instance with the new user */
     public void onUserSwitching(Context context, UserHandle userHandle) {
         synchronized (mLock) {
             MigrationStateChangeJob.cancelAllJobs(context);
             mUserHandle = userHandle;
-        }
-    }
-
-    /**
-     * Returns initialised instance of this class.
-     *
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static MigrationStateManager getInitialisedInstance() {
-        synchronized (sInstanceLock) {
-            Objects.requireNonNull(sMigrationStateManager);
-            return sMigrationStateManager;
-        }
-    }
-
-    /**
-     * Clears the initialized instance such that {@link #initializeInstance} will create a new
-     * instance, for use in tests.
-     */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @VisibleForTesting
-    public static void resetInitializedInstanceForTest() {
-        synchronized (sInstanceLock) {
-            sMigrationStateManager = null;
         }
     }
 
