@@ -34,7 +34,7 @@ import com.android.healthconnect.controller.permissions.request.wear.elements.Sc
 
 /** Wear Settings Permissions Screen to see allowed/disallowed status for all apps. */
 @Composable
-fun AllDataTypesScreen(viewModel: WearConnectedAppsViewModel) {
+fun AllDataTypesScreen(viewModel: WearConnectedAppsViewModel, onClick: (String, String) -> Unit) {
     val connectedApps by viewModel.connectedApps.collectAsState()
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
     val dataTypeToDeniedApps by viewModel.dataTypeToDeniedApps.collectAsState()
@@ -74,7 +74,7 @@ fun AllDataTypesScreen(viewModel: WearConnectedAppsViewModel) {
                 labelMaxLines = 3,
                 secondaryLabel = message,
                 secondaryLabelMaxLines = 3,
-                onClick = {}, // TODO
+                onClick = { onClick(healthPermission.toString(), strDataType) },
                 enabled = enabled,
             )
         }

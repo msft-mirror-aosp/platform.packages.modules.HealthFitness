@@ -1673,6 +1673,9 @@
     <!-- region Permission Manager  -->
     <string name="allowed_apps_count" description="Text to indicate how many apps are allowed to a permission."><xliff:g id="number" example="2">%1$d</xliff:g> of <xliff:g id="other_number" example="2">%2$d</xliff:g> apps allowed</string>
     <string name="no_apps_requesting" description="Text to indicate no app is requesting a permission.">No apps requesting</string>
+    <string name="allowed" description="Text to indicate an app is allowed for this permission.">Allowed</string>
+    <string name="not_allowed" description="Text to indicate an app is not allowed for this permission.">Not allowed</string>
+    <string name="access_sensor_note" description="Text to indicate which data types are allowed from device sensors.">Apps with this permission can access <xliff:g example="heart rate" id="data_type">%s</xliff:g> data from your device sensors.</string>
     <!-- endregion -->
 
     <!-- endregion -->

@@ -21,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 /**
  * Wear Settings Permissions navigation graph.
@@ -37,10 +39,33 @@ fun WearSettingsPermissionsNavGraph() {
     val viewModel = hiltViewModel<WearConnectedAppsViewModel>()
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = PermissionManagerScreen.Vitals.name) {
-        composable(route = PermissionManagerScreen.Vitals.name) { AllDataTypesScreen(viewModel) }
+        composable(route = PermissionManagerScreen.Vitals.name) {
+            AllDataTypesScreen(
+                viewModel,
+                onClick = { permissionStr, dataTypeStr ->
+                    navController.navigate(
+                        "${PermissionManagerScreen.PerDataType.name}/$permissionStr/$dataTypeStr"
+                    )
+                },
+            )
+        }
+
+        composable(
+            route = "${PermissionManagerScreen.PerDataType.name}/{permissionStr}/{dataTypeStr}",
+            arguments =
+                listOf(
+                    navArgument("permissionStr") { type = NavType.StringType },
+                    navArgument("dataTypeStr") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+            val permissionStr = backStackEntry.arguments?.getString("permissionStr") ?: ""
+            val dataTypeStr = backStackEntry.arguments?.getString("dataTypeStr") ?: ""
+            PerDataTypeScreen(viewModel, permissionStr, dataTypeStr)
+        }
     }
 }
 
 enum class PermissionManagerScreen() {
-    Vitals
+    Vitals,
+    PerDataType,
 }
