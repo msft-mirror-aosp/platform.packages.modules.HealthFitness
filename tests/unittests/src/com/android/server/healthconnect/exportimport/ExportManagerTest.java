@@ -196,7 +196,7 @@ public class ExportManagerTest {
     public void testWhenPhrExportNotDisabled_tableContentIsExported() throws Exception {
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
-        mPhrTestUtils.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "medical_data_source_table", 1);
@@ -223,7 +223,7 @@ public class ExportManagerTest {
     public void testDisableExportForPhr_deletesPhrTablesContent() throws Exception {
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
-        mPhrTestUtils.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "medical_data_source_table", 1);
