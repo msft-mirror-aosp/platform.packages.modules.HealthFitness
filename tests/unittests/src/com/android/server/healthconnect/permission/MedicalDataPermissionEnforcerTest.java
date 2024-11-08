@@ -29,7 +29,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINE
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
 import static android.permission.PermissionManager.PERMISSION_HARD_DENIED;
 
@@ -102,7 +102,7 @@ public class MedicalDataPermissionEnforcerTest {
 
         boolean selfRead =
                 mMedicalDataPermissionEnforcer.enforceMedicalReadAccessAndGetEnforceSelfRead(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, mAttributionSource);
+                        MEDICAL_RESOURCE_TYPE_VACCINES, mAttributionSource);
 
         assertThat(selfRead).isFalse();
     }
@@ -118,7 +118,7 @@ public class MedicalDataPermissionEnforcerTest {
 
         boolean selfRead =
                 mMedicalDataPermissionEnforcer.enforceMedicalReadAccessAndGetEnforceSelfRead(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, mAttributionSource);
+                        MEDICAL_RESOURCE_TYPE_VACCINES, mAttributionSource);
 
         assertThat(selfRead).isTrue();
     }

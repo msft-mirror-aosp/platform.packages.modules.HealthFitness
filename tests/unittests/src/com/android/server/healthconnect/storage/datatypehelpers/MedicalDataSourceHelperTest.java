@@ -20,7 +20,7 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
@@ -738,7 +738,7 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ true,
@@ -766,7 +766,7 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ true,
@@ -852,7 +852,7 @@ public class MedicalDataSourceHelperTest {
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(allergyPackage2)));
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -860,12 +860,12 @@ public class MedicalDataSourceHelperTest {
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // no write permission.
         // The data that the calling app can read: dataSource1 (through immunization
         // read permission)
         // In this case, read access log is created based on the intention of the
-        // app and the fact that the app has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+        // app and the fact that the app has MEDICAL_RESOURCE_TYPE_VACCINES
         // even though the actual data accessed is self data.
         AccessLog expected =
                 new AccessLog(
@@ -893,7 +893,7 @@ public class MedicalDataSourceHelperTest {
                 List.of(makeUpsertRequest(immunizationDifferentPackage)));
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource)),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -901,7 +901,7 @@ public class MedicalDataSourceHelperTest {
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // no write permission.
         // The data that the calling app can read: any dataSource belonging to the any immunization
         // resources as the app has immunization permission.
@@ -925,7 +925,7 @@ public class MedicalDataSourceHelperTest {
         List<UUID> dataSourceIds = List.of(UUID.fromString("a6194e35-698c-4706-918f-00bf959f123b"));
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 dataSourceIds,
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -970,7 +970,7 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -978,7 +978,7 @@ public class MedicalDataSourceHelperTest {
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // has write permission.
         // The data that the calling app can read: dataSource of the
         // immunization
@@ -1017,7 +1017,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true,
@@ -1052,7 +1052,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true,
@@ -1101,7 +1101,7 @@ public class MedicalDataSourceHelperTest {
                                         dataSource1Package2.getId())),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true,
@@ -1148,7 +1148,7 @@ public class MedicalDataSourceHelperTest {
                                 List.of(
                                         dataSource1Package1.getId(), dataSource2Package1.getId(),
                                         dataSource1Package2.getId(), dataSource2Package2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false,
@@ -1294,7 +1294,7 @@ public class MedicalDataSourceHelperTest {
                                         dataSource1Package2.getId(), dataSource2Package2.getId())),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false,
@@ -1343,7 +1343,7 @@ public class MedicalDataSourceHelperTest {
                                 List.of(
                                         dataSource1Package1.getId(), dataSource2Package1.getId(),
                                         dataSource1Package2.getId(), dataSource2Package2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false,
@@ -1403,7 +1403,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -1447,7 +1447,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -1492,7 +1492,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -1652,7 +1652,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1694,7 +1694,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1733,7 +1733,7 @@ public class MedicalDataSourceHelperTest {
                 () -> {
                     mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                             Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                            Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                             DATA_SOURCE_PACKAGE_NAME,
                             /* hasWritePermission= */ true,
                             /* isCalledFromBgWithoutBgRead= */ true);
@@ -1771,7 +1771,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1807,7 +1807,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1843,7 +1843,7 @@ public class MedicalDataSourceHelperTest {
                 () -> {
                     mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                             Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                            Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                             DATA_SOURCE_PACKAGE_NAME,
                             /* hasWritePermission= */ false,
                             /* isCalledFromBgWithoutBgRead= */ true);
@@ -1884,7 +1884,7 @@ public class MedicalDataSourceHelperTest {
                         /* packageNames= */ Set.of(),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1927,7 +1927,7 @@ public class MedicalDataSourceHelperTest {
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -2181,7 +2181,7 @@ public class MedicalDataSourceHelperTest {
                         /* packageNames= */ Set.of(),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2231,7 +2231,7 @@ public class MedicalDataSourceHelperTest {
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2277,7 +2277,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2322,7 +2322,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2367,7 +2367,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2692,7 +2692,7 @@ public class MedicalDataSourceHelperTest {
         // belonging to immunizations.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 /* packageNames= */ Set.of(),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -2731,7 +2731,7 @@ public class MedicalDataSourceHelperTest {
         // created.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 /* packageNames= */ Set.of(),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -2775,7 +2775,7 @@ public class MedicalDataSourceHelperTest {
         // Since some immunization resource types were read, an access log will be created.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -2819,7 +2819,7 @@ public class MedicalDataSourceHelperTest {
         // Access log is created since the app has access through read permission.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -3098,7 +3098,7 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ true);
 
         assertThat(mAccessLogsHelper.queryAccessLogs())
@@ -3131,7 +3131,7 @@ public class MedicalDataSourceHelperTest {
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
                         /* medicalResourceTypes= */ Set.of(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                         /* isMedicalDataSourceAccessed= */ true);
 
