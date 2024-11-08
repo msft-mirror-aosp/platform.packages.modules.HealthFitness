@@ -1575,6 +1575,12 @@
 
     <!-- endregion -->
 
+    <!-- region Lock screen banner -->
+    <string name="lock_screen_banner_title" description="Title for banner shown when users don't have a device lock screen set up">Set a screen lock</string>
+    <string name="lock_screen_banner_content" description="Content for banner shown when users don't have a device lock screen set up">For added security for your health data, set a PIN, pattern, or password for this device</string>
+    <string name="lock_screen_banner_button" description="Button that takes users to the app store, for banner shown when users only have one available fitness app">Set screen lock</string>
+    <!-- endregion -->
+
     <!-- region Selectable deletion -->
     <string name="select_all" description="Label for a button that selects all data for deletion [CHAR_LIMIT=40]">Select all</string>
     <string name="deletion_confirmation_dialog_body" description="Text for dialog asking the user to confirm they want to delete all data">Connected apps will no longer be able to read this data from Health&#160;Connect</string>
