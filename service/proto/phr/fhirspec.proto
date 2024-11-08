@@ -28,4 +28,46 @@ message FhirDataTypeConfig {
 message FhirFieldConfig {
     // Whether or not the field is an array.
     optional bool is_array = 1;
+
+    // The data type of this field.
+    R4FhirType r4_type = 2;
+
+    // The kind of FHIR data type of this field.
+    // TODO: b/361775175 - this should be moved to the FhirDataTypeConfig instead, when we have
+    //  configs for types.
+    Kind kind = 3;
+}
+
+// Represents the kind of fhir data type, as found in the StructureDefinition.kind field
+// (https://hl7.org/fhir/R4/valueset-structure-definition-kind.html). See
+// https://hl7.org/fhir/R4/valueset-structure-definition-kind.html for a description of the
+// different values.
+enum Kind {
+    KIND_UNSPECIFIED = 0;
+    // The data type is a resource type.
+    KIND_RESOURCE = 1;
+    // The data type is a primitive type.
+    KIND_PRIMITIVE_TYPE = 2;
+    // The data type is a complex type. For our use case this applies to any type that is not a
+    // resource or a primitive type.
+    KIND_COMPLEX_TYPE = 3;
+}
+
+// The R4 Fhir type used to indicate the type of a field extracted from the fhir spec.
+// Note that all complex data types (non-primitive type) are combined under R4_FHIR_TYPE_COMPLEX
+// for now.
+enum R4FhirType {
+    R4_FHIR_TYPE_UNSPECIFIED = 0;
+    R4_FHIR_TYPE_COMPLEX = 1;
+    R4_FHIR_TYPE_BOOLEAN = 2;
+    R4_FHIR_TYPE_CODE = 3;
+    R4_FHIR_TYPE_DATE_TIME = 4;
+    R4_FHIR_TYPE_INSTANT = 5;
+    R4_FHIR_TYPE_INTEGER = 6;
+    R4_FHIR_TYPE_STRING = 7;
+    R4_FHIR_TYPE_SYSTEM_STRING = 8;
+    R4_FHIR_TYPE_URI = 9;
+    R4_FHIR_TYPE_DATE = 10;
+    R4_FHIR_TYPE_CANONICAL = 11;
+    R4_FHIR_TYPE_TIME = 12;
 }
