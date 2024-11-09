@@ -30,6 +30,7 @@ import com.android.healthconnect.controller.data.DataManagementActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
 import com.android.healthconnect.controller.permissions.app.wear.WearViewAppInfoPermissionsActivity
+import com.android.healthconnect.controller.permissions.connectedapps.wear.WearSettingsPermissionActivity
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
@@ -53,7 +54,8 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
         super.onCreate(savedInstanceState)
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
         window.addSystemFlags(
-            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
+        )
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
             Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
@@ -72,7 +74,7 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
             if (isOnWatch) {
                 getWearTargetIntent()
             } else {
-                getNonWearTargetIntent()
+                getHandheldTargetIntent()
             }
 
         // Handles showing Health Connect Onboarding.
@@ -87,7 +89,7 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
         finish()
     }
 
-    private fun getNonWearTargetIntent(): Intent {
+    private fun getHandheldTargetIntent(): Intent {
         return when (intent.action) {
             HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS -> {
                 Intent(this, MainActivity::class.java)
@@ -115,10 +117,18 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
     private fun getWearTargetIntent(): Intent {
         if (intent.action != HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS) {
             Log.e(TAG, "getWearTargetIntent() has unexpected intent action: " + intent.action)
+            // If unexpected intent, fall default to WearPermissionManagerActivity.
         }
-        // TODO: b/364643019 - Redirect to Wear PermissionManager Activity if packageName is null.
-        return Intent(this, WearViewAppInfoPermissionsActivity::class.java).apply {
-            intent.getStringExtra(EXTRA_PACKAGE_NAME)?.let { putExtra(EXTRA_PACKAGE_NAME, it) }
+        val extraPackageName: String? = intent.getStringExtra(EXTRA_PACKAGE_NAME)
+
+        return if (extraPackageName != null) {
+            // AppInfo page.
+            Intent(this, WearViewAppInfoPermissionsActivity::class.java).apply {
+                putExtra(EXTRA_PACKAGE_NAME, extraPackageName)
+            }
+        } else {
+            // PermissionManager page.
+            Intent(this, WearSettingsPermissionActivity::class.java)
         }
     }
 }

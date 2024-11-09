@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.logging;
 
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PERMISSION_STATS;
+import static android.health.connect.Constants.DEFAULT_INT;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 
@@ -29,7 +30,10 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +43,11 @@ import java.util.Map;
  * @hide
  */
 final class UsageStatsLogger {
+    /**
+     * A client is considered as "monthly active" by PHR if it has made any read medical resources
+     * API call within this number of days.
+     */
+    private static final long PHR_MONTHLY_ACTIVE_USER_DURATION = 30; // 30 days
 
     /** Write Health Connect usage stats to statsd. */
     static void log(
@@ -47,7 +56,8 @@ final class UsageStatsLogger {
             PreferenceHelper preferenceHelper,
             AccessLogsHelper accessLogsHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper) {
+            MedicalResourceHelper medicalResourceHelper,
+            TimeSource timeSource) {
         UsageStatsCollector usageStatsCollector =
                 new UsageStatsCollector(context, userHandle, preferenceHelper, accessLogsHelper);
         usageStatsCollector.upsertLastAccessLogTimeStamp();
@@ -67,7 +77,7 @@ final class UsageStatsLogger {
 
         logExportImportStats(usageStatsCollector);
         logPermissionStats(context, packageNameToPermissionsGranted);
-        logPhrStats(medicalDataSourceHelper, medicalResourceHelper);
+        logPhrStats(medicalDataSourceHelper, medicalResourceHelper, preferenceHelper, timeSource);
 
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS,
@@ -78,7 +88,9 @@ final class UsageStatsLogger {
 
     private static void logPhrStats(
             MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper) {
+            MedicalResourceHelper medicalResourceHelper,
+            PreferenceHelper preferenceHelper,
+            TimeSource timeSource) {
         if (!personalHealthRecordTelemetry()) {
             return;
         }
@@ -89,8 +101,21 @@ final class UsageStatsLogger {
                 HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS,
                 medicalDataSourcesCount,
                 medicalResourcesCount,
-                0,
-                0);
+                isPhrMonthlyActiveUser(preferenceHelper, timeSource),
+                DEFAULT_INT);
+    }
+
+    private static boolean isPhrMonthlyActiveUser(
+            PreferenceHelper preferenceHelper, TimeSource timeSource) {
+        Instant lastReadMedicalResourcesApiTimeStamp =
+                preferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp();
+        if (lastReadMedicalResourcesApiTimeStamp == null) {
+            return false;
+        }
+        return timeSource
+                .getInstantNow()
+                .minus(PHR_MONTHLY_ACTIVE_USER_DURATION, ChronoUnit.DAYS)
+                .isBefore(lastReadMedicalResourcesApiTimeStamp);
     }
 
     static void logExportImportStats(UsageStatsCollector usageStatsCollector) {

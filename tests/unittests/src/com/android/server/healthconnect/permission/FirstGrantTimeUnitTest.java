@@ -71,9 +71,8 @@ public class FirstGrantTimeUnitTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(MigrationStateManager.class)
                     .mockStatic(HealthConnectThreadScheduler.class)
-                    .spyStatic(HealthDataCategoryPriorityHelper.class)
+                    .spyStatic(UserHandle.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
@@ -102,8 +101,7 @@ public class FirstGrantTimeUnitTest {
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
-        when(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
-                .thenReturn(true);
+        when(mTracker.supportsPermissionUsageIntent(anyString(), any())).thenReturn(true);
         when(mContext.createContextAsUser(any(), anyInt())).thenReturn(context);
         when(mContext.getApplicationContext()).thenReturn(context);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
@@ -130,10 +128,10 @@ public class FirstGrantTimeUnitTest {
         Instant instant2 = Instant.parse("2023-02-12T10:00:00Z");
         Instant instant3 = Instant.parse("2023-02-13T10:00:00Z");
         String anotherPackage = "another.package";
+
         // mock PackageInfoUtils
         List<Pair<String, Integer>> packageNameAndUidPairs =
                 Arrays.asList(new Pair<>(SELF_PACKAGE_NAME, 0), new Pair<>(anotherPackage, 1));
-        // Need to re-initialize so that it uses the PackageInfoUtils mock
         List<PackageInfo> packageInfos = new ArrayList<>();
         for (Pair<String, Integer> pair : packageNameAndUidPairs) {
             String packageName = pair.first;
@@ -141,35 +139,33 @@ public class FirstGrantTimeUnitTest {
             PackageInfo packageInfo = new PackageInfo();
             packageInfo.packageName = packageName;
             packageInfos.add(packageInfo);
-            when(mPackageInfoUtils.getPackageUid(
-                            eq(packageName), any(UserHandle.class), any(Context.class)))
+            when(mPackageInfoUtils.getPackageUid(packageName, CURRENT_USER, mContext))
                     .thenReturn(uid);
-            when(mPackageInfoUtils.getPackageNameForUid(eq(mContext), eq(uid)))
+            when(mPackageInfoUtils.getPackageNameForUid(mContext, uid))
                     .thenReturn(Optional.of(packageName));
+            ExtendedMockito.when(UserHandle.getUserHandleForUid(uid)).thenReturn(CURRENT_USER);
         }
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(
-                        any(UserHandle.class), any(Context.class)))
+        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(CURRENT_USER, mContext))
                 .thenReturn(packageInfos);
         FirstGrantTimeManager firstGrantTimeManager =
                 createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
+
+        // Mock Datastore.
         UserGrantTimeState currentGrantTimeState = new UserGrantTimeState(DEFAULT_VERSION);
         currentGrantTimeState.setPackageGrantTime(SELF_PACKAGE_NAME, instant1);
         currentGrantTimeState.setPackageGrantTime(anotherPackage, instant2);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(currentGrantTimeState);
-        // mock permission intent tracker
-        when(mTracker.supportsPermissionUsageIntent(anyString(), ArgumentMatchers.any()))
-                .thenReturn(true);
-        ArgumentCaptor<UserGrantTimeState> captor =
-                ArgumentCaptor.forClass(UserGrantTimeState.class);
 
         assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(instant1);
         assertThat(firstGrantTimeManager.getFirstGrantTime(anotherPackage, CURRENT_USER))
                 .hasValue(instant2);
 
+        ArgumentCaptor<UserGrantTimeState> captor =
+                ArgumentCaptor.forClass(UserGrantTimeState.class);
         firstGrantTimeManager.setFirstGrantTime(SELF_PACKAGE_NAME, instant3, CURRENT_USER);
-        verify(mDatastore).writeForUser(captor.capture(), eq(CURRENT_USER), anyInt());
+        verify(mDatastore).writeForUser(captor.capture(), eq(CURRENT_USER), eq(DATA_TYPE_CURRENT));
 
         UserGrantTimeState newUserGrantTimeState = captor.getValue();
         assertThat(newUserGrantTimeState.getPackageGrantTimes().keySet()).hasSize(2);
@@ -208,9 +204,8 @@ public class FirstGrantTimeUnitTest {
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED)).thenReturn(null);
         int uid = 123;
         String[] packageNames = {"package.name"};
-        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
-                .thenReturn(true);
+        when(mPackageInfoUtils.getPackagesForUid(mContext, CURRENT_USER, uid))
+                .thenReturn(packageNames);
         firstGrantTimeManager.onPermissionsChanged(uid);
         waitForAllScheduledTasksToComplete();
         // after device is unlocked
@@ -240,13 +235,13 @@ public class FirstGrantTimeUnitTest {
                 new int[] {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                 };
-        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
+        ExtendedMockito.when(UserHandle.getUserHandleForUid(uid)).thenReturn(CURRENT_USER);
+        when(mPackageInfoUtils.getPackagesForUid(mContext, CURRENT_USER, uid))
+                .thenReturn(packageNames);
         when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(packageInfo));
         when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
-                .thenReturn(true);
-        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(true);
 
         FirstGrantTimeManager firstGrantTimeManager =
@@ -274,13 +269,15 @@ public class FirstGrantTimeUnitTest {
                 new int[] {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                 };
-        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
+        ExtendedMockito.when(UserHandle.getUserHandleForUid(uid)).thenReturn(CURRENT_USER);
+        when(mPackageInfoUtils.getPackagesForUid(mContext, CURRENT_USER, uid))
+                .thenReturn(packageNames);
         when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(packageInfo));
         when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
                 .thenReturn(true);
-        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
+        when(mTracker.supportsPermissionUsageIntent(packageNames[0], CURRENT_USER))
                 .thenReturn(false);
 
         FirstGrantTimeManager firstGrantTimeManager =

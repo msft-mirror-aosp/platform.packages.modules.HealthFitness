@@ -44,7 +44,7 @@ import com.android.healthconnect.controller.data.alldata.AllDataFragment
 import com.android.healthconnect.controller.data.alldata.AllDataFragment.Companion.IS_BROWSE_MEDICAL_DATA_SCREEN
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
-import com.android.healthconnect.controller.data.appdata.AppDataUseCase
+import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.ALLERGIES_INTOLERANCES
@@ -98,9 +98,9 @@ class AllDataFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
-    private val appDataUseCase: AppDataUseCase = AppDataUseCase(manager, Dispatchers.Main)
+    private val allDataUseCase: AllDataUseCase = AllDataUseCase(manager, Dispatchers.Main)
 
-    @BindValue val allDataViewModel: AllDataViewModel = AllDataViewModel(appDataUseCase)
+    @BindValue val allDataViewModel: AllDataViewModel = AllDataViewModel(allDataUseCase)
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
