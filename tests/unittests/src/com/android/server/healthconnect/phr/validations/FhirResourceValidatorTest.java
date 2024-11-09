@@ -76,15 +76,68 @@ public class FhirResourceValidatorTest {
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
     @Test
-    public void testValidateFhirResource_knownFieldWithUnderscore_succeeds() throws JSONException {
+    public void testValidateFhirResource_primitiveTypeFieldValueAndExtension_succeeds()
+            throws JSONException {
         FhirResourceValidator validator = new FhirResourceValidator();
         JSONObject immunizationJson =
                 new JSONObject(
                         new ImmunizationBuilder()
+                                .set("status", "completed")
                                 .set("_status", new JSONObject("{\"id\": \"1234\"}"))
                                 .toJson());
 
         validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    @Test
+    public void testValidateFhirResource_primitiveTypeFieldOnlyExtensionNoValue_succeeds()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        JSONObject immunizationJson =
+                new JSONObject(
+                        new ImmunizationBuilder()
+                                .removeField("status")
+                                .set("_status", new JSONObject("{\"id\": \"1234\"}"))
+                                .toJson());
+
+        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    @Test
+    public void testValidateFhirResource_onlyRequiredPrimitiveTypeValueField_succeeds()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        JSONObject immunizationJson =
+                new JSONObject(
+                        new ImmunizationBuilder()
+                                .set("status", "completed")
+                                .removeField("_status")
+                                .toJson());
+
+        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    @Test
+    public void testValidateFhirResource_missingRequiredPrimitiveTypeField_throws()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        JSONObject immunizationJson =
+                new JSONObject(
+                        new ImmunizationBuilder()
+                                .removeField("status")
+                                .removeField("_status")
+                                .toJson());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(thrown).hasMessageThat().contains("Missing required field status");
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
@@ -117,5 +170,21 @@ public class FhirResourceValidatorTest {
                                 validator.validateFhirResource(
                                         immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
         assertThat(thrown).hasMessageThat().contains("Found unexpected field _unknown_field");
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    @Test
+    public void testValidateFhirResource_missingRequiredField_throws() throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        JSONObject immunizationJson =
+                new JSONObject(new ImmunizationBuilder().removeField("vaccineCode").toJson());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(thrown).hasMessageThat().contains("Missing required field vaccineCode");
     }
 }

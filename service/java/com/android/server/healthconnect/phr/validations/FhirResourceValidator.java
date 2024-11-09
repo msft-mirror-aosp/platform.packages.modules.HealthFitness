@@ -60,6 +60,23 @@ public class FhirResourceValidator {
         FhirDataTypeConfig config =
                 mFhirSpec.getFhirDataTypeConfigForResourceType(fhirResourceType);
 
+        for (String requiredField : config.getRequiredFieldsList()) {
+            // For primitive type fields, a primitive type extension with leading underscore may be
+            // present instead. See https://build.fhir.org/extensibility.html#primitives, which
+            // states that "extensions may appear in place of the value of the primitive datatype".
+            // TODO: b/374953888 - Update this to only check for leading underscore on primitive
+            //  type fields instead of all fields when we record the field type in the FhirSpec
+            //  proto.
+
+            if (!fhirJsonObject.has(requiredField) && !fhirJsonObject.has("_" + requiredField)) {
+                throw new IllegalArgumentException("Missing required field " + requiredField);
+            }
+
+            // TODO: b/377717422 -  If the field is an array also check that it's not empty.
+            // This case does not happen for top level resource field validation, so should be
+            // handled as part of implementing complex type validation.
+        }
+
         Map<String, FhirFieldConfig> fieldToConfig = config.getAllowedFieldNamesToConfigMap();
         Iterator<String> fieldIterator = fhirJsonObject.keys();
 

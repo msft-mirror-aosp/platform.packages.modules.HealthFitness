@@ -47,6 +47,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
 
 import java.util.Objects;
 
@@ -101,6 +102,7 @@ public class HealthConnectDailyService extends JobService {
                 healthConnectInjector.getMedicalDataSourceHelper();
         MedicalResourceHelper medicalResourceHelper =
                 healthConnectInjector.getMedicalResourceHelper();
+        TimeSource timeSource = healthConnectInjector.getTimeSource();
 
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
@@ -118,7 +120,8 @@ public class HealthConnectDailyService extends JobService {
                                     transactionManager,
                                     activityDateHelper,
                                     medicalDataSourceHelper,
-                                    medicalResourceHelper);
+                                    medicalResourceHelper,
+                                    timeSource);
                             jobFinished(params, false);
                         });
                 return true;

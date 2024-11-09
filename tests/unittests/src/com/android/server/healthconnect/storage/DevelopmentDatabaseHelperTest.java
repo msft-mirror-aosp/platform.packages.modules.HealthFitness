@@ -17,15 +17,14 @@
 package com.android.server.healthconnect.storage;
 
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
+import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.createEmptyDatabase;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -33,15 +32,16 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+
 import com.google.common.base.Preconditions;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.quality.Strictness;
 
 import java.io.File;
 
@@ -52,27 +52,26 @@ public class DevelopmentDatabaseHelperTest {
             new SQLiteDatabase.OpenParams.Builder()
                     .setOpenFlags(SQLiteDatabase.OPEN_READONLY)
                     .build();
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
-    @Mock Context mContext;
+    private Context mContext;
 
-    private File mDatabasePath;
+    @Rule(order = 0)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
+    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new HealthConnectDatabaseTestRule();
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mDatabasePath = getMockDatabasePath();
-        DatabaseTestUtils.clearDatabase(mDatabasePath);
-        when(mContext.getDatabasePath(anyString())).thenReturn(mDatabasePath);
-    }
-
-    @After
-    public void clearDatabase() {
-        DatabaseTestUtils.clearDatabase(getMockDatabasePath());
-    }
-
-    private static File getMockDatabasePath() {
-        return InstrumentationRegistry.getInstrumentation().getContext().getDatabasePath("mock");
+    public void setup() {
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
     }
 
     @Test
@@ -82,7 +81,8 @@ public class DevelopmentDatabaseHelperTest {
         // database that can't be fixed after switching the flag on or off.
         // Test this is true by running onOpen twice, dropping the version in between.
 
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        try (HealthConnectDatabase helper =
+                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
             // make sure a database file exists
             SQLiteDatabase db = helper.getWritableDatabase();
             // Drop the settings table to make sure the update code is run completely a second time.
@@ -96,17 +96,20 @@ public class DevelopmentDatabaseHelperTest {
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_readOnlyDatabase_successful() {
         // GIVEN we have a guaranteed read only database.
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        File databaseFile;
+        try (HealthConnectDatabase helper =
+                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
             // make sure a database file exists
             helper.getWritableDatabase();
+            databaseFile = helper.getDatabasePath();
         }
         // Change it to read only
-        Preconditions.checkState(mDatabasePath.setReadOnly());
+        Preconditions.checkState(databaseFile.setReadOnly());
         // Check the above code works
-        Preconditions.checkState(mDatabasePath.canRead());
-        Preconditions.checkState(!mDatabasePath.canWrite());
+        Preconditions.checkState(databaseFile.canRead());
+        Preconditions.checkState(!databaseFile.canWrite());
         try (SQLiteDatabase readOnlyDatabase =
-                SQLiteDatabase.openDatabase(mDatabasePath, READ_ONLY)) {
+                SQLiteDatabase.openDatabase(databaseFile, READ_ONLY)) {
             Preconditions.checkState(readOnlyDatabase.isReadOnly());
 
             // WHEN we call onOpen on the read only database THEN there are no errors.
@@ -140,7 +143,8 @@ public class DevelopmentDatabaseHelperTest {
     @Test
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testDropAndCreateDevelopmentSettings_existent_overwrites() {
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        try (HealthConnectDatabase helper =
+                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
             // getWriteableDatabase() triggers onOpen(), so the dev database with
             // version CURRENT_VERSION should be created.
             SQLiteDatabase db = helper.getWritableDatabase();
@@ -155,7 +159,8 @@ public class DevelopmentDatabaseHelperTest {
     @Test
     @DisableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_notDevelopment_deletesDevelopmentTables() {
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        try (HealthConnectDatabase helper =
+                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
             // Calling getWritableDatabase() triggers onOpen(). With the flag off,
             // should delete the development database.
             SQLiteDatabase db = helper.getWritableDatabase();
