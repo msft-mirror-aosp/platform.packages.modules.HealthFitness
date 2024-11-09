@@ -105,8 +105,6 @@ public class MigrationBroadcastSchedulingTest {
                 .thenReturn(MIGRATION_STATE_IN_PROGRESS_COUNT_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getNonIdleStateTimeoutPeriod())
                 .thenReturn(NON_IDLE_STATE_TIMEOUT_MOCK_VALUE);
-        ExtendedMockito.doReturn(mMigrationStateManager)
-                .when(MigrationStateManager::getInitialisedInstance);
 
         mMigrationBroadcastScheduler =
                 Mockito.spy(
@@ -129,9 +127,8 @@ public class MigrationBroadcastSchedulingTest {
                                 })
                 .when(() -> HealthConnectThreadScheduler.scheduleInternalTask(any()));
 
-        MigrationStateManager.resetInitializedInstanceForTest();
         MigrationStateManager migrationStateManager =
-                MigrationStateManager.initializeInstance(
+                new MigrationStateManager(
                         UserHandle.getUserHandleForUid(0),
                         mHealthConnectDeviceConfigManager,
                         mPreferenceHelper);
@@ -213,8 +210,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_migrationAllowedIntervalLessThanMinimum_periodicJobScheduled() {
-        ExtendedMockito.doReturn(mMigrationStateManager)
-                .when(MigrationStateManager::getInitialisedInstance);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalLessThanMinPeriod);

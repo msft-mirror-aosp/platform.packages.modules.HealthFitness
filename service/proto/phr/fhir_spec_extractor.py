@@ -120,7 +120,9 @@ class FhirSpecExtractor:
         field_configs_by_name = {}
         # Manually add resourceType field, as this is not present in the spec
         field_configs_by_name["resourceType"] = fhirspec_pb2.FhirFieldConfig(
-            is_array=False
+            is_array=False,
+            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
+            kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
         )
 
         for element in element_definitions:
@@ -185,14 +187,24 @@ class FhirSpecExtractor:
             if field_is_array:
                 raise ValueError("Unexpected cardinality for oneof field. Did not expect array.")
 
-            for type in element_definition["type"]:
-                field_with_type = self._get_oneof_name_for_type(field_name, type["code"])
+            for data_type in element_definition["type"]:
+                field_with_type = self._get_oneof_name_for_type(field_name, data_type["code"])
+                type_enum, kind_enum = self._get_type_and_kind_enum_from_type(data_type["code"])
                 field_configs_by_name[field_with_type] = fhirspec_pb2.FhirFieldConfig(
-                    is_array=False)
+                    is_array=False,
+                    r4_type=type_enum,
+                    kind=kind_enum
+                )
 
         else:
+            if len(element_definition["type"]) != 1:
+                raise ValueError("Expected exactly one type")
+            type_code = element_definition["type"][0]["code"]
+            type_enum, kind_enum = self._get_type_and_kind_enum_from_type(type_code)
             field_configs_by_name[field_name] = fhirspec_pb2.FhirFieldConfig(
-                is_array=field_is_array
+                is_array=field_is_array,
+                r4_type=type_enum,
+                kind=kind_enum
             )
 
         return field_configs_by_name
@@ -250,3 +262,37 @@ class FhirSpecExtractor:
             return True
         else:
             raise ValueError("Unexpected max cardinality value: " + max)
+
+    def _get_type_and_kind_enum_from_type(self, type_code: str):
+        # "id" fields usually have a type containing the following type code and extension
+        # https://hl7.org/fhir/extensions/StructureDefinition-structuredefinition-fhir-type.html
+        if type_code == "http://hl7.org/fhirpath/System.String":
+            return (fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SYSTEM_STRING,
+                    fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE)
+
+        data_type = fhirspec_pb2.R4FhirType.Value(
+            self._convert_type_string_to_enum_string(type_code))
+        kind = fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE \
+            if self._is_primitive_type(type_code) else fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+
+        return data_type, kind
+
+    def _convert_type_string_to_enum_string(self, type_string: str) -> str:
+        if not type_string.isalpha():
+            raise ValueError("Unexpected characters found in type_string: " + type_string)
+
+        # TODO: b/361775175 - Extract all fhir types individually instead of combining non-primitive
+        #  types to COMPLEX enum value.
+        if not self._is_primitive_type(type_string):
+            return "R4_FHIR_TYPE_COMPLEX"
+
+        snake_case_type_string = type_string[0].upper() + "".join(
+            [c if c.islower() else "_" + c for c in type_string[1:]])
+
+        return "R4_FHIR_TYPE_" + snake_case_type_string.upper()
+
+    def _is_primitive_type(self, type_string: str) -> bool:
+        # See https://hl7.org/fhir/R4/datatypes.html for possible types.
+        # TODO: b/361775175 - Read this from the type definitions file instead of inferring from the
+        #  name
+        return type_string[0].islower() and type_string != "xhtml"

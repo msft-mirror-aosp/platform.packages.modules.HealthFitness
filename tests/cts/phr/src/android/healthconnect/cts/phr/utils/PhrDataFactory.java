@@ -339,12 +339,13 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_VACCINES} with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_VACCINES} which contains {@link
+     * PhrDataFactory#getFhirResource} data, with the given {@code dataSourceId}.
      */
-    public static MedicalResource createImmunizationMedicalResource(String dataSource) {
+    public static MedicalResource createVaccineMedicalResource(String dataSourceId) {
         return new MedicalResource.Builder(
                         MEDICAL_RESOURCE_TYPE_VACCINES,
-                        dataSource,
+                        dataSourceId,
                         FHIR_VERSION_R4,
                         getFhirResource())
                 .build();
@@ -352,13 +353,17 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_VACCINES} and {@link
-     * PhrDataFactory#DIFFERENT_FHIR_DATA_IMMUNIZATION} data, with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_VACCINES} which contains {@link
+     * PhrDataFactory#getFhirResourceDifferentImmunization} data, with the given {@code
+     * dataSourceId}.
+     *
+     * <p>The contained FHIR data has a different resource ID than the above {@link
+     * PhrDataFactory#createVaccineMedicalResource}.
      */
-    public static MedicalResource createDifferentImmunizationMedicalResource(String dataSource) {
+    public static MedicalResource createDifferentVaccineMedicalResource(String dataSourceId) {
         return new MedicalResource.Builder(
                         MEDICAL_RESOURCE_TYPE_VACCINES,
-                        dataSource,
+                        dataSourceId,
                         FHIR_VERSION_R4,
                         getFhirResourceDifferentImmunization())
                 .build();
@@ -366,14 +371,18 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_VACCINES} with the given {@code dataSource} with the
-     * default {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}'s status field added.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_VACCINES} which contains {@link
+     * PhrDataFactory#getUpdatedImmunizationFhirResource} data, with the given {@code dataSourceId}.
+     *
+     * <p>The contained FHIR data has the same resource ID as the above {@link
+     * PhrDataFactory#createVaccineMedicalResource}, but data is updated with a "status" field
+     * added.
      */
-    public static MedicalResource createUpdatedImmunizationMedicalResource(String dataSource)
+    public static MedicalResource createUpdatedVaccineMedicalResource(String dataSourceId)
             throws JSONException {
         return new MedicalResource.Builder(
                         MEDICAL_RESOURCE_TYPE_VACCINES,
-                        dataSource,
+                        dataSourceId,
                         FHIR_VERSION_R4,
                         getUpdatedImmunizationFhirResource())
                 .build();
@@ -381,13 +390,13 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} and {@link
-     * PhrDataFactory#FHIR_DATA_ALLERGY} data, with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} which contains {@link
+     * PhrDataFactory#getFhirResourceAllergy} data, with the given {@code dataSourceId}.
      */
-    public static MedicalResource createAllergyMedicalResource(String dataSource) {
+    public static MedicalResource createAllergyMedicalResource(String dataSourceId) {
         return new MedicalResource.Builder(
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                        dataSource,
+                        dataSourceId,
                         FHIR_VERSION_R4,
                         getFhirResourceAllergy())
                 .build();
@@ -395,15 +404,37 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} and {@link
-     * PhrDataFactory#DIFFERENT_FHIR_DATA_ALLERGY} data, with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} which contains {@link
+     * PhrDataFactory#getFhirResourceDifferentAllergy} data, with the given {@code dataSourceId}.
+     *
+     * <p>The contained FHIR data has a different resource ID than the above {@link
+     * PhrDataFactory#createAllergyMedicalResource}.
      */
-    public static MedicalResource createDifferentAllergyMedicalResource(String dataSource) {
+    public static MedicalResource createDifferentAllergyMedicalResource(String dataSourceId) {
         return new MedicalResource.Builder(
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                        dataSource,
+                        dataSourceId,
                         FHIR_VERSION_R4,
                         getFhirResourceDifferentAllergy())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} which contains {@link
+     * PhrDataFactory#getUpdatedAllergyFhirResource} data, with the given {@code dataSourceId}.
+     *
+     * <p>The contained FHIR data has the same resource ID as the above {@link
+     * PhrDataFactory#createAllergyMedicalResource}, but data is updated with a "status" field
+     * added.
+     */
+    public static MedicalResource createUpdatedAllergyMedicalResource(String dataSourceId)
+            throws JSONException {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                        dataSourceId,
+                        FHIR_VERSION_R4,
+                        getUpdatedAllergyFhirResource())
                 .build();
     }
 
@@ -444,10 +475,10 @@ public class PhrDataFactory {
     }
 
     /**
-     * Creates a number of immunization resources based on the given {@code numOfResources} and
-     * {@code dataSourceId}.
+     * Creates a number of vaccine resources based on the given {@code numOfResources} and {@code
+     * dataSourceId}.
      */
-    public static List<MedicalResource> createImmunizationMedicalResources(
+    public static List<MedicalResource> createVaccineMedicalResources(
             int numOfResources, String dataSourceId) {
         FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
         List<MedicalResource> medicalResources = new ArrayList<>();
