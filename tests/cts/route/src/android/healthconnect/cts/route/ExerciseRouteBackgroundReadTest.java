@@ -84,6 +84,8 @@ public class ExerciseRouteBackgroundReadTest {
 
         assertCorrectHealthPermissions();
         connectAppsWithGrantedPermissions();
+
+        deleteAllStagedRemoteData();
     }
 
     @After

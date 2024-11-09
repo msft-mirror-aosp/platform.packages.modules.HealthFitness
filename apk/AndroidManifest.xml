@@ -122,6 +122,11 @@
         </activity>
 
         <activity
+            android:name=".permissions.connectedapps.wear.WearSettingsPermissionActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
             android:name=".permissions.request.PermissionsActivity"
             android:excludeFromRecents="true"
             android:exported="true"

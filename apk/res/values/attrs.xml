@@ -107,6 +107,9 @@
     <attr name="proceduresIcon" format="reference"/>
     <attr name="vitalsIcon" format="reference"/>
     <attr name="socialHistoryIcon" format="reference"/>
+
+    <!-- Lock screen banner -->
+    <attr name="lockIcon" format="reference" />
     <!-- END REGION -->
 
     <!-- REGION DIALOG GRAVITY -->

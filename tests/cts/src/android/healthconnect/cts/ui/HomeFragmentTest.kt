@@ -24,9 +24,9 @@ import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
-import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
 import android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest
+import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -36,6 +36,7 @@ import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
@@ -44,6 +45,8 @@ import org.junit.Rule
 import org.junit.Test
 
 /** CTS test for HealthConnect Home screen. */
+// TODO(b/375384825): Do not disable FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER.
+@RequiresFlagsDisabled(FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER)
 class HomeFragmentTest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
