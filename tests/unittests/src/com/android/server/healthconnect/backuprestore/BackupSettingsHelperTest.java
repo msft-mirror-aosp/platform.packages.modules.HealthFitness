@@ -58,7 +58,6 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -113,28 +112,25 @@ public class BackupSettingsHelperTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        AppInfoHelper.resetInstanceForTest();
         HealthConnectInjector.resetInstanceForTest();
 
         StorageContext context = mDatabaseTestRule.getDatabaseContext();
         mPreferenceHelper = new FakePreferenceHelper();
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mExportImportSettingsStorage = mock(ExportImportSettingsStorage.class);
-
-        TransactionTestUtils transactionTestUtils =
-                new TransactionTestUtils(context, mTransactionManager);
-        transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setPreferenceHelper(mPreferenceHelper)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setExportImportSettingsStorage(mExportImportSettingsStorage)
                         .build();
 
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        TransactionTestUtils transactionTestUtils =
+                new TransactionTestUtils(context, healthConnectInjector);
+        transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
 
         mBackupSettingsHelper =

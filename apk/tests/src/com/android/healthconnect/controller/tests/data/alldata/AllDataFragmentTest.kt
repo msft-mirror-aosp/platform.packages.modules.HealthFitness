@@ -44,11 +44,11 @@ import com.android.healthconnect.controller.data.alldata.AllDataFragment
 import com.android.healthconnect.controller.data.alldata.AllDataFragment.Companion.IS_BROWSE_MEDICAL_DATA_SCREEN
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
-import com.android.healthconnect.controller.data.appdata.AppDataUseCase
+import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.ALLERGIES_INTOLERANCES
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATIONS
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.VACCINES
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
@@ -98,9 +98,9 @@ class AllDataFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
-    private val appDataUseCase: AppDataUseCase = AppDataUseCase(manager, Dispatchers.Main)
+    private val allDataUseCase: AllDataUseCase = AllDataUseCase(manager, Dispatchers.Main)
 
-    @BindValue val allDataViewModel: AllDataViewModel = AllDataViewModel(appDataUseCase)
+    @BindValue val allDataViewModel: AllDataViewModel = AllDataViewModel(allDataUseCase)
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -144,7 +144,7 @@ class AllDataFragmentTest {
 
     @Test
     fun medicalDataPresent_populatedDataTypesDisplayed() {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         launchMedicalAllDataFragment()
 
@@ -184,7 +184,7 @@ class AllDataFragmentTest {
 
     @Test
     fun navigatesToMedicalAllEntries() {
-        mockData(listOf(IMMUNIZATIONS), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         launchFragment<AllDataFragment>(bundleOf(IS_BROWSE_MEDICAL_DATA_SCREEN to true)) {
             navHostController.setGraph(R.navigation.medical_data_nav_graph)
@@ -222,7 +222,7 @@ class AllDataFragmentTest {
 
     @Test
     fun triggerDeletionState_medicalData_showsCheckboxes() {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
         val scenario = launchMedicalAllDataFragment()
         assertCheckboxNotShown("Allergies")
         assertCheckboxNotShown("Vaccines")
@@ -261,7 +261,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_checkedItemsAddedToDeleteSet() {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -272,7 +272,7 @@ class AllDataFragmentTest {
         onView(withText("Vaccines")).perform(click())
         onIdle()
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(IMMUNIZATIONS))
+            .containsExactlyElementsIn(setOf(VACCINES))
         verify(healthConnectLogger)
             .logInteraction(AllDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
         onView(withText("Vaccines")).perform(click())
@@ -343,7 +343,7 @@ class AllDataFragmentTest {
 
     @Test
     fun triggerDeletionState_medicalData_displaysSelectAllButton() {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
         val scenario = launchMedicalAllDataFragment()
 
         scenario.onActivity { activity ->
@@ -377,7 +377,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_onSelectAllChecked_allPermissionTypesChecked() = runTest {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -390,7 +390,7 @@ class AllDataFragmentTest {
         assertCheckboxShown("Select all")
         onView(withText("Select all")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES))
+            .containsExactlyElementsIn(setOf(VACCINES, ALLERGIES_INTOLERANCES))
         verify(healthConnectLogger).logInteraction(AllDataElement.SELECT_ALL_BUTTON)
     }
 
@@ -418,7 +418,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_onSelectAllUnchecked_allPermissionTypesUnChecked() = runTest {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -431,7 +431,7 @@ class AllDataFragmentTest {
         assertCheckboxShown("Select all")
         onView(withText("Select all")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES))
+            .containsExactlyElementsIn(setOf(VACCINES, ALLERGIES_INTOLERANCES))
         onView(withText("Select all")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
@@ -461,7 +461,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_allPermissionTypesChecked_selectAllShouldBeChecked() {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -508,7 +508,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_selectAllChecked_oneUnchecked_selectAllUnchecked() = runTest {
-        mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->

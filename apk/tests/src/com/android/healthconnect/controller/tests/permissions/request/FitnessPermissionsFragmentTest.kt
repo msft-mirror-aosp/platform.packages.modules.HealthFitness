@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.permissions.request.FitnessScreenSta
 import com.android.healthconnect.controller.permissions.request.PermissionsFragment
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -54,7 +55,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.logging.UIAction
-import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -456,7 +456,7 @@ class FitnessPermissionsFragmentTest {
                     as PermissionsFragment
             val allowAllPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
             allowAllPreference?.isChecked =
                 false // makes sure the preference is on so OnPreferenceChecked is triggered
 
@@ -490,7 +490,7 @@ class FitnessPermissionsFragmentTest {
                     as PermissionsFragment
             val allowAllPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
             allowAllPreference?.isChecked =
                 true // makes sure the preference is on so OnPreferenceChecked is triggered
 

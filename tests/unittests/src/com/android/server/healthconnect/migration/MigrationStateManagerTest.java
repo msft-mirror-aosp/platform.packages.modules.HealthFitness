@@ -51,6 +51,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -69,12 +70,17 @@ import android.os.UserHandle;
 import android.os.ext.SdkExtensions;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.TestUtils;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager.IllegalMigrationStateException;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import libcore.util.HexEncoding;
@@ -109,7 +115,7 @@ public class MigrationStateManagerTest {
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Mock private Context mContext;
+    private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private Resources mResources;
@@ -133,30 +139,34 @@ public class MigrationStateManagerTest {
 
     @Before
     public void setUp() {
+        mContext = spy(InstrumentationRegistry.getInstrumentation().getContext());
         when(mContext.getResources()).thenReturn(mResources);
+        when(mContext.getUser()).thenReturn(DEFAULT_USER_HANDLE);
         when(mResources.getIdentifier(anyString(), anyString(), anyString())).thenReturn(1);
         when(mResources.getString(anyInt())).thenReturn(MOCK_CONFIGURED_PACKAGE);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
         when(mHealthConnectDeviceConfigManager.getExecutionTimeBuffer())
                 .thenReturn(EXECUTION_TIME_BUFFER_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getNonIdleStateTimeoutPeriod())
                 .thenReturn(NON_IDLE_STATE_TIMEOUT_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getMaxStartMigrationCalls())
                 .thenReturn(MAX_START_MIGRATION_CALLS_MOCK_VALUE);
-        MigrationStateManager.resetInitializedInstanceForTest();
-        mMigrationStateManager =
-                MigrationStateManager.initializeInstance(
-                        DEFAULT_USER_HANDLE, mHealthConnectDeviceConfigManager, mPreferenceHelper);
+
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setHealthConnectDeviceConfigManager(mHealthConnectDeviceConfigManager)
+                        .setPreferenceHelper(mPreferenceHelper)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mMigrationStateManager = healthConnectInjector.getMigrationStateManager();
         mMigrationStateManager.addStateChangedListener(mMockListener::onMigrationStateChanged);
     }
 
     @After
     public void tearDown() throws TimeoutException {
         TestUtils.waitForAllScheduledTasksToComplete();
-        MigrationStateManager.resetInitializedInstanceForTest();
         clearInvocations(mPreferenceHelper);
     }
 

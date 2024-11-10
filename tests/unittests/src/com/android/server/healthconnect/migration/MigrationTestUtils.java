@@ -46,9 +46,9 @@ public class MigrationTestUtils {
     static final String[] PERMISSIONS_TO_CHECK =
             new String[] {Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA};
 
-    static long getTimeoutPeriodBuffer() {
-        return HealthConnectDeviceConfigManager.getInitialisedInstance().getExecutionTimeBuffer()
-                * 2;
+    static long getTimeoutPeriodBuffer(
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
+        return healthConnectDeviceConfigManager.getExecutionTimeBuffer() * 2;
     }
 
     static List<ResolveInfo> createResolveInfoList(

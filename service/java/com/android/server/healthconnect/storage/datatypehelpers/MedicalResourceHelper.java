@@ -294,6 +294,12 @@ public final class MedicalResourceHelper {
                         .getCommand());
     }
 
+    /** Returns the total number of medical resources in HC database. */
+    public int getMedicalResourcesCount() {
+        ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
+        return mTransactionManager.count(readTableRequest);
+    }
+
     /**
      * Reads the {@link MedicalResource}s stored in the HealthConnect database.
      *

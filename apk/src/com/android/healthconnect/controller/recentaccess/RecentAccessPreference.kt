@@ -42,7 +42,7 @@ constructor(
     private val showCategories: Boolean,
 ) : HealthPreference(context), ComparablePreference {
 
-    private val separator: String by lazy { context.getString(R.string.data_type_separator) }
+    private val separator: String by lazy { context.getString(R.string.separator) }
 
     init {
         layoutResource = R.layout.widget_recent_access_timeline

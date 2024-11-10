@@ -17,11 +17,11 @@ package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MEDICAL_RESOURCE_TYPES_LIST;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
@@ -125,7 +125,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mManager.readMedicalResources(request, executor, receiver);
@@ -144,7 +144,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 mUtil.createDataSource(PhrDataFactory.getCreateMedicalDataSourceRequest());
         mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         // Make the maximum number of calls allowed by quota
         int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mUtil.mLimitsAdjustmentForTesting;
@@ -204,7 +204,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testReadMedicalResourcesByRequest_invalidDataSourceIdsByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         setFieldValueUsingReflection(request, "mDataSourceIds", Set.of("invalid id"));
@@ -223,7 +223,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testReadMedicalResourcesByRequest_invalidResourceTypeByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         setFieldValueUsingReflection(request, "mMedicalResourceType", 100);
@@ -280,7 +280,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
@@ -298,7 +298,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(UUID.randomUUID().toString())
                         .build();
 
@@ -314,29 +314,29 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByRequest_filtersByMedicalResourceType()
             throws InterruptedException {
-        // Given we have three Immunizations and one Allergy in two data sources
+        // Given we have three vaccines and one Allergy in two data sources
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
-        MedicalResource immunization1 =
+        MedicalResource vaccine1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2 =
+        MedicalResource vaccine2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization3 =
+        MedicalResource vaccine3 =
                 mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
         mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
 
-        // When we read immunizations with a page size of 2 and use the nextPageToken to read
-        // remaining immunizations
+        // When we read vaccines with a page size of 2 and use the nextPageToken to read
+        // remaining vaccines
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest allVaccinesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(2)
                         .build();
         mManager.readMedicalResources(
-                allImmunizationsRequest, Executors.newSingleThreadExecutor(), receiver1);
+                allVaccinesRequest, Executors.newSingleThreadExecutor(), receiver1);
 
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
@@ -348,13 +348,13 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 Executors.newSingleThreadExecutor(),
                 receiver2);
 
-        // Then the response gives two pages containing immunizations only, with page token 1
+        // Then the response gives two pages containing vaccines only, with page token 1
         // linking to page 2
         assertThat(receiver1.getResponse().getMedicalResources())
-                .containsExactly(immunization1, immunization2);
+                .containsExactly(vaccine1, vaccine2);
         assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
-        assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization3);
+        assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(vaccine3);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
         assertThat(receiver2.getResponse().getRemainingCount()).isEqualTo(0);
     }
@@ -363,29 +363,27 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByRequest_filtersByMedicalResourceTypeAndOneDataSource()
             throws InterruptedException {
-        // Given we have three Immunizations in two data sources
+        // Given we have three vaccines in two data sources
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
-        MedicalResource immunization1FromDataSource1 =
+        MedicalResource vaccine1FromDataSource1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2FromDataSource1 =
+        MedicalResource vaccine2FromDataSource1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
 
-        // When we read Immunizations only from data source 1 in 2 pages.
+        // When we read vaccines only from data source 1 in 2 pages.
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest immunizationsFromDataSource1Request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest vaccinesFromDataSource1Request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource1.getId())
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
-                immunizationsFromDataSource1Request,
-                Executors.newSingleThreadExecutor(),
-                receiver1);
+                vaccinesFromDataSource1Request, Executors.newSingleThreadExecutor(), receiver1);
 
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
@@ -397,13 +395,13 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 Executors.newSingleThreadExecutor(),
                 receiver2);
 
-        // Then the response gives two pages with results filtered by Immunization and data source 1
+        // Then the response gives two pages with results filtered by vaccine and data source 1
         assertThat(receiver1.getResponse().getMedicalResources())
-                .containsExactly(immunization1FromDataSource1);
+                .containsExactly(vaccine1FromDataSource1);
         assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         assertThat(receiver2.getResponse().getMedicalResources())
-                .containsExactly(immunization2FromDataSource1);
+                .containsExactly(vaccine2FromDataSource1);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
     }
 
@@ -411,30 +409,28 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByRequest_filtersByMedicalResourceTypeAndBothDataSources()
             throws InterruptedException {
-        // Given we have two Immunizations and one Allergy in two data sources
+        // Given we have two vaccines and one Allergy in two data sources
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
-        MedicalResource immunizationFromDataSource1 =
+        MedicalResource vaccineFromDataSource1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunizationFromDataSource2 =
+        MedicalResource vaccineFromDataSource2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
 
-        // When we read Immunizations only from both data sources in 2 pages
+        // When we read vaccines only from both data sources in 2 pages
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest immunizationsFromBothDataSourcesRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest vaccinesFromBothDataSourcesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource2.getId())
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
-                immunizationsFromBothDataSourcesRequest,
-                Executors.newSingleThreadExecutor(),
-                receiver1);
+                vaccinesFromBothDataSourcesRequest, Executors.newSingleThreadExecutor(), receiver1);
 
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
@@ -446,14 +442,14 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 Executors.newSingleThreadExecutor(),
                 receiver2);
 
-        // Then we receive 2 pages containing Immunizations from both data sources with page token
+        // Then we receive 2 pages containing vaccines from both data sources with page token
         // 1 linking to page 2
         assertThat(receiver1.getResponse().getMedicalResources())
-                .containsExactly(immunizationFromDataSource1);
+                .containsExactly(vaccineFromDataSource1);
         assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         assertThat(receiver2.getResponse().getMedicalResources())
-                .containsExactly(immunizationFromDataSource2);
+                .containsExactly(vaccineFromDataSource2);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
     }
 
@@ -461,27 +457,25 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByRequest_hasManagementPermission_succeeds()
             throws InterruptedException {
-        // Given we have two Immunizations in one data source
+        // Given we have two vaccines in one data source
         MedicalDataSource dataSource =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
-        MedicalResource immunization1 =
+        MedicalResource vaccine1 =
                 mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2 =
+        MedicalResource vaccine2 =
                 mUtil.upsertMedicalData(dataSource.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
 
-        // When we read Immunizations with MANAGE_HEALTH_DATA permission in 2 pages
+        // When we read vaccines with MANAGE_HEALTH_DATA permission in 2 pages
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest immunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest vaccinesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         runWithShellPermissionIdentity(
                 () ->
                         mManager.readMedicalResources(
-                                immunizationsRequest,
-                                Executors.newSingleThreadExecutor(),
-                                receiver1),
+                                vaccinesRequest, Executors.newSingleThreadExecutor(), receiver1),
                 MANAGE_HEALTH_DATA);
 
         String nextPageToken = receiver1.getResponse().getNextPageToken();
@@ -497,12 +491,12 @@ public class ReadMedicalResourcesByRequestCtsTest {
                                 receiver2),
                 MANAGE_HEALTH_DATA);
 
-        // The we receive two pages containing all immunizations, with page token 1 linking to page
+        // The we receive two pages containing all vaccines, with page token 1 linking to page
         // 2
-        assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization2);
+        assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(vaccine2);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
 
-        assertThat(receiver1.getResponse().getMedicalResources()).containsExactly(immunization1);
+        assertThat(receiver1.getResponse().getMedicalResources()).containsExactly(vaccine1);
         assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
     }
 
@@ -510,7 +504,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByRequest_setPageSizeOnPageRequest_succeeds()
             throws InterruptedException {
-        // Given we have six Immunizations in three data source
+        // Given we have six vaccines in three data source
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
@@ -524,15 +518,15 @@ public class ReadMedicalResourcesByRequestCtsTest {
         mUtil.upsertMedicalData(dataSource3.getId(), FHIR_DATA_IMMUNIZATION);
         mUtil.upsertMedicalData(dataSource3.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
 
-        // When we read all immunizations in two pages and specify a page size on the page request
+        // When we read all vaccines in two pages and specify a page size on the page request
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest vaccinesRequestWithPageSize1 =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
-                immunizationsRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
+                vaccinesRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
 
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
@@ -557,7 +551,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByRequest_dataDeletedAfterInitialRequest_correctRemaining()
             throws InterruptedException {
-        // Given we have three Immunizations in two data source
+        // Given we have three vaccines in two data source
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
@@ -569,15 +563,15 @@ public class ReadMedicalResourcesByRequestCtsTest {
         MedicalResource resource3 =
                 mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
 
-        // When we read the first Immunization and then delete all Immunizations
+        // When we read the first vaccine and then delete all vaccines
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest vaccinesRequestWithPageSize1 =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
-                immunizationsRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
+                vaccinesRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
 
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
@@ -591,7 +585,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 Executors.newSingleThreadExecutor(),
                 receiver2);
 
-        // Then the second page read will return no immunizations with 0 remaining
+        // Then the second page read will return no vaccines with 0 remaining
         assertThat(receiver1.getResponse().getMedicalResources()).hasSize(1);
         assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(2);
 
@@ -604,7 +598,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByRequest_dataAddedAfterInitialRequest_correctRemaining()
             throws InterruptedException {
-        // Given we have two Immunizations in two data source
+        // Given we have two vaccines in two data source
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
@@ -612,15 +606,15 @@ public class ReadMedicalResourcesByRequestCtsTest {
         mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
         mUtil.upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
 
-        // When we read the first Immunization and then insert two moreImmunizations
+        // When we read the first vaccine and then insert two more vaccines.
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest vaccinesRequestWithPageSize1 =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         mManager.readMedicalResources(
-                immunizationsRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
+                vaccinesRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
 
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
@@ -635,7 +629,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 Executors.newSingleThreadExecutor(),
                 receiver2);
 
-        // Then the second page read will reflect the updated number of immunizations
+        // Then the second page read will reflect the updated number of vaccines
         assertThat(receiver1.getResponse().getMedicalResources()).hasSize(1);
         assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
@@ -649,7 +643,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inForegroundWithNoPerms_throws() {
         // App has not been granted any permissions.
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         HealthConnectException exception =
@@ -661,49 +655,49 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                            + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS to read"
-                            + " MedicalResource");
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES to read"
+                                + " MedicalResource");
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundWithReadPermNoWritePerm_canReadResourcesWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
-        // calling app only has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // Given that we have two data sources from two apps with one vaccine each and the
+        // calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
         revokePermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
-        // When the app reads all immunization resources from the foreground
+        // When the app reads all vaccine resources from the foreground
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_FOREGROUND_APP.readMedicalResources(request);
 
-        // Then it receives all immunization resources
+        // Then it receives all vaccine resources
         assertThat(response.getMedicalResources())
-                .containsExactly(foregroundAppImmunization, backgroundAppImmunization);
+                .containsExactly(foregroundAppVaccine, backgroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundWithReadPermNoWritePerm_throwsForResourcesWithoutReadPerms() {
-        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
@@ -726,14 +720,14 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundHasWritePermNoReadPerms_canReadDataFromOwnDataSources()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
+        // Given that we have two data sources from two apps with one vaccine each and the
         // calling app only has WRITE_MEDICAL_DATA permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
@@ -741,31 +735,31 @@ public class ReadMedicalResourcesByRequestCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(
                 backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
-        // When the app reads all immunization resources from the foreground
+        // When the app reads all vaccine resources from the foreground
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_FOREGROUND_APP.readMedicalResources(request);
 
-        // Then it only receives the immunization resources written by itself
-        assertThat(response.getMedicalResources()).containsExactly(foregroundAppImmunization);
+        // Then it only receives the vaccine resources written by itself
+        assertThat(response.getMedicalResources()).containsExactly(foregroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundHasWriteAndReadPerms_canReadSelfDataAndOtherDataWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization and one allergy
-        // each and the calling app only has WRITE_MEDICAL_DATA and READ_MEDICAL_DATA_IMMUNIZATIONS
+        // Given that we have two data sources from two apps with one vaccine and one allergy
+        // each and the calling app only has WRITE_MEDICAL_DATA and READ_MEDICAL_DATA_VACCINES
         // permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource foregroundAppAllergy =
@@ -773,29 +767,29 @@ public class ReadMedicalResourcesByRequestCtsTest {
                         foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         PHR_BACKGROUND_APP.upsertMedicalResource(
                 backgroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
 
-        // When the app reads immunization resources and allergy resources from the foreground
-        ReadMedicalResourcesInitialRequest readImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        // When the app reads vaccine resources and allergy resources from the foreground
+        ReadMedicalResourcesInitialRequest readVaccinesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesInitialRequest readAllergiesRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
-        ReadMedicalResourcesResponse readImmunizationsResponse =
-                PHR_FOREGROUND_APP.readMedicalResources(readImmunizationsRequest);
+        ReadMedicalResourcesResponse readVaccinesResponse =
+                PHR_FOREGROUND_APP.readMedicalResources(readVaccinesRequest);
         ReadMedicalResourcesResponse readAllergiesResponse =
                 PHR_FOREGROUND_APP.readMedicalResources(readAllergiesRequest);
 
-        // Then it receives all immunization resources, but only the allergy resources written by
+        // Then it receives all vaccine resources, but only the allergy resources written by
         // itself
-        assertThat(readImmunizationsResponse.getMedicalResources())
-                .containsExactly(foregroundAppImmunization, backgroundAppImmunization);
+        assertThat(readVaccinesResponse.getMedicalResources())
+                .containsExactly(foregroundAppVaccine, backgroundAppVaccine);
         assertThat(readAllergiesResponse.getMedicalResources())
                 .containsExactly(foregroundAppAllergy);
     }
@@ -806,7 +800,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
         // App has background read permissions, but no other permissions.
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), READ_HEALTH_DATA_IN_BACKGROUND);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         HealthConnectException exception =
@@ -818,47 +812,47 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                            + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS to read"
-                            + " MedicalResource");
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES to read"
+                                + " MedicalResource");
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithBgReadHasReadPermNoWritePerm_canReadResourcesWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
-        // calling app has READ_HEALTH_DATA_IN_BACKGROUND and READ_MEDICAL_DATA_IMMUNIZATIONS
+        // Given that we have two data sources from two apps with one vaccine each and the
+        // calling app has READ_HEALTH_DATA_IN_BACKGROUND and READ_MEDICAL_DATA_VACCINES
         // permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
         revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
-        // When the app reads all immunization resources from the background
+        // When the app reads all vaccine resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
-        // Then it receives all immunization resources
+        // Then it receives all vaccine resources
         assertThat(response.getMedicalResources())
-                .containsExactly(foregroundAppImmunization, backgroundAppImmunization);
+                .containsExactly(foregroundAppVaccine, backgroundAppVaccine);
     }
 
     @Test
@@ -866,7 +860,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inBgWithBgReadHasReadPermNoWritePerm_throwsForResourceWithoutReadPerms() {
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
-                List.of(READ_HEALTH_DATA_IN_BACKGROUND, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(READ_HEALTH_DATA_IN_BACKGROUND, READ_MEDICAL_DATA_VACCINES));
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
@@ -889,7 +883,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithBgReadHasWritePermNoReadPerms_canReadDataFromOwnDataSources()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
+        // Given that we have two data sources from two apps with one vaccine each and the
         // calling app only has READ_HEALTH_DATA_IN_BACKGROUND and WRITE_MEDICAL_DATA permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
@@ -902,18 +896,18 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
-        // When the app reads all immunization resources from the background
+        // When the app reads all vaccine resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
-        // Then it only receives the immunization resources written by itself
-        assertThat(response.getMedicalResources()).containsExactly(backgroundAppImmunization);
+        // Then it only receives the vaccine resources written by itself
+        assertThat(response.getMedicalResources()).containsExactly(backgroundAppVaccine);
     }
 
     @Test
@@ -921,50 +915,50 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void
             testRead_inBgWithBgReadHasWriteAndReadPerms_canReadSelfDataAndOtherDataWithReadPerms()
                     throws Exception {
-        // Given that we have two data sources from two apps with one immunization and one allergy
+        // Given that we have two data sources from two apps with one vaccine and one allergy
         // each and the calling app has READ_HEALTH_DATA_IN_BACKGROUND, WRITE_MEDICAL_DATA and
-        // READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         PHR_FOREGROUND_APP.upsertMedicalResource(
                 foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource backgroundAppAllergy =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
 
-        // When the app reads immunization resources and allergy resources from the background
-        ReadMedicalResourcesInitialRequest readImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        // When the app reads vaccine resources and allergy resources from the background
+        ReadMedicalResourcesInitialRequest readVaccinesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesInitialRequest readAllergiesRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
-        ReadMedicalResourcesResponse readImmunizationsResponse =
-                PHR_BACKGROUND_APP.readMedicalResources(readImmunizationsRequest);
+        ReadMedicalResourcesResponse readVaccinesResponse =
+                PHR_BACKGROUND_APP.readMedicalResources(readVaccinesRequest);
         ReadMedicalResourcesResponse readAllergiesResponse =
                 PHR_BACKGROUND_APP.readMedicalResources(readAllergiesRequest);
 
-        // Then it receives all immunization resources, but only the allergy resources written by
+        // Then it receives all vaccine resources, but only the allergy resources written by
         // itself
-        assertThat(readImmunizationsResponse.getMedicalResources())
-                .containsExactly(foregroundAppImmunization, backgroundAppImmunization);
+        assertThat(readVaccinesResponse.getMedicalResources())
+                .containsExactly(foregroundAppVaccine, backgroundAppVaccine);
         assertThat(readAllergiesResponse.getMedicalResources())
                 .containsExactly(backgroundAppAllergy);
     }
@@ -974,7 +968,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
     public void testRead_inBackgoundWithNoPerms_throws() {
         // App has not been granted any permissions.
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         HealthConnectException exception =
@@ -986,15 +980,15 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                            + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS to read"
-                            + " MedicalResource");
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES to read"
+                                + " MedicalResource");
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithoutBgReadOnlyWritePerm_canReadDataFromOwnDataSources()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
+        // Given that we have two data sources from two apps with one vaccine each and the
         // calling app only has WRITE_MEDICAL_DATA permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
@@ -1005,29 +999,29 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
-        // When the app reads all immunization resources from the background
+        // When the app reads all vaccine resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
-        // Then it only receives the immunization resources written by itself
-        assertThat(response.getMedicalResources()).containsExactly(backgroundAppImmunization);
+        // Then it only receives the vaccine resources written by itself
+        assertThat(response.getMedicalResources()).containsExactly(backgroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithoutBgReadOnlyReadPerm_canReadOwnDataWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
-        // and the calling app only has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // Given that we have two data sources from two apps with one vaccine each and the
+        // and the calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
@@ -1036,26 +1030,26 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
         revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
-        // When the app reads immunization resources from the background
+        // When the app reads vaccine resources from the background
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadMedicalResourcesResponse response = PHR_BACKGROUND_APP.readMedicalResources(request);
 
-        // Then it receives only receives its own immunization resources
-        assertThat(response.getMedicalResources()).containsExactly(backgroundAppImmunization);
+        // Then it receives only receives its own vaccine resources
+        assertThat(response.getMedicalResources()).containsExactly(backgroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithoutBgReadOnlyReadPerm_throwsForResourcesWithoutReadPerms() {
-        grantPermission(PHR_BACKGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        grantPermission(PHR_BACKGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
@@ -1077,12 +1071,12 @@ public class ReadMedicalResourcesByRequestCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_readPermRemovedBeforePageRequest_throws() throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
-        // and the calling app has READ_MEDICAL_DATA_IMMUNIZATIONS permissions
+        // Given that we have two data sources from two apps with one vaccine each and the
+        // and the calling app has READ_MEDICAL_DATA_VACCINES permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_FOREGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
@@ -1095,15 +1089,15 @@ public class ReadMedicalResourcesByRequestCtsTest {
 
         revokePermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
-        // When the app reads the first immunization, but loses read permissions before the second
+        // When the app reads the first vaccine, but loses read permissions before the second
         // page read
         ReadMedicalResourcesInitialRequest initialRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(1)
                         .build();
         ReadMedicalResourcesResponse initialResponse =
                 PHR_FOREGROUND_APP.readMedicalResources(initialRequest);
-        revokePermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        revokePermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         String nextPageToken = initialResponse.getNextPageToken();
         assertThat(nextPageToken).isNotNull();
         ReadMedicalResourcesPageRequest pageRequest =
@@ -1119,7 +1113,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .hasMessageThat()
                 .contains(
                         "Caller doesn't have"
-                                + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"
+                                + " android.permission.health.READ_MEDICAL_DATA_VACCINES"
                                 + " to read MedicalResource");
     }
 

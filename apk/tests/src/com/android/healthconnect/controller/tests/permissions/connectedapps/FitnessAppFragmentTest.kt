@@ -58,6 +58,7 @@ import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -70,7 +71,6 @@ import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogEle
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags
-import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -152,6 +152,9 @@ class FitnessAppFragmentTest {
     @After
     fun teardown() {
         reset(healthConnectLogger)
+        reset(viewModel)
+        reset(additionalAccessViewModel)
+        reset(healthPermissionReader)
         // enable animations
         toggleAnimation(true)
         Intents.release()
@@ -262,14 +265,13 @@ class FitnessAppFragmentTest {
         onView(withText("Exercise")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
 
-//        TODO(b/377183378) enable logging checks.
-//        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ACCESS_PAGE)
-//        verify(healthConnectLogger).logPageImpression()
-//        // TODO (b/325680041) investigate why these are not active
-//        verify(healthConnectLogger, times(2))
-//            .logImpression(AppAccessElement.PERMISSION_SWITCH_INACTIVE)
-//        verify(healthConnectLogger)
-//            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        // TODO (b/325680041) investigate why these are not active
+        verify(healthConnectLogger, times(2))
+            .logImpression(AppAccessElement.PERMISSION_SWITCH_INACTIVE)
+        verify(healthConnectLogger)
+            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
     }
 
     @Test
@@ -296,7 +298,7 @@ class FitnessAppFragmentTest {
             val fragment = getFragment(activity)
             val mainSwitchPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
 
             assertThat(mainSwitchPreference?.isChecked).isTrue()
         }
@@ -327,7 +329,7 @@ class FitnessAppFragmentTest {
 
             val mainSwitchPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
 
             assertThat(mainSwitchPreference?.isChecked).isFalse()
         }

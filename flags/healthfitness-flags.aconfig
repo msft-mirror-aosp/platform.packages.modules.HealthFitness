@@ -48,8 +48,17 @@ flag {
 flag {
     name: "personal_health_record_telemetry"
     namespace: "health_fitness_aconfig"
-    description: "Flag for guarding telemetry for PHR MVP APIs."
+    description: "Flag for guarding telemetry for PHR MVP APIs. This is for normal WW"
     bug: "361796560"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "personal_health_record_telemetry_private_ww"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for guarding telemetry for PHR MVP APIs. This is for private WW"
+    bug: "375157800"
     is_fixed_read_only: true
     is_exported: true
 }
@@ -124,6 +133,42 @@ flag {
 }
 
 flag {
+    name: "phr_fhir_oneof_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    bug: "376673951"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_primitive_type_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    bug: "361775172"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_basic_complex_type_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    bug: "376283237"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_complex_type_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    bug: "377701407"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
     name: "export_import"
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."
@@ -145,6 +190,18 @@ flag {
     name: "d2d_file_deletion_bug_fix"
     namespace: "health_fitness_aconfig"
     description: "Fixes bugs that prevents file deletion during d2d."
+    bug: "301926710"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+    is_exported: true
+}
+
+flag {
+    name: "permission_tracker_fix_mapping_init"
+    namespace: "health_fitness_aconfig"
+    description: "Fixes a bug when setting up intent tracker for a new user."
     bug: "301926710"
     is_fixed_read_only: true
     metadata {

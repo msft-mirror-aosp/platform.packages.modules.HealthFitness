@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Ayer"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Leer: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestionar permisos"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Actividad"</string>
@@ -994,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salud conectada eliminará todos los datos de hace más de # mes. Los cambios pueden tardar un día en aparecer en tus aplicaciones conectadas.}other{Salud conectada eliminará todos los datos de hace más de # meses. Los cambios pueden tardar un día en aparecer en tus aplicaciones conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Se eliminarán los datos de estas categorías"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Hecho"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{La eliminación automática está activada. Se eliminarán los datos que tengan más de # mes.}other{La eliminación automática está activada. Se eliminarán los datos que tengan más de # meses.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Eliminación automática activada. Se eliminarán los datos de más de # mes.}other{Eliminación automática activada. Se eliminarán los datos de más de # meses.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"La eliminación automática está desactivada"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Establecer prioridad de aplicaciones"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Si más de una aplicación añade datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, Salud conectada priorizará la aplicación que esté más arriba en esta lista. Arrastra las aplicaciones para reordenarlas."</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Ver en la tienda de aplicaciones"</string>
     <string name="select_all" msgid="837499881590001166">"Seleccionar todo"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Las aplicaciones conectadas ya no podrán leer estos datos de Salud conectada"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Marcada"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Sin marcar"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Mapa de ruta de ejercicio disponible"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Día siguiente"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Semana siguiente"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mes siguiente"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Día anterior"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Semana anterior"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mes anterior"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"¿Eliminar permanentemente todos los datos?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"¿Eliminar permanentemente los datos seleccionados?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"¿Eliminar permanentemente todos los datos de <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1175,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Último acceso: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Último acceso: ayer, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Último acceso: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>
