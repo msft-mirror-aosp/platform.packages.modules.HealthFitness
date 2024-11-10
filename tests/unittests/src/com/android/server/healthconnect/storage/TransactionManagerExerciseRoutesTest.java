@@ -37,7 +37,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -104,21 +103,17 @@ public class TransactionManagerExerciseRoutesTest {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-        DeviceInfoHelper.resetInstanceForTest();
-        AppInfoHelper.resetInstanceForTest();
         StorageContext context = testRule.getDatabaseContext();
-        mTransactionManager = testRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);
-        HealthConnectDeviceConfigManager.initializeInstance(context);
 
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();

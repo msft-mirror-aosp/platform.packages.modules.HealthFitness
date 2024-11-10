@@ -20,7 +20,7 @@ import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.GetAdditionalPermissionUseCase
@@ -157,7 +157,7 @@ class AdditionalAccessViewModelTest {
                 listOf(
                     READ_EXERCISE,
                     WRITE_DISTANCE,
-                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    READ_MEDICAL_DATA_VACCINES,
                     READ_EXERCISE_ROUTES,
                     READ_HEALTH_DATA_HISTORY,
                     READ_HEALTH_DATA_IN_BACKGROUND,
@@ -296,13 +296,13 @@ class AdditionalAccessViewModelTest {
                         READ_EXERCISE,
                         WRITE_DISTANCE,
                         READ_EXERCISE_ROUTES,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS,
+                        READ_MEDICAL_DATA_VACCINES,
                         READ_HEALTH_DATA_IN_BACKGROUND,
                         READ_HEALTH_DATA_HISTORY,
                     )
                 )
             whenever(getGrantedHealthPermissionsUseCase.invoke(TEST_APP_PACKAGE_NAME))
-                .thenReturn(listOf(WRITE_DISTANCE, READ_MEDICAL_DATA_IMMUNIZATIONS))
+                .thenReturn(listOf(WRITE_DISTANCE, READ_MEDICAL_DATA_VACCINES))
 
             val additionalAccessStateObserver = TestObserver<AdditionalAccessViewModel.State>()
             val screenStateObserver = TestObserver<AdditionalAccessViewModel.ScreenState>()

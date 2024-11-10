@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,8 +35,11 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -71,25 +75,26 @@ public class AppInfoHelperTest {
 
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
-        StorageContext healthConnectUserContext =
+        StorageContext healthConnectStorageContext =
                 mHealthConnectDatabaseTestRule.getDatabaseContext();
-        TransactionManager transactionManager =
-                mHealthConnectDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils =
-                new TransactionTestUtils(healthConnectUserContext, transactionManager);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
         when(mDrawable.getIntrinsicHeight()).thenReturn(200);
         when(mDrawable.getIntrinsicWidth()).thenReturn(200);
 
-        AppInfoHelper.resetInstanceForTest();
-        mAppInfoHelper =
-                AppInfoHelper.getInstance(mHealthConnectDatabaseTestRule.getTransactionManager());
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(healthConnectStorageContext)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mTransactionTestUtils =
+                new TransactionTestUtils(healthConnectStorageContext, healthConnectInjector);
     }
 
     @After
     public void tearDown() throws Exception {
         reset(mDrawable, mContext, mPackageManager);
-        AppInfoHelper.resetInstanceForTest();
     }
 
     @Test

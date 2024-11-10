@@ -18,8 +18,10 @@ package healthconnect.logging;
 
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_EXPORT_IMPORT_STATS_REPORTED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PERMISSION_STATS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_STORAGE_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -49,8 +51,11 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BloodPressureRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
 import com.android.server.healthconnect.storage.datatypehelpers.HeartRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HeightRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SpeedRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper;
@@ -96,6 +101,9 @@ public class DailyLoggingServiceTest {
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private AccessLogsHelper mAccessLogsHelper;
     @Mock private TransactionManager mTransactionManager;
+    @Mock private MedicalDataSourceHelper mMedicalDataSourceHelper;
+    @Mock private MedicalResourceHelper mMedicalResourceHelper;
+    private FakeTimeSource mFakeTimeSource;
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private static final String NOT_HEALTH_PERMISSION = "NOT_HEALTH_PERMISSION";
     private static final String READ_STEPS = "android.permission.health.READ_STEPS";
@@ -116,6 +124,7 @@ public class DailyLoggingServiceTest {
 
     @Before
     public void mockStatsLog() {
+        mFakeTimeSource = new FakeTimeSource(NOW);
         ExtendedMockito.doReturn(true)
                 .when(() -> HealthConnectManager.isHealthPermission(mContext, READ_STEPS));
         ExtendedMockito.doReturn(false)
@@ -181,7 +190,14 @@ public class DailyLoggingServiceTest {
         }
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -203,7 +219,14 @@ public class DailyLoggingServiceTest {
         when(mTransactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -230,7 +253,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         // Makes sure we do not have count any app that does not have Health Connect permission
         // declared in the manifest as a connected or an available app.
@@ -254,7 +284,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -276,7 +313,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -298,7 +342,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -314,7 +365,14 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -334,7 +392,14 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -352,7 +417,14 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY))
                 .thenReturn(String.valueOf(7));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -369,7 +441,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
         when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY)).thenReturn(null);
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -385,7 +464,14 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -412,7 +498,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -442,7 +535,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -483,7 +583,14 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
 
         ExtendedMockito.verify(
                 () ->
@@ -492,6 +599,147 @@ public class DailyLoggingServiceTest {
                                 eq(CONNECTED_APP_PACKAGE_NAME),
                                 eq(new String[] {READ_STEPS_SHORTENED, WRITE_STEPS_SHORTENED})),
                 never());
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    public void phrStats_flagDisabled_expectNoLogs() {
+        DailyLoggingService.logDailyMetrics(
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_PHR_USAGE_STATS),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt()),
+                never());
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    public void phrStats_flagEnabledAndIsMonthlyActiveUser_expectCorrectLogs() {
+        when(mMedicalDataSourceHelper.getMedicalDataSourcesCount()).thenReturn(101);
+        when(mMedicalResourceHelper.getMedicalResourcesCount()).thenReturn(204);
+        when(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp())
+                .thenReturn(NOW.minus(29, ChronoUnit.DAYS));
+        mFakeTimeSource.setInstant(NOW);
+        // mock connected apps, so UsageStatsLogger#log() does not deem HC as inactive and skip all
+        // the logs
+        when(mContext.createContextAsUser(mCurrentUser, 0)
+                        .getPackageManager()
+                        .getInstalledPackages(any()))
+                .thenReturn(
+                        List.of(
+                                mPackageInfoConnectedApp,
+                                mPackageInfoNotHoldingPermission,
+                                mPackageInfoNotConnectedApp));
+
+        DailyLoggingService.logDailyMetrics(
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_PHR_USAGE_STATS),
+                                eq(101),
+                                eq(204),
+                                /* isPhrMonthlyActiveUser */ eq(true),
+                                anyInt()),
+                times(1));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    public void phrStats_flagEnabledAndIsNotMonthlyActiveUser_expectCorrectLogs() {
+        when(mMedicalDataSourceHelper.getMedicalDataSourcesCount()).thenReturn(101);
+        when(mMedicalResourceHelper.getMedicalResourcesCount()).thenReturn(204);
+        when(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp())
+                .thenReturn(NOW.minus(31, ChronoUnit.DAYS));
+        mFakeTimeSource.setInstant(NOW);
+        // mock connected apps, so UsageStatsLogger#log() does not deem HC as inactive and skip all
+        // the logs
+        when(mContext.createContextAsUser(mCurrentUser, 0)
+                        .getPackageManager()
+                        .getInstalledPackages(any()))
+                .thenReturn(
+                        List.of(
+                                mPackageInfoConnectedApp,
+                                mPackageInfoNotHoldingPermission,
+                                mPackageInfoNotConnectedApp));
+
+        DailyLoggingService.logDailyMetrics(
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_PHR_USAGE_STATS),
+                                eq(101),
+                                eq(204),
+                                /* isPhrMonthlyActiveUser */ eq(false),
+                                anyInt()),
+                times(1));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY)
+    public void phrStats_flagEnabledAndIsNotMonthlyActiveUserDueToNoTimeStamp_expectCorrectLogs() {
+        when(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp()).thenReturn(null);
+        mFakeTimeSource.setInstant(NOW);
+        // mock connected apps, so UsageStatsLogger#log() does not deem HC as inactive and skip all
+        // the logs
+        when(mContext.createContextAsUser(mCurrentUser, 0)
+                        .getPackageManager()
+                        .getInstalledPackages(any()))
+                .thenReturn(
+                        List.of(
+                                mPackageInfoConnectedApp,
+                                mPackageInfoNotHoldingPermission,
+                                mPackageInfoNotConnectedApp));
+
+        DailyLoggingService.logDailyMetrics(
+                mContext,
+                mCurrentUser,
+                mPreferenceHelper,
+                mAccessLogsHelper,
+                mTransactionManager,
+                mMedicalDataSourceHelper,
+                mMedicalResourceHelper,
+                mFakeTimeSource);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_PHR_USAGE_STATS),
+                                anyInt(),
+                                anyInt(),
+                                /* isPhrMonthlyActiveUser */ eq(false),
+                                anyInt()),
+                times(1));
     }
 
     private long subtractDaysFromInstantNow(int numberOfDays) {

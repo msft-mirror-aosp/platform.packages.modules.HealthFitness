@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"אתמול"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"קריאה: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"כתיבה: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ניהול הרשאות"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"זמן: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"פעילות"</string>
@@ -986,7 +986,7 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{אחרי חודש אחד}one{אחרי # חודשים}two{אחרי חודשיים}other{אחרי # חודשים}}"</string>
     <string name="range_never" msgid="4429478261788361233">"אף פעם"</string>
     <string name="range_off" msgid="8178520557618184215">"מושבתת"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"כשמשנים את ההגדרות האלה, הנתונים הקיימים ב-Health Connect נמחקים כך שישקפו את ההעדפות החדשות"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"כשמשנים את ההגדרות האלה, הנתונים הקיימים ב-Health Connect נמחקים בהתאם להעדפות החדשות"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{למחוק אוטומטית את הנתונים אחרי חודש אחד?}one{למחוק אוטומטית את הנתונים אחרי # חודשים?}two{למחוק אוטומטית את הנתונים אחרי חודשיים?}other{למחוק אוטומטית את הנתונים אחרי # חודשים?}}"</string>
     <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{הפעולה הזו גם מוחקת מ-Health Connect נתונים מלפני חודש ויותר.\n\nכדי למחוק לגמרי את הנתונים מהאפליקציות המקושרות שלך, עליך לבדוק כל אפליקציה שבה הנתונים שלך עשויים להישמר.}one{הפעולה הזו גם מוחקת מ-Health Connect נתונים מלפני # חודשים ויותר.\n\nכדי למחוק לגמרי את הנתונים מהאפליקציות המקושרות שלך, עליך לבדוק כל אפליקציה שבה הנתונים שלך עשויים להישמר.}two{הפעולה הזו גם מוחקת מ-Health Connect נתונים מלפני חודשיים ויותר.\n\nכדי למחוק לגמרי את הנתונים מהאפליקציות המקושרות שלך, עליך לבדוק כל אפליקציה שבה הנתונים שלך עשויים להישמר.}other{הפעולה הזו גם מוחקת מ-Health Connect נתונים מלפני # חודשים ויותר.\n\nכדי למחוק לגמרי את הנתונים מהאפליקציות המקושרות שלך, עליך לבדוק כל אפליקציה שבה הנתונים שלך עשויים להישמר.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"הגדרת מחיקה אוטומטית"</string>
@@ -1133,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"לעיון בחנות האפליקציות"</string>
     <string name="select_all" msgid="837499881590001166">"בחירת הכול"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"האפליקציות המקושרות לא יוכלו יותר לקרוא את הנתונים האלה מ-Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"מסומנת"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"לא מסומנת"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"יש מסלול של האימון במפה"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"ליום הבא"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"לשבוע הבא"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"לחודש הבא"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"ליום הקודם"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"לשבוע הקודם"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"לחודש הקודם"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"למחוק סופית את כל הנתונים?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"למחוק סופית את הנתונים שנבחרו?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"למחוק סופית את כל הנתונים של <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1175,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"הגישה האחרונה נעשתה בתאריך: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"גישה אתמול: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"תאריך גישה: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> ב-<xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

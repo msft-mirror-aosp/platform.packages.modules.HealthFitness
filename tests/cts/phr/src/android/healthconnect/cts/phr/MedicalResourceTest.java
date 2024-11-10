@@ -17,7 +17,7 @@
 package android.healthconnect.cts.phr;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
@@ -60,13 +60,13 @@ public class MedicalResourceTest {
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 DATA_SOURCE_ID,
                                 FHIR_VERSION_R4,
                                 fhirResource)
                         .build();
 
-        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
         assertThat(resource.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(resource.getFhirVersion()).isEqualTo(FHIR_VERSION_R4);
         assertThat(resource.getFhirResource()).isEqualTo(fhirResource);
@@ -131,7 +131,7 @@ public class MedicalResourceTest {
                 IllegalArgumentException.class,
                 () ->
                         new MedicalResource.Builder(
-                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                        MEDICAL_RESOURCE_TYPE_VACCINES,
                                         DATA_SOURCE_ID,
                                         FHIR_VERSION_R4,
                                         getFhirResource())
@@ -144,7 +144,7 @@ public class MedicalResourceTest {
                 IllegalArgumentException.class,
                 () ->
                         new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 "1",
                                 FHIR_VERSION_R4,
                                 getFhirResource()));
@@ -156,7 +156,7 @@ public class MedicalResourceTest {
                 IllegalArgumentException.class,
                 () ->
                         new MedicalResource.Builder(
-                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                        MEDICAL_RESOURCE_TYPE_VACCINES,
                                         DATA_SOURCE_ID,
                                         FHIR_VERSION_R4,
                                         getFhirResource())
@@ -168,7 +168,7 @@ public class MedicalResourceTest {
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 DATA_SOURCE_ID,
                                 FHIR_VERSION_R4,
                                 fhirResource)

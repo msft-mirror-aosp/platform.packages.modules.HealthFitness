@@ -18,7 +18,6 @@ package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -26,6 +25,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
@@ -119,8 +119,8 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testQueryAllMedicalResourceTypeInfos_withManagePerm_hasData_succeeds()
             throws Exception {
-        // Create some data sources with data: ds1 contains [immunization, differentImmunization,
-        // allergy], ds2 contains [immunization], and ds3 contains [allergy].
+        // Create some data sources with data: ds1 contains [vaccine, differentVaccine,
+        // allergy], ds2 contains [vaccine], and ds3 contains [allergy].
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
@@ -176,7 +176,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
                                     new MedicalResourceTypeInfo(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                            MEDICAL_RESOURCE_TYPE_VACCINES,
                                             Set.of(dataSource1, dataSource2)),
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
@@ -219,7 +219,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
                                     new MedicalResourceTypeInfo(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
+                                            MEDICAL_RESOURCE_TYPE_VACCINES, Set.of()),
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                                     new MedicalResourceTypeInfo(
@@ -262,7 +262,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
                                     new MedicalResourceTypeInfo(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
+                                            MEDICAL_RESOURCE_TYPE_VACCINES, Set.of()),
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                                     new MedicalResourceTypeInfo(

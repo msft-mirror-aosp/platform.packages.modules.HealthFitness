@@ -158,7 +158,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun fragment_starts() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -185,7 +185,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun doesNotShowWriteHeader_whenNoWritePermissions() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(readPermission)) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(setOf(readPermission))
@@ -227,7 +227,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun unsupportedPackage_grantedPermissionsNotLoaded_onOrientationChange() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -264,7 +264,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun unsupportedPackage_doesNotShowFooter() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -293,7 +293,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenNoHistoryRead_showsFooterWithGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -319,7 +319,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenHistoryRead_showsFooterWithoutGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -440,7 +440,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -497,7 +497,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -554,7 +554,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }

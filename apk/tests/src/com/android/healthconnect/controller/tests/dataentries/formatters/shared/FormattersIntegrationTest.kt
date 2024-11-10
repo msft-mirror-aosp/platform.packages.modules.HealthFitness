@@ -19,40 +19,37 @@
 package com.android.healthconnect.controller.tests.dataentries.formatters.shared
 
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings
-import android.platform.test.annotations.DisableFlags
-import android.platform.test.annotations.EnableFlags
-import android.platform.test.flag.junit.SetFlagsRule
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.fromHealthPermissionCategory
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
-import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
-import org.junit.Rule
 import org.junit.Test
 
 class FormattersIntegrationTest {
 
-    @JvmField @Rule val mSetFlagsRule = SetFlagsRule()
-
-    @EnableFlags(Flags.FLAG_MINDFULNESS)
     @Test
     fun allRecordsHaveFormatters() {
-        val recordClasses =
-            HealthConnectMappings.getInstance().recordIdToExternalRecordClassMap.values.sortedBy {
-                it.name
-            }
-        val supportedUIRecords =
-            HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten().sortedBy { it.name }
-        assertThat(recordClasses).isEqualTo(supportedUIRecords)
-    }
+        val healthConnectMappings = HealthConnectMappings()
+        val frameworkRecordClasses = healthConnectMappings.recordIdToExternalRecordClassMap.values
+        val controllerRecordClasses =
+            HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten()
 
-    @DisableFlags(Flags.FLAG_MINDFULNESS)
-    @Test
-    fun allRecordsHaveFormatters_exceptUnreleasedDataTypes() {
-        val recordClasses =
-            HealthConnectMappings.getInstance().recordIdToExternalRecordClassMap.values.sortedBy {
-                it.name
-            }
-        val supportedUIRecords =
-            HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten().sortedBy { it.name }
-        assertThat(recordClasses).isEqualTo(supportedUIRecords)
+        assertThat(controllerRecordClasses).containsExactlyElementsIn(frameworkRecordClasses)
+
+        for (recordTypeId in healthConnectMappings.allRecordTypeIdentifiers) {
+            val permissionCategory =
+                healthConnectMappings.getHealthPermissionCategoryForRecordType(recordTypeId)
+            val fitnessPermissionType =
+                fromHealthPermissionCategory(permissionCategory) as FitnessPermissionType
+            val expectedRecordClass =
+                healthConnectMappings.recordIdToExternalRecordClassMap[recordTypeId]!!
+
+            assertThat(HealthPermissionToDatatypeMapper.getAllDataTypes())
+                .containsKey(fitnessPermissionType)
+            assertThat(HealthPermissionToDatatypeMapper.getAllDataTypes()[fitnessPermissionType]!!)
+                .contains(expectedRecordClass)
+            assertThat(HealthPermissionToDatatypeMapper.getDataTypes(fitnessPermissionType))
+                .contains(expectedRecordClass)
+        }
     }
 }

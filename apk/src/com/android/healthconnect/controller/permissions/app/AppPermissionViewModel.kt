@@ -379,6 +379,28 @@ constructor(
         return false
     }
 
+    fun updateAdditionalPermission(
+        packageName: String,
+        additionalPermission: AdditionalPermission,
+        grant: Boolean
+    ) : Boolean {
+        try {
+            val grantedPermissions = _grantedAdditionalPermissions.value.orEmpty().toMutableSet()
+            if (grant) {
+                grantPermissionsStatusUseCase.invoke(packageName,additionalPermission.toString())
+                grantedPermissions.add(additionalPermission)
+            } else {
+                revokePermissionsStatusUseCase.invoke(packageName, additionalPermission.toString())
+                grantedPermissions.remove(additionalPermission)
+            }
+            _grantedAdditionalPermissions.postValue(grantedPermissions)
+            return true
+        } catch (ex: Exception) {
+            Log.e(TAG, "Failed to update additional permission!", ex)
+        }
+        return false
+    }
+
     fun updatePermission(
         packageName: String,
         medicalPermission: MedicalPermission,

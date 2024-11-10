@@ -27,7 +27,6 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.NUM_OF_TABLES;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.assertNumberOfTables;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -58,13 +57,10 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
-import com.android.server.healthconnect.utils.TimeSourceImpl;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -162,12 +158,13 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         injector = getHealthConnectInjector(mContext);
         transactionManager = injector.getTransactionManager();
+        transactionTestUtils = new TransactionTestUtils(mContext, injector);
 
         assertPhrTablesExist(transactionManager);
         // read the StepsRecord and assert that it's intact
         List<RecordInternal<?>> recordInternals =
                 transactionManager.readRecordsByIds(
-                        getReadTransactionRequest(
+                        transactionTestUtils.getReadTransactionRequest(
                                 TEST_PACKAGE_NAME,
                                 Map.of(RECORD_TYPE_STEPS, originalStepsRecordUuids)),
                         injector.getAppInfoHelper(),
@@ -205,12 +202,7 @@ public class HealthConnectDatabaseTest {
 
         assertPhrTablesExist(transactionManager);
         // PHR functions should work properly.
-        MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        transactionManager,
-                        injector.getAppInfoHelper(),
-                        new TimeSourceImpl(),
-                        injector.getAccessLogsHelper());
+        MedicalDataSourceHelper medicalDataSourceHelper = injector.getMedicalDataSourceHelper();
         MedicalDataSource originalMedicalDataSource =
                 medicalDataSourceHelper.createMedicalDataSource(
                         mContext,
@@ -263,9 +255,6 @@ public class HealthConnectDatabaseTest {
     }
 
     private static HealthConnectInjector getHealthConnectInjector(Context context) {
-        AppInfoHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
-        TransactionManager.clearInstanceForTest();
         return HealthConnectInjectorImpl.newBuilderForTest(context)
                 .setHealthPermissionIntentAppsTracker(mock(HealthPermissionIntentAppsTracker.class))
                 .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))

@@ -18,7 +18,6 @@ package android.health.connect.internal.datatypes.utils;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -26,6 +25,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 
@@ -65,9 +65,6 @@ public final class MedicalResourceTypePermissionMapper {
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_CONDITIONS, HealthPermissions.READ_MEDICAL_DATA_CONDITIONS);
         sMedicalResourceTypeToReadPermissionMap.put(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS);
-        sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS);
         sMedicalResourceTypeToReadPermissionMap.put(
@@ -85,6 +82,8 @@ public final class MedicalResourceTypePermissionMapper {
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        sMedicalResourceTypeToReadPermissionMap.put(
+                MEDICAL_RESOURCE_TYPE_VACCINES, HealthPermissions.READ_MEDICAL_DATA_VACCINES);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_VISITS, HealthPermissions.READ_MEDICAL_DATA_VISITS);
         sMedicalResourceTypeToReadPermissionMap.put(

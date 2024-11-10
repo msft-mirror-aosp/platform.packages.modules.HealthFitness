@@ -25,7 +25,6 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.units.Temperature;
 import android.health.connect.datatypes.units.TemperatureDelta;
-import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -71,12 +70,6 @@ public final class SkinTemperatureRecordInternal
             parcel.writeLong(skinTemperatureDeltaSample.mEpochMillis());
         }
     }
-
-    @Override
-    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
-
-    @Override
-    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     @Override
     public SkinTemperatureRecord toExternalRecord() {
