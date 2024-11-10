@@ -16,10 +16,10 @@
 
 package android.healthconnect.cts.phr.apis;
 
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
@@ -285,7 +285,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> readReceiver =
                 new HealthConnectReceiver<>();
         mManager.readMedicalResources(
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 Executors.newSingleThreadExecutor(),
                 readReceiver);
@@ -387,7 +387,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> readReceiver =
                 new HealthConnectReceiver<>();
         mManager.readMedicalResources(
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 Executors.newSingleThreadExecutor(),
                 readReceiver);
@@ -402,12 +402,12 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
@@ -415,9 +415,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         runWithShellPermissionIdentity(
                 () -> {
                     mManager.deleteMedicalResources(
-                            List.of(
-                                    foregroundAppImmunization.getId(),
-                                    backgroundAppImmunization.getId()),
+                            List.of(foregroundAppVaccine.getId(), backgroundAppVaccine.getId()),
                             Executors.newSingleThreadExecutor(),
                             callback);
                     callback.verifyNoExceptionOrThrow();
@@ -429,9 +427,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         runWithShellPermissionIdentity(
                 () -> {
                     mManager.readMedicalResources(
-                            List.of(
-                                    backgroundAppImmunization.getId(),
-                                    foregroundAppImmunization.getId()),
+                            List.of(backgroundAppVaccine.getId(), foregroundAppVaccine.getId()),
                             Executors.newSingleThreadExecutor(),
                             readReceiver);
                     assertThat(readReceiver.getResponse()).isEmpty();
@@ -441,7 +437,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_inForegroundOnlyReadPermissions_expectError() {
-        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         MedicalResourceId id =
                 new MedicalResourceId(DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, "1");
 
@@ -485,22 +481,21 @@ public class DeleteMedicalResourcesByIdsCtsTest {
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
-        PHR_FOREGROUND_APP.deleteMedicalResources(List.of(backgroundAppImmunization.getId()));
+        PHR_FOREGROUND_APP.deleteMedicalResources(List.of(backgroundAppVaccine.getId()));
 
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
-        // Test that the immunization is still present
+        // Test that the vaccine is still present
         runWithShellPermissionIdentity(
                 () -> {
                     mManager.readMedicalResources(
-                            List.of(backgroundAppImmunization.getId()),
+                            List.of(backgroundAppVaccine.getId()),
                             Executors.newSingleThreadExecutor(),
                             readReceiver);
-                    assertThat(readReceiver.getResponse())
-                            .containsExactly(backgroundAppImmunization);
+                    assertThat(readReceiver.getResponse()).containsExactly(backgroundAppVaccine);
                 });
     }
 }

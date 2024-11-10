@@ -24,6 +24,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.database.sqlite.SQLiteException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -41,6 +42,7 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -55,7 +57,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestU
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -102,19 +103,17 @@ public class CloudBackupManagerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mDatabaseTestRule.getDatabaseContext(), mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
 
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mTransactionTestUtils =
+                new TransactionTestUtils(
+                        mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         DeviceInfoHelper deviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
@@ -144,12 +143,6 @@ public class CloudBackupManagerTest {
                         priorityHelper,
                         preferenceHelper,
                         exportImportSettingsStorage);
-    }
-
-    @After
-    public void tearDown() {
-        AppInfoHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test
@@ -229,5 +222,23 @@ public class CloudBackupManagerTest {
         assertThat(response.getChanges().size()).isEqualTo(1);
         String nextChangeToken = response.getNextChangeToken();
         assertThat(nextChangeToken).isEqualTo("1");
+    }
+
+    @Test
+    public void getChangesForBackup_throwsDatabaseException() {
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT));
+
+        // Delete backup_change_token_table.
+        HealthConnectDatabase database =
+                new HealthConnectDatabase(mDatabaseTestRule.getDatabaseContext());
+        database.getWritableDatabase()
+                .execSQL("DROP TABLE IF EXISTS " + BackupChangeTokenHelper.getTableName());
+
+        assertThrows(SQLiteException.class, () -> mCloudBackupManager.getChangesForBackup(null));
+        // Add backup_change_token_table back to not affect other tests.
+        BackupChangeTokenHelper.applyBackupTokenUpgrade(database.getWritableDatabase());
     }
 }

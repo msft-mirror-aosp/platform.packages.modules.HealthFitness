@@ -102,7 +102,7 @@ class AccessViewModelTest {
 
         val testObserver = TestObserver<AccessViewModel.AccessScreenState>()
         viewModel.appMetadataMap.observeForever(testObserver)
-        viewModel.loadAppMetaDataMap(MedicalPermissionType.IMMUNIZATIONS)
+        viewModel.loadAppMetaDataMap(MedicalPermissionType.VACCINES)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue())

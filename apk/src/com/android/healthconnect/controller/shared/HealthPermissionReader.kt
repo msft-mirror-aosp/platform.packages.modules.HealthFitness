@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.shared
 
+import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -43,6 +44,7 @@ import javax.inject.Singleton
 class HealthPermissionReader @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
+        private const val HEALTH_PERMISSION_GROUP = "android.permission-group.HEALTH"
         private const val RESOLVE_INFO_FLAG: Long = PackageManager.MATCH_ALL.toLong()
         private const val PACKAGE_INFO_PERMISSIONS_FLAG: Long =
             PackageManager.GET_PERMISSIONS.toLong()
@@ -52,7 +54,6 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
                 HealthPermissions.WRITE_MEDICAL_DATA,
                 HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
                 HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
@@ -60,6 +61,7 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
                 HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
                 HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VACCINES,
                 HealthPermissions.READ_MEDICAL_DATA_VISITS,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
             )
@@ -275,10 +277,24 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
     @VisibleForTesting
     fun getHealthPermissions(): List<String> {
         val permissions =
-            context.packageManager
-                .queryPermissionsByGroup("android.permission-group.HEALTH", 0)
-                .map { permissionInfo -> permissionInfo.name }
+            context.packageManager.queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0).map {
+                permissionInfo ->
+                permissionInfo.name
+            }
         return permissions.filterNot { permission -> shouldHidePermission(permission) }
+    }
+
+    /** Returns a list of all system health permissions in the HEALTH permission group. */
+    fun getSystemHealthPermissions(): List<String> {
+        val permissions =
+            context.packageManager
+                .queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0)
+                .map { permissionInfo -> permissionInfo.name }
+                .filter { permissionName ->
+                    !AppOpsManager.permissionToOp(permissionName)
+                        .equals(AppOpsManager.OPSTR_READ_WRITE_HEALTH_DATA)
+                }
+        return permissions
     }
 
     fun shouldHidePermission(permission: String): Boolean {

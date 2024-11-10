@@ -38,7 +38,7 @@ class AppDataViewModel
 @Inject
 constructor(
     private val appInfoReader: AppInfoReader,
-    private val loadAppDataUseCase: AppDataUseCase,
+    private val loadAllDataUseCase: AllDataUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -95,8 +95,8 @@ constructor(
         _appMedicalData.postValue(AppDataState.Loading)
         numOfPermissionTypes = 0
         viewModelScope.launch {
-            val fitnessData = async { loadAppDataUseCase.loadFitnessAppData(packageName) }
-            val medicalData = async { loadAppDataUseCase.loadMedicalAppData(packageName) }
+            val fitnessData = async { loadAllDataUseCase.loadFitnessAppData(packageName) }
+            val medicalData = async { loadAllDataUseCase.loadMedicalAppData(packageName) }
 
             handleResult(fitnessData.await(), _appFitnessData)
             handleResult(medicalData.await(), _appMedicalData)

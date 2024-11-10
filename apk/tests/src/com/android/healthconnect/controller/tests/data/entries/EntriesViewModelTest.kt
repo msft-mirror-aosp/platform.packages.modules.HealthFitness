@@ -201,7 +201,7 @@ class EntriesViewModelTest {
         val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
         viewModel.entries.observeForever(testObserver)
         viewModel.loadEntries(
-            MedicalPermissionType.IMMUNIZATIONS,
+            MedicalPermissionType.VACCINES,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
             DateNavigationPeriod.PERIOD_WEEK,
         )

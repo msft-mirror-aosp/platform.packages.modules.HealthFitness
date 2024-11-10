@@ -186,7 +186,6 @@ public class BackupRestoreTest {
         FilesUtil.deleteDir(mMockBackedDataDirectory);
         FilesUtil.deleteDir(mMockStagedDataDirectory);
         mFakePreferenceHelper.clearCache();
-        AppInfoHelper.resetInstanceForTest();
     }
 
     @Test

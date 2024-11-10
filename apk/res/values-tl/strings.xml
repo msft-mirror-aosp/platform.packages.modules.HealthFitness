@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Kahapon"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Na-read: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Na-write: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Pamahalaan ang mga pahintulot"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Oras: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktibidad"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"mga pagtulak ng wheelchair"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"I-read ang mga pagtulak ng wheelchair"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"I-write ang mga pagtulak ng wheelchair"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Tindi ng aktibidad"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"tindi ng aktibidad"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"I-read ang tindi ng aktibidad"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"I-write ang tindi ng aktibidad"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Basal metabolic rate"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"basal metabolic rate"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"I-read ang basal metabolic rate"</string>
@@ -998,7 +994,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Ide-delete ng Health Connect ang lahat ng data na mas luma sa # buwan. Posibleng abutin nang isang araw bago lumabas ang mga pagbabagong ito sa iyong mga nakakonektang app.}one{Ide-delete ng Health Connect ang lahat ng data na mas luma sa # buwan. Posibleng abutin nang isang araw bago lumabas ang mga pagbabagong ito sa iyong mga nakakonektang app.}other{Ide-delete ng Health Connect ang lahat ng data na mas luma sa # na buwan. Posibleng abutin nang isang araw bago lumabas ang mga pagbabagong ito sa iyong mga nakakonektang app.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Made-delete ang data mula sa mga ito"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Tapos na"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Naka-on ang awtomatikong i-delete. Ide-delete ang data na mahigit # buwan ang tagal}one{Naka-on ang awtomatikong i-delete. Ide-delete ang data na mahigit # buwan ang tagal}other{Naka-on ang awtomatikong i-delete. Ide-delete ang data na mahigit # na buwan ang tagal}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Naka-on ang auto-delete. Ide-delete ang data na mahigit # buwan ang tagal}one{Naka-on ang auto-delete. Ide-delete ang data na mahigit # buwan ang tagal}other{Naka-on ang auto-delete. Ide-delete ang data na mahigit # na buwan ang tagal}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Naka-off ang awtomatikong i-delete"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Itakda ang priyoridad ng app"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Kung maglalagay ng data ng <xliff:g id="DATA_TYPE">%s</xliff:g> ang higit sa isang app, isasapriyoridad ng Health Connect ang app na pinakamataas sa listahang ito. I-drag ang mga app para baguhin ang pagkakasunod-sunod ng mga ito."</string>
@@ -1137,24 +1133,15 @@
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Tingnan sa app store"</string>
     <string name="select_all" msgid="837499881590001166">"Piliin lahat"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Hindi na mare-read ng mga nakakonektang app ang data na ito mula sa Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"May check"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Walang check"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Available ang ruta ng mapa ng pag-ehersisyo"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Kinabukasan"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Susunod na linggo"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Susunod na buwan"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Nakaraang araw"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Nakaraang linggo"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Nakaraang buwan"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Permanenteng i-delete ang lahat ng data?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Permanenteng i-delete ang napiling data?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Permanenteng i-delete ang lahat ng data ng <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1179,4 +1166,18 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Na-access noong <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Na-access kahapon nang <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Na-access noong <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <skip />
+    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <skip />
+    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <skip />
+    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <skip />
+    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <skip />
+    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <skip />
+    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <skip />
 </resources>

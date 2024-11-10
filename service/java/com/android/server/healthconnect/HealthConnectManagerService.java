@@ -54,7 +54,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceH
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.utils.TimeSource;
-import com.android.server.healthconnect.utils.TimeSourceImpl;
 
 import java.util.Objects;
 
@@ -71,21 +70,21 @@ public class HealthConnectManagerService extends SystemService {
     private final TransactionManager mTransactionManager;
     private final UserManager mUserManager;
     private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
-    private UserHandle mCurrentForegroundUser;
-    private MigrationUiStateManager mMigrationUiStateManager;
-    private final MigrationNotificationSender mMigrationNotificationSender;
+    private final MigrationUiStateManager mMigrationUiStateManager;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final ExportManager mExportManager;
     private final PreferenceHelper mPreferenceHelper;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
+    private final HealthConnectInjector mHealthConnectInjector;
 
-    @Nullable private HealthConnectInjector mHealthConnectInjector;
+    private UserHandle mCurrentForegroundUser;
 
     public HealthConnectManagerService(Context context) {
         super(context);
         mContext = context;
         mCurrentForegroundUser = context.getUser();
+        mUserManager = context.getSystemService(UserManager.class);
 
         AppInfoHelper appInfoHelper;
         AccessLogsHelper accessLogsHelper;
@@ -120,26 +119,25 @@ public class HealthConnectManagerService extends SystemService {
         migrationCleaner = mHealthConnectInjector.getMigrationCleaner();
         mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
         mExportManager = mHealthConnectInjector.getExportManager();
-
-        mUserManager = context.getSystemService(UserManager.class);
         mMigrationBroadcastScheduler =
                 new MigrationBroadcastScheduler(
                         mCurrentForegroundUser,
                         mHealthConnectDeviceConfigManager,
                         mMigrationStateManager);
         mMigrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
-        mMigrationNotificationSender =
+        MigrationNotificationSender migrationNotificationSender =
                 new MigrationNotificationSender(context, mHealthConnectDeviceConfigManager);
         mMigrationUiStateManager =
                 new MigrationUiStateManager(
                         mContext,
                         mCurrentForegroundUser,
                         mMigrationStateManager,
-                        mMigrationNotificationSender);
-        TimeSource timeSource = new TimeSourceImpl();
+                        migrationNotificationSender);
         MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        mTransactionManager, appInfoHelper, timeSource, accessLogsHelper);
+                mHealthConnectInjector.getMedicalDataSourceHelper();
+        MedicalResourceHelper medicalResourceHelper =
+                mHealthConnectInjector.getMedicalResourceHelper();
+        TimeSource timeSource = mHealthConnectInjector.getTimeSource();
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
@@ -149,12 +147,7 @@ public class HealthConnectManagerService extends SystemService {
                         mMigrationStateManager,
                         mMigrationUiStateManager,
                         mContext,
-                        new MedicalResourceHelper(
-                                mTransactionManager,
-                                appInfoHelper,
-                                medicalDataSourceHelper,
-                                timeSource,
-                                accessLogsHelper),
+                        medicalResourceHelper,
                         medicalDataSourceHelper,
                         mExportManager,
                         mExportImportSettingsStorage,
@@ -164,7 +157,11 @@ public class HealthConnectManagerService extends SystemService {
                         changeLogsHelper,
                         changeLogsRequestHelper,
                         internalHealthConnectMappings,
-                        mHealthConnectInjector.getPriorityMigrationHelper());
+                        mHealthConnectInjector.getPriorityMigrationHelper(),
+                        appInfoHelper,
+                        mHealthConnectInjector.getDeviceInfoHelper(),
+                        mPreferenceHelper,
+                        timeSource);
     }
 
     @Override
@@ -235,6 +232,9 @@ public class HealthConnectManagerService extends SystemService {
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
         mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
+        mHealthConnectInjector
+                .getHealthPermissionIntentAppsTracker()
+                .onUserUnlocked(mCurrentForegroundUser);
 
         if (Flags.clearCachesAfterSwitchingUser()) {
             // Clear preferences cache again after the user switching is done as there's a race

@@ -23,14 +23,14 @@ import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
 import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
-import com.android.healthconnect.controller.data.appdata.AppDataUseCase
+import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
@@ -86,7 +86,7 @@ class AllDataViewModelTest {
         context.setLocale(Locale.US)
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
-        viewModel = AllDataViewModel(AppDataUseCase(manager, Dispatchers.Main))
+        viewModel = AllDataViewModel(AllDataUseCase(manager, Dispatchers.Main))
     }
 
     @After
@@ -185,8 +185,11 @@ class AllDataViewModelTest {
         doAnswer(
                 prepareAnswer(
                     listOf(
-                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, setOf()),
-                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, setOf()),
+                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VACCINES, setOf()),
+                        MedicalResourceTypeInfo(
+                            MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                            setOf(),
+                        ),
                     )
                 )
             )
@@ -208,7 +211,7 @@ class AllDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MEDICAL_RESOURCE_TYPE_VACCINES,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 ),
                 MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, setOf()),
@@ -223,44 +226,9 @@ class AllDataViewModelTest {
         advanceUntilIdle()
 
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.VACCINES)))
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
-    }
-
-    @Test
-    fun isAnyMedicalData_noMedicalData_returnsFalse() = runTest {
-        doAnswer(prepareAnswer(emptyMap()))
-            .`when`(manager)
-            .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
-
-        val testObserver = TestObserver<Boolean>()
-        viewModel.isAnyMedicalData.observeForever(testObserver)
-        viewModel.loadAllMedicalData()
-        advanceUntilIdle()
-
-        assertThat(testObserver.getLastValue()).isEqualTo(false)
-    }
-
-    @Test
-    fun isAnyMedicalData_hasMedicalData_returnsTrue() = runTest {
-        val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
-            listOf(
-                MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                    setOf(TEST_MEDICAL_DATA_SOURCE),
-                )
-            )
-        doAnswer(prepareAnswer(medicalResourceTypeResources))
-            .`when`(manager)
-            .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
-
-        val testObserver = TestObserver<Boolean>()
-        viewModel.isAnyMedicalData.observeForever(testObserver)
-        viewModel.loadAllMedicalData()
-        advanceUntilIdle()
-
-        assertThat(testObserver.getLastValue()).isEqualTo(true)
     }
 
     @Test
