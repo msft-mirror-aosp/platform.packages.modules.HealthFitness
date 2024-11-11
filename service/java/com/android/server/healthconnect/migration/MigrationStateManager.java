@@ -86,17 +86,18 @@ public final class MigrationStateManager {
     private final Set<StateChangedListener> mStateChangedListeners = new CopyOnWriteArraySet<>();
 
     private final Object mLock = new Object();
-    private volatile MigrationBroadcastScheduler mMigrationBroadcastScheduler;
+    private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
     private UserHandle mUserHandle;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public MigrationStateManager(
             UserHandle userHandle,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            MigrationBroadcastScheduler migrationBroadcastScheduler) {
         mUserHandle = userHandle;
         mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
         mPreferenceHelper = preferenceHelper;
+        mMigrationBroadcastScheduler = migrationBroadcastScheduler;
     }
 
     /** Re-initialize this class instance with the new user */
@@ -112,11 +113,6 @@ public final class MigrationStateManager {
         synchronized (mLock) {
             mStateChangedListeners.add(listener);
         }
-    }
-
-    public void setMigrationBroadcastScheduler(
-            MigrationBroadcastScheduler migrationBroadcastScheduler) {
-        mMigrationBroadcastScheduler = migrationBroadcastScheduler;
     }
 
     /**
@@ -431,25 +427,19 @@ public final class MigrationStateManager {
         }
         mPreferenceHelper.insertOrReplacePreferencesTransaction(preferences);
 
-        if (mMigrationBroadcastScheduler != null) {
-            //noinspection Convert2Lambda
-            HealthConnectThreadScheduler.scheduleInternalTask(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                mMigrationBroadcastScheduler.scheduleNewJobs(context);
-                            } catch (Exception e) {
-                                Slog.e(TAG, "Migration broadcast schedule failed", e);
-                            }
+        //noinspection Convert2Lambda
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mMigrationBroadcastScheduler.scheduleNewJobs(
+                                    context, MigrationStateManager.this);
+                        } catch (Exception e) {
+                            Slog.e(TAG, "Migration broadcast schedule failed", e);
                         }
-                    });
-        } else if (Constants.DEBUG) {
-            Slog.d(
-                    TAG,
-                    "Unable to schedule migration broadcasts: "
-                            + "MigrationBroadcastScheduler object is null");
-        }
+                    }
+                });
 
         for (StateChangedListener listener : mStateChangedListeners) {
             listener.onChanged(migrationState);
