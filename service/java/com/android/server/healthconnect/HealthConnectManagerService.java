@@ -119,12 +119,7 @@ public class HealthConnectManagerService extends SystemService {
         migrationCleaner = mHealthConnectInjector.getMigrationCleaner();
         mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
         mExportManager = mHealthConnectInjector.getExportManager();
-        mMigrationBroadcastScheduler =
-                new MigrationBroadcastScheduler(
-                        mCurrentForegroundUser,
-                        mHealthConnectDeviceConfigManager,
-                        mMigrationStateManager);
-        mMigrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
+        mMigrationBroadcastScheduler = mHealthConnectInjector.getMigrationBroadcastScheduler();
         MigrationNotificationSender migrationNotificationSender =
                 new MigrationNotificationSender(context, mHealthConnectDeviceConfigManager);
         mMigrationUiStateManager =
@@ -257,7 +252,8 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+                        mMigrationBroadcastScheduler.scheduleNewJobs(
+                                mContext, mMigrationStateManager);
                     } catch (Exception e) {
                         Slog.e(TAG, "Migration broadcast schedule failed", e);
                     }
