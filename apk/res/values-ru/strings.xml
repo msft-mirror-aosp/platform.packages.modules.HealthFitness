@@ -53,7 +53,8 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Вчера"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Чтение: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Запись: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="separator" msgid="1299848322898210658">", "</string>
+    <!-- no translation found for separator (5521285473288943819) -->
+    <skip />
     <string name="manage_permissions" msgid="8394221950712608160">"Настроить разрешения"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Время: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активность"</string>
@@ -321,9 +322,12 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Заболевания"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"заболевания"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Чтение данных о заболеваниях"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Вакцинация"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"вакцинация"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Чтение данных о вакцинации"</string>
+    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
+    <skip />
+    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
+    <skip />
+    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
+    <skip />
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Результаты анализов"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"результаты анализов"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Чтение результатов анализов"</string>
@@ -549,7 +553,7 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Удалить данные"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Перейти к удалению"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Отменить удаление"</string>
-    <string name="time_range_title" msgid="5777596779865648336">"Выберите, какие данные удалить из приложения"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Выберите, какие данные удалить из сервиса"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Далее"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Все данные, добавленные в приложение \"Здоровье и спорт\" за выбранный период времени, будут навсегда удалены."</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\", добавленные в приложение \"Здоровье и спорт\" за выбранный период времени, будут навсегда удалены."</string>
@@ -980,21 +984,21 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Google Play"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Автоматическое удаление"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Автоматическое удаление"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Укажите период, по истечении которого данные будут автоматически удаляться из приложения \"Здоровье и спорт\""</string>
-    <string name="auto_delete_learn_more" msgid="7416469042791307994">"Подробнее об автоматическом удалении…"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Укажите период, по истечении которого данные будут удаляться из сервиса \"Здоровье и спорт\"."</string>
+    <string name="auto_delete_learn_more" msgid="7416469042791307994">"Подробнее об автоматическом удалении"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Автоматически удалять данные"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Через # месяц}one{Через # месяц}few{Через # месяца}many{Через # месяцев}other{Через # месяца}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Никогда"</string>
     <string name="range_off" msgid="8178520557618184215">"Выключено"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"При изменении периода хранения существующие данные будут удалены в соответствии с новыми настройками."</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Автоматически удалять данные через # месяц?}one{Автоматически удалять данные через # месяц?}few{Автоматически удалять данные через # месяца?}many{Автоматически удалять данные через # месяцев?}other{Автоматически удалять данные через # месяца?}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Из приложения \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяца.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}one{Из приложения \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяца.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}few{Из приложения \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяцев.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}many{Из приложения \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяцев.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}other{Из приложения \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяца.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Из сервиса \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяца.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}one{Из сервиса \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяца.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}few{Из сервиса \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяцев.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}many{Из сервиса \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяцев.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}other{Из сервиса \"Здоровье и спорт\" также будут удалены сведения, хранящиеся более # месяца.\n\nЧтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Настроить автоматическое удаление"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Существующие данные будут удалены"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Приложение \"Здоровье и спорт\" удалит все данные, хранящиеся более # месяца. Изменения вступят в силу в связанных приложениях в течение одного дня.}one{Приложение \"Здоровье и спорт\" удалит все данные, хранящиеся более # месяца. Изменения вступят в силу в связанных приложениях в течение одного дня.}few{Приложение \"Здоровье и спорт\" удалит все данные, хранящиеся более # месяцев. Изменения вступят в силу в связанных приложениях в течение одного дня.}many{Приложение \"Здоровье и спорт\" удалит все данные, хранящиеся более # месяцев. Изменения вступят в силу в связанных приложениях в течение одного дня.}other{Приложение \"Здоровье и спорт\" удалит все данные, хранящиеся более # месяца. Изменения вступят в силу в связанных приложениях в течение одного дня.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Будет удалена информация из следующих категорий:"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"ОК"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Автоудаление включено. Данные старше # месяца, будут удалены.}one{Автоудаление включено. Данные старше # месяца, будут удалены.}few{Автоудаление включено. Данные старше # месяцев, будут удалены.}many{Автоудаление включено. Данные старше # месяцев, будут удалены.}other{Автоудаление включено. Данные старше # месяца, будут удалены.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Автоудаление включено. Данные старше # месяца будут удалены.}one{Автоудаление включено. Данные старше # месяца будут удалены.}few{Автоудаление включено. Данные старше # месяцев будут удалены.}many{Автоудаление включено. Данные старше # месяцев будут удалены.}other{Автоудаление включено. Данные старше # месяца будут удалены.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Автоудаление отключено."</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Задайте приоритет приложений"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Если данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" поступят от нескольких приложений, сервис \"Здоровье и спорт\" отдаст приоритет тому, которое выше других в списке. Чтобы изменить порядок, перетащите приложения на нужные места."</string>
@@ -1131,6 +1135,12 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Посмотрите совместимые приложения"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Узнайте, какие ещё приложения можно синхронизировать с сервисом \"<xliff:g id="APP_NAME">%s</xliff:g>\" через платформу \"Здоровье и спорт\"."</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Открыть магазин"</string>
+    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
+    <skip />
+    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
+    <skip />
+    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
+    <skip />
     <string name="select_all" msgid="837499881590001166">"Выбрать все"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Связанные приложения больше не смогут читать эти данные платформы \"Здоровье и спорт\"."</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Выбрано"</string>
@@ -1166,14 +1176,45 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Последний доступ в <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Последний доступ вчера: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Последний доступ: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
-    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
-    <skip />
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Разрешить в любом режиме"</string>
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Разрешить выбранные"</string>
-    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
-    <skip />
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"В самом приложении при его использовании"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Отклонить все"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Открыть приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным о самочувствии и физической активности?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" запрашивает доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nВы можете предоставить сразу все разрешения или задать их по отдельности."</string>
-    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным \"<xliff:g id="DATA_TYPE">%2$s</xliff:g>\"?"</string>
+    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <skip />
+    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <skip />
+    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <skip />
+    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
+    <skip />
+    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
+    <skip />
+    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
+    <skip />
+    <!-- no translation found for allowed_to_access (4179317387300812335) -->
+    <skip />
+    <!-- no translation found for allowed_to_read (2775365229411407406) -->
+    <skip />
+    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
+    <skip />
+    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
+    <skip />
+    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
+    <skip />
+    <!-- no translation found for allowed (4158456017482263737) -->
+    <skip />
+    <!-- no translation found for not_allowed (6092523505093372147) -->
+    <skip />
+    <!-- no translation found for access_sensor_note (7949933977197789634) -->
+    <skip />
+    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
+    <skip />
+    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
+    <skip />
+    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
     <skip />
 </resources>

@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Yesterday"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Read: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Write: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Manage permissions"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Time: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activity"</string>
@@ -321,9 +321,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Conditions"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"conditions"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Read conditions"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vaccines"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vaccines"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Read vaccines"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaccines"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaccines"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Read vaccines"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Lab results"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"lab results"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Read lab results"</string>
@@ -1131,6 +1131,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"See compatible apps"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Find more apps to sync with <xliff:g id="APP_NAME">%s</xliff:g> via Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"See on app store"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Set a screen lock"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"For added security for your health data, set a PIN, pattern, or password for this device"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Set screen lock"</string>
     <string name="select_all" msgid="837499881590001166">"Select all"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Connected apps will no longer be able to read this data from Health Connect"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Checked"</string>
@@ -1173,4 +1176,21 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Allow <xliff:g id="APP_NAME">%1$s</xliff:g> to access fitness and wellness data?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> is requesting access to <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChoose to allow all or control them individually."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Allow <xliff:g id="APP_NAME">%1$s</xliff:g> to access <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitness and wellness"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"all the time"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"while in use"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"All the time"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"While in use"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> can access all of your fitness and wellness data <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Allowed to access"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Allowed to read"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"These permissions give <xliff:g id="APP_NAME">%1$s</xliff:g> access to data from your device sensors."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> of <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> apps allowed"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"No apps requesting"</string>
+    <string name="allowed" msgid="4158456017482263737">"Allowed"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Not allowed"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Apps with this permission can access <xliff:g id="DATA_TYPE">%s</xliff:g> data from your device sensors."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Remove <xliff:g id="DATA_TYPE">%s</xliff:g> access for all apps on your watch?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Check mark"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Cross mark"</string>
 </resources>
