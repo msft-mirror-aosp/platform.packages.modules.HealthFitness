@@ -404,3 +404,10 @@ flag {
     description: "This fixed read-only flag is used to enable replacing permission BODY_SENSORS (and BODY_SENSORS_BACKGROUND) with granular health permission READ_HEART_RATE (and READ_HEALTH_DATA_IN_BACKGROUND)"
     bug: "364638912"
 }
+
+flag {
+    name: "deprecate_exercise_session_type_breathing"
+    namespace: "android_health_services"
+    description: "Deprecates ExerciseSessionType#EXERCISE_SESSION_TYPE_GUIDED_BREATHING"
+    bug: "373629817"
+}
