@@ -28,7 +28,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -69,6 +68,11 @@ public final class PackageInfoUtils {
     @Nullable
     String[] getPackagesForUid(Context context, UserHandle user, int packageUid) {
         return getPackageManagerAsUser(context, user).getPackagesForUid(packageUid);
+    }
+
+    String[] getPackagesForUidNonNull(Context context, UserHandle user, int packageUid) {
+        String[] packages = getPackagesForUid(context, user, packageUid);
+        return packages != null ? packages : new String[] {};
     }
 
     /**
@@ -128,25 +132,6 @@ public final class PackageInfoUtils {
             Log.e(TAG, "Package " + packages[0] + " not found.");
             return null;
         }
-    }
-
-    Optional<String> getPackageNameForUid(Context context, int uid) {
-        String[] packages = getPackageNamesForUid(context, uid);
-        if (packages.length != 1) {
-            Log.w(TAG, "Can't get one package name for UID: " + uid);
-            return Optional.empty();
-        }
-        return Optional.of(packages[0]);
-    }
-
-    String[] getPackageNamesForUid(Context context, int uid) {
-        PackageManager packageManager =
-                getPackageManagerAsUser(context, UserHandle.getUserHandleForUid(uid));
-        if (packageManager == null) {
-            return new String[] {};
-        }
-        String[] packages = packageManager.getPackagesForUid(uid);
-        return packages != null ? packages : new String[] {};
     }
 
     @Nullable
