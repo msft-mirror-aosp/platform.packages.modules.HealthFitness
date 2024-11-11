@@ -122,7 +122,8 @@ public final class CloudBackupManager {
                         backupChangeToken.getDataTablePageToken(),
                         backupChangeToken.getChangeLogsRequestToken());
             }
-            throw new UnsupportedOperationException();
+            return mDatabaseHelper.getIncrementalChanges(
+                    backupChangeToken.getChangeLogsRequestToken());
         } catch (SQLiteException exception) {
             Slog.e(TAG, "Failed to read or write to database", exception);
             throw exception;
