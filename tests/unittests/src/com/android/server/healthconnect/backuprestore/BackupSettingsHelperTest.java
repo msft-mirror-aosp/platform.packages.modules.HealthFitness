@@ -16,11 +16,13 @@
 
 package healthconnect.backuprestore;
 
+import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.AUTO_DELETE_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.DISTANCE_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.ENERGY_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.HEIGHT_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.TEMPERATURE_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.WEIGHT_UNIT_PREF_KEY;
+import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.AutoDeleteFrequency;
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_DISTANCE_UNIT;
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_ENERGY_UNIT;
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_HEIGHT_UNIT;
@@ -227,6 +229,7 @@ public class BackupSettingsHelperTest {
                 new ScheduledExportSettings.Builder().setPeriodInDays(1).setUri(TEST_URI).build();
         ScheduledExportSettings actualSettings = userSettings.getScheduledExportSettings();
 
+        assertThat(actualSettings).isNotNull();
         assertThat(actualSettings).isEqualTo(expectedSettings);
     }
 
@@ -240,6 +243,7 @@ public class BackupSettingsHelperTest {
                 new ScheduledExportSettings.Builder().setPeriodInDays(7).setUri(TEST_URI).build();
         ScheduledExportSettings actualSettings = userSettings.getScheduledExportSettings();
 
+        assertThat(actualSettings).isNotNull();
         assertThat(actualSettings).isEqualTo(expectedSettings);
     }
 
@@ -253,6 +257,42 @@ public class BackupSettingsHelperTest {
                 new ScheduledExportSettings.Builder().setPeriodInDays(30).setUri(TEST_URI).build();
         ScheduledExportSettings actualSettings = userSettings.getScheduledExportSettings();
 
+        assertThat(actualSettings).isNotNull();
         assertThat(actualSettings).isEqualTo(expectedSettings);
+    }
+
+    @Test
+    public void autoDeleteSettingsOff_setsExportSettingsCorrectly() {
+        mPreferenceHelper.insertOrReplacePreference(
+                AUTO_DELETE_PREF_KEY, AutoDeleteFrequency.AUTO_DELETE_RANGE_NEVER.toString());
+
+        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+
+        assertThat(userSettings.getAutoDeleteSetting())
+                .isEqualTo(AutoDeleteFrequency.AUTO_DELETE_RANGE_NEVER);
+    }
+
+    @Test
+    public void autoDeleteSettingsThreeMonths_setsExportSettingsCorrectly() {
+        mPreferenceHelper.insertOrReplacePreference(
+                AUTO_DELETE_PREF_KEY,
+                AutoDeleteFrequency.AUTO_DELETE_RANGE_THREE_MONTHS.toString());
+
+        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+
+        assertThat(userSettings.getAutoDeleteSetting())
+                .isEqualTo(AutoDeleteFrequency.AUTO_DELETE_RANGE_THREE_MONTHS);
+    }
+
+    @Test
+    public void autoDeleteSettingsEighteenMonths_setsExportSettingsCorrectly() {
+        mPreferenceHelper.insertOrReplacePreference(
+                AUTO_DELETE_PREF_KEY,
+                AutoDeleteFrequency.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.toString());
+
+        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+
+        assertThat(userSettings.getAutoDeleteSetting())
+                .isEqualTo(AutoDeleteFrequency.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS);
     }
 }

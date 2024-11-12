@@ -17,6 +17,10 @@
 package com.android.server.healthconnect.storage.datatypehelpers.aggregation;
 
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ACTIVE_CALORIES_BURNED_RECORD_ACTIVE_CALORIES_TOTAL;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ACTIVITY_INTENSITY_DURATION_TOTAL;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ACTIVITY_INTENSITY_MINUTES_TOTAL;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ACTIVITY_INTENSITY_MODERATE_DURATION_TOTAL;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ACTIVITY_INTENSITY_VIGOROUS_DURATION_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.DISTANCE_RECORD_DISTANCE_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ELEVATION_RECORD_ELEVATION_GAINED_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.EXERCISE_SESSION_DURATION_TOTAL;
@@ -236,6 +240,11 @@ public class PriorityRecordsAggregator {
                     new SessionDurationAggregationData(
                             mExtraParams.getExcludeIntervalStartColumnName(),
                             mExtraParams.getExcludeIntervalEndColumnName());
+            case ACTIVITY_INTENSITY_MODERATE_DURATION_TOTAL,
+                            ACTIVITY_INTENSITY_VIGOROUS_DURATION_TOTAL,
+                            ACTIVITY_INTENSITY_DURATION_TOTAL,
+                            ACTIVITY_INTENSITY_MINUTES_TOTAL ->
+                    new ActivityIntensityAggregationData(mAggregationType);
             default ->
                     throw new UnsupportedOperationException(
                             "Priority aggregation do not support type: " + mAggregationType);

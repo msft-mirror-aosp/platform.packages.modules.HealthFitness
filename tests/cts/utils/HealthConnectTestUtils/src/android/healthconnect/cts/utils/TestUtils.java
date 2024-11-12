@@ -47,7 +47,6 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 
-import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -181,10 +180,6 @@ public final class TestUtils {
     public static final String PKG_TEST_APP = "android.healthconnect.test.app";
     private static final String TEST_APP_RECEIVER =
             PKG_TEST_APP + "." + TestAppReceiver.class.getSimpleName();
-
-    public static boolean isHardwareAutomotive() {
-        return hasSystemFeature(AUTOMOTIVE_FEATURE);
-    }
 
     public static ChangeLogTokenResponse getChangeLogToken(ChangeLogTokenRequest request)
             throws InterruptedException {
