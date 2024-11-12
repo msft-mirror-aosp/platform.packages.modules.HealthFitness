@@ -142,6 +142,8 @@ import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.healthfitness.flags.Flags;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -1076,8 +1078,10 @@ public final class TestUtils {
     /** returns true if the hardware is supported by HealthConnect. */
     public static boolean isHardwareSupported(Context context) {
         PackageManager pm = context.getPackageManager();
+        boolean disabledOnWatch = pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+              && !Flags.replaceBodySensorPermissionEnabled();
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
-                && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+                && !disabledOnWatch
                 && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
     }
