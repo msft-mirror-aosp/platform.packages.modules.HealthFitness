@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_A
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 
-import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_ONEOF_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -250,7 +249,7 @@ public class FhirResourceValidatorTest {
         assertThat(thrown).hasMessageThat().contains("Missing required field vaccineCode");
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_ONEOF_VALIDATION})
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
     @Test
     public void testValidateFhirResource_missingRequiredMultiTypeField_throws()
             throws JSONException {
@@ -274,7 +273,7 @@ public class FhirResourceValidatorTest {
         assertThat(thrown).hasMessageThat().contains("Missing required field occurrence[x]");
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_ONEOF_VALIDATION})
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
     @Test
     public void testValidateFhirResource_multipleTypesSetRequiredField_throws()
             throws JSONException {
@@ -299,7 +298,7 @@ public class FhirResourceValidatorTest {
                 .contains("Only one type should be set for field occurrence[x]");
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_ONEOF_VALIDATION})
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
     @Test
     public void testValidateFhirResource_multipleTypesSetOptionalField_throws()
             throws JSONException {
