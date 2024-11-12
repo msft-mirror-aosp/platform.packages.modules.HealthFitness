@@ -368,7 +368,10 @@ public final class ObservationBuilder extends FhirResourceBuilder<ObservationBui
      * @return this builder
      */
     public ObservationBuilder setValueCodeableConcept(@NonNull Uri system, @NonNull String code) {
-        return set("valueCodeableConcept", makeCodeableConcept(system, code, /* display= */ null));
+        return removeAllValueMultiTypeFields()
+                .set(
+                        "valueCodeableConcept",
+                        makeCodeableConcept(system, code, /* display= */ null));
     }
 
     /**
@@ -379,10 +382,48 @@ public final class ObservationBuilder extends FhirResourceBuilder<ObservationBui
      */
     public ObservationBuilder setValueQuantity(Number quantity, QuantityUnits units) {
         try {
-            return set("valueQuantity", units.makeFhirQuantity(quantity));
+            return removeAllValueMultiTypeFields()
+                    .set("valueQuantity", units.makeFhirQuantity(quantity));
         } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * Removes all fields that are part of the effective[x] multi type field, such as
+     * effectiveDateTime and effectivePeriod.
+     *
+     * <p>This should be used before setting one of these fields, as only one is allowed to be set.
+     *
+     * @return this builder
+     */
+    public ObservationBuilder removeAllEffectiveMultiTypeFields() {
+        return removeField("effectiveDateTime")
+                .removeField("effectivePeriod")
+                .removeField("effectiveTiming")
+                .removeField("effectiveInstant");
+    }
+
+    /**
+     * Removes all fields that are part of the value[x] multi type field, such as valueQuantity and
+     * valueCodeableConcept.
+     *
+     * <p>This should be used before setting one of these fields, as only one is allowed to be set.
+     *
+     * @return this builder
+     */
+    public ObservationBuilder removeAllValueMultiTypeFields() {
+        return removeField("valueQuantity")
+                .removeField("valueCodeableConcept")
+                .removeField("valueString")
+                .removeField("valueBoolean")
+                .removeField("valueInteger")
+                .removeField("valueRange")
+                .removeField("valueRatio")
+                .removeField("valueSampledData")
+                .removeField("valueTime")
+                .removeField("valueDateTime")
+                .removeField("valuePeriod");
     }
 
     /**
