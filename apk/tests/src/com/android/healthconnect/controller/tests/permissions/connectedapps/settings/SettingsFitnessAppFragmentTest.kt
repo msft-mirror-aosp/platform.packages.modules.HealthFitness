@@ -305,7 +305,7 @@ class SettingsFitnessAppFragmentTest {
                 withText(
                     "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .check(doesNotExist())
@@ -338,7 +338,7 @@ class SettingsFitnessAppFragmentTest {
                 withText(
                     "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -372,7 +372,7 @@ class SettingsFitnessAppFragmentTest {
                 withText(
                     "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
