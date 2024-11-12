@@ -28,8 +28,8 @@ import android.os.Environment;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 
-import androidx.test.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
@@ -93,7 +93,9 @@ public class GrantTimePersistenceUnitTest {
 
     @Before
     public void mockApexEnvironment() {
-        Context context = InstrumentationRegistry.getContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        // Cleanup and set the mock directory.
+        deleteFile(context.getDir("mock_data", Context.MODE_PRIVATE));
         mMockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
         Mockito.when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
         when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
@@ -211,11 +213,9 @@ public class GrantTimePersistenceUnitTest {
     }
 
     private static void assertRestoredStateIsCorrect(
-            UserGrantTimeState restoredState, UserGrantTimeState initialState) {
-        assertThat(initialState.getVersion()).isEqualTo(restoredState.getVersion());
-        assertThat(initialState.getPackageGrantTimes())
-                .isEqualTo(restoredState.getPackageGrantTimes());
-        assertThat(initialState.getSharedUserGrantTimes())
-                .isEqualTo(restoredState.getSharedUserGrantTimes());
+            UserGrantTimeState actual, UserGrantTimeState expected) {
+        assertThat(actual.getVersion()).isEqualTo(expected.getVersion());
+        assertThat(actual.getPackageGrantTimes()).isEqualTo(expected.getPackageGrantTimes());
+        assertThat(actual.getSharedUserGrantTimes()).isEqualTo(expected.getSharedUserGrantTimes());
     }
 }
