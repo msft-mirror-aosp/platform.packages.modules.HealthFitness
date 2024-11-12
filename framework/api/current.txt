@@ -459,6 +459,10 @@ package android.health.connect.datatypes {
     method public int getActivityIntensityType();
     field public static final int ACTIVITY_INTENSITY_TYPE_MODERATE = 0; // 0x0
     field public static final int ACTIVITY_INTENSITY_TYPE_VIGOROUS = 1; // 0x1
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> DURATION_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.lang.Long> INTENSITY_MINUTES_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> MODERATE_DURATION_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> VIGOROUS_DURATION_TOTAL;
   }
 
   public static final class ActivityIntensityRecord.Builder {
