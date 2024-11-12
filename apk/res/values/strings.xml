@@ -1477,8 +1477,8 @@
 
     <!-- region App update needed banner -->
     <string name="app_update_needed_banner_title" description="Title of banner prompting the user to update an app which is not currently working on this Android version.">App update needed</string>
-    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be updated to continue syncing with Health&#160;Connect</string>
-    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be updated to continue syncing with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be updated to continue syncing with Health&#160;Connect. Updates may not be available for all apps.</string>
+    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be updated to continue syncing with Health&#160;Connect. Updates may not be available for all apps.</string>
     <string name="app_update_needed_banner_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Check for updates</string>
     <string name="app_update_needed_banner_learn_more_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Learn more</string>
     <!--  endregion -->
