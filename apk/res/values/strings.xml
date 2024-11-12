@@ -924,7 +924,7 @@
     <!-- endregion -->
 
     <!--  region activity -->
-    <string name="session_title" translatable="false"><xliff:g example="My Strava workout" id="title">%1$s</xliff:g>, <xliff:g example="Strength training" id="type">%2$s</xliff:g></string>
+    <string name="session_title" translatable="false"><xliff:g example="Strength training" id="type">%2$s</xliff:g> • <xliff:g example="My Strava workout" id="title">%1$s</xliff:g></string>
     <string name="repetitions_format" translatable="false"><xliff:g example="Push up" id="type">%1$s</xliff:g>: <xliff:g example="20" id="count">%2$s</xliff:g></string>
     <string name="repetitions" description="Repetitions of an exercise set. [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 rep} other {# reps}}</string>
     <string name="repetitions_long" description="Repetitions of an exercise set.  [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 repetition} other {# repetitions}}</string>
