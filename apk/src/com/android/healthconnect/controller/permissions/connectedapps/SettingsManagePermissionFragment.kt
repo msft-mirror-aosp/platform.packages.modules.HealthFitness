@@ -39,7 +39,6 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
@@ -61,7 +60,6 @@ import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.settingslib.widget.AppPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -176,7 +174,7 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
         }
     }
 
-    private fun getAppPreference(app: ConnectedAppMetadata): AppPreference {
+    private fun getAppPreference(app: ConnectedAppMetadata): HealthAppPreference {
         return HealthAppPreference(requireContext(), app.appMetadata).also {
             if (app.status == ALLOWED) {
                 it.logName = AppPermissionsElement.CONNECTED_APP_BUTTON
@@ -197,16 +195,22 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
 
     private fun navigateToSettingsAppInfoScreen(app: ConnectedAppMetadata) {
         val navigationId =
-                when (app.permissionsType) {
-                    AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_settingsManagePermission_to_settingsFitnessApp
-                    AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_settingsManagePermission_to_settingsMedicalApp
-                    AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_settingsManagePermission_to_settingsCombinedPermissions
-                }
+            when (app.permissionsType) {
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_settingsManagePermission_to_settingsFitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_settingsManagePermission_to_settingsMedicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_settingsManagePermission_to_settingsCombinedPermissions
+            }
         navigationUtils.navigate(
-                fragment = this,
-                action = navigationId,
-                bundle = bundleOf(
-                        EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
-                        EXTRA_APP_NAME to app.appMetadata.appName))
+            fragment = this,
+            action = navigationId,
+            bundle =
+                bundleOf(
+                    EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
+                    EXTRA_APP_NAME to app.appMetadata.appName,
+                ),
+        )
     }
 }

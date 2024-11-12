@@ -77,7 +77,6 @@ import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.personalHealthRecord
-import com.android.settingslib.widget.AppPreference
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -483,7 +482,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private fun getAppPreference(
         app: ConnectedAppMetadata,
         onClick: (() -> Unit)? = null,
-    ): AppPreference {
+    ): HealthAppPreference {
         return HealthAppPreference(requireContext(), app.appMetadata).also {
             if (app.status == ALLOWED) {
                 it.logName = AppPermissionsElement.CONNECTED_APP_BUTTON
