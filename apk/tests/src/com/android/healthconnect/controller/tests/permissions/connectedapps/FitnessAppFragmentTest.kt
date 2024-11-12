@@ -466,7 +466,7 @@ class FitnessAppFragmentTest {
                         "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -506,7 +506,7 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -537,7 +537,7 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -571,7 +571,7 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
