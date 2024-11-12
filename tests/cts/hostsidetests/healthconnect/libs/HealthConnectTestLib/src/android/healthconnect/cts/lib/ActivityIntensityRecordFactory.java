@@ -24,6 +24,8 @@ import android.health.connect.datatypes.ActivityIntensityRecord;
 import android.health.connect.datatypes.Metadata;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+
 import java.time.Instant;
 import java.time.ZoneOffset;
 
@@ -92,5 +94,31 @@ public final class ActivityIntensityRecordFactory extends RecordFactory<Activity
                 .setStartZoneOffset(startZoneOffset)
                 .setEndZoneOffset(endZoneOffset)
                 .build();
+    }
+
+    /** Creates a new {@link ActivityIntensityRecord} with empty metadata. */
+    public ActivityIntensityRecord newRecord(Instant startTime, Instant endTime, int type) {
+        return newRecord(startTime, endTime, type, null, null);
+    }
+
+    /** Creates a new {@link ActivityIntensityRecord} with empty metadata. */
+    public ActivityIntensityRecord newRecord(
+            Instant startTime,
+            Instant endTime,
+            int type,
+            @Nullable ZoneOffset startZoneOffset,
+            @Nullable ZoneOffset endZoneOffset) {
+        var builder =
+                new ActivityIntensityRecord.Builder(newEmptyMetadata(), startTime, endTime, type);
+
+        if (startZoneOffset != null) {
+            builder.setStartZoneOffset(startZoneOffset);
+        }
+
+        if (endZoneOffset != null) {
+            builder.setEndZoneOffset(endZoneOffset);
+        }
+
+        return builder.build();
     }
 }

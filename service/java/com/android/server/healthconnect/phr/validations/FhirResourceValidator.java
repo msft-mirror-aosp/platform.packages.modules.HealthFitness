@@ -18,6 +18,8 @@ package com.android.server.healthconnect.phr.validations;
 
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 
+import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
+
 import android.health.connect.datatypes.FhirVersion;
 
 import com.android.healthfitness.flags.Flags;
@@ -59,16 +61,24 @@ public class FhirResourceValidator {
             JSONObject fhirJsonObject, @FhirResourceType int fhirResourceType) {
         FhirDataTypeConfig config =
                 mFhirSpec.getFhirDataTypeConfigForResourceType(fhirResourceType);
+        Map<String, FhirFieldConfig> fieldToConfig = config.getAllowedFieldNamesToConfigMap();
 
         for (String requiredField : config.getRequiredFieldsList()) {
+            boolean fieldIsPresent = fhirJsonObject.has(requiredField);
+
             // For primitive type fields, a primitive type extension with leading underscore may be
             // present instead. See https://build.fhir.org/extensibility.html#primitives, which
             // states that "extensions may appear in place of the value of the primitive datatype".
-            // TODO: b/374953888 - Update this to only check for leading underscore on primitive
-            //  type fields instead of all fields when we record the field type in the FhirSpec
-            //  proto.
+            FhirFieldConfig fieldConfig = fieldToConfig.get(requiredField);
+            if (fieldConfig == null) {
+                throw new IllegalStateException(
+                        "Could not find field config for required field " + requiredField);
+            }
+            if (fieldConfig.getKind().equals(KIND_PRIMITIVE_TYPE)) {
+                fieldIsPresent = fieldIsPresent || fhirJsonObject.has("_" + requiredField);
+            }
 
-            if (!fhirJsonObject.has(requiredField) && !fhirJsonObject.has("_" + requiredField)) {
+            if (!fieldIsPresent) {
                 throw new IllegalArgumentException("Missing required field " + requiredField);
             }
 
@@ -77,20 +87,22 @@ public class FhirResourceValidator {
             // handled as part of implementing complex type validation.
         }
 
-        Map<String, FhirFieldConfig> fieldToConfig = config.getAllowedFieldNamesToConfigMap();
         Iterator<String> fieldIterator = fhirJsonObject.keys();
 
         while (fieldIterator.hasNext()) {
             String field = fieldIterator.next();
-            // Strip leading underscore as we want to allow primitive type extensions, which will
-            // have a leading underscore, e.g. _status, see
-            // https://build.fhir.org/json.html#primitive .
-            // TODO: b/374953888 - Update this to only allow leading underscore on primitive type
-            //  fields instead of all fields when we record the field type in the FhirSpec proto.
-            String fieldWithoutLeadingUnderscore =
-                    field.startsWith("_") ? field.substring(1) : field;
+            boolean fieldStartsWithUnderscore = field.startsWith("_");
 
-            if (!fieldToConfig.containsKey(fieldWithoutLeadingUnderscore)) {
+            // Strip leading underscore in case the field is a primitive type extension, which will
+            // have a leading underscore, e.g. _status, see
+            // https://build.fhir.org/json.html#primitive.
+            String fieldWithoutLeadingUnderscore =
+                    fieldStartsWithUnderscore ? field.substring(1) : field;
+
+            FhirFieldConfig fieldConfig = fieldToConfig.get(fieldWithoutLeadingUnderscore);
+            if (fieldConfig == null
+                    || (fieldStartsWithUnderscore
+                            && fieldConfig.getKind() != KIND_PRIMITIVE_TYPE)) {
                 // TODO: b/374953896 - Improve error message to include type and id.
                 throw new IllegalArgumentException("Found unexpected field " + field);
             }
