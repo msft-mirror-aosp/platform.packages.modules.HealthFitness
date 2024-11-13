@@ -17,11 +17,9 @@
 package com.android.server.healthconnect.logging;
 
 import android.content.Context;
-import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -39,18 +37,16 @@ public class DailyLoggingService {
     /** Log daily metrics. */
     public static void logDailyMetrics(
             Context context,
-            UserHandle userHandle,
+            UsageStatsCollector usageStatsCollector,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
             TransactionManager transactionManager,
             MedicalDataSourceHelper medicalDataSourceHelper,
             MedicalResourceHelper medicalResourceHelper) {
         logDatabaseStats(context, transactionManager);
         logUsageStats(
                 context,
-                userHandle,
+                usageStatsCollector,
                 preferenceHelper,
-                accessLogsHelper,
                 medicalDataSourceHelper,
                 medicalResourceHelper);
     }
@@ -65,17 +61,15 @@ public class DailyLoggingService {
 
     private static void logUsageStats(
             Context context,
-            UserHandle userHandle,
+            UsageStatsCollector usageStatsCollector,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             MedicalResourceHelper medicalResourceHelper) {
         try {
             UsageStatsLogger.log(
                     context,
-                    userHandle,
+                    usageStatsCollector,
                     preferenceHelper,
-                    accessLogsHelper,
                     medicalDataSourceHelper,
                     medicalResourceHelper);
         } catch (Exception exception) {

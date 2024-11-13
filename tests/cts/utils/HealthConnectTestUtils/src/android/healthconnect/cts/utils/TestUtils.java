@@ -47,7 +47,6 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 
-import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -143,6 +142,8 @@ import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.healthfitness.flags.Flags;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -181,10 +182,6 @@ public final class TestUtils {
     public static final String PKG_TEST_APP = "android.healthconnect.test.app";
     private static final String TEST_APP_RECEIVER =
             PKG_TEST_APP + "." + TestAppReceiver.class.getSimpleName();
-
-    public static boolean isHardwareAutomotive() {
-        return hasSystemFeature(AUTOMOTIVE_FEATURE);
-    }
 
     public static ChangeLogTokenResponse getChangeLogToken(ChangeLogTokenRequest request)
             throws InterruptedException {
@@ -1081,8 +1078,10 @@ public final class TestUtils {
     /** returns true if the hardware is supported by HealthConnect. */
     public static boolean isHardwareSupported(Context context) {
         PackageManager pm = context.getPackageManager();
+        boolean disabledOnWatch = pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+              && !Flags.replaceBodySensorPermissionEnabled();
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
-                && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+                && !disabledOnWatch
                 && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
     }

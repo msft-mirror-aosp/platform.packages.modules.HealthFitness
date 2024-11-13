@@ -220,29 +220,79 @@ class FhirSpecExtractorTest(unittest.TestCase):
         # occurrenceDateTime and occurrenceString. Fields with a cardinality of 0..* or 1..* should
         # have is_array = true set in their config.
         expected_required_fields = {"status", "vaccineCode", "exampleFieldToTestOneToMany"}
-        expected_field_names_to_array_bool = {
-            "resourceType": False,
-            "id": False,
-            "status": False,
-            "vaccineCode": False,
-            "exampleFieldToTestOneToMany": True,
-            "occurrenceDateTime": False,
-            "occurrenceString": False,
-            "performer""": True,
+        expected_multi_type_config = fhirspec_pb2.MultiTypeFieldConfig(
+            name="occurrence[x]",
+            typed_field_names=["occurrenceDateTime", "occurrenceString"],
+            is_required=True
+        )
+        expected_field_names_to_config = {
+            "resourceType": fhirspec_pb2.FhirFieldConfig(
+                is_array=False,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+            ),
+            "id": fhirspec_pb2.FhirFieldConfig(
+                is_array=False,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SYSTEM_STRING,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+            ),
+            "status": fhirspec_pb2.FhirFieldConfig(
+                is_array=False,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+            ),
+            "vaccineCode": fhirspec_pb2.FhirFieldConfig(
+                is_array=False,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_COMPLEX,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+            ),
+            "exampleFieldToTestOneToMany": fhirspec_pb2.FhirFieldConfig(
+                is_array=True,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_COMPLEX,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+            ),
+            "occurrenceDateTime": fhirspec_pb2.FhirFieldConfig(
+                is_array=False,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+            ),
+            "occurrenceString": fhirspec_pb2.FhirFieldConfig(
+                is_array=False,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+            ),
+            "performer": fhirspec_pb2.FhirFieldConfig(
+                is_array=True,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_COMPLEX,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+            ),
         }
 
         generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message()
 
+        # Check that exactly one Immunization config is present
         self.assertEqual(len(generated_spec.resource_type_to_config.keys()), 1)
         immunization_config = (
             generated_spec.resource_type_to_config[self.IMMUNIZATION_RESOURCE_TYPE_INT])
+        # Check that the list of required fields is as expected
         self.assertEquals(set(immunization_config.required_fields), expected_required_fields)
-        self.assertEqual(set(expected_field_names_to_array_bool.keys()),
+        # Check that the list of multi type configs is as expected
+        self.assertEquals(len(immunization_config.multi_type_fields), 1)
+        received_multi_type_config = immunization_config.multi_type_fields[0]
+        self.assertEqual(received_multi_type_config.name, expected_multi_type_config.name)
+        self.assertEqual(received_multi_type_config.typed_field_names,
+                         expected_multi_type_config.typed_field_names)
+        self.assertEqual(received_multi_type_config.is_required,
+                         expected_multi_type_config.is_required)
+        # Check that the field names to config map is as expected
+        self.assertEqual(set(expected_field_names_to_config.keys()),
                          set(immunization_config.allowed_field_names_to_config.keys()))
-        for expected_field, expected_array_bool in expected_field_names_to_array_bool.items():
-            self.assertEqual(immunization_config.allowed_field_names_to_config[expected_field].is_array,
-                             expected_array_bool,
-                             "Mismatching array bool for field " + expected_field)
+        for expected_field, expected_config in expected_field_names_to_config.items():
+            self.assertEqual(
+                immunization_config.allowed_field_names_to_config[expected_field],
+                expected_config,
+                "Mismatching config for field " + expected_field
+            )
 
     def test_fhir_spec_extractor_immunization_and_patient_contains_two_entries(self):
         fhir_spec_extractor = FhirSpecExtractor(

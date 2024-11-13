@@ -30,6 +30,7 @@ import android.os.PersistableBundle;
 import android.os.UserHandle;
 
 import com.android.server.healthconnect.logging.DailyLoggingService;
+import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -39,6 +40,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -87,9 +89,13 @@ public class HealthConnectDailyJobs {
             TransactionManager transactionManager,
             ActivityDateHelper activityDateHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper) {
+            MedicalResourceHelper medicalResourceHelper,
+            TimeSource timeSource) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
-
+        UserHandle userHandle = UserHandle.getUserHandleForUid(userId);
+        UsageStatsCollector usageStatsCollector =
+                new UsageStatsCollector(
+                        context, userHandle, preferenceHelper, accessLogsHelper, timeSource);
         AutoDeleteService.startAutoDelete(
                 context,
                 healthDataCategoryPriorityHelper,
@@ -100,9 +106,8 @@ public class HealthConnectDailyJobs {
                 activityDateHelper);
         DailyLoggingService.logDailyMetrics(
                 context,
-                UserHandle.getUserHandleForUid(userId),
+                usageStatsCollector,
                 preferenceHelper,
-                accessLogsHelper,
                 transactionManager,
                 medicalDataSourceHelper,
                 medicalResourceHelper);

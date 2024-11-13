@@ -22,10 +22,8 @@ import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetr
 
 import android.content.Context;
 import android.health.HealthFitnessStatsLog;
-import android.os.UserHandle;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -43,13 +41,10 @@ final class UsageStatsLogger {
     /** Write Health Connect usage stats to statsd. */
     static void log(
             Context context,
-            UserHandle userHandle,
+            UsageStatsCollector usageStatsCollector,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             MedicalResourceHelper medicalResourceHelper) {
-        UsageStatsCollector usageStatsCollector =
-                new UsageStatsCollector(context, userHandle, preferenceHelper, accessLogsHelper);
         usageStatsCollector.upsertLastAccessLogTimeStamp();
         Map<String, List<String>> packageNameToPermissionsGranted =
                 usageStatsCollector.getPackagesHoldingHealthPermissions();
@@ -67,7 +62,11 @@ final class UsageStatsLogger {
 
         logExportImportStats(usageStatsCollector);
         logPermissionStats(context, packageNameToPermissionsGranted);
-        logPhrStats(medicalDataSourceHelper, medicalResourceHelper);
+        logPhrStats(
+                medicalDataSourceHelper,
+                medicalResourceHelper,
+                preferenceHelper,
+                usageStatsCollector);
 
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS,
@@ -78,7 +77,9 @@ final class UsageStatsLogger {
 
     private static void logPhrStats(
             MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper) {
+            MedicalResourceHelper medicalResourceHelper,
+            PreferenceHelper preferenceHelper,
+            UsageStatsCollector usageStatsCollector) {
         if (!personalHealthRecordTelemetry()) {
             return;
         }
@@ -89,8 +90,8 @@ final class UsageStatsLogger {
                 HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS,
                 medicalDataSourcesCount,
                 medicalResourcesCount,
-                0,
-                0);
+                usageStatsCollector.isPhrMonthlyActiveUser(),
+                (int) usageStatsCollector.getGrantedPhrAppsCount());
     }
 
     static void logExportImportStats(UsageStatsCollector usageStatsCollector) {

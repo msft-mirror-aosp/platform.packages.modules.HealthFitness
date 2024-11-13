@@ -25,6 +25,7 @@ import android.health.connect.datatypes.ExerciseSegmentType.EXERCISE_SEGMENT_TYP
 import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING
 import android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT
+import android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING
 import android.health.connect.datatypes.units.Length
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
@@ -50,9 +51,11 @@ import org.junit.Test
 @HiltAndroidTest
 class ExerciseSessionFormatterTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
 
     @Inject lateinit var formatter: ExerciseSessionFormatter
+
     @Inject lateinit var unitPreferences: UnitPreferences
     private lateinit var context: Context
 
@@ -68,19 +71,20 @@ class ExerciseSessionFormatterTest {
     @Test
     fun formatValue() = runBlocking {
         assertThat(formatter.formatValue(getRecord(type = EXERCISE_SESSION_TYPE_BIKING)))
-            .isEqualTo("16 m, Cycling")
+            .isEqualTo("Cycling • 16 m")
     }
 
     @Test
     fun formatA11yValue() = runBlocking {
-        assertThat(formatter.formatA11yValue(getRecord(type = EXERCISE_SESSION_TYPE_BIKING)))
-            .isEqualTo("16 minutes, Cycling")
+        assertThat(formatter.formatA11yValue(getRecord(type = EXERCISE_SESSION_TYPE_RUNNING)))
+            .isEqualTo("Running • 16 minutes")
     }
 
     @Test
     fun formatNotes() = runBlocking {
         assertThat(
-                formatter.getNotes(getRecord(type = EXERCISE_SESSION_TYPE_BIKING, note = "notes")))
+                formatter.getNotes(getRecord(type = EXERCISE_SESSION_TYPE_BIKING, note = "notes"))
+            )
             .isEqualTo("notes")
     }
 
@@ -91,16 +95,21 @@ class ExerciseSessionFormatterTest {
             buildList<ExerciseSegment> {
                 add(
                     ExerciseSegment.Builder(
-                            NOW, NOW.plusSeconds(500), EXERCISE_SEGMENT_TYPE_JUMPING_JACK)
+                            NOW,
+                            NOW.plusSeconds(500),
+                            EXERCISE_SEGMENT_TYPE_JUMPING_JACK,
+                        )
                         .setRepetitionsCount(2)
-                        .build())
+                        .build()
+                )
             }
         val laps =
             buildList<ExerciseLap> {
                 add(
                     ExerciseLap.Builder(NOW, NOW.plusSeconds(500))
                         .setLength(Length.fromMeters(20.0))
-                        .build())
+                        .build()
+                )
             }
         val record =
             getRecord(type = EXERCISE_SESSION_TYPE_OTHER_WORKOUT, segments = segments, laps = laps)
@@ -113,15 +122,18 @@ class ExerciseSessionFormatterTest {
                         header = "07:06 - 07:14",
                         headerA11y = "from 07:06 to 07:14",
                         title = "Jumping jack: 2 reps",
-                        titleA11y = "Jumping jack: 2 repetitions"),
+                        titleA11y = "Jumping jack: 2 repetitions",
+                    ),
                     FormattedEntry.SessionHeader("Laps"),
                     FormattedEntry.FormattedSessionDetail(
                         uuid = record.metadata.id,
                         header = "07:06 - 07:14",
                         headerA11y = "from 07:06 to 07:14",
                         title = "0.02 km",
-                        titleA11y = "0.02 kilometres"),
-                ))
+                        titleA11y = "0.02 kilometres",
+                    ),
+                )
+            )
     }
 
     private fun getRecord(
@@ -129,7 +141,7 @@ class ExerciseSessionFormatterTest {
         title: String? = null,
         note: String? = null,
         laps: List<ExerciseLap> = emptyList(),
-        segments: List<ExerciseSegment> = emptyList()
+        segments: List<ExerciseSegment> = emptyList(),
     ): ExerciseSessionRecord {
         return ExerciseSessionRecord.Builder(getMetaData(), NOW, NOW.plusSeconds(1000), type)
             .setNotes(note)

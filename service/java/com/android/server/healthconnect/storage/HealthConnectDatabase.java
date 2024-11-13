@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -39,13 +38,13 @@ public final class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
 
     @VisibleForTesting public static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
-    private final Context mContext;
+    private final StorageContext mContext;
 
-    public HealthConnectDatabase(Context context) {
+    public HealthConnectDatabase(StorageContext context) {
         this(context, DEFAULT_DATABASE_NAME);
     }
 
-    public HealthConnectDatabase(Context context, String databaseName) {
+    public HealthConnectDatabase(StorageContext context, String databaseName) {
         super(context, databaseName, null, getDbVersion());
         mContext = context;
     }

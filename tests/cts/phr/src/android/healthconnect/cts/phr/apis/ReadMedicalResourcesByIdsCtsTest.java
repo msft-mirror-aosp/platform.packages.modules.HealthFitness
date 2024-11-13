@@ -32,7 +32,6 @@ import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -40,12 +39,12 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
@@ -142,13 +141,13 @@ public class ReadMedicalResourcesByIdsCtsTest {
             throws InterruptedException {
         MedicalDataSource dataSource =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
-        MedicalResource immunization =
+        MedicalResource vaccine =
                 mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
         startMigrationWithShellPermissionIdentity();
-        mManager.readMedicalResources(List.of(immunization.getId()), executor, receiver);
+        mManager.readMedicalResources(List.of(vaccine.getId()), executor, receiver);
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
@@ -216,11 +215,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByIds_invalidResourceTypeByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
-        MedicalResourceId id =
-                new MedicalResourceId(
-                        DATA_SOURCE_ID,
-                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                        FHIR_RESOURCE_ID_IMMUNIZATION);
+        MedicalResourceId id = getMedicalResourceId();
 
         setFieldValueUsingReflection(id, "mFhirResourceType", 100);
 
@@ -237,11 +232,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResourcesByIds_invalidDataSourceIdByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
-        MedicalResourceId id =
-                new MedicalResourceId(
-                        DATA_SOURCE_ID,
-                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                        FHIR_RESOURCE_ID_IMMUNIZATION);
+        MedicalResourceId id = getMedicalResourceId();
 
         setFieldValueUsingReflection(id, "mDataSourceId", "invalid id");
 
@@ -274,26 +265,26 @@ public class ReadMedicalResourcesByIdsCtsTest {
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert 3 Immunizations and 1 Allergy.
-        MedicalResource immunization1 =
+        // Insert 3 vaccines and 1 allergy.
+        MedicalResource vaccine1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2 =
+        MedicalResource vaccine2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
-        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        // Vaccine 3 will not be checked for, but inserted to check that everything isn't read.
         mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource allergy = mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
         mManager.readMedicalResources(
                 List.of(
-                        immunization1.getId(),
-                        immunization2.getId(),
+                        vaccine1.getId(),
+                        vaccine2.getId(),
                         // leave out 3
                         allergy.getId()),
                 Executors.newSingleThreadExecutor(),
                 receiver);
 
-        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
+        assertThat(receiver.getResponse()).containsExactly(vaccine1, vaccine2, allergy);
     }
 
     @Test
@@ -305,12 +296,12 @@ public class ReadMedicalResourcesByIdsCtsTest {
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert 3 Immunizations and 1 Allergy.
-        MedicalResource immunization1 =
+        // Insert 3 vaccines and 1 allergy.
+        MedicalResource vaccine1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2 =
+        MedicalResource vaccine2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
-        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        // Vaccine 3 will not be checked for, but inserted to check that everything isn't read.
         mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource allergy = mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -319,15 +310,15 @@ public class ReadMedicalResourcesByIdsCtsTest {
                 () ->
                         mManager.readMedicalResources(
                                 List.of(
-                                        immunization1.getId(),
-                                        immunization2.getId(),
+                                        vaccine1.getId(),
+                                        vaccine2.getId(),
                                         // leave out 3
                                         allergy.getId()),
                                 Executors.newSingleThreadExecutor(),
                                 receiver),
                 MANAGE_HEALTH_DATA);
 
-        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
+        assertThat(receiver.getResponse()).containsExactly(vaccine1, vaccine2, allergy);
     }
 
     @Test
@@ -350,7 +341,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundWithReadPermNoWritePerm_onlyReturnsResourcesWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization and one allergy
+        // Given that we have two data sources from two apps with one vaccine and one allergy
         // each and the calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
@@ -359,7 +350,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource foregroundAppAllergy =
@@ -367,7 +358,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                         foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource backgroundAppAllergy =
@@ -380,50 +371,47 @@ public class ReadMedicalResourcesByIdsCtsTest {
         List<MedicalResource> responseResources =
                 PHR_FOREGROUND_APP.readMedicalResources(
                         List.of(
-                                foregroundAppImmunization.getId(), foregroundAppAllergy.getId(),
-                                backgroundAppImmunization.getId(), backgroundAppAllergy.getId()));
+                                foregroundAppVaccine.getId(), foregroundAppAllergy.getId(),
+                                backgroundAppVaccine.getId(), backgroundAppAllergy.getId()));
 
-        // Then it receives all immunization resources
-        assertThat(responseResources)
-                .containsExactly(foregroundAppImmunization, backgroundAppImmunization);
+        // Then it receives all vaccine resources
+        assertThat(responseResources).containsExactly(foregroundAppVaccine, backgroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundHasWritePermNoReadPerms_onlyReturnsDataFromOwnDataSources()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
+        // Given that we have two data sources from two apps with one vaccine each and the
         // calling app only has WRITE_MEDICAL_DATA permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
-        // When the app reads all immunization resources from the foreground
+        // When the app reads all vaccine resources from the foreground
         List<MedicalResource> resourcesResponse =
                 PHR_FOREGROUND_APP.readMedicalResources(
-                        List.of(
-                                foregroundAppImmunization.getId(),
-                                backgroundAppImmunization.getId()));
+                        List.of(foregroundAppVaccine.getId(), backgroundAppVaccine.getId()));
 
-        // Then it only receives the immunization resources written by itself
-        assertThat(resourcesResponse).containsExactly(foregroundAppImmunization);
+        // Then it only receives the vaccine resources written by itself
+        assertThat(resourcesResponse).containsExactly(foregroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inForegroundHasWriteAndReadPerms_returnsSelfDataAndOtherDataWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization and one allergy
+        // Given that we have two data sources from two apps with one vaccine and one allergy
         // each and the calling app only has WRITE_MEDICAL_DATA and READ_MEDICAL_DATA_VACCINES
         // permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
@@ -433,7 +421,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource foregroundAppAllergy =
@@ -441,7 +429,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                         foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource backgroundAppAllergy =
@@ -452,14 +440,13 @@ public class ReadMedicalResourcesByIdsCtsTest {
         List<MedicalResource> resourcesResponse =
                 PHR_FOREGROUND_APP.readMedicalResources(
                         List.of(
-                                foregroundAppImmunization.getId(), foregroundAppAllergy.getId(),
-                                backgroundAppImmunization.getId(), backgroundAppAllergy.getId()));
+                                foregroundAppVaccine.getId(), foregroundAppAllergy.getId(),
+                                backgroundAppVaccine.getId(), backgroundAppAllergy.getId()));
 
-        // Then it receives all immunization resources, but only the allergy resources written by
+        // Then it receives all vaccine resources, but only the allergy resources written by
         // itself
         assertThat(resourcesResponse)
-                .containsExactly(
-                        foregroundAppImmunization, backgroundAppImmunization, foregroundAppAllergy);
+                .containsExactly(foregroundAppVaccine, backgroundAppVaccine, foregroundAppAllergy);
     }
 
     @Test
@@ -484,7 +471,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithBgReadHasReadPermNoWritePerm_onlyReturnsResourcesWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization and one allergy
+        // Given that we have two data sources from two apps with one vaccine and one allergy
         // each and the calling app has READ_HEALTH_DATA_IN_BACKGROUND and
         // READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
@@ -497,7 +484,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource foregroundAppAllergy =
@@ -505,7 +492,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                         foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource backgroundAppAllergy =
@@ -518,19 +505,18 @@ public class ReadMedicalResourcesByIdsCtsTest {
         List<MedicalResource> resourcesResponse =
                 PHR_BACKGROUND_APP.readMedicalResources(
                         List.of(
-                                foregroundAppImmunization.getId(), foregroundAppAllergy.getId(),
-                                backgroundAppImmunization.getId(), backgroundAppAllergy.getId()));
+                                foregroundAppVaccine.getId(), foregroundAppAllergy.getId(),
+                                backgroundAppVaccine.getId(), backgroundAppAllergy.getId()));
 
-        // Then it receives only immunization resources
-        assertThat(resourcesResponse)
-                .containsExactly(foregroundAppImmunization, backgroundAppImmunization);
+        // Then it receives only vaccine resources
+        assertThat(resourcesResponse).containsExactly(foregroundAppVaccine, backgroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithBgReadHasWritePermNoReadPerms_onlyReturnsDataFromOwnDataSources()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
+        // Given that we have two data sources from two apps with one vaccine each and the
         // calling app only has READ_HEALTH_DATA_IN_BACKGROUND and WRITE_MEDICAL_DATA permissions
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
@@ -539,7 +525,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource foregroundAppAllergy =
@@ -547,7 +533,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                         foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource backgroundAppAllergy =
@@ -558,12 +544,11 @@ public class ReadMedicalResourcesByIdsCtsTest {
         List<MedicalResource> resourcesResponse =
                 PHR_BACKGROUND_APP.readMedicalResources(
                         List.of(
-                                foregroundAppImmunization.getId(), foregroundAppAllergy.getId(),
-                                backgroundAppImmunization.getId(), backgroundAppAllergy.getId()));
+                                foregroundAppVaccine.getId(), foregroundAppAllergy.getId(),
+                                backgroundAppVaccine.getId(), backgroundAppAllergy.getId()));
 
         // Then it only receives the resources written by itself
-        assertThat(resourcesResponse)
-                .containsExactly(backgroundAppImmunization, backgroundAppAllergy);
+        assertThat(resourcesResponse).containsExactly(backgroundAppVaccine, backgroundAppAllergy);
     }
 
     @Test
@@ -571,7 +556,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
     public void
             testRead_inBgWithBgReadHasWriteAndReadPerms_canReadSelfDataAndOtherDataWithReadPerms()
                     throws Exception {
-        // Given that we have two data sources from two apps with one immunization and one allergy
+        // Given that we have two data sources from two apps with one vaccine and one allergy
         // each and the calling app has READ_HEALTH_DATA_IN_BACKGROUND, WRITE_MEDICAL_DATA and
         // READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
@@ -584,7 +569,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource foregroundAppAllergy =
@@ -592,7 +577,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                         foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource backgroundAppAllergy =
@@ -603,14 +588,13 @@ public class ReadMedicalResourcesByIdsCtsTest {
         List<MedicalResource> responseResources =
                 PHR_BACKGROUND_APP.readMedicalResources(
                         List.of(
-                                foregroundAppImmunization.getId(), foregroundAppAllergy.getId(),
-                                backgroundAppImmunization.getId(), backgroundAppAllergy.getId()));
+                                foregroundAppVaccine.getId(), foregroundAppAllergy.getId(),
+                                backgroundAppVaccine.getId(), backgroundAppAllergy.getId()));
 
-        // Then it receives all immunization resources, but only the allergy resources written by
+        // Then it receives all vaccine resources, but only the allergy resources written by
         // itself
         assertThat(responseResources)
-                .containsExactly(
-                        foregroundAppImmunization, backgroundAppImmunization, backgroundAppAllergy);
+                .containsExactly(foregroundAppVaccine, backgroundAppVaccine, backgroundAppAllergy);
     }
 
     @Test
@@ -633,38 +617,36 @@ public class ReadMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithoutBgReadOnlyWritePerm_onlyReturnsDataFromOwnDataSources()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization each and the
+        // Given that we have two data sources from two apps with one vaccine each and the
         // calling app only has WRITE_MEDICAL_DATA permissions
         grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
         // When the app tries to read all resources from the background
         List<MedicalResource> responseResources =
                 PHR_BACKGROUND_APP.readMedicalResources(
-                        List.of(
-                                foregroundAppImmunization.getId(),
-                                backgroundAppImmunization.getId()));
+                        List.of(foregroundAppVaccine.getId(), backgroundAppVaccine.getId()));
 
         // Then it only receives its own resources
-        assertThat(responseResources).containsExactly(backgroundAppImmunization);
+        assertThat(responseResources).containsExactly(backgroundAppVaccine);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testRead_inBgWithoutBgReadOnlyReadPerm_onlyReturnsDataWithReadPerms()
             throws Exception {
-        // Given that we have two data sources from two apps with one immunization and one allergy
+        // Given that we have two data sources from two apps with one vaccine and one allergy
         // each and the
         // and the calling app only has READ_MEDICAL_DATA_VACCINES permissions
         grantPermissions(
@@ -674,7 +656,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource foregroundAppAllergy =
@@ -682,7 +664,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                         foregroundAppDataSource.getId(), FHIR_DATA_ALLERGY);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource backgroundAppAllergy =
@@ -695,11 +677,11 @@ public class ReadMedicalResourcesByIdsCtsTest {
         List<MedicalResource> responseResources =
                 PHR_BACKGROUND_APP.readMedicalResources(
                         List.of(
-                                foregroundAppImmunization.getId(), foregroundAppAllergy.getId(),
-                                backgroundAppImmunization.getId(), backgroundAppAllergy.getId()));
+                                foregroundAppVaccine.getId(), foregroundAppAllergy.getId(),
+                                backgroundAppVaccine.getId(), backgroundAppAllergy.getId()));
 
-        // Then it only receives its own immunization resources
-        assertThat(responseResources).containsExactly(backgroundAppImmunization);
+        // Then it only receives its own vaccine resources
+        assertThat(responseResources).containsExactly(backgroundAppVaccine);
     }
 
     @Test
@@ -710,7 +692,7 @@ public class ReadMedicalResourcesByIdsCtsTest {
                 mUtil.insertSourceAndOneResourcePerPermissionCategory(PHR_BACKGROUND_APP);
         Map<String, Integer> permissionToExpectedMedicalResourceTypeMap =
                 Map.ofEntries(
-                        Map.entry(READ_MEDICAL_DATA_VACCINES, MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Map.entry(READ_MEDICAL_DATA_VACCINES, MEDICAL_RESOURCE_TYPE_VACCINES),
                         Map.entry(
                                 READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),

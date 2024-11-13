@@ -601,7 +601,7 @@
     <string name="inactive_apps_section_message" description="Description text shown in the inactive apps section that explains what inactive apps are [CHAR_LIMIT=NONE]">These apps no longer have access, but still have data stored in Health&#160;Connect</string>
     <string name="manage_permissions_time_frame" description="Text describing the time frame of data which an app will be able to access [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can read data added after <xliff:g example="22 January 2022" id="data_access_date">%2$s</xliff:g></string>
     <string name="other_android_permissions" description="Text that describes how users can change other android permissions through the system settings [CHAR_LIMIT=NONE]">To manage other Android permissions this app can access, go to Settings > Apps</string>
-    <string name="manage_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy [CHAR_LIMIT=NONE]">Data you share with <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> is covered by their privacy policy</string>
+    <string name="manage_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy [CHAR_LIMIT=NONE]">You can learn how <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> handles your data in the developer\'s privacy policy</string>
     <string name="other_android_permissions_content_description" description="Content description that describes how users can change other android permissions through the system settings [CHAR_LIMIT=NONE]">To manage other Android permissions this app can access, go to Settings, then tap Apps</string>
     <string name="manage_permissions_learn_more" description="Link text that open's a third party app's data privacy policy [CHAR_LIMIT=NONE]">Read privacy policy</string>
     <string name="app_perms_content_provider_24h" description="Summary for showing the last access text for content provider permissions [CHAR LIMIT=70]">Accessed in past 24 hours</string>
@@ -924,7 +924,7 @@
     <!-- endregion -->
 
     <!--  region activity -->
-    <string name="session_title" translatable="false"><xliff:g example="My Strava workout" id="title">%1$s</xliff:g>, <xliff:g example="Strength training" id="type">%2$s</xliff:g></string>
+    <string name="session_title" translatable="false"><xliff:g example="Strength training" id="type">%2$s</xliff:g> • <xliff:g example="My Strava workout" id="title">%1$s</xliff:g></string>
     <string name="repetitions_format" translatable="false"><xliff:g example="Push up" id="type">%1$s</xliff:g>: <xliff:g example="20" id="count">%2$s</xliff:g></string>
     <string name="repetitions" description="Repetitions of an exercise set. [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 rep} other {# reps}}</string>
     <string name="repetitions_long" description="Repetitions of an exercise set.  [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 repetition} other {# repetitions}}</string>
@@ -1477,8 +1477,8 @@
 
     <!-- region App update needed banner -->
     <string name="app_update_needed_banner_title" description="Title of banner prompting the user to update an app which is not currently working on this Android version.">App update needed</string>
-    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be updated to continue syncing with Health&#160;Connect</string>
-    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be updated to continue syncing with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be updated to continue syncing with Health&#160;Connect. Updates may not be available for all apps.</string>
+    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be updated to continue syncing with Health&#160;Connect. Updates may not be available for all apps.</string>
     <string name="app_update_needed_banner_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Check for updates</string>
     <string name="app_update_needed_banner_learn_more_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Learn more</string>
     <!--  endregion -->
@@ -1575,6 +1575,12 @@
 
     <!-- endregion -->
 
+    <!-- region Lock screen banner -->
+    <string name="lock_screen_banner_title" description="Title for banner shown when users don't have a device lock screen set up">Set a screen lock</string>
+    <string name="lock_screen_banner_content" description="Content for banner shown when users don't have a device lock screen set up">For added security for your health data, set a PIN, pattern, or password for this device</string>
+    <string name="lock_screen_banner_button" description="Button that takes users to the app store, for banner shown when users only have one available fitness app">Set screen lock</string>
+    <!-- endregion -->
+
     <!-- region Selectable deletion -->
     <string name="select_all" description="Label for a button that selects all data for deletion [CHAR_LIMIT=40]">Select all</string>
     <string name="deletion_confirmation_dialog_body" description="Text for dialog asking the user to confirm they want to delete all data">Connected apps will no longer be able to read this data from Health&#160;Connect</string>
@@ -1658,10 +1664,21 @@
     <string name="view_permissions_while_in_use" description="Text to allow an app to read health data in foreground.">while in use</string>
     <string name="view_permissions_all_the_time_cap" description="Label for button to allow an app to read health data in background.">All the time</string>
     <string name="view_permissions_while_in_use_cap" description="Label for button to allow an app to read health data in foreground.">While in use</string>
-    <string name="view_permissions_mode" description="Text to allow an app to read health data in foreground or background."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g>can access all of your fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
+    <string name="view_permissions_mode" description="Text to allow an app to read health data in foreground or background."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access all of your fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
     <string name="allowed_to_access" description="Text to display view permission mode (all the time or while in use).">Allowed to access</string>
     <string name="allowed_to_read" description="Subtitle to display which permissions are allowed">Allowed to read</string>
     <string name="give_permission_prompt" description="Text to display what permissions are allowed.">These permissions give <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to data from your device sensors.</string>
+    <!-- endregion -->
+
+    <!-- region Permission Manager  -->
+    <string name="allowed_apps_count" description="Text to indicate how many apps are allowed to a permission."><xliff:g id="number" example="2">%1$d</xliff:g> of <xliff:g id="other_number" example="2">%2$d</xliff:g> apps allowed</string>
+    <string name="no_apps_requesting" description="Text to indicate no app is requesting a permission.">No apps requesting</string>
+    <string name="allowed" description="Text to indicate an app is allowed for this permission.">Allowed</string>
+    <string name="not_allowed" description="Text to indicate an app is not allowed for this permission.">Not allowed</string>
+    <string name="access_sensor_note" description="Text to indicate which data types are allowed from device sensors.">Apps with this permission can access <xliff:g example="heart rate" id="data_type">%s</xliff:g> data from your device sensors.</string>
+    <string name="remove_one_permission_for_all" description="Text to indicate removing a data type access for all apps.">Remove <xliff:g example="heart rate" id="data_type">%s</xliff:g> access for all apps on your watch?</string>
+    <string name="icon_content_check_mark" description="Content description for icon to confirm removing one granular health permission for all apps.">Check mark</string>
+    <string name="icon_content_cross_mark" description="Content description for icon to dismiss removing one granular health permission for all apps.">Cross mark</string>
     <!-- endregion -->
 
     <!-- endregion -->

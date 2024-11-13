@@ -19,7 +19,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS
@@ -94,7 +94,7 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
         MEDICAL_RESOURCE_TYPE_PREGNANCY -> MedicalPermissionType.PREGNANCY
         MEDICAL_RESOURCE_TYPE_PROCEDURES -> MedicalPermissionType.PROCEDURES
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY -> MedicalPermissionType.SOCIAL_HISTORY
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS -> MedicalPermissionType.VACCINES
+        MEDICAL_RESOURCE_TYPE_VACCINES -> MedicalPermissionType.VACCINES
         MEDICAL_RESOURCE_TYPE_VISITS -> MedicalPermissionType.VISITS
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS -> MedicalPermissionType.VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalResourceType is not supported.")
@@ -112,7 +112,7 @@ fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
         MedicalPermissionType.PREGNANCY -> MEDICAL_RESOURCE_TYPE_PREGNANCY
         MedicalPermissionType.PROCEDURES -> MEDICAL_RESOURCE_TYPE_PROCEDURES
         MedicalPermissionType.SOCIAL_HISTORY -> MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
-        MedicalPermissionType.VACCINES -> MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+        MedicalPermissionType.VACCINES -> MEDICAL_RESOURCE_TYPE_VACCINES
         MedicalPermissionType.VISITS -> MEDICAL_RESOURCE_TYPE_VISITS
         MedicalPermissionType.VITAL_SIGNS -> MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalPermissionType does not map to a MedicalResourceType.")

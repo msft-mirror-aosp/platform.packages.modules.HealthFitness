@@ -459,6 +459,10 @@ package android.health.connect.datatypes {
     method public int getActivityIntensityType();
     field public static final int ACTIVITY_INTENSITY_TYPE_MODERATE = 0; // 0x0
     field public static final int ACTIVITY_INTENSITY_TYPE_VIGOROUS = 1; // 0x1
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> DURATION_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.lang.Long> INTENSITY_MINUTES_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> MODERATE_DURATION_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> VIGOROUS_DURATION_TOTAL;
   }
 
   public static final class ActivityIntensityRecord.Builder {
@@ -1001,7 +1005,7 @@ package android.health.connect.datatypes {
     field public static final int EXERCISE_SESSION_TYPE_FOOTBALL_AUSTRALIAN = 14; // 0xe
     field public static final int EXERCISE_SESSION_TYPE_FRISBEE_DISC = 15; // 0xf
     field public static final int EXERCISE_SESSION_TYPE_GOLF = 16; // 0x10
-    field public static final int EXERCISE_SESSION_TYPE_GUIDED_BREATHING = 17; // 0x11
+    field @Deprecated @FlaggedApi("com.android.healthfitness.flags.deprecate_exercise_session_type_breathing") public static final int EXERCISE_SESSION_TYPE_GUIDED_BREATHING = 17; // 0x11
     field public static final int EXERCISE_SESSION_TYPE_GYMNASTICS = 18; // 0x12
     field public static final int EXERCISE_SESSION_TYPE_HANDBALL = 19; // 0x13
     field public static final int EXERCISE_SESSION_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING = 20; // 0x14
@@ -1245,7 +1249,6 @@ package android.health.connect.datatypes {
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;
     field public static final int MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES = 2; // 0x2
     field public static final int MEDICAL_RESOURCE_TYPE_CONDITIONS = 7; // 0x7
-    field public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS = 1; // 0x1
     field public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6; // 0x6
     field public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9; // 0x9
     field public static final int MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS = 10; // 0xa
@@ -1253,6 +1256,7 @@ package android.health.connect.datatypes {
     field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
     field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8
     field public static final int MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY = 4; // 0x4
+    field public static final int MEDICAL_RESOURCE_TYPE_VACCINES = 1; // 0x1
     field public static final int MEDICAL_RESOURCE_TYPE_VISITS = 12; // 0xc
     field public static final int MEDICAL_RESOURCE_TYPE_VITAL_SIGNS = 5; // 0x5
   }

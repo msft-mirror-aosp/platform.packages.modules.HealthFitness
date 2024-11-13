@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.shared
 
+import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -29,6 +30,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Co
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
+import com.android.healthfitness.flags.AconfigFlagHelper
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -43,6 +45,7 @@ import javax.inject.Singleton
 class HealthPermissionReader @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
+        private const val HEALTH_PERMISSION_GROUP = "android.permission-group.HEALTH"
         private const val RESOLVE_INFO_FLAG: Long = PackageManager.MATCH_ALL.toLong()
         private const val PACKAGE_INFO_PERMISSIONS_FLAG: Long =
             PackageManager.GET_PERMISSIONS.toLong()
@@ -275,18 +278,34 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
     @VisibleForTesting
     fun getHealthPermissions(): List<String> {
         val permissions =
-            context.packageManager
-                .queryPermissionsByGroup("android.permission-group.HEALTH", 0)
-                .map { permissionInfo -> permissionInfo.name }
+            context.packageManager.queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0).map {
+                permissionInfo ->
+                permissionInfo.name
+            }
         return permissions.filterNot { permission -> shouldHidePermission(permission) }
     }
 
-    fun shouldHidePermission(permission: String): Boolean {
-        return shouldHideMedicalPermission(permission)
+    /** Returns a list of all system health permissions in the HEALTH permission group. */
+    fun getSystemHealthPermissions(): List<String> {
+        val permissions =
+            context.packageManager
+                .queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0)
+                .map { permissionInfo -> permissionInfo.name }
+                .filter { permissionName ->
+                    !AppOpsManager.permissionToOp(permissionName)
+                        .equals(AppOpsManager.OPSTR_READ_WRITE_HEALTH_DATA)
+                }
+        return permissions
     }
 
-    private fun shouldHideMedicalPermission(permission: String): Boolean {
-        return permission in medicalPermissions && !isPersonalHealthRecordEnabled()
+    fun shouldHidePermission(permission: String): Boolean {
+        return when (permission) {
+            in medicalPermissions -> !isPersonalHealthRecordEnabled()
+            HealthPermissions.READ_ACTIVITY_INTENSITY,
+            HealthPermissions.WRITE_ACTIVITY_INTENSITY ->
+                !AconfigFlagHelper.isActivityIntensityEnabled()
+            else -> false
+        }
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

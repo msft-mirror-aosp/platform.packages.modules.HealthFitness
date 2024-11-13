@@ -53,6 +53,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.utils.TimeSource;
 
 import java.util.Objects;
 
@@ -118,12 +119,7 @@ public class HealthConnectManagerService extends SystemService {
         migrationCleaner = mHealthConnectInjector.getMigrationCleaner();
         mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
         mExportManager = mHealthConnectInjector.getExportManager();
-        mMigrationBroadcastScheduler =
-                new MigrationBroadcastScheduler(
-                        mCurrentForegroundUser,
-                        mHealthConnectDeviceConfigManager,
-                        mMigrationStateManager);
-        mMigrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
+        mMigrationBroadcastScheduler = mHealthConnectInjector.getMigrationBroadcastScheduler();
         MigrationNotificationSender migrationNotificationSender =
                 new MigrationNotificationSender(context, mHealthConnectDeviceConfigManager);
         mMigrationUiStateManager =
@@ -136,6 +132,7 @@ public class HealthConnectManagerService extends SystemService {
                 mHealthConnectInjector.getMedicalDataSourceHelper();
         MedicalResourceHelper medicalResourceHelper =
                 mHealthConnectInjector.getMedicalResourceHelper();
+        TimeSource timeSource = mHealthConnectInjector.getTimeSource();
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
@@ -158,7 +155,8 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getPriorityMigrationHelper(),
                         appInfoHelper,
                         mHealthConnectInjector.getDeviceInfoHelper(),
-                        mPreferenceHelper);
+                        mPreferenceHelper,
+                        timeSource);
     }
 
     @Override
@@ -254,7 +252,8 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+                        mMigrationBroadcastScheduler.scheduleNewJobs(
+                                mContext, mMigrationStateManager);
                     } catch (Exception e) {
                         Slog.e(TAG, "Migration broadcast schedule failed", e);
                     }

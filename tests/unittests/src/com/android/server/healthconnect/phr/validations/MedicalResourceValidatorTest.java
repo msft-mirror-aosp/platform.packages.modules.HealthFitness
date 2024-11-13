@@ -104,7 +104,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -127,7 +127,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4B)
@@ -155,7 +155,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -182,7 +182,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -642,7 +642,9 @@ public class MedicalResourceValidatorTest {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, code)
+                        .removeAllEffectiveMultiTypeFields()
                         .set("effectiveDateTime", "2021-04-20")
+                        .removeAllValueMultiTypeFields()
                         .set("valueDateTime", "2021-08-07")
                         .toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
@@ -669,6 +671,7 @@ public class MedicalResourceValidatorTest {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, value.mCode)
+                        .removeAllValueMultiTypeFields()
                         .set("valueCodeableConcept", value.mValueCodeableConcept)
                         .toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
