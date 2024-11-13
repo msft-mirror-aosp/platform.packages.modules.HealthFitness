@@ -216,7 +216,7 @@ class CombinedPermissionsFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -254,7 +254,9 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -277,7 +279,9 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
     }
 

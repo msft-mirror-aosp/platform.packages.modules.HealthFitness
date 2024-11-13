@@ -53,7 +53,10 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import com.android.server.healthconnect.proto.FhirDataTypeConfig;
 import com.android.server.healthconnect.proto.FhirFieldConfig;
 import com.android.server.healthconnect.proto.Kind;
+import com.android.server.healthconnect.proto.MultiTypeFieldConfig;
 import com.android.server.healthconnect.proto.R4FhirType;
+
+import com.google.common.truth.Correspondence;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,6 +66,12 @@ import java.util.Map;
 
 public class FhirSpecProviderTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    private static final Correspondence<MultiTypeFieldConfig, MultiTypeFieldConfig>
+            MULTI_TYPE_CONFIG_EQUIVALENCE =
+                    Correspondence.from(
+                            FhirSpecProviderTest::isMultiTypeFieldConfigEqual,
+                            "isMultiTypeFieldConfigEqual");
 
     @Test
     public void testConstructor_r4FhirVersion_parsesProtoFileAndSucceeds() {
@@ -89,6 +98,14 @@ public class FhirSpecProviderTest {
         // The test is based on the published spec at - https://hl7.org/fhir/R4/immunization.html
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("status", "vaccineCode", "patient");
+        List<MultiTypeFieldConfig> expectedMultiTypeFieldConfigs =
+                List.of(
+                        MultiTypeFieldConfig.newBuilder()
+                                .setName("occurrence[x]")
+                                .addAllTypedFieldNames(
+                                        List.of("occurrenceDateTime", "occurrenceString"))
+                                .setIsRequired(true)
+                                .build());
         Map<String, FhirFieldConfig> expectedFieldConfigsMap =
                 Map.ofEntries(
                         Map.entry(
@@ -249,6 +266,9 @@ public class FhirSpecProviderTest {
 
         assertThat(immunizationConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(immunizationConfig.getMultiTypeFieldsList())
+                .comparingElementsUsing(MULTI_TYPE_CONFIG_EQUIVALENCE)
+                .containsExactlyElementsIn(expectedMultiTypeFieldConfigs);
         assertThat(immunizationConfig.getAllowedFieldNamesToConfigMap())
                 .containsExactlyEntriesIn(expectedFieldConfigsMap);
     }
@@ -257,6 +277,19 @@ public class FhirSpecProviderTest {
     public void testGetFhirDataTypeConfigForResourceType_allergy_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("patient");
+        List<MultiTypeFieldConfig> expectedMultiTypeFieldConfigs =
+                List.of(
+                        MultiTypeFieldConfig.newBuilder()
+                                .setName("onset[x]")
+                                .addAllTypedFieldNames(
+                                        List.of(
+                                                "onsetDateTime",
+                                                "onsetAge",
+                                                "onsetPeriod",
+                                                "onsetRange",
+                                                "onsetString"))
+                                .setIsRequired(false)
+                                .build());
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
                 Map.of(
                         "id",
@@ -286,6 +319,9 @@ public class FhirSpecProviderTest {
 
         assertThat(allergyConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(allergyConfig.getMultiTypeFieldsList())
+                .comparingElementsUsing(MULTI_TYPE_CONFIG_EQUIVALENCE)
+                .containsExactlyElementsIn(expectedMultiTypeFieldConfigs);
         assertThat(allergyConfig.getAllowedFieldNamesToConfigMap())
                 .containsAtLeastEntriesIn(atLeastExpectedFieldConfigsMap);
     }
@@ -294,6 +330,35 @@ public class FhirSpecProviderTest {
     public void testGetFhirDataTypeConfigForResourceType_observation_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("status", "code");
+        List<MultiTypeFieldConfig> expectedMultiTypeFieldConfigs =
+                List.of(
+                        MultiTypeFieldConfig.newBuilder()
+                                .setName("effective[x]")
+                                .addAllTypedFieldNames(
+                                        List.of(
+                                                "effectiveDateTime",
+                                                "effectivePeriod",
+                                                "effectiveTiming",
+                                                "effectiveInstant"))
+                                .setIsRequired(false)
+                                .build(),
+                        MultiTypeFieldConfig.newBuilder()
+                                .setName("value[x]")
+                                .addAllTypedFieldNames(
+                                        List.of(
+                                                "valueQuantity",
+                                                "valueCodeableConcept",
+                                                "valueString",
+                                                "valueBoolean",
+                                                "valueInteger",
+                                                "valueRange",
+                                                "valueRatio",
+                                                "valueSampledData",
+                                                "valueTime",
+                                                "valueDateTime",
+                                                "valuePeriod"))
+                                .setIsRequired(false)
+                                .build());
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
                 Map.of(
                         "encounter",
@@ -317,6 +382,9 @@ public class FhirSpecProviderTest {
 
         assertThat(observationConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(observationConfig.getMultiTypeFieldsList())
+                .comparingElementsUsing(MULTI_TYPE_CONFIG_EQUIVALENCE)
+                .containsExactlyElementsIn(expectedMultiTypeFieldConfigs);
         assertThat(observationConfig.getAllowedFieldNamesToConfigMap())
                 .containsAtLeastEntriesIn(atLeastExpectedFieldConfigsMap);
     }
@@ -602,5 +670,26 @@ public class FhirSpecProviderTest {
                 .setR4Type(r4Type)
                 .setKind(kind)
                 .build();
+    }
+
+    /**
+     * Given two {@link MultiTypeFieldConfig}s, compare whether they are equal or not. This ignores
+     * the list order when comparing {@link MultiTypeFieldConfig#getTypedFieldNamesList()} ()}.
+     */
+    private static boolean isMultiTypeFieldConfigEqual(
+            MultiTypeFieldConfig actual, MultiTypeFieldConfig expected) {
+        List<String> actualFieldNames = actual.getTypedFieldNamesList();
+        List<String> expectedFieldNames = expected.getTypedFieldNamesList();
+        if (actualFieldNames.size() != expectedFieldNames.size()
+                || !actualFieldNames.containsAll(expectedFieldNames)) {
+            return false;
+        }
+
+        MultiTypeFieldConfig actualWithoutFieldNames =
+                actual.toBuilder().clearTypedFieldNames().build();
+        MultiTypeFieldConfig expectedWithoutFieldNames =
+                expected.toBuilder().clearTypedFieldNames().build();
+
+        return actualWithoutFieldNames.equals(expectedWithoutFieldNames);
     }
 }
