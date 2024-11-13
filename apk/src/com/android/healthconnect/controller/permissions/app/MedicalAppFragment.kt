@@ -200,19 +200,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
 
         manageDataCategory.isVisible = true
         manageDataCategory.removeAll()
-        manageDataCategory.addPreference(
-            HealthPreference(requireContext()).also {
-                it.title = getString(R.string.see_app_data)
-                it.setOnPreferenceClickListener {
-                    findNavController()
-                        .navigate(
-                            R.id.action_medicalApp_to_appData,
-                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
-                        )
-                    true
-                }
-            }
-        )
+
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
             if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
@@ -236,6 +224,20 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
             manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
                 state.isAvailable()
         }
+
+        manageDataCategory.addPreference(
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.see_app_data)
+                it.setOnPreferenceClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_medicalApp_to_appData,
+                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
+                        )
+                    true
+                }
+            }
+        )
     }
 
     private fun shouldAddAdditionalAccessPref(): Boolean {
