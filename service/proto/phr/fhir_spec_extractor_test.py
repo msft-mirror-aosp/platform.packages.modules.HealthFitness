@@ -220,6 +220,11 @@ class FhirSpecExtractorTest(unittest.TestCase):
         # occurrenceDateTime and occurrenceString. Fields with a cardinality of 0..* or 1..* should
         # have is_array = true set in their config.
         expected_required_fields = {"status", "vaccineCode", "exampleFieldToTestOneToMany"}
+        expected_multi_type_config = fhirspec_pb2.MultiTypeFieldConfig(
+            name="occurrence[x]",
+            typed_field_names=["occurrenceDateTime", "occurrenceString"],
+            is_required=True
+        )
         expected_field_names_to_config = {
             "resourceType": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
@@ -265,10 +270,21 @@ class FhirSpecExtractorTest(unittest.TestCase):
 
         generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message()
 
+        # Check that exactly one Immunization config is present
         self.assertEqual(len(generated_spec.resource_type_to_config.keys()), 1)
         immunization_config = (
             generated_spec.resource_type_to_config[self.IMMUNIZATION_RESOURCE_TYPE_INT])
+        # Check that the list of required fields is as expected
         self.assertEquals(set(immunization_config.required_fields), expected_required_fields)
+        # Check that the list of multi type configs is as expected
+        self.assertEquals(len(immunization_config.multi_type_fields), 1)
+        received_multi_type_config = immunization_config.multi_type_fields[0]
+        self.assertEqual(received_multi_type_config.name, expected_multi_type_config.name)
+        self.assertEqual(received_multi_type_config.typed_field_names,
+                         expected_multi_type_config.typed_field_names)
+        self.assertEqual(received_multi_type_config.is_required,
+                         expected_multi_type_config.is_required)
+        # Check that the field names to config map is as expected
         self.assertEqual(set(expected_field_names_to_config.keys()),
                          set(immunization_config.allowed_field_names_to_config.keys()))
         for expected_field, expected_config in expected_field_names_to_config.items():
