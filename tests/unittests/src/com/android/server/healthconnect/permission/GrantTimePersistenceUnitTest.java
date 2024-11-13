@@ -161,12 +161,12 @@ public class GrantTimePersistenceUnitTest {
     @Test
     public void testWriteReadData_statesForTwoUsersWritten_restoredCorrectly() {
         FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        UserHandle secondUser = UserHandle.of(mUser.getIdentifier() + 10);
         datastore.writeForUser(PACKAGES_STATE, mUser, DATA_TYPE_CURRENT);
-        datastore.writeForUser(SHARED_USERS_STATE, UserHandle.of(10), DATA_TYPE_CURRENT);
+        datastore.writeForUser(SHARED_USERS_STATE, secondUser, DATA_TYPE_CURRENT);
         UserGrantTimeState restoredState = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState, PACKAGES_STATE);
-        UserGrantTimeState restoredState2 =
-                datastore.readForUser(UserHandle.of(10), DATA_TYPE_CURRENT);
+        UserGrantTimeState restoredState2 = datastore.readForUser(secondUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState2, SHARED_USERS_STATE);
     }
 
