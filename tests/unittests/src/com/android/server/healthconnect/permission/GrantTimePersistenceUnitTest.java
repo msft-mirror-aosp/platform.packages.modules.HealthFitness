@@ -23,25 +23,21 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.when;
 
-import android.content.Context;
-import android.os.Environment;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.EnvironmentFixture;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
@@ -79,32 +75,23 @@ public class GrantTimePersistenceUnitTest {
     private static final UserGrantTimeState EMPTY_STATE =
             new UserGrantTimeState(new ArrayMap<>(), new ArrayMap<>(), 3);
 
+    private final EnvironmentFixture mEnvironmentFixture = new EnvironmentFixture();
+
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(Environment.class)
                     .mockStatic(LocalManagerRegistry.class)
                     .setStrictness(Strictness.LENIENT)
+                    .addStaticMockFixtures(() -> mEnvironmentFixture)
                     .build();
 
     private final UserHandle mUser = UserHandle.of(UserHandle.myUserId());
-    private File mMockDataDirectory;
     @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
 
     @Before
     public void mockApexEnvironment() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        // Cleanup and set the mock directory.
-        deleteFile(context.getDir("mock_data", Context.MODE_PRIVATE));
-        mMockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
-        Mockito.when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
         when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
                 .thenReturn(mAppOpsManagerLocal);
-    }
-
-    @After
-    public void tearDown() {
-        deleteFile(mMockDataDirectory);
     }
 
     @Test
@@ -180,13 +167,14 @@ public class GrantTimePersistenceUnitTest {
     @Test
     public void testParseData_stateIsNotWritten_nullIsReturned() {
         UserGrantTimeState state =
-                GrantTimeXmlHelper.parseGrantTime(new File(mMockDataDirectory, "test_file.xml"));
+                GrantTimeXmlHelper.parseGrantTime(
+                        new File(mEnvironmentFixture.getDataDirectory(), "test_file.xml"));
         assertThat(state).isNull();
     }
 
     @Test
     public void testWriteData_writeAndReadState_restoredEqualToWritten() {
-        File testFile = new File(mMockDataDirectory, "test_file.xml");
+        File testFile = new File(mEnvironmentFixture.getDataDirectory(), "test_file.xml");
         GrantTimeXmlHelper.serializeGrantTimes(testFile, DEFAULT_STATE);
         UserGrantTimeState state = GrantTimeXmlHelper.parseGrantTime(testFile);
         assertRestoredStateIsCorrect(state, DEFAULT_STATE);
@@ -200,16 +188,6 @@ public class GrantTimePersistenceUnitTest {
         assertThat(current).isNotNull();
         assertThat(staged).isNotNull();
         assertThat(current).isNotEqualTo(staged);
-    }
-
-    private static void deleteFile(File file) {
-        File[] contents = file.listFiles();
-        if (contents != null) {
-            for (File f : contents) {
-                deleteFile(f);
-            }
-        }
-        assertThat(file.delete()).isTrue();
     }
 
     private static void assertRestoredStateIsCorrect(
