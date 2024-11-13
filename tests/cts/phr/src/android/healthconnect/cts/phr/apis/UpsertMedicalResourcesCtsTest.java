@@ -358,6 +358,48 @@ public class UpsertMedicalResourcesCtsTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_missingRequiredMultiTypeField_throws() throws Exception {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .removeField("occurrenceDateTime")
+                        .removeField("occurrenceString")
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
+    public void testUpsertMedicalResources_multipleMultiTypeFieldsSet_throws() throws Exception {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .set("occurrenceDateTime", "2023")
+                        .set("occurrenceString", "last year")
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
     @RequiresFlagsEnabled({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,

@@ -51,7 +51,9 @@ import org.junit.Test
 @HiltAndroidTest
 class MindfulnessSessionFormatterTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
+
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
 
     @Inject lateinit var formatter: MindfulnessSessionFormatter
@@ -84,8 +86,8 @@ class MindfulnessSessionFormatterTest {
                     uuid = "",
                     header = "07:06 - 07:22 • com.app.name",
                     headerA11y = "from 07:06 to 07:22 • com.app.name",
-                    title = "16 m, Unknown type",
-                    titleA11y = "16 minutes, Unknown type",
+                    title = "Unknown type • 16 m",
+                    titleA11y = "Unknown type • 16 minutes",
                     dataType = DataType.MINDFULNESS_SESSION,
                     notes = null,
                     route = null,
@@ -115,8 +117,8 @@ class MindfulnessSessionFormatterTest {
                     uuid = "test_id",
                     header = "07:06 - 07:22 • com.app.name",
                     headerA11y = "from 07:06 to 07:22 • com.app.name",
-                    title = "foo-title, Meditation",
-                    titleA11y = "foo-title, Meditation",
+                    title = "Meditation • foo-title",
+                    titleA11y = "Meditation • foo-title",
                     dataType = DataType.MINDFULNESS_SESSION,
                     notes = "foo-notes",
                     route = null,

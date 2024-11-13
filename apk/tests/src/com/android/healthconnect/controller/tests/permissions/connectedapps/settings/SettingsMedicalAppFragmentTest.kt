@@ -285,7 +285,11 @@ class SettingsMedicalAppFragmentTest {
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(doesNotExist())
         onView(withText("Read privacy policy")).check(doesNotExist())
     }
@@ -310,7 +314,11 @@ class SettingsMedicalAppFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -336,7 +344,11 @@ class SettingsMedicalAppFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))

@@ -117,6 +117,8 @@ class FhirSpecExtractor:
             self, element_definitions: Collection[Mapping]) -> fhirspec_pb2.FhirDataTypeConfig:
         required_fields = set()
 
+        multi_type_configs = []
+
         field_configs_by_name = {}
         # Manually add resourceType field, as this is not present in the spec
         field_configs_by_name["resourceType"] = fhirspec_pb2.FhirFieldConfig(
@@ -141,17 +143,17 @@ class FhirSpecExtractor:
                 # This is a "regular" nested field, e.g. Immunization.status, so we extract the
                 # field configs
                 field_name = field_parts[1]
-                field_configs_to_add = self._generate_field_configs_from_field_element(
-                    element, field_name)
+                field_configs_to_add, multi_type_config = (
+                    self._generate_field_configs_and_multi_type_config_from_field_element(
+                    element, field_name))
                 for name in field_configs_to_add:
                     if name in field_configs_by_name: raise ValueError("Field name already exists")
 
                 field_configs_by_name.update(field_configs_to_add)
-                if self._field_is_required(element) and not self.field_name_is_oneof(field_name):
+                if self.field_name_is_multi_type_field(field_name):
+                    multi_type_configs.append(multi_type_config)
+                elif self._field_is_required(element):
                     required_fields.add(field_name)
-
-                # TODO - b/376673951: Record list of oneofs and whether they are required or not so
-                #  that this can be validated as well.
 
             elif field_parts_length > 2:
                 # This means the field is part of a BackBoneElement. For an example see the
@@ -170,31 +172,44 @@ class FhirSpecExtractor:
 
         return fhirspec_pb2.FhirDataTypeConfig(
             allowed_field_names_to_config=field_configs_by_name,
-            required_fields=required_fields
+            required_fields=required_fields,
+            multi_type_fields=multi_type_configs
         )
 
-    def _generate_field_configs_from_field_element(self, element_definition, field_name) -> Mapping[
-        str, fhirspec_pb2.FhirFieldConfig]:
+    def _generate_field_configs_and_multi_type_config_from_field_element(
+            self, element_definition, field_name) -> (Mapping[str, fhirspec_pb2.FhirFieldConfig],
+                                                      list[fhirspec_pb2.MultiTypeFieldConfig]):
         field_is_array = self._field_is_array(element_definition)
 
         field_configs_by_name = {}
 
-        # If the field is a oneof field, it means one of several types can be set. An example is the
-        # field Immunization.occurrence, which has types "string" and "dateTime" and therefore means
-        # the fields "occurrenceString" and "occurrenceDateTime" are allowed. We therefore expand
-        # the field name with each defined type.
-        if self.field_name_is_oneof(field_name):
-            if field_is_array:
-                raise ValueError("Unexpected cardinality for oneof field. Did not expect array.")
+        multi_type_config = None
 
+        # If the field is a multi type field, it means one of several types can be set. An example
+        # is the field Immunization.occurrence, which has types "string" and "dateTime" and
+        # therefore means the fields "occurrenceString" and "occurrenceDateTime" are allowed. We
+        # therefore expand the field name with each defined type.
+        if self.field_name_is_multi_type_field(field_name):
+            if field_is_array:
+                raise ValueError(
+                    "Unexpected cardinality for type choice field. Did not expect array.")
+
+            multi_type_fields = []
             for data_type in element_definition["type"]:
-                field_with_type = self._get_oneof_name_for_type(field_name, data_type["code"])
+                field_with_type = self._get_multi_type_name_for_type(field_name, data_type["code"])
                 type_enum, kind_enum = self._get_type_and_kind_enum_from_type(data_type["code"])
                 field_configs_by_name[field_with_type] = fhirspec_pb2.FhirFieldConfig(
                     is_array=False,
                     r4_type=type_enum,
                     kind=kind_enum
                 )
+                multi_type_fields.append(field_with_type)
+
+            multi_type_config = fhirspec_pb2.MultiTypeFieldConfig(
+                name=field_name,
+                typed_field_names=multi_type_fields,
+                is_required=self._field_is_required(element_definition)
+            )
 
         else:
             if len(element_definition["type"]) != 1:
@@ -207,10 +222,11 @@ class FhirSpecExtractor:
                 kind=kind_enum
             )
 
-        return field_configs_by_name
+        return field_configs_by_name, multi_type_config
 
-    def field_name_is_oneof(self, field_name) -> bool:
-        """Returns true if the field is a oneof field
+    def field_name_is_multi_type_field(self, field_name) -> bool:
+        """Returns true if the field is a oneof / type choice field, which can be contains several
+        data types.
 
         This is the case if the field name ends with "[x]" and means that one of several types can
         be set.
@@ -218,10 +234,10 @@ class FhirSpecExtractor:
 
         return field_name.endswith("[x]")
 
-    def _get_oneof_name_for_type(self, field_name, type_code) -> bool:
+    def _get_multi_type_name_for_type(self, field_name, type_code) -> bool:
         """Returns the one of field name for a specific type.
 
-        For example for the oneof "occurrence[x]" and type "dateTime" this will return
+        For example for the field name "occurrence[x]" and type "dateTime" this will return
         "occurrenceDateTime".
         """
 

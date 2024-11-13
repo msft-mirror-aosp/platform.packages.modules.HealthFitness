@@ -17,29 +17,41 @@
 package com.android.server.healthconnect.logging;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.HealthPermissions;
 import android.os.UserHandle;
 
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Collects Health Connect usage stats.
  *
  * @hide
  */
-final class UsageStatsCollector {
+public final class UsageStatsCollector {
+    /**
+     * A client is considered as "monthly active" by PHR if it has made any read medical resources
+     * API call within this number of days.
+     */
+    private static final long PHR_MONTHLY_ACTIVE_USER_DURATION = 30; // 30 days
+
     private static final String USER_MOST_RECENT_ACCESS_LOG_TIME =
             "USER_MOST_RECENT_ACCESS_LOG_TIME";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
@@ -49,15 +61,18 @@ final class UsageStatsCollector {
 
     private final PreferenceHelper mPreferenceHelper;
     private final AccessLogsHelper mAccessLogsHelper;
+    private final TimeSource mTimeSource;
 
-    UsageStatsCollector(
+    public UsageStatsCollector(
             Context context,
             UserHandle userHandle,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            TimeSource timeSource) {
         mContext = context;
         mPreferenceHelper = preferenceHelper;
         mAccessLogsHelper = accessLogsHelper;
+        mTimeSource = timeSource;
         List<PackageInfo> allPackagesInstalledForUser =
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
@@ -91,7 +106,7 @@ final class UsageStatsCollector {
      * @return Map of package name to permissions granted for apps that are connected (have
      *     read/write) to Health Connect
      */
-    Map<String, List<String>> getPackagesHoldingHealthPermissions() {
+    public Map<String, List<String>> getPackagesHoldingHealthPermissions() {
         Map<String, List<String>> packageNameToPermissionsGranted = new HashMap<>();
         for (PackageInfo info : mPackageNameToPackageInfo.values()) {
             List<String> grantedHealthPermissions =
@@ -101,6 +116,54 @@ final class UsageStatsCollector {
             }
         }
         return packageNameToPermissionsGranted;
+    }
+
+    /** Returns whether the current user is considered as a PHR monthly active user. */
+    public boolean isPhrMonthlyActiveUser() {
+        Instant lastReadMedicalResourcesApiTimeStamp =
+                mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp();
+        if (lastReadMedicalResourcesApiTimeStamp == null) {
+            return false;
+        }
+        return mTimeSource
+                .getInstantNow()
+                .minus(PHR_MONTHLY_ACTIVE_USER_DURATION, ChronoUnit.DAYS)
+                .isBefore(lastReadMedicalResourcesApiTimeStamp);
+    }
+
+    /** Returns the number of clients that are granted at least one PHR <b>read</b> permission. */
+    public long getGrantedPhrAppsCount() {
+        Map<String, List<String>> packageNameToPermissionsGranted =
+                getPackagesHoldingHealthPermissions();
+        // isPersonalHealthRecordEnabled() should be enabled when PHR telemetry flag is enabled,
+        // however, without this check, getAllMedicalPermissions() might throw an exception. 0
+        // should be returned instead of an exception.
+        if (!isPersonalHealthRecordEnabled()) {
+            return 0;
+        }
+
+        // note that this set includes WRITE_MEDICAL_DATA
+        Set<String> medicalPermissions = HealthPermissions.getAllMedicalPermissions();
+
+        return packageNameToPermissionsGranted.values().stream()
+                .map(
+                        grantedPermissions -> {
+                            for (String grantedPerm : grantedPermissions) {
+                                // excluding WRITE_MEDICAL_DATA because we are only counting read
+                                // perms
+                                if (WRITE_MEDICAL_DATA.equals(grantedPerm)) {
+                                    continue;
+                                }
+                                if (medicalPermissions.contains(grantedPerm)) {
+                                    // we just need to find one granted medical perm that is not
+                                    // WRITE, hence returning early.
+                                    return 1;
+                                }
+                            }
+                            return 0;
+                        })
+                .filter(count -> count > 0)
+                .count();
     }
 
     /**

@@ -642,7 +642,9 @@ public class MedicalResourceValidatorTest {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, code)
+                        .removeAllEffectiveMultiTypeFields()
                         .set("effectiveDateTime", "2021-04-20")
+                        .removeAllValueMultiTypeFields()
                         .set("valueDateTime", "2021-08-07")
                         .toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
@@ -669,6 +671,7 @@ public class MedicalResourceValidatorTest {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, value.mCode)
+                        .removeAllValueMultiTypeFields()
                         .set("valueCodeableConcept", value.mValueCodeableConcept)
                         .toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);

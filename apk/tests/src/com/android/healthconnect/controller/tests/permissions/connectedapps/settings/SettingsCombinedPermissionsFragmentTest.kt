@@ -196,14 +196,16 @@ class SettingsCombinedPermissionsFragmentTest {
         onView(withText("Lab results, medications, vaccines and others"))
             .check(matches(isDisplayed()))
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Remove access for this app"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Data you share with Health Connect test app is covered by their privacy policy"
+                    "You can learn how Health Connect test app handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
