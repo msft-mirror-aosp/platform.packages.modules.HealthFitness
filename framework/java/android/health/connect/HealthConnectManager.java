@@ -2078,8 +2078,7 @@ public class HealthConnectManager {
 
         Set<String> permissions = new HashSet<>();
         for (PermissionInfo perm : packageInfo.permissions) {
-            if (android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP.equals(
-                    perm.group)) {
+            if (HealthPermissions.isValidHealthPermission(perm)) {
                 permissions.add(perm.name);
             }
         }
