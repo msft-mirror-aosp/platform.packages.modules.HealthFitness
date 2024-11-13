@@ -49,11 +49,17 @@ class HealthConnectLogger @Inject constructor() {
 
     /** Logs the impression of an element. */
     fun logImpression(element: ElementName) {
+        if (isGuardedByPhrFlag(element)) {
+            return
+        }
         write(HEALTH_CONNECT_UI_IMPRESSION, pageName.impressionId, element.impressionId)
     }
 
     /** Logs the interaction with an element. */
     fun logInteraction(element: ElementName, action: UIAction = UIAction.ACTION_CLICK) {
+        if (isGuardedByPhrFlag(element)) {
+            return
+        }
         write(
             HEALTH_CONNECT_UI_INTERACTION,
             pageName.interactionId,
@@ -64,6 +70,18 @@ class HealthConnectLogger @Inject constructor() {
 
     private fun isGuardedByPhrFlag(pageName: PageName) =
         pageName.isPhrPage() && !personalHealthRecordUiTelemetry()
+
+    private fun isGuardedByPhrFlag(elementName: ElementName): Boolean {
+        val phrElements =
+            setOf(
+                OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR,
+                HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON,
+                CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON,
+                CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON,
+                CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON,
+            )
+        return phrElements.contains(elementName)
+    }
 }
 
 /** Enum class for UI Actions, used to specify whether we wish to log a click or a toggle. */

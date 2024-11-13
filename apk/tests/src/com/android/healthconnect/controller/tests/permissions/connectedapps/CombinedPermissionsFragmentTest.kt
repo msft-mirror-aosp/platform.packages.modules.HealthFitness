@@ -54,6 +54,7 @@ import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
+import com.android.healthconnect.controller.utils.logging.CombinedAppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
@@ -140,6 +141,10 @@ class CombinedPermissionsFragmentTest {
 
             verify(healthConnectLogger, atLeast(1)).setPageId(PageName.COMBINED_APP_ACCESS_PAGE)
             verify(healthConnectLogger).logPageImpression()
+            verify(healthConnectLogger)
+                .logImpression(CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON)
+            verify(healthConnectLogger)
+                .logImpression(CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON)
         }
     }
 
@@ -388,6 +393,8 @@ class CombinedPermissionsFragmentTest {
         onView(withText("Remove access for this app"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON)
         onView(withText("Remove access for this app")).perform(scrollTo()).perform(click())
 
         onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))

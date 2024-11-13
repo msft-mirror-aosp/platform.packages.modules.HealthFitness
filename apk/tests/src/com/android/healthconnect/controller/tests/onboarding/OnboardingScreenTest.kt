@@ -33,17 +33,27 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry.*
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.OnboardingElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class OnboardingScreenTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val setFlagsRule = SetFlagsRule()
+
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -125,6 +135,31 @@ class OnboardingScreenTest {
             .check(matches(isDisplayed()))
         onView(withText("Get started")).check(matches(isDisplayed()))
         onView(withText("Go back")).check(matches(isDisplayed()))
+    }
+
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun correctLogging() {
+        startOnboardingActivity()
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ONBOARDING_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(OnboardingElement.ONBOARDING_GO_BACK_BUTTON)
+        verify(healthConnectLogger).logImpression(OnboardingElement.ONBOARDING_COMPLETED_BUTTON)
+        verify(healthConnectLogger, times(0))
+            .logImpression(OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR)
+    }
+
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun correctLogging_withHealthRecords() {
+        startOnboardingActivity()
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ONBOARDING_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(OnboardingElement.ONBOARDING_GO_BACK_BUTTON)
+        verify(healthConnectLogger).logImpression(OnboardingElement.ONBOARDING_COMPLETED_BUTTON)
+        verify(healthConnectLogger).logImpression(OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR)
     }
 
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
