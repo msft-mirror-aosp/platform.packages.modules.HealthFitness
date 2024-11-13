@@ -352,7 +352,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         }
 
         Instant stagedTime = null;
-        for (String packageName : mPackageInfoHelper.getPackageNamesForUid(mContext, uid)) {
+        for (String packageName :
+                mPackageInfoHelper.getPackagesForUidNonNull(mContext, user, uid)) {
             stagedTime = backupState.getPackageGrantTimes().get(packageName);
             if (stagedTime != null) {
                 break;
@@ -373,7 +374,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         }
 
         mUidToGrantTimeCache.put(uid, stagedTime);
-        for (String packageName : mPackageInfoHelper.getPackageNamesForUid(mContext, uid)) {
+        for (String packageName :
+                mPackageInfoHelper.getPackagesForUidNonNull(mContext, user, uid)) {
             backupState.getPackageGrantTimes().remove(packageName);
         }
         mDatastore.writeForUser(backupState, user, DATA_TYPE_STAGED);
@@ -654,10 +656,11 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                 if (sharedUserName != null) {
                     sharedUserToGrantTime.put(sharedUserName, time);
                 } else {
-                    mPackageInfoHelper
-                            .getPackageNameForUid(mContext, uid)
-                            .ifPresent(
-                                    packageName -> packageNameToGrantTime.put(packageName, time));
+                    String[] packageNames =
+                            mPackageInfoHelper.getPackagesForUid(mContext, user, uid);
+                    if (packageNames != null && packageNames.length == 1) {
+                        packageNameToGrantTime.put(packageNames[0], time);
+                    }
                 }
             }
 
@@ -683,7 +686,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                     continue;
                 }
 
-                for (String packageName : mPackageInfoHelper.getPackageNamesForUid(mContext, uid)) {
+                for (String packageName :
+                        mPackageInfoHelper.getPackagesForUidNonNull(mContext, user, uid)) {
                     packageNameToGrantTime.put(packageName, time);
                 }
             }

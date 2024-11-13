@@ -30,6 +30,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Co
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
+import com.android.healthfitness.flags.AconfigFlagHelper
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -298,11 +299,13 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
     }
 
     fun shouldHidePermission(permission: String): Boolean {
-        return shouldHideMedicalPermission(permission)
-    }
-
-    private fun shouldHideMedicalPermission(permission: String): Boolean {
-        return permission in medicalPermissions && !isPersonalHealthRecordEnabled()
+        return when (permission) {
+            in medicalPermissions -> !isPersonalHealthRecordEnabled()
+            HealthPermissions.READ_ACTIVITY_INTENSITY,
+            HealthPermissions.WRITE_ACTIVITY_INTENSITY ->
+                !AconfigFlagHelper.isActivityIntensityEnabled()
+            else -> false
+        }
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

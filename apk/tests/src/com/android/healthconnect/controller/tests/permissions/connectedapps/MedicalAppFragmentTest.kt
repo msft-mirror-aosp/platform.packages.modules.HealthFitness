@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.content.Intent
 import android.content.Intent.*
-import android.platform.test.annotations.DisableFlags
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -460,7 +459,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -501,7 +500,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -533,7 +532,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -567,7 +566,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
