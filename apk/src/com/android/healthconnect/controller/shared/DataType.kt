@@ -57,47 +57,67 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.Vo2MaxRecord
 import android.health.connect.datatypes.WeightRecord
 import android.health.connect.datatypes.WheelchairPushesRecord
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings
+import com.android.healthfitness.flags.Flags
+import kotlin.reflect.KClass
 
-enum class DataType(val recordClass: Class<out Record>) {
-    ACTIVE_CALORIES_BURNED(ActiveCaloriesBurnedRecord::class.java),
-    BASAL_METABOLIC_RATE(BasalMetabolicRateRecord::class.java),
-    DISTANCE(DistanceRecord::class.java),
-    HEART_RATE(HeartRateRecord::class.java),
-    POWER(PowerRecord::class.java),
-    SPEED(SpeedRecord::class.java),
-    STEPS(StepsRecord::class.java),
-    STEPS_CADENCE(StepsCadenceRecord::class.java),
-    TOTAL_CALORIES_BURNED(TotalCaloriesBurnedRecord::class.java),
-    HEIGHT(HeightRecord::class.java),
-    BODY_FAT(BodyFatRecord::class.java),
-    OXYGEN_SATURATION(OxygenSaturationRecord::class.java),
-    BODY_TEMPERATURE(BodyTemperatureRecord::class.java),
-    BASAL_BODY_TEMPERATURE(BasalBodyTemperatureRecord::class.java),
-    WHEELCHAIR_PUSHES(WheelchairPushesRecord::class.java),
-    RESTING_HEART_RATE(RestingHeartRateRecord::class.java),
-    RESPIRATORY_RATE(RespiratoryRateRecord::class.java),
-    HYDRATION(HydrationRecord::class.java),
-    FLOORS_CLIMBED(FloorsClimbedRecord::class.java),
-    ELEVATION_GAINED(ElevationGainedRecord::class.java),
-    BONE_MASS(BoneMassRecord::class.java),
-    LEAN_BODY_MASS(LeanBodyMassRecord::class.java),
-    WEIGHT(WeightRecord::class.java),
-    BLOOD_GLUCOSE(BloodGlucoseRecord::class.java),
-    NUTRITION(NutritionRecord::class.java),
-    BLOOD_PRESSURE(BloodPressureRecord::class.java),
-    VO2_MAX(Vo2MaxRecord::class.java),
-    CYCLE_PEDALING_CADENCE(CyclingPedalingCadenceRecord::class.java),
-    CERVICAL_MUCUS(CervicalMucusRecord::class.java),
-    SEXUAL_ACTIVITY(SexualActivityRecord::class.java),
-    OVULATION_TEST(OvulationTestRecord::class.java),
-    MENSTRUATION_FLOW(MenstruationFlowRecord::class.java),
-    MENSTRUATION_PERIOD(MenstruationPeriodRecord::class.java),
-    SLEEP(SleepSessionRecord::class.java),
-    EXERCISE(ExerciseSessionRecord::class.java),
-    BODY_WATER_MASS(BodyWaterMassRecord::class.java),
-    INTERMENSTRUAL_BLEEDING(IntermenstrualBleedingRecord::class.java),
-    HEART_RATE_VARIABILITY(HeartRateVariabilityRmssdRecord::class.java),
-    SKIN_TEMPERATURE(SkinTemperatureRecord::class.java),
-    PLANNED_EXERCISE(PlannedExerciseSessionRecord::class.java),
-    MINDFULNESS_SESSION(MindfulnessSessionRecord::class.java),
+typealias DataType = KClass<out Record>
+
+fun getDataTypeForClassName(classSimpleName: String): DataType {
+    return SUPPORTED_DATA_TYPES.first { it.java.simpleName == classSimpleName }
+}
+
+private val SUPPORTED_DATA_TYPES =
+    if (Flags.healthConnectMappings()) getSupportedDataTypes()
+    else
+        listOf(
+            ActiveCaloriesBurnedRecord::class,
+            BasalMetabolicRateRecord::class,
+            DistanceRecord::class,
+            HeartRateRecord::class,
+            PowerRecord::class,
+            SpeedRecord::class,
+            StepsRecord::class,
+            StepsCadenceRecord::class,
+            TotalCaloriesBurnedRecord::class,
+            HeightRecord::class,
+            BodyFatRecord::class,
+            OxygenSaturationRecord::class,
+            BodyTemperatureRecord::class,
+            BasalBodyTemperatureRecord::class,
+            WheelchairPushesRecord::class,
+            RestingHeartRateRecord::class,
+            RespiratoryRateRecord::class,
+            HydrationRecord::class,
+            FloorsClimbedRecord::class,
+            ElevationGainedRecord::class,
+            BoneMassRecord::class,
+            LeanBodyMassRecord::class,
+            WeightRecord::class,
+            BloodGlucoseRecord::class,
+            NutritionRecord::class,
+            BloodPressureRecord::class,
+            Vo2MaxRecord::class,
+            CyclingPedalingCadenceRecord::class,
+            CervicalMucusRecord::class,
+            SexualActivityRecord::class,
+            OvulationTestRecord::class,
+            MenstruationFlowRecord::class,
+            MenstruationPeriodRecord::class,
+            SleepSessionRecord::class,
+            ExerciseSessionRecord::class,
+            BodyWaterMassRecord::class,
+            IntermenstrualBleedingRecord::class,
+            HeartRateVariabilityRmssdRecord::class,
+            SkinTemperatureRecord::class,
+            PlannedExerciseSessionRecord::class,
+            MindfulnessSessionRecord::class,
+        )
+
+private fun getSupportedDataTypes(): List<DataType> {
+    return HealthConnectMappings.getInstance()
+        .recordIdToExternalRecordClassMap
+        .values
+        .map { it.kotlin }
+        .toList()
 }

@@ -26,7 +26,6 @@ import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.MindfulnessSessionFormatter
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.getMetaData
@@ -88,7 +87,7 @@ class MindfulnessSessionFormatterTest {
                     headerA11y = "from 07:06 to 07:22 • com.app.name",
                     title = "Unknown type • 16 m",
                     titleA11y = "Unknown type • 16 minutes",
-                    dataType = DataType.MINDFULNESS_SESSION,
+                    dataType = MindfulnessSessionRecord::class,
                     notes = null,
                     route = null,
                     isClickable = false,
@@ -119,7 +118,7 @@ class MindfulnessSessionFormatterTest {
                     headerA11y = "from 07:06 to 07:22 • com.app.name",
                     title = "Meditation • foo-title",
                     titleA11y = "Meditation • foo-title",
-                    dataType = DataType.MINDFULNESS_SESSION,
+                    dataType = MindfulnessSessionRecord::class,
                     notes = "foo-notes",
                     route = null,
                     isClickable = false,

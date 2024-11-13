@@ -30,12 +30,11 @@ class DeleteEntryUseCase
 @Inject
 constructor(
     private val healthConnectManager: HealthConnectManager,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     suspend fun invoke(deleteEntry: DeleteDataEntry) =
         withContext(dispatcher) {
-            val recordIdFilter =
-                RecordIdFilter.fromId(deleteEntry.dataType.recordClass, deleteEntry.id)
+            val recordIdFilter = RecordIdFilter.fromId(deleteEntry.dataType.java, deleteEntry.id)
 
             healthConnectManager.deleteRecords(listOf(recordIdFilter), Runnable::run) {}
         }
