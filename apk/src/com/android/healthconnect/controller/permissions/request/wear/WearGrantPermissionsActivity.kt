@@ -41,90 +41,91 @@ import javax.inject.Inject
 @AndroidEntryPoint(ComponentActivity::class)
 class WearGrantPermissionsActivity : Hilt_WearGrantPermissionsActivity() {
 
-  companion object {
-    private const val TAG = "WearGrantPermissionsActivity"
-  }
-
-  private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
-  @Inject lateinit var healthPermissionReader: HealthPermissionReader
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) ||
-      !Flags.replaceBodySensorPermissionEnabled()) {
-      Log.e(
-        TAG,
-        "Health connect is not available on watch, activity should not have been started, " +
-          "finishing!"
-    )
-      return
+    companion object {
+        private const val TAG = "WearGrantPermissionsActivity"
     }
 
-    // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-    window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+    private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
+    @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
-    // Load permissions for this package.
-    val packageName = getPackageNameExtra()
-    val rawPermissionStrings = getPermissionStrings()
-    // Only allow requests for system health permissions and background permission.
-    val allowedPermissionsToRequest =
-      healthPermissionReader.getSystemHealthPermissions().toMutableList().also {
-        it.add(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
-      }
-    val permissionStrings =
-      rawPermissionStrings.intersect(allowedPermissionsToRequest.toSet()).toTypedArray()
-    requestPermissionsViewModel.init(packageName, permissionStrings)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    // Dismiss this request if any permission is USER_FIXED.
-    if (requestPermissionsViewModel.isAnyPermissionUserFixed(packageName, permissionStrings)) {
-      handlePermissionResults()
-      finish()
-      return
+        if (
+            !getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) ||
+                !Flags.replaceBodySensorPermissionEnabled()
+        ) {
+            Log.e(
+                TAG,
+                "Health connect is not available on watch, activity should not have been started, " +
+                    "finishing!",
+            )
+            return
+        }
+
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+
+        // Load permissions for this package.
+        val packageName = getPackageNameExtra()
+        val rawPermissionStrings = getPermissionStrings()
+        // Only allow requests for system health permissions and background permission.
+        val allowedPermissionsToRequest =
+            healthPermissionReader.getSystemHealthPermissions().toMutableList().also {
+                it.add(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+            }
+        val permissionStrings =
+            rawPermissionStrings.intersect(allowedPermissionsToRequest.toSet()).toTypedArray()
+        requestPermissionsViewModel.init(packageName, permissionStrings)
+
+        // Dismiss this request if any permission is USER_FIXED.
+        if (requestPermissionsViewModel.isAnyPermissionUserFixed(packageName, permissionStrings)) {
+            handlePermissionResults()
+            finish()
+            return
+        }
+
+        // Launch composable UI.
+        val root = ComposeView(this)
+        root.setContent {
+            WearGrantPermissionsScreen(requestPermissionsViewModel) {
+                requestPermissionsViewModel.requestHealthPermissions(packageName)
+                handlePermissionResults()
+                finish()
+            }
+        }
+        setContentView(root)
     }
 
-    // Launch composable UI.
-    val root = ComposeView(this)
-    root.setContent {
-      WearGrantPermissionsScreen(requestPermissionsViewModel) {
-        requestPermissionsViewModel.requestHealthPermissions(packageName)
-        handlePermissionResults()
+    // TODO: b/376845793 - Reuse handlePermissionResults code in phone and wear, potentially move
+    // this method to RequestPermissionViewModel.
+    private fun handlePermissionResults(resultCode: Int = RESULT_OK) {
+        val results = requestPermissionsViewModel.getPermissionGrants()
+        val grants = mutableListOf<Int>()
+        val permissionStrings = mutableListOf<String>()
+
+        for ((permission, state) in results) {
+            if (state == PermissionState.GRANTED) {
+                grants.add(PackageManager.PERMISSION_GRANTED)
+            } else {
+                grants.add(PackageManager.PERMISSION_DENIED)
+            }
+
+            permissionStrings.add(permission.toString())
+        }
+
+        val result = Intent()
+        result.putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, permissionStrings.toTypedArray())
+        result.putExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS, grants.toIntArray())
+        setResult(resultCode, result)
         finish()
-      }
-    }
-    setContentView(root)
-  }
-
-  // TODO: b/376845793 - Reuse handlePermissionResults code in phone and wear, potentially move
-  // this method to RequestPermissionViewModel.
-  private fun handlePermissionResults(resultCode: Int = RESULT_OK) {
-    val results = requestPermissionsViewModel.getPermissionGrants()
-    val grants = mutableListOf<Int>()
-    val permissionStrings = mutableListOf<String>()
-
-    for ((permission, state) in results) {
-      if (state == PermissionState.GRANTED) {
-        grants.add(PackageManager.PERMISSION_GRANTED)
-      } else {
-        grants.add(PackageManager.PERMISSION_DENIED)
-      }
-
-      permissionStrings.add(permission.toString())
     }
 
-    val result = Intent()
-    result.putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, permissionStrings.toTypedArray())
-    result.putExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS, grants.toIntArray())
-    setResult(resultCode, result)
-    finish()
-  }
+    private fun getPermissionStrings(): Array<out String> {
+        return intent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES).orEmpty()
+    }
 
-
-  private fun getPermissionStrings(): Array<out String> {
-    return intent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES).orEmpty()
-  }
-
-  private fun getPackageNameExtra(): String {
-    return intent.getStringExtra(EXTRA_PACKAGE_NAME).orEmpty()
-  }
+    private fun getPackageNameExtra(): String {
+        return intent.getStringExtra(EXTRA_PACKAGE_NAME).orEmpty()
+    }
 }
