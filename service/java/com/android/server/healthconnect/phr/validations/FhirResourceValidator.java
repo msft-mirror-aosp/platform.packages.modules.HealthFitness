@@ -68,9 +68,7 @@ public class FhirResourceValidator {
         validatePresenceOfRequiredFields(
                 fhirJsonObject, config.getRequiredFieldsList(), fieldToConfig);
 
-        if (Flags.phrFhirOneofValidation()) {
-            validateMultiTypeFields(fhirJsonObject, config.getMultiTypeFieldsList(), fieldToConfig);
-        }
+        validateMultiTypeFields(fhirJsonObject, config.getMultiTypeFieldsList(), fieldToConfig);
 
         validateResourceStructure(fhirJsonObject, fieldToConfig);
     }
