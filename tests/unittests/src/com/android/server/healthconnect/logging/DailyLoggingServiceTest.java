@@ -84,7 +84,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.TotalCaloriesBur
 import com.android.server.healthconnect.storage.datatypehelpers.Vo2MaxRecordHelper;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -996,43 +995,6 @@ public class DailyLoggingServiceTest {
         ExtendedMockito.verify(
                 () -> HealthFitnessStatsLog.write(eq(HEALTH_CONNECT_PHR_STORAGE_STATS), anyInt()),
                 never());
-    }
-
-    @Test
-    @EnableFlags({
-        FLAG_PERSONAL_HEALTH_RECORD,
-        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
-    })
-    @Ignore("TODO(b/376223524): enable this test in the next CL when dbstat unavailable is logged")
-    public void phrStats_flagEnabled_getFileBytesReturnNull_expectCorrectPhrDbStatsLogs() {
-        when(mTableSizeHelper.getFileBytes(mStringListCaptor.capture())).thenReturn(null);
-        when(mMedicalResourceHelper.getMedicalResourcesCount()).thenReturn(1);
-        UsageStatsCollector usageStatsCollector =
-                new UsageStatsCollector(
-                        mContext,
-                        mCurrentUser,
-                        mPreferenceHelper,
-                        mAccessLogsHelper,
-                        mFakeTimeSource);
-
-        DailyLoggingService.logDailyMetrics(
-                mContext,
-                usageStatsCollector,
-                mTransactionManager,
-                mMedicalDataSourceHelper,
-                mMedicalResourceHelper,
-                mTableSizeHelper);
-
-        assertThat(mStringListCaptor.getValue())
-                .isEqualTo(
-                        Set.of(
-                                MedicalDataSourceHelper.getMainTableName(),
-                                MedicalResourceHelper.getMainTableName(),
-                                MedicalResourceIndicesHelper.getTableName()));
-        ExtendedMockito.verify(
-                () -> HealthFitnessStatsLog.write(eq(HEALTH_CONNECT_PHR_STORAGE_STATS), eq(-1L)),
-                times(1));
     }
 
     private long subtractDaysFromInstantNow(int numberOfDays) {
