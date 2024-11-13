@@ -136,6 +136,28 @@ class AllEntriesFragmentTest {
     }
 
     @Test
+    fun fitnessData_logsFitnessPageImpression() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
+
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
+    fun medicalData_logsMedicalPageImpression() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
+
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
+        )
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
     fun whenNoData_showsNoData() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
@@ -172,8 +194,6 @@ class AllEntriesFragmentTest {
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("7 hours")).check(matches(isDisplayed()))
 
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ENTRIES_PAGE)
-        verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 

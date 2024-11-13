@@ -75,8 +75,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
     }
 
     init {
-        // TODO(b/342159144): Update visual elements.
-        this.setPageName(PageName.UNKNOWN_PAGE)
+        setPageName(PageName.MEDICAL_APP_ACCESS_PAGE)
     }
 
     @Inject lateinit var logger: HealthConnectLogger
