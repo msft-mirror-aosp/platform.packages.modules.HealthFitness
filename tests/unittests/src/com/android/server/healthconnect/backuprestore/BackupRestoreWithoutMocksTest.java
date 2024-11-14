@@ -264,6 +264,59 @@ public class BackupRestoreWithoutMocksTest {
         Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
         Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_D2D_AND_EXPORT_IMPORT
     })
+    public void testMerge_withPhrMergeEnabled_over5000Resources_copiesAllPhrData()
+            throws Exception {
+        StorageContext dbContext =
+                StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+        createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
+        HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
+        mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
+        Pair<Long, String> rowIdUuidPair =
+                mPhrTestUtils.insertMedicalDataSource(
+                        stagedDb, dbContext, DATA_SOURCE_SUFFIX, TEST_PACKAGE_NAME, INSTANT_NOW);
+        int numOfResources = 5100;
+        mPhrTestUtils.insertMedicalResources(
+                stagedDb,
+                PhrDataFactory::createVaccineMedicalResources,
+                rowIdUuidPair.second,
+                rowIdUuidPair.first,
+                INSTANT_NOW_PLUS_TEN_SEC,
+                numOfResources);
+        assertTableSize(stagedDb, "medical_data_source_table", 1);
+        assertTableSize(stagedDb, "medical_resource_table", numOfResources);
+        assertTableSize(stagedDb, "medical_resource_indices_table", numOfResources);
+        // Read the dataSources and lastModifiedTimestamps.
+        List<Pair<MedicalDataSource, Long>> dataSourceRowsStaged =
+                mPhrTestUtils.readMedicalDataSources(stagedDb);
+        // Read the medicalResources and lastModifiedTimestamps.
+        ReadMedicalResourceRowsResponse medicalResourceRowsStaged =
+                mPhrTestUtils.readMedicalResources(stagedDb);
+
+        mBackupRestore.merge();
+
+        HealthConnectDatabase originalDatabase =
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
+        assertTableSize(originalDatabase, "medical_data_source_table", 1);
+        assertTableSize(originalDatabase, "medical_resource_table", numOfResources);
+        assertTableSize(originalDatabase, "medical_resource_indices_table", numOfResources);
+        // Read the dataSources and lastModifiedTimestamps of original db after merge.
+        List<Pair<MedicalDataSource, Long>> dataSourceRowsOriginal =
+                mPhrTestUtils.readMedicalDataSources(originalDatabase);
+        // Assert dataSources and their timestamps of the staged db is the same as original db.
+        assertThat(dataSourceRowsOriginal).isEqualTo(dataSourceRowsStaged);
+        // Read the medicalResources and lastModifiedTimestamps of original db after merge.
+        ReadMedicalResourceRowsResponse medicalResourceRowsOriginal =
+                mPhrTestUtils.readMedicalResources(originalDatabase);
+        // Assert medicalResources and their timestamps of the staged db is the same as original db.
+        assertThat(medicalResourceRowsOriginal).isEqualTo(medicalResourceRowsStaged);
+    }
+
+    @Test
+    @EnableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_D2D_AND_EXPORT_IMPORT
+    })
     public void testMerge_withPhrMergeEnabled_copiesAllPhrData() throws Exception {
         StorageContext dbContext =
                 StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
