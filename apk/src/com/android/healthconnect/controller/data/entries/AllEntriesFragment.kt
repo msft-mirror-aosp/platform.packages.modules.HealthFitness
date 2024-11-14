@@ -60,7 +60,6 @@ import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.toInstant
-import com.android.healthfitness.flags.Flags.personalHealthRecordUiTelemetry
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -345,12 +344,16 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     }
 
     private fun setLoggerPageId() {
-        if (permissionType is FitnessPermissionType) {
-            logger.setPageId(PageName.TAB_ENTRIES_PAGE)
-        } else if (permissionType is MedicalPermissionType && personalHealthRecordUiTelemetry()) {
-            logger.setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
-        } else {
-            logger.setPageId(PageName.UNKNOWN_PAGE)
+        when (permissionType) {
+            is FitnessPermissionType -> {
+                logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+            }
+            is MedicalPermissionType -> {
+                logger.setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
+            }
+            else -> {
+                logger.setPageId(PageName.UNKNOWN_PAGE)
+            }
         }
     }
 
