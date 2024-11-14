@@ -64,7 +64,7 @@ import javax.inject.Inject
 class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader

@@ -72,12 +72,7 @@ import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
 import org.junit.After;
@@ -160,23 +155,7 @@ public class ExportManagerTest {
                 new ExportManager(
                         mContext, fakeClock, mExportImportSettingsStorage, transactionManager);
 
-        AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
-        AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        FakeTimeSource timeSource = new FakeTimeSource(mTimeStamp);
-        MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        transactionManager, appInfoHelper, timeSource, accessLogsHelper);
-        mPhrTestUtils =
-                new PhrTestUtils(
-                        mContext,
-                        transactionManager,
-                        new MedicalResourceHelper(
-                                transactionManager,
-                                appInfoHelper,
-                                medicalDataSourceHelper,
-                                timeSource,
-                                accessLogsHelper),
-                        medicalDataSourceHelper);
+        mPhrTestUtils = new PhrTestUtils(mContext, healthConnectInjector);
 
         mExportedDbContext =
                 StorageContext.create(

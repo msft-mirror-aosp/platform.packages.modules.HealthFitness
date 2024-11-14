@@ -66,7 +66,7 @@ import javax.inject.Inject
 class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader

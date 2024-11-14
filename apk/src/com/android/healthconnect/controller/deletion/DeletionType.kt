@@ -20,13 +20,15 @@ import android.os.Parcelable
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
+import com.android.healthconnect.controller.shared.getDataTypeForClassName
 
 /** Represents the types of deletion that the user can perform. */
 sealed class DeletionType : Parcelable {
     class DeletionTypeAllData() : DeletionType() {
 
         @Suppress(
-            "UNUSED_PARAMETER") // the class has no data to write but inherits from a Parcelable
+            "UNUSED_PARAMETER"
+        ) // the class has no data to write but inherits from a Parcelable
         constructor(parcel: Parcel) : this() {}
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {}
@@ -51,7 +53,9 @@ sealed class DeletionType : Parcelable {
             parcel: Parcel
         ) : this(
             FitnessPermissionType.valueOf(
-                parcel.readString() ?: FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString())) {}
+                parcel.readString() ?: FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()
+            )
+        ) {}
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(fitnessPermissionType.toString())
@@ -120,15 +124,17 @@ sealed class DeletionType : Parcelable {
     data class DeletionTypeHealthPermissionTypeFromApp(
         val fitnessPermissionType: FitnessPermissionType,
         val packageName: String,
-        val appName: String
+        val appName: String,
     ) : DeletionType() {
         constructor(
             parcel: Parcel
         ) : this(
             FitnessPermissionType.valueOf(
-                parcel.readString() ?: FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()),
+                parcel.readString() ?: FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()
+            ),
             parcel.readString() ?: "",
-            parcel.readString() ?: "") {}
+            parcel.readString() ?: "",
+        ) {}
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(fitnessPermissionType.toString())
@@ -158,14 +164,15 @@ sealed class DeletionType : Parcelable {
             parcel: Parcel
         ) : this(
             parcel.readString().orEmpty(),
-            DataType.valueOf(parcel.readString().orEmpty()),
-            parcel.readInt())
+            getDataTypeForClassName(parcel.readString().orEmpty()),
+            parcel.readInt(),
+        )
 
         override fun describeContents(): Int = 0
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(id)
-            parcel.writeString(dataType.name)
+            parcel.writeString(dataType.simpleName)
             parcel.writeInt(index)
         }
 

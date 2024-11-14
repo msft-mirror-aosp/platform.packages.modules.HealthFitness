@@ -41,7 +41,7 @@ constructor(@ApplicationContext private val context: Context) :
         record: CyclingPedalingCadenceRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.SeriesDataEntry(
             uuid = record.metadata.id,
@@ -49,12 +49,13 @@ constructor(@ApplicationContext private val context: Context) :
             headerA11y = headerA11y,
             title = formatValue(record, unitPreferences),
             titleA11y = formatA11yValue(record, unitPreferences),
-            dataType = getDataType(record))
+            dataType = record::class,
+        )
     }
 
     override suspend fun formatValue(
         record: CyclingPedalingCadenceRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return formatCadence(R.string.cycling_cadence_series_range, record) { rpm ->
             format(context.getString(R.string.cycling_rpm), mapOf("count" to rpm))
@@ -63,7 +64,7 @@ constructor(@ApplicationContext private val context: Context) :
 
     override suspend fun formatA11yValue(
         record: CyclingPedalingCadenceRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return formatCadence(R.string.cycling_cadence_series_range_long, record) { rpm ->
             format(context.getString(R.string.cycling_rpm_long), mapOf("count" to rpm))
@@ -83,18 +84,21 @@ constructor(@ApplicationContext private val context: Context) :
                     title =
                         format(
                             context.getString(R.string.cycling_rpm),
-                            mapOf("count" to sample.revolutionsPerMinute)),
+                            mapOf("count" to sample.revolutionsPerMinute),
+                        ),
                     titleA11y =
                         format(
                             context.getString(R.string.cycling_rpm_long),
-                            mapOf("count" to sample.revolutionsPerMinute)))
+                            mapOf("count" to sample.revolutionsPerMinute),
+                        ),
+                )
             }
     }
 
     private fun formatCadence(
         @StringRes res: Int,
         record: CyclingPedalingCadenceRecord,
-        getCadenceString: (rpm: Double) -> String
+        getCadenceString: (rpm: Double) -> String,
     ): String {
         if (record.samples.isEmpty()) {
             return context.getString(R.string.no_data)

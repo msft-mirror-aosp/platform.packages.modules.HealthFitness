@@ -171,12 +171,7 @@ public class MedicalDataSourceHelperTest {
         mTransactionTestUtils =
                 new TransactionTestUtils(
                         mHealthConnectDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
-        mUtil =
-                new PhrTestUtils(
-                        mContext,
-                        mTransactionManager,
-                        mMedicalResourceHelper,
-                        mMedicalDataSourceHelper);
+        mUtil = new PhrTestUtils(mContext, healthConnectInjector);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
     }
 
@@ -2534,7 +2529,9 @@ public class MedicalDataSourceHelperTest {
                         "data_source_uuid",
                         "package_name");
         String expectedQuery =
-                "SELECT MAX(medical_resource_table.last_modified_time) AS last_data_update_time,"
+                "SELECT MAX(medical_resource_table.last_modified_time) AS"
+                        + " last_data_update_time,inner_query_result.last_modified_time AS"
+                        + " last_data_source_update_time,"
                         + String.join(",", groupByColumnNames)
                         + " FROM ( SELECT * FROM medical_data_source_table WHERE"
                         + " medical_data_source_row_id IN (SELECT medical_data_source_row_id FROM ("
@@ -2577,7 +2574,9 @@ public class MedicalDataSourceHelperTest {
                         "data_source_uuid",
                         "package_name");
         String expectedQuery =
-                "SELECT MAX(medical_resource_table.last_modified_time) AS last_data_update_time,"
+                "SELECT MAX(medical_resource_table.last_modified_time) AS"
+                        + " last_data_update_time,inner_query_result.last_modified_time AS"
+                        + " last_data_source_update_time,"
                         + String.join(",", groupByColumnNames)
                         + " FROM ( SELECT * FROM medical_data_source_table WHERE"
                         + " medical_data_source_row_id IN (SELECT medical_data_source_row_id FROM"
