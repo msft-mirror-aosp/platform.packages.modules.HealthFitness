@@ -73,7 +73,8 @@ public class DistanceRecordTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {
@@ -93,7 +94,7 @@ public class DistanceRecordTest {
 
     @BeforeClass
     public static void setup() throws InterruptedException {
-        if (!TestUtils.isHardwareSupported()) {
+        if (!TestUtils.isHealthConnectFullySupported()) {
             return;
         }
         TestUtils.verifyDeleteRecords(
