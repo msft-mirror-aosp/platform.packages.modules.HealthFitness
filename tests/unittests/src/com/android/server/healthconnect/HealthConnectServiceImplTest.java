@@ -324,7 +324,7 @@ public class HealthConnectServiceImplTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    android.healthconnect.cts.utils.TestUtils::isHardwareSupported,
+                    android.healthconnect.cts.utils.TestUtils::isHealthConnectFullySupported,
                     "Tests should run on supported hardware only.");
 
     @Before

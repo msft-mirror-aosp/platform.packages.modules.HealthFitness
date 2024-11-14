@@ -88,7 +88,8 @@ public class HealthConnectWithManagePermissionsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::areHealthPermissionsSupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {
@@ -568,8 +569,7 @@ public class HealthConnectWithManagePermissionsTest {
 
     @Test
     public void testPermissionApis_migrationInProgress_apisBlocked() throws Exception {
-        // TODO: b/378776485 - Use a better filter mechanism for "full support".
-        assumeFalse(FeatureUtil.isWatch());
+        assumeTrue(TestUtils.isHealthConnectFullySupported());
         runWithShellPermissionIdentity(
                 IntegrationTestUtils::startMigration,
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
