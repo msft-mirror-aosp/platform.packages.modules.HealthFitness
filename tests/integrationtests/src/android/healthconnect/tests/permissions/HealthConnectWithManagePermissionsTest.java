@@ -26,6 +26,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 import android.Manifest;
 import android.content.Context;
@@ -39,6 +41,8 @@ import android.os.Build;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.android.compatibility.common.util.FeatureUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -89,7 +93,9 @@ public class HealthConnectWithManagePermissionsTest {
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getTargetContext();
-        mHealthConnectManager = mContext.getSystemService(HealthConnectManager.class);
+        mHealthConnectManager = runWithShellPermissionIdentity(
+                    () -> mContext.getSystemService(HealthConnectManager.class),
+                    MANAGE_HEALTH_PERMISSIONS);
 
         revokePermissionViaPackageManager(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
         revokePermissionViaPackageManager(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
@@ -97,12 +103,12 @@ public class HealthConnectWithManagePermissionsTest {
         resetPermissionFlags(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
         assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
         assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
-        deleteAllStagedRemoteData();
+        deleteAllStagedRemoteData(mHealthConnectManager);
     }
 
     @After
     public void tearDown() {
-        deleteAllStagedRemoteData();
+        deleteAllStagedRemoteData(mHealthConnectManager);
     }
 
     @Test
@@ -146,10 +152,19 @@ public class HealthConnectWithManagePermissionsTest {
     }
 
     @Test(expected = SecurityException.class)
-    public void testGrantHealthPermission_usageIntentNotSupported_throwsIllegalArgumentException()
+    public void testGrantHealthPermission_usageIntentNotSupported_nonWatch_throwsIllegalArgumentException()
             throws Exception {
+        assumeFalse(FeatureUtil.isWatch());
         grantHealthPermission(NO_USAGE_INTENT_APP_PACKAGE, DEFAULT_PERM);
         fail("Expected SecurityException due to undeclared health permissions usage intent.");
+    }
+
+    @Test
+    public void testGrantHealthPermission_usageIntentNotSupported_watch_succeeds()
+            throws Exception {
+        assumeTrue(FeatureUtil.isWatch());
+        grantHealthPermission(NO_USAGE_INTENT_APP_PACKAGE, DEFAULT_PERM);
+        assertPermGrantedForApp(NO_USAGE_INTENT_APP_PACKAGE, DEFAULT_PERM);
     }
 
     @Test
@@ -553,6 +568,8 @@ public class HealthConnectWithManagePermissionsTest {
 
     @Test
     public void testPermissionApis_migrationInProgress_apisBlocked() throws Exception {
+        // TODO: b/378776485 - Use a better filter mechanism for "full support".
+        assumeFalse(FeatureUtil.isWatch());
         runWithShellPermissionIdentity(
                 IntegrationTestUtils::startMigration,
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
@@ -566,7 +583,7 @@ public class HealthConnectWithManagePermissionsTest {
             assertNotNull(exception);
         }
         assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
-        deleteAllStagedRemoteData();
+        deleteAllStagedRemoteData(mHealthConnectManager);
 
         // Revoke permission
         runWithShellPermissionIdentity(

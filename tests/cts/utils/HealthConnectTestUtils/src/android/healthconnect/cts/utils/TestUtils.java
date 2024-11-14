@@ -613,7 +613,10 @@ public final class TestUtils {
     }
 
     public static void deleteAllStagedRemoteData() {
-        HealthConnectManager service = getHealthConnectManager();
+        deleteAllStagedRemoteData(getHealthConnectManager());
+    }
+
+    public static void deleteAllStagedRemoteData(HealthConnectManager service) {
         runWithShellPermissionIdentity(
                 () ->
                         // TODO(b/241542162): Avoid reflection once TestApi can be called from CTS
