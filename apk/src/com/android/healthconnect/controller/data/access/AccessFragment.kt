@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
@@ -33,7 +32,6 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
-import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
@@ -59,6 +57,7 @@ class AccessFragment : Hilt_AccessFragment() {
         private const val INACTIVE_SECTION = "inactive"
         private const val NO_DATA = "no_data_preference"
         private const val DELETION_TAG = "DeletionTag"
+        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY = "START_DELETION_ENTRIES_AND_ACCESS_KEY"
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -105,9 +104,6 @@ class AccessFragment : Hilt_AccessFragment() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
         viewModel.loadAppMetaDataMap(permissionType)
-        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
-            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -192,8 +188,8 @@ class AccessFragment : Hilt_AccessFragment() {
                                         appName = appMetadata.appName,
                                     )
                                 )
-                                childFragmentManager.setFragmentResult(
-                                    START_DELETION_KEY,
+                                parentFragmentManager.setFragmentResult(
+                                    START_DELETION_ENTRIES_AND_ACCESS_KEY,
                                     bundleOf(),
                                 )
                             }
@@ -236,13 +232,5 @@ class AccessFragment : Hilt_AccessFragment() {
                     EXTRA_APP_NAME to appAccessMetadata.appMetadata.appName,
                 ),
             )
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val deletionFragment = childFragmentManager.findFragmentByTag(DELETION_TAG)
-        if (deletionFragment != null) {
-            childFragmentManager.commitNow { remove(deletionFragment) }
-        }
     }
 }
