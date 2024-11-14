@@ -231,6 +231,31 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
         manageDataCategory.isVisible = true
         manageDataCategory.removeAll()
+
+        additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
+        additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
+            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
+                val additionalAccessPref =
+                    HealthPreference(requireContext()).also {
+                        it.key = KEY_ADDITIONAL_ACCESS
+                        it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
+                        it.setTitle(R.string.additional_access_label)
+                        it.setOnPreferenceClickListener { _ ->
+                            val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
+                            findNavController()
+                                .navigate(
+                                    R.id.action_fitnessAppFragment_to_additionalAccessFragment,
+                                    extras,
+                                )
+                            true
+                        }
+                    }
+                manageDataCategory.addPreference(additionalAccessPref)
+            }
+            manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
+                state.isAvailable()
+        }
+
         if (Flags.newInformationArchitecture()) {
             manageDataCategory.addPreference(
                 HealthPreference(requireContext()).also {
@@ -263,29 +288,6 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                     }
                 }
             )
-        }
-        additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
-        additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
-                val additionalAccessPref =
-                    HealthPreference(requireContext()).also {
-                        it.key = KEY_ADDITIONAL_ACCESS
-                        it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
-                        it.setTitle(R.string.additional_access_label)
-                        it.setOnPreferenceClickListener { _ ->
-                            val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
-                            findNavController()
-                                .navigate(
-                                    R.id.action_fitnessAppFragment_to_additionalAccessFragment,
-                                    extras,
-                                )
-                            true
-                        }
-                    }
-                manageDataCategory.addPreference(additionalAccessPref)
-            }
-            manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                state.isAvailable()
         }
     }
 

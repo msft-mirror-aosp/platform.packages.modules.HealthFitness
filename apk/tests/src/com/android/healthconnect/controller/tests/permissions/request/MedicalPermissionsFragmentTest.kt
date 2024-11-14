@@ -190,8 +190,21 @@ class MedicalPermissionsFragmentTest {
             )
         Espresso.onIdle()
         onView(withText("Allow \u201C$TEST_APP_NAME\u201D to write")).check(matches(isDisplayed()))
+    }
 
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.UNKNOWN_PAGE)
+    @Test
+    fun medicalReadAndWrite_phrUiTelemetryFlagEnabled_phrTelemetry() {
+        whenever(viewModel.medicalScreenState).then {
+            MutableLiveData(
+                MedicalScreenState.ShowMedicalReadWrite(
+                    appMetadata = appMetadata,
+                    medicalPermissions = allMedicalPermissions,
+                )
+            )
+        }
+        launchFragment<MedicalPermissionsFragment>(bundleOf())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger, times(3)).logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
     }

@@ -26,7 +26,6 @@ import android.health.HealthFitnessStatsLog;
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,6 @@ final class UsageStatsLogger {
     static void log(
             Context context,
             UsageStatsCollector usageStatsCollector,
-            PreferenceHelper preferenceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             MedicalResourceHelper medicalResourceHelper) {
         usageStatsCollector.upsertLastAccessLogTimeStamp();
@@ -65,7 +63,6 @@ final class UsageStatsLogger {
         logPhrStats(
                 medicalDataSourceHelper,
                 medicalResourceHelper,
-                preferenceHelper,
                 usageStatsCollector);
 
         HealthFitnessStatsLog.write(
@@ -78,7 +75,6 @@ final class UsageStatsLogger {
     private static void logPhrStats(
             MedicalDataSourceHelper medicalDataSourceHelper,
             MedicalResourceHelper medicalResourceHelper,
-            PreferenceHelper preferenceHelper,
             UsageStatsCollector usageStatsCollector) {
         if (!personalHealthRecordTelemetry()) {
             return;

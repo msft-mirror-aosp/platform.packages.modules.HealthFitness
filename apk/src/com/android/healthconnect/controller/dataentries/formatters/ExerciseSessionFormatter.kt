@@ -105,7 +105,7 @@ class ExerciseSessionFormatter
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val exerciseSegmentTypeFormatter: ExerciseSegmentTypeFormatter
+    private val exerciseSegmentTypeFormatter: ExerciseSegmentTypeFormatter,
 ) : BaseFormatter<ExerciseSessionRecord>(context), RecordDetailsFormatter<ExerciseSessionRecord> {
 
     private val timeFormatter = LocalDateTimeFormatter(context)
@@ -114,7 +114,7 @@ constructor(
         record: ExerciseSessionRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return ExerciseSessionEntry(
             uuid = record.metadata.id,
@@ -122,9 +122,10 @@ constructor(
             headerA11y = headerA11y,
             title = formatValue(record),
             titleA11y = formatA11yValue(record),
-            dataType = getDataType(record),
+            dataType = record::class,
             notes = getNotes(record),
-            route = record.route)
+            route = record.route,
+        )
     }
 
     fun formatValue(record: ExerciseSessionRecord): String {
@@ -158,7 +159,7 @@ constructor(
 
     private fun formatSession(
         record: ExerciseSessionRecord,
-        formatDuration: (duration: Duration) -> String
+        formatDuration: (duration: Duration) -> String,
     ): String {
         val type = getExerciseType(context, record.exerciseType)
         return if (!record.title.isNullOrBlank()) {
@@ -212,6 +213,7 @@ constructor(
                 EXERCISE_SESSION_TYPE_BIKING -> context.getString(R.string.biking)
                 EXERCISE_SESSION_TYPE_BIKING_STATIONARY ->
                     context.getString(R.string.biking_stationary)
+
                 EXERCISE_SESSION_TYPE_BOOT_CAMP -> context.getString(R.string.boot_camp)
                 EXERCISE_SESSION_TYPE_BOXING -> context.getString(R.string.boxing)
                 EXERCISE_SESSION_TYPE_CALISTHENICS -> context.getString(R.string.calisthenics)
@@ -222,16 +224,20 @@ constructor(
                 EXERCISE_SESSION_TYPE_FENCING -> context.getString(R.string.fencing)
                 EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN ->
                     context.getString(R.string.football_american)
+
                 EXERCISE_SESSION_TYPE_FOOTBALL_AUSTRALIAN ->
                     context.getString(R.string.activity_type_australian_football)
+
                 EXERCISE_SESSION_TYPE_FRISBEE_DISC -> context.getString(R.string.frisbee_disc)
                 EXERCISE_SESSION_TYPE_GOLF -> context.getString(R.string.golf)
                 EXERCISE_SESSION_TYPE_GUIDED_BREATHING ->
                     context.getString(R.string.guided_breathing)
+
                 EXERCISE_SESSION_TYPE_GYMNASTICS -> context.getString(R.string.gymnastics)
                 EXERCISE_SESSION_TYPE_HANDBALL -> context.getString(R.string.handball)
                 EXERCISE_SESSION_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING ->
                     context.getString(R.string.high_intensity_interval_training)
+
                 EXERCISE_SESSION_TYPE_HIKING -> context.getString(R.string.hiking)
                 EXERCISE_SESSION_TYPE_ICE_HOCKEY -> context.getString(R.string.ice_hockey)
                 EXERCISE_SESSION_TYPE_ICE_SKATING -> context.getString(R.string.ice_skating)
@@ -248,6 +254,7 @@ constructor(
                 EXERCISE_SESSION_TYPE_RUNNING -> context.getString(R.string.running)
                 EXERCISE_SESSION_TYPE_RUNNING_TREADMILL ->
                     context.getString(R.string.running_treadmill)
+
                 EXERCISE_SESSION_TYPE_SAILING -> context.getString(R.string.sailing)
                 EXERCISE_SESSION_TYPE_SCUBA_DIVING -> context.getString(R.string.scuba_diving)
                 EXERCISE_SESSION_TYPE_SKATING -> context.getString(R.string.skating)
@@ -260,12 +267,15 @@ constructor(
                 EXERCISE_SESSION_TYPE_STAIR_CLIMBING -> context.getString(R.string.stair_climbing)
                 EXERCISE_SESSION_TYPE_STAIR_CLIMBING_MACHINE ->
                     context.getString(R.string.stair_climbing_machine)
+
                 EXERCISE_SESSION_TYPE_STRENGTH_TRAINING ->
                     context.getString(R.string.strength_training)
+
                 EXERCISE_SESSION_TYPE_STRETCHING -> context.getString(R.string.stretching)
                 EXERCISE_SESSION_TYPE_SURFING -> context.getString(R.string.surfing)
                 EXERCISE_SESSION_TYPE_SWIMMING_OPEN_WATER ->
                     context.getString(R.string.swimming_open_water)
+
                 EXERCISE_SESSION_TYPE_SWIMMING_POOL -> context.getString(R.string.swimming_pool)
                 EXERCISE_SESSION_TYPE_TABLE_TENNIS -> context.getString(R.string.table_tennis)
                 EXERCISE_SESSION_TYPE_TENNIS -> context.getString(R.string.tennis)

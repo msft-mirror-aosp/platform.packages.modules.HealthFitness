@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.deletion
 
 import android.app.Dialog
+import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -23,7 +24,6 @@ import androidx.fragment.app.setFragmentResult
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.deletion.DeletionConstants.CONFIRMATION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionConstants.GO_BACK_EVENT
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.logging.DeletionDialogConfirmationElement
@@ -102,13 +102,19 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 return when (chosenRange) {
                     ChosenRange.DELETE_RANGE_LAST_24_HOURS ->
                         getString(
-                            R.string.confirming_question_data_type_one_day, permissionTypeLabel)
+                            R.string.confirming_question_data_type_one_day,
+                            permissionTypeLabel,
+                        )
                     ChosenRange.DELETE_RANGE_LAST_7_DAYS ->
                         getString(
-                            R.string.confirming_question_data_type_one_week, permissionTypeLabel)
+                            R.string.confirming_question_data_type_one_week,
+                            permissionTypeLabel,
+                        )
                     ChosenRange.DELETE_RANGE_LAST_30_DAYS ->
                         getString(
-                            R.string.confirming_question_data_type_one_month, permissionTypeLabel)
+                            R.string.confirming_question_data_type_one_month,
+                            permissionTypeLabel,
+                        )
                     ChosenRange.DELETE_RANGE_ALL_DATA ->
                         getString(R.string.confirming_question_data_type_all, permissionTypeLabel)
                 }
@@ -183,8 +189,10 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
         val deletionType = deletionParameters.deletionType
         var message = getString(R.string.confirming_question_message)
 
-        if (deletionType is DeletionType.DeleteDataEntry &&
-            deletionType.dataType == DataType.MENSTRUATION_PERIOD) {
+        if (
+            deletionType is DeletionType.DeleteDataEntry &&
+                deletionType.dataType == MenstruationPeriodRecord::class
+        ) {
             message =
                 getString(
                     R.string.confirming_question_message_menstruation,
