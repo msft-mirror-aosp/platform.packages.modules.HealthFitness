@@ -177,7 +177,6 @@ class HomeFragment : Hilt_HomeFragment() {
         }
 
         if (isPersonalHealthRecordEnabled()) {
-            // TODO(b/343148212): Add logname.
             mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
                 findNavController()
                     .navigate(
@@ -187,6 +186,7 @@ class HomeFragment : Hilt_HomeFragment() {
                 true
             }
             mBrowseMedicalDataPreference?.isVisible = false
+            mBrowseMedicalDataPreference?.logName = HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON
         } else {
             preferenceScreen.removePreferenceRecursively(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
         }

@@ -34,14 +34,20 @@ import com.android.healthconnect.controller.data.rawfhir.RawFhirViewModel.RawFhi
 import com.android.healthconnect.controller.data.rawfhir.RawFhirViewModel.RawFhirState.WithData
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.verify
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -49,13 +55,20 @@ import org.mockito.kotlin.whenever
 class RawFhirFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     var manager: HealthConnectManager = mock(HealthConnectManager::class.java)
 
     @BindValue val viewModel: RawFhirViewModel = mock(RawFhirViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock(HealthConnectLogger::class.java)
 
     @Before
     fun setup() {
         hiltRule.inject()
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -187,5 +200,19 @@ class RawFhirFragmentTest {
         )
         onView(withText(fhir)).check(matches(isDisplayed()))
         onView(withContentDescription(contentDescription)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun logPageImpression() {
+        whenever(viewModel.rawFhir).then { MutableLiveData(Error) }
+
+        launchFragment<RawFhirFragment>(
+            bundleOf(
+                RawFhirFragment.MEDICAL_RESOURCE_ID_KEY to TEST_MEDICAL_RESOURCE_IMMUNIZATION.id
+            )
+        )
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.RAW_FHIR_PAGE)
+        verify(healthConnectLogger).logPageImpression()
     }
 }

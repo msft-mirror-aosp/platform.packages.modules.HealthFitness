@@ -47,7 +47,7 @@ constructor(@ApplicationContext private val context: Context) :
         record: SkinTemperatureRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.SeriesDataEntry(
             uuid = record.metadata.id,
@@ -55,7 +55,8 @@ constructor(@ApplicationContext private val context: Context) :
             headerA11y = headerA11y,
             title = formatValue(record, unitPreferences),
             titleA11y = formatA11yValue(record, unitPreferences),
-            dataType = getDataType(record))
+            dataType = record::class,
+        )
     }
 
     override suspend fun formatRecordDetails(record: SkinTemperatureRecord): List<FormattedEntry> {
@@ -72,7 +73,9 @@ constructor(@ApplicationContext private val context: Context) :
                         titleA11y =
                             context.getString(R.string.skin_temperature_measurement_location_title),
                         header = formatLocation(context, record.measurementLocation),
-                        headerA11y = formatLocation(context, record.measurementLocation)))
+                        headerA11y = formatLocation(context, record.measurementLocation),
+                    )
+                )
             }
 
         val baselineEntry: List<FormattedEntry> =
@@ -85,13 +88,17 @@ constructor(@ApplicationContext private val context: Context) :
                         title = context.getString(R.string.skin_temperature_baseline_title),
                         titleA11y = context.getString(R.string.skin_temperature_baseline_title),
                         header = formatNullableTemperature(record.baseline, false),
-                        headerA11y = formatNullableTemperature(record.baseline, true)))
+                        headerA11y = formatNullableTemperature(record.baseline, true),
+                    )
+                )
             }
 
         val deltasTitle: List<FormattedEntry> =
             listOf(
                 FormattedEntry.FormattedSectionTitle(
-                    context.getString(R.string.skin_temperature_delta_details_heading)))
+                    context.getString(R.string.skin_temperature_delta_details_heading)
+                )
+            )
 
         val deltas =
             record.deltas
@@ -113,17 +120,25 @@ constructor(@ApplicationContext private val context: Context) :
         if (temperature == null) return ""
         return if (isA11y) {
             TemperatureFormatter.formatA11tValue(
-                context, temperature, MEASUREMENT_LOCATION_UNKNOWN, unitPreferences)
+                context,
+                temperature,
+                MEASUREMENT_LOCATION_UNKNOWN,
+                unitPreferences,
+            )
         } else {
             TemperatureFormatter.formatValue(
-                context, temperature, MEASUREMENT_LOCATION_UNKNOWN, unitPreferences)
+                context,
+                temperature,
+                MEASUREMENT_LOCATION_UNKNOWN,
+                unitPreferences,
+            )
         }
     }
 
     private fun formatDelta(
         id: String,
         delta: Delta,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry.FormattedSessionDetail {
         return FormattedEntry.FormattedSessionDetail(
             uuid = id,
@@ -131,10 +146,17 @@ constructor(@ApplicationContext private val context: Context) :
             headerA11y = timeFormatter.formatTime(delta.time),
             title =
                 TemperatureDeltaFormatter.formatSingleDeltaValue(
-                    context, delta.delta, unitPreferences),
+                    context,
+                    delta.delta,
+                    unitPreferences,
+                ),
             titleA11y =
                 TemperatureDeltaFormatter.formatSingleDeltaA11yValue(
-                    context, delta.delta, unitPreferences))
+                    context,
+                    delta.delta,
+                    unitPreferences,
+                ),
+        )
     }
 
     override suspend fun formatValue(
@@ -150,7 +172,7 @@ constructor(@ApplicationContext private val context: Context) :
 
     override suspend fun formatA11yValue(
         record: SkinTemperatureRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return if (record.deltas.size == 1) {
             formatA11yUnit(record.deltas.first().delta)
@@ -170,20 +192,27 @@ constructor(@ApplicationContext private val context: Context) :
     private fun format(
         record: SkinTemperatureRecord,
         unitPreferences: UnitPreferences,
-        isA11y: Boolean
+        isA11y: Boolean,
     ): String {
         if (record.deltas.isEmpty()) {
             return context.getString(R.string.no_data)
         }
         val averageDelta =
             TemperatureDelta.fromCelsius(
-                record.deltas.sumOf { it.delta.inCelsius } / record.deltas.size)
+                record.deltas.sumOf { it.delta.inCelsius } / record.deltas.size
+            )
         return if (isA11y) {
             TemperatureDeltaFormatter.formatAverageDeltaA11yValue(
-                context, averageDelta, unitPreferences)
+                context,
+                averageDelta,
+                unitPreferences,
+            )
         } else {
             TemperatureDeltaFormatter.formatAverageDeltaValue(
-                context, averageDelta, unitPreferences)
+                context,
+                averageDelta,
+                unitPreferences,
+            )
         }
     }
 
@@ -197,7 +226,8 @@ constructor(@ApplicationContext private val context: Context) :
                 context.getString(R.string.temperature_location_wrist)
             else -> {
                 throw IllegalArgumentException(
-                    "Unrecognised skin temperature measurement location: $location")
+                    "Unrecognised skin temperature measurement location: $location"
+                )
             }
         }
     }

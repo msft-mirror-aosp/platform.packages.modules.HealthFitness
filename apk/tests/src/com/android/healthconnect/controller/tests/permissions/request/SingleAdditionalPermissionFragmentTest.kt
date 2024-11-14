@@ -35,6 +35,7 @@ import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -45,6 +46,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.atLeast
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
@@ -108,6 +112,12 @@ class SingleAdditionalPermissionFragmentTest {
             .check(matches(isDisplayed()))
         onView(withText("$TEST_APP_NAME can already access past data for your health records"))
             .check(doesNotExist())
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.REQUEST_HISTORY_READ_PERMISSION_PAGE)
+        verify(healthConnectLogger, times(0))
+            .setPageId(PageName.REQUEST_BACKGROUND_READ_PERMISSION_PAGE)
+        verify(healthConnectLogger).logPageImpression()
     }
 
     @Test
@@ -184,6 +194,12 @@ class SingleAdditionalPermissionFragmentTest {
                 )
             )
             .check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.REQUEST_BACKGROUND_READ_PERMISSION_PAGE)
+        verify(healthConnectLogger, times(0))
+            .setPageId(PageName.REQUEST_HISTORY_READ_PERMISSION_PAGE)
+        verify(healthConnectLogger).logPageImpression()
     }
 
     @Test

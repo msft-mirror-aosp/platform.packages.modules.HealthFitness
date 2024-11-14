@@ -168,12 +168,7 @@ public class MedicalResourceHelperTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
-        mUtil =
-                new PhrTestUtils(
-                        mContext,
-                        mTransactionManager,
-                        mMedicalResourceHelper,
-                        mMedicalDataSourceHelper);
+        mUtil = new PhrTestUtils(mContext, healthConnectInjector);
     }
 
     @Test

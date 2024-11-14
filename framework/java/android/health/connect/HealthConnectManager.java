@@ -2078,8 +2078,7 @@ public class HealthConnectManager {
 
         Set<String> permissions = new HashSet<>();
         for (PermissionInfo perm : packageInfo.permissions) {
-            if (android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP.equals(
-                    perm.group)) {
+            if (HealthPermissions.isValidHealthPermission(perm)) {
                 permissions.add(perm.name);
             }
         }
@@ -2118,7 +2117,9 @@ public class HealthConnectManager {
      * Interoperability Resources (FHIR)</a> standard. The FHIR resource provided in {@link
      * UpsertMedicalResourceRequest#getData()} is expected to be valid FHIR in JSON representation
      * for the specified {@link UpsertMedicalResourceRequest#getFhirVersion()} according to the <a
-     * href="https://hl7.org/fhir/resourcelist.html">FHIR spec</a>.
+     * href="https://hl7.org/fhir/resourcelist.html">FHIR spec</a>. Structural validation checks
+     * such as resource structure, field types and presence of required fields are performed, but
+     * these checks may not cover all FHIR spec requirements and may change in future versions.
      *
      * <p>Each {@link UpsertMedicalResourceRequest} also has to meet the following requirements.
      *

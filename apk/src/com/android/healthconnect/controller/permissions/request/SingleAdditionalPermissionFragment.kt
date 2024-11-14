@@ -18,9 +18,7 @@
 package com.android.healthconnect.controller.permissions.request
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
@@ -45,8 +43,6 @@ class SingleAdditionalPermissionFragment : Hilt_SingleAdditionalPermissionFragme
 
     private val header: RequestPermissionHeaderPreference by pref(HEADER)
     private val footer: FooterPreference by pref(FOOTER)
-    // TODO(b/342159144): Update page name.
-    private val pageName = PageName.UNKNOWN_PAGE
     @Inject lateinit var logger: HealthConnectLogger
 
     private var allowButtonName: ElementName =
@@ -54,26 +50,6 @@ class SingleAdditionalPermissionFragment : Hilt_SingleAdditionalPermissionFragme
     private var dontAllowButtonName: ElementName =
         RequestCombinedAdditionalPermissionsElement.CANCEL_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        logger.setPageId(pageName)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        logger.setPageId(pageName)
-        logger.logPageImpression()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        logger.setPageId(pageName)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.additional_permissions_screen, rootKey)
@@ -100,9 +76,11 @@ class SingleAdditionalPermissionFragment : Hilt_SingleAdditionalPermissionFragme
                 }
                 is AdditionalScreenState.ShowHistory -> {
                     setupHistoryScreen(screenState)
+                    this.setPageName(PageName.REQUEST_HISTORY_READ_PERMISSION_PAGE)
                 }
                 is AdditionalScreenState.ShowBackground -> {
                     setupBackgroundScreen(screenState)
+                    this.setPageName(PageName.REQUEST_BACKGROUND_READ_PERMISSION_PAGE)
                 }
             }
         }

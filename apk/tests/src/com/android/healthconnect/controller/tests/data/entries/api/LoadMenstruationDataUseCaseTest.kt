@@ -32,7 +32,6 @@ import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDat
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataUseCase
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.service.HealthManagerModule
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -68,6 +67,7 @@ class LoadMenstruationDataUseCaseTest {
 
     private lateinit var context: Context
     private lateinit var loadMenstruationDataUseCase: LoadMenstruationDataUseCase
+
     @Inject lateinit var loadEntriesHelper: LoadEntriesHelper
 
     @BindValue
@@ -174,7 +174,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = TEST_APP_NAME,
                         title = "Period day 1 of 6",
                         titleA11y = "Period day 1 of 6",
-                        dataType = DataType.MENSTRUATION_PERIOD,
+                        dataType = MenstruationPeriodRecord::class,
                         startTime = NOW,
                         endTime = NOW.plus(ofDays(5)),
                     ),
@@ -184,7 +184,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = TEST_APP_NAME,
                         title = "Period day 2 of 4",
                         titleA11y = "Period day 2 of 4",
-                        dataType = DataType.MENSTRUATION_PERIOD,
+                        dataType = MenstruationPeriodRecord::class,
                         startTime = NOW.minus(ofDays(1)),
                         endTime = NOW.plus(ofDays(2)),
                     ),
@@ -194,7 +194,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "7:06 AM • $TEST_APP_NAME",
                         title = "Heavy flow",
                         titleA11y = "Heavy flow",
-                        dataType = DataType.MENSTRUATION_FLOW,
+                        dataType = MenstruationFlowRecord::class,
                     ),
                 )
             )
@@ -267,7 +267,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "Oct 20 – 25 • $TEST_APP_NAME",
                         title = "Period (6 days)",
                         titleA11y = "Period (6 days)",
-                        dataType = DataType.MENSTRUATION_PERIOD,
+                        dataType = MenstruationPeriodRecord::class,
                         startTime = NOW,
                         endTime = NOW.plus(ofDays(5)),
                     ),
@@ -277,7 +277,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "7:06 AM • $TEST_APP_NAME",
                         title = "Heavy flow",
                         titleA11y = "Heavy flow",
-                        dataType = DataType.MENSTRUATION_FLOW,
+                        dataType = MenstruationFlowRecord::class,
                     ),
                     FormattedEntry.EntryDateSectionHeader(date = "Yesterday"),
                     FormattedEntry.FormattedDataEntry(
@@ -286,7 +286,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "Oct 19 – 22 • $TEST_APP_NAME",
                         title = "Period (4 days)",
                         titleA11y = "Period (4 days)",
-                        dataType = DataType.MENSTRUATION_PERIOD,
+                        dataType = MenstruationPeriodRecord::class,
                         startTime = NOW.minus(ofDays(1)),
                         endTime = NOW.plus(ofDays(2)),
                     ),
@@ -297,7 +297,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "7:06 AM • $TEST_APP_NAME",
                         title = "Light flow",
                         titleA11y = "Light flow",
-                        dataType = DataType.MENSTRUATION_FLOW,
+                        dataType = MenstruationFlowRecord::class,
                     ),
                 )
             )
@@ -375,7 +375,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "Oct 20 – 25 • $TEST_APP_NAME",
                         title = "Period (6 days)",
                         titleA11y = "Period (6 days)",
-                        dataType = DataType.MENSTRUATION_PERIOD,
+                        dataType = MenstruationPeriodRecord::class,
                         startTime = NOW,
                         endTime = NOW.plus(ofDays(5)),
                     ),
@@ -385,7 +385,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "7:06 AM • $TEST_APP_NAME",
                         title = "Heavy flow",
                         titleA11y = "Heavy flow",
-                        dataType = DataType.MENSTRUATION_FLOW,
+                        dataType = MenstruationFlowRecord::class,
                     ),
                     FormattedEntry.EntryDateSectionHeader(date = "Yesterday"),
                     FormattedEntry.FormattedDataEntry(
@@ -394,7 +394,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "Oct 19 – 22 • $TEST_APP_NAME",
                         title = "Period (4 days)",
                         titleA11y = "Period (4 days)",
-                        dataType = DataType.MENSTRUATION_PERIOD,
+                        dataType = MenstruationPeriodRecord::class,
                         startTime = NOW.minus(ofDays(1)),
                         endTime = NOW.plus(ofDays(2)),
                     ),
@@ -405,7 +405,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "7:06 AM • $TEST_APP_NAME",
                         title = "Light flow",
                         titleA11y = "Light flow",
-                        dataType = DataType.MENSTRUATION_FLOW,
+                        dataType = MenstruationFlowRecord::class,
                     ),
                     FormattedEntry.EntryDateSectionHeader(date = "October 10, 2022"),
                     FormattedEntry.FormattedDataEntry(
@@ -414,7 +414,7 @@ class LoadMenstruationDataUseCaseTest {
                         headerA11y = "October 10 • $TEST_APP_NAME",
                         title = "Period (1 day)",
                         titleA11y = "Period (1 day)",
-                        dataType = DataType.MENSTRUATION_PERIOD,
+                        dataType = MenstruationPeriodRecord::class,
                         startTime = NOW.minus(ofDays(10)),
                         endTime = NOW.minus(ofDays(10)),
                     ),

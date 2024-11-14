@@ -84,6 +84,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
     @Test
     fun oldIA_dataAndAccess_seeAllEntries_flagEnabled_showsMindfulness() {
         context.launchMainActivity {
+            scrollDownTo(By.text("Data and access"))
             findTextAndClick("Data and access")
             findText("Wellness")
             findTextAndClick("See all categories")
@@ -149,6 +150,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
     @Test
     fun oldIA_dataAndAccess_deleteMindfulnessData() {
         context.launchMainActivity {
+            scrollDownTo(By.text("Data and access"))
             findTextAndClick("Data and access")
             findTextAndClick("See all categories")
             scrollToEnd()
@@ -181,6 +183,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
     @Test
     fun appPermissions_flagEnabled_showsMindfulness() {
         context.launchMainActivity {
+            scrollDownTo(By.text("App permissions"))
             findTextAndClick("App permissions")
             findTextAndClick("Health Connect cts test app")
             scrollDownTo(By.text("Mindfulness"))
@@ -228,6 +231,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
     @Test
     fun oldIA_dataAndAccess_seeAllCategories_flagDisabled_doesNotShowWellness() {
         context.launchMainActivity {
+            scrollDownTo(By.text("Data and access"))
             findTextAndClick("Data and access")
             findObject(By.text("Activity").enabled(true), timeout = Duration.ofSeconds(2))
             verifyTextNotFound("Wellness")
@@ -242,7 +246,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
     @Test
     fun appPermissions_flagDisabled_doesNotShowMindfulness() {
         context.launchMainActivity {
-            scrollToEnd()
+            scrollDownTo(By.text("App permissions"))
             findTextAndClick("App permissions")
             findTextAndClick("Health Connect cts test app")
             scrollDownTo(By.text("Steps"))
