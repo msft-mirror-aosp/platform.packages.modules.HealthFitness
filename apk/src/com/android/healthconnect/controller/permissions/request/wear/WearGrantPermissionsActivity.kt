@@ -23,6 +23,7 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
+import android.health.connect.HealthPermissions
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
@@ -31,8 +32,10 @@ import androidx.activity.viewModels
 import androidx.compose.ui.platform.ComposeView
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Wear Grant Permissions activity for Health Connect. */
 @AndroidEntryPoint(ComponentActivity::class)
@@ -43,6 +46,7 @@ class WearGrantPermissionsActivity : Hilt_WearGrantPermissionsActivity() {
   }
 
   private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
+  @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -62,7 +66,14 @@ class WearGrantPermissionsActivity : Hilt_WearGrantPermissionsActivity() {
 
     // Load permissions for this package.
     val packageName = getPackageNameExtra()
-    val permissionStrings = getPermissionStrings()
+    val rawPermissionStrings = getPermissionStrings()
+    // Only allow requests for system health permissions and background permission.
+    val allowedPermissionsToRequest =
+      healthPermissionReader.getSystemHealthPermissions().toMutableList().also {
+        it.add(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+      }
+    val permissionStrings =
+      rawPermissionStrings.intersect(allowedPermissionsToRequest.toSet()).toTypedArray()
     requestPermissionsViewModel.init(packageName, permissionStrings)
 
     // Dismiss this request if any permission is USER_FIXED.

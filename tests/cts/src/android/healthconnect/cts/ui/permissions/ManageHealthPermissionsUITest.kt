@@ -23,6 +23,7 @@ import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
@@ -55,7 +56,10 @@ class ManageHealthPermissionsUITest : HealthConnectBaseTest() {
     @Ignore("TODO(b/265789268):Fix flaky \"Remove access for all apps\" not found")
     fun revokeAllPermissions_revokeAllConnectedAppsPermission() {
         grantPermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.READ_HEIGHT,
+        )
 
         context.launchMainActivity {
             navigateToManagePermissions()
@@ -82,14 +86,24 @@ class ManageHealthPermissionsUITest : HealthConnectBaseTest() {
     @After
     fun tearDown() {
         grantPermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.READ_HEIGHT,
+        )
         grantPermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_HEIGHT,
+        )
         grantPermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_BODY_FAT,
+        )
     }
 
     private fun navigateToManagePermissions() {
+        scrollDownTo(By.text("App permissions"))
         clickOnText("App permissions")
         waitDisplayed(By.text("Allowed access"))
     }

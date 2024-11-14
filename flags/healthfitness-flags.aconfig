@@ -135,7 +135,7 @@ flag {
 flag {
     name: "phr_fhir_oneof_validation"
     namespace: "health_fitness_aconfig"
-    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    description: "UNUSED."
     bug: "376673951"
     is_fixed_read_only: true
     is_exported: true
@@ -144,7 +144,7 @@ flag {
 flag {
     name: "phr_fhir_primitive_type_validation"
     namespace: "health_fitness_aconfig"
-    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    description: "Flag for validating FHIR primitive data types when upserting medical data."
     bug: "361775172"
     is_fixed_read_only: true
     is_exported: true
@@ -153,7 +153,7 @@ flag {
 flag {
     name: "phr_fhir_basic_complex_type_validation"
     namespace: "health_fitness_aconfig"
-    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    description: "Flag for basic validation of FHIR complex types when upserting medical data."
     bug: "376283237"
     is_fixed_read_only: true
     is_exported: true
@@ -162,7 +162,7 @@ flag {
 flag {
     name: "phr_fhir_complex_type_validation"
     namespace: "health_fitness_aconfig"
-    description: "Flag for validating structure of FHIR resources when upserting medical data."
+    description: "Flag for full validation of FHIR complex types when upserting medical data."
     bug: "377701407"
     is_fixed_read_only: true
     is_exported: true

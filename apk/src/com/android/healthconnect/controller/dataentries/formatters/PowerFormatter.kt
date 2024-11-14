@@ -42,7 +42,7 @@ class PowerFormatter @Inject constructor(@ApplicationContext private val context
         record: PowerRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.SeriesDataEntry(
             uuid = record.metadata.id,
@@ -50,19 +50,20 @@ class PowerFormatter @Inject constructor(@ApplicationContext private val context
             headerA11y = headerA11y,
             title = formatValue(record, unitPreferences),
             titleA11y = formatA11yValue(record, unitPreferences),
-            dataType = getDataType(record))
+            dataType = record::class,
+        )
     }
 
     override suspend fun formatValue(
         record: PowerRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return format(R.string.watt_format, record.samples)
     }
 
     override suspend fun formatA11yValue(
         record: PowerRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return format(R.string.watt_format_long, record.samples)
     }
@@ -89,11 +90,13 @@ class PowerFormatter @Inject constructor(@ApplicationContext private val context
             title =
                 MessageFormat.format(
                     context.getString(R.string.watt_format),
-                    mapOf("value" to sample.power.inWatts)),
+                    mapOf("value" to sample.power.inWatts),
+                ),
             titleA11y =
                 MessageFormat.format(
                     context.getString(R.string.watt_format_long),
-                    mapOf("value" to sample.power.inWatts)),
+                    mapOf("value" to sample.power.inWatts),
+                ),
         )
     }
 }

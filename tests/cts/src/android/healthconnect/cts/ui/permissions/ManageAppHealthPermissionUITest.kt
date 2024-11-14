@@ -143,6 +143,7 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     private fun navigateToManageAppPermissions() {
+        scrollDownTo(By.text("App permissions"))
         clickOnText("App permissions")
         clickOnText("Health Connect cts test app")
         waitDisplayed(By.text("Health Connect cts test app"))

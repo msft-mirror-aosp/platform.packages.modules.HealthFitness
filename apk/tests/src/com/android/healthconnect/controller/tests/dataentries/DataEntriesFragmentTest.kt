@@ -16,6 +16,8 @@
 package com.android.healthconnect.controller.tests.dataentries
 
 import android.content.Context
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
+import android.health.connect.datatypes.StepsRecord
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
@@ -37,7 +39,6 @@ import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewM
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.withIndex
@@ -70,6 +71,7 @@ class DataEntriesFragmentTest {
     @BindValue
     val viewModel: DataEntriesFragmentViewModel =
         Mockito.mock(DataEntriesFragmentViewModel::class.java)
+
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var context: Context
@@ -183,7 +185,7 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 7:06 to 7:06 • TEST_APP_NAME",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
         FormattedDataEntry(
             uuid = "test_id",
@@ -191,7 +193,7 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 8:06 to 8:06 • TES   T_APP_NAME",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
         FormattedAggregation(
             aggregation = "127 steps",
@@ -209,7 +211,7 @@ private val FORMATTED_PLANNED_EXERCISE_LIST =
             title = "Running • Morning Run",
             titleA11y = "Running • Morning Run",
             notes = "Daily morning run.",
-            dataType = DataType.PLANNED_EXERCISE,
+            dataType = PlannedExerciseSessionRecord::class,
         ),
         PlannedExerciseSessionEntry(
             uuid = "test_id",
@@ -218,6 +220,6 @@ private val FORMATTED_PLANNED_EXERCISE_LIST =
             title = "Swimming • Freestyle Technique Bootcamp",
             titleA11y = "Swimming • Freestyle Technique Bootcamp",
             notes = "A weekly swimming training plan.",
-            dataType = DataType.PLANNED_EXERCISE,
+            dataType = PlannedExerciseSessionRecord::class,
         ),
     )

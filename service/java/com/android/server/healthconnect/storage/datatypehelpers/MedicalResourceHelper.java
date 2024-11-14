@@ -30,6 +30,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDa
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.SqlJoin.INNER_QUERY_ALIAS;
 import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_INNER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -65,6 +66,8 @@ import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
+import com.android.server.healthconnect.phr.ReadMedicalResourceRowsResponse;
+import com.android.server.healthconnect.phr.ReadMedicalResourceRowsResponse.MedicalResourceRow;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.TransactionManager.TransactionRunnableWithReturn;
@@ -106,6 +109,9 @@ public final class MedicalResourceHelper {
 
     @VisibleForTesting static final String DATA_SOURCE_ID_COLUMN_NAME = "data_source_id";
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
+    private static final String LAST_MODIFIED_TIMESTAMP_MEDICAL_RESOURCE_ALIAS =
+            "medical_resource_last_modified_time";
+
     private static final String MEDICAL_RESOURCE_COLUMNS =
             FHIR_RESOURCE_TYPE_COLUMN_NAME
                     + ","
@@ -596,6 +602,39 @@ public final class MedicalResourceHelper {
         return getReadTableRequestUsingRequestFilters(pageTokenWrapper, pageSize);
     }
 
+    /**
+     * Creates a {@link ReadTableRequest} given the {@code lastRowId} and {@code pageSize}. This
+     * allows to read from the given {@code lastRowId} onwards.
+     *
+     * <p>This is only used in DatabaseMerger code, where we want to read all the {@link
+     * MedicalResource}s stored in the staged database for merging.
+     */
+    public static ReadTableRequest getReadTableRequestForAllMedicalResources(
+            long lastRowId, int pageSize) {
+        // The INNER_QUERY_ALIAS refers to the medical_resource_table.
+        String medicalResourceLastModifiedTime =
+                String.format(
+                        "%1$s.%2$s AS %3$s",
+                        INNER_QUERY_ALIAS,
+                        LAST_MODIFIED_TIME_COLUMN_NAME,
+                        LAST_MODIFIED_TIMESTAMP_MEDICAL_RESOURCE_ALIAS);
+        List<String> allColumns =
+                List.of(
+                        MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME,
+                        FHIR_RESOURCE_TYPE_COLUMN_NAME,
+                        FHIR_RESOURCE_ID_COLUMN_NAME,
+                        FHIR_DATA_COLUMN_NAME,
+                        getFhirVersionColumnName(),
+                        getMedicalResourceTypeColumnName(),
+                        getDataSourceUuidColumnName(),
+                        medicalResourceLastModifiedTime);
+        return getReadTableRequestUsingPageSizeAndLastRowId(pageSize, lastRowId)
+                .setColumnNames(allColumns)
+                .setJoinClause(
+                        joinWithMedicalResourceIndicesTable()
+                                .attachJoin(joinWithMedicalDataSourceTable()));
+    }
+
     /** Creates {@link ReadTableRequest} for the given {@link PhrPageTokenWrapper}. */
     @VisibleForTesting
     static ReadTableRequest getReadTableRequestUsingRequestFilters(
@@ -1016,6 +1055,25 @@ public final class MedicalResourceHelper {
     }
 
     /**
+     * Create {@link ContentValues} for the given {@code dataSourceRowId}, {@code lastModifiedTime},
+     * {@code appInfoId} and {@link MedicalResource}.
+     *
+     * <p>This is only used in DatabaseMerger code, where we want to provide a lastModifiedTimestamp
+     * from the source database rather than based on the current time.
+     */
+    public static ContentValues getContentValues(
+            long dataSourceRowId, long lastModifiedTime, MedicalResource resource) {
+        FhirResource fhirResource = resource.getFhirResource();
+        ContentValues resourceContentValues = new ContentValues();
+        resourceContentValues.put(DATA_SOURCE_ID_COLUMN_NAME, dataSourceRowId);
+        resourceContentValues.put(FHIR_DATA_COLUMN_NAME, fhirResource.getData());
+        resourceContentValues.put(FHIR_RESOURCE_TYPE_COLUMN_NAME, fhirResource.getType());
+        resourceContentValues.put(FHIR_RESOURCE_ID_COLUMN_NAME, fhirResource.getId());
+        resourceContentValues.put(LAST_MODIFIED_TIME_COLUMN_NAME, lastModifiedTime);
+        return resourceContentValues;
+    }
+
+    /**
      * Creates a {@link MedicalResource} for the given {@code uuid} and {@link
      * UpsertMedicalResourceInternalRequest}.
      */
@@ -1099,6 +1157,29 @@ public final class MedicalResourceHelper {
         int remainingCount = totalRowCount - medicalResources.size();
         return new ReadMedicalResourcesInternalResponse(
                 medicalResources, nextPageToken, remainingCount);
+    }
+
+    /**
+     * Returns a {@link ReadMedicalResourceRowsResponse} which contains the {@link MedicalResource}s
+     * built from the read rows, their lastModifiedTimestamps and the lastReadRowId.
+     *
+     * <p>This is only used in DatabaseMerger code, where we want to provide a lastModifiedTimestamp
+     * from the source database rather than based on the current time.
+     */
+    public static ReadMedicalResourceRowsResponse getMedicalResourceRows(
+            Cursor cursor, int pageSize) {
+        List<MedicalResourceRow> medicalResources = new ArrayList<>();
+        long lastRowId = DEFAULT_LONG;
+        if (cursor.moveToFirst()) {
+            do {
+                if (medicalResources.size() >= pageSize) {
+                    break;
+                }
+                medicalResources.add(getMedicalResourceAndLastModifiedTime(cursor));
+                lastRowId = getCursorLong(cursor, MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME);
+            } while (cursor.moveToNext());
+        }
+        return new ReadMedicalResourceRowsResponse(medicalResources, lastRowId);
     }
 
     /**
@@ -1334,6 +1415,28 @@ public final class MedicalResourceHelper {
                 .addExtraWhereClauses(
                         new WhereClauses(AND)
                                 .addWhereInSQLRequestClause(getPrimaryColumn(), innerRead));
+    }
+
+    private static MedicalResourceRow getMedicalResourceAndLastModifiedTime(Cursor cursor) {
+        int fhirResourceTypeInt = getCursorInt(cursor, FHIR_RESOURCE_TYPE_COLUMN_NAME);
+        long lastModifiedTimestamp =
+                getCursorLong(cursor, LAST_MODIFIED_TIMESTAMP_MEDICAL_RESOURCE_ALIAS);
+        FhirResource fhirResource =
+                new FhirResource.Builder(
+                                fhirResourceTypeInt,
+                                getCursorString(cursor, FHIR_RESOURCE_ID_COLUMN_NAME),
+                                getCursorString(cursor, FHIR_DATA_COLUMN_NAME))
+                        .build();
+        FhirVersion fhirVersion =
+                parseFhirVersion(getCursorString(cursor, getFhirVersionColumnName()));
+        return new MedicalResourceRow(
+                new MedicalResource.Builder(
+                                getCursorInt(cursor, getMedicalResourceTypeColumnName()),
+                                getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),
+                                fhirVersion,
+                                fhirResource)
+                        .build(),
+                lastModifiedTimestamp);
     }
 
     private static MedicalResource getMedicalResource(Cursor cursor) {

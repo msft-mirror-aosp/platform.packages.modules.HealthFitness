@@ -67,6 +67,7 @@ import android.annotation.Nullable;
 import android.annotation.SystemApi;
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.content.pm.PermissionInfo;
 import android.health.connect.datatypes.ExerciseRoute;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
@@ -1119,6 +1120,21 @@ public final class HealthPermissions {
             @NonNull Context context) {
         return getDataCategoriesWithWritePermissionsForPackage(packageInfo, context)
                 .contains(dataCategory);
+    }
+
+    /** @hide */
+    public static boolean isValidHealthPermission(PermissionInfo permissionInfo) {
+        return HEALTH_PERMISSION_GROUP.equals(permissionInfo.group)
+                && isPermissionEnabled(permissionInfo.name);
+    }
+
+    /** @hide */
+    // TODO(b/377285620): flag the permissions in the Manifest when fully supported.
+    static boolean isPermissionEnabled(@NonNull String permission) {
+        return switch (permission) {
+            case READ_ACTIVITY_INTENSITY, WRITE_ACTIVITY_INTENSITY -> Flags.activityIntensity();
+            default -> true;
+        };
     }
 
     private static synchronized void populateHealthPermissionToHealthPermissionCategoryMap() {

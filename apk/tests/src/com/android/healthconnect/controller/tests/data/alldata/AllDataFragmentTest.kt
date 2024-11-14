@@ -96,6 +96,7 @@ import org.mockito.kotlin.verify
 class AllDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
     private val allDataUseCase: AllDataUseCase = AllDataUseCase(manager, Dispatchers.Main)
@@ -143,6 +144,16 @@ class AllDataFragmentTest {
     }
 
     @Test
+    fun populatedMedicalData_pageImpressionLogged() {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        launchMedicalAllDataFragment()
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ALL_MEDICAL_DATA_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
     fun medicalDataPresent_populatedDataTypesDisplayed() {
         mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
@@ -152,6 +163,7 @@ class AllDataFragmentTest {
         onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
+        onView(withText("Select all")).check(doesNotExist())
     }
 
     @Test
@@ -193,7 +205,8 @@ class AllDataFragmentTest {
 
         onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("Vaccines")).perform(click())
-        // TODO(b/342159144): Test interaction log.
+        verify(healthConnectLogger)
+            .logInteraction(AllDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.entriesAndAccessFragment)
     }
