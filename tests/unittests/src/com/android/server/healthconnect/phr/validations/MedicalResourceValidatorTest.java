@@ -282,6 +282,41 @@ public class MedicalResourceValidatorTest {
     }
 
     @Test
+    public void testValidateAndCreateInternalRequest_nullId_throws() {
+        String immunizationJson = new ImmunizationBuilder().set("id", JSONObject.NULL).toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown).hasMessageThat().contains("id should be a string");
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nonStringId_throws() {
+        String immunizationJson = new ImmunizationBuilder().set("id", 123).toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown).hasMessageThat().contains("id should be a string");
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nullString_succeeds() {
+        String immunizationJson = new ImmunizationBuilder().set("id", "null").toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        UpsertMedicalResourceInternalRequest internalRequest =
+                validator.validateAndCreateInternalRequest();
+
+        assertThat(internalRequest.getFhirResourceId()).isEqualTo("null");
+    }
+
+    @Test
     public void testValidateAndCreateInternalRequest_unsupportedFhirVersion_throws() {
         UpsertMedicalResourceRequest upsertRequest =
                 getUpsertMedicalResourceRequestBuilder()
@@ -318,6 +353,26 @@ public class MedicalResourceValidatorTest {
                         "Unsupported FHIR resource type "
                                 + FHIR_RESOURCE_TYPE_UNSUPPORTED
                                 + " for resource with id "
+                                + FHIR_RESOURCE_ID_IMMUNIZATION);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nullResourceType_throws() {
+        String immunizationJson =
+                new ImmunizationBuilder()
+                        .setId(FHIR_RESOURCE_ID_IMMUNIZATION)
+                        .set("resourceType", JSONObject.NULL)
+                        .toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Unsupported FHIR resource type null for resource with id "
                                 + FHIR_RESOURCE_ID_IMMUNIZATION);
     }
 
