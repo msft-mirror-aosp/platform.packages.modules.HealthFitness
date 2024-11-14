@@ -42,6 +42,7 @@ fun ControlSingleDataTypeForSingleAppScreen(
     permissionStr: String,
     dataTypeStr: String,
     packageName: String,
+    onAdditionalPermissionClick: (String) -> Unit,
 ) {
     val healthPermission = fromPermissionString(permissionStr)
 
@@ -95,7 +96,7 @@ fun ControlSingleDataTypeForSingleAppScreen(
             Chip(
                 label = stringResource(R.string.additional_access_label),
                 labelMaxLines = 3,
-                onClick = {}, // TODO: navigate
+                onClick = { onAdditionalPermissionClick(packageName) },
                 enabled = isBackgroundPermissionRequested,
             )
         }

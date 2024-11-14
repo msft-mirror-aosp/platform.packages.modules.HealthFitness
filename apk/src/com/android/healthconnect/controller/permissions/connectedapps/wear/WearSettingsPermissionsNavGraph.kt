@@ -17,22 +17,22 @@
  */
 package com.android.healthconnect.controller.permissions.connectedapps.wear
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.android.healthconnect.controller.permissions.app.wear.WearViewAppInfoPermissionsActivity
 
-/**
- * Wear Settings Permissions navigation graph.
- *
- * TODO: b/364643019 - Control single health permission for one app screen, Control background
- *   health read permission screen.
- */
+/** Wear Settings Permissions navigation graph. */
 @Composable
 fun WearSettingsPermissionsNavGraph() {
     val viewModel = hiltViewModel<WearConnectedAppsViewModel>()
@@ -112,6 +112,39 @@ fun WearSettingsPermissionsNavGraph() {
                 permissionStr,
                 dataTypeStr,
                 packageName,
+                onAdditionalPermissionClick = {
+                    navController.navigate(
+                        "${PermissionManagerScreen.BackgroundPermission.name}/$packageName"
+                    )
+                },
+            )
+        }
+
+        composable(
+            route = "${PermissionManagerScreen.BackgroundPermission.name}/{packageName}",
+            arguments = listOf(navArgument("packageName") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            // Handle the activity result and re-initialize the ViewModel when swipe back.
+            val launcher =
+                rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.StartActivityForResult()
+                ) {
+                    viewModel.loadConnectedApps()
+                }
+            val packageName = backStackEntry.arguments?.getString("packageName") ?: ""
+            val context = LocalContext.current
+            ControlBackgroundReadForSingleAppScreen(
+                viewModel,
+                packageName,
+                onBackClick = { navController.popBackStack() },
+                onAppInfoPermissionClick = {
+                    // Launch AppInfo->Permissions->Fitness&Wellness screen.
+                    val intent =
+                        Intent(context, WearViewAppInfoPermissionsActivity::class.java).apply {
+                            putExtra(android.content.Intent.EXTRA_PACKAGE_NAME, packageName)
+                        }
+                    launcher.launch(intent)
+                },
             )
         }
     }
@@ -122,4 +155,5 @@ enum class PermissionManagerScreen() {
     PerDataType,
     RemoveAll,
     PerDataTypePerApp,
+    BackgroundPermission,
 }
