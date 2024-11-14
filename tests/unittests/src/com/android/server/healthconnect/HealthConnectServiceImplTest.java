@@ -126,7 +126,6 @@ import android.health.connect.ratelimiter.RateLimiter;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -178,7 +177,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -279,7 +277,6 @@ public class HealthConnectServiceImplTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(AppInfoHelper.class)
-                    .mockStatic(Environment.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(LocalManagerRegistry.class)
                     .mockStatic(UserHandle.class)
@@ -288,6 +285,7 @@ public class HealthConnectServiceImplTest {
                     .mockStatic(HealthFitnessStatsLog.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
+                    .addStaticMockFixtures(EnvironmentFixture::new)
                     .build();
 
     @Mock private TransactionManager mTransactionManager;
@@ -319,7 +317,6 @@ public class HealthConnectServiceImplTest {
     private AttributionSource mAttributionSource;
     private HealthConnectServiceImpl mHealthConnectService;
     private UserHandle mUserHandle;
-    private File mMockDataDirectory;
     private ThreadPoolExecutor mInternalTaskScheduler;
     private String mTestPackageName;
 
@@ -345,8 +342,6 @@ public class HealthConnectServiceImplTest {
         when(mServiceContext.createContextAsUser(mUserHandle, 0)).thenReturn(mContext);
         when(mServiceContext.getSystemService(ActivityManager.class))
                 .thenReturn(mContext.getSystemService(ActivityManager.class));
-        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
         when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
@@ -392,7 +387,6 @@ public class HealthConnectServiceImplTest {
     @After
     public void tearDown() throws TimeoutException {
         waitForAllScheduledTasksToComplete();
-        deleteDir(mMockDataDirectory);
         clearInvocations(mPreferenceHelper);
     }
 
@@ -654,13 +648,14 @@ public class HealthConnectServiceImplTest {
         for (Method m : allMethods) {
             assertWithMessage(
                             "Method '%s' does not belong to either"
-                                + " BLOCK_CALLS_DURING_DATA_SYNC_LIST or"
-                                + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST. Make sure the method"
-                                + " implementation includes a section blocking calls during data"
-                                + " sync, then add the method to BLOCK_CALLS_DURING_DATA_SYNC_LIST"
-                                + " (check the Javadoc for this constant for more details). If the"
-                                + " method must allow calls during data sync, add it to"
-                                + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST.",
+                                    + " BLOCK_CALLS_DURING_DATA_SYNC_LIST or"
+                                    + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST. Make sure the"
+                                    + " method implementation includes a section blocking calls"
+                                    + " during data sync, then add the method to"
+                                    + " BLOCK_CALLS_DURING_DATA_SYNC_LIST (check the Javadoc for"
+                                    + " this constant for more details). If the method must allow"
+                                    + " calls during data sync, add it to"
+                                    + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST.",
                             m.getName())
                     .that(
                             DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST.contains(m.getName())
@@ -2630,26 +2625,6 @@ public class HealthConnectServiceImplTest {
         fileWriter.write("Contents of file " + fileName);
         fileWriter.close();
         return file;
-    }
-
-    private static void deleteDir(File dir) {
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (var file : files) {
-                if (file.isDirectory()) {
-                    deleteDir(file);
-                } else {
-                    assertThat(file.delete()).isTrue();
-                }
-            }
-        }
-        assertWithMessage(
-                        "Directory "
-                                + dir.getAbsolutePath()
-                                + " is not empty, Files present = "
-                                + Arrays.toString(dir.list()))
-                .that(dir.delete())
-                .isTrue();
     }
 
     /**

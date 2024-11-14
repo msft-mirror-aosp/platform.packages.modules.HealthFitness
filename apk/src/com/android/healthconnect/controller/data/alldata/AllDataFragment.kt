@@ -73,10 +73,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         const val IS_BROWSE_MEDICAL_DATA_SCREEN = "key_is_browse_medical_data_screen"
     }
 
-    init {
-        this.setPageName(PageName.ALL_DATA_PAGE)
-    }
-
     @Inject lateinit var logger: HealthConnectLogger
 
     /** Decides whether this screen is supposed to display Fitness data or Medical data. */
@@ -181,6 +177,11 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
         if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
+        }
+        if (showMedicalData) {
+            setPageName(PageName.ALL_MEDICAL_DATA_PAGE)
+        } else {
+            setPageName(PageName.ALL_DATA_PAGE)
         }
         selectAllCheckboxPreference.logName = AllDataElement.SELECT_ALL_BUTTON
     }

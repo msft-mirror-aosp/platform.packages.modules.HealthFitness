@@ -62,6 +62,7 @@ import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.toInstant
+import com.android.healthfitness.flags.Flags.personalHealthRecordUiTelemetry
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -232,7 +233,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
@@ -240,6 +240,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
             permissionType = fromPermissionTypeName(permissionTypeName)
         }
+        setLoggerPageId()
         setTitle(permissionType.upperCaseLabel())
         logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
 
@@ -343,8 +344,18 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
         }
-        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+        setLoggerPageId()
         logger.logPageImpression()
+    }
+
+    private fun setLoggerPageId() {
+        if (permissionType is FitnessPermissionType) {
+            logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+        } else if (permissionType is MedicalPermissionType && personalHealthRecordUiTelemetry()) {
+            logger.setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
+        } else {
+            logger.setPageId(PageName.UNKNOWN_PAGE)
+        }
     }
 
     private fun updateMenu(

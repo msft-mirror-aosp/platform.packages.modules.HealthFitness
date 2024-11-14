@@ -15,7 +15,9 @@
  */
 package com.android.healthconnect.controller.utils.logging
 
+import androidx.annotation.VisibleForTesting
 import com.android.healthconnect.controller.HealthFitnessUiStatsLog.*
+import com.android.healthfitness.flags.Flags.personalHealthRecordUiTelemetry
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -32,8 +34,13 @@ class HealthConnectLogger @Inject constructor() {
      * Sets the page ID which will be used for all impressions and interaction logging on this page.
      */
     fun setPageId(pageName: PageName) {
+        if (isGuardedByPhrFlag(pageName)) {
+            return
+        }
         this.pageName = pageName
     }
+
+    @VisibleForTesting fun getPageId(): PageName = pageName
 
     /** Logs the impression of a page. */
     fun logPageImpression() {
@@ -42,17 +49,38 @@ class HealthConnectLogger @Inject constructor() {
 
     /** Logs the impression of an element. */
     fun logImpression(element: ElementName) {
+        if (isGuardedByPhrFlag(element)) {
+            return
+        }
         write(HEALTH_CONNECT_UI_IMPRESSION, pageName.impressionId, element.impressionId)
     }
 
     /** Logs the interaction with an element. */
     fun logInteraction(element: ElementName, action: UIAction = UIAction.ACTION_CLICK) {
+        if (isGuardedByPhrFlag(element)) {
+            return
+        }
         write(
             HEALTH_CONNECT_UI_INTERACTION,
             pageName.interactionId,
             element.interactionId,
             action.id,
         )
+    }
+
+    private fun isGuardedByPhrFlag(pageName: PageName) =
+        pageName.isPhrPage() && !personalHealthRecordUiTelemetry()
+
+    private fun isGuardedByPhrFlag(elementName: ElementName): Boolean {
+        val phrElements =
+            setOf(
+                OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR,
+                HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON,
+                CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON,
+                CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON,
+                CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON,
+            )
+        return phrElements.contains(elementName)
     }
 }
 
@@ -231,10 +259,62 @@ enum class PageName(val impressionId: Int, val interactionId: Int) {
         HEALTH_CONNECT_UI_IMPRESSION__PAGE__APP_ENTRIES_PAGE,
         HEALTH_CONNECT_UI_INTERACTION__PAGE__APP_ENTRIES_PAGE,
     ),
+    ALL_MEDICAL_DATA_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__ALL_MEDICAL_DATA_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__ALL_MEDICAL_DATA_PAGE,
+    ),
+    TAB_MEDICAL_ENTRIES_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__TAB_MEDICAL_ENTRIES_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__TAB_MEDICAL_ENTRIES_PAGE,
+    ),
+    TAB_MEDICAL_ACCESS_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__TAB_MEDICAL_ACCESS_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__TAB_MEDICAL_ACCESS_PAGE,
+    ),
+    RAW_FHIR_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__RAW_FHIR_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__RAW_FHIR_PAGE,
+    ),
+    REQUEST_MEDICAL_PERMISSIONS_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__REQUEST_MEDICAL_PERMISSIONS_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__REQUEST_MEDICAL_PERMISSIONS_PAGE,
+    ),
+    COMBINED_APP_ACCESS_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__COMBINED_APP_ACCESS_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__COMBINED_APP_ACCESS_PAGE,
+    ),
+    MEDICAL_APP_ACCESS_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__MEDICAL_APP_ACCESS_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__MEDICAL_APP_ACCESS_PAGE,
+    ),
+    SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE,
+    ),
+    SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE,
+    ),
     UNKNOWN_PAGE(
         HEALTH_CONNECT_UI_IMPRESSION__PAGE__PAGE_UNKNOWN,
         HEALTH_CONNECT_UI_INTERACTION__PAGE__PAGE_UNKNOWN,
-    ),
+    );
+
+    fun isPhrPage(): Boolean {
+        val phrPages =
+            setOf(
+                ALL_MEDICAL_DATA_PAGE,
+                TAB_MEDICAL_ENTRIES_PAGE,
+                TAB_MEDICAL_ACCESS_PAGE,
+                RAW_FHIR_PAGE,
+                REQUEST_MEDICAL_PERMISSIONS_PAGE,
+                COMBINED_APP_ACCESS_PAGE,
+                MEDICAL_APP_ACCESS_PAGE,
+                SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE,
+                SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE,
+            )
+        return phrPages.contains(this)
+    }
 }
 
 /** Common interface for loggable elements. */
@@ -274,6 +354,10 @@ enum class HomePageElement(override val impressionId: Int, override val interact
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__BROWSE_DATA_BUTTON,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__BROWSE_DATA_BUTTON,
     ),
+    BROWSE_HEALTH_RECORDS_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__BROWSE_HEALTH_RECORDS_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__BROWSE_HEALTH_RECORDS_BUTTON,
+    ),
 }
 
 /** Loggable elements in the Onboarding page. */
@@ -286,6 +370,10 @@ enum class OnboardingElement(override val impressionId: Int, override val intera
     ONBOARDING_GO_BACK_BUTTON(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__ONBOARDING_GO_BACK_BUTTON,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__ONBOARDING_GO_BACK_BUTTON,
+    ),
+    ONBOARDING_MESSAGE_WITH_PHR(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__ONBOARDING_MESSAGE_WITH_PHR,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__ONBOARDING_MESSAGE_WITH_PHR,
     ),
 }
 
@@ -1350,6 +1438,24 @@ enum class AllEntriesElement(override val impressionId: Int, override val intera
     DATE_VIEW_SPINNER_MONTH(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__DATE_VIEW_SPINNER_YEAR,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__DATE_VIEW_SPINNER_YEAR,
+    ),
+}
+
+enum class CombinedAppAccessElement(
+    override val impressionId: Int,
+    override val interactionId: Int,
+) : ElementName {
+    FITNESS_PERMISSIONS_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__FITNESS_PERMISSIONS_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__FITNESS_PERMISSIONS_BUTTON,
+    ),
+    MEDICAL_PERMISSIONS_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__MEDICAL_PERMISSIONS_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__MEDICAL_PERMISSIONS_BUTTON,
+    ),
+    REMOVE_ALL_PERMISSIONS_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__REMOVE_ALL_PERMISSIONS_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__REMOVE_ALL_PERMISSIONS_BUTTON,
     ),
 }
 
