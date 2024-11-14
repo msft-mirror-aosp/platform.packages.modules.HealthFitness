@@ -354,21 +354,28 @@ public class HealthConnectServiceImplTest {
                         .setTransactionManager(mTransactionManager)
                         .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setHealthConnectPermissionHelper(mHealthConnectPermissionHelper)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setMigrationCleaner(mMigrationCleaner)
+                        .setMedicalDataSourceHelper(mMedicalDataSourceHelper)
+                        .setMedicalResourceHelper(mMedicalResourceHelper)
+                        .setMigrationStateManager(mMigrationStateManager)
                         .setAppInfoHelper(mAppInfoHelper)
+                        .setAppInfoHelper(mAppInfoHelper)
+                        .setTimeSource(mFakeTimeSource)
                         .build();
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
-                        mTransactionManager,
-                        mHealthConnectPermissionHelper,
-                        mMigrationCleaner,
-                        mFirstGrantTimeManager,
-                        mMigrationStateManager,
-                        mMigrationUiStateManager,
                         mServiceContext,
-                        mMedicalResourceHelper,
-                        mMedicalDataSourceHelper,
+                        healthConnectInjector.getTransactionManager(),
+                        healthConnectInjector.getHealthConnectPermissionHelper(),
+                        healthConnectInjector.getMigrationCleaner(),
+                        healthConnectInjector.getFirstGrantTimeManager(),
+                        healthConnectInjector.getMigrationStateManager(),
+                        mMigrationUiStateManager,
+                        healthConnectInjector.getMedicalResourceHelper(),
+                        healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
                         healthConnectInjector.getExportImportSettingsStorage(),
                         healthConnectInjector.getAccessLogsHelper(),
@@ -380,8 +387,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getPriorityMigrationHelper(),
                         healthConnectInjector.getAppInfoHelper(),
                         healthConnectInjector.getDeviceInfoHelper(),
-                        mPreferenceHelper,
-                        mFakeTimeSource);
+                        healthConnectInjector.getPreferenceHelper(),
+                        healthConnectInjector.getTimeSource());
     }
 
     @After

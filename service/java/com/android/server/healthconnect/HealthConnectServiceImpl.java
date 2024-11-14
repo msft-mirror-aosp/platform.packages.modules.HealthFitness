@@ -291,13 +291,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private volatile UserHandle mCurrentForegroundUser;
 
     HealthConnectServiceImpl(
+            Context context,
             TransactionManager transactionManager,
             HealthConnectPermissionHelper permissionHelper,
             MigrationCleaner migrationCleaner,
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
-            Context context,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
