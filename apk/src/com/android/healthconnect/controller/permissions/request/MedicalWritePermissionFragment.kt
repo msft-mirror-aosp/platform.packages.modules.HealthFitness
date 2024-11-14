@@ -39,6 +39,16 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
         private const val HEADER_PREFERENCE = "request_permissions_header"
         private const val SUPPORTED_PERMS_PREFERENCE = "supported_medical_permissions"
         private const val FOOTER_PREFERENCE = "request_medical_write_footer"
+        private val sampleMedicalPermissionTypes =
+            setOf(
+                MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                MedicalPermissionType.CONDITIONS,
+                MedicalPermissionType.LABORATORY_RESULTS,
+                MedicalPermissionType.MEDICATIONS,
+                MedicalPermissionType.PROCEDURES,
+                MedicalPermissionType.VACCINES,
+                MedicalPermissionType.VITAL_SIGNS,
+            )
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -94,13 +104,13 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
     private fun setupScreen(screenState: MedicalScreenState.ShowMedicalWrite) {
         header.bind(appName = screenState.appMetadata.appName, screenState = screenState)
 
-        val allMedicalPermissions =
-            MedicalPermissionType.entries
+        val sampleMedicalPermissions =
+            sampleMedicalPermissionTypes
                 .filterNot { it == MedicalPermissionType.ALL_MEDICAL_DATA }
                 .map { getString(it.upperCaseLabel()) }
                 .sorted()
                 .joinToString("\n")
-        supportedMedicalPreference?.summary = allMedicalPermissions
+        supportedMedicalPreference?.summary = sampleMedicalPermissions
 
         footer?.title = getString(R.string.medical_request_footer)
         footer?.setLearnMoreText(getString(R.string.medical_request_about_health_records))
