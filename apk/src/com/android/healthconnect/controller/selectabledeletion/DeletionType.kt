@@ -32,7 +32,9 @@ sealed class DeletionType {
         val totalPermissionTypes: Int,
         val packageName: String,
         val appName: String,
-    ) : DeletionType()
+    ) : DeletionType() {
+        fun toDeleteAppData(): DeleteAppData = DeleteAppData(packageName, appName)
+    }
 
     data class DeleteEntries(
         val idsToDataTypes: Map<String, DataType>,
