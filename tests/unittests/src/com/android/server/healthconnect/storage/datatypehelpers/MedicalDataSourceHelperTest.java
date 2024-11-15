@@ -33,6 +33,7 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.createAllergyMe
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResource;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 
+import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
 import static com.android.server.healthconnect.storage.PhrTestUtils.makeUpsertRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DATA_SOURCE_UUID_COLUMN_NAME;
@@ -56,10 +57,10 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import android.content.ContentValues;
@@ -142,14 +143,18 @@ public class MedicalDataSourceHelperTest {
     private AccessLogsHelper mAccessLogsHelper;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
-    private Context mContext;
+
+    @Mock private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private Drawable mDrawable;
 
     @Before
     public void setup() throws NameNotFoundException {
 
-        mContext = spy(mHealthConnectDatabaseTestRule.getDatabaseContext());
+        when(mContext.getUser()).thenReturn(TEST_USER);
+        when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
+        when(mContext.getPackageManager()).thenReturn(mPackageManager);
+
         mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
@@ -166,13 +171,7 @@ public class MedicalDataSourceHelperTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
-        // We set the context to null, because we only use insertApp in this set of tests and
-        // we don't need context for that.
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mHealthConnectDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
         mUtil = new PhrTestUtils(mContext, healthConnectInjector);
-        when(mContext.getPackageManager()).thenReturn(mPackageManager);
     }
 
     @After
