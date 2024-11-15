@@ -333,7 +333,7 @@ public class MedicalDataSourceHelper {
             Context context, CreateMedicalDataSourceRequest request, String packageName) {
         try {
             // Get the appInfoId outside the transaction
-            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName, context);
+            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName);
             return mTransactionManager.runAsTransaction(
                     (TransactionManager.TransactionRunnableWithReturn<
                                     MedicalDataSource, RuntimeException>)

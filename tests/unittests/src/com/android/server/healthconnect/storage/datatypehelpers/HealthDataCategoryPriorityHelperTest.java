@@ -23,6 +23,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.flatte
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
@@ -130,13 +131,12 @@ public class HealthDataCategoryPriorityHelperTest {
 
         when(mTransactionManager.read(any())).thenReturn(mCursor);
         when(mTransactionManager.getCurrentUserHandle()).thenReturn(UserHandle.CURRENT);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME), any()))
-                .thenReturn(APP_PACKAGE_ID);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_2), any()))
+        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME))).thenReturn(APP_PACKAGE_ID);
+        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_2)))
                 .thenReturn(APP_PACKAGE_ID_2);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_3), any()))
+        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_3)))
                 .thenReturn(APP_PACKAGE_ID_3);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_4), any()))
+        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_4)))
                 .thenReturn(APP_PACKAGE_ID_4);
         when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
         when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME_2)).thenReturn(APP_PACKAGE_ID_2);
@@ -182,7 +182,7 @@ public class HealthDataCategoryPriorityHelperTest {
                 HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
         setupPriorityList(priorityList);
 
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID);
+        when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID);
         mHealthDataCategoryPriorityHelper.appendToPriorityList(
                 APP_PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS, mContext, true);
 
@@ -198,7 +198,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
         doReturn(true).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID_4);
+        when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID_4);
         spy.appendToPriorityList(
                 APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, false);
 
@@ -219,7 +219,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
         doReturn(false).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID_4);
+        when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID_4);
         spy.appendToPriorityList(
                 APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, false);
 
@@ -240,7 +240,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
         doReturn(true).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID_4);
+        when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID_4);
         spy.appendToPriorityList(
                 APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, true);
 

@@ -175,7 +175,8 @@ public class HealthConnectManagerService extends SystemService {
     private void switchToSetupForUser(UserHandle user) {
         // Note: This is for test setup debugging, please don't surround with DEBUG flag
         Slog.d(TAG, "switchToSetupForUser: " + user);
-        mTransactionManager.onUserUnlocked(StorageContext.create(mContext, mCurrentForegroundUser));
+        StorageContext storageContext = StorageContext.create(mContext, mCurrentForegroundUser);
+        mTransactionManager.onUserUnlocked(storageContext);
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
@@ -183,6 +184,8 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectInjector
                 .getHealthPermissionIntentAppsTracker()
                 .onUserUnlocked(mCurrentForegroundUser);
+
+        mHealthConnectInjector.getAppInfoHelper().setupForUser(storageContext);
 
         if (Flags.clearCachesAfterSwitchingUser()) {
             // Clear preferences cache again after the user switching is done as there's a race
