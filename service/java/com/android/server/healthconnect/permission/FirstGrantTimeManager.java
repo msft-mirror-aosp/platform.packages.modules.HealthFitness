@@ -166,7 +166,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
      * background thread otherwise.
      */
     private void updateFirstGrantTimesFromPermissionState(UserHandle user, int uid, boolean sync) {
-        if (!mUserManager.isUserUnlocked()) {
+        if (!mUserManager.isUserUnlocked(user)) {
             // this method is called in onPermissionsChanged(uid) which is called as soon as the
             // system boots up, even before the user has unlock the device for the first time.
             // Side note: onPermissionsChanged() is also called on both primary user and work
@@ -384,7 +384,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     /** Initialize first grant time state for given user. */
     private void initAndValidateUserStateIfNeedLocked(UserHandle user) {
-        if (!mUserManager.isUserUnlocked()) {
+        if (!mUserManager.isUserUnlocked(user)) {
             // only init first grant time state when device is unlocked, because before that, we
             // cannot access any files, which leads to `mUidToGrantTimeCache` being empty and never
             // get re-initialized.
