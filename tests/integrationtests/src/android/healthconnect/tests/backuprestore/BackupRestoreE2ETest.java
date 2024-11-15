@@ -106,7 +106,7 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        if (!TestUtils.isHardwareSupported()) {
+        if (!TestUtils.isHealthConnectFullySupported()) {
             return;
         }
         mBackupRestoreApkPackageName = getBackupRestoreApkPackageName();
@@ -128,7 +128,7 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
 
     public void testBackupThenRestore_over2000Records_expectDataIsRestoredCorrectly()
             throws Exception {
-        if (!TestUtils.isHardwareSupported()) {
+        if (!TestUtils.isHealthConnectFullySupported()) {
             return;
         }
         int numOfRecords = 2050;
@@ -150,7 +150,7 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
 
     public void testBackupThenRestore_trainingPlans_expectDataIsRestoredCorrectly()
             throws Exception {
-        if (!TestUtils.isHardwareSupported()) {
+        if (!TestUtils.isHealthConnectFullySupported()) {
             return;
         }
         DataOrigin dataOrigin = DataFactory.getDataOrigin(mContext.getPackageName());

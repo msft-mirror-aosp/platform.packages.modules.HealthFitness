@@ -62,7 +62,7 @@ fun AllDataTypesScreen(viewModel: WearConnectedAppsViewModel, onClick: (String, 
             val nAllowedApps = dataTypeToAllowedApps[healthPermission]?.size ?: 0
             val nDeniedApps = dataTypeToDeniedApps[healthPermission]?.size ?: 0
             val nRequestedApps = nAllowedApps + nDeniedApps
-            val enabled = (nRequestedApps == nTotalApps) && (nTotalApps != 0)
+            val enabled = nRequestedApps != 0
             val message =
                 if (enabled) {
                     stringResource(R.string.allowed_apps_count, nAllowedApps, nRequestedApps)

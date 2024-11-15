@@ -515,7 +515,7 @@
     <string name="medical_request_header_access_info_read_write" description="Text describing which medical data can be accessed by the app that is requesting medical permissions [CHAR_LIMIT=NONE]">If you give access, the app can read and write data such as allergies, lab results, vaccines and more\n<xliff:g example="About health records" id="about_health_records_link">%1$s</xliff:g></string>
     <string name="medical_request_header_access_info_read" description="Text describing which medical data can be accessed by the app that is requesting medical permissions [CHAR_LIMIT=NONE]">If you give access, the app can read data such as allergies, lab results, vaccines and more\n<xliff:g example="About health records" id="about_health_records_link">%1$s</xliff:g></string>
     <string name="medical_request_about_health_records" description="Link to a help page about health records [CHAR_LIMIT=NONE]">About health records</string>
-    <string name="medical_request_data_to_share" description="Title for section of the medical permission request screen which lists the data types accessed by this write permission [CHAR_LIMIT=NONE]">Data to share</string>
+    <string name="medical_request_data_to_share" description="Title for section of the medical permission request screen which lists some examples of the data types accessed by this write permission [CHAR_LIMIT=NONE]">Data to share includes</string>
     <string name="medical_request_summary" description="Explanation than an app can access all health records when it requests medical write permissions [CHAR_LIMIT=NONE]">If you allow, <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can share your health records with Health&#160;Connect.</string>
     <string name="medical_request_footer" description="Footer for screen requesting medical write permissions for an app [CHAR_LIMIT=NONE]">Sync your health records from your different apps and sources to keep them in one place</string>
     <!--endregion-->
@@ -1679,6 +1679,10 @@
     <string name="remove_one_permission_for_all" description="Text to indicate removing a data type access for all apps.">Remove <xliff:g example="heart rate" id="data_type">%s</xliff:g> access for all apps on your watch?</string>
     <string name="icon_content_check_mark" description="Content description for icon to confirm removing one granular health permission for all apps.">Check mark</string>
     <string name="icon_content_cross_mark" description="Content description for icon to dismiss removing one granular health permission for all apps.">Cross mark</string>
+    <string name="current_allow_mode" description="Text to indicate currently the app is allowed all the time or while in use.">"Currently, <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
+    <string name="allow_all_the_time_prompt" description="Title to ask user select all the time or while in use.">Allow <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to fitness and wellness data all the time?</string>
+    <string name="current_access" description="Subtitle to indicate which data types the app currently has permission to."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> has access to <xliff:g id="data_types" example="Heart rate, Skin temp">%2$s</xliff:g>.</string>
+    <string name="manage_fitness_and_wellness_permissions" description="Label for button to manager fitness and wellness permissions for an app.">Manage fitness and wellness permissions</string>
     <!-- endregion -->
 
     <!-- endregion -->

@@ -383,6 +383,34 @@ public class FhirResourceValidatorTest {
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
     @Test
+    public void testValidateFhirResource_fieldContainsNullSetViaJsonString_throws()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // This test tests that a "null" value in a json string is parsed to JSONObject.NULL as
+        // expected and therefore throws the expected error.
+        JSONObject allergyJson =
+                new JSONObject(
+                        "{"
+                                + "  \"resourceType\": \"AllergyIntolerance\","
+                                + "  \"id\": \"allergyintolerance-1\","
+                                + "  \"type\": null,"
+                                + "  \"patient\": {"
+                                + "    \"reference\": \"Patient/patient-1\","
+                                + "    \"display\": \"Example, Anne\""
+                                + "  }"
+                                + "}");
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+        assertThat(thrown).hasMessageThat().contains("Found null value in field: type");
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
+    @Test
     public void testValidateFhirResource_primitiveTypeArrayFieldIsNull_throws()
             throws JSONException {
         FhirResourceValidator validator = new FhirResourceValidator();
@@ -590,10 +618,36 @@ public class FhirResourceValidatorTest {
                         new AllergyBuilder()
                                 .set(
                                         "_category",
-                                        new JSONArray("[{\"id\": \"123\"}, {\"id\": \"123\"}]"))
+                                        new JSONArray("[{\"id\": \"123\"}, {\"id\": \"456\"}]"))
                                 .toJson());
 
         validator.validateFhirResource(allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
+    @Test
+    public void testValidateFhirResource_arrayOfPrimitiveTypeExtensionsIfNotArray_throws()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // The "status" field is a primitive type field of type "code", but is not an array. So
+        // the extension field "_status" is not allowed to be an array.
+        JSONObject immunizationJson =
+                new JSONObject(
+                        new ImmunizationBuilder()
+                                .set(
+                                        "_status",
+                                        new JSONArray("[{\"id\": \"123\"}, {\"id\": \"456\"}]"))
+                                .toJson());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains("Invalid resource structure. Expected object in field: _status");
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
