@@ -613,7 +613,10 @@ public final class TestUtils {
     }
 
     public static void deleteAllStagedRemoteData() {
-        HealthConnectManager service = getHealthConnectManager();
+        deleteAllStagedRemoteData(getHealthConnectManager());
+    }
+
+    public static void deleteAllStagedRemoteData(HealthConnectManager service) {
         runWithShellPermissionIdentity(
                 () ->
                         // TODO(b/241542162): Avoid reflection once TestApi can be called from CTS
@@ -1071,19 +1074,28 @@ public final class TestUtils {
         receiver.verifyNoExceptionOrThrow(3);
     }
 
-    public static boolean isHardwareSupported() {
-        return isHardwareSupported(ApplicationProvider.getApplicationContext());
+    public static boolean isHealthConnectFullySupported() {
+        return isHealthConnectFullySupported(ApplicationProvider.getApplicationContext());
+    }
+
+    public static boolean isHealthConnectFullySupported(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
+    }
+
+    public static boolean areHealthPermissionsSupported() {
+        return areHealthPermissionsSupported(ApplicationProvider.getApplicationContext());
     }
 
     /** returns true if the hardware is supported by HealthConnect. */
-    public static boolean isHardwareSupported(Context context) {
+    public static boolean areHealthPermissionsSupported(Context context) {
         PackageManager pm = context.getPackageManager();
-        boolean disabledOnWatch = pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
-              && !Flags.replaceBodySensorPermissionEnabled();
-        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
-                && !disabledOnWatch
-                && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
-                && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
+        boolean isWatchEnabled = pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+          && Flags.replaceBodySensorPermissionEnabled();
+        return isHealthConnectFullySupported(context) || isWatchEnabled;
     }
 
     /** Gets the priority list after getting the MANAGE_HEALTH_DATA permission. */

@@ -243,7 +243,7 @@ public class FhirResourceValidator {
                 break;
             default:
                 throw new IllegalStateException(
-                        "Encountered unexpected type kind: " + fieldConfig.getKind());
+                        "Encountered unexpected type kind: " + fieldConfig.getKind().name());
         }
     }
 

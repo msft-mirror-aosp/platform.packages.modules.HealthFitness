@@ -33,6 +33,7 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
@@ -363,6 +364,12 @@ public final class HealthConnectPermissionHelper {
     }
 
     private void enforceSupportPermissionsUsageIntent(String packageName, UserHandle userHandle) {
+        // Wear apps are not currently required to support the permission intent.
+        if (Flags.replaceBodySensorPermissionEnabled()
+                && mPackageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+            return;
+        }
+
         if (!mPermissionIntentAppsTracker.supportsPermissionUsageIntent(packageName, userHandle)) {
             throw new SecurityException(
                     "Package "

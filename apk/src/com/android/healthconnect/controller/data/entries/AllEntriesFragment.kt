@@ -27,7 +27,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commitNow
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,8 +47,7 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
-import com.android.healthconnect.controller.selectabledeletion.DeletionConstants
-import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
+import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.DataType
@@ -62,7 +60,6 @@ import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.toInstant
-import com.android.healthfitness.flags.Flags.personalHealthRecordUiTelemetry
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -73,6 +70,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
     companion object {
         private const val DELETION_TAG = "DeletionTag"
+        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY = "START_DELETION_ENTRIES_AND_ACCESS_KEY"
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -341,20 +339,21 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 dateNavigationView.getPeriod(),
             )
         }
-        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
-            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
-        }
         setLoggerPageId()
         logger.logPageImpression()
     }
 
     private fun setLoggerPageId() {
-        if (permissionType is FitnessPermissionType) {
-            logger.setPageId(PageName.TAB_ENTRIES_PAGE)
-        } else if (permissionType is MedicalPermissionType && personalHealthRecordUiTelemetry()) {
-            logger.setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
-        } else {
-            logger.setPageId(PageName.UNKNOWN_PAGE)
+        when (permissionType) {
+            is FitnessPermissionType -> {
+                logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+            }
+            is MedicalPermissionType -> {
+                logger.setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
+            }
+            else -> {
+                logger.setPageId(PageName.UNKNOWN_PAGE)
+            }
         }
     }
 
@@ -420,7 +419,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 entriesViewModel.currentSelectedDate.value!!,
             )
         )
-        childFragmentManager.setFragmentResult(DeletionConstants.START_DELETION_KEY, bundleOf())
+        parentFragmentManager.setFragmentResult(START_DELETION_ENTRIES_AND_ACCESS_KEY, bundleOf())
     }
 
     private fun setDateNavigationViewMaxDate() {
@@ -482,14 +481,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     entriesRecyclerView.isVisible = false
                 }
             }
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val deletionFragment = childFragmentManager.findFragmentByTag(DELETION_TAG)
-        if (deletionFragment != null) {
-            childFragmentManager.commitNow { remove(deletionFragment) }
         }
     }
 }
