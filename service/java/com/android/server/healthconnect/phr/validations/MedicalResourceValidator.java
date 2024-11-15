@@ -172,11 +172,21 @@ public class MedicalResourceValidator {
     }
 
     private static String extractResourceId(JSONObject fhirJsonObj) {
+        Object id;
         try {
-            return fhirJsonObj.getString("id");
+            id = fhirJsonObj.get("id");
         } catch (JSONException e) {
             throw new IllegalArgumentException("Resource is missing id field");
         }
+
+        // The FHIR spec expects this to be a string, so throw an error if this is not a json string
+        // to avoid cases where null leads to an id value "null" for example, if we were to use
+        // JSONObject.getString("id") instead.
+        if (!(id instanceof String)) {
+            throw new IllegalArgumentException("Resource id should be a string");
+        }
+
+        return (String) id;
     }
 
     private static String extractResourceType(JSONObject fhirJsonObj, String resourceId) {
