@@ -30,6 +30,7 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.AutoDeleteService;
@@ -77,6 +78,7 @@ public class AutoDeleteServiceTest {
     @Mock private AppInfoHelper mAppInfoHelper;
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     @Mock private ActivityDateHelper mActivityDateHelper;
+    @Mock private MigrationUiStateManager mMigrationUiStateManager;
     @Mock Context mContext;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
@@ -97,6 +99,7 @@ public class AutoDeleteServiceTest {
                         .setPreferenceHelper(mPreferenceHelper)
                         .setExportManager(mExportManager)
                         .setTransactionManager(mTransactionManager)
+                        .setMigrationUiStateManager(mMigrationUiStateManager)
                         .setAppInfoHelper(mAppInfoHelper)
                         .setActivityDateHelper(mActivityDateHelper)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
