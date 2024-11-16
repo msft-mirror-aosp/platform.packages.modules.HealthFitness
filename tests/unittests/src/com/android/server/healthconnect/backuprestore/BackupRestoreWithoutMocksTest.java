@@ -102,7 +102,8 @@ public class BackupRestoreWithoutMocksTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     private StorageContext mContext;
     private TransactionTestUtils mTransactionTestUtils;

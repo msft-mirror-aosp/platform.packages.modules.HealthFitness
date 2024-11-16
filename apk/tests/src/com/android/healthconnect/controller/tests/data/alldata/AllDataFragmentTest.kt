@@ -175,6 +175,46 @@ class AllDataFragmentTest {
         onView(withText("No data")).check(matches(isDisplayed()))
         onView(withText("Data from apps with access to Health\u00A0Connect will show here"))
             .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun whenFitnessDataTypesDisplayed_topIntroNotShown() {
+        mockData(
+            listOf(
+                FitnessPermissionType.STEPS,
+                FitnessPermissionType.HEART_RATE,
+                FitnessPermissionType.BASAL_BODY_TEMPERATURE,
+            )
+        )
+
+        launchFragment<AllDataFragment>()
+
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun whenMedicalDataTypesDisplayed_topIntroShown() {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        launchMedicalAllDataFragment()
+
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(matches(isDisplayed()))
     }
 
     @Test
