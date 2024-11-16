@@ -108,7 +108,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
 
             findText("foo-notes")
             // Make sure that clicking on a Mindfulness entry does not open the details screen.
-            findTextAndClick("foo-title, Meditation")
+            findTextAndClick("Meditation • foo-title")
 
             findText("Unknown type • 29m")
             findObject(
@@ -135,7 +135,50 @@ class MindfulnessTest : HealthConnectBaseTest() {
             findTextAndClick("Delete")
             findTextAndClick("Done")
             findText("Unknown type • 29m")
-            verifyObjectNotFound(By.text("foo-title, Meditation"))
+            verifyObjectNotFound(By.text("Meditation • foo-title"))
+
+            assertThat(readAllRecords(MindfulnessSessionRecord::class.java))
+                .comparingElementsUsing(
+                    transforming(MindfulnessSessionRecord::getStartTime, "record start time")
+                )
+                .containsExactly(YESTERDAY_11AM.plusHours(1).toInstant())
+        }
+    }
+
+    @RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS, FLAG_NEW_INFORMATION_ARCHITECTURE)
+    @Test
+    fun newIA_dataAndAccess_seeAllEntries_flagEnabled_showsMindfulness() {
+        context.launchMainActivity {
+            scrollDownTo(By.text("Data and access"))
+            findTextAndClick("Data and access")
+            scrollDownTo(By.text("Wellness"))
+            scrollDownTo(By.text("Mindfulness"))
+            findTextAndClick("Mindfulness")
+
+            findText("No data")
+            findObjectAndClick(By.desc("Previous day"))
+            waitForObjectNotFound(By.text("No data"), timeout = Duration.ofSeconds(1))
+
+            if (DateFormat.is24HourFormat(context)) {
+                findText("11:00 - 11:15 • ${context.packageName}")
+            } else {
+                findText("11:00 AM - 11:15 AM • ${context.packageName}")
+            }
+
+            findText("foo-notes")
+            // Make sure that clicking on a Mindfulness entry does not open the details screen.
+            findTextAndClick("Meditation • foo-title")
+
+            findText("Unknown type • 29m")
+            findObject(By.desc("Previous day"))
+
+            findObjectAndClick(By.desc("Enter deletion"))
+            findObjectAndClick(By.text("Meditation • foo-title"))
+            findObjectAndClick(By.desc("Delete data"))
+            findTextAndClick("Delete")
+            findTextAndClick("Done")
+            findText("Unknown type • 29m")
+            verifyObjectNotFound(By.text("Meditation • foo-title"))
 
             assertThat(readAllRecords(MindfulnessSessionRecord::class.java))
                 .comparingElementsUsing(
@@ -239,6 +282,19 @@ class MindfulnessTest : HealthConnectBaseTest() {
             findTextAndClick("See all categories")
             scrollToEnd()
             verifyTextNotFound("Wellness")
+        }
+    }
+
+    @RequiresFlagsDisabled(Flags.FLAG_MINDFULNESS)
+    @RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
+    @Test
+    fun newIA_dataAndAccess_flagDisabled_doesNotShowWellness() {
+        context.launchMainActivity {
+            scrollDownTo(By.text("Data and access"))
+            findTextAndClick("Data and access")
+            scrollToEnd()
+            verifyTextNotFound("Wellness")
+            verifyTextNotFound("Mindfulness")
         }
     }
 
