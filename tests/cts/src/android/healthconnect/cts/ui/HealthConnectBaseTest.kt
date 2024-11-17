@@ -36,7 +36,7 @@ open class HealthConnectBaseTest {
     @get:Rule
     var mSupportedHardwareRule =
         AssumptionCheckerRule(
-            { TestUtils.isHardwareSupported() },
+            { TestUtils.isHealthConnectFullySupported() },
             "Tests should run on supported hardware only.",
         )
 

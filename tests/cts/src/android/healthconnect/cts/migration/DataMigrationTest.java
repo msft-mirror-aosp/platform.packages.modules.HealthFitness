@@ -33,7 +33,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
 
 import android.Manifest;
 import android.content.Context;
@@ -182,7 +181,8 @@ public class DataMigrationTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() {
@@ -546,8 +546,6 @@ public class DataMigrationTest {
     @Test
     public void migratePermissions_hasValidPermissions_validPermissionsGranted()
             throws InterruptedException {
-        assumeFalse(TestUtils.isHardwareAutomotive());
-
         revokeHealthPermissions(APP_PACKAGE_NAME);
 
         final String entityId = "permissions";
@@ -570,8 +568,6 @@ public class DataMigrationTest {
     @Test
     public void migratePermissions_allInvalidPermissions_throwsMigrationException()
             throws InterruptedException {
-        assumeFalse(TestUtils.isHardwareAutomotive());
-
         revokeHealthPermissions(APP_PACKAGE_NAME);
 
         final String entityId = "permissions";
@@ -617,8 +613,6 @@ public class DataMigrationTest {
     @Test
     public void migratePriority_additionalAppsInMigrationPayload_prioritySaved()
             throws InterruptedException {
-        assumeFalse(TestUtils.isHardwareAutomotive());
-
         revokeHealthPermissions(APP_PACKAGE_NAME);
         revokeHealthPermissions(APP_PACKAGE_NAME_2);
 

@@ -19,9 +19,32 @@ message FhirDataTypeConfig {
     map<string, FhirFieldConfig> allowed_field_names_to_config = 1;
 
     // The list of fields that are required to be present for this data type.
-    // Note that this does not include required oneofs which have a separate config.
+    // Note that this does not include required multi type fields. Whether or not these are required
+    // will be contained in the multi_type_fields configs (see next field).
     repeated string required_fields = 2;
 
+    // The list of fields where one of several data type fields can be set.
+    // This is used to validate only one of each field is set and that exactly one is set if the
+    // field is required.
+    // Note that this config needs to be used to determine whether a multi type field is required
+    // or not, as these fields will not be included in the required_fields list above.
+    repeated MultiTypeFieldConfig multi_type_fields = 3;
+
+}
+
+// Represents the config of a FHIR field where a choice of data types can be set.
+// See https://build.fhir.org/formats.html#choice for more background.
+message MultiTypeFieldConfig {
+    // The name of the field without type suffix
+    optional string name = 1;
+
+    // The possible fields of a specific type that can be set in the json resource, e.g.
+    // "occurrenceDataTime", "occurrenceString". Only one of these fields is allowed to be present.
+    repeated string typed_field_names = 2;
+
+    // Whether or not the field is a required field.
+    // If true, exactly one of the fields in type_field_names is expected to be present.
+    optional bool is_required = 3;
 }
 
 // The FHIR spec config of a FHIR field.

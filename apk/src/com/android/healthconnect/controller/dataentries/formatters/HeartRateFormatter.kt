@@ -40,7 +40,7 @@ class HeartRateFormatter @Inject constructor(@ApplicationContext private val con
         record: HeartRateRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.SeriesDataEntry(
             uuid = record.metadata.id,
@@ -48,12 +48,13 @@ class HeartRateFormatter @Inject constructor(@ApplicationContext private val con
             headerA11y = headerA11y,
             title = formatValue(record, unitPreferences),
             titleA11y = formatA11yValue(record, unitPreferences),
-            dataType = getDataType(record))
+            dataType = record::class,
+        )
     }
 
     override suspend fun formatValue(
         record: HeartRateRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return if (record.samples.size == 1) {
             formatSampleValue(R.string.heart_rate_value, record.samples.first().beatsPerMinute)
@@ -66,15 +67,12 @@ class HeartRateFormatter @Inject constructor(@ApplicationContext private val con
 
     override suspend fun formatA11yValue(
         record: HeartRateRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return if (record.samples.size == 1) {
             formatSampleValue(R.string.heart_rate_long_value, record.samples.first().beatsPerMinute)
         } else {
-            return formatRange(
-                R.string.heart_rate_series_range_long,
-                record,
-            ) { heartRate: Long ->
+            return formatRange(R.string.heart_rate_series_range_long, record) { heartRate: Long ->
                 formatSampleValue(R.string.heart_rate_long_value, heartRate)
             }
         }
@@ -92,7 +90,7 @@ class HeartRateFormatter @Inject constructor(@ApplicationContext private val con
 
     private fun formatSample(
         id: String,
-        sample: HeartRateRecord.HeartRateSample
+        sample: HeartRateRecord.HeartRateSample,
     ): FormattedEntry.FormattedSessionDetail {
         return FormattedEntry.FormattedSessionDetail(
             uuid = id,
@@ -110,7 +108,7 @@ class HeartRateFormatter @Inject constructor(@ApplicationContext private val con
     private fun formatRange(
         @StringRes res: Int,
         record: HeartRateRecord,
-        getSample: (heartRate: Long) -> String
+        getSample: (heartRate: Long) -> String,
     ): String {
         val min = record.samples.minOf { it.beatsPerMinute }
         val max = record.samples.maxOf { it.beatsPerMinute }

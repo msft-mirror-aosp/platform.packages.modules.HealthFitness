@@ -32,9 +32,9 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
-
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
+import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
@@ -51,7 +51,6 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_REQUESTS;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPDATE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPSERT_MEDICAL_RESOURCES;
-
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -78,7 +77,6 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadMedicalResourcesResponse;
-import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLogsResponseParcel;
@@ -116,10 +114,10 @@ import android.health.connect.aidl.InsertRecordsResponseParcel;
 import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
-import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
@@ -152,7 +150,6 @@ import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
@@ -162,13 +159,13 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
-
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.backuprestore.CloudBackupManager;
+import com.android.server.healthconnect.backuprestore.CloudRestoreManager;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
@@ -211,9 +208,6 @@ import com.android.server.healthconnect.storage.request.UpsertTransactionRequest
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.utils.TimeSource;
-
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -231,8 +225,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
+import org.json.JSONException;
 
 /**
  * IHealthConnectService's implementation
@@ -252,6 +246,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final TransactionManager mTransactionManager;
     @Nullable private final CloudBackupManager mCloudBackupManager;
+    @Nullable private final CloudRestoreManager mCloudRestoreManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final Context mContext;
@@ -291,13 +286,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private volatile UserHandle mCurrentForegroundUser;
 
     HealthConnectServiceImpl(
+            Context context,
             TransactionManager transactionManager,
             HealthConnectPermissionHelper permissionHelper,
             MigrationCleaner migrationCleaner,
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
-            Context context,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
@@ -385,6 +380,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mPreferenceHelper,
                                 mExportImportSettingsStorage)
                         : null;
+        mCloudRestoreManager = Flags.cloudBackupAndRestore() ? new CloudRestoreManager() : null;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -3154,6 +3150,25 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void pushSettingsForRestore(
+            BackupSettings backupSettings, IEmptyResponseCallback callback) {
+        if (mCloudRestoreManager == null) return;
+        if (!cloudBackupAndRestore()) return;
+        checkParamsNonNull(backupSettings);
+        checkParamsNonNull(callback);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        mCloudRestoreManager.pushSettingsForRestore(backupSettings);
+                        callback.onResult();
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }

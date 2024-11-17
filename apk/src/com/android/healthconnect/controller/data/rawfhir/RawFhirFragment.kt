@@ -33,6 +33,7 @@ import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdap
 import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
@@ -53,16 +54,19 @@ class RawFhirFragment : Hilt_RawFhirFragment() {
     private lateinit var detailsAdapter: RecyclerViewAdapter
     private val rawFhirViewBinder by lazy { RawFhirViewBinder() }
 
-    // TODO(b/342159144): create page name atom.
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO(b/342159144): logger.setPageId(pageName)
+        setPageId()
     }
 
     override fun onResume() {
         super.onResume()
-        // TODO(b/342159144): logger.setPageId(pageName)
+        setPageId()
+        logger.logPageImpression()
+    }
+
+    private fun setPageId() {
+        logger.setPageId(PageName.RAW_FHIR_PAGE)
     }
 
     override fun onCreateView(
@@ -70,7 +74,6 @@ class RawFhirFragment : Hilt_RawFhirFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // TODO(b/342159144): logger.setPageId(pageName)
         val view = inflater.inflate(R.layout.fragment_data_entry_details, container, false)
         medicalResourceId =
             requireArguments().getParcelable(MEDICAL_RESOURCE_ID_KEY)

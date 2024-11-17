@@ -44,6 +44,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 
 import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -84,6 +85,16 @@ public final class TransactionTestUtils {
         mHealthConnectInjector.getAppInfoHelper().clearCache();
         assertThat(mHealthConnectInjector.getAppInfoHelper().getAppInfoId(packageName))
                 .isNotEqualTo(DEFAULT_LONG);
+    }
+
+    /** Inserts {@code packageName} into the given {@link HealthConnectDatabase}. */
+    public void insertApp(HealthConnectDatabase db, String packageName) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PACKAGE_COLUMN_NAME, packageName);
+        mTransactionManager.insert(
+                db.getWritableDatabase(),
+                new UpsertTableRequest(
+                        AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
     }
 
     /** Inserts records attributed to the given package. */

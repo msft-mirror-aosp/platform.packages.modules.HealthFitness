@@ -33,7 +33,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,7 +41,6 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
-import android.os.Environment;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -52,6 +50,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -84,16 +83,14 @@ public class HealthConnectDatabaseTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
                     .mockStatic(ExportImportLogger.class)
                     .setStrictness(Strictness.LENIENT)
+                    .addStaticMockFixtures(EnvironmentFixture::new)
                     .build();
 
     @Before
     public void setup() {
         mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
     }
 
     @Test

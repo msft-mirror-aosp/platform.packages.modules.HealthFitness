@@ -98,6 +98,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -757,6 +758,8 @@ class HomeFragmentTest {
         onView(withText("Browse health records")).check(doesNotExist())
         onView(withText("View your health records and which apps can access them"))
             .check(doesNotExist())
+        verify(healthConnectLogger, times(0))
+            .logImpression(HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON)
     }
 
     @Test
@@ -784,6 +787,7 @@ class HomeFragmentTest {
         onView(withText("View your health records and which apps can access them"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON)
     }
 
     // endregion
