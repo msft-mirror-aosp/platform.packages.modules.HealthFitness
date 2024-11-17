@@ -64,7 +64,8 @@ public class GrantTimeIntegrationTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::areHealthPermissionsSupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {

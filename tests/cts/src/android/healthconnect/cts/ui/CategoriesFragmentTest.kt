@@ -48,7 +48,7 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
-            if (!TestUtils.isHardwareSupported()) {
+            if (!TestUtils.isHealthConnectFullySupported()) {
                 return
             }
             val records: List<Record> = listOf(stepsRecordFromTestApp(), stepsRecordFromTestApp())
@@ -58,7 +58,7 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
-            if (!TestUtils.isHardwareSupported()) {
+            if (!TestUtils.isHealthConnectFullySupported()) {
                 return
             }
             verifyDeleteRecords(

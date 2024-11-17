@@ -16,7 +16,6 @@
 
 package android.health.connect;
 
-import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
@@ -31,6 +30,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINE
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.health.connect.HealthPermissions.isValidHealthPermission;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
@@ -342,10 +342,6 @@ public class HealthPermissionsTest {
                 assertWithMessage(PHR_FAIL_MESSAGE).that(permissions).contains(permissionInfo.name);
             }
         }
-    }
-
-    private boolean isValidHealthPermission(PermissionInfo permissionInfo) {
-        return permissionInfo.group != null && permissionInfo.group.equals(HEALTH_PERMISSION_GROUP);
     }
 
     private PermissionInfo[] getHealthPermissionInfos() throws Exception {

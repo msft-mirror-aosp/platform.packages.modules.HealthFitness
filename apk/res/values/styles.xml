@@ -239,6 +239,7 @@
         <item name="android:paddingEnd">@dimen/spacing_xlarge</item>
         <item name="android:textColor">@color/settingslib_spinner_title_color</item>
         <item name="android:textAppearance">?attr/textAppearanceLabel</item>
+        <item name="android:dropDownVerticalOffset">@dimen/button_size</item>
     </style>
 
     <style name="Widget.HealthConnect.RadioButton.Chip" parent="@style/Widget.AppCompat.CompoundButton.RadioButton">

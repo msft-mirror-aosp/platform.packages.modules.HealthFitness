@@ -13,6 +13,7 @@
  */
 package com.android.healthconnect.controller.entrydetails
 
+import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -256,7 +257,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
     ) {
         val deletionType = DeletionType.DeleteDataEntry(uuid, dataType, index)
 
-        if (deletionType.dataType == DataType.MENSTRUATION_PERIOD) {
+        if (deletionType.dataType == MenstruationPeriodRecord::class) {
             childFragmentManager.setFragmentResult(
                 START_DELETION_EVENT,
                 bundleOf(

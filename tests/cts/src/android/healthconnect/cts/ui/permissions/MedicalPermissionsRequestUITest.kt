@@ -54,7 +54,7 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
             permissions = listOf(HealthPermissions.WRITE_MEDICAL_DATA),
         ) {
             findText("Allow Health Connect cts test app 2 to access your health records?")
-            findText("Data to share")
+            findText("Data to share includes")
 
             findTextAndClick("Allow")
             assertPermGrantedForApp(TEST_APP_2_PACKAGE_NAME, HealthPermissions.WRITE_MEDICAL_DATA)
@@ -74,7 +74,7 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
             permissions = listOf(HealthPermissions.WRITE_MEDICAL_DATA),
         ) {
             findText("Allow Health Connect cts test app 2 to access your health records?")
-            findText("Data to share")
+            findText("Data to share includes")
 
             findTextAndClick("Don't allow")
             assertPermNotGrantedForApp(

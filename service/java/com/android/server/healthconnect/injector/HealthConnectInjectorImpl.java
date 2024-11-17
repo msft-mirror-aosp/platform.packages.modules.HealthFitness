@@ -25,9 +25,12 @@ import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
+import com.android.server.healthconnect.migration.notification.MigrationNotificationSender;
 import com.android.server.healthconnect.permission.FirstGrantTimeDatastore;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
@@ -87,6 +90,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final TimeSource mTimeSource;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
+    private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
+    private final MigrationUiStateManager mMigrationUiStateManager;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -152,10 +157,18 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mExportImportSettingsStorage,
                                 mTransactionManager)
                         : builder.mExportManager;
+        mMigrationBroadcastScheduler =
+                builder.mMigrationBroadcastScheduler == null
+                        ? new MigrationBroadcastScheduler(
+                                userHandle, mHealthConnectDeviceConfigManager)
+                        : builder.mMigrationBroadcastScheduler;
         mMigrationStateManager =
                 builder.mMigrationStateManager == null
                         ? new MigrationStateManager(
-                                userHandle, mHealthConnectDeviceConfigManager, mPreferenceHelper)
+                                userHandle,
+                                mHealthConnectDeviceConfigManager,
+                                mPreferenceHelper,
+                                mMigrationBroadcastScheduler)
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
@@ -233,6 +246,15 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mTimeSource,
                                 getAccessLogsHelper())
                         : builder.mMedicalResourceHelper;
+        mMigrationUiStateManager =
+                builder.mMigrationUiStateManager == null
+                        ? new MigrationUiStateManager(
+                                context,
+                                userHandle,
+                                mMigrationStateManager,
+                                new MigrationNotificationSender(
+                                        context, mHealthConnectDeviceConfigManager))
+                        : builder.mMigrationUiStateManager;
     }
 
     @Override
@@ -360,6 +382,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mTimeSource;
     }
 
+    @Override
+    public MigrationBroadcastScheduler getMigrationBroadcastScheduler() {
+        return mMigrationBroadcastScheduler;
+    }
+
+    @Override
+    public MigrationUiStateManager getMigrationUiStateManager() {
+        return mMigrationUiStateManager;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -407,6 +439,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private TimeSource mTimeSource;
         @Nullable private MedicalDataSourceHelper mMedicalDataSourceHelper;
         @Nullable private MedicalResourceHelper mMedicalResourceHelper;
+        @Nullable private MigrationBroadcastScheduler mMigrationBroadcastScheduler;
+        @Nullable private MigrationUiStateManager mMigrationUiStateManager;
 
         private Builder(Context context) {
             mContext = context;
@@ -584,6 +618,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setMedicalResourceHelper(MedicalResourceHelper medicalResourceHelper) {
             Objects.requireNonNull(medicalResourceHelper);
             mMedicalResourceHelper = medicalResourceHelper;
+            return this;
+        }
+
+        /** Set fake or custom {@link MigrationBroadcastScheduler} */
+        public Builder setMigrationBroadcastScheduler(
+                MigrationBroadcastScheduler migrationBroadcastScheduler) {
+            Objects.requireNonNull(migrationBroadcastScheduler);
+            mMigrationBroadcastScheduler = migrationBroadcastScheduler;
+            return this;
+        }
+
+        /** Set fake or custom {@link MigrationUiStateManager} */
+        public Builder setMigrationUiStateManager(MigrationUiStateManager migrationUiStateManager) {
+            Objects.requireNonNull(migrationUiStateManager);
+            mMigrationUiStateManager = migrationUiStateManager;
             return this;
         }
 

@@ -20,6 +20,7 @@ import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXP
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
+import static com.android.server.healthconnect.TestUtils.assertTableSize;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_ZIP_FILE_NAME;
@@ -71,12 +72,7 @@ import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
 import org.junit.After;
@@ -123,7 +119,8 @@ public class ExportManagerTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     private StorageContext mContext;
     private TransactionTestUtils mTransactionTestUtils;
@@ -159,23 +156,7 @@ public class ExportManagerTest {
                 new ExportManager(
                         mContext, fakeClock, mExportImportSettingsStorage, transactionManager);
 
-        AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
-        AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        FakeTimeSource timeSource = new FakeTimeSource(mTimeStamp);
-        MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        transactionManager, appInfoHelper, timeSource, accessLogsHelper);
-        mPhrTestUtils =
-                new PhrTestUtils(
-                        mContext,
-                        transactionManager,
-                        new MedicalResourceHelper(
-                                transactionManager,
-                                appInfoHelper,
-                                medicalDataSourceHelper,
-                                timeSource,
-                                accessLogsHelper),
-                        medicalDataSourceHelper);
+        mPhrTestUtils = new PhrTestUtils(mContext, healthConnectInjector);
 
         mExportedDbContext =
                 StorageContext.create(
@@ -522,14 +503,6 @@ public class ExportManagerTest {
                                         (mExportedDbContext.getDatabasePath(
                                                 REMOTE_EXPORT_ZIP_FILE_NAME))))
                         .build());
-    }
-
-    private void assertTableSize(HealthConnectDatabase database, String tableName, int tableRows) {
-        Cursor cursor =
-                database.getWritableDatabase()
-                        .rawQuery("SELECT count(*) FROM " + tableName + ";", null);
-        cursor.moveToNext();
-        assertThat(cursor.getInt(0)).isEqualTo(tableRows);
     }
 
     private void assertExportStartRecorded() {

@@ -395,7 +395,6 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
     /** Syncs priority table with the permissions and data. */
     public synchronized void reSyncHealthDataPriorityTable(Context context) {
-        Objects.requireNonNull(context);
         boolean newAggregationSourceControl =
                 mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
         // Candidates to be added to the priority list

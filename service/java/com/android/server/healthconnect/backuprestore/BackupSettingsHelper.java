@@ -45,6 +45,7 @@ public final class BackupSettingsHelper {
     public static final String HEIGHT_UNIT_PREF_KEY = "HEIGHT_UNIT_KEY";
     public static final String WEIGHT_UNIT_PREF_KEY = "WEIGHT_UNIT_KEY";
     public static final String DISTANCE_UNIT_PREF_KEY = "DISTANCE_UNIT_KEY";
+    public static final String AUTO_DELETE_PREF_KEY = "auto_delete_range_picker";
 
     public BackupSettingsHelper(
             HealthDataCategoryPriorityHelper priorityHelper,
@@ -63,6 +64,7 @@ public final class BackupSettingsHelper {
     public CloudBackupSettings collectUserSettings() {
         return new CloudBackupSettings.Builder()
                 .setPriorityList(getPriorityList())
+                .setAutoDeleteSetting(getAutoDeleteSetting())
                 .setExportSettings(getExportSettings())
                 .setEnergyUnitPreference(getEnergyPreference())
                 .setTemperatureUnitPreference(getTemperaturePreference())
@@ -80,6 +82,14 @@ public final class BackupSettingsHelper {
             return Map.of();
         }
         return priorityListMap;
+    }
+
+    @Nullable
+    private CloudBackupSettings.AutoDeleteFrequency getAutoDeleteSetting() {
+        String preference = mPreferenceHelper.getPreference(AUTO_DELETE_PREF_KEY);
+        return preference == null
+                ? null
+                : CloudBackupSettings.AutoDeleteFrequency.valueOf(preference);
     }
 
     private ScheduledExportSettings getExportSettings() {

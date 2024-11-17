@@ -53,7 +53,8 @@
     <string name="yesterday_header" msgid="6652176268273681505">"ನಿನ್ನೆ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"ಓದಿರಿ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"ಬರೆಯಿರಿ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="separator" msgid="1299848322898210658">", "</string>
+    <!-- no translation found for separator (5521285473288943819) -->
+    <skip />
     <string name="manage_permissions" msgid="8394221950712608160">"ಅನುಮತಿಗಳನ್ನು ನಿರ್ವಹಿಸಿ"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ಸಮಯ: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"ಚಟುವಟಿಕೆ"</string>
@@ -321,9 +322,12 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"ವೈದ್ಯಕೀಯ ಸ್ಥಿತಿಗಳು"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"ವೈದ್ಯಕೀಯ ಸ್ಥಿತಿಗಳು"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"ವೈದ್ಯಕೀಯ ಸ್ಥಿತಿಗಳ ಕುರಿತು ಓದಿರಿ"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"ವ್ಯಾಕ್ಸಿನ್‌ಗಳು"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"ವ್ಯಾಕ್ಸಿನ್‌ಗಳು"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"ವ್ಯಾಕ್ಸಿನ್‌ಗಳನ್ನು ಕುರಿತು ಓದುತ್ತದೆ"</string>
+    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
+    <skip />
+    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
+    <skip />
+    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
+    <skip />
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"ಲ್ಯಾಬ್‌ ಫಲಿತಾಂಶಗಳು"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"ಲ್ಯಾಬ್‌ ಫಲಿತಾಂಶಗಳು"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"ಲ್ಯಾಬ್‌ ಫಲಿತಾಂಶಗಳನ್ನು ಓದಿರಿ"</string>
@@ -1131,6 +1135,12 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"ಹೊಂದಾಣಿಕೆಯ ಆ್ಯಪ್‌ಗಳನ್ನು ನೋಡಿ"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect ಮೂಲಕ <xliff:g id="APP_NAME">%s</xliff:g> ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡಲು ಇನ್ನಷ್ಟು ಆ್ಯಪ್‌‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"ಆ್ಯಪ್‌ ಸ್ಟೋರ್‌ನಲ್ಲಿ ನೋಡಿ"</string>
+    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
+    <skip />
+    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
+    <skip />
+    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
+    <skip />
     <string name="select_all" msgid="837499881590001166">"ಎಲ್ಲವನ್ನೂ ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"ಕನೆಕ್ಟ್ ಮಾಡಲಾದ ಆ್ಯಪ್‌ಗಳಿಗೆ ಇನ್ನು ಮುಂದೆ Health Connect ನಲ್ಲಿನ ಈ ಡೇಟಾವನ್ನು ಓದಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"ಗುರುತಿಸಲಾಗಿದೆ"</string>
@@ -1166,18 +1176,45 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g> ಸಮಯಕ್ಕೆ ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲಾಗಿದೆ"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"ನಿನ್ನೆ <xliff:g id="TIME_DATE">%1$s</xliff:g> ಸಮಯಕ್ಕೆ ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲಾಗಿದೆ"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g> ಸಮಯಕ್ಕೆ ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲಾಗಿದೆ"</string>
-    <!-- no translation found for request_permissions_allow_all_the_time (4081502779872893569) -->
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"ಎಲ್ಲಾ ಸಮಯದಲ್ಲೂ ಅನುಮತಿಸಿ"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"ಅನುಮತಿಸಿ ಆಯ್ಕೆಮಾಡಿದೆ"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"ಆ್ಯಪ್ ಅನ್ನು ಬಳಸುವಾಗ"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"ಎಲ್ಲವನ್ನೂ ನಿರಾಕರಿಸಿ"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"ಫಿಟ್‌ನೆಸ್ ಮತ್ತು ಯೋಗಕ್ಷೇಮ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಅನುಮತಿಸಬೇಕೇ?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="DATA_TYPES">%2$s</xliff:g> ಗೆ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು <xliff:g id="APP_NAME">%1$s</xliff:g> ವಿನಂತಿಸುತ್ತಿದೆ.\n\nಎಲ್ಲವನ್ನೂ ಅನುಮತಿಸಲು ಅಥವಾ ಅವುಗಳನ್ನು ಪ್ರತ್ಯೇಕವಾಗಿ ನಿಯಂತ್ರಿಸಲು ಆಯ್ಕೆಮಾಡಿ."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="DATA_TYPE">%2$s</xliff:g> ಅನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಅನುಮತಿ ನೀಡಬೇಕೇ?"</string>
+    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
     <skip />
-    <!-- no translation found for request_permissions_allow_selected (218527615680495438) -->
+    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
     <skip />
-    <!-- no translation found for request_permissions_while_using_the_app (5155929974398889727) -->
+    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
     <skip />
-    <!-- no translation found for request_permissions_deny_all (4123735770293545320) -->
+    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
     <skip />
-    <!-- no translation found for wear_allow_app_access_fitness_and_wellness_data (7914569541993476826) -->
+    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
     <skip />
-    <!-- no translation found for wear_request_multiple_data_type_permissions (5348997693739610876) -->
+    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
     <skip />
-    <!-- no translation found for wear_request_single_data_type_permission (4479262151480683518) -->
+    <!-- no translation found for allowed_to_access (4179317387300812335) -->
+    <skip />
+    <!-- no translation found for allowed_to_read (2775365229411407406) -->
+    <skip />
+    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
+    <skip />
+    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
+    <skip />
+    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
+    <skip />
+    <!-- no translation found for allowed (4158456017482263737) -->
+    <skip />
+    <!-- no translation found for not_allowed (6092523505093372147) -->
+    <skip />
+    <!-- no translation found for access_sensor_note (7949933977197789634) -->
+    <skip />
+    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
+    <skip />
+    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
+    <skip />
+    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
     <skip />
 </resources>

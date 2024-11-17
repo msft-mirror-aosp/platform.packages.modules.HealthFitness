@@ -177,7 +177,29 @@ class SettingsMedicalAppFragmentTest {
         onView(withText("Allow all")).check(matches(isDisplayed()))
         onView(withText("Allowed to read")).check(matches(isDisplayed()))
         onView(withText("Allowed to write")).check(matches(isDisplayed()))
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_PERMISSIONS_PAGE)
+    }
+
+    @Test
+    fun fragmentStarts_logPageImpression() {
+        val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedMedicalPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
+
+        val scenario =
+            launchFragment<SettingsMedicalAppFragment>(
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
         verify(healthConnectLogger, times(2)).logImpression(PermissionsElement.PERMISSION_SWITCH)
@@ -285,7 +307,11 @@ class SettingsMedicalAppFragmentTest {
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(doesNotExist())
         onView(withText("Read privacy policy")).check(doesNotExist())
     }
@@ -310,7 +336,11 @@ class SettingsMedicalAppFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -336,7 +366,11 @@ class SettingsMedicalAppFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
