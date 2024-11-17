@@ -96,6 +96,7 @@ import org.mockito.kotlin.verify
 class AllDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
     private val allDataUseCase: AllDataUseCase = AllDataUseCase(manager, Dispatchers.Main)
@@ -143,6 +144,16 @@ class AllDataFragmentTest {
     }
 
     @Test
+    fun populatedMedicalData_pageImpressionLogged() {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        launchMedicalAllDataFragment()
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ALL_MEDICAL_DATA_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
     fun medicalDataPresent_populatedDataTypesDisplayed() {
         mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
@@ -152,6 +163,7 @@ class AllDataFragmentTest {
         onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
+        onView(withText("Select all")).check(doesNotExist())
     }
 
     @Test
@@ -162,6 +174,46 @@ class AllDataFragmentTest {
 
         onView(withText("No data")).check(matches(isDisplayed()))
         onView(withText("Data from apps with access to Health\u00A0Connect will show here"))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun whenFitnessDataTypesDisplayed_topIntroNotShown() {
+        mockData(
+            listOf(
+                FitnessPermissionType.STEPS,
+                FitnessPermissionType.HEART_RATE,
+                FitnessPermissionType.BASAL_BODY_TEMPERATURE,
+            )
+        )
+
+        launchFragment<AllDataFragment>()
+
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun whenMedicalDataTypesDisplayed_topIntroShown() {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        launchMedicalAllDataFragment()
+
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
             .check(matches(isDisplayed()))
     }
 
@@ -193,7 +245,8 @@ class AllDataFragmentTest {
 
         onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("Vaccines")).perform(click())
-        // TODO(b/342159144): Test interaction log.
+        verify(healthConnectLogger)
+            .logInteraction(AllDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.entriesAndAccessFragment)
     }

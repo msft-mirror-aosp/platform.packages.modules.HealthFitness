@@ -70,7 +70,7 @@ import javax.inject.Inject
 class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader

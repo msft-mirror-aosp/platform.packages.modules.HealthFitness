@@ -39,6 +39,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
+import com.android.healthconnect.controller.utils.logging.CombinedAppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
@@ -65,8 +66,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     }
 
     init {
-        // TODO(b/342159144): Update visual elements.
-        this.setPageName(PageName.UNKNOWN_PAGE)
+        this.setPageName(PageName.COMBINED_APP_ACCESS_PAGE)
     }
 
     private var packageName = ""
@@ -152,6 +152,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
         managePermissionsCategory.addPreference(
             HealthPreference(requireContext()).also {
+                it.logName = CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON
                 it.title = getString(R.string.fitness_permissions)
                 it.summary = getString(R.string.fitness_permissions_summary)
                 it.setOnPreferenceClickListener {
@@ -171,6 +172,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
         managePermissionsCategory.addPreference(
             HealthPreference(requireContext()).also {
+                it.logName = CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON
                 it.title = getString(R.string.medical_permissions)
                 it.summary = getString(R.string.medical_permissions_summary)
                 it.setOnPreferenceClickListener {
@@ -235,6 +237,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
         )
         manageAppCategory.addPreference(
             HealthPreference(requireContext()).also {
+                it.logName = CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON
                 it.title = getString(R.string.remove_access_for_this_app)
                 it.setOnPreferenceClickListener {
                     showRevokeAllPermissions()

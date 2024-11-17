@@ -21,9 +21,12 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.ActivityIntensityRecordInternal;
 import android.util.Pair;
+
+import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.util.List;
 
@@ -34,9 +37,8 @@ import java.util.List;
  */
 public class ActivityIntensityRecordHelper
         extends IntervalRecordHelper<ActivityIntensityRecordInternal> {
-
     private static final String TABLE_NAME = "activity_intensity_record_table";
-    private static final String TYPE_COLUMN_NAME = "type";
+    public static final String TYPE_COLUMN_NAME = "type";
 
     public ActivityIntensityRecordHelper() {
         super(RecordTypeIdentifier.RECORD_TYPE_ACTIVITY_INTENSITY);
@@ -62,5 +64,10 @@ public class ActivityIntensityRecordHelper
     @Override
     public String getMainTableName() {
         return TABLE_NAME;
+    }
+
+    @Override
+    AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
+        return new AggregateParams(TABLE_NAME, List.of(TYPE_COLUMN_NAME));
     }
 }

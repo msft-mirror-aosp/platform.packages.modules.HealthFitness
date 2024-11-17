@@ -23,25 +23,21 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.when;
 
-import android.content.Context;
-import android.os.Environment;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 
-import androidx.test.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.EnvironmentFixture;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
@@ -79,30 +75,23 @@ public class GrantTimePersistenceUnitTest {
     private static final UserGrantTimeState EMPTY_STATE =
             new UserGrantTimeState(new ArrayMap<>(), new ArrayMap<>(), 3);
 
+    private final EnvironmentFixture mEnvironmentFixture = new EnvironmentFixture();
+
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(Environment.class)
                     .mockStatic(LocalManagerRegistry.class)
                     .setStrictness(Strictness.LENIENT)
+                    .addStaticMockFixtures(() -> mEnvironmentFixture)
                     .build();
 
     private final UserHandle mUser = UserHandle.of(UserHandle.myUserId());
-    private File mMockDataDirectory;
     @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
 
     @Before
     public void mockApexEnvironment() {
-        Context context = InstrumentationRegistry.getContext();
-        mMockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
-        Mockito.when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
         when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
                 .thenReturn(mAppOpsManagerLocal);
-    }
-
-    @After
-    public void tearDown() {
-        deleteFile(mMockDataDirectory);
     }
 
     @Test
@@ -159,12 +148,12 @@ public class GrantTimePersistenceUnitTest {
     @Test
     public void testWriteReadData_statesForTwoUsersWritten_restoredCorrectly() {
         FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        UserHandle secondUser = UserHandle.of(mUser.getIdentifier() + 10);
         datastore.writeForUser(PACKAGES_STATE, mUser, DATA_TYPE_CURRENT);
-        datastore.writeForUser(SHARED_USERS_STATE, UserHandle.of(10), DATA_TYPE_CURRENT);
+        datastore.writeForUser(SHARED_USERS_STATE, secondUser, DATA_TYPE_CURRENT);
         UserGrantTimeState restoredState = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState, PACKAGES_STATE);
-        UserGrantTimeState restoredState2 =
-                datastore.readForUser(UserHandle.of(10), DATA_TYPE_CURRENT);
+        UserGrantTimeState restoredState2 = datastore.readForUser(secondUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState2, SHARED_USERS_STATE);
     }
 
@@ -178,13 +167,14 @@ public class GrantTimePersistenceUnitTest {
     @Test
     public void testParseData_stateIsNotWritten_nullIsReturned() {
         UserGrantTimeState state =
-                GrantTimeXmlHelper.parseGrantTime(new File(mMockDataDirectory, "test_file.xml"));
+                GrantTimeXmlHelper.parseGrantTime(
+                        new File(mEnvironmentFixture.getDataDirectory(), "test_file.xml"));
         assertThat(state).isNull();
     }
 
     @Test
     public void testWriteData_writeAndReadState_restoredEqualToWritten() {
-        File testFile = new File(mMockDataDirectory, "test_file.xml");
+        File testFile = new File(mEnvironmentFixture.getDataDirectory(), "test_file.xml");
         GrantTimeXmlHelper.serializeGrantTimes(testFile, DEFAULT_STATE);
         UserGrantTimeState state = GrantTimeXmlHelper.parseGrantTime(testFile);
         assertRestoredStateIsCorrect(state, DEFAULT_STATE);
@@ -200,22 +190,10 @@ public class GrantTimePersistenceUnitTest {
         assertThat(current).isNotEqualTo(staged);
     }
 
-    private static void deleteFile(File file) {
-        File[] contents = file.listFiles();
-        if (contents != null) {
-            for (File f : contents) {
-                deleteFile(f);
-            }
-        }
-        assertThat(file.delete()).isTrue();
-    }
-
     private static void assertRestoredStateIsCorrect(
-            UserGrantTimeState restoredState, UserGrantTimeState initialState) {
-        assertThat(initialState.getVersion()).isEqualTo(restoredState.getVersion());
-        assertThat(initialState.getPackageGrantTimes())
-                .isEqualTo(restoredState.getPackageGrantTimes());
-        assertThat(initialState.getSharedUserGrantTimes())
-                .isEqualTo(restoredState.getSharedUserGrantTimes());
+            UserGrantTimeState actual, UserGrantTimeState expected) {
+        assertThat(actual.getVersion()).isEqualTo(expected.getVersion());
+        assertThat(actual.getPackageGrantTimes()).isEqualTo(expected.getPackageGrantTimes());
+        assertThat(actual.getSharedUserGrantTimes()).isEqualTo(expected.getSharedUserGrantTimes());
     }
 }

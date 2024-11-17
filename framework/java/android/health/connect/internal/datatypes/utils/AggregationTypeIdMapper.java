@@ -17,6 +17,10 @@
 package android.health.connect.internal.datatypes.utils;
 
 import static android.health.connect.datatypes.ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL;
+import static android.health.connect.datatypes.ActivityIntensityRecord.DURATION_TOTAL;
+import static android.health.connect.datatypes.ActivityIntensityRecord.INTENSITY_MINUTES_TOTAL;
+import static android.health.connect.datatypes.ActivityIntensityRecord.MODERATE_DURATION_TOTAL;
+import static android.health.connect.datatypes.ActivityIntensityRecord.VIGOROUS_DURATION_TOTAL;
 import static android.health.connect.datatypes.BasalMetabolicRateRecord.BASAL_CALORIES_TOTAL;
 import static android.health.connect.datatypes.BloodPressureRecord.DIASTOLIC_AVG;
 import static android.health.connect.datatypes.BloodPressureRecord.DIASTOLIC_MAX;
@@ -115,9 +119,12 @@ import android.health.connect.datatypes.units.TemperatureDelta;
 import android.health.connect.datatypes.units.Velocity;
 import android.health.connect.datatypes.units.Volume;
 import android.os.Parcel;
+import android.util.Log;
 
+import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -157,9 +164,18 @@ public final class AggregationTypeIdMapper {
                                 HEART_MEASUREMENTS_COUNT,
                                 SLEEP_DURATION_TOTAL,
                                 EXERCISE_DURATION_TOTAL));
+        List<AggregationType<?>> durationAggregations = new ArrayList<>();
 
         if (Flags.mindfulness()) {
             longAggregations.add(MINDFULNESS_DURATION_TOTAL);
+        }
+
+        // Redundantly explicitly checking the flag to satisfy the linter.
+        if (Flags.activityIntensity() && AconfigFlagHelper.isActivityIntensityEnabled()) {
+            durationAggregations.add(MODERATE_DURATION_TOTAL);
+            durationAggregations.add(VIGOROUS_DURATION_TOTAL);
+            durationAggregations.add(DURATION_TOTAL);
+            longAggregations.add(INTENSITY_MINUTES_TOTAL);
         }
 
         addLongIdsToAggregateResultMap(longAggregations);
@@ -247,6 +263,7 @@ public final class AggregationTypeIdMapper {
                         SYSTOLIC_AVG,
                         SYSTOLIC_MAX,
                         SYSTOLIC_MIN));
+        addDurationIdsToAggregateResultMap(durationAggregations);
     }
 
     @NonNull
@@ -327,6 +344,12 @@ public final class AggregationTypeIdMapper {
     @NonNull
     private AggregateResult<Velocity> getVelocityResult(double result) {
         return new AggregateResult<>(Velocity.fromMetersPerSecond(result));
+    }
+
+    @NonNull
+    private AggregateResult<Duration> getDurationResult(long resultMillis) {
+        Log.i("RDI", "getDurationResult: " + resultMillis);
+        return new AggregateResult<>(Duration.ofMillis(resultMillis));
     }
 
     private void addLongIdsToAggregateResultMap(
@@ -425,6 +448,16 @@ public final class AggregationTypeIdMapper {
             mIdToAggregateResult.put(
                     aggregationType.getAggregationTypeIdentifier(),
                     result -> getVelocityResult(result.readDouble()));
+            populateIdDataAggregationType(aggregationType);
+        }
+    }
+
+    private void addDurationIdsToAggregateResultMap(
+            @NonNull List<AggregationType<?>> aggregationTypeList) {
+        for (AggregationType<?> aggregationType : aggregationTypeList) {
+            mIdToAggregateResult.put(
+                    aggregationType.getAggregationTypeIdentifier(),
+                    result -> getDurationResult(result.readLong()));
             populateIdDataAggregationType(aggregationType);
         }
     }

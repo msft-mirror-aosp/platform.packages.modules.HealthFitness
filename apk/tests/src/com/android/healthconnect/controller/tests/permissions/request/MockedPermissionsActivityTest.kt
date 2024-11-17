@@ -259,7 +259,7 @@ class MockedPermissionsActivityTest {
             .check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-        onView(withText("Data to share")).check(matches(isDisplayed()))
+        onView(withText("Data to share includes")).check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToPosition<RecyclerView.ViewHolder>(3))
         val availableMedicalPermissionsString =
@@ -267,13 +267,8 @@ class MockedPermissionsActivityTest {
                 "Conditions\n" +
                 "Lab results\n" +
                 "Medications\n" +
-                "Personal details\n" +
-                "Practitioner details\n" +
-                "Pregnancy\n" +
                 "Procedures\n" +
-                "Social history\n" +
                 "Vaccines\n" +
-                "Visits\n" +
                 "Vital signs"
         onView(withText(availableMedicalPermissionsString)).check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))

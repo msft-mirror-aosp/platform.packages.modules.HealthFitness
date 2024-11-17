@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.content.Intent
 import android.content.Intent.*
-import android.platform.test.annotations.DisableFlags
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -64,6 +63,7 @@ import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -149,7 +149,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    fun test_noPermissions() {
+    fun noPermissions() {
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf<HealthPermissionStatus>())
         }
@@ -179,7 +179,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    fun test_readPermission() {
+    fun readPermission() {
         val permission = MedicalPermission(VACCINES)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedMedicalPermissions).then { MutableLiveData(setOf(permission)) }
@@ -210,7 +210,20 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    fun test_writePermission() {
+    fun logPageImpression() {
+        val permission = MedicalPermission(VACCINES)
+        whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
+        whenever(viewModel.grantedMedicalPermissions).then { MutableLiveData(setOf(permission)) }
+        launchFragment<MedicalAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MEDICAL_APP_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
+    fun writePermission() {
         val permission = MedicalPermission(ALL_MEDICAL_DATA)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedMedicalPermissions).then { MutableLiveData(setOf(permission)) }
@@ -241,7 +254,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    fun test_readAndWritePermission() {
+    fun readAndWritePermission() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
         val readPermission = MedicalPermission(VACCINES)
         whenever(viewModel.medicalPermissions).then {
@@ -275,13 +288,10 @@ class MedicalAppFragmentTest {
         onView(withText("All health records")).check(matches(isDisplayed()))
         onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
-
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.UNKNOWN_PAGE)
-        verify(healthConnectLogger).logPageImpression()
     }
 
     @Test
-    fun test_allowAllToggleOn_whenAllPermissionsOn() {
+    fun allowAllToggleOn_whenAllPermissionsOn() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
         val readPermission = MedicalPermission(VACCINES)
         whenever(viewModel.medicalPermissions).then {
@@ -314,7 +324,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    fun test_allowAllToggleOff_whenAtLeastOnePermissionOff() {
+    fun allowAllToggleOff_whenAtLeastOnePermissionOff() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
         val readPermission = MedicalPermission(VACCINES)
         whenever(viewModel.medicalPermissions).then {
@@ -460,7 +470,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -501,7 +511,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -533,7 +543,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -567,7 +577,7 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())

@@ -16,12 +16,15 @@
 package com.android.healthconnect.controller.tests.dataentries.formatters
 
 import android.content.Context
+import android.health.connect.datatypes.BasalMetabolicRateRecord
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
+import android.health.connect.datatypes.StepsRecord
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.getBasalMetabolicRateRecord
 import com.android.healthconnect.controller.tests.utils.getHeartRateRecord
@@ -71,7 +74,9 @@ class HealthDataEntryFormatterTest {
                         headerA11y = "from 07:06 to 07:06 • Health Connect test app",
                         title = "80 bpm - 100 bpm",
                         titleA11y = "from 80 beats per minute to 100 beats per minute",
-                        dataType = DataType.HEART_RATE))
+                        dataType = HeartRateRecord::class,
+                    )
+                )
         }
     }
 
@@ -87,7 +92,9 @@ class HealthDataEntryFormatterTest {
                         headerA11y = "from 07:06 to 07:06 • Health Connect test app",
                         title = "12 steps",
                         titleA11y = "12 steps",
-                        dataType = DataType.STEPS))
+                        dataType = StepsRecord::class,
+                    )
+                )
         }
     }
 
@@ -103,7 +110,9 @@ class HealthDataEntryFormatterTest {
                     headerA11y = "07:06 • Health Connect test app",
                     title = "1,548 cal",
                     titleA11y = "1,548 calories",
-                    dataType = DataType.BASAL_METABOLIC_RATE))
+                    dataType = BasalMetabolicRateRecord::class,
+                )
+            )
     }
 
     @Test
@@ -118,8 +127,10 @@ class HealthDataEntryFormatterTest {
                         headerA11y = "from 07:06 to 08:06 • Health Connect test app",
                         title = "Running • Morning Run",
                         titleA11y = "Running • Morning Run",
-                        dataType = DataType.PLANNED_EXERCISE,
-                        notes = "Morning quick run by the park"))
+                        dataType = PlannedExerciseSessionRecord::class,
+                        notes = "Morning quick run by the park",
+                    )
+                )
         }
     }
 }

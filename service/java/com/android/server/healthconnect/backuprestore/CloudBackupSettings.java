@@ -35,6 +35,7 @@ public class CloudBackupSettings {
     /** Builder class for {@link CloudBackupSettings} */
     public static final class Builder {
         private Map<Integer, List<Long>> mPriorityListMap;
+        @Nullable private AutoDeleteFrequency mAutoDeletePreference;
         @Nullable private ScheduledExportSettings mExportSettings;
         @Nullable private EnergyUnit mEnergyUnitPreference;
         @Nullable private TemperatureUnit mTemperatureUnitPreference;
@@ -46,6 +47,7 @@ public class CloudBackupSettings {
             this(
                     Map.of(),
                     null,
+                    null,
                     DEFAULT_ENERGY_UNIT,
                     DEFAULT_TEMPERATURE_UNIT,
                     DEFAULT_HEIGHT_UNIT,
@@ -55,6 +57,7 @@ public class CloudBackupSettings {
 
         public Builder(
                 Map<Integer, List<Long>> priorityListMap,
+                @Nullable AutoDeleteFrequency autoDeletePreference,
                 @Nullable ScheduledExportSettings exportSettings,
                 @Nullable EnergyUnit energyUnitPreference,
                 @Nullable TemperatureUnit temperatureUnitPreference,
@@ -63,6 +66,7 @@ public class CloudBackupSettings {
                 @Nullable DistanceUnit distanceUnitPreference) {
             Objects.requireNonNull(priorityListMap);
             mPriorityListMap = priorityListMap;
+            mAutoDeletePreference = autoDeletePreference;
             mExportSettings =
                     exportSettings != null
                             ? exportSettings
@@ -85,6 +89,12 @@ public class CloudBackupSettings {
         public Builder setPriorityList(Map<Integer, List<Long>> priorityListMap) {
             Objects.requireNonNull(priorityListMap);
             mPriorityListMap = priorityListMap;
+            return this;
+        }
+
+        /** Saves the user's auto-delete setting and returns the Builder for chaining. */
+        public Builder setAutoDeleteSetting(@Nullable AutoDeleteFrequency autoDeletePreference) {
+            mAutoDeletePreference = autoDeletePreference;
             return this;
         }
 
@@ -137,6 +147,7 @@ public class CloudBackupSettings {
         public CloudBackupSettings build() {
             return new CloudBackupSettings(
                     mPriorityListMap,
+                    mAutoDeletePreference,
                     mExportSettings,
                     mEnergyUnitPreference,
                     mTemperatureUnitPreference,
@@ -147,6 +158,7 @@ public class CloudBackupSettings {
     }
 
     private final Map<Integer, List<Long>> mPriorityListMapSetting;
+    @Nullable private final AutoDeleteFrequency mAutoDeleteSetting;
     @Nullable private final ScheduledExportSettings mExportSettings;
     @Nullable private final EnergyUnit mEnergyUnitSetting;
     @Nullable private final TemperatureUnit mTemperatureUnitSetting;
@@ -156,6 +168,7 @@ public class CloudBackupSettings {
 
     private CloudBackupSettings(
             Map<Integer, List<Long>> priorityList,
+            @Nullable AutoDeleteFrequency autoDeleteSetting,
             @Nullable ScheduledExportSettings exportSettings,
             @Nullable EnergyUnit energyUnit,
             @Nullable TemperatureUnit temperatureUnit,
@@ -163,6 +176,7 @@ public class CloudBackupSettings {
             @Nullable WeightUnit weightUnit,
             @Nullable DistanceUnit distanceUnit) {
         mPriorityListMapSetting = priorityList;
+        mAutoDeleteSetting = autoDeleteSetting;
         mExportSettings = exportSettings;
         mEnergyUnitSetting = energyUnit;
         mTemperatureUnitSetting = temperatureUnit;
@@ -190,6 +204,14 @@ public class CloudBackupSettings {
      */
     public Map<Integer, List<Long>> getPriorityListMapSetting() {
         return mPriorityListMapSetting;
+    }
+
+    /**
+     * @return the user's auto delete preference setting.
+     */
+    @Nullable
+    public AutoDeleteFrequency getAutoDeleteSetting() {
+        return mAutoDeleteSetting;
     }
 
     /**
@@ -273,6 +295,13 @@ public class CloudBackupSettings {
     public enum DistanceUnit implements UnitPreference {
         KILOMETERS,
         MILES
+    }
+
+    /** The available auto-delete frequency options for auto-delete preference. */
+    public enum AutoDeleteFrequency {
+        AUTO_DELETE_RANGE_NEVER,
+        AUTO_DELETE_RANGE_THREE_MONTHS,
+        AUTO_DELETE_RANGE_EIGHTEEN_MONTHS
     }
 
     public static final EnergyUnit DEFAULT_ENERGY_UNIT = EnergyUnit.CALORIE;
