@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.injector;
 
 import android.content.Context;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.UserHandle;
 
@@ -214,7 +213,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? new HealthConnectPermissionHelper(
                                 context,
                                 context.getPackageManager(),
-                                HealthConnectManager.getHealthPermissions(context),
                                 mPermissionIntentAppsTracker,
                                 mFirstGrantTimeManager,
                                 mHealthDataCategoryPriorityHelper,
