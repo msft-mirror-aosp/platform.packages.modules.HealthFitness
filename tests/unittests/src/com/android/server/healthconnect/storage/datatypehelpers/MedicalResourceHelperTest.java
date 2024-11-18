@@ -353,8 +353,11 @@ public class MedicalResourceHelperTest {
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_resource_table ORDER BY"
-                                + " medical_resource_row_id LIMIT "
+                        "SELECT medical_resource_row_id,fhir_resource_type,fhir_resource_id,"
+                                + "fhir_data,fhir_version,medical_resource_type,"
+                                + "data_source_uuid,inner_query_result.last_modified_time"
+                                + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
+                                + " medical_resource_table ORDER BY medical_resource_row_id LIMIT "
                                 + (DEFAULT_PAGE_SIZE + 1)
                                 + " ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
@@ -392,8 +395,11 @@ public class MedicalResourceHelperTest {
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_resource_table ORDER BY"
-                                + " medical_resource_row_id LIMIT "
+                        "SELECT medical_resource_row_id,fhir_resource_type,fhir_resource_id,"
+                                + "fhir_data,fhir_version,medical_resource_type,data_source_uuid,"
+                                + "inner_query_result.last_modified_time"
+                                + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
+                                + " medical_resource_table ORDER BY medical_resource_row_id LIMIT "
                                 + (DEFAULT_PAGE_SIZE + 1)
                                 + " ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
