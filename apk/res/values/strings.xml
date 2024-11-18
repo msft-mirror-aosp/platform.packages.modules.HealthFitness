@@ -116,7 +116,7 @@
 
     <!-- region framework permissions -->
     <!-- Health data permissions labels and descriptions -->
-    <string name="permgrouplab_health" description="Title of an application permission group, listed so the user can choose whether they want to allow the application to do this. [CHAR LIMIT=30]">Fitness and wellness</string>
+    <string name="permgrouplab_health" description="Title of an application permission group, listed so the user can choose whether they want to allow the application to do this. [CHAR LIMIT=30]">Health&#160;Connect</string>
     <string name="permgroupdesc_health" description="Description of an application permission, listed so the user can choose whether they want to allow the application to do this. [CHAR LIMIT=100]">access your health data</string>
 
     <!-- Health data permissions labels and descriptions -->
