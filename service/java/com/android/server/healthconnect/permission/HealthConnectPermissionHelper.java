@@ -121,7 +121,7 @@ public final class HealthConnectPermissionHelper {
                     MASK_PERMISSION_FLAGS,
                     PackageManager.FLAG_PERMISSION_USER_SET,
                     checkedUser);
-            mAppInfoHelper.getOrInsertAppInfoId(packageName, mContext);
+            mAppInfoHelper.getOrInsertAppInfoId(packageName);
             addToPriorityListIfRequired(packageName, permissionName);
 
         } finally {
