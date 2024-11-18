@@ -63,7 +63,6 @@ import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -392,10 +391,122 @@ class MedicalAppFragmentTest {
             .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
     }
 
-    // TODO (b/369796531) Add more tests for dialogs
-    // allowAll_toggleOff_withBackgroundPermission_showsDisconnectDialog
-    // allowAll_toggleOff_withPastDataPermission_showsDisconnectDialog
-    // allowAll_toggleOff_noAdditionalPermissions_showsDisconnectDialog
+    @Test
+    fun allowAll_toggleOff_withBackgroundPermission_showsDisconnectDialog() {
+        val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(VACCINES)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeMedicalShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeMedicalShouldIncludePastData()).thenReturn(false)
+        launchFragment<MedicalAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all health record permissions?")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect, including background data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete health records from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
+
+    @Test
+    fun allowAll_toggleOff_withPastDataPermission_showsDisconnectDialog() {
+        val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(VACCINES)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeMedicalShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeMedicalShouldIncludePastData()).thenReturn(true)
+        launchFragment<MedicalAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all health record permissions?")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect, including past data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete health records from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
+
+    @Test
+    fun allowAll_toggleOff_noAdditionalPermissions_showsDisconnectDialog() {
+        val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(VACCINES)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeMedicalShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeMedicalShouldIncludePastData()).thenReturn(false)
+        launchFragment<MedicalAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all health record permissions?")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete health records from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
 
     @Test
     fun allowAll_toggleOff_onDialogRemoveAllClicked_disconnectAllPermissions() {
