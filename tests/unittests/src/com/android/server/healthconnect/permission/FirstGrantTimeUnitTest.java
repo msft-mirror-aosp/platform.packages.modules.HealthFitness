@@ -111,7 +111,7 @@ public class FirstGrantTimeUnitTest {
         when(mContext.getSystemService(UserManager.class)).thenReturn(mUserManager);
         when(mContext.getUser()).thenReturn(CURRENT_USER);
 
-        when(mUserManager.isUserUnlocked()).thenReturn(true);
+        when(mUserManager.isUserUnlocked(any())).thenReturn(true);
         ExtendedMockito.when(UserHandle.getUserHandleForUid(SELF_PACKAGE_UID))
                 .thenReturn(CURRENT_USER);
 
@@ -224,13 +224,13 @@ public class FirstGrantTimeUnitTest {
     public void testOnPermissionsChangedCalledWhileDeviceIsLocked_getGrantTimeNotNullAfterUnlock()
             throws TimeoutException {
         // before device is unlocked
-        when(mUserManager.isUserUnlocked()).thenReturn(false);
+        when(mUserManager.isUserUnlocked(any())).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT)).thenReturn(null);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED)).thenReturn(null);
         mFirstGrantTimeManager.onPermissionsChanged(SELF_PACKAGE_UID);
         waitForAllScheduledTasksToComplete();
         // after device is unlocked
-        when(mUserManager.isUserUnlocked()).thenReturn(true);
+        when(mUserManager.isUserUnlocked(any())).thenReturn(true);
         UserGrantTimeState currentGrantTimeState = new UserGrantTimeState(DEFAULT_VERSION);
         Instant now = Instant.parse("2023-02-14T10:00:00Z");
         currentGrantTimeState.setPackageGrantTime(SELF_PACKAGE_NAME, now);
