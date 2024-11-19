@@ -55,14 +55,18 @@ import static java.util.stream.Collectors.toSet;
 
 import android.app.UiAutomation;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
+import android.os.OutcomeReceiver;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -70,6 +74,7 @@ import com.google.common.collect.Iterables;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -122,6 +127,32 @@ public class PhrCtsTestUtils {
     }
 
     /**
+     * Makes a call to {@link HealthConnectManager#getMedicalDataSources(List, Executor,
+     * OutcomeReceiver)}.
+     */
+    public List<MedicalDataSource> getMedicalDataSourcesByIds(List<String> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalDataSource>> createReceiver =
+                new HealthConnectReceiver<>();
+        mManager.getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), createReceiver);
+        return createReceiver.getResponse();
+    }
+
+    /**
+     * Makes a call to {@link
+     * HealthConnectManager#getMedicalDataSources(GetMedicalDataSourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public List<MedicalDataSource> getMedicalDataSourcesByRequest(
+            GetMedicalDataSourcesRequest request) throws InterruptedException {
+        HealthConnectReceiver<List<MedicalDataSource>> createReceiver =
+                new HealthConnectReceiver<>();
+        mManager.getMedicalDataSources(
+                request, Executors.newSingleThreadExecutor(), createReceiver);
+        return createReceiver.getResponse();
+    }
+
+    /**
      * Makes a call to {@link HealthConnectManager#upsertMedicalResources} and returns the upserted
      * medical resource.
      */
@@ -143,6 +174,76 @@ public class PhrCtsTestUtils {
         mManager.deleteMedicalResources(
                 resourceIds, Executors.newSingleThreadExecutor(), deleteReceiver);
         deleteReceiver.verifyNoExceptionOrThrow();
+    }
+
+    /**
+     * A utility method to call {@link HealthConnectManager#readMedicalResources(List, Executor,
+     * OutcomeReceiver)}.
+     */
+    public List<MedicalResource> readMedicalResourcesByIds(List<MedicalResourceId> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
+        mManager.readMedicalResources(ids, Executors.newSingleThreadExecutor(), dataReceiver);
+        return dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link
+     * HealthConnectManager#readMedicalResources(ReadMedicalResourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public ReadMedicalResourcesResponse readMedicalResourcesByRequest(
+            ReadMedicalResourcesRequest request) throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> dataReceiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), dataReceiver);
+        return dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link HealthConnectManager#deleteMedicalDataSourceWithData(String,
+     * Executor, OutcomeReceiver)}.
+     */
+    public void deleteMedicalDataSourceWithData(String dataSourceId) throws InterruptedException {
+        HealthConnectReceiver<Void> dataReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalDataSourceWithData(
+                dataSourceId, Executors.newSingleThreadExecutor(), dataReceiver);
+        dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link HealthConnectManager#deleteMedicalResources(List, Executor,
+     * OutcomeReceiver)}.
+     */
+    public void deleteMedicalResourcesByIds(List<MedicalResourceId> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<Void> dataReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), dataReceiver);
+        dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link
+     * HealthConnectManager#deleteMedicalResources(DeleteMedicalResourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public void deleteMedicalResourcesByRequest(DeleteMedicalResourcesRequest request)
+            throws InterruptedException {
+        HealthConnectReceiver<Void> dataReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), dataReceiver);
+        dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link
+     * HealthConnectManager#deleteMedicalResources(DeleteMedicalResourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public void readMedicalResourcesByRequest(DeleteMedicalResourcesRequest request)
+            throws InterruptedException {
+        HealthConnectReceiver<Void> dataReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), dataReceiver);
+        dataReceiver.getResponse();
     }
 
     /**

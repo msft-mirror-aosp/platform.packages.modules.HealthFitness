@@ -125,7 +125,7 @@ public class UpsertTransactionRequest {
             if (!skipPackageName) {
                 StorageUtils.addPackageNameTo(recordInternal, packageName);
             }
-            appInfoHelper.populateAppInfoId(recordInternal, context, /* requireAllFields= */ true);
+            appInfoHelper.populateAppInfoId(recordInternal, /* requireAllFields= */ true);
             deviceInfoHelper.populateDeviceInfoId(recordInternal);
 
             if (isInsertRequest) {

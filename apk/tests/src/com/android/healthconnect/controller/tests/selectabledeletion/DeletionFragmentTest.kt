@@ -50,6 +50,7 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -76,6 +77,7 @@ class DeletionFragmentTest {
                 totalPermissionTypes = 10,
             )
         }
+        whenever(viewModel.removePermissions).thenReturn(false)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
@@ -209,6 +211,8 @@ class DeletionFragmentTest {
             )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+        onView(withText("Also remove all $TEST_APP_NAME permissions from Health Connect"))
+            .check(matches(not(isDisplayed())))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -243,6 +247,8 @@ class DeletionFragmentTest {
             )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+        onView(withText("Also remove all $TEST_APP_NAME permissions from Health Connect"))
+            .check(matches(not(isDisplayed())))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -276,6 +282,8 @@ class DeletionFragmentTest {
                 )
             )
             .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also remove all $TEST_APP_NAME permissions from Health Connect"))
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
