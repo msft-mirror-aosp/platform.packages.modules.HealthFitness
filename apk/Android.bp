@@ -230,6 +230,10 @@ android_app {
         "framework-healthfitness.stubs.module_lib",
         "framework-annotations-lib",
     ],
+    optimize: {
+        optimize: true,
+        shrink_resources: true,
+    },
     apex_available: ["com.android.healthfitness"],
     flags_packages: [
         "healthfitness-aconfig-flags",
