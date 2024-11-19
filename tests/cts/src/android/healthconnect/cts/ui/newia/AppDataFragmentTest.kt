@@ -27,6 +27,7 @@ import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
@@ -73,14 +74,10 @@ class AppDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appPermissions_showsAppDataButton() {
         context.launchMainActivity {
-            scrollDownTo(By.text("App permissions"))
-            findTextAndClick("App permissions")
+            scrollDownToAndClick(By.text("App permissions"))
             findTextAndClick("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
-            scrollDownTo(By.text("Allowed to read"))
-            scrollDownTo(By.text("Allowed to write"))
-
-            scrollDownTo(By.text("See app data"))
+            scrollToEnd()
             findText("See app data")
         }
     }
