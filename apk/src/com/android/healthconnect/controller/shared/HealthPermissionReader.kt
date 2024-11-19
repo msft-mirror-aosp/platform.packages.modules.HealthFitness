@@ -397,8 +397,8 @@ constructor(
                 .queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0)
                 .map { permissionInfo -> permissionInfo.name }
                 .filter { permissionName ->
-                    !AppOpsManager.permissionToOp(permissionName)
-                        .equals(AppOpsManager.OPSTR_READ_WRITE_HEALTH_DATA)
+                    val appOp = AppOpsManager.permissionToOp(permissionName)
+                    appOp != null && !appOp.equals(AppOpsManager.OPSTR_READ_WRITE_HEALTH_DATA)
                 }
         return permissions
     }
