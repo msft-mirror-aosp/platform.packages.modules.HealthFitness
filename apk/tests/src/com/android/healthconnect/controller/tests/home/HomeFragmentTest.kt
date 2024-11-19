@@ -1430,6 +1430,9 @@ class HomeFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Set screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER)
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON)
     }
 
     @Test
@@ -1467,6 +1470,7 @@ class HomeFragmentTest {
 
         launchFragment<HomeFragment>(Bundle())
         onView(withText("Set screen lock")).perform(scrollTo()).perform(click())
+        verify(healthConnectLogger).logInteraction(HomePageElement.LOCK_SCREEN_BANNER_BUTTON)
 
         intended(hasAction(ACTION_SECURITY_SETTINGS))
     }
@@ -1487,6 +1491,8 @@ class HomeFragmentTest {
 
         onView(withText("Set screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withId(R.id.dismiss_button)).perform(scrollTo()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON)
 
         onView(withText("Set screen lock")).check(doesNotExist())
     }
