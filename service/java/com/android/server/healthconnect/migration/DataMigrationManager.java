@@ -152,7 +152,7 @@ public final class DataMigrationManager {
 
     private UpsertTableRequest parseRecord(RecordMigrationPayload payload) {
         final RecordInternal<?> record = payload.getRecordInternal();
-        mAppInfoHelper.populateAppInfoId(record, mUserContext, false);
+        mAppInfoHelper.populateAppInfoId(record, /* requireAllFields */ false);
         mDeviceInfoHelper.populateDeviceInfoId(record);
 
         if (record.getUuid() == null) {
@@ -206,7 +206,6 @@ public final class DataMigrationManager {
     @GuardedBy("sLock")
     private void migrateAppInfo(AppInfoMigrationPayload payload) {
         mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
-                mUserContext,
                 payload.getPackageName(),
                 payload.getAppName(),
                 payload.getAppIcon(),

@@ -194,7 +194,7 @@ public class PhrTestUtils {
             String packageName,
             Instant instant) {
         SQLiteDatabase db = healthConnectDatabase.getWritableDatabase();
-        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName, context);
+        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName);
         if (appInfoId == DEFAULT_LONG) {
             throw new IllegalStateException("App id does not exist");
         }

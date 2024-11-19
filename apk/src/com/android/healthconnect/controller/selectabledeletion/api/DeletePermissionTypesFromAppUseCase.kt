@@ -37,10 +37,22 @@ constructor(
         DeleteFitnessPermissionTypesFromAppUseCase,
     private val deleteMedicalPermissionTypesFromAppUseCase:
         DeleteMedicalPermissionTypesFromAppUseCase,
+    private val deleteAppDataUseCase: DeleteAppDataUseCase,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(deletePermissionTypes: DeleteHealthPermissionTypesFromApp) {
+    suspend operator fun invoke(
+        deletePermissionTypes: DeleteHealthPermissionTypesFromApp,
+        removePermissions: Boolean = false,
+    ) {
+        if (
+            deletePermissionTypes.healthPermissionTypes.size ==
+                deletePermissionTypes.totalPermissionTypes
+        ) {
+            deleteAppDataUseCase.invoke(deletePermissionTypes.toDeleteAppData(), removePermissions)
+            return
+        }
+
         withContext(dispatcher) {
             val deleteFitness = async { maybeDeleteFitnessData(deletePermissionTypes) }
             val deleteMedical = async { maybeDeleteMedicalData(deletePermissionTypes) }
