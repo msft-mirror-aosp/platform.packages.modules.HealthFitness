@@ -78,18 +78,18 @@ public final class HealthConnectResourcesContext extends ContextWrapper {
         mResourcesApkAction = requireNonNull(resourcesApkAction);
         mResourcesApkPath = resourcesApkPath;
         mFlags = flags;
-
-        initialisePackageNames();
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void initialisePackageNames() {
         ResolveInfo info = resolvePackageInfo();
 
         if (info != null) {
             mResourcesApkPkgName = info.activityInfo.applicationInfo.packageName;
             int iconResource = info.activityInfo.getIconResource();
-            mResourceLoadPackageName = getResources().getResourcePackageName(iconResource);
+            Resources resources = getResources();
+            if (resources != null) {
+                mResourceLoadPackageName = resources.getResourcePackageName(iconResource);
+            }
         }
     }
 

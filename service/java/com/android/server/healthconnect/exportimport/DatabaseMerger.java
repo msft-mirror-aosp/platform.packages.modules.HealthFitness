@@ -119,7 +119,6 @@ public final class DatabaseMerger {
             DeviceInfoHelper deviceInfoHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             TransactionManager transactionManager) {
-        requireNonNull(context);
         mContext = context;
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
@@ -145,8 +144,7 @@ public final class DatabaseMerger {
                 // If this package is not installed on the target device and is not present in the
                 // health db, then fill the health db with the info from source db. According to the
                 // security review b/341253579, we should not parse the imported icon.
-                mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(
-                        mContext, packageName, appName);
+                mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(packageName, appName);
             }
         }
 
