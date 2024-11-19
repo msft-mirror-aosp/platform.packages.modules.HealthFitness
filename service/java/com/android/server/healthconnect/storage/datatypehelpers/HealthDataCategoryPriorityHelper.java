@@ -129,7 +129,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             boolean isInactiveApp) {
         List<Long> newPriorityOrder;
         getHealthDataCategoryToAppIdPriorityMap().putIfAbsent(dataCategory, new ArrayList<>());
-        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName, context);
+        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName);
         if (getHealthDataCategoryToAppIdPriorityMap().get(dataCategory).contains(appInfoId)) {
             return;
         }
@@ -414,7 +414,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         for (PackageInfo packageInfo : validHealthApps) {
             Set<Integer> dataCategoriesWithWritePermissionsForThisPackage =
                     getDataCategoriesWithWritePermissionsForPackage(packageInfo, context);
-            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageInfo.packageName, context);
+            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageInfo.packageName);
 
             for (int dataCategory : dataCategoriesWithWritePermissionsForThisPackage) {
                 List<Long> appIdsHavingPermission =

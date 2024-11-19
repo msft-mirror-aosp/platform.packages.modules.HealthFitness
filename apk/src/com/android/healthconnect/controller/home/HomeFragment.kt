@@ -505,8 +505,8 @@ class HomeFragment : Hilt_HomeFragment() {
     private fun getLockScreenBanner(
         bannerState: LockScreenBannerState.ShowBanner
     ): BannerPreference {
-        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also {
-            banner ->
+        return BannerPreference(requireContext(), HomePageElement.LOCK_SCREEN_BANNER).also { banner
+            ->
             banner.title = resources.getString(R.string.lock_screen_banner_title)
             banner.summary = resources.getString(R.string.lock_screen_banner_content)
             banner.key = LOCK_SCREEN_BANNER_KEY
@@ -514,14 +514,14 @@ class HomeFragment : Hilt_HomeFragment() {
             banner.order = HOME_FRAGMENT_BANNER_ORDER
             banner.setPrimaryButton(
                 resources.getString(R.string.lock_screen_banner_button),
-                UnknownGenericElement.UNKNOWN_BANNER_BUTTON,
+                HomePageElement.LOCK_SCREEN_BANNER_BUTTON,
             )
             banner.setPrimaryButtonOnClickListener {
                 updateBannerSeen(bannerState)
                 navigateToSecuritySettings()
             }
             banner.setIsDismissable(true)
-            banner.setDismissAction(UnknownGenericElement.UNKNOWN_BANNER_BUTTON) {
+            banner.setDismissAction(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON) {
                 updateBannerSeen(bannerState)
                 preferenceScreen.removePreference(banner)
             }

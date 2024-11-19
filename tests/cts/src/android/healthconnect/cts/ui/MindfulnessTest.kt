@@ -35,6 +35,7 @@ import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.readAllRecords
@@ -176,6 +177,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
             findObjectAndClick(By.text("Meditation • foo-title"))
             findObjectAndClick(By.desc("Delete data"))
             findTextAndClick("Delete")
+            waitDisplayed(By.text("Done"), Duration.ofSeconds(3))
             findTextAndClick("Done")
             findText("Unknown type • 29m")
             verifyObjectNotFound(By.text("Meditation • foo-title"))

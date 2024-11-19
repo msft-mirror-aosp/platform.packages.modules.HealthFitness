@@ -86,6 +86,7 @@ import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -98,7 +99,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.anyString
+import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.kotlin.anyArray
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
@@ -289,6 +292,34 @@ class MockedPermissionsActivityTest {
             )
             .check(matches(isDisplayed()))
         onView(withText("About health records")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun showMedicalPermissionRequest_correctLogging() {
+        whenever(viewModel.permissionsActivityState).then {
+            MutableLiveData(PermissionsActivityState.ShowMedical(isWriteOnly = true))
+        }
+        whenever(viewModel.medicalScreenState).then {
+            MutableLiveData(
+                MedicalScreenState.ShowMedicalWrite(
+                    appMetadata = appMetadata,
+                    medicalPermissions =
+                        listOf(
+                            HealthPermission.MedicalPermission.fromPermissionString(
+                                WRITE_MEDICAL_DATA
+                            )
+                        ),
+                )
+            )
+        }
+        val permissions = arrayOf(WRITE_MEDICAL_DATA)
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.REQUEST_WRITE_MEDICAL_PERMISSION_PAGE)
+        verify(healthConnectLogger).logPageImpression()
     }
 
     @Test

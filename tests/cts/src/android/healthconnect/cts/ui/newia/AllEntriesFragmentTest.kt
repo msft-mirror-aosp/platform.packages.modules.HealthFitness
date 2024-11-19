@@ -25,6 +25,7 @@ import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -32,6 +33,7 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import org.junit.After
@@ -117,6 +119,7 @@ class AllEntriesFragmentTest : HealthConnectBaseTest() {
             findTextAndClick("Select all")
             findObjectAndClick(By.desc("Delete data"))
             findTextAndClick("Delete")
+            waitDisplayed(By.text("Done"), Duration.ofSeconds(3))
             findTextAndClick("Done")
             findText("No data")
         }
