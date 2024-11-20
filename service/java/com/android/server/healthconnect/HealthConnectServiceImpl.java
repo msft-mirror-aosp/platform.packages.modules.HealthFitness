@@ -2032,6 +2032,23 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
             mExportImportSettingsStorage.configure(settings);
 
+            // Trigger a one time immediate export when periodic export is scheduled.
+            if (Flags.immediateExport() && settings != null && settings.getPeriodInDays() > 0) {
+                mThreadScheduler.scheduleInternalTask(
+                        () -> {
+                            try {
+                                final int uid = Binder.getCallingUid();
+                                final int pid = Binder.getCallingPid();
+
+                                mContext.enforcePermission(
+                                        MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                                mExportManager.runExport(userHandle);
+                            } catch (Exception e) {
+                                Slog.e(TAG, "Failed to trigger a one time immediate export.", e);
+                            }
+                        });
+            }
+
             mThreadScheduler.scheduleInternalTask(
                     () -> {
                         try {
