@@ -28,6 +28,21 @@ import javax.inject.Singleton
 @Singleton
 class HealthConnectLogger @Inject constructor() {
 
+    companion object {
+        private val phrElements =
+            setOf(
+                OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR,
+                HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON,
+                CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON,
+                CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON,
+                CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON,
+                HomePageElement.LOCK_SCREEN_BANNER,
+                HomePageElement.LOCK_SCREEN_BANNER_BUTTON,
+                HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON,
+                RawFhirPageElement.RAW_FHIR_RESOURCE,
+            )
+    }
+
     private var pageName = PageName.UNKNOWN_PAGE
 
     /**
@@ -72,15 +87,7 @@ class HealthConnectLogger @Inject constructor() {
         pageName.isPhrPage() && !personalHealthRecordUiTelemetry()
 
     private fun isGuardedByPhrFlag(elementName: ElementName): Boolean {
-        val phrElements =
-            setOf(
-                OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR,
-                HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON,
-                CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON,
-                CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON,
-                CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON,
-            )
-        return phrElements.contains(elementName)
+        return phrElements.contains(elementName) && !personalHealthRecordUiTelemetry()
     }
 }
 
@@ -295,6 +302,10 @@ enum class PageName(val impressionId: Int, val interactionId: Int) {
         HEALTH_CONNECT_UI_IMPRESSION__PAGE__SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE,
         HEALTH_CONNECT_UI_INTERACTION__PAGE__SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE,
     ),
+    REQUEST_WRITE_MEDICAL_PERMISSION_PAGE(
+        HEALTH_CONNECT_UI_IMPRESSION__PAGE__REQUEST_WRITE_MEDICAL_PERMISSION_PAGE,
+        HEALTH_CONNECT_UI_INTERACTION__PAGE__REQUEST_WRITE_MEDICAL_PERMISSION_PAGE,
+    ),
     UNKNOWN_PAGE(
         HEALTH_CONNECT_UI_IMPRESSION__PAGE__PAGE_UNKNOWN,
         HEALTH_CONNECT_UI_INTERACTION__PAGE__PAGE_UNKNOWN,
@@ -312,6 +323,7 @@ enum class PageName(val impressionId: Int, val interactionId: Int) {
                 MEDICAL_APP_ACCESS_PAGE,
                 SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE,
                 SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE,
+                REQUEST_WRITE_MEDICAL_PERMISSION_PAGE,
             )
         return phrPages.contains(this)
     }
@@ -357,6 +369,18 @@ enum class HomePageElement(override val impressionId: Int, override val interact
     BROWSE_HEALTH_RECORDS_BUTTON(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__BROWSE_HEALTH_RECORDS_BUTTON,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__BROWSE_HEALTH_RECORDS_BUTTON,
+    ),
+    LOCK_SCREEN_BANNER(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__LOCK_SCREEN_BANNER,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__LOCK_SCREEN_BANNER,
+    ),
+    LOCK_SCREEN_BANNER_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__LOCK_SCREEN_BANNER_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__LOCK_SCREEN_BANNER_BUTTON,
+    ),
+    LOCK_SCREEN_BANNER_DISMISS_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__LOCK_SCREEN_BANNER_DISMISS_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__LOCK_SCREEN_BANNER_DISMISS_BUTTON,
     ),
 }
 
@@ -1457,6 +1481,15 @@ enum class CombinedAppAccessElement(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__REMOVE_ALL_PERMISSIONS_BUTTON,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__REMOVE_ALL_PERMISSIONS_BUTTON,
     ),
+}
+
+/** Loggable elements belonging to any page with unknown elements. */
+enum class RawFhirPageElement(override val impressionId: Int, override val interactionId: Int) :
+    ElementName {
+    RAW_FHIR_RESOURCE(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__RAW_FHIR_RESOURCE,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__RAW_FHIR_RESOURCE,
+    )
 }
 
 /** Loggable elements belonging to the error page, and the unknown element. */

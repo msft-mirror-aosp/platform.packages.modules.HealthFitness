@@ -34,6 +34,7 @@ import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RawFhirPageElement
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
@@ -138,7 +139,7 @@ class RawFhirFragment : Hilt_RawFhirFragment() {
             val rawFhir = view.findViewById<TextView>(R.id.item_raw_fhir)
             rawFhir.text = data.fhir
             rawFhir.contentDescription = data.fhirContentDescription
-            // TODO(b/342159144): Log impression.
+            logger.logImpression(RawFhirPageElement.RAW_FHIR_RESOURCE)
         }
     }
 }
