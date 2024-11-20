@@ -30,6 +30,8 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.android.healthfitness.flags.Flags;
+
 import java.util.Set;
 
 /**
@@ -43,7 +45,7 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
     @NonNull private final String mDataSourceId;
     @NonNull private final FhirVersion mFhirVersion;
     @NonNull private final String mData;
-    private long mDataSize;
+    private int mDataSize;
 
     @NonNull
     public static final Creator<UpsertMedicalResourceRequest> CREATOR =
@@ -77,13 +79,20 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
 
     private UpsertMedicalResourceRequest(@NonNull Parcel in) {
         requireNonNull(in);
-        mDataSize = in.dataSize();
+        int dataAvailStartPosition = in.dataAvail();
+
         mDataSourceId = requireNonNull(in.readString());
         validateMedicalDataSourceIds(Set.of(mDataSourceId));
         mFhirVersion =
                 requireNonNull(
                         in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
         mData = requireNonNull(in.readString());
+
+        if (Flags.phrUpsertFixParcelSizeCalculation()) {
+            mDataSize = dataAvailStartPosition - in.dataAvail();
+        } else {
+            mDataSize = in.dataSize();
+        }
     }
 
     /**

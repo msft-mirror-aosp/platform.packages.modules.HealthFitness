@@ -83,6 +83,7 @@ public class PhrCtsTestUtils {
     public static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
     public static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
     public static final int RECORD_SIZE_LIMIT_IN_BYTES = 1000000;
+    public static final int CHUNK_SIZE_LIMIT_IN_BYTES = 5000000;
     public static final String PHR_BACKGROUND_APP_PKG =
             "android.healthconnect.cts.phr.testhelper.app1";
     public static final String PHR_FOREGROUND_APP_PKG =
