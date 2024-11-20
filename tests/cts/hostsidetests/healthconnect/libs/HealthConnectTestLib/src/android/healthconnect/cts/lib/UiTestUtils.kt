@@ -131,6 +131,28 @@ object UiTestUtils {
         findObjectAndClick(By.text(text))
     }
 
+    /**
+     * Returns an object with given content description if it's visible on the screen.
+     *
+     * Throws if the object is not visible.
+     *
+     * Use this if the text label is expected to be visible on the screen without scrolling.
+     */
+    fun findDesc(desc: String): UiObject2 {
+        return findObject(By.desc(desc))
+    }
+
+    /**
+     * Clicks on an object with give content description if it's visible on the screen.
+     *
+     * Throws if the object is not visible.
+     *
+     * Use this if the object is expected to be visible on the screen without scrolling.
+     */
+    fun findDescAndClick(desc: String) {
+        findObjectAndClick(By.desc(desc))
+    }
+
     /** Throws an exception if given object is visible on the screen. */
     fun verifyObjectNotFound(selector: BySelector) {
         if (findObjectOrNull(selector) != null) {
@@ -163,7 +185,10 @@ object UiTestUtils {
     }
 
     fun scrollDownTo(selector: BySelector) {
-        waitFindObject(By.scrollable(true)).scrollUntil(Direction.DOWN, Until.findObject(selector))
+        val scrollable = waitFindObjectOrNull(By.scrollable(true), FIND_OBJECT_TIMEOUT.toMillis())
+
+        scrollable?.scrollUntil(Direction.DOWN, Until.findObject(selector))
+        findObject(selector)
     }
 
     fun scrollUpTo(selector: BySelector) {

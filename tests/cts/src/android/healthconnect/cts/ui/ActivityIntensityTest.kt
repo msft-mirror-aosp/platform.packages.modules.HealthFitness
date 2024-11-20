@@ -16,69 +16,75 @@
 
 package android.healthconnect.cts.ui
 
-import android.health.connect.HealthPermissions.READ_MINDFULNESS
-import android.health.connect.HealthPermissions.WRITE_MINDFULNESS
-import android.health.connect.datatypes.ExerciseSessionRecord
-import android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING
-import android.health.connect.datatypes.MindfulnessSessionRecord
-import android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_MEDITATION
-import android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_UNKNOWN
+import android.health.connect.HealthPermissions.READ_ACTIVITY_INTENSITY
+import android.health.connect.HealthPermissions.WRITE_ACTIVITY_INTENSITY
+import android.health.connect.datatypes.ActivityIntensityRecord
+import android.health.connect.datatypes.RespiratoryRateRecord
+import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.RecordFactory.YESTERDAY_11AM
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.text.format.DateFormat.is24HourFormat
-import com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS
+import com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 
-@RequiresFlagsEnabled(FLAG_MINDFULNESS, FLAG_NEW_INFORMATION_ARCHITECTURE)
-class MindfulnessTest : BaseDataTypeTest<MindfulnessSessionRecord>() {
-    override val dataTypeString = "Mindfulness"
-    override val dataCategoryString = "Wellness"
-    override val permissionString = "Mindfulness"
-    override val permissions = listOf(READ_MINDFULNESS, WRITE_MINDFULNESS)
-    override val sameCategoryDataTypeString = null
-    override val anotherCategoryString = "Activity"
-    override val anotherCategoryDataTypeString = "TODO: lul"
+@RequiresFlagsEnabled(FLAG_ACTIVITY_INTENSITY, FLAG_NEW_INFORMATION_ARCHITECTURE)
+class ActivityIntensityTest : BaseDataTypeTest<ActivityIntensityRecord>() {
+
+    override val dataTypeString = "Activity intensity"
+    override val dataCategoryString = "Activity"
+    override val permissionString = "Activity intensity"
+    override val permissions = listOf(READ_ACTIVITY_INTENSITY, WRITE_ACTIVITY_INTENSITY)
+
+    override val sameCategoryDataTypeString = "Steps"
+    override val anotherCategoryString = "Vitals"
+    override val anotherCategoryDataTypeString = "Respiratory rate"
 
     override fun createRecord() =
-        MindfulnessSessionRecord.Builder(
+        ActivityIntensityRecord.Builder(
                 newEmptyMetadata(),
                 YESTERDAY_11AM.toInstant(),
                 YESTERDAY_11AM.plusMinutes(15).toInstant(),
-                MINDFULNESS_SESSION_TYPE_MEDITATION,
+                ActivityIntensityRecord.ACTIVITY_INTENSITY_TYPE_VIGOROUS,
             )
-            .setTitle("foo-title")
-            .setNotes("foo-notes")
             .build()
 
     override val expectedRecordHeader =
         if (is24HourFormat(context)) "11:00 - 11:15 • ${context.packageName}"
         else "11:00 AM - 11:15 AM • ${context.packageName}"
-    override val expectedRecordTitle = "Meditation • foo-title"
-    override val expectedRecordSubtitle = "foo-notes"
+
+    override val expectedRecordTitle = "Vigorous"
+    override val expectedRecordSubtitle = null
 
     override fun createRecordToBeDeleted() =
-        MindfulnessSessionRecord.Builder(
+        ActivityIntensityRecord.Builder(
                 newEmptyMetadata(),
                 YESTERDAY_11AM.plusHours(3).toInstant(),
                 YESTERDAY_11AM.plusHours(4).plusMinutes(29).toInstant(),
-                MINDFULNESS_SESSION_TYPE_UNKNOWN,
+                ActivityIntensityRecord.ACTIVITY_INTENSITY_TYPE_MODERATE,
             )
             .build()
 
     override val expectedRecordToBeDeletedHeader =
         if (is24HourFormat(context)) "14:00 - 15:29 • ${context.packageName}"
         else "2:00 PM - 3:29 PM • ${context.packageName}"
-    override val expectedRecordToBeDeletedTitle = "Unknown type • 1h 29m"
 
-    override fun createSameCategoryRecord() = null
+    override val expectedRecordToBeDeletedTitle = "Moderate"
 
-    override fun createAnotherCategoryRecord() =
-        ExerciseSessionRecord.Builder(
+    override fun createSameCategoryRecord() =
+        StepsRecord.Builder(
                 newEmptyMetadata(),
                 YESTERDAY_11AM.minusDays(1).minusHours(2).toInstant(),
                 YESTERDAY_11AM.minusDays(1).minusHours(1).toInstant(),
-                EXERCISE_SESSION_TYPE_RUNNING,
+                50,
+            )
+            .build()
+
+    override fun createAnotherCategoryRecord() =
+        RespiratoryRateRecord.Builder(
+                newEmptyMetadata(),
+                YESTERDAY_11AM.minusDays(1).minusHours(4).toInstant(),
+                14.0,
             )
             .build()
 }
