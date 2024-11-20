@@ -35,7 +35,7 @@ import java.time.LocalDate
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -57,7 +57,7 @@ class RawFhirUseCaseTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     var manager: HealthConnectManager = mock(HealthConnectManager::class.java)
 
@@ -77,7 +77,6 @@ class RawFhirUseCaseTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
