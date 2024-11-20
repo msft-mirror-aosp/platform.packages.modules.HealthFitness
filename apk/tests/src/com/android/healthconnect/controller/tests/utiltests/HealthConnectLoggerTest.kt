@@ -25,6 +25,7 @@ import com.android.healthconnect.controller.utils.logging.PageName.COMBINED_APP_
 import com.android.healthconnect.controller.utils.logging.PageName.MEDICAL_APP_ACCESS_PAGE
 import com.android.healthconnect.controller.utils.logging.PageName.RAW_FHIR_PAGE
 import com.android.healthconnect.controller.utils.logging.PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE
+import com.android.healthconnect.controller.utils.logging.PageName.REQUEST_WRITE_MEDICAL_PERMISSION_PAGE
 import com.android.healthconnect.controller.utils.logging.PageName.SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE
 import com.android.healthconnect.controller.utils.logging.PageName.SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE
 import com.android.healthconnect.controller.utils.logging.PageName.TAB_MEDICAL_ACCESS_PAGE
@@ -62,6 +63,7 @@ class HealthConnectLoggerTest {
             MEDICAL_APP_ACCESS_PAGE,
             SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE,
             SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE,
+            REQUEST_WRITE_MEDICAL_PERMISSION_PAGE,
         )
 
     @Test

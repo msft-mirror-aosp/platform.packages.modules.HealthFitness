@@ -8,12 +8,14 @@ import android.health.connect.HealthPermissions.READ_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
+import android.os.Build
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.platform.test.flag.junit.SetFlagsRule
+import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity
 import com.android.healthconnect.controller.permissions.data.HealthPermission
@@ -287,6 +289,18 @@ class HealthPermissionReaderTest {
         // health permission, regardless of declaring an intent filter
         assertThat(wearAppsWithHealthPermissions)
             .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun getSystemHealthPermissions_returnSystemHealthPermissions() = runTest {
+        assertThat(permissionReader.getSystemHealthPermissions())
+            .containsExactly(
+                HealthPermissions.READ_HEART_RATE,
+                HealthPermissions.READ_OXYGEN_SATURATION,
+                HealthPermissions.READ_SKIN_TEMPERATURE,
+            )
     }
 
     @Test

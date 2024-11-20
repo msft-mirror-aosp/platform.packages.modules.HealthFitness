@@ -1070,6 +1070,11 @@
     <string name="mindfulness_type_other" description="Mindfulness session type: Other. [CHAR LIMIT=20]">Other</string>
     <string name="mindfulness_type_unguided" description="Mindfulness session type: Unguided. [CHAR LIMIT=20]">Unguided</string>
     <!--endregion-->
+
+    <!-- region Activity Intensity -->
+    <string name="activity_intensity_type_moderate" description="Activity intensity type: Moderate. [CHAR LIMIT=20]">Moderate</string>
+    <string name="activity_intensity_type_vigorous" description="Activity intensity type: Vigorous. [CHAR LIMIT=20]">Vigorous</string>
+    <!--endregion-->
     <!-- endregion -->
 
     <!-- region Duration -->
