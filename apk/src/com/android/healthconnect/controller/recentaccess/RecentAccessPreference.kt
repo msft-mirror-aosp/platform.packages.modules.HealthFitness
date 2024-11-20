@@ -26,16 +26,11 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.formatRecentAccessTime
 import com.android.healthconnect.controller.utils.logging.RecentAccessElement
-import java.time.Instant
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /** Custom preference for displaying Recent access apps, including dash lines for timeline views. */
-class RecentAccessPreference
-constructor(
+class RecentAccessPreference(
     context: Context,
     private val recentAccessEntry: RecentAccessEntry,
     private val timeSource: TimeSource,
@@ -76,7 +71,8 @@ constructor(
         }
 
         val accessTime = holder.findViewById(R.id.time) as TextView
-        val formattedTime = formatTime(recentAccessEntry.instantTime)
+        val formattedTime =
+            formatRecentAccessTime(recentAccessEntry.instantTime, timeSource, context)
         accessTime.text = formattedTime
         accessTime.contentDescription =
             context.getString(R.string.recent_access_time_content_descritption, formattedTime)
@@ -117,18 +113,5 @@ constructor(
         }
 
         return sortedList
-    }
-
-    private fun formatTime(instant: Instant): String {
-        val localTime: LocalTime = instant.atZone(ZoneId.systemDefault()).toLocalTime()
-        return if (timeSource.is24Hour(context)) {
-            localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-        } else {
-            if (Locale.getDefault() == Locale.KOREA || Locale.getDefault() == Locale.KOREAN) {
-                localTime.format(DateTimeFormatter.ofPattern("a h:mm"))
-            } else {
-                localTime.format(DateTimeFormatter.ofPattern("h:mm a"))
-            }
-        }
     }
 }
