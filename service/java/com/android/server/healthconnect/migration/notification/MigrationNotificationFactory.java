@@ -410,6 +410,8 @@ public class MigrationNotificationFactory {
 
     @VisibleForTesting
     public static String[] getNotificationStringResources() {
+        // Resources referenced here must be explicitly kept in apk/res/raw/keep.xml to avoid
+        // removal during shrinking
         return new String[] {
             MIGRATION_IN_PROGRESS_NOTIFICATION_TITLE,
             MIGRATION_APP_UPDATE_NEEDED_NOTIFICATION_TITLE,
