@@ -65,6 +65,7 @@ public final class HealthConnectPermissionHelper {
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final AppInfoHelper mAppInfoHelper;
     private final HealthConnectMappings mHealthConnectMappings;
+
     /**
      * Constructs a {@link HealthConnectPermissionHelper}.
      *
@@ -274,9 +275,9 @@ public final class HealthConnectPermissionHelper {
     private void removeFromPriorityListIfRequired(String packageName, String permissionName) {
         if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
+                    mContext,
                     packageName,
                     mHealthConnectMappings.getHealthDataCategoryForWritePermission(permissionName),
-                    this,
                     mContext.getUser());
         }
     }
