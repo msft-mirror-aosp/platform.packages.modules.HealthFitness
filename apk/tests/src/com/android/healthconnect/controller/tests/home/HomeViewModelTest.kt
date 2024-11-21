@@ -46,7 +46,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -73,7 +73,7 @@ class HomeViewModelTest {
     private lateinit var viewModel: HomeViewModel
     private lateinit var context: Context
     private lateinit var sharedPreferences: SharedPreferences
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private val keyguardManagerUtils: KeyguardManagerUtil =
         Mockito.mock(KeyguardManagerUtil::class.java)
@@ -101,7 +101,6 @@ class HomeViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test

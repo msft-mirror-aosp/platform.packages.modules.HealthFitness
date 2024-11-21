@@ -119,7 +119,6 @@ import android.health.connect.datatypes.units.TemperatureDelta;
 import android.health.connect.datatypes.units.Velocity;
 import android.health.connect.datatypes.units.Volume;
 import android.os.Parcel;
-import android.util.Log;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
@@ -348,7 +347,6 @@ public final class AggregationTypeIdMapper {
 
     @NonNull
     private AggregateResult<Duration> getDurationResult(long resultMillis) {
-        Log.i("RDI", "getDurationResult: " + resultMillis);
         return new AggregateResult<>(Duration.ofMillis(resultMillis));
     }
 

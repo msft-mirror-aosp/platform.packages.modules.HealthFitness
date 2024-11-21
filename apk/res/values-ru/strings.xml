@@ -44,7 +44,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Настроить единицы измерения"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Настройки"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Управление данными"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Импорт и экспорт данных"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Экспорт и импорт данных"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Доступ за последнее время"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"В последнее время приложения не получали доступ к сервису \"Здоровье и спорт\""</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Вся информация о доступе за последнее время"</string>
@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Вчера"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Чтение: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Запись: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Настроить разрешения"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Время: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активность"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"температура кожи"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Доступ к данным о температуре кожи"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Запись данных о температуре кожи"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Все данные о здоровье"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"все данные о здоровье"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Запись всех данных о здоровье"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Заболевания"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"заболевания"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Чтение данных о заболеваниях"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Вакцинация"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"вакцинация"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Чтение данных о вакцинации"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Результаты анализов"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"результаты анализов"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Чтение результатов анализов"</string>
@@ -377,7 +375,8 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Если вы предоставите разрешение, приложение сможет считывать и записывать данные, например о вакцинации, анализах и аллергии.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Если вы предоставите разрешение, приложение сможет считывать данные, например об аллергии, вакцинации и анализах.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Об информации, касающейся здоровья"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Данные, которыми вы готовы поделиться:"</string>
+    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
+    <skip />
     <string name="medical_request_summary" msgid="7281321524805015510">"Если вы предоставите разрешение, приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" сможет делиться данными о вашем здоровье с платформой \"Здоровье и спорт\"."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Синхронизируйте информацию о здоровье из разных приложений и источников и храните ее централизованно"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Удалить все разрешения?"</string>
@@ -436,7 +435,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"У этих приложений больше нет доступа, но их данные по-прежнему хранятся в сервисе \"Здоровье и спорт\"."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> получит доступ к данным, добавленным после <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Чтобы задать разрешения для этого приложения в Android, выберите \"Настройки &gt; Приложения\"."</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"На данные, которые вы предоставляете приложению <xliff:g id="APP_NAME">%1$s</xliff:g>, распространяется его политика конфиденциальности."</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Подробнее о том, как приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" обрабатывает ваши данные, можно прочитать в политике конфиденциальности разработчика."</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Чтобы задать разрешения для этого приложения в Android, выберите \"Настройки &gt; Приложения\"."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Ознакомиться с политикой конфиденциальности"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Разрешение использовалось в последние 24 часа"</string>
@@ -531,7 +530,7 @@
     <string name="export_cancel_button" msgid="1952360582645412410">"Отмена"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Отмена"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Далее"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Откуда импортировать:"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Источник импорта"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"Выберите облачное хранилище для импорта данных."</string>
     <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Нажмите, чтобы выбрать аккаунт"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Выберите аккаунт"</string>
@@ -1075,8 +1074,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Возобновите интеграцию приложения \"Здоровье и спорт\""</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Чтобы не потерять данные, завершите процесс в течение <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Требуется обновление"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> нужно обновить, чтобы оно синхронизировалось с платформой \"Здоровье и спорт\"."</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Некоторые приложения нужно обновить, чтобы они синхронизировались с платформой \"Здоровье и спорт\"."</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Чтобы приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" синхронизировалось с сервисом \"Здоровье и спорт\", обновите его. Обновления могут быть доступны не для всех приложений."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Чтобы некоторые приложения синхронизировались с сервисом \"Здоровье и спорт\", обновите их. Обновления могут быть доступны не для всех приложений."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Проверить наличие обновлений"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Подробнее"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Интеграция приложения \"Здоровье и спорт\""</string>
@@ -1135,12 +1134,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Посмотрите совместимые приложения"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Узнайте, какие ещё приложения можно синхронизировать с сервисом \"<xliff:g id="APP_NAME">%s</xliff:g>\" через платформу \"Здоровье и спорт\"."</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Открыть магазин"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Настройте блокировку экрана"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Установите на этом устройстве PIN-код, графический ключ или пароль, чтобы лучше защитить данные о здоровье."</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Настроить блокировку экрана"</string>
     <string name="select_all" msgid="837499881590001166">"Выбрать все"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Связанные приложения больше не смогут читать эти данные платформы \"Здоровье и спорт\"."</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Выбрано"</string>
@@ -1181,40 +1177,31 @@
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"В самом приложении при его использовании"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Отклонить все"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Открыть приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным о самочувствии и физической активности?"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" запрашивает доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nВы можете предоставить сразу все разрешения или задать их по отдельности."</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" запрашивает доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nВы можете предоставить сразу все разрешения или настроить их по отдельности."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным \"<xliff:g id="DATA_TYPE">%2$s</xliff:g>\"?"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическая активность и самочувствие"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"всегда"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"при использовании приложения"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Всегда"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"При использовании приложения"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ ко всем вашим данным о физической активности и самочувствии <xliff:g id="ALLOW_MODE">%2$s</xliff:g>."</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Разрешен доступ"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Разрешено чтение данных"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Эти разрешения дают приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным датчиков устройства."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Приложений с разрешением: <xliff:g id="NUMBER_0">%1$d</xliff:g> из <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Нет запросов от приложений"</string>
+    <string name="allowed" msgid="4158456017482263737">"Разрешено"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Не разрешено"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Приложения с этим разрешением могут получать доступ к следующим данным датчиков устройства: <xliff:g id="DATA_TYPE">%s</xliff:g>."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Закрыть для всех приложений на часах доступ к следующим данным: <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Флажок"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Крестик"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>

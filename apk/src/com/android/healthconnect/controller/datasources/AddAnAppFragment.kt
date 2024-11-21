@@ -22,9 +22,9 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PotentialAppSourcesState
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PriorityListState
+import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.AddAnAppElement
@@ -84,9 +84,7 @@ class AddAnAppFragment : Hilt_AddAnAppFragment() {
             .sortedBy { it.appName }
             .forEach { appMetadata ->
                 preferenceScreen.addPreference(
-                    HealthPreference(requireContext()).also { preference ->
-                        preference.title = appMetadata.appName
-                        preference.icon = appMetadata.icon
+                    HealthAppPreference(requireContext(), appMetadata).also { preference ->
                         preference.logName = AddAnAppElement.POTENTIAL_PRIORITY_APP_BUTTON
                         preference.setOnPreferenceClickListener {
                             // add this app to the bottom of the priority list
@@ -96,11 +94,14 @@ class AddAnAppFragment : Hilt_AddAnAppFragment() {
                                     .also { it.add(appMetadata) }
                                     .toList()
                             dataSourcesViewModel.updatePriorityList(
-                                newPriority.map { it.packageName }.toList(), category)
+                                newPriority.map { it.packageName }.toList(),
+                                category,
+                            )
                             navigationUtils.popBackStack(this)
                             true
                         }
-                    })
+                    }
+                )
             }
     }
 }
