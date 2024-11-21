@@ -195,7 +195,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -285,6 +285,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthConnectMappings mHealthConnectMappings;
     private final TimeSource mTimeSource;
+    private final DatabaseHelpers mDatabaseHelpers;
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
 
@@ -312,7 +313,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             AppInfoHelper appInfoHelper,
             DeviceInfoHelper deviceInfoHelper,
             PreferenceHelper preferenceHelper,
-            TimeSource timeSource) {
+            TimeSource timeSource,
+            DatabaseHelpers databaseHelpers,
+            MigrationEntityHelper migrationEntityHelper) {
         mTimeSource = timeSource;
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
@@ -323,6 +326,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mFirstGrantTimeManager = firstGrantTimeManager;
         mContext = context;
         mCurrentForegroundUser = context.getUser();
+        mDatabaseHelpers = databaseHelpers;
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mMigrationStateManager = migrationStateManager;
         mDeviceInfoHelper = deviceInfoHelper;
@@ -367,7 +371,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
         mChangeLogsHelper = changeLogsHelper;
-        mMigrationEntityHelper = new MigrationEntityHelper();
+        mMigrationEntityHelper = migrationEntityHelper;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
         mCloudBackupManager =
@@ -1817,7 +1821,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA_PERMISSION, null);
         mBackupRestore.deleteAndResetEverything(userHandle);
         mMigrationStateManager.clearCaches(mContext);
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
         RateLimiter.clearCache();
         String[] packageNames = mContext.getPackageManager().getPackagesForUid(getCallingUid());
         for (String packageName : packageNames) {

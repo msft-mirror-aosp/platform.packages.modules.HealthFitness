@@ -66,7 +66,7 @@ import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -132,6 +132,7 @@ public class ImportManagerTest {
     private ExportImportSettingsStorage mExportImportSettingsStorage;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
+    private DatabaseHelpers mDatabaseHelpers;
     private DeviceInfoHelper mDeviceInfoHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
@@ -154,6 +155,7 @@ public class ImportManagerTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
+        mDatabaseHelpers = healthConnectInjector.getDatabaseHelpers();
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
@@ -191,7 +193,6 @@ public class ImportManagerTest {
     @After
     public void tearDown() throws Exception {
         TestUtils.waitForAllScheduledTasksToComplete();
-        DatabaseHelper.clearAllData(mTransactionManager);
 
         File testDir = mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE);
         File[] allContents = testDir.listFiles();
@@ -213,7 +214,7 @@ public class ImportManagerTest {
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
@@ -347,7 +348,7 @@ public class ImportManagerTest {
 
         File zipToImport = zipExportedDb(dbToImport);
 
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 

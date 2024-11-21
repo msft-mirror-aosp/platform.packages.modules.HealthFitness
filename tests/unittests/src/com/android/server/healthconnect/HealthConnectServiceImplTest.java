@@ -277,12 +277,8 @@ public class HealthConnectServiceImplTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(AppInfoHelper.class)
-                    .mockStatic(PreferenceHelper.class)
                     .mockStatic(LocalManagerRegistry.class)
                     .mockStatic(UserHandle.class)
-                    .mockStatic(TransactionManager.class)
-                    .mockStatic(HealthDataCategoryPriorityHelper.class)
                     .mockStatic(HealthFitnessStatsLog.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
@@ -389,7 +385,9 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getAppInfoHelper(),
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getPreferenceHelper(),
-                        healthConnectInjector.getTimeSource());
+                        healthConnectInjector.getTimeSource(),
+                        healthConnectInjector.getDatabaseHelpers(),
+                        healthConnectInjector.getMigrationEntityHelper());
     }
 
     @After

@@ -59,14 +59,11 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,7 +84,6 @@ public class BackupSettingsHelperTest {
 
     private PreferenceHelper mPreferenceHelper;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
-    private TransactionManager mTransactionManager;
     private BackupSettingsHelper mBackupSettingsHelper;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
 
@@ -128,7 +124,6 @@ public class BackupSettingsHelperTest {
                         .setExportImportSettingsStorage(mExportImportSettingsStorage)
                         .build();
 
-        mTransactionManager = healthConnectInjector.getTransactionManager();
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
@@ -139,11 +134,6 @@ public class BackupSettingsHelperTest {
                         mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
 
         when(mExportImportSettingsStorage.getUri()).thenReturn(TEST_URI);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        DatabaseHelper.clearAllData(mTransactionManager);
     }
 
     @Test

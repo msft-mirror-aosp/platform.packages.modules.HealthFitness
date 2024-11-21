@@ -38,7 +38,7 @@ import com.android.server.healthconnect.permission.PermissionPackageChangesOrche
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.Objects;
@@ -62,6 +62,7 @@ public class HealthConnectManagerService extends SystemService {
     private final PreferenceHelper mPreferenceHelper;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
+    private final DatabaseHelpers mDatabaseHelpers;
     private final HealthConnectInjector mHealthConnectInjector;
 
     private UserHandle mCurrentForegroundUser;
@@ -71,7 +72,6 @@ public class HealthConnectManagerService extends SystemService {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mUserManager = context.getSystemService(UserManager.class);
-
 
         HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
         mHealthConnectInjector = HealthConnectInjector.getInstance();
@@ -86,6 +86,7 @@ public class HealthConnectManagerService extends SystemService {
         mExportManager = mHealthConnectInjector.getExportManager();
         mMigrationBroadcastScheduler = mHealthConnectInjector.getMigrationBroadcastScheduler();
         mMigrationUiStateManager = mHealthConnectInjector.getMigrationUiStateManager();
+        mDatabaseHelpers = mHealthConnectInjector.getDatabaseHelpers();
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mContext,
@@ -109,7 +110,9 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getAppInfoHelper(),
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mPreferenceHelper,
-                        mHealthConnectInjector.getTimeSource());
+                        mHealthConnectInjector.getTimeSource(),
+                        mDatabaseHelpers,
+                        mHealthConnectInjector.getMigrationEntityHelper());
     }
 
     @Override
@@ -134,7 +137,7 @@ public class HealthConnectManagerService extends SystemService {
         }
 
         HealthConnectThreadScheduler.shutdownThreadPools();
-        DatabaseHelper.clearAllCache();
+        mDatabaseHelpers.clearAllCache();
         mTransactionManager.onUserSwitching();
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
