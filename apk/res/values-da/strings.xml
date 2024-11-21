@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"I går"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Læst: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Skrevet: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrer tilladelser"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tidspunkt: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivitet"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"hudtemperatur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Læs hudtemperatur"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Skriv hudtemperatur"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Alle sundhedsoplysninger"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"alle sundhedsoplysninger"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Angiv alle sundhedsoplysninger"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Tilstande"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"tilstande"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Læs tilstande"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaccinationer"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaccinationer"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Læs vaccinationer"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Prøvesvar"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"prøvesvar"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Læs prøvesvar"</string>
@@ -377,7 +375,8 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Hvis du giver adgang, kan appen læse og skrive data som f.eks. allergier, prøvesvar, vaccinationer m.m.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Hvis du giver adgang, kan appen læse data som f.eks. allergier, prøvesvar, vaccinationer m.m.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Om sundhedsoplysninger"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Data, der skal deles"</string>
+    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
+    <skip />
     <string name="medical_request_summary" msgid="7281321524805015510">"Hvis du giver tilladelse, kan <xliff:g id="APP_NAME">%1$s</xliff:g> dele dine sundhedsoplysninger med Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Synkroniser dine sundhedsoplysninger fra forskellige apps og kilder for at samle dem ét sted"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vil du fjerne alle tilladelser?"</string>
@@ -436,7 +435,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Disse apps har ikke længere adgang, men har stadig data, der er gemt i Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan læse data, der er tilføjet efter <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Du kan administrere andre Android-tilladelser, som denne app har, ved at gå til Indstillinger &gt; Apps"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Data, som du deler med <xliff:g id="APP_NAME">%1$s</xliff:g>, er dækket af privatlivspolitikken for appen"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Du kan få flere oplysninger om, hvordan <xliff:g id="APP_NAME">%1$s</xliff:g> håndterer dine data, i udviklerens privatlivspolitik"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Du kan administrere andre Android-tilladelser, som denne app har, ved at gå til Indstillinger og trykke på Apps"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Læs privatlivspolitikken"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Brugt inden for de seneste 24 timer"</string>
@@ -1075,8 +1074,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Genoptag Health Connect-integration"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Hvis du vil beholde dine data, skal du fuldføre integrationen inden for <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Appopdatering er påkrævet"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> skal opdateres for fortsat at kunne synkroniseres med Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Nogle apps skal opdateres for fortsat at kunne synkroniseres med Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> skal opdateres for fortsat at kunne synkroniseres med Health Connect. Opdateringer er muligvis ikke tilgængelige for alle apps."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Nogle apps skal opdateres for fortsat at kunne synkroniseres med Health Connect. Opdateringer er muligvis ikke tilgængelige for alle apps."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Søg efter opdateringer"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Få flere oplysninger"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-integration"</string>
@@ -1135,12 +1134,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Se kompatible apps"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Find flere apps, som du kan synkronisere med <xliff:g id="APP_NAME">%s</xliff:g> via Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Se i App Store"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Konfigurer en skærmlås"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Øg beskyttelsen af dine sundhedsdata ved at konfigurere en pinkode, et mønster eller en adgangskode for denne enhed"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Konfigurer skærmlås"</string>
     <string name="select_all" msgid="837499881590001166">"Vælg alle"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Tilknyttede apps vil ikke længere kunne tilgå disse data via Health Connect"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Markeret"</string>
@@ -1183,38 +1179,29 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til trænings- og helbredsdata?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> anmoder om adgang til <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nVælg, om du vil give tilladelse til alle datatyper, eller om du vil administrere dem individuelt."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitness og sundhed"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"hele tiden"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"under brug"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Hele tiden"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Under brug"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan tilgå alle dine fitness- og sundhedsdata <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Har adgang"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Har tilladelse til at læse"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Disse tilladelser giver <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til data fra din enheds sensorer."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> ud af <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> apps har tilladelse"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Ingen apps anmoder om tilladelsen"</string>
+    <string name="allowed" msgid="4158456017482263737">"Har tilladelse"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Har ikke tilladelse"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Apps med denne tilladelse kan tilgå data om <xliff:g id="DATA_TYPE">%s</xliff:g> fra sensorerne på din enhed."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Vil du fjerne adgangen til <xliff:g id="DATA_TYPE">%s</xliff:g> for alle apps på dit ur?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Flueben"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Kryds"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>

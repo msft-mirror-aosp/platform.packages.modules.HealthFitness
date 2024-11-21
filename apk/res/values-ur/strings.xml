@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"گزشتہ کل"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"پڑھیں: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"لکھیں: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"اجازتوں کا نظم کریں"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"وقت: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"سرگرمی"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"جلد کا درجہ حرارت"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"جلد کا درجہ حرارت پڑھیں"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"جلد کا درجہ حرارت لکھیں"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"صحت کے تمام ریکارڈز"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"صحت کے تمام ریکارڈز"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"صحت کے تمام ریکارڈز لکھیں"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"حالات"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"حالات"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"حالات پڑھیں"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"ویکسینز"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"ویکسینز"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"ویکسینز پڑھیں"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"لیب کے نتائج"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"لیب کے نتائج"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"لیب کے نتائج پڑھیں"</string>
@@ -377,7 +375,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"آپ کے رسائی دینے پر، ایپ الرجیز، لیب کے نتائج، ویکسینز اور مزید جیسے ڈیٹا کو پڑھ اور لکھ سکتی ہے\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"آپ کے رسائی دینے پر، ایپ الرجیز، لیب کے نتائج، ویکسینز اور مزید جیسے ڈیٹا کو پڑھ سکتی ہے\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"صحت کے ریکارڈز کے بارے میں"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"اشتراک کرنے کے لیے ڈیٹا"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"اشتراک کرنے کا ڈیٹا شامل ہے"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"آپ کے اجازت دینے پر، <xliff:g id="APP_NAME">%1$s</xliff:g> ایپ آپ کے صحت کے ریکارڈز کا Health Connect کے ساتھ اشتراک کر سکتی ہے۔"</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"اپنے صحت کے ریکارڈز کو اپنی مختلف ایپس اور وسائل سے مطابقت پذیر بنائیں تاکہ انہیں ایک مقام پر رکھا جا سکے"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"تمام اجازتیں ہٹائیں؟"</string>
@@ -436,7 +434,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ان ایپس کو اب مزید رسائی حاصل نہیں ہے لیکن ان کے پاس اب بھی Health Connect میں ڈیٹا اسٹور ہے"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> کے بعد شامل کردہ ڈیٹا کو <xliff:g id="APP_NAME">%1$s</xliff:g> ایپ پڑھ سکتی ہے"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"دیگر Android اجازتوں کا نظم کرنے کے لیے جن تک یہ ایپ رسائی حاصل کر سکتی ہے، ترتیبات &gt; ایپس پر جائیں"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"آپ جس ڈیٹا کا <xliff:g id="APP_NAME">%1$s</xliff:g> کے ساتھ اشتراک کرتے ہیں اسے اس کی رازداری کی پالیسیوں کے ذریعے کوَر کیا جاتا ہے"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"آپ ڈویلپر کی رازداری کی پالیسی میں یہ جان سکتے ہیں کہ <xliff:g id="APP_NAME">%1$s</xliff:g> آپ کے ڈیٹا کو کیسے ہینڈل کرتی ہے"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"دیگر Android اجازتوں کا نظم کرنے کے لیے جن تک یہ ایپ رسائی حاصل کر سکتی ہے، ترتیبات پر جائیں، پھر ایپس پر تھپتھپائیں"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"رازداری کی پالیسی پڑھیں"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"گزشتہ 24 گھنٹے میں رسائی حاصل کی گئی"</string>
@@ -1075,8 +1073,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect کے انضمام کو دوبارہ شروع کریں"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"اپنا ڈیٹا برقرار رکھنے کے لیے، اسے <xliff:g id="TIME_NEEDED">%1$s</xliff:g> دن کے اندر مکمل کریں"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"ایپ کی اپ ڈیٹ درکار ہے"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect کے ساتھ مطابقت پذیری جاری رکھنے کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کو اپ ڈیٹ کرنے کی ضرورت ہے"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect کے ساتھ مطابقت پذیری جاری رکھنے کے لیے کچھ ایپس کو اپ ڈیٹ کرنے کی ضرورت ہے"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"‫Health Connect کے ساتھ مطابقت پذیری جاری رکھنے کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کو اپ ڈیٹ کرنے کی ضرورت ہے۔ ہو سکتا ہے اپ ڈیٹس سبھی ایپس کے لیے دستیاب نہ ہوں۔"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"‫Health Connect کے ساتھ مطابقت پذیری جاری رکھنے کے لیے کچھ ایپس کو اپ ڈیٹ کرنے کی ضرورت ہے۔ ہو سکتا ہے اپ ڈیٹس سبھی ایپس کے لیے دستیاب نہ ہوں۔"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"اپ ڈیٹس چیک کریں"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"مزید جانیں"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"‫Health Connect کا انضمام"</string>
@@ -1135,12 +1133,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"موافق ایپس دیکھیں"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"‫Health Connect کے ذریعے <xliff:g id="APP_NAME">%s</xliff:g> کے ساتھ مطابقت پذیری کرنے کیلئے مزید ایپس تلاش کریں"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"‫App اسٹور پر دیکھیں"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"اسکرین لاک سیٹ کریں"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"اپنی صحت سے متعلق ڈیٹا کے لیے شامل کردہ سیکیورٹی کے لیے، اس آلے کے لیے PIN، پیٹرن یا پاس ورڈ سیٹ کریں"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"اسکرین لاک سیٹ کریں"</string>
     <string name="select_all" msgid="837499881590001166">"سبھی کو منتخب کریں"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"منسلک ایپس Health Connect سے اس ڈیٹا کو مزید نہیں پڑھ سکیں گی"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"نشان زد کر دیا گیا"</string>
@@ -1183,38 +1178,29 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو تندرستی اور فلاح و بہبود کے ڈیٹا تک رسائی کی اجازت دیں؟"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_TYPES">%2$s</xliff:g> تک رسائی کی درخواست کر رہا ہے۔\n\nسبھی کو اجازت دینے کا انتخاب کریں یا انہیں انفرادی طور پر کنٹرول کریں۔"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو <xliff:g id="DATA_TYPE">%2$s</xliff:g> تک رسائی حاصل کرنے کی اجازت دیں؟"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"تندرستی اور بہبودی"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"ہر وقت"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"استعمال کے دوران"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"ہر وقت"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"استعمال کے دوران"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> آپ کے سبھی تندرستی اور فلاح و بہبود کے ڈیٹا تک رسائی <xliff:g id="ALLOW_MODE">%2$s</xliff:g> حاصل کر سکتی ہے"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"رسائی حاصل کرنے کی اجازت دی گئی"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"پڑھنے کی اجازت دی گئی"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"یہ اجازتیں آپ کے آلے کے سینسرز سے ڈیٹا تک <xliff:g id="APP_NAME">%1$s</xliff:g> کو رسائی دیتی ہیں۔"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"‫<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> میں سے <xliff:g id="NUMBER_0">%1$d</xliff:g> ایپس کو اجازت دی گئی ہے"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"کوئی ایپ درخواست نہیں کر رہی ہے"</string>
+    <string name="allowed" msgid="4158456017482263737">"اجازت یافتہ"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"اجازت نہیں ہے"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"اس اجازت والی ایپس آپ کے آلے کے سینسرز سے <xliff:g id="DATA_TYPE">%s</xliff:g> ڈیٹا تک رسائی حاصل کر سکتی ہے۔"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"اپنی گھڑی پر موجود سبھی ایپس پر <xliff:g id="DATA_TYPE">%s</xliff:g> تک رسائی ہٹائیں؟"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"چیک مارک"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"کراس کا نشان"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>
