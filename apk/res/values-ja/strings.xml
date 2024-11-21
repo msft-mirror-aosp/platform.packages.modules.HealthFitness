@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"皮膚温"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"皮膚温を読み取る"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"皮膚温を書き込む"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"ヘルスコネクトに同期・追加されたすべての健康記録が含まれます。これは必ずしも医療記録とは限らず、健康記録の医学的説明は含まれません。"</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"すべての医療記録"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"すべての医療記録"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"医療記録の書き込み"</string>
@@ -791,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"音楽"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"その他"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ガイドなし"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> 分"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> 時間 <xliff:g id="MIN">%2$s</xliff:g> 分"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> 時間"</string>
@@ -1043,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"統合中"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"ヘルスコネクトを Android システムと統合しています。\n\nデータと権限が移行されるまで時間がかかることがあります。"</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"統合完了の通知が表示されるまでアプリを閉じないでください。"</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"ヘルスコネクトの統合中"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"更新が必要です"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"設定から直接アクセスできるよう、ヘルスコネクトを Android システムと統合しています。"</string>
     <string name="update_button" msgid="4544529019832009496">"更新"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"ヘルスコネクトとシステム設定との統合を続行できるよう、この更新を開始してください"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"今すぐ更新"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"システム アップデートが必要です"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"続行する前に、電話システムを更新してください。"</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"電話システムをすでに更新している場合は、スマートフォンを再起動して統合を続行してください"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"ヘルスコネクトの更新が必要です"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"続行する前に、ヘルスコネクト アプリを最新バージョンに更新してください。"</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"空き容量が不足しています"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"ヘルスコネクトの統合を続けるためには、スマートフォンに <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> の空き容量が必要です。\n\nスマートフォンのストレージのデータを一部削除してから、もう一度お試しください。"</string>
     <string name="try_again_button" msgid="8745496819992160789">"再試行"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"空き容量を増やす"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"空き容量が不足しています"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"ヘルスコネクトの統合を続けるには、スマートフォンに <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> の空き容量が必要です。"</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"統合が一時停止しました"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Android システムとの統合中にヘルスコネクト アプリが終了しました。\n\n[再開] をクリックしてアプリを再起動し、データと権限の移行を続行してください。"</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"ヘルスコネクトのデータを保持するため、<xliff:g id="TIME_NEEDED">%1$s</xliff:g>以内に完了してください"</string>
@@ -1070,8 +1068,6 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"ヘルスコネクトと Android システムとの統合を続行するには、タップしてください。データを保持するため、<xliff:g id="TIME_NEEDED">%1$s</xliff:g>以内に統合を完了してください。"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"ヘルスコネクトと Android システムとの統合を続行するには、タップしてください。"</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"続行"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"ヘルスコネクトの統合を再開してください"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"データを保持するため、<xliff:g id="TIME_NEEDED">%1$s</xliff:g>以内に統合を完了してください。"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"アプリの更新が必要です"</string>
     <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"ヘルスコネクトとの同期を続けるには、<xliff:g id="APP_NAME">%1$s</xliff:g> の更新が必要です。アプリによってはアップデートを利用できない場合があります。"</string>
     <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"ヘルスコネクトとの同期を続けるには、いくつかのアプリの更新が必要です。アプリによってはアップデートを利用できない場合があります。"</string>
@@ -1089,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"ヘルスコネクトの統合が完了しませんでした"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"再開できるようになると通知が届きます。"</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"OK"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"ヘルスコネクトの統合が完了しませんでした"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"詳細"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"ヘルスコネクトの統合が完了しました"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"開く"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"新機能"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"設定からヘルスコネクトに直接アクセスできるようになりました。いつでもヘルスコネクト アプリをアンインストールして、ストレージの空き容量を増やすことができます。"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
@@ -1195,12 +1187,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"スマートウォッチのすべてのアプリから<xliff:g id="DATA_TYPE">%s</xliff:g>のアクセス権を削除しますか？"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"チェックマーク"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"バツマーク"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"現在、<xliff:g id="APP_NAME">%1$s</xliff:g> はフィットネスとウェルネスに関するデータにアクセスできます（<xliff:g id="ALLOW_MODE">%2$s</xliff:g>）"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"フィットネスとウェルネスに関するデータへのアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に常に許可しますか？"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> は<xliff:g id="DATA_TYPES">%2$s</xliff:g>へのアクセスが可能です。"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"フィットネスとウェルネスに関する権限を管理"</string>
 </resources>
