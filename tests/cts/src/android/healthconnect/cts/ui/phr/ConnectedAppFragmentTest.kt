@@ -19,6 +19,7 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -69,10 +70,8 @@ class ConnectedAppFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appWithFitnessPermissionsOnly_showsFitnessPermissionsScreen() {
         context.launchMainActivity {
-            scrollDownTo(By.text("App permissions"))
-            findTextAndClick("App permissions")
-            scrollDownTo(By.text("Health Connect cts test app 2"))
-            findTextAndClick("Health Connect cts test app 2")
+            scrollDownToAndClick(By.text("App permissions"))
+            scrollDownToAndClick(By.text("CtsHealthConnectTestAppBWithNormalReadWritePermission"))
 
             scrollDownTo(By.text("Allowed to read"))
             scrollDownTo(By.text("Allowed to write"))

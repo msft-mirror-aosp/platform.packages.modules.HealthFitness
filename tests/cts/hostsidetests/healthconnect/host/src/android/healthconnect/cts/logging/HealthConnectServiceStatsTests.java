@@ -18,6 +18,14 @@ package android.healthconnect.cts.logging;
 
 import static android.healthconnect.cts.HostSideTestUtil.isHardwareSupported;
 import static android.healthfitness.api.ApiMethod.CREATE_MEDICAL_DATA_SOURCE;
+import static android.healthfitness.api.ApiMethod.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
+import static android.healthfitness.api.ApiMethod.DELETE_MEDICAL_RESOURCES_BY_IDS;
+import static android.healthfitness.api.ApiMethod.DELETE_MEDICAL_RESOURCES_BY_REQUESTS;
+import static android.healthfitness.api.ApiMethod.GET_MEDICAL_DATA_SOURCES_BY_IDS;
+import static android.healthfitness.api.ApiMethod.GET_MEDICAL_DATA_SOURCES_BY_REQUESTS;
+import static android.healthfitness.api.ApiMethod.READ_MEDICAL_RESOURCES_BY_IDS;
+import static android.healthfitness.api.ApiMethod.READ_MEDICAL_RESOURCES_BY_REQUESTS;
+import static android.healthfitness.api.ApiMethod.UPSERT_MEDICAL_RESOURCES;
 import static android.healthfitness.api.ApiStatus.ERROR;
 import static android.healthfitness.api.ApiStatus.SUCCESS;
 
@@ -26,6 +34,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import android.cts.statsdatom.lib.ConfigUtils;
 import android.cts.statsdatom.lib.DeviceUtils;
@@ -43,7 +52,6 @@ import com.android.os.StatsLog;
 import com.android.os.healthfitness.api.ApiExtensionAtoms;
 import com.android.os.healthfitness.api.HealthConnectApiCalled;
 import com.android.tradefed.build.IBuildInfo;
-import com.android.tradefed.device.DeviceNotAvailableException;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.IBuildReceiver;
 import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
@@ -65,8 +73,6 @@ public class HealthConnectServiceStatsTests extends BaseHostJUnit4Test implement
             HostFlagsValueProvider.createCheckFlagsRule(this::getDevice);
 
     private static final String TEST_APP_PKG_NAME = "android.healthconnect.cts.testhelper";
-    private static final String PERMISSION_WRITE_MEDICAL_DATA =
-            "android.permission.health.WRITE_MEDICAL_DATA";
     private IBuildInfo mCtsBuild;
 
     @Before
@@ -100,36 +106,94 @@ public class HealthConnectServiceStatsTests extends BaseHostJUnit4Test implement
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
     })
-    public void testCreateMedicalDataSource_withWritePermission_expectSuccessLogs()
-            throws Exception {
+    public void testPhrApiAndStatusLogs() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
         }
-        grantPermission(PERMISSION_WRITE_MEDICAL_DATA);
 
-        List<StatsLog.EventMetricData> data =
-                uploadAtomConfigAndTriggerTest("testCreateMedicalDataSource");
+        List<AssertApiCallParams> testCases =
+                List.of(
+                        createAssertApiCallParams(
+                                "testCreateMedicalDataSourceSuccess",
+                                CREATE_MEDICAL_DATA_SOURCE,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testCreateMedicalDataSourceError",
+                                CREATE_MEDICAL_DATA_SOURCE,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByIdsSuccess",
+                                GET_MEDICAL_DATA_SOURCES_BY_IDS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByIdsError",
+                                GET_MEDICAL_DATA_SOURCES_BY_IDS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByRequestSuccess",
+                                GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByRequestError",
+                                GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalDataSourceWithDataSuccess",
+                                DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalDataSourceWithDataError",
+                                DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testUpsertMedicalResourcesSuccess",
+                                UPSERT_MEDICAL_RESOURCES,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testUpsertMedicalResourcesError", UPSERT_MEDICAL_RESOURCES, ERROR),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByIdsSuccess",
+                                READ_MEDICAL_RESOURCES_BY_IDS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByIdsError",
+                                READ_MEDICAL_RESOURCES_BY_IDS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByRequestsSuccess",
+                                READ_MEDICAL_RESOURCES_BY_REQUESTS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByRequestsError",
+                                READ_MEDICAL_RESOURCES_BY_REQUESTS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByIdsSuccess",
+                                DELETE_MEDICAL_RESOURCES_BY_IDS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByIdsError",
+                                DELETE_MEDICAL_RESOURCES_BY_IDS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByRequestSuccess",
+                                DELETE_MEDICAL_RESOURCES_BY_REQUESTS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByRequestError",
+                                DELETE_MEDICAL_RESOURCES_BY_REQUESTS,
+                                ERROR));
 
-        assertApiStatus(data, CREATE_MEDICAL_DATA_SOURCE, SUCCESS);
-    }
+        for (AssertApiCallParams params : testCases) {
+            setUp();
 
-    @Test
-    @RequiresFlagsEnabled({
-        FLAG_PERSONAL_HEALTH_RECORD,
-        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
-    })
-    public void testCreateMedicalDataSource_withoutWritePermission_expectErrorLogs()
-            throws Exception {
-        if (!isHardwareSupported(getDevice())) {
-            return;
+            List<StatsLog.EventMetricData> data =
+                    uploadAtomConfigAndTriggerTest(params.methodNameToTriggerApi);
+
+            assertApiStatus(data, params.apiMethod, params.apiStatus);
+
+            tearDown();
         }
-        revokePermission(PERMISSION_WRITE_MEDICAL_DATA);
-
-        List<StatsLog.EventMetricData> data =
-                uploadAtomConfigAndTriggerTest("testCreateMedicalDataSource");
-
-        assertApiStatus(data, CREATE_MEDICAL_DATA_SOURCE, ERROR);
     }
 
     @Test
@@ -473,18 +537,34 @@ public class HealthConnectServiceStatsTests extends BaseHostJUnit4Test implement
     private static void assertApiStatus(
             List<StatsLog.EventMetricData> data, ApiMethod apiMethod, ApiStatus apiStatus) {
         StatsLog.EventMetricData event = getEventForApiMethod(data, apiMethod);
+        assertWithMessage("Asserting API %s with status %s", apiMethod.name(), apiStatus.name())
+                .that(event)
+                .isNotNull();
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(apiStatus);
-        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
+        assertWithMessage("Asserting API %s with status %s", apiMethod.name(), apiStatus.name())
+                .that(atom.getApiStatus())
+                .isEqualTo(apiStatus);
+        assertWithMessage("Asserting API %s with status %s", apiMethod.name(), apiStatus.name())
+                .that(atom.getPackageName())
+                .isEqualTo(TEST_APP_PKG_NAME);
     }
 
-    private void grantPermission(String permission) throws DeviceNotAvailableException {
-        getDevice().executeShellCommand("pm grant " + TEST_APP_PKG_NAME + " " + permission);
+    private static AssertApiCallParams createAssertApiCallParams(
+            String methodToTriggerApi, ApiMethod apiMethod, ApiStatus apiStatus) {
+        return new AssertApiCallParams(methodToTriggerApi, apiMethod, apiStatus);
     }
 
-    private void revokePermission(String permission) throws DeviceNotAvailableException {
-        getDevice().executeShellCommand("pm revoke " + TEST_APP_PKG_NAME + " " + permission);
+    private static class AssertApiCallParams {
+        public final String methodNameToTriggerApi;
+        public final ApiMethod apiMethod;
+        public final ApiStatus apiStatus;
+
+        AssertApiCallParams(String methodToTriggerApi, ApiMethod apiMethod, ApiStatus apiStatus) {
+            this.methodNameToTriggerApi = methodToTriggerApi;
+            this.apiMethod = apiMethod;
+            this.apiStatus = apiStatus;
+        }
     }
 }

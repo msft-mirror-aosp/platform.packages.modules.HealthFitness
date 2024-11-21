@@ -245,7 +245,8 @@ public class HealthConnectServiceImplTest {
                     "queryAllMedicalResourceTypeInfos",
                     "runImmediateExport",
                     "getChangesForBackup",
-                    "getSettingsForBackup");
+                    "getSettingsForBackup",
+                    "pushSettingsForRestore");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -323,7 +324,7 @@ public class HealthConnectServiceImplTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    android.healthconnect.cts.utils.TestUtils::isHardwareSupported,
+                    android.healthconnect.cts.utils.TestUtils::isHealthConnectFullySupported,
                     "Tests should run on supported hardware only.");
 
     @Before
@@ -354,21 +355,28 @@ public class HealthConnectServiceImplTest {
                         .setTransactionManager(mTransactionManager)
                         .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setHealthConnectPermissionHelper(mHealthConnectPermissionHelper)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setMigrationCleaner(mMigrationCleaner)
+                        .setMedicalDataSourceHelper(mMedicalDataSourceHelper)
+                        .setMedicalResourceHelper(mMedicalResourceHelper)
+                        .setMigrationStateManager(mMigrationStateManager)
                         .setAppInfoHelper(mAppInfoHelper)
+                        .setAppInfoHelper(mAppInfoHelper)
+                        .setTimeSource(mFakeTimeSource)
                         .build();
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
-                        mTransactionManager,
-                        mHealthConnectPermissionHelper,
-                        mMigrationCleaner,
-                        mFirstGrantTimeManager,
-                        mMigrationStateManager,
-                        mMigrationUiStateManager,
                         mServiceContext,
-                        mMedicalResourceHelper,
-                        mMedicalDataSourceHelper,
+                        healthConnectInjector.getTransactionManager(),
+                        healthConnectInjector.getHealthConnectPermissionHelper(),
+                        healthConnectInjector.getMigrationCleaner(),
+                        healthConnectInjector.getFirstGrantTimeManager(),
+                        healthConnectInjector.getMigrationStateManager(),
+                        mMigrationUiStateManager,
+                        healthConnectInjector.getMedicalResourceHelper(),
+                        healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
                         healthConnectInjector.getExportImportSettingsStorage(),
                         healthConnectInjector.getAccessLogsHelper(),
@@ -380,8 +388,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getPriorityMigrationHelper(),
                         healthConnectInjector.getAppInfoHelper(),
                         healthConnectInjector.getDeviceInfoHelper(),
-                        mPreferenceHelper,
-                        mFakeTimeSource);
+                        healthConnectInjector.getPreferenceHelper(),
+                        healthConnectInjector.getTimeSource());
     }
 
     @After

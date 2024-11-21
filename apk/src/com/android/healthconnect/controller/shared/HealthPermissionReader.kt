@@ -18,12 +18,15 @@ package com.android.healthconnect.controller.shared
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.pm.PackageManager.PackageInfoFlags
 import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
+import android.os.Process
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
@@ -32,6 +35,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Co
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthfitness.flags.AconfigFlagHelper
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
+import com.android.healthfitness.flags.Flags
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -42,7 +46,12 @@ import javax.inject.Singleton
  * resources. See android.health.connect.HealthPermissions
  */
 @Singleton
-class HealthPermissionReader @Inject constructor(@ApplicationContext private val context: Context) {
+class HealthPermissionReader
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
+) {
 
     companion object {
         private const val HEALTH_PERMISSION_GROUP = "android.permission-group.HEALTH"
@@ -66,6 +75,34 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
                 HealthPermissions.READ_MEDICAL_DATA_VISITS,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
             )
+
+        /**
+         * Determines if an app's permission group is user-sensitive. If an app is not user
+         * sensitive, then it is considered a system app, and hidden in the UI by default.
+         *
+         * This logic is copied from PermissionController/AppPermGroupUiInfoLiveData because we want
+         * to achieve consistent numbers as showed in Settings->PermissionManager.
+         *
+         * @param permFlags the permission flags corresponding to the permissions requested by a
+         *   given app
+         * @param packageFlags flag of
+         *   [android.R.styleable#AndroidManifestUsesPermission&lt;uses-permission&gt;] tag included
+         *   under &lt;manifest&gt
+         * @return Whether or not this package requests a user sensitive permission
+         */
+        private fun isUserSensitive(permFlags: Int?, packageFlags: Int?): Boolean {
+            if (permFlags == null || packageFlags == null) {
+                return true
+            }
+            val granted =
+                packageFlags and PackageInfo.REQUESTED_PERMISSION_GRANTED != 0 &&
+                    permFlags and PackageManager.FLAG_PERMISSION_REVOKED_COMPAT == 0
+            return if (granted) {
+                permFlags and PackageManager.FLAG_PERMISSION_USER_SENSITIVE_WHEN_GRANTED != 0
+            } else {
+                permFlags and PackageManager.FLAG_PERMISSION_USER_SENSITIVE_WHEN_DENIED != 0
+            }
+        }
     }
 
     /**
@@ -73,11 +110,79 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
      * (additional or data type).
      */
     fun getAppsWithHealthPermissions(): List<String> {
+        if (
+            context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+                Flags.replaceBodySensorPermissionEnabled()
+        ) {
+            // On Wear, do not depend on intent filter, instead, query apps by requested permissions
+            // and filter out system apps.
+            return getPackagesRequestingSystemHealthPermissions()
+        }
         return try {
             appsWithDeclaredIntent().filter { getValidHealthPermissions(it).isNotEmpty() }
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    /**
+     * Identifies apps that have system health permissions requested.
+     *
+     * This function queries all apps and search for non-system apps that have requested at least
+     * one health permissions. This function does not rely on health rationale intent filter. The
+     * processing time of this function will be longer than the intent filter approach.
+     *
+     * @return a list of app package names that have requested at least one health permission and
+     *   that are not system apps
+     */
+    private fun getPackagesRequestingSystemHealthPermissions(): List<String> {
+        val packages =
+            context.packageManager.getInstalledPackagesAsUser(
+                PackageManager.GET_PERMISSIONS,
+                Process.myUserHandle().getIdentifier(),
+            )
+        val healthApps = mutableListOf<String>()
+        val systemHealthPermissions = getSystemHealthPermissions()
+
+        for (info in packages) {
+            val packageName = info.packageName
+            val requestedPermissions = info.requestedPermissions ?: continue
+
+            // Create a subset of requestedPermissions, where only system health permissions are
+            // included. This is because HealthConnect service enforceValidHealthPermissions before
+            // getPermissionFlags, and we're only interested in system health permissions in
+            // displaying wear UI.
+            val requestedSystemHealthPermissions =
+                requestedPermissions
+                    .withIndex()
+                    .filter { (_, permissionName) ->
+                        systemHealthPermissions.contains(permissionName)
+                    }
+                    .associate { (index, permissionName) -> index to permissionName }
+            if (requestedSystemHealthPermissions.isEmpty()) {
+                continue
+            }
+
+            // Only display non-system apps who are considered user-sensitive for health permission
+            // group. Use permission flags to determine whether an app is user-sensitive.
+            // This is a HealthConnect service call to get permission flags.
+            val allPermFlags =
+                getHealthPermissionsFlagsUseCase(
+                    packageName,
+                    requestedSystemHealthPermissions.values.toList(),
+                )
+            if (
+                requestedSystemHealthPermissions.any { (index, permissionName) ->
+                    isUserSensitive(
+                        allPermFlags[permissionName],
+                        info.requestedPermissionsFlags?.getOrNull(index),
+                    )
+                }
+            ) {
+                healthApps.add(packageName)
+            }
+        }
+        return healthApps
     }
 
     fun getAppsWithFitnessPermissions(): List<String> {
@@ -292,8 +397,8 @@ class HealthPermissionReader @Inject constructor(@ApplicationContext private val
                 .queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0)
                 .map { permissionInfo -> permissionInfo.name }
                 .filter { permissionName ->
-                    !AppOpsManager.permissionToOp(permissionName)
-                        .equals(AppOpsManager.OPSTR_READ_WRITE_HEALTH_DATA)
+                    val appOp = AppOpsManager.permissionToOp(permissionName)
+                    appOp != null && !appOp.equals(AppOpsManager.OPSTR_READ_WRITE_HEALTH_DATA)
                 }
         return permissions
     }

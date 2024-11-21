@@ -57,12 +57,13 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHealthConnectFullySupported()) {
+                return
+            }
+
             TestUtils.deleteAllStagedRemoteData()
             TestUtils.deleteAllMedicalData()
 
-            if (!TestUtils.isHardwareSupported()) {
-                return
-            }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
                 StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
@@ -72,7 +73,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
-            if (!TestUtils.isHardwareSupported()) {
+            if (!TestUtils.isHealthConnectFullySupported()) {
                 return
             }
             TestUtils.deleteAllStagedRemoteData()

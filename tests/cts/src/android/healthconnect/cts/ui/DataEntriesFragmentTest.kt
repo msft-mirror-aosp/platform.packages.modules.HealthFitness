@@ -92,7 +92,7 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun tearDown() {
-            if (!TestUtils.isHardwareSupported()) {
+            if (!TestUtils.isHealthConnectFullySupported()) {
                 return
             }
             verifyDeleteRecords(
