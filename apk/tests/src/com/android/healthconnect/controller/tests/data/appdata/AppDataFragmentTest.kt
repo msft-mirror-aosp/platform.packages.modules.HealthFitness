@@ -62,7 +62,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -83,7 +83,7 @@ class AppDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
     @Inject lateinit var appInfoReader: AppInfoReader
@@ -102,7 +102,6 @@ class AppDataFragmentTest {
     fun tearDown() {
         toggleAnimation(true)
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
