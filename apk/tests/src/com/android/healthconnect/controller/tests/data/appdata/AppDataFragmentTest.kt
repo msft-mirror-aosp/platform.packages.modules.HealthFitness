@@ -35,11 +35,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataFragment
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
-import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.DELETE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.DELETE
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.Constants
