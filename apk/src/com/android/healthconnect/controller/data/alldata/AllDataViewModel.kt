@@ -19,12 +19,12 @@ package com.android.healthconnect.controller.data.alldata
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -33,28 +33,13 @@ import kotlinx.coroutines.launch
 /** View model for the [AllDataFragment] . */
 @HiltViewModel
 class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDataUseCase) :
-    ViewModel() {
+    DeletionDataViewModel() {
 
     companion object {
         private const val TAG = "AllDataViewModel"
     }
 
     private val _allData = MutableLiveData<AllDataState>()
-
-    private val _setOfPermissionTypesToBeDeleted = MutableLiveData<Set<HealthPermissionType>>()
-
-    val setOfPermissionTypesToBeDeleted: LiveData<Set<HealthPermissionType>>
-        get() = _setOfPermissionTypesToBeDeleted
-
-    private var numOfPermissionTypes: Int = 0
-
-    private var allDataDeletionScreenState: AllDataDeletionScreenState =
-        AllDataDeletionScreenState.VIEW
-
-    private val _allPermissionTypesSelected = MutableLiveData<Boolean>()
-
-    val allPermissionTypesSelected: LiveData<Boolean>
-        get() = _allPermissionTypesSelected
 
     /** Provides a list of [PermissionTypesPerCategory]s to be displayed in [AllDataFragment]. */
     val allData: LiveData<AllDataState>
@@ -108,53 +93,11 @@ class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDa
             .isNotEmpty()
     }
 
-    fun resetDeleteSet() {
-        _setOfPermissionTypesToBeDeleted.value = (emptySet())
-    }
-
-    fun addToDeleteSet(permissionType: HealthPermissionType) {
-        val deleteSet = _setOfPermissionTypesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.add(permissionType)
-        _setOfPermissionTypesToBeDeleted.value = (deleteSet.toSet())
-        if (numOfPermissionTypes == deleteSet.size) {
-            _allPermissionTypesSelected.postValue(true)
-        }
-    }
-
-    fun removeFromDeleteSet(permissionType: HealthPermissionType) {
-        val deleteSet = _setOfPermissionTypesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.remove(permissionType)
-        _setOfPermissionTypesToBeDeleted.value = (deleteSet.toSet())
-        if (deleteSet.size != numOfPermissionTypes) {
-            _allPermissionTypesSelected.postValue(false)
-        }
-    }
-
-    fun setScreenState(screenState: AllDataDeletionScreenState) {
-        this.allDataDeletionScreenState = screenState
-        if (allDataDeletionScreenState == AllDataDeletionScreenState.VIEW) {
-            resetDeleteSet()
-        }
-    }
-
-    fun getScreenState(): AllDataDeletionScreenState {
-        return allDataDeletionScreenState
-    }
-
-    fun getNumOfPermissionTypes(): Int {
-        return numOfPermissionTypes
-    }
-
     sealed class AllDataState {
-        object Loading : AllDataState()
+        data object Loading : AllDataState()
 
-        object Error : AllDataState()
+        data object Error : AllDataState()
 
         data class WithData(val dataMap: List<PermissionTypesPerCategory>) : AllDataState()
-    }
-
-    enum class AllDataDeletionScreenState {
-        VIEW,
-        DELETE,
     }
 }
