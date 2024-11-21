@@ -16,13 +16,8 @@
 <!-- Keep resources loaded by name by the system server -->
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:keep="
-        @string/*_notification_action,
         @string/*_notification_content,
         @string/*_notification_title,
         @string/export_notification_*,
-        @string/free_up_space_button,
         @string/import_notification_*,
-        @string/resume_button,
-        @string/resume_migration_banner_button,
-        @string/try_again_button,
     " />
