@@ -181,6 +181,18 @@ flag {
 }
 
 flag {
+    name: "phr_upsert_fix_use_shared_memory"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for fixing upsertMedicalResources to use shared memory."
+    bug: "380022133"
+    is_fixed_read_only: true
+    is_exported: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
     name: "export_import"
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."

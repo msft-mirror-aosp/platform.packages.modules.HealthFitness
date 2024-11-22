@@ -52,6 +52,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_UPSERT_FIX_USE_SHARED_MEMORY;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -285,9 +286,9 @@ public class UpsertMedicalResourcesCtsTest {
         TestUtils.setLowerRateLimitsForTesting(false);
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
-        // TODO: b/380022133 - Increase this to 2mb after using shared memory in
-        //  UpsertMedicalResourceRequest. Right now we can only insert around 500kb before getting
-        //  an exception "android.os.TransactionTooLargeException: data parcel size".
+        // Without writing the upsert requests to shared memory, we are able to insert around
+        // 500kb before getting an exception "android.os.TransactionTooLargeException: data parcel
+        // size". The test below tests writing 2mb of data with shared memory enabled.
         int sizeToInsert = 500000;
         int totalRequestSize = 0;
         int requestCounter = 0;
@@ -306,6 +307,39 @@ public class UpsertMedicalResourcesCtsTest {
         mManager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
 
         receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION,
+        FLAG_PHR_UPSERT_FIX_USE_SHARED_MEMORY
+    })
+    public void testUpsertMedicalResources_insert2mbOfDataTestingSharedMemory_succeeds()
+            throws InterruptedException {
+        TestUtils.setLowerRateLimitsForTesting(false);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        int sizeToInsert = 2000000;
+        int totalRequestSize = 0;
+        int requestCounter = 0;
+        List<UpsertMedicalResourceRequest> requests = new ArrayList<>();
+        while (totalRequestSize < sizeToInsert) {
+            requestCounter++;
+            UpsertMedicalResourceRequest request =
+                    makeImmunizationUpsertRequest(dataSourceId, String.valueOf(requestCounter));
+            requests.add(request);
+            // Get the parcel size of the request and add it to the totalRequestSize
+            Parcel parcel = Parcel.obtain();
+            request.writeToParcel(parcel, 0);
+            totalRequestSize += parcel.dataSize();
+        }
+
+        mManager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+        assertThat(receiver.getResponse().size()).isAtLeast(500);
     }
 
     @Test

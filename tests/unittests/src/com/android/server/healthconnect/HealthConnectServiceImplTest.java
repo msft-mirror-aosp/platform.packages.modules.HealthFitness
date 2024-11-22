@@ -114,10 +114,12 @@ import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceListParcelResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
+import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntityParcel;
@@ -239,6 +241,7 @@ public class HealthConnectServiceImplTest {
                     "getMedicalDataSourcesByRequest",
                     "deleteMedicalResourcesByIds",
                     "deleteMedicalResourcesByRequest",
+                    "upsertMedicalResourcesFromRequestsParcel",
                     "upsertMedicalResources",
                     "readMedicalResourcesByIds",
                     "readMedicalResourcesByRequest",
@@ -311,6 +314,7 @@ public class HealthConnectServiceImplTest {
     @Mock IReadMedicalResourcesResponseCallback mReadMedicalResourcesResponseCallback;
     @Mock IEmptyResponseCallback mEmptyResponseCallback;
     @Mock IMedicalResourcesResponseCallback mMedicalResourcesResponseCallback;
+    @Mock IMedicalResourceListParcelResponseCallback mMedicalResourceListParcelResponseCallback;
     @Captor ArgumentCaptor<HealthConnectExceptionParcel> mErrorCaptor;
     @Captor ArgumentCaptor<List<MedicalDataSource>> mMedicalDataSourcesResponseCaptor;
     private FakeTimeSource mFakeTimeSource;
@@ -1221,6 +1225,32 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testUpsertMedicalResourcesFromRequestsParcel_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
     @EnableFlags({
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
@@ -1251,6 +1281,39 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testUpsertMedicalResourcesFromRequestsParcel_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(UPSERT_MEDICAL_RESOURCES),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(UPSERT_MEDICAL_RESOURCES),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testUpsertMedicalResources_flagOff_throws() throws Exception {
         IMedicalResourcesResponseCallback callback = mock(IMedicalResourcesResponseCallback.class);
@@ -1264,6 +1327,27 @@ public class HealthConnectServiceImplTest {
                 callback);
 
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResourcesFromRequestsParcel_flagOff_throws() throws Exception {
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        verify(mMedicalResourceListParcelResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
     }
@@ -1828,17 +1912,39 @@ public class HealthConnectServiceImplTest {
             throws RemoteException {
         setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
 
-        IMedicalResourcesResponseCallback callback = mock(IMedicalResourcesResponseCallback.class);
-
         mHealthConnectService.upsertMedicalResources(
                 mAttributionSource,
                 List.of(
                         new UpsertMedicalResourceRequest.Builder(
                                         DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
                                 .build()),
-                callback);
+                mMedicalResourcesResponseCallback);
 
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        verify(mMedicalResourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResourcesFromRequestsParcel_hasDataManagementPermission_throws()
+            throws RemoteException {
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        verify(mMedicalResourceListParcelResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
@@ -1857,6 +1963,27 @@ public class HealthConnectServiceImplTest {
                 callback);
 
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResourcesFromRequestsParcel_noWriteMedicalDataPermission_throws()
+            throws Exception {
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        verify(mMedicalResourceListParcelResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }

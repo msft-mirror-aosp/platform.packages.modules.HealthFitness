@@ -32,9 +32,10 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
+
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
-import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
@@ -51,6 +52,7 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_REQUESTS;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPDATE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPSERT_MEDICAL_RESOURCES;
+
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -104,6 +106,7 @@ import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceListParcelResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
@@ -111,12 +114,14 @@ import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
+import android.health.connect.aidl.MedicalResourceListParcel;
 import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
 import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
@@ -159,6 +164,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
@@ -208,6 +214,9 @@ import com.android.server.healthconnect.storage.request.UpsertTransactionRequest
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.utils.TimeSource;
+
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -226,7 +235,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.json.JSONException;
 
 /**
  * IHealthConnectService's implementation
@@ -2508,13 +2516,47 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 /* isController= */ holdsDataManagementPermission);
     }
 
+    /**
+     * Service implementation of {@link HealthConnectManager#upsertMedicalResources} when the flag
+     * PHR_UPSERT_FIX_USE_SHARED_MEMORY is enabled.
+     *
+     * <p>The {@link UpsertMedicalResourceRequestsParcel} will be written to shared memory if
+     * required, so more data can be sent.
+     */
+    @Override
+    public void upsertMedicalResourcesFromRequestsParcel(
+            AttributionSource attributionSource,
+            UpsertMedicalResourceRequestsParcel requestsParcel,
+            IMedicalResourceListParcelResponseCallback callback) {
+        checkParamsNonNull(attributionSource, requestsParcel, callback);
+
+        final ErrorCallback errorCallback = callback::onError;
+
+        upsertMedicalResources(
+                attributionSource, requestsParcel.getUpsertRequests(), callback, errorCallback);
+    }
+
+    /**
+     * Service implementation of {@link HealthConnectManager#upsertMedicalResources} when the flag
+     * PHR_UPSERT_FIX_USE_SHARED_MEMORY is disabled.
+     */
     @Override
     public void upsertMedicalResources(
             AttributionSource attributionSource,
             List<UpsertMedicalResourceRequest> requests,
             IMedicalResourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, requests, callback);
+
         final ErrorCallback errorCallback = callback::onError;
+
+        upsertMedicalResources(attributionSource, requests, callback, errorCallback);
+    }
+
+    private void upsertMedicalResources(
+            AttributionSource attributionSource,
+            List<UpsertMedicalResourceRequest> requests,
+            android.os.IInterface callback,
+            ErrorCallback errorCallback) {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -2542,7 +2584,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     if (requests.isEmpty()) {
-                        tryAndReturnResult(callback, List.of(), logger);
+                        tryAndReturnMedicalResourcesResult(callback, List.of(), logger);
                     }
 
                     enforceIsForegroundUser(userHandle);
@@ -2585,6 +2627,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         validatedMedicalResourcesToUpsert.add(
                                 validator.validateAndCreateInternalRequest());
                     }
+
                     List<MedicalResource> medicalResources =
                             mMedicalResourceHelper.upsertMedicalResources(
                                     callingPackageName, validatedMedicalResourcesToUpsert);
@@ -2594,7 +2637,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     .collect(toSet()));
                     logger.setNumberOfRecords(medicalResources.size());
 
-                    tryAndReturnResult(callback, medicalResources, logger);
+                    tryAndReturnMedicalResourcesResult(callback, medicalResources, logger);
                 },
                 logger,
                 errorCallback,
@@ -3507,12 +3550,42 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         }
     }
 
+    private static void tryAndReturnMedicalResourcesResult(
+            android.os.IInterface callback,
+            List<MedicalResource> medicalResources,
+            HealthConnectServiceLogger.Builder logger) {
+        if (callback instanceof IMedicalResourcesResponseCallback) {
+            tryAndReturnResult(
+                    (IMedicalResourcesResponseCallback) callback, medicalResources, logger);
+        } else if (callback instanceof IMedicalResourceListParcelResponseCallback) {
+            tryAndReturnResult(
+                    (IMedicalResourceListParcelResponseCallback) callback,
+                    new MedicalResourceListParcel(medicalResources),
+                    logger);
+        } else {
+            throw new IllegalStateException("Unexpected callback type for upsertMedicalResources");
+        }
+    }
+
     private static void tryAndReturnResult(
             IMedicalResourcesResponseCallback callback,
             List<MedicalResource> medicalResources,
             HealthConnectServiceLogger.Builder logger) {
         try {
             callback.onResult(medicalResources);
+            logger.setHealthDataServiceApiStatusSuccess();
+        } catch (RemoteException e) {
+            Slog.e(TAG, "Remote call to return UpsertMedicalResourcesResponse failed", e);
+            logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+        }
+    }
+
+    private static void tryAndReturnResult(
+            IMedicalResourceListParcelResponseCallback callback,
+            MedicalResourceListParcel medicalResourceListParcel,
+            HealthConnectServiceLogger.Builder logger) {
+        try {
+            callback.onResult(medicalResourceListParcel);
             logger.setHealthDataServiceApiStatusSuccess();
         } catch (RemoteException e) {
             Slog.e(TAG, "Remote call to return UpsertMedicalResourcesResponse failed", e);
