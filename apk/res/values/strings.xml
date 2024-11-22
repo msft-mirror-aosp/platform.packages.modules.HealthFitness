@@ -1432,7 +1432,6 @@
     <string name="migration_in_progress_screen_title" description="Title of screen shown when migration is in progress">Integration in progress</string>
     <string name="migration_in_progress_screen_integration_details" description="Detail information shown when migration is in progress">Health&#160;Connect is being integrated with the Android system.\n\nIt may take some time while your data and permissions are being transferred.</string>
     <string name="migration_in_progress_screen_integration_dont_close" description="Instruction to not close application shown when migration is in progress">Don\'t close the app until you get a notification that the process is complete.</string>
-    <string name="migration_in_progress_notification_title" description="Title of notification sent when migration is in progress">Health&#160;Connect integration in progress</string>
     <!--  endregion -->
 
     <!-- region Update needed common -->
@@ -1440,7 +1439,6 @@
     <string name="migration_update_needed_screen_details" description="Detail information shown when migration is pending and an update is needed.">Health&#160;Connect is being integrated with the Android system so you can access it directly from your settings.</string>
     <string name="update_button" description="Text of a button prompting the user to update an app or their phone system [CHAR_LIMIT=40]">Update</string>
     <string name="migration_update_needed_notification_content" description="Content of notification sent when migration is pending and an app or module update is needed.">Start this update so that Health&#160;Connect can continue integrating with your system settings</string>
-    <string name="migration_update_needed_notification_action" description="Action of notification sent when migration is pending and an app or module update is needed.">Update now</string>
     <!--  endregion -->
 
     <!-- region Module Update needed -->
@@ -1450,7 +1448,6 @@
 
     <!--  endregion -->
     <!-- region App Update needed -->
-    <string name="migration_app_update_needed_notification_title" description="Title of notification sent when migration is pending and an app or module update is needed.">Health&#160;Connect update needed</string>
     <string name="migration_app_update_needed_action" description="Action information shown when migration is pending and an app update is needed.">Before continuing, update the Health&#160;Connect app to the latest version.</string>
     <!--  endregion -->
 
@@ -1460,8 +1457,6 @@
     <string name="migration_more_space_needed_screen_details" description="Detail information shown when migration is pending and more space is needed.">Health&#160;Connect needs <xliff:g example="500MB" id="space_needed">%1$s</xliff:g> of storage space on your phone in order for the integration to continue.\n\nClear some space on your phone and then try again.</string>
     <string name="try_again_button" description="Text of a button prompting the user to try looking at the space again [CHAR_LIMIT=40]">Try again</string>
     <string name="free_up_space_button" description="Text of a button leading the user to their system storage so they can free up space. [CHAR_LIMIT=40]">Free up space</string>
-    <string name="migration_more_space_needed_notification_title" description="Title of notification sent when migration is pending and more space is needed.">More space needed</string>
-    <string name="migration_more_space_needed_notification_content" description="Content of notification sent when migration is pending and more space is needed.">Health&#160;Connect needs <xliff:g example="500MB" id="space_needed">%1$s</xliff:g> of storage space on your phone to continue integrating.</string>
     <!--  endregion -->
 
     <!-- region Migration paused -->
@@ -1478,8 +1473,6 @@
     <string name="resume_migration_banner_description" description="Description of banner prompting the user to resume actions needed for migration">Tap to continue integrating Health&#160;Connect with the Android system. In order to keep your data, complete this within <xliff:g example="1 day" id="time_needed">%1$s</xliff:g></string>
     <string name="resume_migration_banner_description_fallback" description="Fallback description of banner prompting the user to resume actions needed for migration">Tap to continue integrating Health&#160;Connect with the Android system.</string>
     <string name="resume_migration_banner_button" description="Button of banner prompting the user to resume actions needed for migration">Continue</string>
-    <string name="resume_migration_notification_title" description="Title of notification prompting the user to resume actions needed for migration">Resume Health&#160;Connect integration</string>
-    <string name="resume_migration_notification_content" description="Content of notification prompting the user to resume actions needed for migration">In order to keep your data, complete this within <xliff:g example="1 day" id="time_needed">%1$s</xliff:g></string>
     <!--  endregion -->
 
     <!-- region App update needed banner -->
@@ -1509,13 +1502,6 @@
     <string name="migration_not_complete_dialog_title" description="Title of dialog shown to the user when migration did not complete due to an error.">Health&#160;Connect integration didn\'t complete</string>
     <string name="migration_not_complete_dialog_content" description="Content of dialog shown to the user when migration did not complete due to an error.">You\'ll get a notification when it becomes available again.</string>
     <string name="migration_not_complete_dialog_button" description="Button of dialog shown to the user when migration did not complete due to an error.">Got it</string>
-    <string name="migration_not_complete_notification_title" description="Title of notification shown to the user when migration did not complete due to an error.">Health&#160;Connect integration didn\'t complete</string>
-    <string name="migration_not_complete_notification_action" description="Action of notification shown to the user when migration did not complete due to an error.">Read more</string>
-    <!--  endregion -->
-
-    <!-- region Migration complete -->
-    <string name="migration_complete_notification_title" description="Title of notification shown to the user when migration is complete">Health&#160;Connect integration complete</string>
-    <string name="migration_complete_notification_action" description="Action of notification shown to the user when migration is complete">Open</string>
     <!--  endregion -->
 
     <!-- region Whats new dialog -->

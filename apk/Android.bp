@@ -178,7 +178,6 @@ android_library {
         "SettingsLibActivityEmbedding",
         "SettingsLibSettingsSpinner",
         "androidx.core_core",
-        "guava",
         "hilt_android",
         "healthfitness-ui-statsd",
         "healthfitness-aconfig-flags-helper",
@@ -192,7 +191,6 @@ android_library {
         "androidx.wear.compose_compose-material3",
         "androidx.navigation_navigation-compose",
         "androidx.navigation_navigation-runtime-ktx",
-        "libprotobuf-java-lite",
         "androidx.lifecycle_lifecycle-runtime-compose",
     ],
     kotlincflags: ["-Xjvm-default=all"],
@@ -230,6 +228,10 @@ android_app {
         "framework-healthfitness.stubs.module_lib",
         "framework-annotations-lib",
     ],
+    optimize: {
+        optimize: true,
+        shrink_resources: true,
+    },
     apex_available: ["com.android.healthfitness"],
     flags_packages: [
         "healthfitness-aconfig-flags",
