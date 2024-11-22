@@ -98,7 +98,7 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
         assertThat(data.size).isAtLeast(2)
 
         val homePageId = PageId.HOME_PAGE
-        val categoriesPageId = PageId.CATEGORIES_PAGE
+        val manageDataPageId = PageId.MANAGE_DATA_PAGE
         val homePageImpression =
             data.filter {
                 it.atom.getExtension(UiExtensionAtoms.healthConnectUiImpression).page ==
@@ -107,54 +107,47 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
             }
         assertThat(homePageImpression.size).isAtLeast(1)
 
-        val categoriesPageImpression =
+        val manageDataPageImpression =
             data.filter {
                 it.atom.getExtension(UiExtensionAtoms.healthConnectUiImpression).page ==
-                    categoriesPageId &&
+                    manageDataPageId &&
                     !it.atom.getExtension(UiExtensionAtoms.healthConnectUiImpression).hasElement()
             }
-        assertThat(categoriesPageImpression.size).isAtLeast(1)
+        assertThat(manageDataPageImpression.size).isAtLeast(1)
 
-        val dataAndAccessInteraction =
+        val manageDataInteraction =
             data.filter {
                 it.atom.getExtension(UiExtensionAtoms.healthConnectUiInteraction).page ==
                     homePageId &&
                     it.atom.getExtension(UiExtensionAtoms.healthConnectUiInteraction).element ==
-                        ElementId.DATA_AND_ACCESS_BUTTON
+                        ElementId.MANAGE_DATA_BUTTON
             }
-        assertThat(dataAndAccessInteraction.size).isAtLeast(1)
+        assertThat(manageDataInteraction.size).isAtLeast(1)
 
-        val appPermissionsImpression =
-            filterImpressionLogs(data, ElementId.APP_PERMISSIONS_BUTTON)
+        // Home page impressions
+        val appPermissionsImpression = filterImpressionLogs(data, ElementId.APP_PERMISSIONS_BUTTON)
         assertThat(appPermissionsImpression.size).isAtLeast(1)
 
-        val dataAndAccessImpression =
-            filterImpressionLogs(data, ElementId.DATA_AND_ACCESS_BUTTON)
-        assertThat(dataAndAccessImpression.size).isAtLeast(1)
-
-        val recentAccessDataImpression =
-            filterImpressionLogs(data, ElementId.RECENT_ACCESS_ENTRY)
+        val recentAccessDataImpression = filterImpressionLogs(data, ElementId.RECENT_ACCESS_ENTRY)
         assertThat(recentAccessDataImpression.size).isAtLeast(1)
 
         val seeAllRecentAccessImpression =
             filterImpressionLogs(data, ElementId.SEE_ALL_RECENT_ACCESS_BUTTON)
         assertThat(seeAllRecentAccessImpression.size).isAtLeast(1)
 
-        val toolbarImpression =
-            filterImpressionLogs(data, ElementId.TOOLBAR_SETTINGS_BUTTON)
+        val toolbarImpression = filterImpressionLogs(data, ElementId.TOOLBAR_SETTINGS_BUTTON)
         assertThat(toolbarImpression.size).isAtLeast(1)
 
-        val categoryImpression =
-            filterImpressionLogs(data, ElementId.CATEGORY_BUTTON)
-        assertThat(categoryImpression.size).isAtLeast(2)
+        // Manage data page impressions
+        val autoDeleteImpression = filterImpressionLogs(data, ElementId.AUTO_DELETE_BUTTON)
+        assertThat(autoDeleteImpression.size).isAtLeast(1)
 
-        val seeAllCategoriesImpression =
-            filterImpressionLogs(data, ElementId.SEE_ALL_CATEGORIES_BUTTON)
-        assertThat(seeAllCategoriesImpression.size).isAtLeast(1)
+        val dataSourcesAndPriorityImpression =
+            filterImpressionLogs(data, ElementId.DATA_SOURCES_AND_PRIORITY_BUTTON)
+        assertThat(dataSourcesAndPriorityImpression.size).isAtLeast(1)
 
-        val deleteAllDataImpression =
-            filterImpressionLogs(data, ElementId.DELETE_ALL_DATA_BUTTON)
-        assertThat(deleteAllDataImpression.size).isAtLeast(1)
+        val setUnitsImpression = filterImpressionLogs(data, ElementId.SET_UNITS_BUTTON)
+        assertThat(setUnitsImpression.size).isAtLeast(1)
     }
 
     private fun filterImpressionLogs(
