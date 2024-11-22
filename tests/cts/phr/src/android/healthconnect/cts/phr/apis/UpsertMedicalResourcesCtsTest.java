@@ -17,6 +17,7 @@ package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.CHUNK_SIZE_LIMIT_IN_BYTES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
@@ -50,6 +51,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -70,6 +72,7 @@ import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
+import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
@@ -89,6 +92,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -205,17 +209,58 @@ public class UpsertMedicalResourcesCtsTest {
     }
 
     @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION
+    })
+    public void testUpsertMedicalResources_underMemoryChunkSizeLimit_succeeds()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        int maxChunkSize = CHUNK_SIZE_LIMIT_IN_BYTES / mUtil.mLimitsAdjustmentForTesting;
+        // Calculate the number of requests needed to almost reach the maxChunkSize by looking at
+        // the dataSize of a request.
+        UpsertMedicalResourceRequest request =
+                makeImmunizationUpsertRequest(dataSourceId, "resource_id");
+        Parcel parcel = Parcel.obtain();
+        request.writeToParcel(parcel, 0);
+        int requestSize = parcel.dataSize();
+        // We take the quotient and ignore the remainder of the division to get the number of
+        // resources to stay under the memory limit.
+        int nResources = maxChunkSize / requestSize;
+
+        List<UpsertMedicalResourceRequest> requests = new ArrayList<>();
+        for (int i = 0; i < nResources; i++) {
+            requests.add(makeImmunizationUpsertRequest(dataSourceId, String.valueOf(i)));
+        }
+        mManager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION
+    })
     public void testUpsertMedicalResources_memoryChunkSizeLimitExceeded_throws()
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        // 1000 is just picked after trial and error. See comments in
-        // http://ag/27893719/4..8/tests/cts/src/android/healthconnect/cts/ratelimiter/RateLimiterTest.java#b206.
-        int nCopies = 1000 / mUtil.mLimitsAdjustmentForTesting;
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID, FHIR_VERSION_R4, "UpsertMedicalResourceRequest")
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, new ImmunizationBuilder().toJson())
                         .build();
+        int maxChunkSize = CHUNK_SIZE_LIMIT_IN_BYTES / mUtil.mLimitsAdjustmentForTesting;
+        // Calculate the number of requests needed to reach the maxChunkSize by looking at the
+        // dataSize of the request.
+        Parcel parcel = Parcel.obtain();
+        request.writeToParcel(parcel, 0);
+        int requestSize = parcel.dataSize();
+        // Taking the quotient and ignoring the remainder of the division gets us the number of
+        // resources to stay within the memory limit. Then we add one more to exceed the limit.
+        int nCopies = maxChunkSize / requestSize + 1;
 
         mManager.upsertMedicalResources(
                 Collections.nCopies(nCopies, request),
@@ -227,6 +272,40 @@ public class UpsertMedicalResourcesCtsTest {
                 .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
         assertThat(exception.getMessage())
                 .contains("Records chunk size exceeded the max chunk limit");
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION
+    })
+    public void testUpsertMedicalResources_insert500kbOfData_succeeds()
+            throws InterruptedException {
+        TestUtils.setLowerRateLimitsForTesting(false);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        // TODO: b/380022133 - Increase this to 2mb after using shared memory in
+        //  UpsertMedicalResourceRequest. Right now we can only insert around 500kb before getting
+        //  an exception "android.os.TransactionTooLargeException: data parcel size".
+        int sizeToInsert = 500000;
+        int totalRequestSize = 0;
+        int requestCounter = 0;
+        List<UpsertMedicalResourceRequest> requests = new ArrayList<>();
+        while (totalRequestSize < sizeToInsert) {
+            requestCounter++;
+            UpsertMedicalResourceRequest request =
+                    makeImmunizationUpsertRequest(dataSourceId, String.valueOf(requestCounter));
+            requests.add(request);
+            // Get the parcel size of the request and add it to the totalRequestSize
+            Parcel parcel = Parcel.obtain();
+            request.writeToParcel(parcel, 0);
+            totalRequestSize += parcel.dataSize();
+        }
+
+        mManager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+
+        receiver.verifyNoExceptionOrThrow();
     }
 
     @Test
@@ -1079,5 +1158,14 @@ public class UpsertMedicalResourcesCtsTest {
                                         dataSource.getId(), FHIR_DATA_IMMUNIZATION));
 
         assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    private static UpsertMedicalResourceRequest makeImmunizationUpsertRequest(
+            String dataSourceId, String resourceId) {
+        return new UpsertMedicalResourceRequest.Builder(
+                        dataSourceId,
+                        FHIR_VERSION_R4,
+                        new ImmunizationBuilder().setId(resourceId).toJson())
+                .build();
     }
 }
