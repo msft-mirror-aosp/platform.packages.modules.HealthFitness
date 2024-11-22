@@ -172,7 +172,10 @@ class FhirSpecExtractor:
 
         return fhirspec_pb2.FhirDataTypeConfig(
             allowed_field_names_to_config=field_configs_by_name,
-            required_fields=required_fields,
+            # Sort the list of required fields alphabetically, as the output of this script is part
+            # of the build, which needs to be deterministic. The required_fields come from a set,
+            # which does not have ordering guarantees.
+            required_fields=sorted(required_fields),
             multi_type_fields=multi_type_configs
         )
 

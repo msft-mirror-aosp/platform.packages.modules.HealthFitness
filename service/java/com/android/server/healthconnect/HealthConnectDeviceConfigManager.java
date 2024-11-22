@@ -84,10 +84,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     public static final String ENABLE_MIGRATION_NOTIFICATIONS_FLAG =
             "enable_migration_notifications";
 
-    @VisibleForTesting
-    public static final String ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG =
-            "aggregation_source_controls_enable";
-
     public static final boolean ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE = true;
 
     @VisibleForTesting
@@ -206,9 +202,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     ENABLE_MIGRATION_NOTIFICATIONS_FLAG,
                     ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
 
-    @GuardedBy("mLock")
-    private boolean mAggregationSourceControlsEnabled = true;
-
     public HealthConnectDeviceConfigManager(Context context) {
         DeviceConfig.addOnPropertiesChangedListener(
                 HEALTH_FITNESS_NAMESPACE, context.getMainExecutor(), this);
@@ -230,7 +223,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         sFlagsToTrack.add(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_MIGRATION_NOTIFICATIONS_FLAG);
-        sFlagsToTrack.add(ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG);
     }
 
     @GuardedBy("mLock")
@@ -372,16 +364,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         }
     }
 
-    /** Returns whether the new aggregation source control feature is enabled or not. */
-    public boolean isAggregationSourceControlsEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mAggregationSourceControlsEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
-
     /** Updates rate limiting quota values. */
     public void updateRateLimiterValues() {
         mLock.readLock().lock();
@@ -484,8 +466,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                         ENABLE_MIGRATION_NOTIFICATIONS_FLAG,
                                         ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
                         break;
-                    case ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG:
-                        mAggregationSourceControlsEnabled = true;
                 }
             } finally {
                 mLock.writeLock().unlock();
