@@ -136,7 +136,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? new HealthDataCategoryPriorityHelper(
                                 mAppInfoHelper,
                                 mTransactionManager,
-                                mHealthConnectDeviceConfigManager,
                                 mPreferenceHelper,
                                 mPackageInfoUtils,
                                 mHealthConnectMappings)
