@@ -65,6 +65,7 @@
   <!-- region Data Types -->
   <!-- region Activity data types -->
   <string name="active_calories_burned_label" description="Label used to show the user's active calories burned data [CHAR_LIMIT=50]">Active calories burned</string>
+  <string name="activity_intensity_label" description="Label used to show the user's activity intensity data [CHAR_LIMIT=50]">Activity intensity</string>
   <string name="distance_label" description="Label used to show the user's distance data [CHAR_LIMIT=50]">Distance</string>
   <string name="elevation_gained_label" description="Label used to show the user's elevation gained data [CHAR_LIMIT=50]">Elevation gained</string>
   <string name="floors_climbed_label" description="Label used to show the user's floors climbed data [CHAR_LIMIT=50]">Floors climbed</string>
