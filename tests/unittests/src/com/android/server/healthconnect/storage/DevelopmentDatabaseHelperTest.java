@@ -17,14 +17,12 @@
 package com.android.server.healthconnect.storage;
 
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.createEmptyDatabase;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -33,7 +31,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 
 import com.google.common.base.Preconditions;
 
@@ -53,7 +52,7 @@ public class DevelopmentDatabaseHelperTest {
                     .setOpenFlags(SQLiteDatabase.OPEN_READONLY)
                     .build();
 
-    private Context mContext;
+    private StorageContext mStorageContext;
 
     @Rule(order = 0)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -61,17 +60,14 @@ public class DevelopmentDatabaseHelperTest {
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
-
     @Before
     public void setup() {
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        mStorageContext = StorageContext.create(context, context.getUser());
     }
 
     @Test
@@ -81,8 +77,7 @@ public class DevelopmentDatabaseHelperTest {
         // database that can't be fixed after switching the flag on or off.
         // Test this is true by running onOpen twice, dropping the version in between.
 
-        try (HealthConnectDatabase helper =
-                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mStorageContext)) {
             // make sure a database file exists
             SQLiteDatabase db = helper.getWritableDatabase();
             // Drop the settings table to make sure the update code is run completely a second time.
@@ -97,8 +92,7 @@ public class DevelopmentDatabaseHelperTest {
     public void testOnOpen_readOnlyDatabase_successful() {
         // GIVEN we have a guaranteed read only database.
         File databaseFile;
-        try (HealthConnectDatabase helper =
-                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mStorageContext)) {
             // make sure a database file exists
             helper.getWritableDatabase();
             databaseFile = helper.getDatabasePath();
@@ -143,8 +137,7 @@ public class DevelopmentDatabaseHelperTest {
     @Test
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testDropAndCreateDevelopmentSettings_existent_overwrites() {
-        try (HealthConnectDatabase helper =
-                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mStorageContext)) {
             // getWriteableDatabase() triggers onOpen(), so the dev database with
             // version CURRENT_VERSION should be created.
             SQLiteDatabase db = helper.getWritableDatabase();
@@ -159,8 +152,7 @@ public class DevelopmentDatabaseHelperTest {
     @Test
     @DisableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_notDevelopment_deletesDevelopmentTables() {
-        try (HealthConnectDatabase helper =
-                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER))) {
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mStorageContext)) {
             // Calling getWritableDatabase() triggers onOpen(). With the flag off,
             // should delete the development database.
             SQLiteDatabase db = helper.getWritableDatabase();
@@ -195,6 +187,7 @@ public class DevelopmentDatabaseHelperTest {
                     .isEqualTo(DevelopmentDatabaseHelper.CURRENT_VERSION);
         }
     }
+
     @Test
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_oldDevelopmentSettingsTable_createsNew() {
