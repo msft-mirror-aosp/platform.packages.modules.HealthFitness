@@ -483,11 +483,12 @@ public class PhrDataFactory {
         FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
         List<MedicalResource> medicalResources = new ArrayList<>();
         for (int i = 0; i < numOfResources; i++) {
+            String fhirResourceId = "id/" + i;
             FhirResource fhirResource =
                     new FhirResource.Builder(
                                     FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                                    "id/" + i,
-                                    FHIR_DATA_IMMUNIZATION)
+                                    fhirResourceId,
+                                    new ImmunizationBuilder().setId(fhirResourceId).toJson())
                             .build();
             MedicalResource medicalResource =
                     new MedicalResource.Builder(
