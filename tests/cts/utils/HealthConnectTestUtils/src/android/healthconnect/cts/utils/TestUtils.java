@@ -47,7 +47,6 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 
-import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
