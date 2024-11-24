@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Včeraj"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Branje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Pisanje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljanje dovoljenj"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Čas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Dejavnost"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura kože"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Branje temperature kože"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisovanje temperature kože"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Vse zdravstvene evidence"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"vse zdravstvene evidence"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Zapisovanje vseh zdravstvenih evidenc"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Zdravstvena stanja"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"zdravstvena stanja"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Branje zdravstvenih stanj"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Cepiva"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"cepiva"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Branje podatkov o cepivih"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratorijski izvidi"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratorijski izvidi"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Branje laboratorijskih izvidov"</string>
@@ -377,7 +375,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Če odobrite dostop, lahko aplikacija bere in zapisuje podatke, kot so alergije, laboratorijski izvidi, cepiva in drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Če odobrite dostop, lahko aplikacija bere podatke, kot so alergije, laboratorijski izvidi, cepiva in drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"O zdravstvenih evidencah"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Podatki za deljenje"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Podatki za deljenje vključujejo naslednje"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Če to dovolite, lahko aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> deli vaše zdravstvene evidence s storitvijo Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sinhronizirajte zdravstvene podatke iz različnih aplikacij in virov, da bodo na enem mestu"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Želite odstraniti vsa dovoljenja?"</string>
@@ -436,7 +434,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Te aplikacije nimajo več dostopa, njihovi podatki pa so še vedno shranjeni v storitvi Health Connect."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> lahko bere podatke, dodane po dnevu <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>."</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Za upravljanje drugih dovoljenj za Android, do katerih ima ta aplikacija dostop, odprite »Nastavitve« &gt; »Aplikacije«."</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Za podatke, ki jih delite z aplikacijo <xliff:g id="APP_NAME">%1$s</xliff:g>, velja pravilnik o zasebnosti za to aplikacijo."</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"V pravilniku o zasebnosti razvijalca lahko preberete, kako aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ravna z vašimi podatki."</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Če želite upravljati druga dovoljenja za Android, do katerih lahko dostopa ta aplikacija, odprite nastavitve in se dotaknite možnosti »Aplikacije«."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Preberite pravilnik o zasebnosti"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Dostop v zadnjih 24 urah"</string>
@@ -1075,8 +1073,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Nadaljujte integracijo aplikacije Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Če želite obdržati podatke, to dokončajte v tem času: <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Posodobiti morate aplikacijo"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Aplikacijo <xliff:g id="APP_NAME">%1$s</xliff:g> je treba posodobiti, da se bo še naprej sinhronizirala z aplikacijo Health Connect."</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Nekatere aplikacije je treba posodobiti, da se bodo še naprej sinhronizirale z aplikacijo Health Connect."</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Aplikacijo <xliff:g id="APP_NAME">%1$s</xliff:g> je treba posodobiti, da se bo še naprej sinhronizirala s storitvijo Health Connect. Posodobitve morda niso na voljo za vse aplikacije."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Nekatere aplikacije je treba posodobiti, da se bodo še naprej sinhronizirale s storitvijo Health Connect. Posodobitve morda niso na voljo za vse aplikacije."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Preverite, ali so na voljo posodobitve"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Več o tem"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integracija aplikacije Health Connect"</string>
@@ -1135,12 +1133,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Oglejte si združljive aplikacije"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Poiščite več aplikacij za sinhronizacijo z aplikacijo <xliff:g id="APP_NAME">%s</xliff:g> prek storitve Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Prikaži v trgovini z aplikacijami"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Nastavitev zaklepanja zaslona"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Za večjo varnost zdravstvenih podatkov nastavite kodo PIN, vzorec ali geslo za to napravo"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Nastavite zaklepanje zaslona"</string>
     <string name="select_all" msgid="837499881590001166">"Izberi vse"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Povezane aplikacije ne bodo več mogle brati teh podatkov v storitvi Health Connect"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Potrjeno"</string>
@@ -1183,38 +1178,29 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Želite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> dovoliti dostop do podatkov o telesni pripravljenosti in počutju?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> zahteva dostop do teh vrst podatkov: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nDovolite vse ali jih upravljajte posamezno."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Ali aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> dovolite dostop do dovoljenja »<xliff:g id="DATA_TYPE">%2$s</xliff:g>«?"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Telesna pripravljenost in dobro počutje"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"ves čas"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"med uporabo"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Ves čas"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Med uporabo"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> lahko do vseh vaših podatkov o telesni pripravljenosti in počutju dostopa <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Dovoljen dostop"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Dovoljeno branje"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Ta dovoljenja aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> omogočajo dostop do podatkov iz tipal naprave."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Dovoljene aplikacije: <xliff:g id="NUMBER_0">%1$d</xliff:g> od <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Nobena aplikacija ne zahteva"</string>
+    <string name="allowed" msgid="4158456017482263737">"Dovoljeno"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Ni dovoljeno"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Aplikacije s tem dovoljenjem lahko dostopajo do podatkov iz tipal naprave za: <xliff:g id="DATA_TYPE">%s</xliff:g>."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Želite odstraniti dostop do dovoljenja »<xliff:g id="DATA_TYPE">%s</xliff:g>« za vse aplikacije v uri?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Kljukica"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Križec"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>

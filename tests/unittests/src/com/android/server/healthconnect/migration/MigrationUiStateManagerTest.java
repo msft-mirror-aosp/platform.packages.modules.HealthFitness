@@ -95,7 +95,7 @@ public class MigrationUiStateManagerTest {
     }
 
     @Test
-    public void testStateChanged_appUpdateNeeded_noMigrationUiAppUpdateNeededNotificationSent() {
+    public void testStateChanged_appUpdateNeeded_noNotificationSent() {
         when(mMigrationStateManager.getMigrationState())
                 .thenReturn(HealthConnectDataState.MIGRATION_STATE_APP_UPGRADE_REQUIRED);
         final ArgumentCaptor<MigrationStateManager.StateChangedListener> captor =
@@ -104,9 +104,7 @@ public class MigrationUiStateManagerTest {
         verify(mMigrationStateManager).addStateChangedListener(captor.capture());
         captor.getValue().onChanged(HealthConnectDataState.MIGRATION_STATE_APP_UPGRADE_REQUIRED);
         verify(mMigrationNotificationSender, never())
-                .sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_APP_UPDATE_NEEDED,
-                        DEFAULT_USER_HANDLE);
+                .sendNotification(anyInt(), any(UserHandle.class));
     }
 
     @Test
@@ -159,9 +157,7 @@ public class MigrationUiStateManagerTest {
         captor.getValue().onChanged(HealthConnectDataState.MIGRATION_STATE_ALLOWED);
 
         verify(mMigrationNotificationSender, never())
-                .sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_CANCELLED,
-                        DEFAULT_USER_HANDLE);
+                .sendNotification(anyInt(), any(UserHandle.class));
     }
 
     @Test
@@ -184,7 +180,7 @@ public class MigrationUiStateManagerTest {
     }
 
     @Test
-    public void testStateChanged_inProgress_noMigrationUiInProgressNotificationSent() {
+    public void testStateChanged_inProgress_noNotificationSent() {
         when(mMigrationStateManager.getMigrationState())
                 .thenReturn(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
         final ArgumentCaptor<MigrationStateManager.StateChangedListener> captor =
@@ -193,9 +189,7 @@ public class MigrationUiStateManagerTest {
         verify(mMigrationStateManager).addStateChangedListener(captor.capture());
         captor.getValue().onChanged(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
         verify(mMigrationNotificationSender, never())
-                .sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_IN_PROGRESS,
-                        DEFAULT_USER_HANDLE);
+                .sendNotification(anyInt(), any(UserHandle.class));
     }
 
     @Test
@@ -213,7 +207,7 @@ public class MigrationUiStateManagerTest {
     }
 
     @Test
-    public void testStateChanged_complete_noMigrationUiCompleteNotificationSent() {
+    public void testStateChanged_complete_noNotificationSent() {
         when(mMigrationStateManager.getMigrationState())
                 .thenReturn(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
         when(mMigrationStateManager.hasIdleStateTimedOut()).thenReturn(false);
@@ -223,9 +217,7 @@ public class MigrationUiStateManagerTest {
         verify(mMigrationStateManager).addStateChangedListener(captor.capture());
         captor.getValue().onChanged(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
         verify(mMigrationNotificationSender, never())
-                .sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_COMPLETE,
-                        DEFAULT_USER_HANDLE);
+                .sendNotification(anyInt(), any(UserHandle.class));
     }
 
     @Test

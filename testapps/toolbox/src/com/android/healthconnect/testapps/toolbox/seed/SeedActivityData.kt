@@ -18,6 +18,9 @@ package com.android.healthconnect.testapps.toolbox.seed
 import android.content.Context
 import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord
+import android.health.connect.datatypes.ActivityIntensityRecord
+import android.health.connect.datatypes.ActivityIntensityRecord.ACTIVITY_INTENSITY_TYPE_MODERATE
+import android.health.connect.datatypes.ActivityIntensityRecord.ACTIVITY_INTENSITY_TYPE_VIGOROUS
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
 import android.health.connect.datatypes.DistanceRecord
@@ -87,6 +90,7 @@ class SeedActivityData(private val context: Context, private val manager: Health
     fun seedActivityData() {
         runBlocking {
             try {
+                seedActivityIntensityData()
                 seedStepsData()
                 seedDistanceData()
                 seedElevationGainedRecord()
@@ -105,6 +109,26 @@ class SeedActivityData(private val context: Context, private val manager: Health
                 throw ex
             }
         }
+    }
+
+    private suspend fun seedActivityIntensityData() {
+        val records =
+            listOf(start, yesterday, lastWeek, lastMonth).flatMap { baseTime ->
+                List(3) {
+                    val startTime = baseTime.plus(ofMinutes(5 * it.toLong()))
+
+                    ActivityIntensityRecord.Builder(
+                            getMetaData(context),
+                            startTime,
+                            startTime.plus(ofMinutes(3)),
+                            if (Random.nextBoolean()) ACTIVITY_INTENSITY_TYPE_MODERATE
+                            else ACTIVITY_INTENSITY_TYPE_VIGOROUS,
+                        )
+                        .build()
+                }
+            }
+
+        insertRecords(records, manager)
     }
 
     private suspend fun seedStepsData() {
