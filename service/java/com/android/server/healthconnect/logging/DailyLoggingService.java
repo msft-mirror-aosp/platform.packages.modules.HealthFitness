@@ -63,10 +63,17 @@ public class DailyLoggingService {
             TableSizeHelper tableSizeHelper) {
         try {
             DatabaseStatsLogger.log(context, transactionManager);
+        } catch (Exception exception) {
+            Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log database stats", exception);
+        }
+        try {
             DatabaseStatsLogger.logPhrDatabaseStats(
                     medicalDataSourceHelper, medicalResourceHelper, tableSizeHelper);
         } catch (Exception exception) {
-            Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log database stats", exception);
+            Slog.e(
+                    HEALTH_CONNECT_DAILY_LOGGING_SERVICE,
+                    "Failed to log PHR database stats",
+                    exception);
         }
     }
 

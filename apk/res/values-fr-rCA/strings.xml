@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Hier"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lecture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Écriture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Heure : <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activité"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"température cutanée"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lire la température cutanée"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Écrire la température cutanée"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Tous les dossiers médicaux"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"tous les dossiers médicaux"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Rédigez tous les dossiers médicaux"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Problèmes de santé"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"problèmes de santé"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Lire les données relatives aux problèmes de santé"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaccins"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaccins"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Lecture des données relatives aux vaccins"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Résultats de laboratoire"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"résultats de laboratoire"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Lecture des données relatives aux résultats de laboratoire"</string>
@@ -377,7 +375,8 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si vous donnez l\'accès, l\'appli pourra lire et écrire des données telles que celles concernant les allergies, les résultats de laboratoire, les vaccins et plus\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Si vous donnez l\'accès, l\'appli pourra lire des données telles que celles concernant les allergies, les résultats de laboratoire, les vaccins et plus\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"À propos des dossiers médicaux"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Données à partager"</string>
+    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
+    <skip />
     <string name="medical_request_summary" msgid="7281321524805015510">"Si vous l\'autorisez, <xliff:g id="APP_NAME">%1$s</xliff:g> pourra partager vos dossiers médicaux avec Connexion santé."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Synchronisez vos dossiers médicaux à partir de vos différentes applis et sources pour les conserver au même endroit"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Retirer toutes les autorisations?"</string>
@@ -436,7 +435,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Ces applis n\'ont plus accès à Connexion santé, mais leurs données y sont toujours stockées"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> peut lire les données ajoutées après le <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Pour gérer les autres autorisations Android qui peuvent être accordées à cette appli, accédez à Paramètres &gt; Applis"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Les données que vous partagez avec <xliff:g id="APP_NAME">%1$s</xliff:g> sont couvertes par la politique de confidentialité de celle-ci"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Vous pouvez vous renseigner sur la façon dont <xliff:g id="APP_NAME">%1$s</xliff:g> traite vos données en consultant la politique de confidentialité du développeur"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Pour gérer les autres autorisations Android qui peuvent être accordées à cette appli, accédez à Paramètres, puis touchez Applis"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lire la politique de confidentialité"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Dernier accès : au cours des dernières 24 heures"</string>
@@ -496,7 +495,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Chaque jour"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Chaque semaine"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Chaque mois"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"Choisissez l\'endroit où enregistrer l\'exportation programmée"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Choisir l\'endroit où enregistrer l\'exportation programmée"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Veuillez choisir une appli de stockage infonuagique pour exporter vos données"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Connexion santé"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Connexion santé (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -1075,8 +1074,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reprendre l\'intégration de Connexion santé"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Pour conserver vos données de Connexion santé, complétez l\'intégration dans un délai de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Mise à jour de l\'appli nécessaire"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"L\'appli <xliff:g id="APP_NAME">%1$s</xliff:g> doit être mise à jour pour continuer la synchronisation avec Connexion santé"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Certaines applis ont besoin d\'être mises à jour pour continuer la synchronisation avec Connexion santé"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"L\'appli <xliff:g id="APP_NAME">%1$s</xliff:g> doit être mise à jour pour continuer la synchronisation avec Connexion santé. Les mises à jour peuvent ne pas être offertes pour toutes les applis."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Certaines applis ont besoin d\'être mises à jour pour continuer la synchronisation avec Connexion santé. Les mises à jour peuvent ne pas être offertes pour toutes les applis."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Rechercher des mises à jour"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"En savoir plus"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Intégration Connexion santé"</string>
@@ -1135,12 +1134,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Afficher les applis compatibles"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Trouvez d\'autres applis à synchroniser avec <xliff:g id="APP_NAME">%s</xliff:g> par le biais de Connexion santé"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Voir dans la boutique d\'applis"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Configurer un verrouillage de l\'écran"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Pour une sécurité accrue de vos données relatives à la santé, définissez un NIP, un schéma ou un mot de passe pour cet appareil"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Configurer le verrouillage de l\'écran"</string>
     <string name="select_all" msgid="837499881590001166">"Tout sélectionner"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Les applis connectées ne pourront plus accéder à ces données à partir de Connexion santé"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Sélectionnée"</string>
@@ -1180,41 +1176,32 @@
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Autoriser la sélect."</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Lorsque vous utilisez l\'appli"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Tout refuser"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux données antérieures d\'activité physique et de bien-être?"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux données d\'activité physique et de bien-être?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> demande l\'accès aux données suivantes : <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChoisissez de les autoriser toutes ou de les contrôler individuellement."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Mise en forme et bien-être"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"en tout temps"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"durant l\'utilisation"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"En tout temps"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Durant l\'utilisation"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> peut accéder à toutes vos données d\'activité physique et de bien-être <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Autorisée à accéder"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Autorisée à lire"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Ces autorisations permettent à <xliff:g id="APP_NAME">%1$s</xliff:g> d\'accéder aux données des capteurs de votre appareil."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> applis autorisées sur <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Aucune appli ne demande une autorisation"</string>
+    <string name="allowed" msgid="4158456017482263737">"Autorisée"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Non autorisée"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Les applis disposant de cette autorisation peuvent accéder aux données <xliff:g id="DATA_TYPE">%s</xliff:g> des capteurs de votre appareil."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Retirer l\'accès à <xliff:g id="DATA_TYPE">%s</xliff:g> pour toutes les applis sur votre montre?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Coche"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Croix"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>

@@ -59,6 +59,7 @@ import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.formatRecentAccessTime
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
@@ -69,6 +70,7 @@ import com.android.healthfitness.flags.Flags.exportImport
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
 import com.android.healthfitness.flags.Flags.personalHealthRecordLockScreenBanner
+import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
@@ -505,8 +507,8 @@ class HomeFragment : Hilt_HomeFragment() {
     private fun getLockScreenBanner(
         bannerState: LockScreenBannerState.ShowBanner
     ): BannerPreference {
-        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also {
-            banner ->
+        return BannerPreference(requireContext(), HomePageElement.LOCK_SCREEN_BANNER).also { banner
+            ->
             banner.title = resources.getString(R.string.lock_screen_banner_title)
             banner.summary = resources.getString(R.string.lock_screen_banner_content)
             banner.key = LOCK_SCREEN_BANNER_KEY
@@ -514,14 +516,14 @@ class HomeFragment : Hilt_HomeFragment() {
             banner.order = HOME_FRAGMENT_BANNER_ORDER
             banner.setPrimaryButton(
                 resources.getString(R.string.lock_screen_banner_button),
-                UnknownGenericElement.UNKNOWN_BANNER_BUTTON,
+                HomePageElement.LOCK_SCREEN_BANNER_BUTTON,
             )
             banner.setPrimaryButtonOnClickListener {
                 updateBannerSeen(bannerState)
                 navigateToSecuritySettings()
             }
             banner.setIsDismissable(true)
-            banner.setDismissAction(UnknownGenericElement.UNKNOWN_BANNER_BUTTON) {
+            banner.setDismissAction(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON) {
                 updateBannerSeen(bannerState)
                 preferenceScreen.removePreference(banner)
             }
@@ -649,16 +651,7 @@ class HomeFragment : Hilt_HomeFragment() {
             )
         } else {
             recentAppsList.forEach { recentApp ->
-                val newRecentAccessPreference =
-                    RecentAccessPreference(requireContext(), recentApp, timeSource, false).also {
-                        newPreference ->
-                        if (!recentApp.isInactive) {
-                            newPreference.setOnPreferenceClickListener {
-                                navigateToAppInfoScreen(recentApp)
-                                true
-                            }
-                        }
-                    }
+                val newRecentAccessPreference = getRecentAccessPreference(recentApp)
                 mRecentAccessPreference?.addPreference(newRecentAccessPreference)
             }
             val seeAllPreference =
@@ -672,6 +665,33 @@ class HomeFragment : Hilt_HomeFragment() {
                 true
             }
             mRecentAccessPreference?.addPreference(seeAllPreference)
+        }
+    }
+
+    private fun getRecentAccessPreference(recentApp: RecentAccessEntry): HealthPreference {
+        return if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
+            HealthPreference(requireContext()).also { newPreference ->
+                newPreference.title = recentApp.metadata.appName
+                newPreference.icon = recentApp.metadata.icon
+                newPreference.summary =
+                    formatRecentAccessTime(recentApp.instantTime, timeSource, requireContext())
+                if (!recentApp.isInactive) {
+                    newPreference.setOnPreferenceClickListener {
+                        navigateToAppInfoScreen(recentApp)
+                        true
+                    }
+                }
+            }
+        } else {
+            RecentAccessPreference(requireContext(), recentApp, timeSource, false).also {
+                newPreference ->
+                if (!recentApp.isInactive) {
+                    newPreference.setOnPreferenceClickListener {
+                        navigateToAppInfoScreen(recentApp)
+                        true
+                    }
+                }
+            }
         }
     }
 

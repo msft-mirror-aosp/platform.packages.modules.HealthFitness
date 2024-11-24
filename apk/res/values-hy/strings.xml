@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Երեկ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Կարդալ՝ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Գրանցել՝ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Կառավարել թույլտվությունները"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Ժամանակը՝ <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Ակտիվություն"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"մաշկի ջերմաստիճան"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Կարդալ մարմնի ջերմաստիճանի տվյալները"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Գրել մարմնի ջերմաստիճանի տվյալները"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Առողջության մասին բոլոր տեղեկությունները"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"առողջության մասին բոլոր տեղեկությունները"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Գրանցել առողջության մասին բոլոր տեղեկությունները"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Ախտաբանական վիճակներ"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"ախտաբանական վիճակներ"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Կարդալ ախտաբանական վիճակների տվյալները"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Պատվաստանյութեր"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"պատվաստանյութեր"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Կարդալ պատվաստանյութերի մասին տվյալները"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Լաբորատոր արդյունքներ"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"լաբորատոր արդյունքներ"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Կարդալ լաբորատոր արդյունքները"</string>
@@ -377,7 +375,8 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Եթե տրամադրեք հասանելիություն, հավելվածը կկարողանա կարդալ և գրանցել տվյալներ, օրինակ՝ ալերգիաների, լաբորատոր արդյունքների, պատվաստանյութերի մասին և ոչ միայն\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Եթե տրամադրեք հասանելիություն, հավելվածը կկարողանա կարդալ տվյալները, օրինակ՝ ալերգիաների, լաբորատոր արդյունքների, պատվաստանյութերի մասին և ոչ միայն\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Առողջության մասին տեղեկությունների վերաբերյալ"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Տվյալներ, որոնցով պատրաստ եք կիսվել"</string>
+    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
+    <skip />
     <string name="medical_request_summary" msgid="7281321524805015510">"Եթե թույլատրեք, <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը կկարողանա ձեր առողջության մասին տեղեկությունները փոխանցել Health Connect-ին։"</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Համաժամացրեք ձեր առողջության մասին տեղեկությունները տարբեր հավելվածներից և աղբյուրներից և պահեք դրանք մեկ տեղում"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Հեռացնե՞լ բոլոր թույլտվությունները"</string>
@@ -436,7 +435,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Այս հավելվածներն այլևս չունեն հասանելիություն, սակայն դրանց տվյալները նախկինի պես պահվում են Health Connect-ում"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը կարող է կարդալ <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> հետո ավելացված տվյալները"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Android-ում այս հավելվածին հասանելի մյուս թույլտվությունները կառավարելու համար անցեք Կարգավորումներ &gt; Հավելվածներ"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին ձեր փոխանցած տվյալների նկատմամբ կիրառվում է այդ հավելվածի գաղտնիության քաղաքականությունը"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Ծրագրավորողի գաղտնիության քաղաքականության մեջ կարող եք տեղեկանալ, թե ինչպես է <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը մշակում ձեր տվյալները"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Android-ում այս հավելվածին հասանելի մյուս թույլտվությունները կառավարելու համար անցեք Կարգավորումներ, ապա հպեք «Հավելվածներ»"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Կարդալ գաղտնիության քաղաքականությունը"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Օգտագործվել է վերջին 24 ժամվա ընթացքում"</string>
@@ -1075,8 +1074,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Վերսկսեք Health Connect-ի ինտեգրումը"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Ձեր տվյալները պահպանելու համար ավարտեք ինտեգրումը <xliff:g id="TIME_NEEDED">%1$s</xliff:g>վա ընթացքում"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Պահանջվում է հավելվածի թարմացում"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն անհրաժեշտ է թարմացնել, որպեսզի Health Connect-ի հետ համաժամացումը շարունակվի"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Որոշ հավելվածներ անհրաժեշտ է թարմացնել, որպեսզի Health Connect-ի հետ համաժամացումը շարունակվի"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն անհրաժեշտ է թարմացնել, որպեսզի Health Connect-ի հետ համաժամացումը շարունակվի։ Թարմացումները հնարավոր է, որ ոչ բոլոր հավելվածների համար հասանելի լինել։"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Որոշ հավելվածներ անհրաժեշտ է թարմացնել, որպեսզի Health Connect-ի հետ համաժամացումը շարունակվի։ Թարմացումները հնարավոր է, որ ոչ բոլոր հավելվածների համար հասանելի լինել։"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Ստուգել թարմացումների առկայությունը"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Իմանալ ավելին"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-ի ինտեգրում"</string>
@@ -1135,12 +1134,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Տեսեք համատեղելի հավելվածները"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Գտեք այլ հավելվածներ՝ Health Connect-ի միջոցով <xliff:g id="APP_NAME">%s</xliff:g> հավելվածի հետ համաժամացնելու համար"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Տեսնել հավելվածների խանութում"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Օգտագործեք էկրանի կողպում"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Ձեր առողջական տվյալների լրացուցիչ պաշտպանության համար օգտագործեք PIN կոդ, նախշ կամ գաղտնաբառ այս սարքում։"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Օգտագործել էկրանի կողպում"</string>
     <string name="select_all" msgid="837499881590001166">"Ընտրել բոլորը"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Կապված հավելվածներն այլևս չեն կարողանա կարդալ Health Connect-ի այս տվյալները"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Նշված է"</string>
@@ -1183,38 +1179,29 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել ֆիզիկական ակտիվության և ապրելակերպի մասին պահված տվյալները"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին անհրաժեշտ է հետևյալ տվյալների հասանելիություն՝ <xliff:g id="DATA_TYPES">%2$s</xliff:g>։\n\nՏրամադրեք բոլոր թույլտվությունները կամ կառավարեք դրանք առանձին-առանձին։"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին հասանելի դարձնե՞լ այս տվյալները՝ <xliff:g id="DATA_TYPE">%2$s</xliff:g>"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Ֆիթնես և առողջություն"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"միշտ"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"օգտագործման ժամանակ"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Միշտ"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Օգտագործման ժամանակ"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g>-ին <xliff:g id="ALLOW_MODE">%2$s</xliff:g> հասանելի են ֆիթնեսի և առողջության վերաբերյալ ձեր բոլոր տվյսլները"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Դիտելու թույլտվություն"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Կարդալու թույլտվություն"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Այս թույլտվություններով <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը կարող է դիտել տվյալները ձեր սարքի սենսորներից։"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Թույլատրված է <xliff:g id="NUMBER_0">%1$d</xliff:g> հավելված՝ <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>-ից"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Հավելվածներից հարցումներ չկան"</string>
+    <string name="allowed" msgid="4158456017482263737">"Թույլատրված է"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Արգելված է"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Այս թույլտվությամբ հավելվածները կարող են դիտել ձեր սարքի սենսորներից «<xliff:g id="DATA_TYPE">%s</xliff:g>» տվյալները։"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Հեռացնե՞լ «<xliff:g id="DATA_TYPE">%s</xliff:g>» տվյալների հասանելիությունը ձեր ժամացույցի բոլոր հավելվածների համար։"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Թռչնանիշ"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Խաչանիշ"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>

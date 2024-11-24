@@ -48,6 +48,9 @@ constructor(
         private const val TAG = "DeletionViewModel"
     }
 
+    // Artificial delay for reloads, to give enough time for the deletion task to end
+    private val defaultDelay = 2000L
+
     private lateinit var deletionType: DeletionType
 
     private var _permissionTypesReloadNeeded = MutableLiveData(false)
@@ -85,6 +88,8 @@ constructor(
     val inactiveAppsReloadNeeded: LiveData<Boolean>
         get() = _inactiveAppsReloadNeeded
 
+    var removePermissions = false
+
     fun delete() {
         viewModelScope.launch {
             _deletionProgress.postValue(DeletionProgress.STARTED)
@@ -96,33 +101,41 @@ constructor(
                         deletePermissionTypesUseCase.invoke(
                             deletionType as DeleteHealthPermissionTypes
                         )
+                        delay(defaultDelay)
                         _permissionTypesReloadNeeded.postValue(true)
                     }
                     is DeleteEntries -> {
                         deleteEntriesUseCase.invoke(deletionType as DeleteEntries)
+                        delay(defaultDelay)
                         _entriesReloadNeeded.postValue(true)
                     }
                     is DeleteHealthPermissionTypesFromApp -> {
                         deletePermissionTypesFromAppUseCase.invoke(
-                            deletionType as DeleteHealthPermissionTypesFromApp
+                            deletionType as DeleteHealthPermissionTypesFromApp,
+                            removePermissions,
                         )
+                        delay(defaultDelay)
                         _appPermissionTypesReloadNeeded.postValue(true)
                     }
                     is DeleteEntriesFromApp -> {
                         deleteEntriesUseCase.invoke(
                             (deletionType as DeleteEntriesFromApp).toDeleteEntries()
                         )
+                        delay(defaultDelay)
                         _appEntriesReloadNeeded.postValue(true)
                     }
                     is DeleteAppData -> {
                         deleteAppDataUseCase.invoke((deletionType as DeleteAppData))
+                        delay(defaultDelay)
                         _connectedAppsReloadNeeded.postValue(true)
                     }
                     is DeletionType.DeleteInactiveAppData -> {
                         deletePermissionTypesFromAppUseCase.invoke(
                             (deletionType as DeletionType.DeleteInactiveAppData)
-                                .toDeleteHealthPermissionTypesFromApp()
+                                .toDeleteHealthPermissionTypesFromApp(),
+                            removePermissions = false,
                         )
+                        delay(defaultDelay)
                         _inactiveAppsReloadNeeded.postValue(true)
                     }
                 }

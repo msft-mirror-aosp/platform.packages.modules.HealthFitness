@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.health.connect.Constants;
 import android.net.Uri;
 import android.os.UserHandle;
@@ -105,6 +106,13 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
             removePermissions =
                     mPermissionIntentTracker.updateStateAndGetIfIntentWasRemoved(
                             packageName, userHandle);
+        }
+
+        // Wear Apps don't require the permissions intent. No need to revoke the permissions if it
+        // is missing.
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            Flags.replaceBodySensorPermissionEnabled()) {
+            removePermissions = false;
         }
         // If the package was removed, we reset grant time. If the package is present but the health
         // intent support removed we revoke all health permissions and also reset grant time
