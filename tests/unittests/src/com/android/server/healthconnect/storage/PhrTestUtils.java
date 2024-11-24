@@ -194,7 +194,7 @@ public class PhrTestUtils {
             String packageName,
             Instant instant) {
         SQLiteDatabase db = healthConnectDatabase.getWritableDatabase();
-        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName, context);
+        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName);
         if (appInfoId == DEFAULT_LONG) {
             throw new IllegalStateException("App id does not exist");
         }
@@ -217,6 +217,25 @@ public class PhrTestUtils {
     }
 
     /**
+     * Inserts a {@code numOfResources} of {@link MedicalResource}s into the given {@link
+     * HealthConnectDatabase} using the given {@link MedicalResourcesCreator}, {@code
+     * dataSourceUuid}, and {@code dataSourceRowId}.
+     */
+    public void insertMedicalResources(
+            HealthConnectDatabase healthConnectDatabase,
+            MedicalResourcesCreator creator,
+            String dataSourceUuid,
+            long dataSourceRowId,
+            Instant instant,
+            int numOfResources) {
+        List<MedicalResource> medicalResources = creator.create(numOfResources, dataSourceUuid);
+        SQLiteDatabase db = healthConnectDatabase.getWritableDatabase();
+        for (MedicalResource medicalResource : medicalResources) {
+            insertResource(db, medicalResource, dataSourceRowId, instant);
+        }
+    }
+
+    /**
      * Inserts a {@link MedicalResource} into the given {@link HealthConnectDatabase} using the
      * given {@link MedicalResourceCreator}, {@code dataSourceUuid}, and {@code dataSourceRowId}.
      */
@@ -228,6 +247,14 @@ public class PhrTestUtils {
             Instant instant) {
         MedicalResource medicalResource = creator.create(dataSourceUuid);
         SQLiteDatabase db = healthConnectDatabase.getWritableDatabase();
+        insertResource(db, medicalResource, dataSourceRowId, instant);
+    }
+
+    private void insertResource(
+            SQLiteDatabase db,
+            MedicalResource medicalResource,
+            long dataSourceRowId,
+            Instant instant) {
         long rowId =
                 db.insertWithOnConflict(
                         MedicalResourceHelper.getMainTableName(),

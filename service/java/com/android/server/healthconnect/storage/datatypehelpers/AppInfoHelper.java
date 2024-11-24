@@ -34,7 +34,6 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.Nullable;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.ApplicationInfoFlags;
@@ -54,6 +53,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -108,11 +108,15 @@ public final class AppInfoHelper extends DatabaseHelper {
      */
     @Nullable private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
+    private StorageContext mUserContext;
     private final TransactionManager mTransactionManager;
     private final HealthConnectMappings mHealthConnectMappings;
 
     public AppInfoHelper(
-            TransactionManager transactionManager, HealthConnectMappings healthConnectMappings) {
+            StorageContext userContext,
+            TransactionManager transactionManager,
+            HealthConnectMappings healthConnectMappings) {
+        mUserContext = userContext;
         mTransactionManager = transactionManager;
         mHealthConnectMappings = healthConnectMappings;
     }
@@ -121,6 +125,15 @@ public final class AppInfoHelper extends DatabaseHelper {
     public synchronized void clearCache() {
         mAppInfoMap = null;
         mIdPackageNameMap = null;
+    }
+
+    /** Setup AppInfoHelper for the given user. */
+    public synchronized void setupForUser(StorageContext userContext) {
+        mUserContext = userContext;
+        // While we already call clearCache() in HCManager.onUserSwitching(), calling this again
+        // here in case any of the methods below was called in between that initialized the cache
+        // with the wrong context.
+        clearCache();
     }
 
     @Override
@@ -137,14 +150,13 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     /** Populates record with appInfoId */
-    public void populateAppInfoId(
-            RecordInternal<?> record, Context context, boolean requireAllFields) {
+    public void populateAppInfoId(RecordInternal<?> record, boolean requireAllFields) {
         final String packageName = requireNonNull(record.getPackageName());
         AppInfoInternal appInfo = getAppInfoMap().get(packageName);
 
         if (appInfo == null) {
             try {
-                appInfo = getAppInfo(packageName, context);
+                appInfo = getAppInfo(packageName);
             } catch (NameNotFoundException e) {
                 if (requireAllFields) {
                     throw new IllegalStateException("Could not find package info", e);
@@ -171,14 +183,12 @@ public final class AppInfoHelper extends DatabaseHelper {
      * onlyUpdate is false then only insert a new AppInfo entry; no replacement.
      */
     public void addOrUpdateAppInfoIfNotInstalled(
-            Context context,
             String packageName,
             @Nullable String name,
             @Nullable byte[] maybeIcon,
             boolean onlyUpdate) {
-        if (!isAppInstalled(context, packageName)) {
-            byte[] icon =
-                    maybeIcon == null ? getIconFromPackageName(context, packageName) : maybeIcon;
+        if (!isAppInstalled(packageName)) {
+            byte[] icon = maybeIcon == null ? getIconFromPackageName(packageName) : maybeIcon;
             // using pre-existing value of recordTypesUsed.
             var appInfo = getAppInfoMap().get(packageName);
             var recordTypesUsed = appInfo == null ? null : appInfo.getRecordTypesUsed();
@@ -198,9 +208,9 @@ public final class AppInfoHelper extends DatabaseHelper {
      * name} and {@code icon}, only if no AppInfo entry already exists.
      */
     public void addOrUpdateAppInfoIfNoAppInfoEntryExists(
-            Context context, String packageName, @Nullable String name) {
+            String packageName, @Nullable String name) {
         if (!containsAppInfo(packageName)) {
-            byte[] icon = getIconFromPackageName(context, packageName);
+            byte[] icon = getIconFromPackageName(packageName);
             var appInfo = getAppInfoMap().get(packageName);
             var recordTypesUsed = appInfo == null ? null : appInfo.getRecordTypesUsed();
             AppInfoInternal appInfoInternal =
@@ -210,9 +220,11 @@ public final class AppInfoHelper extends DatabaseHelper {
         }
     }
 
-    private boolean isAppInstalled(Context context, String packageName) {
+    private boolean isAppInstalled(String packageName) {
         try {
-            context.getPackageManager().getApplicationInfo(packageName, ApplicationInfoFlags.of(0));
+            mUserContext
+                    .getPackageManager()
+                    .getApplicationInfo(packageName, ApplicationInfoFlags.of(0));
             return true;
         } catch (NameNotFoundException e) {
             return false;
@@ -303,13 +315,13 @@ public final class AppInfoHelper extends DatabaseHelper {
      * Returns AppInfo id for the provided {@code packageName}, creating it if needed using the
      * given {@link SQLiteDatabase}.
      */
-    public long getOrInsertAppInfoId(SQLiteDatabase db, String packageName, Context context) {
-        return getOrInsertAppInfoId(Optional.of(db), packageName, context);
+    public long getOrInsertAppInfoId(SQLiteDatabase db, String packageName) {
+        return getOrInsertAppInfoId(Optional.of(db), packageName);
     }
 
     /** Returns AppInfo id for the provided {@code packageName}, creating it if needed. */
-    public long getOrInsertAppInfoId(String packageName, Context context) {
-        return getOrInsertAppInfoId(Optional.empty(), packageName, context);
+    public long getOrInsertAppInfoId(String packageName) {
+        return getOrInsertAppInfoId(Optional.empty(), packageName);
     }
 
     /**
@@ -317,13 +329,12 @@ public final class AppInfoHelper extends DatabaseHelper {
      * is null, the default will be {@link TransactionManager#getReadableDb()} for reads and {@link
      * TransactionManager#getWritableDb()} for writes.
      */
-    private long getOrInsertAppInfoId(
-            Optional<SQLiteDatabase> db, String packageName, Context context) {
+    private long getOrInsertAppInfoId(Optional<SQLiteDatabase> db, String packageName) {
         AppInfoInternal appInfoInternal = getAppInfoMap(db).get(packageName);
 
         if (appInfoInternal == null) {
             try {
-                appInfoInternal = getAppInfo(packageName, context);
+                appInfoInternal = getAppInfo(packageName);
             } catch (NameNotFoundException e) {
                 throw new IllegalStateException("Could not find package info for package", e);
             }
@@ -661,9 +672,8 @@ public final class AppInfoHelper extends DatabaseHelper {
         return getIdPackageNameMap(Optional.empty());
     }
 
-    private AppInfoInternal getAppInfo(String packageName, Context context)
-            throws NameNotFoundException {
-        PackageManager packageManager = context.getPackageManager();
+    private AppInfoInternal getAppInfo(String packageName) throws NameNotFoundException {
+        PackageManager packageManager = mUserContext.getPackageManager();
         ApplicationInfo info =
                 packageManager.getApplicationInfo(
                         packageName, PackageManager.ApplicationInfoFlags.of(0));
@@ -674,8 +684,8 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     @Nullable
-    private byte[] getIconFromPackageName(Context context, String packageName) {
-        PackageManager packageManager = context.getPackageManager();
+    private byte[] getIconFromPackageName(String packageName) {
+        PackageManager packageManager = mUserContext.getPackageManager();
         try {
             Drawable drawable = packageManager.getApplicationIcon(packageName);
             Bitmap bitmap = getBitmapFromDrawable(drawable);

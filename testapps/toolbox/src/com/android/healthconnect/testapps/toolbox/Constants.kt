@@ -16,6 +16,7 @@
 package com.android.healthconnect.testapps.toolbox
 
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord
+import android.health.connect.datatypes.ActivityIntensityRecord
 import android.health.connect.datatypes.BasalBodyTemperatureRecord
 import android.health.connect.datatypes.BasalMetabolicRateRecord
 import android.health.connect.datatypes.BloodGlucoseRecord
@@ -77,6 +78,7 @@ object Constants {
     val FITNESS_READ_PERMISSIONS =
         arrayOf(
             "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+            "android.permission.health.READ_ACTIVITY_INTENSITY",
             "android.permission.health.READ_BASAL_BODY_TEMPERATURE",
             "android.permission.health.READ_BASAL_METABOLIC_RATE",
             "android.permission.health.READ_BLOOD_GLUCOSE",
@@ -120,6 +122,7 @@ object Constants {
     val FITNESS_WRITE_PERMISSIONS =
         arrayOf(
             "android.permission.health.WRITE_ACTIVE_CALORIES_BURNED",
+            "android.permission.health.WRITE_ACTIVITY_INTENSITY",
             "android.permission.health.WRITE_BASAL_BODY_TEMPERATURE",
             "android.permission.health.WRITE_BASAL_METABOLIC_RATE",
             "android.permission.health.WRITE_BLOOD_GLUCOSE",
@@ -240,6 +243,7 @@ object Constants {
             listOf(
                 HealthPermissionType.PLANNED_EXERCISE,
                 HealthPermissionType.ACTIVE_CALORIES_BURNED,
+                HealthPermissionType.ACTIVITY_INTENSITY,
                 HealthPermissionType.DISTANCE,
                 HealthPermissionType.ELEVATION_GAINED,
                 HealthPermissionType.FLOORS_CLIMBED,
@@ -306,6 +310,7 @@ object Constants {
             ActiveCaloriesBurnedRecord::class,
             R.string.active_calories_burned_label,
         ),
+        ACTIVITY_INTENSITY(ActivityIntensityRecord::class, R.string.activity_intensity_label),
         DISTANCE(DistanceRecord::class, R.string.distance_label),
         ELEVATION_GAINED(ElevationGainedRecord::class, R.string.elevation_gained_label),
         FLOORS_CLIMBED(FloorsClimbedRecord::class, R.string.floors_climbed_label),

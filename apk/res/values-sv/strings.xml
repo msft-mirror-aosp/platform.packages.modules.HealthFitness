@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"I går"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Läs: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Skriv: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Hantera behörigheter"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tid: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivitet"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"hudtemperatur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Läsa hudtemperatur"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Registrera hudtemperatur"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Alla hälsojournaler"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"alla hälsojournaler"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Skriva alla hälsojournaler"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Villkor"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"villkor"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Villkor för läsbehörighet"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vacciner"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vacciner"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Läsa vacciner"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratorieresultat"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratorieresultat"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Läsa laboratorieresultat"</string>
@@ -377,7 +375,8 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Om du ger åtkomst kan appen läsa och skriva data som allergier, labbresultat, vacciner med mera\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Om du ger åtkomst kan appen läsa data som allergier, labbresultat, vacciner med mera\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Om hälsojournaler"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Data att dela"</string>
+    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
+    <skip />
     <string name="medical_request_summary" msgid="7281321524805015510">"Om du tillåter detta kan <xliff:g id="APP_NAME">%1$s</xliff:g> dela dina hälsojournaler med Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Synkronisera dina hälsojournaler från olika appar och källor så att de finns på ett och samma ställe"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vill du ta bort alla behörigheter?"</string>
@@ -436,7 +435,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"De här apparna har inte längre åtkomst till Health Connect, men har fortfarande data lagrad där"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan läsa data som lagts till efter <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Om du vill hantera andra Android-behörigheter som appen kan få åtkomst till öppnar du Inställningar &gt; Appar"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Data som du delar med <xliff:g id="APP_NAME">%1$s</xliff:g> omfattas av den appens integritetspolicy"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Du kan läsa mer om hur <xliff:g id="APP_NAME">%1$s</xliff:g> hanterar din data i utvecklarens integritetspolicy"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Om du vill hantera andra Android-behörigheter som appen kan få åtkomst till öppnar du Inställningar och trycker på Appar"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Läs integritetspolicyn"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Användes under de senaste 24 timmarna"</string>
@@ -1075,8 +1074,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Återuppta Health Connect-integreringen"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Slutför detta inom <xliff:g id="TIME_NEEDED">%1$s</xliff:g> för att behålla din data."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Appuppdatering krävs"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> behöver uppdateras för att fortsätta synkroniseras med Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Vissa appar behöver uppdateras för att fortsätta synkroniseras med Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> behöver uppdateras för att fortsätta synkroniseras med Health Connect. Uppdateringar kanske inte är tillgängliga för alla appar."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Vissa appar behöver uppdateras för att fortsätta synkroniseras med Health Connect. Uppdateringar kanske inte är tillgängliga för alla appar."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Sök efter uppdateringar"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Läs mer"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-integrering"</string>
@@ -1135,12 +1134,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Se kompatibla appar"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Hitta fler appar att synkronisera med <xliff:g id="APP_NAME">%s</xliff:g> via Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Se på appbutiken"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ställ in ett skärmlås"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Öka säkerheten för din hälsodata genom att ställa in en pinkod, ett mönster eller ett lösenord för enheten"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Ställ in skärmlås"</string>
     <string name="select_all" msgid="837499881590001166">"Markera allt"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Anslutna appar kan inte längre läsa denna data från Health Connect"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Markerad"</string>
@@ -1183,38 +1179,29 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Vill du ge <xliff:g id="APP_NAME">%1$s</xliff:g> åtkomst till tränings- och hälsodata?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> begär åtkomst till <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nTillåt alla eller bestäm för varje enskild behörighet."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Vill du ge <xliff:g id="APP_NAME">%1$s</xliff:g> åtkomst till <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Träning och hälsa"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"hela tiden"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"vid användning"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Hela tiden"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Vid användning"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan få åtkomst till all din tränings- och hälsodata <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Tillåts åtkomst"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Tillåts att läsa"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Med dessa behörigheter får <xliff:g id="APP_NAME">%1$s</xliff:g> åtkomst till data från enhetens sensorer."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> av <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> appar tillåts"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Inga appar begär"</string>
+    <string name="allowed" msgid="4158456017482263737">"Tillåts"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Tillåts inte"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Appar med den här behörigheten får åtkomst till <xliff:g id="DATA_TYPE">%s</xliff:g>data från enhetens sensorer."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Vill du ta bort åtkomst till <xliff:g id="DATA_TYPE">%s</xliff:g> för alla appar på klockan?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Bockmarkering"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Kryssmarkering"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>

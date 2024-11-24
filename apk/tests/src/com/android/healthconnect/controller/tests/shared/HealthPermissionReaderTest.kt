@@ -1,18 +1,23 @@
 package com.android.healthconnect.controller.tests.shared
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions
+import android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS
 import android.health.connect.HealthPermissions.READ_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
+import android.os.Build
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.platform.test.flag.junit.SetFlagsRule
+import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
@@ -23,12 +28,16 @@ import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.UNSUPPORTED_TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.WEAR_LEGACY_TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.WEAR_TEST_APP_PACKAGE_NAME
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.test.runTest
+import org.junit.Assume.assumeFalse
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,7 +54,7 @@ class HealthPermissionReaderTest {
 
     @Before
     fun setup() {
-        hiltRule.inject()
+        runWithShellPermissionIdentity({ hiltRule.inject() }, MANAGE_HEALTH_PERMISSIONS)
         context = InstrumentationRegistry.getInstrumentation().context
     }
 
@@ -244,7 +253,8 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getAppsWithHealthPermissions_returnsSupportedApps() = runTest {
+    fun getAppsWithHealthPermissions_returnsSupportedApps_handHeldDevices() = runTest {
+        assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
         assertThat(permissionReader.getAppsWithHealthPermissions())
             .containsAtLeast(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2)
     }
@@ -256,9 +266,41 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getAppsWithHealthPermissions_doesNotReturnUnsupportedApps() = runTest {
+    fun getAppsWithHealthPermissions_doesNotReturnUnsupportedApps_handHeldDevices() = runTest {
+        assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
         assertThat(permissionReader.getAppsWithHealthPermissions())
             .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun getAppsWithHealthPermissions_returnAppsRequestingHealthPermissions_wearDevices() = runTest {
+        assumeTrue(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
+
+        val wearAppsWithHealthPermissions = permissionReader.getAppsWithHealthPermissions()
+        assertThat(wearAppsWithHealthPermissions)
+            .containsAtLeast(
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_PACKAGE_NAME_2,
+                WEAR_LEGACY_TEST_APP_PACKAGE_NAME, // Test split permissiom from BODY_SENSORS
+                WEAR_TEST_APP_PACKAGE_NAME,
+            )
+        // An app is not considered a wear app with health permissions if not requesting a system
+        // health permission, regardless of declaring an intent filter
+        assertThat(wearAppsWithHealthPermissions)
+            .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun getSystemHealthPermissions_returnSystemHealthPermissions() = runTest {
+        assertThat(permissionReader.getSystemHealthPermissions())
+            .containsExactly(
+                HealthPermissions.READ_HEART_RATE,
+                HealthPermissions.READ_OXYGEN_SATURATION,
+                HealthPermissions.READ_SKIN_TEMPERATURE,
+            )
     }
 
     @Test

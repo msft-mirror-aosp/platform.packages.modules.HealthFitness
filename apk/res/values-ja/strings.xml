@@ -53,8 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"昨日"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"読み取り: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"書き込み: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <!-- no translation found for separator (5521285473288943819) -->
-    <skip />
+    <string name="separator" msgid="5521285473288943819">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"権限を管理"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"時間: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"アクティビティ"</string>
@@ -313,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"皮膚温"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"皮膚温を読み取る"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"皮膚温を書き込む"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"すべての医療記録"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"すべての医療記録"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"医療記録の書き込み"</string>
@@ -322,12 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"健康状態"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"健康状態"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"健康状態の読み取り"</string>
-    <!-- no translation found for vaccines_uppercase_label (1101176371071123187) -->
-    <skip />
-    <!-- no translation found for vaccines_lowercase_label (4991324441768127447) -->
-    <skip />
-    <!-- no translation found for vaccines_content_description (7152741514791951684) -->
-    <skip />
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"ワクチン接種"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"ワクチン接種"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"ワクチン接種データの読み取り"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"検査結果"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"検査結果"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"検査結果データの読み取り"</string>
@@ -377,7 +375,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"アクセス権を付与すると、このアプリはアレルギー、検査結果、ワクチン接種などのデータの読み取りと書き込みを行えるようになります\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"アクセス権を付与すると、このアプリはアレルギー、検査結果、ワクチン接種などのデータを読み取れるようになります\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"医療記録について"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"共有するデータ"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"共有するデータには以下が含まれます"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"許可すると、<xliff:g id="APP_NAME">%1$s</xliff:g>は医療記録をヘルスコネクトと共有できるようになります。"</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"さまざまなアプリやソースの医療記録を同期して 1 か所で管理できます"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"すべての権限を削除しますか？"</string>
@@ -436,7 +434,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"これらのアプリはアクセスできなくなりましたが、ヘルスコネクトからデータが削除されることはありません"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> は、<xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>以降に追加されたデータを読み取ることができます"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"このアプリがアクセスできるその他の Android 権限を管理するには、[設定] &gt; [アプリ] に移動してください"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"<xliff:g id="APP_NAME">%1$s</xliff:g> と共有するデータには、そのアプリのプライバシー ポリシーが適用されます"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"<xliff:g id="APP_NAME">%1$s</xliff:g> でのデータの取り扱いについて詳しくは、デベロッパーのプライバシー ポリシーをご覧ください"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"このアプリがアクセスできるその他の Android 権限を管理するには、[設定] に移動し、[アプリ] をタップしてください"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"プライバシー ポリシーを読む"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"過去 24 時間にアクセス"</string>
@@ -947,7 +945,7 @@
     <string name="height_ft_compacted" msgid="1024585112134314039">"{height,plural, =1{1′}other{#′}}"</string>
     <string name="feet_inches_format" msgid="768610500549967860">"<xliff:g id="FT">%1$s</xliff:g><xliff:g id="IN">%2$s</xliff:g>⁠"</string>
     <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>⁠"</string>
-    <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 カロリー}other{# カロリー}}"</string>
+    <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 kcal}other{# kcal}}"</string>
     <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 Cal}other{# Cal}}"</string>
     <string name="kj" msgid="2742876437259085714">"{count,plural, =1{1 kJ}other{# kJ}}"</string>
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 キロジュール}other{# キロジュール}}"</string>
@@ -1075,8 +1073,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"ヘルスコネクトの統合を再開してください"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"データを保持するため、<xliff:g id="TIME_NEEDED">%1$s</xliff:g>以内に統合を完了してください。"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"アプリの更新が必要です"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"ヘルスコネクトとの同期を続けるには、<xliff:g id="APP_NAME">%1$s</xliff:g> の更新が必要です"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"ヘルスコネクトとの同期を続けるには、いくつかのアプリの更新が必要です"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"ヘルスコネクトとの同期を続けるには、<xliff:g id="APP_NAME">%1$s</xliff:g> の更新が必要です。アプリによってはアップデートを利用できない場合があります。"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"ヘルスコネクトとの同期を続けるには、いくつかのアプリの更新が必要です。アプリによってはアップデートを利用できない場合があります。"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"アップデートを確認"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"詳細"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"ヘルスコネクトの統合"</string>
@@ -1135,12 +1133,9 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"対応アプリを表示する"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"ヘルスコネクトで <xliff:g id="APP_NAME">%s</xliff:g> と同期するアプリをさらに探す"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"アプリストアで表示する"</string>
-    <!-- no translation found for lock_screen_banner_title (5384381892985739755) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_content (3392527073622152481) -->
-    <skip />
-    <!-- no translation found for lock_screen_banner_button (2537090011380728122) -->
-    <skip />
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"画面ロックの設定"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"健康に関するデータのセキュリティを強化するために、このデバイスの PIN、パターン、またはパスワードを設定してください"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"画面ロックを設定"</string>
     <string name="select_all" msgid="837499881590001166">"すべて選択"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"接続されているアプリは、ヘルスコネクトに追加されたこのデータを読み取れなくなります"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"ON"</string>
@@ -1183,38 +1178,29 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"フィットネスとウェルネスに関するデータへのアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に許可しますか？"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> が<xliff:g id="DATA_TYPES">%2$s</xliff:g>へのアクセスをリクエストしています。\n\nすべて許可するか、個別に許可するかを選択してください。"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> に<xliff:g id="DATA_TYPE">%2$s</xliff:g>へのアクセスを許可しますか？"</string>
-    <!-- no translation found for fitness_and_wellness (2002316898861559748) -->
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"フィットネスとウェルネス"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"常時"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"使用中"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"常時"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"使用中"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> はフィットネスとウェルネスに関するすべてのデータにアクセスできます（<xliff:g id="ALLOW_MODE">%2$s</xliff:g>）"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"アクセスの許可"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"読み取りの許可"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"これらの権限により、<xliff:g id="APP_NAME">%1$s</xliff:g> はデバイスのセンサーからデータにアクセスできるようになります。"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> 個のアプリを許可"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"リクエストしているアプリはありません"</string>
+    <string name="allowed" msgid="4158456017482263737">"許可"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"許可しない"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"この権限があるアプリは、デバイスのセンサーから<xliff:g id="DATA_TYPE">%s</xliff:g>のデータにアクセスできます。"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"スマートウォッチのすべてのアプリから<xliff:g id="DATA_TYPE">%s</xliff:g>のアクセス権を削除しますか？"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"チェックマーク"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"バツマーク"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time (6899702815770193290) -->
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
     <skip />
-    <!-- no translation found for view_permissions_while_in_use (2031627107397429473) -->
+    <!-- no translation found for current_access (1457167070428176139) -->
     <skip />
-    <!-- no translation found for view_permissions_all_the_time_cap (7703114160274796464) -->
-    <skip />
-    <!-- no translation found for view_permissions_while_in_use_cap (2567477283044619917) -->
-    <skip />
-    <!-- no translation found for view_permissions_mode (5954826327563393399) -->
-    <skip />
-    <!-- no translation found for allowed_to_access (4179317387300812335) -->
-    <skip />
-    <!-- no translation found for allowed_to_read (2775365229411407406) -->
-    <skip />
-    <!-- no translation found for give_permission_prompt (5788144216023065504) -->
-    <skip />
-    <!-- no translation found for allowed_apps_count (2289260267605628310) -->
-    <skip />
-    <!-- no translation found for no_apps_requesting (8088684445910698363) -->
-    <skip />
-    <!-- no translation found for allowed (4158456017482263737) -->
-    <skip />
-    <!-- no translation found for not_allowed (6092523505093372147) -->
-    <skip />
-    <!-- no translation found for access_sensor_note (7949933977197789634) -->
-    <skip />
-    <!-- no translation found for remove_one_permission_for_all (6732728480265044938) -->
-    <skip />
-    <!-- no translation found for icon_content_check_mark (358150681017987426) -->
-    <skip />
-    <!-- no translation found for icon_content_cross_mark (3007762424358780248) -->
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
     <skip />
 </resources>

@@ -68,7 +68,7 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
     }
 
     init {
-        this.setPageName(PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE)
+        this.setPageName(PageName.REQUEST_WRITE_MEDICAL_PERMISSION_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

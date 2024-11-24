@@ -312,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"skin temperature"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Read skin temperature"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Write skin temperature"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"All health records"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"all health records"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Write all health records"</string>
@@ -373,7 +375,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"If you give access, the app can read and write data such as allergies, lab results, vaccines and more\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"If you give access, the app can read data such as allergies, lab results, vaccines and more\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"About health records"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Data to share"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Data to share includes"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"If you allow, <xliff:g id="APP_NAME">%1$s</xliff:g> can share your health records with Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sync your health records from your different apps and sources to keep them in one place"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Remove all permissions?"</string>
@@ -432,7 +434,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"These apps no longer have access, but still have data stored in Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> can read data added after <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"To manage other Android permissions this app can access, go to Settings &gt; Apps"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Data you share with <xliff:g id="APP_NAME">%1$s</xliff:g> is covered by their privacy policy"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"You can learn how <xliff:g id="APP_NAME">%1$s</xliff:g> handles your data in the developer\'s privacy policy"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"To manage other Android permissions this app can access, go to Settings, then tap Apps"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Read privacy policy"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Accessed in past 24 hours"</string>
@@ -1071,8 +1073,8 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Resume Health Connect integration"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"In order to keep your data, complete this within <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"App update needed"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> needs to be updated to continue syncing with Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Some apps need to be updated to continue syncing with Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> needs to be updated to continue syncing with Health Connect. Updates may not be available for all apps."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Some apps need to be updated to continue syncing with Health Connect. Updates may not be available for all apps."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Check for updates"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Learn more"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect integration"</string>
@@ -1193,4 +1195,12 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Remove <xliff:g id="DATA_TYPE">%s</xliff:g> access for all apps on your watch?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Check mark"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Cross mark"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
+    <skip />
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
+    <skip />
+    <!-- no translation found for current_access (1457167070428176139) -->
+    <skip />
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
+    <skip />
 </resources>

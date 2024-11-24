@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.injector;
 
 import android.content.Context;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.UserHandle;
 
@@ -104,23 +103,25 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         // Any class that is using this user below are responsible for making sure that they
         // update any reference to user when it changes.
         UserHandle userHandle = builder.mUserHandle;
+        StorageContext storageContext = StorageContext.create(context, userHandle);
 
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
+        mHealthConnectMappings = HealthConnectMappings.getInstance();
         mTimeSource = builder.mTimeSource == null ? new TimeSourceImpl() : builder.mTimeSource;
+
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
                         ? new HealthConnectDeviceConfigManager(context)
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
-                        ? new TransactionManager(
-                                StorageContext.create(context, userHandle),
-                                mInternalHealthConnectMappings)
+                        ? new TransactionManager(storageContext, mInternalHealthConnectMappings)
                         : builder.mTransactionManager;
-        mHealthConnectMappings = HealthConnectMappings.getInstance();
+
         mAppInfoHelper =
                 builder.mAppInfoHelper == null
-                        ? new AppInfoHelper(mTransactionManager, mHealthConnectMappings)
+                        ? new AppInfoHelper(
+                                storageContext, mTransactionManager, mHealthConnectMappings)
                         : builder.mAppInfoHelper;
         mPackageInfoUtils =
                 builder.mPackageInfoUtils == null
@@ -135,7 +136,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? new HealthDataCategoryPriorityHelper(
                                 mAppInfoHelper,
                                 mTransactionManager,
-                                mHealthConnectDeviceConfigManager,
                                 mPreferenceHelper,
                                 mPackageInfoUtils,
                                 mHealthConnectMappings)
@@ -212,7 +212,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? new HealthConnectPermissionHelper(
                                 context,
                                 context.getPackageManager(),
-                                HealthConnectManager.getHealthPermissions(context),
                                 mPermissionIntentAppsTracker,
                                 mFirstGrantTimeManager,
                                 mHealthDataCategoryPriorityHelper,
