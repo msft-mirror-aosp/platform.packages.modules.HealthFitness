@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package healthconnect.backuprestore;
+package com.android.server.healthconnect.backuprestore;
 
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.AUTO_DELETE_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.DISTANCE_UNIT_PREF_KEY;
@@ -40,25 +40,24 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import android.Manifest;
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.backuprestore.BackupSettingsHelper;
-import com.android.server.healthconnect.backuprestore.CloudBackupSettings;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -112,7 +111,7 @@ public class BackupSettingsHelperTest {
 
         HealthConnectInjector.resetInstanceForTest();
 
-        StorageContext context = mDatabaseTestRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
         mPreferenceHelper = new FakePreferenceHelper();
         mExportImportSettingsStorage = mock(ExportImportSettingsStorage.class);
 

@@ -22,6 +22,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
 
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
@@ -30,6 +31,7 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
@@ -37,7 +39,6 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
@@ -72,8 +73,7 @@ public class ReadTransactionRequestTest {
 
     @Before
     public void setup() {
-        StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
-
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))

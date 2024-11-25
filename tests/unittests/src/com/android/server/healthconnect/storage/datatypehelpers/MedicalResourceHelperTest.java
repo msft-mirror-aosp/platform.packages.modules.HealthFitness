@@ -66,6 +66,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.HealthConnectManager;
@@ -82,6 +83,8 @@ import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -91,7 +94,6 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.PhrTestUtils;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -139,22 +141,18 @@ public class MedicalResourceHelperTest {
     private static final Instant INSTANT_NOW = Instant.now();
 
     private MedicalResourceHelper mMedicalResourceHelper;
-    private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
-    private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
-    private StorageContext mContext;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
 
     @Before
     public void setup() {
-
-        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
         mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
@@ -164,11 +162,9 @@ public class MedicalResourceHelperTest {
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
-        mUtil = new PhrTestUtils(mContext, healthConnectInjector);
+        mUtil = new PhrTestUtils(context, healthConnectInjector);
     }
 
     @Test

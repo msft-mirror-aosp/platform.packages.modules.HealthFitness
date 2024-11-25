@@ -20,9 +20,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
 
+import android.content.Context;
 import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
@@ -58,9 +61,9 @@ public class BackupChangeTokenHelperTest {
 
     @Before
     public void setup() {
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(
-                                mHealthConnectDatabaseTestRule.getDatabaseContext())
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))

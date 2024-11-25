@@ -21,10 +21,13 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.Environment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -73,7 +76,7 @@ public class NoMockAutoDeleteServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        StorageContext context = testRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
 
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
@@ -109,7 +112,7 @@ public class NoMockAutoDeleteServiceTest {
                                 mHealthConnectInjector.getPreferenceHelper()))
                 .isEqualTo(30);
         AutoDeleteService.startAutoDelete(
-                testRule.getDatabaseContext(),
+                ApplicationProvider.getApplicationContext(),
                 mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
                 mHealthConnectInjector.getPreferenceHelper(),
                 mHealthConnectInjector.getAppInfoHelper(),
