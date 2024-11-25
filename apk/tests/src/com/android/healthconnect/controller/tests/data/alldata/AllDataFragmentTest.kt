@@ -392,6 +392,12 @@ class AllDataFragmentTest {
         }
 
         assertCheckboxShown("Select all")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
     }
 
     @Test

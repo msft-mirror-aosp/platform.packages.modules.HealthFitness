@@ -399,8 +399,10 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun setupSelectAllPreference(screenState: DeletionScreenState) {
-        selectAllCheckboxPreference.isVisible = screenState == DELETE
-        if (screenState == DELETE) {
+        val isDeletionState = screenState == DELETE
+        selectAllCheckboxPreference.isVisible = isDeletionState
+        topIntroPreference.isVisible = !isDeletionState
+        if (isDeletionState) {
             viewModel.allPermissionTypesSelected.observe(viewLifecycleOwner) {
                 allPermissionTypesSelected ->
                 selectAllCheckboxPreference.removeOnPreferenceClickListener()
