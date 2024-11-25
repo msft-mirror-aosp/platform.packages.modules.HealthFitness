@@ -395,10 +395,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void onUserSwitching(UserHandle currentForegroundUser) {
         mCurrentForegroundUser = currentForegroundUser;
         mBackupRestore.setupForUser(currentForegroundUser);
-        HealthConnectThreadScheduler.scheduleInternalTask(
-                () ->
-                        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(
-                                mContext));
     }
 
     @Override
@@ -1259,7 +1255,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         throwExceptionIfDataSyncInProgress();
                         List<DataOrigin> dataOriginInPriorityOrder =
                                 mHealthDataCategoryPriorityHelper
-                                        .syncAndGetPriorityOrder(dataCategory, mContext)
+                                        .syncAndGetPriorityOrder(dataCategory)
                                         .stream()
                                         .map(
                                                 (name) ->

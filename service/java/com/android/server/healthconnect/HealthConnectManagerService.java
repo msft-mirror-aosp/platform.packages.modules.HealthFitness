@@ -189,6 +189,7 @@ public class HealthConnectManagerService extends SystemService {
                 .onUserUnlocked(mCurrentForegroundUser);
 
         mHealthConnectInjector.getAppInfoHelper().setupForUser(storageContext);
+        mHealthConnectInjector.getHealthDataCategoryPriorityHelper().setupForUser(storageContext);
 
         if (Flags.clearCachesAfterSwitchingUser()) {
             // Clear preferences cache again after the user switching is done as there's a race

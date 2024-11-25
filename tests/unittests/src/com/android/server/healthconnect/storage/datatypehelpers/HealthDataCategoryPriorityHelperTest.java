@@ -42,7 +42,6 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -120,14 +119,12 @@ public class HealthDataCategoryPriorityHelperTest {
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
-    private Context mContext;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         when(mTransactionManager.read(any())).thenReturn(mCursor);
-        when(mTransactionManager.getCurrentUserHandle()).thenReturn(UserHandle.CURRENT);
         when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME))).thenReturn(APP_PACKAGE_ID);
         when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_2)))
                 .thenReturn(APP_PACKAGE_ID_2);
@@ -148,9 +145,9 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mCursor.getColumnIndex(eq(APP_ID_PRIORITY_ORDER_COLUMN_NAME)))
                 .thenReturn(APP_ID_PRIORITY_ORDER_COLUMN_INDEX);
 
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setAppInfoHelper(mAppInfoHelper)
@@ -177,7 +174,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
         when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID);
         mHealthDataCategoryPriorityHelper.appendToPriorityList(
-                APP_PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS, mContext, true);
+                APP_PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS, true);
 
         verify(mTransactionManager, never()).insertOrReplace(any());
     }
@@ -190,10 +187,9 @@ public class HealthDataCategoryPriorityHelperTest {
         setupPriorityList(priorityList);
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
+        doReturn(true).when(spy).isDefaultApp(APP_PACKAGE_NAME_4);
         when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID_4);
-        spy.appendToPriorityList(
-                APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, false);
+        spy.appendToPriorityList(APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, false);
 
         List<Long> expectedPriorityOrder =
                 List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID, APP_PACKAGE_ID_2);
@@ -211,10 +207,9 @@ public class HealthDataCategoryPriorityHelperTest {
         setupPriorityList(priorityList);
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(false).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
+        doReturn(false).when(spy).isDefaultApp(APP_PACKAGE_NAME_4);
         when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID_4);
-        spy.appendToPriorityList(
-                APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, false);
+        spy.appendToPriorityList(APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, false);
 
         List<Long> expectedPriorityOrder =
                 List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_4);
@@ -232,10 +227,9 @@ public class HealthDataCategoryPriorityHelperTest {
         setupPriorityList(priorityList);
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
+        doReturn(true).when(spy).isDefaultApp(APP_PACKAGE_NAME_4);
         when(mAppInfoHelper.getOrInsertAppInfoId(any(), anyString())).thenReturn(APP_PACKAGE_ID_4);
-        spy.appendToPriorityList(
-                APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, true);
+        spy.appendToPriorityList(APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, true);
 
         List<Long> expectedPriorityOrder =
                 List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_4);
@@ -255,7 +249,7 @@ public class HealthDataCategoryPriorityHelperTest {
         setupPackageInfoWithWritePermissionGranted();
 
         mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
-                mContext, APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY, UserHandle.CURRENT);
+                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
         verify(mTransactionManager, never()).insertOrReplace(any());
     }
@@ -273,8 +267,7 @@ public class HealthDataCategoryPriorityHelperTest {
         doReturn(true)
                 .when(spy)
                 .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppFromPriorityList(
-                mContext, APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY, UserHandle.CURRENT);
+        spy.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
         verify(mTransactionManager, never()).insertOrReplace(any());
     }
@@ -292,8 +285,7 @@ public class HealthDataCategoryPriorityHelperTest {
         doReturn(false)
                 .when(spy)
                 .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppFromPriorityList(
-                mContext, APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY, UserHandle.CURRENT);
+        spy.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
         List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
         verify(mTransactionManager)
@@ -310,8 +302,7 @@ public class HealthDataCategoryPriorityHelperTest {
         setupPriorityList(priorityList);
         setupPackageInfoWithWritePermissionGranted();
 
-        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
-                mContext, APP_PACKAGE_NAME, UserHandle.CURRENT);
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
 
         List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID);
         assertThat(
@@ -331,7 +322,7 @@ public class HealthDataCategoryPriorityHelperTest {
         doReturn(true)
                 .when(spy)
                 .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppFromPriorityList(mContext, APP_PACKAGE_NAME, UserHandle.CURRENT);
+        spy.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
 
         verify(mTransactionManager, never()).insertOrReplace(any());
     }
@@ -348,7 +339,7 @@ public class HealthDataCategoryPriorityHelperTest {
                 .when(spy)
                 .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
-        spy.maybeRemoveAppFromPriorityList(mContext, APP_PACKAGE_NAME, UserHandle.CURRENT);
+        spy.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
         List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
         verify(mTransactionManager)
                 .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
@@ -397,10 +388,10 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mAppInfoHelper.getPackageNames(any()))
                 .thenReturn(List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doNothing().when(spy).reSyncHealthDataPriorityTable(any());
+        doNothing().when(spy).reSyncHealthDataPriorityTable();
 
-        spy.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext);
-        verify(spy, times(1)).reSyncHealthDataPriorityTable(mContext);
+        spy.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY);
+        verify(spy, times(1)).reSyncHealthDataPriorityTable();
     }
 
     @Test
@@ -527,7 +518,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         assertThat(
                         mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
                                 HealthDataCategory.ACTIVITY))
@@ -595,7 +586,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         assertThat(
                         mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
                                 HealthDataCategory.ACTIVITY))
@@ -663,7 +654,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         assertThat(
                         mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
                                 HealthDataCategory.ACTIVITY))
@@ -736,7 +727,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         assertThat(
                         mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
                                 HealthDataCategory.VITALS))
@@ -804,7 +795,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         verify(mTransactionManager)
                 .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.ACTIVITY)));
         // This would have been empty hence not populating with contributing apps.
@@ -872,7 +863,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         verify(mTransactionManager)
                 .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.ACTIVITY)));
         assertThat(
@@ -955,7 +946,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
                 .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         verify(mTransactionManager, never())
                 .insertOrReplace(argThat(new UpsertRequestMatcher(List.of(APP_PACKAGE_ID))));
         assertThat(
@@ -1043,7 +1034,8 @@ public class HealthDataCategoryPriorityHelperTest {
         priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4));
         setupPriorityList(priorityList);
 
-        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(mContext);
+        mHealthDataCategoryPriorityHelper
+                .addInactiveAppsWhenFirstMigratingToNewAggregationControl();
         verifyPriorityUpdate(
                 List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3),
                 HealthDataCategory.ACTIVITY);
@@ -1053,7 +1045,8 @@ public class HealthDataCategoryPriorityHelperTest {
     @Test
     public void testMaybeAddInactiveAppsToPriorityList_ifPreferenceExists_doesNotAdd() {
         when(mPreferenceHelper.getPreference(any())).thenReturn(String.valueOf(true));
-        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(mContext);
+        mHealthDataCategoryPriorityHelper
+                .addInactiveAppsWhenFirstMigratingToNewAggregationControl();
         verify(mPreferenceHelper, never()).insertOrReplacePreference(any(), any());
         verify(mTransactionManager, never()).insertOrReplace(any());
     }
@@ -1293,7 +1286,7 @@ public class HealthDataCategoryPriorityHelperTest {
                 HealthDataCategory.ACTIVITY,
                 Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2, APP_PACKAGE_NAME_3));
         expectedResult.put(HealthDataCategory.VITALS, Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3));
-        assertThat(mHealthDataCategoryPriorityHelper.getAllInactiveApps(mContext))
+        assertThat(mHealthDataCategoryPriorityHelper.getAllInactiveApps())
                 .isEqualTo(expectedResult);
     }
 

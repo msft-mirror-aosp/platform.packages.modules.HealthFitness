@@ -40,7 +40,6 @@ import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
 
@@ -83,14 +82,12 @@ public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
 
     private volatile HealthConnectDatabase mHealthConnectDatabase;
-    private UserHandle mUserHandle;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     public TransactionManager(
             StorageContext storageContext,
             InternalHealthConnectMappings internalHealthConnectMappings) {
         mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
-        mUserHandle = storageContext.getUser();
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
@@ -101,11 +98,7 @@ public final class TransactionManager {
 
     /** Setup the transaction manager for the new user. */
     public void onUserUnlocked(StorageContext storageContext) {
-        if (mUserHandle.equals(storageContext.getUser())) {
-            return;
-        }
         mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
-        mUserHandle = storageContext.getUser();
     }
 
     /**
@@ -1045,9 +1038,5 @@ public final class TransactionManager {
     public interface TransactionRunnableWithReturn<R, E extends Throwable> {
         /** Task to be executed that throws throwable of type E and returns type R. */
         R run(SQLiteDatabase db) throws E;
-    }
-
-    public UserHandle getCurrentUserHandle() {
-        return mUserHandle;
     }
 }
