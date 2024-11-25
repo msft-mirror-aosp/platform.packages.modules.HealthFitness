@@ -88,25 +88,27 @@ public class UpsertTransactionRequestTest {
     @Test
     public void getPackageName_expectCorrectName() {
         UpsertTransactionRequest request1 =
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForInsert(
                         "package.name.1",
                         List.of(),
                         mDeviceInfoHelper,
-                        /* isInsertRequest= */ false,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mAppInfoHelper);
+                        mAppInfoHelper,
+                        /* extraPermsStateMap= */ Collections.emptyMap());
         assertThat(request1.getPackageName()).isEqualTo("package.name.1");
 
         UpsertTransactionRequest request2 =
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForUpdate(
                         "package.name.2",
                         List.of(),
                         mDeviceInfoHelper,
-                        /* isInsertRequest= */ false,
-                        /* useProvidedUuid= */ false,
-                        /* skipPackageNameAndLogs= */ false,
-                        mAppInfoHelper);
+                        mAppInfoHelper,
+                        /* extraPermsStateMap= */ Collections.emptyMap());
         assertThat(request2.getPackageName()).isEqualTo("package.name.2");
+
+        UpsertTransactionRequest request3 =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(), mDeviceInfoHelper, mAppInfoHelper);
+        assertThat(request3.getPackageName()).isNull();
     }
 
     @Test
@@ -116,13 +118,12 @@ public class UpsertTransactionRequestTest {
                         getStepsRecord().toRecordInternal(),
                         getBasalMetabolicRateRecord().toRecordInternal());
         UpsertTransactionRequest request =
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForUpdate(
                         "package.name",
                         records,
                         mDeviceInfoHelper,
-                        /* isInsertRequest= */ false,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mAppInfoHelper);
+                        mAppInfoHelper,
+                        /* extraPermsStateMap= */ Collections.emptyMap());
 
         assertThat(request.getRecordTypeIds())
                 .containsExactly(RECORD_TYPE_STEPS, RECORD_TYPE_BASAL_METABOLIC_RATE);
