@@ -83,6 +83,15 @@ java_defaults {
     visibility: ["//visibility:private"],
 }
 
+filegroup {
+    name: "hilt-test-runner",
+    srcs: ["src/**/HiltTestRunner.kt"],
+    visibility: [
+        "//packages/modules/HealthFitness/apk/tests/screendiff",
+        "//vendor:__subpackages__",
+    ],
+}
+
 java_library {
     name: "SafetyCenterTests",
     srcs: [
