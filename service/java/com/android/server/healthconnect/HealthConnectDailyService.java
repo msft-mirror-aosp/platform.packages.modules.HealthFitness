@@ -38,12 +38,10 @@ import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -84,8 +82,7 @@ public class HealthConnectDailyService extends JobService {
         }
 
         HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
-        HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper =
-                healthConnectInjector.getHealthDataCategoryPriorityHelper();
+        DailyCleanupJob dailyCleanupJob = healthConnectInjector.getDailyCleanupJob();
         ExportImportSettingsStorage exportImportSettingsStorage =
                 healthConnectInjector.getExportImportSettingsStorage();
         ExportManager exportManager = healthConnectInjector.getExportManager();
@@ -94,10 +91,8 @@ public class HealthConnectDailyService extends JobService {
                 healthConnectInjector.getHealthConnectDeviceConfigManager();
         MigrationStateManager migrationStateManager =
                 healthConnectInjector.getMigrationStateManager();
-        AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         TransactionManager transactionManager = healthConnectInjector.getTransactionManager();
-        ActivityDateHelper activityDateHelper = healthConnectInjector.getActivityDateHelper();
         MedicalDataSourceHelper medicalDataSourceHelper =
                 healthConnectInjector.getMedicalDataSourceHelper();
         MedicalResourceHelper medicalResourceHelper =
@@ -113,15 +108,13 @@ public class HealthConnectDailyService extends JobService {
                             HealthConnectDailyJobs.execute(
                                     context,
                                     params,
-                                    healthDataCategoryPriorityHelper,
                                     preferenceHelper,
-                                    appInfoHelper,
                                     accessLogsHelper,
                                     transactionManager,
-                                    activityDateHelper,
                                     medicalDataSourceHelper,
                                     medicalResourceHelper,
-                                    timeSource);
+                                    timeSource,
+                                    dailyCleanupJob);
                             jobFinished(params, false);
                         });
                 return true;

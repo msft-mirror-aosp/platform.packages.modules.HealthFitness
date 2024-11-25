@@ -113,7 +113,8 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getAppInfoHelper(),
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mPreferenceHelper,
-                        mDatabaseHelpers);
+                        mDatabaseHelpers,
+                        mHealthConnectInjector.getPreferencesManager());
     }
 
     @Override
@@ -143,7 +144,6 @@ public class HealthConnectManagerService extends SystemService {
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
         mMigrationStateManager.onUserSwitching(mContext, to.getUserHandle());
-
         mCurrentForegroundUser = to.getUserHandle();
 
         if (mUserManager.isUserUnlocked(to.getUserHandle())) {

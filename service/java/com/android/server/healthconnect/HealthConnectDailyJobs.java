@@ -31,12 +31,9 @@ import android.os.UserHandle;
 
 import com.android.server.healthconnect.logging.DailyLoggingService;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
-import com.android.server.healthconnect.storage.AutoDeleteService;
+import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -83,15 +80,13 @@ public class HealthConnectDailyJobs {
     public static void execute(
             Context context,
             JobParameters params,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             PreferenceHelper preferenceHelper,
-            AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
             TransactionManager transactionManager,
-            ActivityDateHelper activityDateHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             MedicalResourceHelper medicalResourceHelper,
-            TimeSource timeSource) {
+            TimeSource timeSource,
+            DailyCleanupJob dailyCleanupJob) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
         UserHandle userHandle = UserHandle.getUserHandleForUid(userId);
         UsageStatsCollector usageStatsCollector =
@@ -99,14 +94,7 @@ public class HealthConnectDailyJobs {
                         context, userHandle, preferenceHelper, accessLogsHelper, timeSource);
         TableSizeHelper tableSizeHelper = new TableSizeHelper(transactionManager);
 
-        AutoDeleteService.startAutoDelete(
-                context,
-                healthDataCategoryPriorityHelper,
-                preferenceHelper,
-                appInfoHelper,
-                transactionManager,
-                accessLogsHelper,
-                activityDateHelper);
+        dailyCleanupJob.startDailyCleanup();
         DailyLoggingService.logDailyMetrics(
                 context,
                 usageStatsCollector,
