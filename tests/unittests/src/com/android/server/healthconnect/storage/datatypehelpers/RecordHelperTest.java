@@ -96,7 +96,7 @@ public class RecordHelperTest {
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();

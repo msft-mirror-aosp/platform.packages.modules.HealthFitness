@@ -166,7 +166,7 @@ public class MedicalDataSourceHelperTest {
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();

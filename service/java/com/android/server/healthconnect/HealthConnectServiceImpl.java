@@ -32,9 +32,10 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
+
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
-import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
@@ -51,6 +52,7 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_REQUESTS;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPDATE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPSERT_MEDICAL_RESOURCES;
+
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -159,6 +161,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
@@ -208,6 +211,9 @@ import com.android.server.healthconnect.storage.request.UpsertTransactionRequest
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.utils.TimeSource;
+
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -226,7 +232,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.json.JSONException;
 
 /**
  * IHealthConnectService's implementation
@@ -514,7 +519,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     attributionSource.getPackageName(),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    mContext,
                                     /* isInsertRequest */ true,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource),
@@ -903,7 +907,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     attributionSource.getPackageName(),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    mContext,
                                     /* isInsertRequest */ false,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource),
