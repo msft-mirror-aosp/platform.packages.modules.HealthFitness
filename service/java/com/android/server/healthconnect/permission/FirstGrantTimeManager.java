@@ -246,9 +246,13 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                 // take care of merging permissions
                 if (!mMigrationStateManager.isMigrationInProgress()) {
                     HealthConnectThreadScheduler.scheduleInternalTask(
-                            () ->
-                                    mHealthDataCategoryPriorityHelper.updateHealthDataPriority(
-                                            packageNames, user, mContext));
+                            () -> {
+                                for (String packageName : packageNames) {
+                                    mHealthDataCategoryPriorityHelper
+                                            .maybeRemoveAppFromPriorityList(
+                                                    mContext, packageName, user);
+                                }
+                            });
                 }
             }
         } finally {
