@@ -27,7 +27,6 @@ import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -131,16 +130,13 @@ public class TransactionManagerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        AppInfoHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
@@ -165,7 +161,8 @@ public class TransactionManagerTest {
                         .addId(uuid)
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
 
         List<RecordInternal<?>> records =
                 mTransactionManager.readRecordsByIds(
@@ -191,7 +188,7 @@ public class TransactionManagerTest {
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
         ReadTransactionRequest request =
-                getReadTransactionRequest(
+                mTransactionTestUtils.getReadTransactionRequest(
                         ImmutableMap.of(
                                 RECORD_TYPE_STEPS,
                                 stepsUuids,
@@ -221,7 +218,8 @@ public class TransactionManagerTest {
                         .addClientRecordId("id")
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsByIds(
                 readTransactionRequest,
                 mAppInfoHelper,
@@ -245,7 +243,8 @@ public class TransactionManagerTest {
                         .setPageSize(1)
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         Throwable thrown =
                 assertThrows(
                         IllegalArgumentException.class,
@@ -281,7 +280,8 @@ public class TransactionManagerTest {
                         /* isAscending= */ true, /* timeMillis= */ 500, /* offset= */ 0);
 
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         Pair<List<RecordInternal<?>>, PageTokenWrapper> result =
                 mTransactionManager.readRecordsAndPageToken(
                         readTransactionRequest,
@@ -302,7 +302,8 @@ public class TransactionManagerTest {
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build();
 
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
                 readTransactionRequest,
                 mAppInfoHelper,
@@ -327,7 +328,8 @@ public class TransactionManagerTest {
                         .build();
 
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
                 readTransactionRequest,
                 mAppInfoHelper,
@@ -346,7 +348,8 @@ public class TransactionManagerTest {
                         .addId(UUID.randomUUID().toString())
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
 
         Throwable thrown =
                 assertThrows(

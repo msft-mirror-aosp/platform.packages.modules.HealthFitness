@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.addNam
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.Nullable;
-import android.content.Context;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -66,7 +65,6 @@ public class UpsertTransactionRequest {
             @Nullable String packageName,
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
-            Context context,
             boolean isInsertRequest,
             Map<String, Boolean> extraPermsStateMap,
             AppInfoHelper appInfoHelper) {
@@ -74,7 +72,6 @@ public class UpsertTransactionRequest {
                 packageName,
                 recordInternals,
                 deviceInfoHelper,
-                context,
                 isInsertRequest,
                 false /* useProvidedUuid */,
                 false /* skipPackageNameAndLogs */,
@@ -86,7 +83,6 @@ public class UpsertTransactionRequest {
             @Nullable String packageName,
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
-            Context context,
             boolean isInsertRequest,
             boolean useProvidedUuid,
             boolean skipPackageName,
@@ -95,7 +91,6 @@ public class UpsertTransactionRequest {
                 packageName,
                 recordInternals,
                 deviceInfoHelper,
-                context,
                 isInsertRequest,
                 useProvidedUuid,
                 skipPackageName,
@@ -108,7 +103,6 @@ public class UpsertTransactionRequest {
             @Nullable String packageName,
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
-            Context context,
             boolean isInsertRequest,
             // TODO(b/329237732): Use builder pattern for this class.
             boolean useProvidedUuid,
@@ -125,7 +119,7 @@ public class UpsertTransactionRequest {
             if (!skipPackageName) {
                 StorageUtils.addPackageNameTo(recordInternal, packageName);
             }
-            appInfoHelper.populateAppInfoId(recordInternal, context, /* requireAllFields= */ true);
+            appInfoHelper.populateAppInfoId(recordInternal, /* requireAllFields= */ true);
             deviceInfoHelper.populateDeviceInfoId(recordInternal);
 
             if (isInsertRequest) {

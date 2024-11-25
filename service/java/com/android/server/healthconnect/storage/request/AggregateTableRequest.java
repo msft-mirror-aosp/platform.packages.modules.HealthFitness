@@ -280,7 +280,8 @@ public class AggregateTableRequest {
                 continue;
             }
 
-            if (mAggregationType.getAggregateResultClass() == Long.class) {
+            if (mAggregationType.getAggregateResultClass() == Long.class
+                    || mAggregationType.getAggregateResultClass() == Duration.class) {
                 result =
                         new AggregateResult<>(
                                 aggregator.getResultForGroup(groupNumber).longValue());

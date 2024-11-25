@@ -18,19 +18,19 @@ package com.android.healthconnect.controller.shared.preference
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.Preference.OnPreferenceChangeListener
-import androidx.preference.SwitchPreference
+import androidx.preference.SwitchPreferenceCompat
 import com.android.healthconnect.controller.utils.logging.ElementName
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import com.android.healthconnect.controller.utils.logging.UIAction
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import dagger.hilt.android.EntryPointAccessors
 
-/** A [SwitchPreference] that allows logging. */
+/** A [SwitchPreferenceCompat] that allows logging. */
 open class HealthSwitchPreference
 @JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null) : SwitchPreference(context, attrs) {
+constructor(context: Context, attrs: AttributeSet? = null) :
+    SwitchPreferenceCompat(context, attrs) {
 
     private var logger: HealthConnectLogger
     var logNameActive: ElementName = UnknownGenericElement.UNKNOWN_SWITCH_ACTIVE_PREFERENCE
@@ -40,7 +40,9 @@ constructor(context: Context, attrs: AttributeSet? = null) : SwitchPreference(co
     init {
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
     }
 

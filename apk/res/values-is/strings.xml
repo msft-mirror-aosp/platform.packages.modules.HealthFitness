@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Í gær"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lesa: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Skrifa: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Stjórna heimildum"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tími: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Hreyfing"</string>
@@ -312,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"hitastig húðar"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lesa hitastig húðar"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Skrifa hitastig húðar"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Þetta felur í sér allar heilsufarsskrár sem eru samstilltar og bætt við Heilsutengingu. Þetta er hugsanlega ekki öll sjúkraskráin þín og innheldur ekki læknisfræðilega lýsingu á heilsufarsskránum þínum."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Öll heilsufarsgögn"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"öll heilsufarsgögn"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Skrifa öll heilsufarsgögn"</string>
@@ -321,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Skilmálar"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"skilmálar"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Lesa skilmála"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Upplýsingar um bólusetningar"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"upplýsingar um bólusetningar"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Lesa upplýsingar um bólusetningar"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Upplýsingar um bólusetningar"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"upplýsingar um bólusetningar"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Lesa upplýsingar um bólusetningar"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Rannsóknarniðurstöður"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"rannsóknarniðurstöður"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Lesa rannsóknarniðurstöður"</string>
@@ -373,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ef þú veitir forritinu aðgang getur það lesið og skrifað gögn á borð við upplýsingar um ofnæmi, rannsóknarniðurstöður, bólusetningar og fleira\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ef þú veitir forritinu aðgang getur það lesið gögn á borð við upplýsingar um ofnæmi, rannsóknarniðurstöður, bólusetningar og fleira\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Um heilsufarsgögn"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Gögn sem þú vilt deila"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Gögnum sem verður deilt eru m.a."</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Ef þú veitir <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang getur forritið deilt heilsufarsgögnunum þínum með Heilsutengingu."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Samstilltu heilsufarsgögnin þín úr mismunandi forritum og af mismunandi upprunum til að nálgast þau á einum stað"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Fjarlægja allar heimildir?"</string>
@@ -432,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Þessi forrit hafa ekki lengur aðgang en gögn frá þeim eru enn vistuð í Heilsutengingu"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> getur lesið gögn sem bætt hefur verið við eftir <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Til að stjórna öðrum Android-heimildum sem þetta forrit hefur aðgang að skaltu fara í „Stillingar &gt; Forrit“"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Gögn sem þú deilir með <xliff:g id="APP_NAME">%1$s</xliff:g> falla undir persónuverndarstefnu viðkomandi forrits"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Kynntu þér hvernig <xliff:g id="APP_NAME">%1$s</xliff:g> meðhöndlar gögnin þín í persónuverndarstefnu þróunaraðilans"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Til að stjórna öðrum Android-heimildum sem þetta forrit hefur aðgang að skaltu fara í stillingar og ýta á „Forrit“"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lesa persónuverndarstefnuna"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Opnað síðasta sólarhringinn"</string>
@@ -468,7 +469,7 @@
     <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Síðasti útflutningur: fyrir einni klukkustund}one{Síðasti útflutningur: fyrir # klukkustund}other{Síðasti útflutningur: fyrir # klukkustundum}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"Síðasti útflutningur: ekkert"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"Tímasettur útflutningur"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Áætlaður útflutningur"</string>
     <string name="import_data" msgid="404502315533233094">"Flytja inn gögn"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Endurheimtu gögn úr skrá sem hefur áður verið flutt út"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"Tókst ekki að endurheimta gögn"</string>
@@ -488,7 +489,7 @@
     <string name="choose_frequency_category" msgid="9094154407387676553">"Breyta tíðni"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Áður útfluttum gögnum verður ekki eytt þaðan sem þau voru vistuð þegar þú slekkur á áætluðum útflutningi"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Settu upp áætlaðan útflutning"</string>
-    <string name="choose_frequency_description" msgid="7698155810053504157">"Veldu hversu reglulega gögnin þín verða flutt út"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Veldu hversu oft gögnin þín verða flutt út"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Daglega"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Vikulega"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mánaðarlega"</string>
@@ -789,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Tónlist"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Annað"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Án leiðsagnar"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> mín."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> klst. <xliff:g id="MIN">%2$s</xliff:g> mín."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> klst."</string>
@@ -1041,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Samþætting í gangi"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Samþætting Heilsutengingar og Android-kerfisins er í gangi.\n\nÞað gæti tekið nokkurn tíma að flytja gögn og heimildir."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Ekki loka forritinu fyrr en þú færð tilkynningu um að ferlinu sé lokið."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Samþætting Heilsutengingar er í gangi"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Uppfærslu krafist"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Verið er að samþætta Heilsutengingu og Android-kerfið svo þú getir opnað forritið beint úr stillingunum."</string>
     <string name="update_button" msgid="4544529019832009496">"Uppfæra"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Uppfærðu núna svo samþætting Heilsutengingar og kerfisstillinga geti haldið áfram"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Uppfæra núna"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Kerfisuppfærslu krafist"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Uppfærðu kerfi símans áður en þú heldur áfram."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Ef þú hefur þegar uppfært kerfi símans skaltu prófa að endurræsa símann til að halda samþættingunni áfram"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Uppfærslu Heilsutengingar krafist"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Uppfærðu forrit Heilsutengingar í nýjustu útgáfuna áður en þú heldur áfram."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Aukins geymslurýmis krafist"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Heilsutenging þarf <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> geymslurými í símanum til að halda samþættingunni áfram.\n\nLosaðu um pláss í símanum og reyndu síðan aftur."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Reyna aftur"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Losa um pláss"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Aukins geymslurýmis krafist"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Heilsutenging þarf <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> geymslurými í símanum til að halda samþættingunni áfram."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Hlé var gert á samþættingu"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Forrit Heilsutengingar lokaðist meðan á samþættingu við Android-kerfið stóð.\n\nSmelltu á „Halda áfram“ til að opna forritið aftur og halda flutningi gagna og heimilda áfram."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Ljúktu þessu innan <xliff:g id="TIME_NEEDED">%1$s</xliff:g> til að halda Heilsutengingargögnunum þínum."</string>
@@ -1068,11 +1068,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Ýttu til að halda samþættingu Heilsutengingar og Android-kerfisins áfram. Ljúktu þessu innan <xliff:g id="TIME_NEEDED">%1$s</xliff:g> til að halda gögnunum þínum."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Ýttu til að halda samþættingu Heilsutengingar og Android-kerfisins áfram."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Halda áfram"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Halda samþættingu Heilsutengingar áfram"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Ljúktu þessu innan <xliff:g id="TIME_NEEDED">%1$s</xliff:g> til að halda gögnunum þínum."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Uppfærslu forrits krafist"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Þú þarft að uppfæra <xliff:g id="APP_NAME">%1$s</xliff:g> til að geta haldið áfram að samstilla við Heilsutengingu"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Þú þarft að uppfæra einhver forrit til að geta haldið áfram að samstilla við Heilsutengingu"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Þú þarft að uppfæra <xliff:g id="APP_NAME">%1$s</xliff:g> til að geta haldið áfram að samstilla við Heilsutengingu. Uppfærslur eru hugsanlega ekki í boði fyrir öll forrit."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Þú þarft að uppfæra einhver forrit til að geta haldið áfram að samstilla við Heilsutengingu. Uppfærslur eru hugsanlega ekki í boði fyrir öll forrit."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Leita að uppfærslum"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Nánar"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Samþætting Heilsutengingar"</string>
@@ -1087,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Samþætting Heilsutengingar tókst ekki"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Þú færð tilkynningu þegar þetta verður aftur í boði."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Ég skil"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Samþætting Heilsutengingar tókst ekki"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Lesa meira"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Samþættingu Heilsutengingar er lokið"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Opna"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nýjungar"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Nú geturðu opnað Heilsutengingu beint úr stillingunum. Þú getur fjarlægt forrit Heilsutengingar hvenær sem er til að losa geymslurými."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Ég skil"</string>
@@ -1131,26 +1125,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Sjá samhæf forrit"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Finna fleiri forrit til að samstilla með <xliff:g id="APP_NAME">%s</xliff:g> í gegnum Heilsutengingu"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Sjá í forritaverslun"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Stilltu skjálás"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Stilltu PIN-númer, mynstur eða aðgangsorð í tækinu til að auka öryggi heilsugagnanna þinna"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Stilla skjálás"</string>
     <string name="select_all" msgid="837499881590001166">"Velja allt"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Tengd forrit munu ekki lengur geta opnað þessi gögn Heilsutengingar"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Valið"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Ekki valið"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Kort af æfingaleið tiltækt"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Næsti dagur"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Næsta vika"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Næsti mánuður"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Fyrri dagur"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Fyrri vika"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Fyrri mánuður"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Eyða öllum gögnum fyrir fullt og allt?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Eyða völdum gögnum fyrir fullt og allt?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Eyða öllum <xliff:g id="APP_NAME">%s</xliff:g>-gögnum fyrir fullt og allt?"</string>
@@ -1175,4 +1163,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Opnað kl. <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Opnað í gær kl. <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Opnað <xliff:g id="TIME_DATE_0">%1$s</xliff:g> kl. <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Leyfa alltaf"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Leyfa valið"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Meðan verið er að nota forritið"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Hafna öllu"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að gögnum um hreysti og vellíðan?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> biður um aðgang að <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nVeldu að leyfa allt eða stjórnaðu þeim hverju fyrir sig."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Viltu veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Hreysti og vellíðan"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"hvenær sem er"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"á meðan forritið er í notkun"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Hvenær sem er"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Á meðan forritið er í notkun"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> getur skoðað öll heilsu- og hreystigögnin þín <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Með aðgang"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Má lesa"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Þessar heimildir veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að gögnum frá skynjurum tækisins."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> af <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> forritum eru með aðgang"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Ekkert forrit biður um heimild"</string>
+    <string name="allowed" msgid="4158456017482263737">"Heimild veitt"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Heimild ekki veitt"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Forrit með þessa heimild hafa aðgang að gögnum um <xliff:g id="DATA_TYPE">%s</xliff:g> frá skynjurum tækisins."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Fjarlægja aðgang allra forrita í úrinu að gögnum um <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Gátmerki"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Kross"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Eins og er getur <xliff:g id="APP_NAME">%1$s</xliff:g> skoðað öll gögn þín um hreysti og vellíðan <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Viltu veita <xliff:g id="APP_NAME">%1$s</xliff:g> óheftan aðgang að gögnum um hreysti og vellíðan?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> hefur aðgang að <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Stjórna heimildum fyrir hreysti og vellíðan"</string>
 </resources>

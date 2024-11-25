@@ -15,6 +15,7 @@
  */
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVITY_INTENSITY;
 import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
 
 import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY;
@@ -23,10 +24,12 @@ import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier;
 import android.health.connect.internal.datatypes.ActivityIntensityRecordInternal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Objects;
@@ -48,6 +51,65 @@ public final class ActivityIntensityRecord extends IntervalRecord {
 
     /** Vigorous activity intensity. */
     public static final int ACTIVITY_INTENSITY_TYPE_VIGOROUS = 1;
+
+    /**
+     * Metric identifier to retrieve the total duration of moderate activity intensity using
+     * aggregate APIs in {@link android.health.connect.HealthConnectManager}.
+     */
+    @NonNull
+    public static final AggregationType<Duration> MODERATE_DURATION_TOTAL =
+            new AggregationType<>(
+                    AggregationTypeIdentifier.ACTIVITY_INTENSITY_MODERATE_DURATION_TOTAL,
+                    AggregationType.SUM,
+                    RECORD_TYPE_ACTIVITY_INTENSITY,
+                    Duration.class);
+
+    /**
+     * Metric identifier to retrieve the total duration of vigorous activity intensity using
+     * aggregate APIs in {@link android.health.connect.HealthConnectManager}.
+     */
+    @NonNull
+    public static final AggregationType<Duration> VIGOROUS_DURATION_TOTAL =
+            new AggregationType<>(
+                    AggregationTypeIdentifier.ACTIVITY_INTENSITY_VIGOROUS_DURATION_TOTAL,
+                    AggregationType.SUM,
+                    RECORD_TYPE_ACTIVITY_INTENSITY,
+                    Duration.class);
+
+    /**
+     * Metric identifier to retrieve the total duration of activity intensity regardless of the type
+     * using aggregate APIs in {@link android.health.connect.HealthConnectManager}.
+     *
+     * <p>Equivalent to {@link #MODERATE_DURATION_TOTAL} + {@link #VIGOROUS_DURATION_TOTAL}.
+     */
+    @NonNull
+    public static final AggregationType<Duration> DURATION_TOTAL =
+            new AggregationType<>(
+                    AggregationTypeIdentifier.ACTIVITY_INTENSITY_DURATION_TOTAL,
+                    AggregationType.SUM,
+                    RECORD_TYPE_ACTIVITY_INTENSITY,
+                    Duration.class);
+
+    /**
+     * Metric identifier to retrieve the number of weighted intensity minutes using aggregate APIs
+     * in {@link android.health.connect.HealthConnectManager}.
+     *
+     * <p>Records of type {@link #ACTIVITY_INTENSITY_TYPE_MODERATE} contribute their full duration
+     * to the result, while records of type {@link #ACTIVITY_INTENSITY_TYPE_VIGOROUS} contribute
+     * double their duration.
+     *
+     * <p>Equivalent to {@link #MODERATE_DURATION_TOTAL} + 2 * {@link #VIGOROUS_DURATION_TOTAL}
+     * rounded to minutes.
+     *
+     * <p>Calculated in minutes.
+     */
+    @NonNull
+    public static final AggregationType<Long> INTENSITY_MINUTES_TOTAL =
+            new AggregationType<>(
+                    AggregationTypeIdentifier.ACTIVITY_INTENSITY_MINUTES_TOTAL,
+                    AggregationType.SUM,
+                    RECORD_TYPE_ACTIVITY_INTENSITY,
+                    Long.class);
 
     /**
      * Valid set of values for {@link ActivityIntensityType}. Update this set when add a new type or

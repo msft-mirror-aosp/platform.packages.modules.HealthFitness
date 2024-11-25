@@ -18,22 +18,78 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.Constants.DELETE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_DISTANCE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.APP_ID_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.OPERATION_TYPE_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.RECORD_TYPE_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.UUIDS_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.bytesToUuids;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import static org.mockito.Mockito.mock;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.health.connect.HealthConnectManager;
+import android.health.connect.accesslog.AccessLog;
+import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.os.Environment;
+
+import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.StorageUtils;
+
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.quality.Strictness;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class ChangeLogsHelperTest {
+
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
+    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new HealthConnectDatabaseTestRule();
+
+    private ChangeLogsHelper mChangeLogsHelper;
+    private TransactionManager mTransactionManager;
+
+    @Before
+    public void setup() {
+        Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mChangeLogsHelper = healthConnectInjector.getChangeLogsHelper();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+    }
+
     @Test
     public void changeLogs_getUpsertTableRequests_listLessThanDefaultPageSize() {
         ChangeLogsHelper.ChangeLogs changeLogs =
@@ -65,5 +121,60 @@ public class ChangeLogsHelperTest {
         List<UUID> uuidList2 =
                 bytesToUuids((byte[]) requests.get(1).getContentValues().get(UUIDS_COLUMN_NAME));
         assertThat(uuidList2).hasSize(1);
+    }
+
+    @Test
+    public void getRecordTypesWrittenInPast30Days_ignoresOperationsOtherThanUpsert() {
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_STEPS,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().toEpochMilli());
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_DISTANCE,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().minus(20, ChronoUnit.DAYS).toEpochMilli());
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_BLOOD_PRESSURE,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_DELETE,
+                /* timeStamp= */ Instant.now().minus(20, ChronoUnit.DAYS).toEpochMilli());
+
+        assertThat(mChangeLogsHelper.getRecordTypesWrittenInPast30Days())
+                .containsExactly(RECORD_TYPE_STEPS, RECORD_TYPE_DISTANCE);
+    }
+
+    @Test
+    public void getRecordTypesWrittenInPast30Days_ignoresDataWrittenMoreThan30DaysAgo() {
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_STEPS,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().toEpochMilli());
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_DISTANCE,
+                /* appInfoId= */ 2,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().minus(31, ChronoUnit.DAYS).toEpochMilli());
+
+        assertThat(mChangeLogsHelper.getRecordTypesWrittenInPast30Days())
+                .containsExactly(RECORD_TYPE_STEPS);
+    }
+
+    private void insertChangeLog(
+            @RecordTypeIdentifier.RecordType int recordType,
+            int appInfoId,
+            @AccessLog.OperationType.OperationTypes int operationType,
+            long timeStamp) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RECORD_TYPE_COLUMN_NAME, recordType);
+        contentValues.put(APP_ID_COLUMN_NAME, appInfoId);
+        contentValues.put(OPERATION_TYPE_COLUMN_NAME, operationType);
+        contentValues.put(TIME_COLUMN_NAME, timeStamp);
+        contentValues.put(
+                UUIDS_COLUMN_NAME, StorageUtils.getSingleByteArray(Collections.emptyList()));
+        mTransactionManager.insert(
+                new UpsertTableRequest(ChangeLogsHelper.TABLE_NAME, contentValues));
     }
 }

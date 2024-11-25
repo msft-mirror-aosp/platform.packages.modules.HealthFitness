@@ -23,6 +23,8 @@ import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.Mockito.mock;
+
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.Environment;
@@ -30,6 +32,10 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -59,20 +65,23 @@ public class UpsertTransactionRequestTest {
     public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
-    private StorageContext mContext;
     private AppInfoHelper mAppInfoHelper;
+    private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setup() {
-        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        TransactionTestUtils transactionTestUtils =
-                new TransactionTestUtils(
-                        mContext, mHealthConnectDatabaseTestRule.getTransactionManager());
+        StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp("package.name");
 
-        AppInfoHelper.resetInstanceForTest();
-        mAppInfoHelper =
-                AppInfoHelper.getInstance(mHealthConnectDatabaseTestRule.getTransactionManager());
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
     }
 
     @Test
@@ -81,8 +90,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name.1",
                         List.of(),
-                        DeviceInfoHelper.getInstance(),
-                        mContext,
+                        mDeviceInfoHelper,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
                         mAppInfoHelper);
@@ -92,8 +100,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name.2",
                         List.of(),
-                        DeviceInfoHelper.getInstance(),
-                        mContext,
+                        mDeviceInfoHelper,
                         /* isInsertRequest= */ false,
                         /* useProvidedUuid= */ false,
                         /* skipPackageNameAndLogs= */ false,
@@ -111,8 +118,7 @@ public class UpsertTransactionRequestTest {
                 new UpsertTransactionRequest(
                         "package.name",
                         records,
-                        DeviceInfoHelper.getInstance(),
-                        mContext,
+                        mDeviceInfoHelper,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
                         mAppInfoHelper);

@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -147,19 +146,15 @@ public class ImportManagerTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        AppInfoHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
-
         mContext = mDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
@@ -206,8 +201,6 @@ public class ImportManagerTest {
             }
         }
         testDir.delete();
-        AppInfoHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test
@@ -236,7 +229,7 @@ public class ImportManagerTest {
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
         ReadTransactionRequest request =
-                getReadTransactionRequest(
+                mTransactionTestUtils.getReadTransactionRequest(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 stepsUuids,
@@ -266,14 +259,14 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -288,7 +281,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME)
                 .inOrder();
     }
@@ -303,7 +296,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -311,7 +304,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3)
                 .inOrder();
 
@@ -326,7 +319,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3, TEST_PACKAGE_NAME)
                 .inOrder();
     }
@@ -370,7 +363,7 @@ public class ImportManagerTest {
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
         ReadTransactionRequest request =
-                getReadTransactionRequest(
+                mTransactionTestUtils.getReadTransactionRequest(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 stepsUuids,

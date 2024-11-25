@@ -22,6 +22,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTOR
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.database.sqlite.SQLiteException;
 import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.backuprestore.GetSettingsForBackupResponse;
@@ -100,8 +101,10 @@ public final class CloudBackupManager {
      */
     @NonNull
     public GetChangesForBackupResponse getChangesForBackup(@Nullable String changeToken) {
-        if (changeToken != null) {
-            // TODO: b/369799948 - error handling?
+        try {
+            if (changeToken == null) {
+                return mDatabaseHelper.getChangesAndTokenFromDataTables();
+            }
             BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                     BackupChangeTokenHelper.getBackupChangeToken(mTransactionManager, changeToken);
             boolean isChangeLogsTokenValid =
@@ -119,9 +122,17 @@ public final class CloudBackupManager {
                         backupChangeToken.getDataTablePageToken(),
                         backupChangeToken.getChangeLogsRequestToken());
             }
-            throw new UnsupportedOperationException();
+            return mDatabaseHelper.getIncrementalChanges(
+                    backupChangeToken.getChangeLogsRequestToken());
+        } catch (SQLiteException exception) {
+            Slog.e(TAG, "Failed to read or write to database", exception);
+            throw exception;
+        } catch (IllegalStateException exception) {
+            // This case is impossible because the database enforces uuid's non-nullity but
+            // within the RecordInternal class this is defined as nullable.
+            Slog.e(TAG, "Missing uuid for record", exception);
+            throw exception;
         }
-        return mDatabaseHelper.getChangesAndTokenFromDataTables();
     }
 
     /** Returns all user settings bundled as a single byte array. */

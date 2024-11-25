@@ -20,7 +20,7 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BODY_FAT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_DISTANCE;
@@ -107,17 +107,15 @@ public class AccessLogsHelperTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        AppInfoHelper.resetInstanceForTest();
         Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }
@@ -146,7 +144,7 @@ public class AccessLogsHelperTest {
                                 mAccessLogsHelper.addAccessLog(
                                         db,
                                         DATA_SOURCE_PACKAGE_NAME,
-                                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
@@ -156,7 +154,7 @@ public class AccessLogsHelperTest {
         assertThat(result).hasSize(1);
         assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog.getMedicalResourceTypes())
-                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_VACCINES));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
         assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
@@ -174,7 +172,7 @@ public class AccessLogsHelperTest {
                                         DATA_SOURCE_PACKAGE_NAME,
                                         Set.of(
                                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                                MEDICAL_RESOURCE_TYPE_VACCINES),
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
@@ -187,7 +185,7 @@ public class AccessLogsHelperTest {
                 .isEqualTo(
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
+                                MEDICAL_RESOURCE_TYPE_VACCINES));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
         assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
@@ -253,7 +251,7 @@ public class AccessLogsHelperTest {
                     mAccessLogsHelper.addAccessLog(
                             db,
                             DATA_SOURCE_PACKAGE_NAME,
-                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                            Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                             OPERATION_TYPE_UPSERT,
                             /* accessedMedicalDataSource= */ false);
                 });
@@ -273,7 +271,7 @@ public class AccessLogsHelperTest {
 
         assertThat(accessLog2.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog2.getMedicalResourceTypes())
-                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_VACCINES));
         assertThat(accessLog2.getRecordTypes()).isEmpty();
         assertThat(accessLog2.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
         assertThat(accessLog2.isMedicalDataSourceAccessed()).isFalse();

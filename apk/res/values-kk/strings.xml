@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Кеше"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Оқу: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Жазу: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Рұқсаттарды басқару"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Уақыты: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Қимыл"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"мүгедек арбасын итеру көрсеткіші"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Мүгедек арбасын итеру көрсеткішін оқу"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Мүгедек арбасын итеру көрсеткішін жазу"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Қимыл қарқыны"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"қимыл қарқыны"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Қимыл қарқыны туралы деректі оқу"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Қимыл қарқыны туралы деректі жазу"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Тыныш күйдегі зат алмасу жылдамдығы"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"тыныш күйдегі зат алмасу жылдамдығы"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Тыныш күйдегі зат алмасу жылдамдығы деректерін оқу"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"Тері температурасы"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Тері температурасын оқу"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Тері температурасын жазу"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Бұған Health Connect қолданбасымен синхрондалған және оған қосылған денсаулық туралы бүкіл ақпарат кіреді. Бұны толық медициналық журналыңыз деп есептеуге болмайды және онда денсаулық туралы ақпаратыңыздың медициналық сипаттамасы жоқ."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Денсаулық туралы бүкіл ақпарат"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"денсаулық туралы бүкіл ақпарат"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Денсаулық туралы бүкіл ақпаратты жазу"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Шарттар"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"шарттар"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Оқу шарттары"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Вакциналар"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"вакциналар"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Вакциналар туралы оқу"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Вакциналар"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"вакциналар"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Вакциналар туралы оқу"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Зертханалық нәтижелер"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"зертханалық нәтижелер"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Зертханалық нәтижелер туралы оқу"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Рұқсат берсеңіз, қолданба аллергиялар, зертханалық талдау нәтижелері, вакциналар сияқты деректерді оқып, жаза алады.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Рұқсат берсеңіз, қолданба аллергиялар, зертханалық талдау нәтижелері, вакциналар сияқты деректерді оқи алады.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Денсаулық туралы ақпарат"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Бөлісетін деректер"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Бөлісетін деректер"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Рұқсат берсеңіз, <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы денсаулық туралы ақпаратыңызды Health Connect қолданбасымен бөлісе алады."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Әр қолданбадағы және дереккөздегі денсаулық туралы ақпаратты синхрондап, бір жерде сақтаңыз."</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Барлық рұқсатты өшіру керек пе?"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Бұл қолданбалардың енді рұқсаты жоқ, бірақ олардың деректері бұрынғыша Health Connect-те сақталады."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> күнінен кейін қосылған деректерді оқи алады."</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Осы қолданба пайдалана алатын Android жүйесіндегі басқа рұқсаттарды басқару үшін \"Параметрлер &gt; Қолданбалар\" тармағына өтіңіз."</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасымен бөлісетін деректерге оның құпиялық саясаты қолданылады."</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасының деректеріңізді өңдеу жолын әзірлеушінің құпиялық саясатынан біле аласыз."</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Осы қолданба пайдалана алатын Android жүйесіндегі басқа рұқсаттарды басқару үшін параметрлердегі \"Қолданбалар\" бөліміне өтіңіз."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Құпиялық саясатын оқу"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Соңғы 24 сағатта пайдаланылды."</string>
@@ -793,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Музыка"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Басқа"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Көмекшісіз"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> мин"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> сағ <xliff:g id="MIN">%2$s</xliff:g> мин"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> сағ"</string>
@@ -1045,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Біріктіру процесі орындалып жатыр"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect қолданбасы Android жүйесімен біріктіріліп жатыр.\n\nДеректер мен рұқсаттардың тасымалдануына біраз уақыт кетуі мүмкін."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Процестің аяқталғаны жөнінде хабарландыру алғанша, қолданбаны жаппаңыз."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect-ті біріктіру процесі орындалып жатыр"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Жаңарту қажет"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect қолданбасы Android жүйесімен біріктіріліп жатыр, сондықтан қолданбаны тікелей параметрлерден пайдалана аласыз."</string>
     <string name="update_button" msgid="4544529019832009496">"Жаңарту"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Жаңартуды бастасаңыз, Health Connect қолданбасын жүйе параметрлерімен біріктіру процесін жалғастыра аласыз."</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Қазір жаңарту"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Жүйені жаңарту қажет"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Жалғастырмас бұрын, телефондағы операциялық жүйені жаңартыңыз."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Телефондағы операциялық жүйені жаңартып қойсаңыз, біріктіру процесін жалғастыру үшін телефонды өшіріп, сосын қосып көріңіз."</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect-тің жаңа нұсқасын орнату қажет"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Жалғастырмас бұрын, Health Connect қолданбасын соңғы нұсқаға жаңартыңыз."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Қосымша орын қажет"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect-ті біріктіру процесін жалғастыру үшін телефонда <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> жад көлемі қажет.\n\nТелефонда біраз орын босатып, әрекетті қайталап көріңіз."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Қайталау"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Орын босату"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Қосымша орын қажет"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect-ті біріктіру процесін жалғастыру үшін телефонда <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> жад көлемі қажет."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Біріктіру процесі кідіртілді"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Health Connect қолданбасы Android жүйесімен біріктіру кезінде жабылды.\n\n\"Жалғастыру\" түймесін басып, қолданбаны қайта ашыңыз және деректер мен рұқсаттарды тасымалдай беріңіз."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Health Connect деректерін сақтап қалу үшін процесті <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ішінде аяқтаңыз."</string>
@@ -1072,11 +1068,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Health Connect-ті Android жүйесімен біріктіру процесін жалғастыру үшін түртіңіз. Деректерді сақтап қалу үшін процесті <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ішінде аяқтаңыз."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Health Connect-ті Android жүйесімен біріктіру процесін жалғастыру үшін түртіңіз."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Жалғастыру"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect-ті біріктіру процесін жалғастырыңыз"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Деректерді сақтап қалу үшін процесті <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ішінде аяқтаңыз."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Қолданбаның жаңа нұсқасын орнату қажет"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect платформасымен синхрондала беруі үшін, <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасын жаңарту керек."</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect платформасымен синхрондала беруі үшін, кейбір қолданбаларды жаңарту керек."</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Health Connect платформасымен синхрондала беруі үшін, <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасын жаңарту керек. Қолданбалардың бәрінде жаңа нұсқа бола бермейді."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Health Connect платформасымен синхрондала беруі үшін, кейбір қолданбаларды жаңарту керек. Қолданбалардың бәрінде жаңа нұсқа бола бермейді."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Жаңартулардың бар-жоғын тексеру"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Толық ақпарат"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-ті біріктіру"</string>
@@ -1091,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connect-ті біріктіру процесі аяқталмады"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Біріктіру процесі қайта басталғанда хабарландыру жіберіледі."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Түсінікті"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connect-ті біріктіру процесі аяқталмады"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Толық оқу"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connect-ті біріктіру процесі аяқталды"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Ашу"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Жаңалық"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Енді Health Connect-ті тікелей параметрлерден пайдалана аласыз. Жад көлемін босату үшін Health Connect қолданбасын кез келген уақытта жойыңыз."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Түсінікті"</string>
@@ -1135,26 +1125,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Үйлесімді қолданбаларды көріңіз"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect арқылы <xliff:g id="APP_NAME">%s</xliff:g> қызметімен қандай қолданбаларды синхрондауға болатынын табыңыз."</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"App Store-дан көру"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Экран құлпын орнатыңыз"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Денсаулық деректерінің қауіпсіздігін арттыру үшін, осы құрылғыға PIN кодын, өрнек немесе құпия сөз орнатыңыз."</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Экран құлпын орнату"</string>
     <string name="select_all" msgid="837499881590001166">"Барлығын таңдау"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Байланысқан қолданбалар бұдан былай Health Connect-тегі бұл деректерді оқи алмайды."</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Құсбелгі қойылған"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Құсбелгі қойылмаған"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Жаттығу картасының бағыты шықты."</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Келесі күн"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Келесі апта"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Келесі ай"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Алдыңғы күн"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Алдыңғы апта"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Алдыңғы ай"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Барлық дерек біржола жойылсын ба?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Таңдалған деректер біржола жойылсын ба?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Барлық <xliff:g id="APP_NAME">%s</xliff:g> дерегі біржола жойылсын ба?"</string>
@@ -1179,4 +1163,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Пайдаланылған уақыты: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Кеше пайдаланылған уақыты: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Пайдаланылған уақыты: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Біржола рұқсат ету"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Таңдалғандарға рұқсат беру"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Қолданбаны пайдаланған кезде"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Барлығын мақұлдамау"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына фитнес пен сауықтыру деректерін пайдалануға рұқсат берілсін бе?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы <xliff:g id="DATA_TYPES">%2$s</xliff:g> дерегін пайдалану рұқсатын сұрап жатыр.\n\nБарлығына рұқсат беруді таңдаңыз немесе әрқайсысын жеке-жеке басқарыңыз."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына деректерді (<xliff:g id="DATA_TYPE">%2$s</xliff:g>) пайдалануға рұқсат етілсін бе?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Фитнес пен денсаулық"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"әрдайым"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"қолданыс кезінде"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Әрдайым"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Қолданыс кезінде"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы барлық фитнес пен денсаулыққа қатысты дерегіңізді <xliff:g id="ALLOW_MODE">%2$s</xliff:g> пайдалана алады."</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Пайдалануға рұқсат берілген"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Оқуға рұқсат берілген"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Бұл рұқсаттар <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына құрылғыңыздың датчиктерінен алынған деректерді пайдалануға мүмкіндік береді."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> қолданбаға рұқсат берілген"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Рұқсат сұрап жатқан қолданбалар жоқ"</string>
+    <string name="allowed" msgid="4158456017482263737">"Рұқсат берілген"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Рұқсат берілмеген"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Осы рұқсат берілген қолданбалар құрылғыңыздың датчиктерінен алынған <xliff:g id="DATA_TYPE">%s</xliff:g> деректерін пайдалана алады."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Сағатыңызда барлық қолданба үшін <xliff:g id="DATA_TYPE">%s</xliff:g> пайдалану рұқсатын өшіру керек пе?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Құсбелгі"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Айқас белгі"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Қазір <xliff:g id="APP_NAME">%1$s</xliff:g> фитнес пен сауықтыру деректерін (<xliff:g id="ALLOW_MODE">%2$s</xliff:g> режимінде) пайдалана алады."</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына фитнес пен сауықтыру деректерін пайдалануға біржола рұқсат берілсін бе?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасының мынадай деректерді пайдалануға рұқсаты бар: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Фитнес пен сауықтыру дерегін пайдалану рұқсаттарын басқару"</string>
 </resources>

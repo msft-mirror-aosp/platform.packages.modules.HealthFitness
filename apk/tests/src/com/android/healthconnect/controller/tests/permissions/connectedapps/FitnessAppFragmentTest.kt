@@ -58,6 +58,7 @@ import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -70,7 +71,6 @@ import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogEle
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags
-import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -152,6 +152,9 @@ class FitnessAppFragmentTest {
     @After
     fun teardown() {
         reset(healthConnectLogger)
+        reset(viewModel)
+        reset(additionalAccessViewModel)
+        reset(healthPermissionReader)
         // enable animations
         toggleAnimation(true)
         Intents.release()
@@ -295,7 +298,7 @@ class FitnessAppFragmentTest {
             val fragment = getFragment(activity)
             val mainSwitchPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
 
             assertThat(mainSwitchPreference?.isChecked).isTrue()
         }
@@ -326,7 +329,7 @@ class FitnessAppFragmentTest {
 
             val mainSwitchPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
 
             assertThat(mainSwitchPreference?.isChecked).isFalse()
         }
@@ -377,13 +380,272 @@ class FitnessAppFragmentTest {
             .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
     }
 
-    // TODO (b/369796531) Add more tests for dialogs
-    // allowAll_toggleOff_withBackground_andMedicalPermissions_showsDisconnectDialog
-    // allowAll_toggleOff_withPastData_andMedicalPermissions_showsDisconnectDialog
-    // allowAll_toggleOff_noAdditional_andMedicalPermissions_showsDisconnectDialog
-    // allowAll_toggleOff_withAdditional_andNoMedicalPermissions_showsDisconnectDialog
-    // allowAll_toggleOff_withBackground_andNoMedicalPermissions_showsDisconnectDialog
-    // allowAll_toggleOff_noAdditional_andNoMedical_showsDisconnectDialog
+    @Test
+    fun allowAll_toggleOff_withBackground_andMedicalPermissions_showsDisconnectDialog() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
+
+        launchFragment<FitnessAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all fitness and wellness permissions?"))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect, including background data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete fitness data from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
+
+    @Test
+    fun allowAll_toggleOff_withPastData_andMedicalPermissions_showsDisconnectDialog() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
+
+        launchFragment<FitnessAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all fitness and wellness permissions?"))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect, including past data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete fitness data from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
+
+    @Test
+    fun allowAll_toggleOff_withAdditional_andNoMedicalPermissions_showsDisconnectDialog() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData<List<HealthPermission.MedicalPermission>>(emptyList())
+        }
+
+        launchFragment<FitnessAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " any data from Health Connect, including background and past data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like location, " +
+                        "camera, or microphone."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete " + "$TEST_APP_NAME data from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
+
+    @Test
+    fun allowAll_toggleOff_noAdditional_andMedicalPermissions_showsDisconnectDialog() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
+
+        launchFragment<FitnessAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all fitness and wellness permissions?"))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete fitness data from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
+
+    @Test
+    fun allowAll_toggleOff_withBackground_andNoMedicalPermissions_showsDisconnectDialog() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData<List<HealthPermission.MedicalPermission>>(emptyList())
+        }
+
+        launchFragment<FitnessAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " any data from Health Connect, including background data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like location, " +
+                        "camera, or microphone."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete " + "$TEST_APP_NAME data from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
+
+    @Test
+    fun allowAll_toggleOff_noAdditional_andNoMedical_showsDisconnectDialog() {
+        val writePermission = FitnessPermission(EXERCISE, WRITE)
+        val readPermission = FitnessPermission(DISTANCE, READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeFitnessShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeFitnessShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData<List<HealthPermission.MedicalPermission>>(emptyList())
+        }
+
+        launchFragment<FitnessAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Allow all")).perform(click())
+
+        onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " any data from Health Connect." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone, or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete " + "$TEST_APP_NAME data from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+    }
 
     @Test
     fun allowAll_toggleOff_onDialogRemoveAllClicked_disconnectAllPermissions() {
@@ -463,7 +725,7 @@ class FitnessAppFragmentTest {
                         "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -503,7 +765,7 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -534,7 +796,7 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -568,7 +830,7 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())

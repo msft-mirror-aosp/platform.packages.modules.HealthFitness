@@ -33,11 +33,10 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.testapps.toolbox.R
-import java.lang.reflect.Field
+import java.io.Serializable
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.io.Serializable
 
 class GeneralUtils {
 
@@ -69,7 +68,10 @@ class GeneralUtils {
                 try {
                     suspendCancellableCoroutine<InsertRecordsResponse> { continuation ->
                             manager.insertRecords(
-                                records, Runnable::run, continuation.asOutcomeReceiver())
+                                records,
+                                Runnable::run,
+                                continuation.asOutcomeReceiver(),
+                            )
                         }
                         .records
                 } catch (ex: Exception) {
@@ -78,10 +80,7 @@ class GeneralUtils {
             return insertedRecords
         }
 
-        suspend fun <T : Record> updateRecords(
-            records: List<T>,
-            manager: HealthConnectManager,
-        ) {
+        suspend fun <T : Record> updateRecords(records: List<T>, manager: HealthConnectManager) {
             try {
                 suspendCancellableCoroutine<Void> { continuation ->
                     manager.updateRecords(records, Runnable::run, continuation.asOutcomeReceiver())
@@ -91,18 +90,13 @@ class GeneralUtils {
             }
         }
 
-        fun <T : Any> getStaticFieldNamesAndValues(
-            obj: KClass<T>,
-        ): EnumFieldsWithValues {
-            val fieldNameToValue: MutableMap<String, Any> = emptyMap<String, Any>().toMutableMap()
-            val fields: List<Field> =
-                obj.java.declaredFields.filter { field ->
+        fun <T : Any> getStaticFieldNamesAndValues(obj: KClass<T>): EnumFieldsWithValues {
+            return obj.java.declaredFields
+                .filter { field ->
                     Modifier.isStatic(field.modifiers) && field.type == Int::class.java
                 }
-            for (field in fields) {
-                fieldNameToValue[field.name] = field.get(obj)!!
-            }
-            return EnumFieldsWithValues(fieldNameToValue.toMap())
+                .associate { it.name to it.get(obj)!! }
+                .let { EnumFieldsWithValues(it) }
         }
 
         suspend fun readRecords(
@@ -132,7 +126,10 @@ class GeneralUtils {
             val records =
                 suspendCancellableCoroutine<ReadRecordsResponse<T>> { continuation ->
                         manager.readRecords(
-                            request, Runnable::run, continuation.asOutcomeReceiver())
+                            request,
+                            Runnable::run,
+                            continuation.asOutcomeReceiver(),
+                        )
                     }
                     .records
             Log.d("READ_RECORDS", "Read ${records.size} records")
@@ -142,8 +139,7 @@ class GeneralUtils {
         inline fun <reified T> Context.requireSystemService(): T =
             requireNotNull(getSystemService(T::class.java))
 
-        fun Intent.requireStringExtra(name: String): String =
-            requireNotNull(getStringExtra(name))
+        fun Intent.requireStringExtra(name: String): String = requireNotNull(getStringExtra(name))
 
         fun Intent.requireByteArrayExtra(name: String): ByteArray =
             requireNotNull(getByteArrayExtra(name))

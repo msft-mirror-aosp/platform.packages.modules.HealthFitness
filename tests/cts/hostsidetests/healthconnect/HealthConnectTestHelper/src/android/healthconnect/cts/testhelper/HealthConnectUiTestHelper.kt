@@ -31,6 +31,7 @@ import org.junit.Assume
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+
 /**
  * These tests are run by statsdatom/healthconnect to log atoms by triggering Health Connect APIs.
  *
@@ -38,8 +39,7 @@ import org.junit.Test
  */
 @NonApiTest(exemptionReasons = [], justification = "METRIC")
 class HealthConnectUiTestHelper {
-    @get:Rule
-    val disableAnimationRule = DisableAnimationRule()
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val mHealthConnectManager: HealthConnectManager? =
@@ -101,6 +101,7 @@ class HealthConnectUiTestHelper {
             UiTestUtils.waitDisplayed(By.text("App permissions"))
             UiTestUtils.scrollDownTo(By.text("Manage data"))
             UiTestUtils.clickOnText("Manage data")
+            UiTestUtils.waitDisplayed(By.text("Auto-delete"))
         }
     }
 }

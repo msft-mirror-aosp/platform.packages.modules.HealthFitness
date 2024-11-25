@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.tests.deletion
 
 import android.health.connect.HealthDataCategory
+import android.health.connect.datatypes.StepsRecord
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
@@ -39,7 +40,6 @@ import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -1342,7 +1342,7 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAllData_confirmationDialogForEntry_showsCorrectText() {
-        val deletionEntry = DeletionType.DeleteDataEntry("test_id", DataType.STEPS, 0)
+        val deletionEntry = DeletionType.DeleteDataEntry("test_id", StepsRecord::class, 0)
 
         whenever(viewModel.deletionParameters).then {
             MutableLiveData(DeletionParameters(deletionType = deletionEntry))

@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Vakar"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Perskaityta: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Įrašyta: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Tvarkyti leidimus"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Laikas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Veikla"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"neįgaliųjų vežimėlio pastūmimai"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Skaityti neįgaliųjų vežimėlio pastūmimų duomenis"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Rašyti neįgaliųjų vežimėlio pastūmimų duomenis"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Veiklos intensyvumas"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"veiklos intensyvumas"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Skaityti veiklos intensyvumo duomenis"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Rašyti veiklos intensyvumo duomenis"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Pagrindinis medžiagų apykaitos greitis"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"pagrindinis medžiagų apykaitos greitis"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Skaityti pagrindinio medžiagų apykaitos greičio duomenis"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"odos temperatūra"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Nuskaityti odos temperatūrą"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Įrašyti odos temperatūrą"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Tai apima visus sveikatos įrašus, sinchronizuotus su „Health Connect“ ir pridėtus prie jos. Tai gali būti ne visa sveikatos istorija ir čia nėra medicininio jūsų sveikatos įrašų aprašymo."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Visi sveikatos įrašai"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"visi sveikatos įrašai"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Rašyti visus sveikatos įrašus"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Sąlygos"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"sąlygos"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Skaityti sąlygas"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vakcinos"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vakcinos"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Skaityti vakcinų duomenis"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vakcinos"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vakcinos"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Skaityti vakcinų duomenis"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratorinių tyrimų rezultatai"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratorinių tyrimų rezultatai"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Skaityti laboratorinių tyrimų rezultatus"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Jei suteiksite prieigą, programa galės skaityti ir rašyti tokius duomenis kaip alergijos, laboratorinių tyrimų rezultatai, vakcinos ir kt.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Jei suteiksite prieigą, programa galės skaityti tokius duomenis kaip alergijos, laboratorinių tyrimų rezultatai, vakcinos ir kt.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Apie sveikatos įrašus"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Bendrinami duomenys"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Bendrinami duomenys apima"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Jei leisite, „<xliff:g id="APP_NAME">%1$s</xliff:g>“ galės bendrinti jūsų sveikatos įrašus su „Health Connect“."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sinchronizuokite sveikatos įrašus iš skirtingų programų ir šaltinių, kad jie būtų saugomi vienoje vietoje"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Pašalinti visus leidimus?"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Šios programos nebeturi prieigos, bet jų duomenys vis tiek saugomi sistemoje „Health Connect“"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Programa „<xliff:g id="APP_NAME">%1$s</xliff:g>“ gali nuskaityti duomenis, pridėtus po <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Norėdami valdyti kitus „Android“ leidimus, ką ši programa gali pasiekti, eikite į skiltį „Nustatymai“ &gt; „Programos“"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Duomenims, kuriuos bendrinate su programa „<xliff:g id="APP_NAME">%1$s</xliff:g>”, taikoma šios programos privatumo politika"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Kaip „<xliff:g id="APP_NAME">%1$s</xliff:g>“ tvarko jūsų duomenis, sužinosite kūrėjo privatumo politikoje"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Jei norite valdyti kitus „Android“ leidimus, kuriuos ši programa gali pasiekti, eikite į skiltį „Nustatymai“, tada palieskite „Programos“"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Skaityti privatumo politiką"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Pasiekta per pastarąsias 24 val."</string>
@@ -688,7 +685,7 @@
     <string name="dumbbell_triceps_extension_left_arm" msgid="6756023069611493063">"Kair. rankos tiesimas su svarmeniu (tricepsas)"</string>
     <string name="dumbbell_triceps_extension_right_arm" msgid="1498470275564554389">"Dešin. rankos tiesimas su svarmeniu (tricepsas)"</string>
     <string name="dumbbell_triceps_extension_two_arm" msgid="5409860665522903159">"Abiejų rankų tiesimas su svarmenimis (tricepsas)"</string>
-    <string name="elliptical" msgid="5148914059968910839">"Treniruotė elipsiniu treniruokliu"</string>
+    <string name="elliptical" msgid="5148914059968910839">"Elipsinis treniruoklis"</string>
     <string name="exercise_class" msgid="32582249527931454">"Mankštos užsiėmimai"</string>
     <string name="fencing" msgid="410347890025055779">"Fechtavimasis"</string>
     <string name="football_american" msgid="8564554592554502623">"Amerikietiškasis futbolas"</string>
@@ -717,7 +714,7 @@
     <string name="rock_climbing" msgid="3123024521372083233">"Alpinizmas"</string>
     <string name="roller_hockey" msgid="3524872164646176686">"Ratukinių pačiūžų ritulys"</string>
     <string name="rowing" msgid="615898011726585442">"Irklavimas"</string>
-    <string name="rowing_machine" msgid="4075255566862183370">"Treniruotė irklavimo treniruokliu"</string>
+    <string name="rowing_machine" msgid="4075255566862183370">"Irklavimo treniruotė"</string>
     <string name="rugby" msgid="5146215118571059267">"Regbis"</string>
     <string name="running" msgid="5135754380339217169">"Bėgimas"</string>
     <string name="running_treadmill" msgid="2083354407217486405">"Bėgimas ant bėgtakio"</string>
@@ -793,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Muzika"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Kita"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Be vadovo"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Vidutinis"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Energingas"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> val. <xliff:g id="MIN">%2$s</xliff:g> min."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> val."</string>
@@ -1045,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Vyksta integravimas"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"„Health Connect“ integruojama su „Android“ sistema.\n\nGali šiek tiek užtrukti, kol bus perkelti jūsų duomenys ir leidimai."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Neuždarykite programos, kol negausite pranešimo, kad procesas baigtas."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Vykdomas „Health Connect“ integravimas"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Reikia atnaujinti"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"„Health Connect“ integruojama su „Android“ sistema, kad galėtumėte ją pasiekti tiesiai iš nustatymų."</string>
     <string name="update_button" msgid="4544529019832009496">"Atnaujinti"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Pradėkite šį atnaujinimą, kad būtų galima ir toliau integruoti „Health Connect“ su jūsų sistemos nustatymais"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Atnaujinti dabar"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Reikalingas sistemos naujinys"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Prieš tęsdami atnaujinkite telefono sistemą."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Jei jau atnaujinote telefono sistemą, pabandykite iš naujo paleisti telefoną, kad būtų tęsiamas integravimas"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Reikia atnaujinti „Health Connect“"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Prieš tęsdami atnaujinkite programą „Health Connect“ į naujausią versiją."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Reikia daugiau vietos"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"„Health Connect“ reikia <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> saugyklos vietos jūsų telefone, kad būtų tęsiamas integravimas.\n\nAtlaisvinkite telefone šiek tiek vietos ir bandykite dar kartą."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Bandyti dar kartą"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Atlaisvinti vietos"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Reikia daugiau vietos"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"„Health Connect“ reikia <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> saugyklos vietos jūsų telefone, kad būtų tęsiamas integravimas."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Integravimas pristabdytas"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Programa „Health Connect“ buvo uždaryta vykdant integravimą su „Android“ sistema.\n\nSpustelėkite „Tęsti“, kad iš naujo atidarytumėte programą ir tęstumėte duomenų ir leidimų perkėlimą."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Kad išsaugotumėte „Health Connect“ duomenis, atlikite tai iki <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1072,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Palieskite ir tęskite „Health Connect“ integravimą su „Android“ sistema. Kad išsaugotumėte duomenis, atlikite tai iki <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Palieskite ir tęskite „Health Connect“ integravimą su „Android“ sistema."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Tęsti"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Tęsti „Health Connect“ integravimą"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Kad išsaugotumėte duomenis, atlikite tai iki <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Reikalingas programos naujinys"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ reikia atnaujinti, kad būtų galima toliau sinchronizuoti su „Health Connect“"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Kai kurias programas reikia atnaujinti, kad būtų galima toliau sinchronizuoti su „Health Connect“"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ reikia atnaujinti, kad būtų galima toliau sinchronizuoti su „Health Connect“. Naujiniai gali būti pasiekiami ne visose programose."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Kai kurias programas reikia atnaujinti, kad būtų galima toliau sinchronizuoti su „Health Connect“. Naujiniai gali būti pasiekiami ne visose programose."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Patikrinkite, ar yra naujinių"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Sužinokite daugiau"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"„Health Connect“ integravimas"</string>
@@ -1091,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"„Health Connect“ integravimas nebuvo baigtas"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Gausite pranešimą, kai vėl bus pasiekiama."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Supratau"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"„Health Connect“ integravimas nebuvo baigtas"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Daugiau"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"„Health Connect“ integravimas baigtas"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Atidaryti"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Kas naujo"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Dabar galite pasiekti „Health Connect“ tiesiai iš nustatymų. Bet kuriuo metu pašalinkite „Health Connect“ programą, kad atlaisvintumėte saugyklos vietos."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Supratau"</string>
@@ -1135,26 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Suderinamų programų peržiūra"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Raskite daugiau programų, kurias galėtumėte sinchronizuoti su „<xliff:g id="APP_NAME">%s</xliff:g>“ naudodami „Health Connect“"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Žr. programų parduotuvėje"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ekrano užrakto nustatymas"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Kad pagerintumėte sveikatos duomenų saugą, nustatykite šio įrenginio PIN kodą, atrakinimo piešinį arba slaptažodį"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Nustatyti ekrano užraktą"</string>
     <string name="select_all" msgid="837499881590001166">"Pasirinkti viską"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Prijungtos programos nebegalės skaityti šių duomenų iš „Health Connect“"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Pažymėta"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Nepažymėta"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Pasiekiamas pratimų maršruto žemėlapis"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Kita diena"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Kita savaitė"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Kitas mėnuo"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Ankstesnė diena"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Ankstesnė savaitė"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Ankstesnis mėnuo"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Visam laikui ištrinti visus duomenis?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Visam laikui ištrinti pasirinktus duomenis?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Visam laikui ištrinti visus programos „<xliff:g id="APP_NAME">%s</xliff:g>“ duomenis?"</string>
@@ -1179,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Pasiekta <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Pasiekta vakar <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Pasiekta <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Leisti visą laiką"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Leisti pasirinktus"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Naudojant programą"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Atmesti viską"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Leisti programai „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti mankštos ir sveikatingumo duomenis?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ prašo prieigos prie šių duomenų: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nGalite leisti viską arba valdyti atskirai."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Leisti „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti įrenginį (<xliff:g id="DATA_TYPE">%2$s</xliff:g>)?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Kūno rengyba ir sveikata"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"visą laiką"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"kol naudojama"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Visą laiką"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Kol naudojama"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ gali pasiekti visus jūsų mankštos ir sveikatingumo duomenis <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Leidžiama pasiekti"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Leidžiama skaityti"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Šie leidimai suteikia „<xliff:g id="APP_NAME">%1$s</xliff:g>“ prieigą prie įrenginio jutiklių duomenų."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Leidžiama programų: <xliff:g id="NUMBER_0">%1$d</xliff:g> iš <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Nėra jokių programų, kurios pateiktų užklausą"</string>
+    <string name="allowed" msgid="4158456017482263737">"Leidžiama"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Neleidžiama"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Programos, kurioms suteiktas šis leidimas, gali pasiekti <xliff:g id="DATA_TYPE">%s</xliff:g> duomenis iš įrenginio jutiklių."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Pašalinti <xliff:g id="DATA_TYPE">%s</xliff:g> prieigą prie visų programų laikrodyje?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Varnelė"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Kryžiuko ženklas"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Šiuo metu „<xliff:g id="APP_NAME">%1$s</xliff:g>“ gali <xliff:g id="ALLOW_MODE">%2$s</xliff:g> pasiekti visus jūsų mankštos ir sveikatingumo duomenis"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Leisti programai „<xliff:g id="APP_NAME">%1$s</xliff:g>“ visada pasiekti mankštos ir sveikatingumo duomenis?"</string>
+    <string name="current_access" msgid="1457167070428176139">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ turi prieigą prie <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Tvarkyti mankštos ir sveikatingumo leidimus"</string>
 </resources>

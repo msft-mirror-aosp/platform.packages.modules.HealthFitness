@@ -31,11 +31,8 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -77,22 +74,17 @@ public class NoMockAutoDeleteServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        PreferenceHelper.clearInstanceForTest();
-
         StorageContext context = testRule.getDatabaseContext();
-        mTransactionManager = testRule.getTransactionManager();
-        DatabaseHelper.clearAllData(mTransactionManager);
-        mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        DeviceInfoHelper.resetInstanceForTest();
-        AppInfoHelper.resetInstanceForTest();
 
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionManager = mHealthConnectInjector.getTransactionManager();
+        DatabaseHelper.clearAllData(mTransactionManager);
+        mTransactionTestUtils = new TransactionTestUtils(mHealthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
     @Test

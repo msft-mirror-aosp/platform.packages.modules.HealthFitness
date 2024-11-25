@@ -16,9 +16,7 @@
 package com.android.healthconnect.controller.permissions.request
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
@@ -56,8 +54,6 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         private const val HEADER = "request_permissions_header"
     }
 
-    // TODO(b/342159144): Update page name.
-    private val pageName = PageName.UNKNOWN_PAGE
     @Inject lateinit var logger: HealthConnectLogger
 
     private val viewModel: RequestPermissionViewModel by activityViewModels()
@@ -82,24 +78,8 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         viewModel.updateMedicalPermissions(grant)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        logger.setPageId(pageName)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        logger.setPageId(pageName)
-        logger.logPageImpression()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        logger.setPageId(pageName)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    init {
+        this.setPageName(PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
