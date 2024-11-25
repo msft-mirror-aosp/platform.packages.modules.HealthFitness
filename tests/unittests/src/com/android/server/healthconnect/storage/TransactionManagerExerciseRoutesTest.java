@@ -110,7 +110,7 @@ public class TransactionManagerExerciseRoutesTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);

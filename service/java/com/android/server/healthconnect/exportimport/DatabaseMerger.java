@@ -465,7 +465,6 @@ public final class DatabaseMerger {
                             null /* packageName */,
                             records,
                             mDeviceInfoHelper,
-                            mContext,
                             true /* isInsertRequest */,
                             true /* useProvidedUuid */,
                             true /* skipPackageName */,

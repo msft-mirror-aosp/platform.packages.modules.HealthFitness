@@ -519,7 +519,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     attributionSource.getPackageName(),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    mContext,
                                     /* isInsertRequest */ true,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource),
@@ -908,7 +907,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     attributionSource.getPackageName(),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    mContext,
                                     /* isInsertRequest */ false,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource),

@@ -92,7 +92,7 @@ public class TableSizeHelperTest {
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .setTimeSource(mFakeTimeSource)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, mHealthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(mHealthConnectInjector);
 
         mTableSizeHelper = new TableSizeHelper(mHealthConnectInjector.getTransactionManager());
     }

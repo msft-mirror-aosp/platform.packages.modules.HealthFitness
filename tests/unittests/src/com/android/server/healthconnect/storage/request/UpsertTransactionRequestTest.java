@@ -65,21 +65,19 @@ public class UpsertTransactionRequestTest {
     public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
-    private StorageContext mContext;
     private AppInfoHelper mAppInfoHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setup() {
-        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
-        TransactionTestUtils transactionTestUtils =
-                new TransactionTestUtils(mContext, healthConnectInjector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp("package.name");
 
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
@@ -93,7 +91,6 @@ public class UpsertTransactionRequestTest {
                         "package.name.1",
                         List.of(),
                         mDeviceInfoHelper,
-                        mContext,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
                         mAppInfoHelper);
@@ -104,7 +101,6 @@ public class UpsertTransactionRequestTest {
                         "package.name.2",
                         List.of(),
                         mDeviceInfoHelper,
-                        mContext,
                         /* isInsertRequest= */ false,
                         /* useProvidedUuid= */ false,
                         /* skipPackageNameAndLogs= */ false,
@@ -123,7 +119,6 @@ public class UpsertTransactionRequestTest {
                         "package.name",
                         records,
                         mDeviceInfoHelper,
-                        mContext,
                         /* isInsertRequest= */ false,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
                         mAppInfoHelper);

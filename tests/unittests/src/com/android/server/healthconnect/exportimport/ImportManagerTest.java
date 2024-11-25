@@ -154,7 +154,7 @@ public class ImportManagerTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);

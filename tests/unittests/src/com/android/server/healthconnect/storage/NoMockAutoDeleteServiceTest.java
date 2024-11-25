@@ -83,7 +83,7 @@ public class NoMockAutoDeleteServiceTest {
                         .build();
         mTransactionManager = mHealthConnectInjector.getTransactionManager();
         DatabaseHelper.clearAllData(mTransactionManager);
-        mTransactionTestUtils = new TransactionTestUtils(context, mHealthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(mHealthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
