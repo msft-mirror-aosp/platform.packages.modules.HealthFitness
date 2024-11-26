@@ -129,8 +129,7 @@ public class BackupSettingsHelperTest {
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils =
-                new TransactionTestUtils(context, healthConnectInjector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();

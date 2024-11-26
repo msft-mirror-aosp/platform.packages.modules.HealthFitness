@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"อุณหภูมิผิวหนัง"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"อ่านข้อมูลอุณหภูมิผิวหนัง"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"เขียนข้อมูลอุณหภูมิผิวหนัง"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"รวมถึงบันทึกข้อมูลสุขภาพทั้งหมดที่ซิงค์และเพิ่มลงใน Health Connect ข้อมูลนี้อาจไม่ใช่เวชระเบียนทั้งหมดและไม่รวมถึงคำอธิบายทางการแพทย์เกี่ยวกับบันทึกข้อมูลสุขภาพของคุณ"</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"บันทึกข้อมูลสุขภาพทั้งหมด"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"บันทึกข้อมูลสุขภาพทั้งหมด"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"เขียนบันทึกข้อมูลสุขภาพทั้งหมด"</string>
@@ -375,8 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"หากคุณให้สิทธิ์เข้าถึง แอปนี้จะสามารถอ่านและเขียนข้อมูล เช่น อาการแพ้ ผลตรวจ วัคซีน และอื่นๆ\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"หากคุณให้สิทธิ์เข้าถึง แอปนี้จะสามารถอ่านข้อมูล เช่น อาการแพ้ ผลตรวจ วัคซีน และอื่นๆ\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"เกี่ยวกับบันทึกข้อมูลสุขภาพ"</string>
-    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
-    <skip />
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"ข้อมูลที่จะแชร์ ได้แก่"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"หากอนุญาต <xliff:g id="APP_NAME">%1$s</xliff:g> จะแชร์บันทึกข้อมูลสุขภาพของคุณกับ Health Connect ได้"</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"ซิงค์บันทึกข้อมูลสุขภาพจากแอปและแหล่งที่มาต่างๆ เพื่อเก็บไว้ในที่เดียว"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"นำสิทธิ์ทั้งหมดออกใช่ไหม"</string>
@@ -792,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"เพลง"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"อื่นๆ"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ไม่มีคำแนะนำ"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> นาที"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ชม. <xliff:g id="MIN">%2$s</xliff:g> นาที"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ชม."</string>
@@ -1044,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"การผสานรวมอยู่ระหว่างดำเนินการ"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect กำลังผสานรวมกับระบบ Android\n\nทั้งนี้ การโอนข้อมูลและสิทธิ์ต่างๆ ของคุณอาจใช้เวลาสักระยะหนึ่ง"</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"อย่าปิดแอปจนกว่าจะได้รับการแจ้งเตือนว่าขั้นตอนนี้เสร็จสมบูรณ์แล้ว"</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"การผสานรวม Health Connect อยู่ระหว่างดำเนินการ"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"ต้องอัปเดต"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect กำลังผสานรวมกับระบบ Android เพื่อให้คุณเข้าถึงได้โดยตรงจากการตั้งค่า"</string>
     <string name="update_button" msgid="4544529019832009496">"อัปเดต"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"เริ่มการอัปเดตนี้เพื่อให้ Health Connect ผสานรวมกับการตั้งค่าระบบต่อได้"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"อัปเดตเลย"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"ต้องอัปเดตระบบ"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"อัปเดตระบบโทรศัพท์ก่อนที่จะดำเนินการต่อ"</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"หากอัปเดตระบบโทรศัพท์เรียบร้อยแล้ว ให้ลองรีสตาร์ทโทรศัพท์เพื่อผสานรวมต่อ"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"ต้องอัปเดต Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"อัปเดตแอป Health Connect เป็นเวอร์ชันล่าสุดก่อนที่จะดำเนินการต่อ"</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"ต้องมีพื้นที่มากขึ้น"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect ต้องใช้พื้นที่เก็บข้อมูลในโทรศัพท์ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> เพื่อผสานรวมต่อ\n\nโปรดเพิ่มพื้นที่ว่างในโทรศัพท์แล้วลองอีกครั้ง"</string>
     <string name="try_again_button" msgid="8745496819992160789">"ลองอีกครั้ง"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"เพิ่มพื้นที่ว่าง"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"ต้องมีพื้นที่มากขึ้น"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect ต้องใช้พื้นที่เก็บข้อมูลในโทรศัพท์ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> เพื่อผสานรวมต่อ"</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"หยุดการผสานรวมชั่วคราว"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"แอป Health Connect ปิดลงขณะกำลังผสานรวมกับระบบ Android\n\nคลิก \"ทำต่อ\" เพื่อเปิดแอปอีกครั้ง แล้วดำเนินการโอนข้อมูลและสิทธิ์ต่างๆ ต่อ"</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"โปรดดำเนินการให้เสร็จสมบูรณ์ภายใน <xliff:g id="TIME_NEEDED">%1$s</xliff:g> เพื่อเก็บข้อมูล Health Connect ของคุณไว้"</string>
@@ -1071,8 +1068,6 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"แตะเพื่อผสานรวม Health Connect กับระบบ Android ต่อ โปรดดำเนินการให้เสร็จสมบูรณ์ภายใน <xliff:g id="TIME_NEEDED">%1$s</xliff:g> เพื่อเก็บข้อมูลของคุณไว้"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"แตะเพื่อผสานรวม Health Connect กับระบบ Android ต่อ"</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"ต่อไป"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"ผสานรวม Health Connect ต่อ"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"โปรดดำเนินการให้เสร็จสมบูรณ์ภายใน <xliff:g id="TIME_NEEDED">%1$s</xliff:g> เพื่อเก็บข้อมูลของคุณไว้"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"ต้องอัปเดตแอป"</string>
     <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"ต้องอัปเดต <xliff:g id="APP_NAME">%1$s</xliff:g> ก่อนจึงจะซิงค์กับ Health Connect ต่อได้ การอัปเดตอาจไม่พร้อมใช้งานสำหรับบางแอป"</string>
     <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"บางแอปต้องอัปเดตก่อนจึงจะซิงค์กับ Health Connect ต่อได้ การอัปเดตอาจไม่พร้อมใช้งานสำหรับบางแอป"</string>
@@ -1090,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"การผสานรวม Health Connect ไม่เสร็จสมบูรณ์"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"คุณจะได้รับการแจ้งเตือนเมื่อพร้อมดำเนินการอีกครั้ง"</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"รับทราบ"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"การผสานรวม Health Connect ไม่เสร็จสมบูรณ์"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"อ่านเพิ่มเติม"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"การผสานรวม Health Connect เสร็จสมบูรณ์"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"เปิด"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"มีอะไรใหม่"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"ตอนนี้คุณสามารถเข้าถึง Health Connect โดยตรงจากการตั้งค่า ถอนการติดตั้งแอป Health Connect ได้ทุกเมื่อเพื่อเพิ่มพื้นที่เก็บข้อมูล"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"รับทราบ"</string>
@@ -1196,12 +1187,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"นําสิทธิ์เข้าถึง<xliff:g id="DATA_TYPE">%s</xliff:g>ออกจากแอปทั้งหมดในนาฬิกาไหม"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"เครื่องหมายถูก"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"เครื่องหมายกากบาท"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"ขณะนี้ <xliff:g id="APP_NAME">%1$s</xliff:g> สามารถเข้าถึงข้อมูลการออกกำลังกายและสุขภาวะ<xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลการออกกำลังกายและสุขภาวะตลอดเวลาไหม"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> มีสิทธิ์เข้าถึงข้อมูล<xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"จัดการสิทธิ์ด้านการออกกำลังกายและสุขภาวะ"</string>
 </resources>

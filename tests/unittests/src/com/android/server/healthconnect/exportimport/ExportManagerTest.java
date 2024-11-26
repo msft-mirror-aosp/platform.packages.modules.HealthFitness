@@ -144,7 +144,7 @@ public class ExportManagerTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         TransactionManager transactionManager = healthConnectInjector.getTransactionManager();
 

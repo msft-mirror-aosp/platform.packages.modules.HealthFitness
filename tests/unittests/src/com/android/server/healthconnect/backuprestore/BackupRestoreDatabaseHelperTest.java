@@ -134,9 +134,7 @@ public class BackupRestoreDatabaseHelperTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();

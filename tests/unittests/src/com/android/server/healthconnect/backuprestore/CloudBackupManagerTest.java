@@ -110,9 +110,7 @@ public class CloudBackupManagerTest {
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
