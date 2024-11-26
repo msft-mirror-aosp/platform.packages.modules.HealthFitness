@@ -40,6 +40,8 @@ class HealthConnectLogger @Inject constructor() {
                 HomePageElement.LOCK_SCREEN_BANNER_BUTTON,
                 HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON,
                 RawFhirPageElement.RAW_FHIR_RESOURCE,
+                MedicalWritePermissionPageElement.ALLOW_WRITE_HEALTH_RECORDS_BUTTON,
+                MedicalWritePermissionPageElement.CANCEL_WRITE_HEALTH_RECORDS_BUTTON,
             )
     }
 
@@ -1483,13 +1485,28 @@ enum class CombinedAppAccessElement(
     ),
 }
 
-/** Loggable elements belonging to any page with unknown elements. */
+/** Loggable elements belonging to the RawFhirPage. */
 enum class RawFhirPageElement(override val impressionId: Int, override val interactionId: Int) :
     ElementName {
     RAW_FHIR_RESOURCE(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__RAW_FHIR_RESOURCE,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__RAW_FHIR_RESOURCE,
     )
+}
+
+/** Loggable elements belonging to MedicalWritePermissionFragment elements. */
+enum class MedicalWritePermissionPageElement(
+    override val impressionId: Int,
+    override val interactionId: Int,
+) : ElementName {
+    ALLOW_WRITE_HEALTH_RECORDS_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__ALLOW_WRITE_HEALTH_RECORDS_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__ALLOW_WRITE_HEALTH_RECORDS_BUTTON,
+    ),
+    CANCEL_WRITE_HEALTH_RECORDS_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__CANCEL_WRITE_HEALTH_RECORDS_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__CANCEL_WRITE_HEALTH_RECORDS_BUTTON,
+    ),
 }
 
 /** Loggable elements belonging to the error page, and the unknown element. */
