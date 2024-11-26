@@ -134,7 +134,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =
@@ -155,7 +155,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         injector = getHealthConnectInjector(mContext);
         transactionManager = injector.getTransactionManager();
-        transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        transactionTestUtils = new TransactionTestUtils(injector);
 
         assertPhrTablesExist(transactionManager);
         // read the StepsRecord and assert that it's intact
@@ -180,7 +180,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =

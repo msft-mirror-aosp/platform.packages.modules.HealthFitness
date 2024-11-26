@@ -32,7 +32,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -67,11 +66,9 @@ public final class TransactionTestUtils {
     private static final Set<String> NO_EXTRA_PERMS = Set.of();
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
-    private final Context mContext;
     private final HealthConnectInjector mHealthConnectInjector;
 
-    public TransactionTestUtils(Context context, HealthConnectInjector injector) {
-        mContext = context;
+    public TransactionTestUtils(HealthConnectInjector injector) {
         mTransactionManager = injector.getTransactionManager();
         mHealthConnectInjector = injector;
     }
@@ -112,7 +109,6 @@ public final class TransactionTestUtils {
                         packageName,
                         records,
                         mHealthConnectInjector.getDeviceInfoHelper(),
-                        mContext,
                         /* isInsertRequest= */ true,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
                         mHealthConnectInjector.getAppInfoHelper()));

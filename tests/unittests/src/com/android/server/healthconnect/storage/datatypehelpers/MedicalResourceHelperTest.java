@@ -161,7 +161,7 @@ public class MedicalResourceHelperTest {
                         .setTimeSource(mFakeTimeSource)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
