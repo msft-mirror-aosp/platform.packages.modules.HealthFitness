@@ -137,7 +137,7 @@ public class PermissionPackageChangesOrchestratorTest {
             mContext,
             buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ false));
         assertThat(
-            mHealthDataCategoryPriorityHelper.getPriorityOrder(
+            mHealthDataCategoryPriorityHelper.syncAndGetPriorityOrder(
                 HealthDataCategory.SLEEP, mContext))
             .isEmpty();
     }

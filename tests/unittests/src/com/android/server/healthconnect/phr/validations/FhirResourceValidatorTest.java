@@ -21,6 +21,7 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_I
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -754,5 +755,30 @@ public class FhirResourceValidatorTest {
                 .contains(
                         "Invalid resource structure. Found json object but expected primitive type"
                                 + " in field: category");
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION
+    })
+    @Test
+    public void testValidateFhirResource_primitiveValidationFails_throws() throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // The "primarySource" field is of primitive type "boolean" and cannot be a string.
+        JSONObject immunizationJson =
+                new JSONObject(new ImmunizationBuilder().set("primarySource", "true").toJson());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Invalid resource structure. "
+                                + "Found non boolean object in field: primarySource");
     }
 }

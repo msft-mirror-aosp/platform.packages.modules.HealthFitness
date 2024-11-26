@@ -33,6 +33,8 @@ import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.VACCINES
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.DELETE
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.VIEW
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -339,19 +341,17 @@ class AppDataViewModelTest {
     }
 
     @Test
-    fun setDeletionState_setsCorrectly() {
-        viewModel.setDeletionState(AppDataViewModel.AppDataDeletionScreenState.DELETE)
+    fun setDeletionScreenState_setsCorrectly() {
+        viewModel.setDeletionScreenStateValue(DELETE)
 
-        assertThat(viewModel.getDeletionState())
-            .isEqualTo(AppDataViewModel.AppDataDeletionScreenState.DELETE)
+        assertThat(viewModel.getDeletionScreenStateValue()).isEqualTo(DELETE)
     }
 
     @Test
-    fun getDeletionState_getsCorrectValue() {
-        viewModel.setDeletionState(AppDataViewModel.AppDataDeletionScreenState.VIEW)
+    fun getDeletionScreenState_getsCorrectValue() {
+        viewModel.setDeletionScreenStateValue(VIEW)
 
-        assertThat(viewModel.getDeletionState())
-            .isEqualTo(AppDataViewModel.AppDataDeletionScreenState.VIEW)
+        assertThat(viewModel.getDeletionScreenStateValue()).isEqualTo(VIEW)
     }
 
     @Test
@@ -464,7 +464,7 @@ class AppDataViewModelTest {
         viewModel.loadAppData(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
-        assertThat(viewModel.getNumOfPermissionTypes()).isEqualTo(3)
+        assertThat(viewModel.getTheNumOfPermissionTypes()).isEqualTo(3)
     }
 
     private fun prepareAnswer(
