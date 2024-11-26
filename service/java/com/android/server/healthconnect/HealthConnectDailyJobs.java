@@ -16,13 +16,10 @@
 
 package com.android.server.healthconnect;
 
-import static android.health.connect.Constants.DEFAULT_INT;
-
 import static com.android.server.healthconnect.HealthConnectDailyService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.HealthConnectDailyService.EXTRA_USER_ID;
 
 import android.app.job.JobInfo;
-import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,13 +29,7 @@ import android.os.UserHandle;
 import com.android.server.healthconnect.logging.DailyLoggingService;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.storage.DailyCleanupJob;
-import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TableSizeHelper;
-import com.android.server.healthconnect.utils.TimeSource;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -78,29 +69,10 @@ public class HealthConnectDailyJobs {
 
     /** Auto deletes the data and uploads critical daily metrics. */
     public static void execute(
-            Context context,
-            JobParameters params,
-            PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
-            TransactionManager transactionManager,
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper,
-            TimeSource timeSource,
+            UsageStatsCollector usageStatsCollector,
+            DatabaseStatsCollector databaseStatsCollector,
             DailyCleanupJob dailyCleanupJob) {
-        int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
-        UserHandle userHandle = UserHandle.getUserHandleForUid(userId);
-        UsageStatsCollector usageStatsCollector =
-                new UsageStatsCollector(
-                        context, userHandle, preferenceHelper, accessLogsHelper, timeSource);
-        TableSizeHelper tableSizeHelper = new TableSizeHelper(transactionManager);
-
         dailyCleanupJob.startDailyCleanup();
-        DailyLoggingService.logDailyMetrics(
-                context,
-                usageStatsCollector,
-                transactionManager,
-                medicalDataSourceHelper,
-                medicalResourceHelper,
-                tableSizeHelper);
+        DailyLoggingService.logDailyMetrics(usageStatsCollector, databaseStatsCollector);
     }
 }

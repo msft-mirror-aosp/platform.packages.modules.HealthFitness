@@ -36,16 +36,13 @@ import android.util.Slog;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.utils.TimeSource;
 
 import java.util.Objects;
 
@@ -91,13 +88,10 @@ public class HealthConnectDailyService extends JobService {
                 healthConnectInjector.getHealthConnectDeviceConfigManager();
         MigrationStateManager migrationStateManager =
                 healthConnectInjector.getMigrationStateManager();
-        AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        TransactionManager transactionManager = healthConnectInjector.getTransactionManager();
-        MedicalDataSourceHelper medicalDataSourceHelper =
-                healthConnectInjector.getMedicalDataSourceHelper();
-        MedicalResourceHelper medicalResourceHelper =
-                healthConnectInjector.getMedicalResourceHelper();
-        TimeSource timeSource = healthConnectInjector.getTimeSource();
+        UsageStatsCollector usageStatsCollector =
+                healthConnectInjector.getUsageStatsCollector(context);
+        DatabaseStatsCollector databaseStatsCollector =
+                healthConnectInjector.getDatabaseStatsCollector();
 
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
@@ -106,15 +100,7 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             HealthConnectDailyJobs.execute(
-                                    context,
-                                    params,
-                                    preferenceHelper,
-                                    accessLogsHelper,
-                                    transactionManager,
-                                    medicalDataSourceHelper,
-                                    medicalResourceHelper,
-                                    timeSource,
-                                    dailyCleanupJob);
+                                    usageStatsCollector, databaseStatsCollector, dailyCleanupJob);
                             jobFinished(params, false);
                         });
                 return true;
