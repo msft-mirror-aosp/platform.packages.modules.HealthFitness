@@ -519,14 +519,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mDataPermissionEnforcer.enforceRecordsWritePermissions(
                             recordInternals, attributionSource);
                     UpsertTransactionRequest insertRequest =
-                            new UpsertTransactionRequest(
-                                    attributionSource.getPackageName(),
+                            UpsertTransactionRequest.createForInsert(
+                                    Objects.requireNonNull(attributionSource.getPackageName()),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    /* isInsertRequest */ true,
+                                    mAppInfoHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
-                                            recordInternals, attributionSource),
-                                    mAppInfoHelper);
+                                            recordInternals, attributionSource));
                     List<String> uuids =
                             mTransactionManager.insertAll(
                                     mAppInfoHelper, mAccessLogsHelper, insertRequest);
@@ -907,14 +906,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mDataPermissionEnforcer.enforceRecordsWritePermissions(
                             recordInternals, attributionSource);
                     UpsertTransactionRequest request =
-                            new UpsertTransactionRequest(
-                                    attributionSource.getPackageName(),
+                            UpsertTransactionRequest.createForUpdate(
+                                    Objects.requireNonNull(attributionSource.getPackageName()),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    /* isInsertRequest */ false,
+                                    mAppInfoHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
-                                            recordInternals, attributionSource),
-                                    mAppInfoHelper);
+                                            recordInternals, attributionSource));
                     mTransactionManager.updateAll(mAppInfoHelper, mAccessLogsHelper, request);
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
