@@ -172,7 +172,7 @@ flag {
     name: "phr_upsert_fix_parcel_size_calculation"
     namespace: "health_fitness_aconfig"
     description: "Flag for fixing the UpsertMedicalResourceRequest parcel size calculation."
-    bug: "377701407"
+    bug: "379819662"
     is_fixed_read_only: true
     is_exported: true
     metadata {
