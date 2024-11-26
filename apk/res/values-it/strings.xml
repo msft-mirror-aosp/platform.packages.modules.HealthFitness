@@ -420,7 +420,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Ogni giorno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ogni settimana"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ogni mese"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"Scegli dove salvare esport. programmata"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Scegli dove salvare l\'esportazione"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Scegli un\'app di spazio di archiviazione sul cloud per esportare i dati"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Connessione Salute"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Connessione Salute (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -918,7 +918,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Connessione Salute eliminerà tutti i dati che risalgono a più di # mese fa. Potrebbe essere necessario un giorno per la visualizzazione di queste modifiche nelle tue app collegate.}other{Connessione Salute eliminerà tutti i dati che risalgono a più di # mesi fa. Potrebbe essere necessario un giorno per la visualizzazione di queste modifiche nelle tue app collegate.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Dati da eliminare da queste"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Fine"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{L\'eliminazione automatica è attiva. I dati che risalgono a più di # mese fa verranno eliminati.}other{L\'eliminazione automatica è attiva. I dati che risalgono a più di # mesi fa verranno eliminati.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{L\'eliminazione automatica è attiva. I dati risalenti a più di # mese fa verranno eliminati.}other{L\'eliminazione automatica è attiva. I dati risalenti a più di # mesi fa verranno eliminati.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"L\'eliminazione automatica è disattivata"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Imposta la priorità delle app"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Se più app aggiungono dati relativi a <xliff:g id="DATA_TYPE">%s</xliff:g>, Connessione Salute dà la priorità all\'app all\'inizio di questo elenco. Trascina le app per cambiarne l\'ordine."</string>

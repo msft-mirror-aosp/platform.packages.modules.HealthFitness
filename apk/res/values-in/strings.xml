@@ -43,7 +43,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Tetapkan unit"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferensi"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Kelola data"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Mengekspor dan mengimpor data"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Ekspor dan impor data"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Akses terbaru"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Tidak ada aplikasi yang baru-baru ini mengakses Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Lihat semua akses terbaru"</string>
@@ -516,7 +516,7 @@
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Selesai"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Tutup"</string>
     <string name="delete_dialog_success_title" msgid="900884533930984889">"Data dihapus dari Health Connect"</string>
-    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Jika Anda ingin menghapus data sepenuhnya dari aplikasi yang terhubung, periksa setiap aplikasi tempat data Anda disimpan."</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Jika Anda ingin menghapus data sepenuhnya dari aplikasi yang terhubung, periksa setiap aplikasi yang mungkin menyimpan data Anda."</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"Selesai"</string>
     <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Lihat aplikasi yang terhubung"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Menghapus data Anda"</string>
@@ -873,7 +873,7 @@
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 kilojoule}other{# kilojoule}}"</string>
     <string name="percent" formatted="false" msgid="9199428244800776575">"{value,plural, =1{1%}other{#%}}"</string>
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 persen}other{# persen}}"</string>
-    <string name="units_cancel" msgid="5947097690625771995">"Batalkan"</string>
+    <string name="units_cancel" msgid="5947097690625771995">"Batal"</string>
     <string name="units_title" msgid="6504086463237869339">"Satuan"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Jarak"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Tinggi"</string>
@@ -912,7 +912,7 @@
     <string name="range_off" msgid="8178520557618184215">"Nonaktif"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Jika Anda mengubah setelan ini, Health Connect akan menghapus data yang ada untuk menerapkan preferensi baru"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Hapus otomatis data setelah # bulan?}other{Hapus otomatis data setelah # bulan?}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Tindakan ini juga akan menghapus data yang lebih lama dari # bulan dari Health Connect.\n\nJika Anda ingin menghapus data sepenuhnya dari aplikasi yang terhubung, periksa setiap aplikasi tempat data Anda disimpan.}other{Tindakan ini juga akan menghapus data yang lebih lama dari # bulan dari Health Connect.\n\nJika Anda ingin menghapus data sepenuhnya dari aplikasi yang terhubung, periksa setiap aplikasi tempat data Anda disimpan.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Tindakan ini juga akan menghapus data yang lebih lama dari # bulan dari Health Connect.\n\nJika Anda ingin menghapus data sepenuhnya dari aplikasi yang terhubung, periksa setiap aplikasi yang mungkin menyimpan data Anda.}other{Tindakan ini juga akan menghapus data yang lebih lama dari # bulan dari Health Connect.\n\nJika Anda ingin menghapus data sepenuhnya dari aplikasi yang terhubung, periksa setiap aplikasi yang mungkin menyimpan data Anda.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Setel hapus otomatis"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Data yang ada akan dihapus"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect akan menghapus semua data yang berumur lebih dari # bulan. Penerapan perubahan ini ke aplikasi yang terhubung mungkin perlu waktu sampai satu hari.}other{Health Connect akan menghapus semua data yang berumur lebih dari # bulan. Penerapan perubahan ini ke aplikasi yang terhubung mungkin perlu waktu sampai satu hari.}}"</string>

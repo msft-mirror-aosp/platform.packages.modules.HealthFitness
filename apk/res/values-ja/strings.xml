@@ -478,9 +478,9 @@
     <string name="time_range_title" msgid="5777596779865648336">"ヘルスコネクトから削除するデータの選択"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"次へ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"指定した期間にヘルスコネクトに追加されたすべてのデータを完全に削除します"</string>
-    <string name="time_range_message_data_type" msgid="1896125004829258195">"指定した期間にヘルスコネクトに追加された<xliff:g id="DATA_TYPE">%s</xliff:g>のデータを完全に削除します"</string>
-    <string name="time_range_message_category" msgid="1136451418397326356">"指定した期間にヘルスコネクトに追加された<xliff:g id="CATEGORY">%s</xliff:g>のデータを完全に削除します"</string>
-    <string name="time_range_message_app_data" msgid="2590800457710603556">"指定した期間にヘルスコネクトに追加された<xliff:g id="APP_DATA">%s</xliff:g>のデータを完全に削除します"</string>
+    <string name="time_range_message_data_type" msgid="1896125004829258195">"指定した期間にヘルスコネクトに追加された <xliff:g id="DATA_TYPE">%s</xliff:g> のデータを完全に削除します"</string>
+    <string name="time_range_message_category" msgid="1136451418397326356">"指定した期間にヘルスコネクトに追加された <xliff:g id="CATEGORY">%s</xliff:g> のデータを完全に削除します"</string>
+    <string name="time_range_message_app_data" msgid="2590800457710603556">"指定した期間にヘルスコネクトに追加された <xliff:g id="APP_DATA">%s</xliff:g> のデータを完全に削除します"</string>
     <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"指定した期間に <xliff:g id="APP_DATA">%2$s</xliff:g> がヘルスコネクトに追加した<xliff:g id="DATA_TYPE">%1$s</xliff:g>のデータを完全に削除します"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"過去 24 時間分を削除"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"過去 7 日分を削除"</string>
@@ -867,7 +867,7 @@
     <string name="height_ft_compacted" msgid="1024585112134314039">"{height,plural, =1{1′}other{#′}}"</string>
     <string name="feet_inches_format" msgid="768610500549967860">"<xliff:g id="FT">%1$s</xliff:g><xliff:g id="IN">%2$s</xliff:g>⁠"</string>
     <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>⁠"</string>
-    <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 カロリー}other{# カロリー}}"</string>
+    <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 kcal}other{# kcal}}"</string>
     <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 Cal}other{# Cal}}"</string>
     <string name="kj" msgid="2742876437259085714">"{count,plural, =1{1 kJ}other{# kJ}}"</string>
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 キロジュール}other{# キロジュール}}"</string>
@@ -904,7 +904,7 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Play ストア"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"自動削除"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"自動削除"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"指定した時間が過ぎたらデータを削除するよう設定することで、ヘルスコネクトでの保存時間を管理できます"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"指定した期間の経過後にデータを削除するように設定して、ヘルスコネクトでの保存時間を管理できます"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"自動削除の詳細"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"データの自動削除"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{# か月後}other{# か月後}}"</string>
@@ -918,7 +918,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{保存期間が # か月を超えるすべてのデータがヘルスコネクトから削除されます。接続されているアプリにこれらの変更が反映されるまで 1 日ほどかかることがあります。}other{保存期間が # か月を超えるすべてのデータがヘルスコネクトから削除されます。接続されているアプリにこれらの変更が反映されるまで 1 日ほどかかることがあります。}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"アプリから削除されるデータ"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"完了"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{自動削除を ON にしました。# か月を過ぎたデータは削除されます}other{自動削除を ON にしました。# か月を過ぎたデータは削除されます}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{自動削除を ON にしました。# か月を過ぎたデータは削除されます。}other{自動削除を ON にしました。# か月を過ぎたデータは削除されます。}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"自動削除は OFF です"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"アプリの優先順位を設定する"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"<xliff:g id="DATA_TYPE">%s</xliff:g>のデータを追加するアプリが複数ある場合、ヘルスコネクトはこのリストの一番上にあるアプリを優先します。順序を変更するには、アプリをドラッグしてください。"</string>

@@ -396,7 +396,7 @@
     <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Eksport terakhir: 1 jam yang lalu}other{Eksport terakhir: # jam yang lalu}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"Eksport terakhir: tiada"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"Eksport dijadualkan"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Eksport berjadual"</string>
     <string name="import_data" msgid="404502315533233094">"Import data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Pulihkan data daripada fail yang dieksport sebelum ini"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"Tidak dapat memulihkan data"</string>
@@ -406,7 +406,7 @@
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Kemas kinikan sistem anda supaya Health Connect dapat memulihkan data anda, kemudian cuba lagi."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"Cuba lagi"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Terdapat masalah dengan proses pemulihan data daripada eksport anda."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Ciri eksport membolehkan anda menyimpan data anda agar anda boleh memindahkan data tersebut kepada telefon baharu"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Ciri eksport membolehkan anda menyimpan data agar anda boleh memindahkan data tersebut kepada telefon baharu"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Perihal sandaran dan pemulihan"</string>
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Hidup"</string>
@@ -420,7 +420,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Harian"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Mingguan"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Bulanan"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"Pilih lokasi penyimpanan eksport"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Pilih lokasi penyimpanan eksport berjadual"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Sila pilih apl storan awan untuk mengeksport data anda"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>

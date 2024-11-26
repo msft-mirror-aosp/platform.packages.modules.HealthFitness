@@ -420,7 +420,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Jednom dnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Jednom nedeljno"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Jednom mesečno"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"Odaberite mesto čuvanja zakazanog izvoza"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Odaberite gde će se sačuvati zakazani izvoz"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Izaberite aplikaciju za prostor u klaudu da biste izvozili podatke"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Povezivanje zdravlja"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Povezivanje zdravlja (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>

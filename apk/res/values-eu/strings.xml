@@ -406,7 +406,7 @@
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Eguneratu sistema Health Connect-ek datuak leheneratu ahal izan ditzan eta saiatu berriro."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"Saiatu berriro"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Arazo bat izan da esportatutako datuak leheneratzean."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportatzeak datuak gordetzeko aukera ematen dizu, beste telefono batera transferitu ahal izateko"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportazioak datuak gordetzeko aukera ematen dizu, beste telefono batera transferitu ahal izateko"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Babeskopiei eta leheneratzeari buruz"</string>
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aktibatuta"</string>

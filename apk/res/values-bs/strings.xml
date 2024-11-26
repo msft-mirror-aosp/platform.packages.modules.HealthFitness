@@ -983,7 +983,7 @@
     <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Potrebno je više prostora"</string>
     <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect treba <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> prostora za pohranu na telefonu da nastavi s integracijom."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Integracija je pauzirana"</string>
-    <string name="migration_paused_screen_details" msgid="5898311710030340187">"Aplikacija Health Connect se zatvorila tokom integracije s Android sistemom.\n\nKliknite na Nastavi da ponovo otvorite aplikaciju i nastavite s prijenosom podataka i odobrenja."</string>
+    <string name="migration_paused_screen_details" msgid="5898311710030340187">"Aplikacija Health Connect se zatvorila tokom integracije s Android sistemom.\n\nKliknite na Nastavi da ponovo otvorite aplikaciju i nastavite s prenosom podataka i odobrenja."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Da sačuvate podatke Health Connecta, izvršite ovo u roku od <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_button" msgid="2255148549862208047">"Nastavi"</string>
     <string name="migration_paused_notification_title" msgid="4368414714202113077">"Integracija je pauzirana"</string>

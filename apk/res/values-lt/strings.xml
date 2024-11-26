@@ -608,7 +608,7 @@
     <string name="dumbbell_triceps_extension_left_arm" msgid="6756023069611493063">"Kair. rankos tiesimas su svarmeniu (tricepsas)"</string>
     <string name="dumbbell_triceps_extension_right_arm" msgid="1498470275564554389">"Dešin. rankos tiesimas su svarmeniu (tricepsas)"</string>
     <string name="dumbbell_triceps_extension_two_arm" msgid="5409860665522903159">"Abiejų rankų tiesimas su svarmenimis (tricepsas)"</string>
-    <string name="elliptical" msgid="5148914059968910839">"Treniruotė elipsiniu treniruokliu"</string>
+    <string name="elliptical" msgid="5148914059968910839">"Elipsinis treniruoklis"</string>
     <string name="exercise_class" msgid="32582249527931454">"Mankštos užsiėmimai"</string>
     <string name="fencing" msgid="410347890025055779">"Fechtavimasis"</string>
     <string name="football_american" msgid="8564554592554502623">"Amerikietiškasis futbolas"</string>
@@ -637,7 +637,7 @@
     <string name="rock_climbing" msgid="3123024521372083233">"Alpinizmas"</string>
     <string name="roller_hockey" msgid="3524872164646176686">"Ratukinių pačiūžų ritulys"</string>
     <string name="rowing" msgid="615898011726585442">"Irklavimas"</string>
-    <string name="rowing_machine" msgid="4075255566862183370">"Treniruotė irklavimo treniruokliu"</string>
+    <string name="rowing_machine" msgid="4075255566862183370">"Irklavimo treniruotė"</string>
     <string name="rugby" msgid="5146215118571059267">"Regbis"</string>
     <string name="running" msgid="5135754380339217169">"Bėgimas"</string>
     <string name="running_treadmill" msgid="2083354407217486405">"Bėgimas ant bėgtakio"</string>

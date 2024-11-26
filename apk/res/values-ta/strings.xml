@@ -94,7 +94,7 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"எரிக்கப்பட்ட கலோரிகள் குறித்த தரவை வாசிக்க ஆப்ஸை அனுமதிக்கும்"</string>
     <string name="background_read_title" msgid="5061383169517186234">"பின்னணியில் தரவை அணுகுதல்"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"பின்னணியில் தரவை அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கவா?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"நீங்கள் ஆப்ஸைப் பயன்படுத்தாதபோது, Health Connect தரவை அணுக இந்த ஆப்ஸை அனுமதிக்கவும்"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"நீங்கள் ஆப்ஸைப் பயன்படுத்தாதபோது, Health Connect தரவை அணுக இந்த ஆப்ஸை அனுமதிக்கும்"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"அனுமதித்தால், நீங்கள் ஆப்ஸைப் பயன்படுத்தாதபோது, Health Connect தரவை இந்த ஆப்ஸ் அணுகும்."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"முந்தைய தரவை அணுகுதல்"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"முந்தைய தரவை அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கவா?"</string>
@@ -407,7 +407,7 @@
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"மீண்டும் முயல்க"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"நீங்கள் பதிவேற்றியதில் இருந்து தரவை மீட்டெடுப்பதில் சிக்கல் இருந்தது."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"பதிவேற்றுதல் அம்சம் உங்கள் தரவைச் சேமிக்க அனுமதிக்கிறது. எனவே நீங்கள் அதைப் புதிய மொபைலுக்கு மாற்றலாம்."</string>
-    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"காப்புப் பிரதி &amp; மீட்டமைத்தலின் அறிமுகம்"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"காப்புப் பிரதி &amp; மீட்டமைத்தல் பற்றி"</string>
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"இயக்கப்பட்டுள்ளது"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"முடக்கப்பட்டுள்ளது"</string>

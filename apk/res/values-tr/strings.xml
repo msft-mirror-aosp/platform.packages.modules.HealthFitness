@@ -406,7 +406,7 @@
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Health Connect\'in verilerinizi geri yükleyebilmesi için sisteminizi güncelleyin ve tekrar deneyin."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"Tekrar dene"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Dışa aktarma işleminizdeki verileri geri yüklerken bir sorun oluştu."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz."</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Yedekleme ve geri yükleme hakkında"</string>
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Açık"</string>

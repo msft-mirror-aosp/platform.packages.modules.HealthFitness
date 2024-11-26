@@ -913,13 +913,13 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Khi bạn thay đổi những chế độ cài đặt này, Health Connect sẽ xoá dữ liệu hiện có dựa trên các lựa chọn ưu tiên mới của bạn"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Tự động xoá dữ liệu sau # tháng?}other{Tự động xoá dữ liệu sau # tháng?}}"</string>
     <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Thao tác này cũng xoá dữ liệu đã lưu hơn # tháng khỏi Health Connect.\n\nNếu bạn muốn xoá hoàn toàn dữ liệu khỏi các ứng dụng đã kết nối, hãy kiểm tra từng ứng dụng có thể đã lưu dữ liệu của bạn.}other{Thao tác này cũng xoá dữ liệu đã lưu hơn # tháng khỏi Health Connect.\n\nNếu bạn muốn xoá hoàn toàn dữ liệu khỏi các ứng dụng đã kết nối, hãy kiểm tra từng ứng dụng có thể đã lưu dữ liệu của bạn.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng xoá tự động"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng tự động xoá"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Dữ liệu hiện tại sẽ bị xoá"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}other{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Dữ liệu sẽ bị xoá khỏi các danh mục sau"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Xong"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Tính năng Xoá tự động ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}other{Tính năng Xoá tự động ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}}"</string>
-    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Tính năng Xoá tự động ở trạng thái tắt"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Tính năng Tự động xoá ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}other{Tính năng Tự động xoá ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Tính năng Tự động xoá ở trạng thái tắt"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Đặt thứ tự ưu tiên của ứng dụng"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Nếu nhiều ứng dụng thêm dữ liệu <xliff:g id="DATA_TYPE">%s</xliff:g>, Health Connect sẽ ưu tiên ứng dụng ở vị trí cao nhất trong danh sách này. Bạn có thể kéo các ứng dụng để sắp xếp lại chúng."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Lưu"</string>

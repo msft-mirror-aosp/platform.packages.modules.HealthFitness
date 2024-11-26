@@ -396,9 +396,9 @@
     <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{上一次匯出：1 小時前}other{上一次匯出：# 小時前}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"上次匯出：沒有"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"已預定匯出"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"定期匯出"</string>
     <string name="import_data" msgid="404502315533233094">"匯入資料"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"從先前已匯出的檔案還原資料"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"從先前匯出的檔案還原資料"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"無法還原資料"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"選擇檔案"</string>
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"你選取的檔案不兼容還原功能。請務必選取正確的匯出檔案。"</string>
@@ -415,12 +415,12 @@
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"變更頻率"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"關閉排定匯出時間的設定後，系統不會從儲存位置刪除先前匯出的資料"</string>
-    <string name="choose_frequency" msgid="8119085390857180221">"排定匯出資料的時間"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"安排定期匯出資料的時間"</string>
     <string name="choose_frequency_description" msgid="7698155810053504157">"選擇匯出資料的頻率"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"每日"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"每週"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"選擇排定匯出資料的儲存位置"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"選擇定期匯出資料的儲存位置"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"請選擇用於匯出資料的雲端儲存空間應用程式"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"健康資料同步"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"健康資料同步 (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -462,7 +462,7 @@
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"取消"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"完成"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"沒有可用的應用程式。安裝雲端儲存空間應用程式，即可在此查看"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"如需更多選項，安裝雲端儲存空間應用程式即可在此查看資料"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"如需使用更多選項，請安裝雲端儲存空間應用程式"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"前往「Play 商店」"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"開始使用 Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"「健康資料同步」能儲存健康和健身資料，方便你同步處理裝置上各個應用程式的資料"</string>
@@ -480,7 +480,7 @@
     <string name="time_range_message_all" msgid="7280888587242744729">"此操作會永久刪除所選時段內新增至 Health Connect 的所有資料"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="DATA_TYPE">%s</xliff:g>資料"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="CATEGORY">%s</xliff:g>資料"</string>
-    <string name="time_range_message_app_data" msgid="2590800457710603556">"此操作會永久刪除所選時段內新增至 Health Connect 的「<xliff:g id="APP_DATA">%s</xliff:g>」資料"</string>
+    <string name="time_range_message_app_data" msgid="2590800457710603556">"此操作會永久刪除所選時段內新增至「健康資料同步」的「<xliff:g id="APP_DATA">%s</xliff:g>」資料"</string>
     <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"此操作會永久刪除所選時段內由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增至「健康資料同步」的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"刪除過去 24 小時的資料"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"刪除過去 7 天的資料"</string>
@@ -918,8 +918,8 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect 將刪除 # 個月前的所有資料。這些變更可能一天後才會在已連結的應用程式上顯示。}other{Health Connect 將刪除 # 個月前的所有資料。這些變更可能一天後才會在已連結的應用程式上顯示。}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"系統會刪除以下類別的資料"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"完成"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{已開啟自動刪除。系統會刪除 # 個月前的資料}other{已開啟自動刪除。系統會刪除 # 個月前的資料}}"</string>
-    <string name="auto_delete_off_toast" msgid="6530926709108821768">"已關閉自動刪除"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{已開啟自動刪除功能。系統會刪除 # 個月前的資料}other{已開啟自動刪除功能。系統會刪除 # 個月前的資料}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"已關閉自動刪除功能"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"設定應用程式優先次序"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"如果多個應用程式新增<xliff:g id="DATA_TYPE">%s</xliff:g>資料，Health Connect 會優先處理此清單中排名最高的應用程式。拖曳應用程式即可重新排序。"</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"儲存"</string>
