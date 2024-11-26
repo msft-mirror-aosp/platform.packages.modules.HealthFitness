@@ -17,7 +17,7 @@
 package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
@@ -83,7 +83,8 @@ public class GetMedicalDataSourcesByIdsCtsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     private HealthConnectManager mManager;
     private PhrCtsTestUtils mUtil;
@@ -352,8 +353,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         // To write data from two different apps.
         grantPermission(PHR_BACKGROUND_APP_PKG, WRITE_MEDICAL_DATA);
         grantPermissions(
-                PHR_FOREGROUND_APP_PKG,
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                PHR_FOREGROUND_APP_PKG, List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         MedicalDataSource dataSource1Foreground =
                 PHR_FOREGROUND_APP.createMedicalDataSource(
                         getCreateMedicalDataSourceRequest("ds/1"));
@@ -370,7 +370,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
         // App is in foreground, no write permission but has
-        // immunization read permission. App can read all dataSources belonging to immunizations.
+        // vaccine read permission. App can read all dataSources belonging to vaccines.
         revokePermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
         List<MedicalDataSource> result =
                 PHR_FOREGROUND_APP.getMedicalDataSources(
@@ -427,8 +427,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         // To write data from two different apps.
         grantPermission(PHR_BACKGROUND_APP_PKG, WRITE_MEDICAL_DATA);
         grantPermissions(
-                PHR_FOREGROUND_APP_PKG,
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                PHR_FOREGROUND_APP_PKG, List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         MedicalDataSource dataSource1Foreground =
                 PHR_FOREGROUND_APP.createMedicalDataSource(
                         getCreateMedicalDataSourceRequest("ds/1"));
@@ -448,9 +447,9 @@ public class GetMedicalDataSourcesByIdsCtsTest {
                         getCreateMedicalDataSourceRequest("ds/2"));
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
-        // App is in foreground, has write permission and has immunization read permissions.
+        // App is in foreground, has write permission and has vaccine read permissions.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types.
+        // vaccine resource types.
         List<MedicalDataSource> result =
                 PHR_FOREGROUND_APP.getMedicalDataSources(
                         List.of(
@@ -479,7 +478,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
 
         // Calling app is running in the background without background read permission.
-        // The app has write permission and read immunization permission.
+        // The app has write permission and read vaccine permission.
         // The app can read data sources created by itself only.
         List<MedicalDataSource> result =
                 PHR_BACKGROUND_APP.getMedicalDataSources(
@@ -506,7 +505,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         grantPermissions(
                 PHR_BACKGROUND_APP.getPackageName(),
-                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS));
+                List.of(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES));
         MedicalDataSource dataSource1Foreground =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
         PHR_FOREGROUND_APP.upsertMedicalResource(
@@ -522,7 +521,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
         // App is in background without background read perm, no write permission but has
-        // immunization read permission. App can read dataSources belonging to immunizations that
+        // vaccine read permission. App can read dataSources belonging to vaccines that
         // the app wrote itself.
         revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         List<MedicalDataSource> result =
@@ -547,7 +546,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource dataSource1Foreground =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
@@ -564,7 +563,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
         // App is in background with background read permission, no write permission but has
-        // immunization read permission. App can read all dataSources belonging to immunizations.
+        // vaccine read permission. App can read all dataSources belonging to vaccines.
         revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         List<MedicalDataSource> result =
                 PHR_BACKGROUND_APP.getMedicalDataSources(
@@ -620,7 +619,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
                 List.of(
                         WRITE_MEDICAL_DATA,
                         READ_HEALTH_DATA_IN_BACKGROUND,
-                        READ_MEDICAL_DATA_IMMUNIZATIONS));
+                        READ_MEDICAL_DATA_VACCINES));
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource dataSource1Foreground =
                 PHR_FOREGROUND_APP.createMedicalDataSource(
@@ -642,9 +641,9 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         PHR_BACKGROUND_APP.upsertMedicalResource(dataSource2Background.getId(), FHIR_DATA_ALLERGY);
 
         // App is in background, has background read permission,
-        // has write permission and immunization read permissions.
+        // has write permission and vaccine read permissions.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types.
+        // vaccine resource types.
         List<MedicalDataSource> result =
                 PHR_BACKGROUND_APP.getMedicalDataSources(
                         List.of(

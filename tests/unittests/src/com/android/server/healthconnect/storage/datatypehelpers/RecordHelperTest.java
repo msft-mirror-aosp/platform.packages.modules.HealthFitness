@@ -28,6 +28,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
@@ -40,6 +41,7 @@ import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.os.Environment;
 import android.util.Pair;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
@@ -47,7 +49,6 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
@@ -88,17 +89,15 @@ public class RecordHelperTest {
 
     @Before
     public void setup() throws Exception {
-        StorageContext context = testRule.getDatabaseContext();
-        mTransactionManager = testRule.getTransactionManager();
-        DatabaseHelper.clearAllData(mTransactionManager);
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();

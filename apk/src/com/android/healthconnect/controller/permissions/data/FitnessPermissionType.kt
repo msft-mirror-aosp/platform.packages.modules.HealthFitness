@@ -25,6 +25,7 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 enum class FitnessPermissionType(val category: Int) : HealthPermissionType {
     // ACTIVITY
     ACTIVE_CALORIES_BURNED(HealthPermissionCategory.ACTIVE_CALORIES_BURNED),
+    ACTIVITY_INTENSITY(HealthPermissionCategory.ACTIVITY_INTENSITY),
     DISTANCE(HealthPermissionCategory.DISTANCE),
     ELEVATION_GAINED(HealthPermissionCategory.ELEVATION_GAINED),
     EXERCISE(HealthPermissionCategory.EXERCISE),
@@ -101,6 +102,7 @@ fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissio
         // ACTIVITY
         HealthPermissionCategory.ACTIVE_CALORIES_BURNED ->
             FitnessPermissionType.ACTIVE_CALORIES_BURNED
+        HealthPermissionCategory.ACTIVITY_INTENSITY -> FitnessPermissionType.ACTIVITY_INTENSITY
         HealthPermissionCategory.DISTANCE -> FitnessPermissionType.DISTANCE
         HealthPermissionCategory.ELEVATION_GAINED -> FitnessPermissionType.ELEVATION_GAINED
         HealthPermissionCategory.EXERCISE -> FitnessPermissionType.EXERCISE

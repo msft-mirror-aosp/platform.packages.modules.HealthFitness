@@ -38,6 +38,7 @@ import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -526,4 +527,7 @@ interface IHealthConnectService {
 
     /** @hide */
     void getSettingsForBackup(in IGetSettingsForBackupResponseCallback callback);
+
+    /** @hide */
+    void pushSettingsForRestore(in BackupSettings backupSettings, in IEmptyResponseCallback callback);
 }

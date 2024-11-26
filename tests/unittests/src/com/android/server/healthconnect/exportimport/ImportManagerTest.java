@@ -48,6 +48,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.UserHandle;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -66,7 +67,7 @@ import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -124,7 +125,7 @@ public class ImportManagerTest {
 
     private ImportManager mImportManagerSpy;
 
-    private StorageContext mContext;
+    private Context mContext;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
@@ -132,6 +133,7 @@ public class ImportManagerTest {
     private ExportImportSettingsStorage mExportImportSettingsStorage;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
+    private DatabaseHelpers mDatabaseHelpers;
     private DeviceInfoHelper mDeviceInfoHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
@@ -146,16 +148,16 @@ public class ImportManagerTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
 
-        mContext = mDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
+        mContext = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mDatabaseHelpers = healthConnectInjector.getDatabaseHelpers();
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
@@ -192,7 +194,6 @@ public class ImportManagerTest {
     @After
     public void tearDown() throws Exception {
         TestUtils.waitForAllScheduledTasksToComplete();
-        DatabaseHelper.clearAllData(mTransactionManager);
 
         File testDir = mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE);
         File[] allContents = testDir.listFiles();
@@ -214,7 +215,7 @@ public class ImportManagerTest {
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
@@ -260,14 +261,14 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -282,7 +283,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME)
                 .inOrder();
     }
@@ -297,7 +298,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -305,7 +306,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3)
                 .inOrder();
 
@@ -320,7 +321,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3, TEST_PACKAGE_NAME)
                 .inOrder();
     }
@@ -348,7 +349,7 @@ public class ImportManagerTest {
 
         File zipToImport = zipExportedDb(dbToImport);
 
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 

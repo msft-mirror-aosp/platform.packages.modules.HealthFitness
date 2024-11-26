@@ -21,9 +21,16 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
+import android.content.Context;
+import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
 import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -33,6 +40,7 @@ import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
@@ -51,6 +59,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import org.junit.Before;
@@ -63,8 +72,10 @@ import org.mockito.MockitoAnnotations;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /** Unit test for class {@link BackupRestoreDatabaseHelper}. */
 @RunWith(AndroidJUnit4.class)
@@ -80,6 +91,7 @@ public class BackupRestoreDatabaseHelperTest {
     private static final double TEST_DIASTOLIC = 92.6;
     private static final String ACTIVE_CALORIES_BURNED_RECORD_TABLE =
             "active_calories_burned_record_table";
+    private static final String BLOOD_PRESSURE_RECORD_TABLE = "blood_pressure_record_table";
 
     private static Object deserializeRecordInternal(byte[] bytes)
             throws IOException, ClassNotFoundException {
@@ -106,6 +118,8 @@ public class BackupRestoreDatabaseHelperTest {
     private BackupRestoreDatabaseHelper mBackupRestoreDatabaseHelper;
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
+    private AccessLogsHelper mAccessLogsHelper;
+    private AppInfoHelper mAppInfoHelper;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -116,21 +130,18 @@ public class BackupRestoreDatabaseHelperTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
-
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
-                        .setTransactionManager(mTransactionManager)
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
-        AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
-        AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         DeviceInfoHelper deviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         HealthConnectMappings healthConnectMappings =
                 healthConnectInjector.getHealthConnectMappings();
@@ -143,8 +154,8 @@ public class BackupRestoreDatabaseHelperTest {
         mBackupRestoreDatabaseHelper =
                 new BackupRestoreDatabaseHelper(
                         mTransactionManager,
-                        appInfoHelper,
-                        accessLogsHelper,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
                         internalHealthConnectMappings,
@@ -362,7 +373,7 @@ public class BackupRestoreDatabaseHelperTest {
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, nextChangeTokenRowId);
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(7468);
-        assertThat(backupChangeToken.getDataTableName()).isEqualTo("blood_pressure_record_table");
+        assertThat(backupChangeToken.getDataTableName()).isEqualTo(BLOOD_PRESSURE_RECORD_TABLE);
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo("1");
     }
 
@@ -428,5 +439,90 @@ public class BackupRestoreDatabaseHelperTest {
                         mBackupRestoreDatabaseHelper.isChangeLogsTokenValid(
                                 response.getNextChangeToken()))
                 .isTrue();
+    }
+
+    @Test
+    public void getIncrementalChanges_changeLogsTokenIsNull_throwsException() {
+        assertThrows(
+                IllegalStateException.class,
+                () -> mBackupRestoreDatabaseHelper.getIncrementalChanges(null));
+    }
+
+    @Test
+    public void getIncrementalChanges_upsertRecords_correctChangeReturned()
+            throws IOException, ClassNotFoundException {
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT));
+        // All data tables have been iterated through.
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, response.getNextChangeToken());
+
+        // Insert a new record and generate access logs.
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
+        GetChangesForBackupResponse secondResponse =
+                mBackupRestoreDatabaseHelper.getIncrementalChanges(
+                        backupChangeToken.getChangeLogsRequestToken());
+
+        assertThat(secondResponse.getChanges().size()).isEqualTo(1);
+        BackupChange bloodPressureBackupChange = secondResponse.getChanges().get(0);
+        assertThat(bloodPressureBackupChange.getVersion()).isEqualTo(0);
+        BloodPressureRecordInternal bloodPressureRecord =
+                (BloodPressureRecordInternal)
+                        deserializeRecordInternal(bloodPressureBackupChange.getData());
+        assertThat(bloodPressureRecord.getDiastolic()).isEqualTo(TEST_DIASTOLIC);
+        assertThat(bloodPressureRecord.getSystolic()).isEqualTo(TEST_SYSTOLIC);
+        assertThat(bloodPressureRecord.getTimeInMillis()).isEqualTo(TEST_TIME_IN_MILLIS);
+    }
+
+    @Test
+    public void getIncrementalChanges_includesDeletedRecords_correctChangeReturned() {
+        RecordInternal<BloodPressureRecord> bloodPressureRecordInternal =
+                createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT),
+                bloodPressureRecordInternal);
+        // All data tables have been iterated through.
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, response.getNextChangeToken());
+
+        // Delete the blood pressure record.
+        DeleteUsingFiltersRequest deleteRequest =
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(BloodPressureRecord.class)
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .build())
+                        .build();
+        DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
+        mTransactionManager.deleteAll(
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
+                /* shouldRecordDeleteAccessLogs= */ true,
+                mAccessLogsHelper);
+
+        GetChangesForBackupResponse secondResponse =
+                mBackupRestoreDatabaseHelper.getIncrementalChanges(
+                        backupChangeToken.getChangeLogsRequestToken());
+
+        assertThat(secondResponse.getChanges().size()).isEqualTo(1);
+        BackupChange deletedBloodPressureBackupChange = secondResponse.getChanges().get(0);
+        UUID bloodPressureRecordUuid = bloodPressureRecordInternal.getUuid();
+        assertThat(bloodPressureRecordUuid).isNotNull();
+        assertThat(deletedBloodPressureBackupChange.isDeletion()).isTrue();
+        assertThat(deletedBloodPressureBackupChange.getUid())
+                .isEqualTo(bloodPressureRecordUuid.toString());
+        assertThat(deletedBloodPressureBackupChange.getData()).isNull();
     }
 }

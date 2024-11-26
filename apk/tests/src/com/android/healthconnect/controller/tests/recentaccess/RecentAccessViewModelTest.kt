@@ -19,7 +19,7 @@ import android.health.connect.Constants
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.BasalMetabolicRateRecord
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.health.connect.datatypes.RecordTypeIdentifier
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -54,7 +54,7 @@ import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -72,7 +72,7 @@ class RecentAccessViewModelTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
@@ -99,7 +99,6 @@ class RecentAccessViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -797,7 +796,7 @@ class RecentAccessViewModelTest {
                         accessTime.toEpochMilli(),
                         Constants.READ,
                         setOf(
-                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                            MEDICAL_RESOURCE_TYPE_VACCINES,
                             MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         ),
                         true,
@@ -838,7 +837,7 @@ class RecentAccessViewModelTest {
                         accessTime.toEpochMilli(),
                         Constants.UPSERT,
                         setOf(
-                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                            MEDICAL_RESOURCE_TYPE_VACCINES,
                             MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         ),
                         true,

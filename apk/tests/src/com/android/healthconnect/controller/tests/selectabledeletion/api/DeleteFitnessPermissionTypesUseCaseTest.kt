@@ -75,7 +75,7 @@ class DeleteFitnessPermissionTypesUseCaseTest {
                     FitnessPermissionType.SLEEP,
                     FitnessPermissionType.EXERCISE,
                     FitnessPermissionType.MENSTRUATION,
-                    MedicalPermissionType.IMMUNIZATIONS,
+                    MedicalPermissionType.VACCINES,
                 ),
                 8,
             )

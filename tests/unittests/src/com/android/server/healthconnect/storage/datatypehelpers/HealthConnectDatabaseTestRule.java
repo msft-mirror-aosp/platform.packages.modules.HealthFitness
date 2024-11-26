@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static com.android.server.healthconnect.TestUtils.TEST_USER;
+import static com.android.server.healthconnect.storage.HealthConnectDatabase.DEFAULT_DATABASE_NAME;
 
 import static org.mockito.Mockito.when;
 
@@ -25,9 +26,7 @@ import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.rules.ExternalResource;
 
@@ -40,25 +39,34 @@ import java.io.File;
  * <p><code>
  * {@literal @} Rule (order = 1)
  * public final ExtendedMockitoRule mExtendedMockitoRule = new ExtendedMockitoRule.Builder(this)
- *     .mockStatic(HealthConnectManager.class)
- *     .mockStatic(Environment.class)
- *     .setStrictness(Strictness.LENIENT)
- *     .build();
+ * .mockStatic(HealthConnectManager.class)
+ * .mockStatic(Environment.class)
+ * .setStrictness(Strictness.LENIENT)
+ * .build();
  *
  * {@literal @} Rule (order = 2)
  * public final HealthConnectDatabaseTestRule mDatabaseTestRule =
- *     new HealthConnectDatabaseTestRule();
+ * new HealthConnectDatabaseTestRule();
  * </code>
  *
  * <p>Mocking is done in the test class rather than here to avoid interferences for Mockito session
  * handling when multiple test rules are used. It avoids starting multiple sessions in parallel.
+ *
+ * @deprecated Use {@link com.android.server.healthconnect.SQLiteDatabaseFixture} instead.
  */
+@Deprecated
 public class HealthConnectDatabaseTestRule extends ExternalResource {
     private StorageContext mStorageContext;
-    private TransactionManager mTransactionManager;
+    private final String mDatabaseName;
 
     // Mock Environment using ExtendedMockitoRule in the test using this rule.
-    public HealthConnectDatabaseTestRule() {}
+    public HealthConnectDatabaseTestRule() {
+        this(DEFAULT_DATABASE_NAME);
+    }
+
+    public HealthConnectDatabaseTestRule(String databaseName) {
+        mDatabaseName = databaseName;
+    }
 
     @Override
     public void before() {
@@ -70,28 +78,14 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         mStorageContext =
                 StorageContext.create(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-        // TransactionManager might already be initialized with a different context.
-        // We first clear any earlier instance, then initialize with the required context.
-        // We then call cleanup, so that any leftover in the required location data can be deleted.
-        // We then initialize it again with the required context.
-        TransactionManager.clearInstanceForTest();
-        TransactionManager.initializeInstance(mStorageContext);
-        TransactionManager.cleanUpForTest();
-        mTransactionManager = TransactionManager.initializeInstance(mStorageContext);
-        HealthConnectDeviceConfigManager.initializeInstance(mStorageContext);
     }
 
     @Override
     public void after() {
-        DatabaseHelper.clearAllData(mTransactionManager);
-        TransactionManager.cleanUpForTest();
+        mStorageContext.deleteDatabase(mDatabaseName);
     }
 
     public StorageContext getDatabaseContext() {
         return mStorageContext;
-    }
-
-    public TransactionManager getTransactionManager() {
-        return mTransactionManager;
     }
 }

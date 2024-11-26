@@ -16,6 +16,8 @@
 
 package android.healthconnect.cts.testhelper;
 
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteAllRecordsAddedByTestApp;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getBloodPressureRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeartRateRecord;
@@ -26,6 +28,9 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.queryAccessLo
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -48,6 +53,21 @@ public class DailyLogsTests {
 
     private final HealthConnectManager mHealthConnectManager =
             InstrumentationRegistry.getContext().getSystemService(HealthConnectManager.class);
+    private final PhrCtsTestUtils mPhrTestUtils = new PhrCtsTestUtils(mHealthConnectManager);
+
+    @Test
+    public void testUpsertMedicalResourcesThenReadSuccess() throws InterruptedException {
+        // clean up before the test to make the test more realistic
+        mPhrTestUtils.deleteAllMedicalData();
+
+        MedicalDataSource medicalDataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource medicalResource =
+                mPhrTestUtils.upsertMedicalData(medicalDataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        // make a read to emulate monthly active user
+        mPhrTestUtils.readMedicalResourcesByIds(List.of(medicalResource.getId()));
+    }
 
     @Test
     public void testInsertRecordsSucceed() throws Exception {

@@ -29,7 +29,7 @@ import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.health.connect.HealthPermissions.READ_HEART_RATE
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import android.health.connect.HealthPermissions.WRITE_EXERCISE
@@ -86,6 +86,7 @@ import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -98,7 +99,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.anyString
+import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.kotlin.anyArray
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
@@ -259,7 +262,7 @@ class MockedPermissionsActivityTest {
             .check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-        onView(withText("Data to share")).check(matches(isDisplayed()))
+        onView(withText("Data to share includes")).check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToPosition<RecyclerView.ViewHolder>(3))
         val availableMedicalPermissionsString =
@@ -267,13 +270,8 @@ class MockedPermissionsActivityTest {
                 "Conditions\n" +
                 "Lab results\n" +
                 "Medications\n" +
-                "Personal details\n" +
-                "Practitioner details\n" +
-                "Pregnancy\n" +
                 "Procedures\n" +
-                "Social history\n" +
                 "Vaccines\n" +
-                "Visits\n" +
                 "Vital signs"
         onView(withText(availableMedicalPermissionsString)).check(matches(isDisplayed()))
         onView(withId(androidx.preference.R.id.recycler_view))
@@ -297,6 +295,34 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
+    fun showMedicalPermissionRequest_correctLogging() {
+        whenever(viewModel.permissionsActivityState).then {
+            MutableLiveData(PermissionsActivityState.ShowMedical(isWriteOnly = true))
+        }
+        whenever(viewModel.medicalScreenState).then {
+            MutableLiveData(
+                MedicalScreenState.ShowMedicalWrite(
+                    appMetadata = appMetadata,
+                    medicalPermissions =
+                        listOf(
+                            HealthPermission.MedicalPermission.fromPermissionString(
+                                WRITE_MEDICAL_DATA
+                            )
+                        ),
+                )
+            )
+        }
+        val permissions = arrayOf(WRITE_MEDICAL_DATA)
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.REQUEST_WRITE_MEDICAL_PERMISSION_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
     fun showMedicalPermissionRequest_withReadAndWritePermissions() {
         whenever(viewModel.permissionsActivityState).then {
             MutableLiveData(PermissionsActivityState.ShowMedical(isWriteOnly = false))
@@ -306,7 +332,7 @@ class MockedPermissionsActivityTest {
                 MedicalScreenState.ShowMedicalReadWrite(
                     appMetadata = appMetadata,
                     medicalPermissions =
-                        listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA).map {
+                        listOf(READ_MEDICAL_DATA_VACCINES, WRITE_MEDICAL_DATA).map {
                             fromPermissionString(it) as HealthPermission.MedicalPermission
                         },
                 )
@@ -314,9 +340,9 @@ class MockedPermissionsActivityTest {
         }
         whenever(viewModel.allMedicalPermissionsGranted).then { MutableLiveData(true) }
         whenever(viewModel.grantedMedicalPermissions).then {
-            MutableLiveData(setOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS))
+            MutableLiveData(setOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES))
         }
-        val permissions = arrayOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATIONS)
+        val permissions = arrayOf(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_VACCINES)
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)

@@ -18,6 +18,7 @@
 
 package com.android.healthconnect.controller.tests.shared
 
+import android.health.connect.HealthDataCategory
 import android.health.connect.HealthDataCategory.ACTIVITY
 import android.health.connect.HealthDataCategory.BODY_MEASUREMENTS
 import android.health.connect.HealthDataCategory.CYCLE_TRACKING
@@ -39,6 +40,7 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -60,6 +62,25 @@ class HealthDataCategoryExtensionsTest {
     }
 
     @Test
+    fun fitnessDataCategories() {
+        assertThat(FITNESS_DATA_CATEGORIES).hasSize(7)
+        assertThat(FITNESS_DATA_CATEGORIES).containsNoDuplicates()
+        assertThat(FITNESS_DATA_CATEGORIES).doesNotContain(HealthDataCategory.UNKNOWN)
+    }
+
+    @Test
+    fun healthPermissionTypes_containNoDuplicates() {
+        FITNESS_DATA_CATEGORIES.forEach { dataCategory ->
+            assertWithMessage("HealthDataCategoty ${dataCategory}")
+                .that(dataCategory.healthPermissionTypes())
+                .containsNoDuplicates()
+        }
+
+        assertThat(FITNESS_DATA_CATEGORIES.flatMap { it.healthPermissionTypes() })
+            .containsNoDuplicates()
+    }
+
+    @Test
     fun allFitnessPermissions_haveParentCategory() {
         val allFitnessPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
@@ -67,12 +88,14 @@ class HealthDataCategoryExtensionsTest {
             }
         for (permissionString in allFitnessPermissions) {
             val fitnessPermission = FitnessPermission.fromPermissionString(permissionString)
-            assertThat(
-                    FITNESS_DATA_CATEGORIES.any {
+
+            assertWithMessage(permissionString)
+                .that(
+                    FITNESS_DATA_CATEGORIES.count() {
                         it.healthPermissionTypes().contains(fitnessPermission.fitnessPermissionType)
                     }
                 )
-                .isEqualTo(true)
+                .isEqualTo(1)
         }
     }
 

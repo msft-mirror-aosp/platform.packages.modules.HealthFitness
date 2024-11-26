@@ -32,7 +32,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -44,6 +43,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 
 import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -66,11 +66,9 @@ public final class TransactionTestUtils {
     private static final Set<String> NO_EXTRA_PERMS = Set.of();
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
-    private final Context mContext;
     private final HealthConnectInjector mHealthConnectInjector;
 
-    public TransactionTestUtils(Context context, HealthConnectInjector injector) {
-        mContext = context;
+    public TransactionTestUtils(HealthConnectInjector injector) {
         mTransactionManager = injector.getTransactionManager();
         mHealthConnectInjector = injector;
     }
@@ -86,6 +84,16 @@ public final class TransactionTestUtils {
                 .isNotEqualTo(DEFAULT_LONG);
     }
 
+    /** Inserts {@code packageName} into the given {@link HealthConnectDatabase}. */
+    public void insertApp(HealthConnectDatabase db, String packageName) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PACKAGE_COLUMN_NAME, packageName);
+        mTransactionManager.insert(
+                db.getWritableDatabase(),
+                new UpsertTableRequest(
+                        AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
+    }
+
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, RecordInternal<?>... records) {
         return insertRecords(packageName, List.of(records));
@@ -97,14 +105,12 @@ public final class TransactionTestUtils {
         return mTransactionManager.insertAll(
                 appInfoHelper,
                 mHealthConnectInjector.getAccessLogsHelper(),
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForInsert(
                         packageName,
                         records,
                         mHealthConnectInjector.getDeviceInfoHelper(),
-                        mContext,
-                        /* isInsertRequest= */ true,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mHealthConnectInjector.getAppInfoHelper()));
+                        mHealthConnectInjector.getAppInfoHelper(),
+                        /* extraPermsStateMap= */ Collections.emptyMap()));
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */

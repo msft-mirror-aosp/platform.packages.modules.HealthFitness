@@ -18,9 +18,12 @@ package com.android.server.healthconnect.permission;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,9 +34,14 @@ import android.health.connect.HealthDataCategory;
 import android.net.Uri;
 import android.os.Process;
 import android.os.UserHandle;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.core.app.ApplicationProvider;
 
+import com.android.compatibility.common.util.FeatureUtil;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -50,13 +58,16 @@ public class PermissionPackageChangesOrchestratorTest {
     private static final UserHandle CURRENT_USER = Process.myUserHandle();
 
     @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
+    @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(TransactionManager.class)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
-                    .mockStatic(HealthDataCategoryPriorityHelper.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
+        new ExtendedMockitoRule.Builder(this)
+            .mockStatic(TransactionManager.class)
+            .mockStatic(HealthConnectDeviceConfigManager.class)
+            .mockStatic(HealthDataCategoryPriorityHelper.class)
+            .setStrictness(Strictness.LENIENT)
+            .build();
 
     private int mCurrentUid;
     private PermissionPackageChangesOrchestrator mOrchestrator;
@@ -65,26 +76,21 @@ public class PermissionPackageChangesOrchestratorTest {
     @Mock private HealthConnectPermissionHelper mHelper;
     @Mock private HealthPermissionIntentAppsTracker mTracker;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
-    @Mock private TransactionManager mTransactionManager;
-    @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     @Mock private UserHandle mUserHandle;
 
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     @Before
     public void setUp() throws PackageManager.NameNotFoundException {
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
         mContext = ApplicationProvider.getApplicationContext();
         mCurrentUid = mContext.getPackageManager().getPackageUid(SELF_PACKAGE_NAME, 0);
         mOrchestrator =
-                new PermissionPackageChangesOrchestrator(
-                        mTracker,
-                        mFirstGrantTimeManager,
-                        mHelper,
-                        mUserHandle,
-                        mHealthDataCategoryPriorityHelper);
+            new PermissionPackageChangesOrchestrator(
+                mTracker,
+                mFirstGrantTimeManager,
+                mHelper,
+                mUserHandle,
+                mHealthDataCategoryPriorityHelper);
         setIntentIsPresent(/* isIntentPresent= */ true);
     }
 
@@ -92,60 +98,82 @@ public class PermissionPackageChangesOrchestratorTest {
     public void testPackageAdded_callsTrackerToUpdateState_noGrantTimeOrPermsCalls() {
         mOrchestrator.onReceive(mContext, buildPackageIntent(Intent.ACTION_PACKAGE_ADDED));
         verify(mHelper, never())
-                .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
+            .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
         verify(mFirstGrantTimeManager, never())
-                .onPackageRemoved(eq(SELF_PACKAGE_NAME), eq(mCurrentUid), eq(CURRENT_USER));
+            .onPackageRemoved(eq(SELF_PACKAGE_NAME), eq(mCurrentUid), eq(CURRENT_USER));
     }
 
     @Test
-    public void testPackageChanged_intentWasRemoved_revokesPerms() {
+    public void testPackageChanged_intentWasRemoved_nonWear_revokesPerms() {
+        assumeFalse(FeatureUtil.isWatch());
         setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(mContext, buildPackageIntent(Intent.ACTION_PACKAGE_CHANGED));
         verify(mHelper)
-                .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
+            .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
+    public void testPackageChanged_intentWasRemoved_wear_doesNotRevokePerms() {
+        assumeTrue(FeatureUtil.isWatch());
+        setIntentIsPresent(/* isIntentPresent= */ false);
+        mOrchestrator.onReceive(mContext, buildPackageIntent(Intent.ACTION_PACKAGE_CHANGED));
+        verify(mHelper, never())
+            .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
     }
 
     @Test
     public void testPackageRemoved_resetsGrantTime() {
         mOrchestrator.onReceive(
-                mContext,
-                buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ false));
+            mContext,
+            buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ false));
         verify(mFirstGrantTimeManager)
-                .onPackageRemoved(eq(SELF_PACKAGE_NAME), eq(mCurrentUid), eq(CURRENT_USER));
+            .onPackageRemoved(eq(SELF_PACKAGE_NAME), eq(mCurrentUid), eq(CURRENT_USER));
     }
 
     @Test
     public void testPackageRemoved_removesFromPriorityList_whenNewAggregationOff() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
         mOrchestrator.onReceive(
-                mContext,
-                buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ false));
+            mContext,
+            buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ false));
         assertThat(
-                        mHealthDataCategoryPriorityHelper.getPriorityOrder(
-                                HealthDataCategory.SLEEP, mContext))
-                .isEmpty();
+            mHealthDataCategoryPriorityHelper.syncAndGetPriorityOrder(
+                HealthDataCategory.SLEEP, mContext))
+            .isEmpty();
     }
 
     @Test
     public void testPackageReplaced_noGrantTimeResetsOrPermsRevokes() {
         mOrchestrator.onReceive(
-                mContext,
-                buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ true));
+            mContext,
+            buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ true));
         verify(mFirstGrantTimeManager, never())
-                .onPackageRemoved(eq(SELF_PACKAGE_NAME), eq(mCurrentUid), eq(CURRENT_USER));
+            .onPackageRemoved(eq(SELF_PACKAGE_NAME), eq(mCurrentUid), eq(CURRENT_USER));
         verify(mHelper, never())
-                .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
+            .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
     }
 
     @Test
-    public void testPackageReplaced_intentNotSupported_revokesPerms() {
+    public void testPackageReplaced_intentNotSupported_nonWear_revokesPerms() {
+        assumeFalse(FeatureUtil.isWatch());
         setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(
-                mContext,
-                buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ true));
+            mContext,
+            buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ true));
         verify(mHelper)
-                .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
+            .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
+    public void testPackageReplaced_intentNotSupported_wear_doesNotRevokePerms() {
+        assumeTrue(FeatureUtil.isWatch());
+        setIntentIsPresent(/* isIntentPresent= */ false);
+        mOrchestrator.onReceive(
+            mContext,
+            buildPackageIntent(Intent.ACTION_PACKAGE_REMOVED, /* isReplaced= */ true));
+        verify(mHelper, never())
+            .revokeAllHealthPermissions(eq(SELF_PACKAGE_NAME), anyString(), eq(CURRENT_USER));
     }
 
     private Intent buildPackageIntent(String action) {
@@ -154,16 +182,16 @@ public class PermissionPackageChangesOrchestratorTest {
 
     private Intent buildPackageIntent(String action, boolean isReplaced) {
         return new Intent()
-                .setAction(action)
-                .putExtra(Intent.EXTRA_REPLACING, isReplaced)
-                .setData(Uri.parse("package:" + SELF_PACKAGE_NAME))
-                .putExtra(Intent.EXTRA_UID, mCurrentUid);
+            .setAction(action)
+            .putExtra(Intent.EXTRA_REPLACING, isReplaced)
+            .setData(Uri.parse("package:" + SELF_PACKAGE_NAME))
+            .putExtra(Intent.EXTRA_UID, mCurrentUid);
     }
 
     private void setIntentIsPresent(boolean isIntentPresent) {
         when(mTracker.updateAndGetSupportsPackageUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
-                .thenReturn(isIntentPresent);
+            .thenReturn(isIntentPresent);
         when(mTracker.updateStateAndGetIfIntentWasRemoved(SELF_PACKAGE_NAME, CURRENT_USER))
-                .thenReturn(!isIntentPresent);
+            .thenReturn(!isIntentPresent);
     }
 }

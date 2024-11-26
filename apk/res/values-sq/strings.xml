@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Dje"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lexon: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Shkruan te: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Menaxho lejet"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Koha: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktiviteti"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"shtyrje të karriges me rrota"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Të lexojë të dhënat për shtyrjet e karriges me rrota"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Të shkruajë të dhënat për shtyrjet e karriges me rrota"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensiteti i aktivitetit"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensiteti i aktivitetit"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Të lexojë të dhënat për intensitetin e aktivitetit"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Të shkruajë të dhënat për intensitetin e aktivitetit"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Norma metabolike bazë"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"norma metabolike bazë"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Të lexojë të dhënat për normën metabolike bazë"</string>
@@ -316,6 +312,8 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura e lëkurës"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lexo temperaturën e lëkurës"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Shkruaj temperaturën e lëkurës"</string>
+    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
+    <skip />
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Të gjitha të dhënat shëndetësore"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"të gjitha të dhënat shëndetësore"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Të shkruajë të gjitha të dhënat shëndetësore"</string>
@@ -325,9 +323,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Kushtet"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"kushtet"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Të lexojë kushtet"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vaksinat"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vaksinat"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Të lexojë të dhënat për vaksinat"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaksinat"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaksinat"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Të lexojë të dhënat për vaksinat"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Rezultatet laboratorike"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"rezultatet laboratorike"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Të lexojë rezultatet laboratorike"</string>
@@ -377,7 +375,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Nëse jep qasje, aplikacioni mund të lexojë dhe të shkruajë të dhënat si p.sh. alergjitë, rezultatet laboratorike, vaksinat etj.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Nëse jep qasje, aplikacioni mund të lexojë të dhënat si p.sh. alergjitë, rezultatet laboratorike, vaksinat etj.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Rreth të dhënave shëndetësore"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Të dhënat për t\'u ndarë"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Të dhënat për t\'i ndarë përfshijnë"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Nëse e lejon, <xliff:g id="APP_NAME">%1$s</xliff:g> mund të ndajë të dhënat e tua shëndetësore me Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Të sinkronizojë të dhënat e tua shëndetësore nga aplikacionet dhe burime të ndryshme për t\'i mbajtur në një vend të vetëm"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Të hiqen të gjitha lejet?"</string>
@@ -436,7 +434,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Këto aplikacione nuk kanë më qasje, por kanë ende të dhëna të ruajtura në Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> mund të lexojë të dhënat e shtuara pas datës <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Për të menaxhuar lejet e tjera të Android te të cilat ky aplikacion mund të ketë qasje, shko te Cilësimet &gt; Aplikacionet"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Të dhënat që ndan me <xliff:g id="APP_NAME">%1$s</xliff:g> mbulohen nga politika e privatësisë së tij"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Mund të mësosh se si <xliff:g id="APP_NAME">%1$s</xliff:g> i përdor të dhënat e tua te politika e privatësisë e zhvilluesit"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Për të menaxhuar lejet e tjera të Android te të cilat ky aplikacion mund të ketë qasje, shko te \"Cilësimet\" dhe më pas trokit tek \"Aplikacionet\""</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lexo politikën e privatësisë"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Qasja gjatë 24 orëve të fundit"</string>
@@ -793,6 +791,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Muzikë"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Tjetër"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Pa udhëzime"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> orë e <xliff:g id="MIN">%2$s</xliff:g> min."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> orë"</string>
@@ -1045,23 +1047,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrimi në proces"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect po integrohet me sistemin Android.\n\nMund të duhet pak kohë derisa të transferohen të dhënat dhe lejet."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Mos e mbyll aplikacionin derisa të marrësh një njoftim se procesi ka përfunduar."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Integrimi i Health Connect është në proces"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Nevojitet përditësimi"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect po integrohet me sistemin Android, në mënyrë që të mund të qasesh drejtpërdrejt nga cilësimet e tua."</string>
     <string name="update_button" msgid="4544529019832009496">"Përditëso"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Nise këtë përditësim në mënyrë që Health Connect të vazhdojë të integrohet me cilësimet e sistemit"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Përditëso tani"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Nevojitet përditësimi i sistemit"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Përpara se të vazhdosh, përditëso sistemin e telefonit."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Nëse e ke përditësuar tashmë sistemin e telefonit, provo ta rindezësh për të vazhduar integrimin"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Nevojitet përditësimi i Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Përpara se të vazhdosh, përditëso aplikacionin Health Connect në versionin më të fundit."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Nevojitet më shumë hapësirë"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect ka nevojë për <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> hapësirë ruajtëse në telefon për të vazhduar integrimin.\n\nLiro hapësirë telefon dhe provo sërish."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Provo përsëri"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Liro hapësirën"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Nevojitet më shumë hapësirë"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect ka nevojë për <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> hapësirë ruajtëse në telefon për të vazhduar integrimin."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Integrimi u ndërpre"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Aplikacioni Health Connect u mbyll ndërsa po integrohej me sistemin Android.\n\nKliko \"rifillo\" për ta rihapur aplikacionin dhe për të vazhduar transferimin e të dhënave dhe të lejeve."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Për të ruajtur të dhënat e Health Connect, kryeje këtë brenda <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1072,11 +1069,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Trokit për të vazhduar integrimin e Health Connect me sistemin Android. Për të ruajtur të dhënat e tua, kryeje këtë brenda kësaj kohe: <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Trokit për të vazhduar integrimin e Health Connect me sistemin Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Vazhdo"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Rifillo integrimin e Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Për të ruajtur të dhënat e tua, kryeje këtë brenda <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Nevojitet përditësimi i aplikacioneve"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> duhet të përditësohet për të vazhduar sinkronizimin me Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Disa aplikacione duhet të përditësohen për të vazhduar sinkronizimin me Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> duhet të përditësohet për të vazhduar sinkronizimin me Health Connect. Përditësimet mund të mos ofrohen për të gjitha aplikacionet."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Disa aplikacione duhet të përditësohen për të vazhduar sinkronizimin me Health Connect. Përditësimet mund të mos ofrohen për të gjitha aplikacionet."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Kontrollo për përditësime"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Mëso më shumë"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integrimi i Health Connect"</string>
@@ -1091,10 +1086,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Integrimi i Health Connect nuk u krye"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Do të marrësh një njoftim kur të bëhet sërish i disponueshëm."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"E kuptova"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Integrimi i Health Connect nuk u krye"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Lexo më shumë"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Integrimi i Health Connect përfundoi"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Hap"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Ç\'të reja ka"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Tani mund të qasesh te Health Connect drejtpërdrejt nga cilësimet e tua. Çinstalo aplikacionin Health Connect në çdo kohë për të liruar hapësirë ruajtëse."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"E kuptova"</string>
@@ -1135,26 +1126,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Shiko aplikacionet e përputhshme"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Gjej më shumë aplikacione për t\'i sinkronizuar me <xliff:g id="APP_NAME">%s</xliff:g> nëpërmjet Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Shiko në dyqanin e aplikacioneve"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Cakto një kyçje ekrani"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Për më shumë siguri për të dhënat e shëndetit, cakto një kod PIN, motiv ose fjalëkalim për këtë pajisje"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Cakto kyçjen e ekranit"</string>
     <string name="select_all" msgid="837499881590001166">"Zgjidh të gjitha"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Aplikacionet e lidhura nuk do të mund të lexojnë më këto të dhëna nga Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Zgjedhur"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Nuk është zgjedhur"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Ofrohet itinerari i kartës së stërvitjes"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Dita tjetër"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Java tjetër"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Muaji tjetër"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Dita e mëparshme"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Java e mëparshme"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Muaji i mëparshëm"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Të fshihen përgjithmonë të gjitha të dhënat?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Të fshihen përgjithmonë të dhënat e zgjedhura?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Të fshihen përgjithmonë të gjitha të dhënat e <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1179,4 +1164,36 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Qasja e fundit në <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Qasja e fundit dje në <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Qasja e fundit më <xliff:g id="TIME_DATE_0">%1$s</xliff:g> në <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Lejo gjithmonë"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Lejo të zgjedhurat"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Gjatë përdorimit të aplikacionit"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Refuzo të gjitha"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Të lejohet që <xliff:g id="APP_NAME">%1$s</xliff:g> të ketë qasje te të dhënat e fitnesit dhe të mirëqenies?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> po kërkon qasje te <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nZgjidh që t\'i lejosh të gjitha ose kontrolloji në mënyrë individuale."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Të lejohet <xliff:g id="APP_NAME">%1$s</xliff:g> të ketë qasje te <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnesi dhe mirëqenia"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"gjatë gjithë kohës"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"kur është në përdorim"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Gjatë gjithë kohës"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Kur është në përdorim"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> mund të qaset te të gjitha të dhënat për fitnesin dhe mirëqenien <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Lejohet të qaset"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Lejohet të lexojë"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Këto leje i japin qasje <xliff:g id="APP_NAME">%1$s</xliff:g> te të dhënat nga sensorët e pajisjes sate."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Lejohen <xliff:g id="NUMBER_0">%1$d</xliff:g> nga <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplikacione"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Asnjë aplikacion nuk po kërkon"</string>
+    <string name="allowed" msgid="4158456017482263737">"Lejohet"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Nuk lejohet"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Aplikacionet që kanë këtë leje mund të qasen te të dhënat për <xliff:g id="DATA_TYPE">%s</xliff:g> nga sensorët e pajisjes"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Të hiqet qasja për <xliff:g id="DATA_TYPE">%s</xliff:g> për të gjitha aplikacionet në orën tënde?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Shenja e zgjedhjes"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Shenja e kryqëzimit"</string>
+    <!-- no translation found for current_allow_mode (6716206063077569218) -->
+    <skip />
+    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
+    <skip />
+    <!-- no translation found for current_access (1457167070428176139) -->
+    <skip />
+    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
+    <skip />
 </resources>

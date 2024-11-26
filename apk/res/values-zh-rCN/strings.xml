@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"昨天"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"读取：<xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"写入：<xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
+    <string name="separator" msgid="5521285473288943819">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理权限"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"时间：<xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"活动"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"推轮椅次数"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"读取推轮椅次数数据"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"写入推轮椅次数数据"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"活动强度"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"活动强度"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"读取活动强度数据"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"写入活动强度数据"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"基础代谢率"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"基础代谢率"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"读取基础代谢率数据"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"体表温度"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"读取体表温度"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"写入体表温度"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"这包括已同步和添加到“健康数据共享”中的所有健康记录。这可能不是您的完整医疗记录，也不包含您的健康记录的医学描述。"</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"所有健康记录"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"所有健康记录"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"写入所有健康记录"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"病症数据"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"病症数据"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"读取病症数据"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"疫苗接种"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"疫苗接种"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"读取疫苗接种数据"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"疫苗接种"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"疫苗接种"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"读取疫苗接种数据"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"化验结果"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"化验结果"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"读取化验结果"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"如果您授予访问权限，此应用将可以读取和写入过敏反应、化验结果、疫苗接种等数据\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"如果您授予访问权限，此应用将可以读取过敏反应、化验结果、疫苗接种等数据\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"关于健康记录"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"要共享的数据"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"要分享的数据包括"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"如果您允许，“<xliff:g id="APP_NAME">%1$s</xliff:g>”将可以与“健康数据共享”共享您的健康记录。"</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"同步来自不同应用和来源的健康记录，将其集中存放在一个位置"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"要撤消所有权限吗？"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"这些应用已经没有访问权限，但仍有数据存储在健康数据共享中"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”可以读取 <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>之后添加的数据"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"如需管理此应用可以访问的其他 Android 权限，请依次进入“设置”&gt;“应用”"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"您与“<xliff:g id="APP_NAME">%1$s</xliff:g>”共享的数据受其隐私权政策约束"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"您可在相应开发者的隐私权政策中了解“<xliff:g id="APP_NAME">%1$s</xliff:g>”会如何处理您的数据"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"如需管理此应用可以访问的其他 Android 权限，请进入“设置”，然后点按“应用”"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"阅读隐私权政策"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次访问时间：过去 24 小时内"</string>
@@ -462,7 +459,7 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"知道了"</string>
     <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"设置"</string>
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"无法导出数据"</string>
-    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>的导出任务出现问题。请设置新的排定导出任务并重试。"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>的导出任务出现问题。请设置新的定期导出任务并重试。"</string>
     <string name="next_export_time" msgid="3138247220014510213">"下次导出日期：<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="next_export_text" msgid="6726252793571403846">"下一次导出即将开始"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"备份和恢复"</string>
@@ -486,17 +483,17 @@
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"关于备份和恢复"</string>
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"已开启"</string>
-    <string name="automatic_export_off" msgid="3270255845008880841">"已停用"</string>
-    <string name="automatic_export_switch_text" msgid="8277559519722722926">"按计划导出"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"已关闭"</string>
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"定期导出"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"更改频率"</string>
-    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"如果您关闭导出计划，不会导致之前导出的数据从保存位置删除"</string>
-    <string name="choose_frequency" msgid="8119085390857180221">"设置导出计划"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"如果您关闭定期导出，请注意，系统不会从保存位置删除之前导出的数据"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"设置定期导出"</string>
     <string name="choose_frequency_description" msgid="7698155810053504157">"选择数据导出频率"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"每周"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"选择导出计划的导出数据保存位置"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"选择定期导出内容的保存位置"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"请选择一款云端存储空间应用来导出您的数据"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"健康数据共享"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"健康数据共享 (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -519,11 +516,11 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"打开"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"选择文件"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"释放空间"</string>
-    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"已开启按计划导出"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"已开启定期导出"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"健康数据共享无法导出数据"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"需要更多存储空间"</string>
-    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>的导出任务出现问题。请设置新的排定导出任务并重试。"</string>
-    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"健康数据共享要求手机上有 <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> 的存储空间，才能继续执行排定的导出任务。"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>的导出任务出现问题。请设置新的定期导出任务并重试。"</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"健康数据共享要求手机上有 <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> 的存储空间，才能继续进行定期导出。"</string>
     <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"设置"</string>
     <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"释放空间"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
@@ -539,7 +536,7 @@
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"完成"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"没有可用的应用。安装云端存储空间应用即可在此处查看您的数据"</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"如需更多选项，请安装云端存储空间应用，然后这里就会显示相关选项"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"转到 Play 商店"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"前往 Play 商店"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"开始使用健康数据共享"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"“健康数据共享”会存储您的健康与健身数据，让您可以轻松同步设备上各应用的数据"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"“健康数据共享”会存储和同步来自不同应用的健康与健身数据。\n\n"<b>"健康与健身数据，"</b>"包括锻炼时段、步数、营养、睡眠等\n\n"<b>"健康记录，"</b>"包括疫苗接种、化验结果等"</string>
@@ -793,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"音乐"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"其他"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"无指导"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> 分钟"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> 小时 <xliff:g id="MIN">%2$s</xliff:g> 分钟"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> 小时"</string>
@@ -1045,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"集成正在进行中"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"健康数据共享正在与 Android 系统集成。\n\n转移数据和权限可能需要一些时间。"</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"在收到集成完成的通知之前，请勿关闭应用。"</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"健康数据共享集成正在进行中"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"需要更新"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"健康数据共享正在与 Android 系统集成，完成后您可以直接在设置中访问它。"</string>
     <string name="update_button" msgid="4544529019832009496">"更新"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"开始执行此更新操作，以便健康数据共享能继续与您的系统设置集成"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"立即更新"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"需要更新系统"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"在继续集成之前，请更新您的手机系统。"</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"如果您已更新手机系统，请尝试重启手机，继续进行集成"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"需要更新健康数据共享"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"在继续操作之前，请将健康数据共享应用更新到最新版本。"</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"需要更多存储空间"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"健康数据共享需要 <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> 的手机存储空间，才能继续集成。\n\n请清除手机上的一些内容，然后重试。"</string>
     <string name="try_again_button" msgid="8745496819992160789">"重试"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"释放空间"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"需要更多存储空间"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"健康数据共享需要 <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> 的手机存储空间，才能继续集成。"</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"集成已暂停"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"健康数据共享应用与 Android 系统集成时，会处于关闭状态。\n\n请点击“恢复”重新打开该应用，继续转移您的数据和权限。"</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"为保留您的健康数据共享数据，请在 <xliff:g id="TIME_NEEDED">%1$s</xliff:g>内完成这项操作"</string>
@@ -1072,11 +1068,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"点按即可继续将健康数据共享与 Android 系统进行集成。为保留您的数据，请在 <xliff:g id="TIME_NEEDED">%1$s</xliff:g>内完成这项操作"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"点按即可继续将健康数据共享与 Android 系统进行集成。"</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"继续"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"恢复健康数据共享集成"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"为保留您的数据，请在 <xliff:g id="TIME_NEEDED">%1$s</xliff:g>内完成这项操作"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"需要更新应用"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”需要更新，才能继续与“健康数据共享”同步"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"部分应用需要更新，才能继续与“健康数据共享”同步"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”需要更新，才能继续与“健康数据共享”同步。某些应用可能无法更新。"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"部分应用需要更新，才能继续与“健康数据共享”同步。某些应用可能无法更新。"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"检查更新"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"了解详情"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"健康数据共享集成"</string>
@@ -1091,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"健康数据共享集成未完成"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"当您可以再次集成时，会收到相关通知。"</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"知道了"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"健康数据共享集成未完成"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"了解详情"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"健康数据共享集成已完成"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"打开"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"新增功能"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"现在，您可以直接在设置中访问健康数据共享，也可以随时卸载健康数据共享应用以释放存储空间。"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"知道了"</string>
@@ -1135,26 +1125,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"查看兼容应用"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"通过“健康数据共享”查找更多要与<xliff:g id="APP_NAME">%s</xliff:g>同步的应用"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"在应用商店中查看"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"设置屏锁"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"为了提高健康数据的安全性，请为此设备设置 PIN 码、解锁图案或密码"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"设置屏锁"</string>
     <string name="select_all" msgid="837499881590001166">"全选"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"关联的应用将无法再通过“健康数据共享”读取这些数据"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"已选中"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"未选中"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"有锻炼路线地图可供使用"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"次日"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"下周"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"下个月"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"前一天"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"前一周"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"上个月"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"要永久删除所有数据吗？"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"要永久删除所选数据吗？"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"要永久删除所有“<xliff:g id="APP_NAME">%s</xliff:g>”数据吗？"</string>
@@ -1179,4 +1163,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"上次访问时间：<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"昨天<xliff:g id="TIME_DATE">%1$s</xliff:g>访问过"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g><xliff:g id="TIME_DATE_1">%2$s</xliff:g>访问过"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"始终允许"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"允许使用所选权限"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"仅在使用该应用时允许"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"全部拒绝"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"要允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问健身与健康数据吗？"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g>正在请求访问“<xliff:g id="DATA_TYPES">%2$s</xliff:g>”。\n\n您可以全部允许，也可以单独控制。"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问<xliff:g id="DATA_TYPE">%2$s</xliff:g>吗？"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"健身和健康"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"始终"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"使用期间"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"始终"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"使用期间"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”<xliff:g id="ALLOW_MODE">%2$s</xliff:g>可以访问您的所有健身和健康数据"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"允许访问"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"允许读取"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"有了这些权限，“<xliff:g id="APP_NAME">%1$s</xliff:g>”便可访问设备传感器中的数据。"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"允许 <xliff:g id="NUMBER_0">%1$d</xliff:g> 个应用（共 <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> 个）"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"没有应用请求权限"</string>
+    <string name="allowed" msgid="4158456017482263737">"允许"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"不允许"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"具有此权限的应用可以访问设备传感器中的<xliff:g id="DATA_TYPE">%s</xliff:g>数据。"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"要为手表上的所有应用撤消“<xliff:g id="DATA_TYPE">%s</xliff:g>”访问权限吗？"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"对勾标记"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"叉号"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"目前，“<xliff:g id="APP_NAME">%1$s</xliff:g>”可以访问健身与健康数据，相应的权限类型为“<xliff:g id="ALLOW_MODE">%2$s</xliff:g>”"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"始终允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问健身与健康数据？"</string>
+    <string name="current_access" msgid="1457167070428176139">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”有权访问<xliff:g id="DATA_TYPES">%2$s</xliff:g>。"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"管理健身与健康相关权限"</string>
 </resources>

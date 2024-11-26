@@ -16,10 +16,10 @@
 
 package android.healthconnect.cts.phr.apis;
 
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
@@ -79,7 +79,8 @@ public class DeleteMedicalResourcesByRequestCtsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     private HealthConnectManager mManager;
     private PhrCtsTestUtils mUtil;
@@ -191,7 +192,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest deleteRequest =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         // Change the delete request to use an illegal type for this test.
         setFieldValueUsingReflection(deleteRequest, "mMedicalResourceTypes", Set.of(100));
@@ -269,7 +270,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS + 1)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES + 1)
                         .build();
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
 
@@ -293,16 +294,16 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         MedicalDataSource dataSource2 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
         // Insert some data
-        MedicalResource immunization1 =
+        MedicalResource vaccine1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2 =
+        MedicalResource vaccine2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource allergy1 = mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
 
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
 
@@ -310,7 +311,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         // Test only the allergy is present
         HealthConnectReceiver<List<MedicalResource>> readReceiver2 = new HealthConnectReceiver<>();
         mManager.readMedicalResources(
-                List.of(immunization1.getId(), immunization2.getId(), allergy1.getId()),
+                List.of(vaccine1.getId(), vaccine2.getId(), allergy1.getId()),
                 Executors.newSingleThreadExecutor(),
                 readReceiver2);
         assertThat(readReceiver2.getResponse()).containsExactly(allergy1);
@@ -322,14 +323,14 @@ public class DeleteMedicalResourcesByRequestCtsTest {
             throws InterruptedException {
         MedicalDataSource dataSource =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
-        MedicalResource immunization =
+        MedicalResource vaccine =
                 mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource allergy = mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_ALLERGY);
 
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
@@ -338,7 +339,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         // Test resources were deleted
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
         mManager.readMedicalResources(
-                List.of(immunization.getId(), allergy.getId()),
+                List.of(vaccine.getId(), allergy.getId()),
                 Executors.newSingleThreadExecutor(),
                 readReceiver);
         assertThat(readReceiver.getResponse()).isEmpty();
@@ -354,9 +355,9 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         MedicalDataSource dataSource2 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
         // Insert some data
-        MedicalResource immunization1 =
+        MedicalResource vaccine1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2 =
+        MedicalResource vaccine2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
 
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
@@ -367,13 +368,13 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
 
         callback.verifyNoExceptionOrThrow();
-        // Test only immunization2 is present
+        // Test only vaccine2 is present
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
         mManager.readMedicalResources(
-                List.of(immunization1.getId(), immunization2.getId()),
+                List.of(vaccine1.getId(), vaccine2.getId()),
                 Executors.newSingleThreadExecutor(),
                 readReceiver);
-        assertThat(readReceiver.getResponse()).containsExactly(immunization2);
+        assertThat(readReceiver.getResponse()).containsExactly(vaccine2);
     }
 
     @Test
@@ -388,11 +389,11 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         MedicalDataSource dataSource3 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("3"));
         // Insert some data
-        MedicalResource immunization1 =
+        MedicalResource vaccine1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization2 =
+        MedicalResource vaccine2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource immunization3 =
+        MedicalResource vaccine3 =
                 mUtil.upsertMedicalData(dataSource3.getId(), FHIR_DATA_IMMUNIZATION);
 
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
@@ -404,13 +405,13 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), callback);
 
         callback.verifyNoExceptionOrThrow();
-        // Test only immunization3 is present
+        // Test only vaccine3 is present
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
         mManager.readMedicalResources(
-                List.of(immunization1.getId(), immunization2.getId(), immunization3.getId()),
+                List.of(vaccine1.getId(), vaccine2.getId(), vaccine3.getId()),
                 Executors.newSingleThreadExecutor(),
                 readReceiver);
-        assertThat(readReceiver.getResponse()).containsExactly(immunization3);
+        assertThat(readReceiver.getResponse()).containsExactly(vaccine3);
     }
 
     @Test
@@ -423,45 +424,41 @@ public class DeleteMedicalResourcesByRequestCtsTest {
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
         MedicalDataSource dataSource3 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("3"));
-        MedicalResource dataSource1Immunization =
+        MedicalResource vaccineDS1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource dataSource1Allergy =
+        MedicalResource allergyDS1 =
                 mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        MedicalResource dataSource2Immunization =
+        MedicalResource vaccineDS2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
-        MedicalResource dataSource2Allergy =
+        MedicalResource allergyDS2 =
                 mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_ALLERGY);
-        MedicalResource dataSource3Allergy =
+        MedicalResource allergyDS3 =
                 mUtil.upsertMedicalData(dataSource3.getId(), FHIR_DATA_ALLERGY);
 
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
-        DeleteMedicalResourcesRequest deleteRequestDS1andDS3Immunizations =
+        DeleteMedicalResourcesRequest deleteRequestDS1andDS3Vaccines =
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource3.getId())
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         mManager.deleteMedicalResources(
-                deleteRequestDS1andDS3Immunizations, Executors.newSingleThreadExecutor(), callback);
+                deleteRequestDS1andDS3Vaccines, Executors.newSingleThreadExecutor(), callback);
 
         callback.verifyNoExceptionOrThrow();
         // Test only one was deleted
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
         mManager.readMedicalResources(
                 List.of(
-                        dataSource1Immunization.getId(),
-                        dataSource1Allergy.getId(),
-                        dataSource2Immunization.getId(),
-                        dataSource2Allergy.getId(),
-                        dataSource3Allergy.getId()),
+                        vaccineDS1.getId(),
+                        allergyDS1.getId(),
+                        vaccineDS2.getId(),
+                        allergyDS2.getId(),
+                        allergyDS3.getId()),
                 Executors.newSingleThreadExecutor(),
                 readReceiver);
         assertThat(readReceiver.getResponse())
-                .containsExactly(
-                        dataSource1Allergy,
-                        dataSource2Immunization,
-                        dataSource2Allergy,
-                        dataSource3Allergy);
+                .containsExactly(allergyDS1, vaccineDS2, allergyDS2, allergyDS3);
     }
 
     @Test
@@ -507,13 +504,13 @@ public class DeleteMedicalResourcesByRequestCtsTest {
             throws InterruptedException {
         MedicalDataSource dataSource =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
-        MedicalResource immunization =
+        MedicalResource vaccine =
                 mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
 
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS + 1)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES + 1)
                         .build();
         runWithShellPermissionIdentity(
                 () -> {
@@ -526,8 +523,8 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         // Test resource is still present
         HealthConnectReceiver<List<MedicalResource>> readReceiver2 = new HealthConnectReceiver<>();
         mManager.readMedicalResources(
-                List.of(immunization.getId()), Executors.newSingleThreadExecutor(), readReceiver2);
-        assertThat(readReceiver2.getResponse()).containsExactly(immunization);
+                List.of(vaccine.getId()), Executors.newSingleThreadExecutor(), readReceiver2);
+        assertThat(readReceiver2.getResponse()).containsExactly(vaccine);
     }
 
     @Test
@@ -538,12 +535,12 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalDataSource foregroundAppDataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource foregroundAppImmunization =
+        MedicalResource foregroundAppVaccine =
                 PHR_FOREGROUND_APP.upsertMedicalResource(
                         foregroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         DeleteMedicalResourcesRequest deleteResourcesForBothAppsRequest =
@@ -568,9 +565,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         runWithShellPermissionIdentity(
                 () -> {
                     mManager.readMedicalResources(
-                            List.of(
-                                    backgroundAppImmunization.getId(),
-                                    foregroundAppImmunization.getId()),
+                            List.of(backgroundAppVaccine.getId(), foregroundAppVaccine.getId()),
                             Executors.newSingleThreadExecutor(),
                             readReceiver);
                     assertThat(readReceiver.getResponse()).isEmpty();
@@ -595,7 +590,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_inForegroundOnlyReadPerm_expectError() {
-        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
 
@@ -628,7 +623,7 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
         DeleteMedicalResourcesRequest deleteBackgroundAppResourcesRequest =
@@ -639,15 +634,14 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         PHR_FOREGROUND_APP.deleteMedicalResources(deleteBackgroundAppResourcesRequest);
 
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
-        // Test that the immunization is still present
+        // Test that the vaccine is still present
         runWithShellPermissionIdentity(
                 () -> {
                     mManager.readMedicalResources(
-                            List.of(backgroundAppImmunization.getId()),
+                            List.of(backgroundAppVaccine.getId()),
                             Executors.newSingleThreadExecutor(),
                             readReceiver);
-                    assertThat(readReceiver.getResponse())
-                            .containsExactly(backgroundAppImmunization);
+                    assertThat(readReceiver.getResponse()).containsExactly(backgroundAppVaccine);
                 });
     }
 
@@ -659,26 +653,25 @@ public class DeleteMedicalResourcesByRequestCtsTest {
         grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource backgroundAppDataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource backgroundAppImmunization =
+        MedicalResource backgroundAppVaccine =
                 PHR_BACKGROUND_APP.upsertMedicalResource(
                         backgroundAppDataSource.getId(), FHIR_DATA_IMMUNIZATION);
-        DeleteMedicalResourcesRequest deleteImmunizationsRequest =
+        DeleteMedicalResourcesRequest deleteVaccinesRequest =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
-        PHR_FOREGROUND_APP.deleteMedicalResources(deleteImmunizationsRequest);
+        PHR_FOREGROUND_APP.deleteMedicalResources(deleteVaccinesRequest);
 
         HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
-        // Test that the immunization is still present
+        // Test that the vaccine is still present
         runWithShellPermissionIdentity(
                 () -> {
                     mManager.readMedicalResources(
-                            List.of(backgroundAppImmunization.getId()),
+                            List.of(backgroundAppVaccine.getId()),
                             Executors.newSingleThreadExecutor(),
                             readReceiver);
-                    assertThat(readReceiver.getResponse())
-                            .containsExactly(backgroundAppImmunization);
+                    assertThat(readReceiver.getResponse()).containsExactly(backgroundAppVaccine);
                 });
     }
 }

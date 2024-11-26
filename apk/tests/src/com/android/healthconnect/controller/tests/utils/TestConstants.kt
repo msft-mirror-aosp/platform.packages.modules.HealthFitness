@@ -502,6 +502,8 @@ const val TEST_APP_PACKAGE_NAME_3 = "package.name.3"
 const val UNSUPPORTED_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app3"
 const val OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app4"
 const val MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app5"
+const val WEAR_LEGACY_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app6"
+const val WEAR_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app7"
 const val TEST_APP_NAME = "Health Connect test app"
 const val TEST_APP_NAME_2 = "Health Connect test app 2"
 const val TEST_APP_NAME_3 = "Health Connect test app 3"
@@ -562,7 +564,7 @@ val TEST_FHIR_RESOURCE_INVALID_JSON: FhirResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION,
@@ -570,7 +572,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION_2: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION_2,
@@ -578,7 +580,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION_2: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION_3: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION_3,
@@ -586,7 +588,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION_3: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION_LONG: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION_LONG,
@@ -594,7 +596,7 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION_LONG: MedicalResource =
         .build()
 val TEST_MEDICAL_RESOURCE_INVALID_JSON: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_INVALID_JSON,

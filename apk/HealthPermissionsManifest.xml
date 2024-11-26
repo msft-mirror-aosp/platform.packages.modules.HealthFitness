@@ -40,13 +40,11 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
-    <!-- @FlaggedApi("com.android.healthfitness.flags.activity_intensity") -->
     <permission
         android:name="android.permission.health.READ_ACTIVITY_INTENSITY"
         android:label="@string/activity_intensity_read_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH"
-        android:featureFlag="com.android.healthfitness.flags.activity_intensity"
     />
 
     <permission
@@ -257,6 +255,8 @@
         android:name="android.permission.health.READ_OXYGEN_SATURATION"
         android:label="@string/oxygen_saturation_read_content_description"
         android:protectionLevel="dangerous"
+        android:backgroundPermission=
+            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
@@ -275,6 +275,8 @@
         android:name="android.permission.health.READ_SKIN_TEMPERATURE"
         android:label="@string/skin_temperature_read_content_description"
         android:protectionLevel="dangerous"
+        android:backgroundPermission=
+            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
@@ -292,11 +294,6 @@
     <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_CONDITIONS"
         android:label="@string/conditions_content_description"
-        android:protectionLevel="dangerous"
-        android:permissionGroup="android.permission-group.HEALTH" />
-    <permission
-        android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"
-        android:label="@string/immunizations_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
@@ -335,6 +332,11 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_VACCINES"
+        android:label="@string/vaccines_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_VISITS"
         android:label="@string/visits_content_description"
         android:protectionLevel="dangerous"
@@ -360,13 +362,11 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
-    <!-- @FlaggedApi("com.android.healthfitness.flags.activity_intensity") -->
     <permission
         android:name="android.permission.health.WRITE_ACTIVITY_INTENSITY"
         android:label="@string/activity_intensity_write_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH"
-        android:featureFlag="com.android.healthfitness.flags.activity_intensity"
     />
 
     <permission

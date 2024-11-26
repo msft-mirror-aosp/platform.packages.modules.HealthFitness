@@ -16,6 +16,7 @@
 package com.android.healthconnect.testapps.toolbox.ui
 
 import android.health.connect.HealthConnectManager
+import android.health.connect.datatypes.ActivityIntensityRecord
 import android.health.connect.datatypes.BasalBodyTemperatureRecord
 import android.health.connect.datatypes.BloodGlucoseRecord
 import android.health.connect.datatypes.BloodPressureRecord
@@ -103,6 +104,7 @@ class InsertRecordFragment : Fragment() {
                 is InsertOrUpdateRecordsViewModel.InsertedRecordsState.WithData -> {
                     showInsertSuccessDialog(state.entries)
                 }
+
                 is InsertOrUpdateRecordsViewModel.InsertedRecordsState.Error -> {
                     Toast.makeText(
                             context,
@@ -160,9 +162,11 @@ class InsertRecordFragment : Fragment() {
             IntervalRecord::class.java -> {
                 setupStartAndEndTimeFields()
             }
+
             InstantRecord::class.java -> {
                 setupTimeField("Time", "time")
             }
+
             else -> {
                 Toast.makeText(context, R.string.not_implemented, Toast.LENGTH_SHORT).show()
                 mNavigationController.popBackStack()
@@ -196,6 +200,7 @@ class InsertRecordFragment : Fragment() {
                     field =
                         EditableTextView(this.requireContext(), mRecordsField.name, INPUT_TYPE_LONG)
                 }
+
                 ExerciseRoute::class.java, // Edge case
                 Int::class.java, // Most of int fields are enums and are handled separately
                 List::class
@@ -203,6 +208,7 @@ class InsertRecordFragment : Fragment() {
                 -> {
                     continue
                 }
+
                 Double::class.java,
                 Pressure::class.java,
                 BloodGlucose::class.java,
@@ -220,6 +226,7 @@ class InsertRecordFragment : Fragment() {
                             INPUT_TYPE_DOUBLE,
                         )
                 }
+
                 TemperatureDelta::class.java -> {
                     field =
                         EditableTextView(
@@ -228,10 +235,12 @@ class InsertRecordFragment : Fragment() {
                             INPUT_TYPE_DOUBLE,
                         )
                 }
+
                 CharSequence::class.java -> {
                     field =
                         EditableTextView(this.requireContext(), mRecordsField.name, INPUT_TYPE_TEXT)
                 }
+
                 else -> {
                     continue
                 }
@@ -242,78 +251,65 @@ class InsertRecordFragment : Fragment() {
     }
 
     private fun setupEnumFields() {
-        val enumFieldNameToClass: HashMap<String, KClass<*>> = HashMap()
-        var field: InputFieldView
-        when (mRecordClass) {
-            MenstruationFlowRecord::class -> {
-                enumFieldNameToClass["mFlow"] =
-                    MenstruationFlowRecord.MenstruationFlowType::class as KClass<*>
+        val enumFieldNameToClass =
+            when (mRecordClass) {
+                MenstruationFlowRecord::class ->
+                    mapOf("mFlow" to MenstruationFlowRecord.MenstruationFlowType::class)
+                OvulationTestRecord::class ->
+                    mapOf("mResult" to OvulationTestRecord.OvulationTestResult::class)
+                SexualActivityRecord::class ->
+                    mapOf(
+                        "mProtectionUsed" to
+                            SexualActivityRecord.SexualActivityProtectionUsed::class
+                    )
+                CervicalMucusRecord::class ->
+                    mapOf(
+                        "mSensation" to CervicalMucusRecord.CervicalMucusSensation::class,
+                        "mAppearance" to CervicalMucusRecord.CervicalMucusAppearance::class,
+                    )
+
+                Vo2MaxRecord::class ->
+                    mapOf("mMeasurementMethod" to Vo2MaxRecord.Vo2MaxMeasurementMethod::class)
+                BasalBodyTemperatureRecord::class ->
+                    mapOf(
+                        "mBodyTemperatureMeasurementLocation" to
+                            BodyTemperatureMeasurementLocation::class
+                    )
+                BloodGlucoseRecord::class ->
+                    mapOf(
+                        "mSpecimenSource" to BloodGlucoseRecord.SpecimenSource::class,
+                        "mRelationToMeal" to BloodGlucoseRecord.RelationToMealType::class,
+                        "mMealType" to MealType::class,
+                    )
+
+                BloodPressureRecord::class ->
+                    mapOf(
+                        "mMeasurementLocation" to BodyTemperatureMeasurementLocation::class,
+                        "mBodyPosition" to BloodPressureRecord.BodyPosition::class,
+                    )
+
+                BodyTemperatureRecord::class ->
+                    mapOf("mMeasurementLocation" to BodyTemperatureMeasurementLocation::class)
+
+                SkinTemperatureRecord::class ->
+                    mapOf("mMeasurementLocation" to SkinTemperatureRecord::class)
+                ExerciseSessionRecord::class -> mapOf("mExerciseType" to ExerciseSessionType::class)
+
+                PlannedExerciseSessionRecord::class ->
+                    mapOf("mPlannedExerciseType" to ExerciseSessionType::class)
+
+                MindfulnessSessionRecord::class ->
+                    mapOf("mMindfulnessSessionType" to MindfulnessSessionRecord::class)
+                ActivityIntensityRecord::class ->
+                    mapOf("mActivityIntensityType" to ActivityIntensityRecord::class)
+                else -> mapOf()
             }
-            OvulationTestRecord::class -> {
-                enumFieldNameToClass["mResult"] =
-                    OvulationTestRecord.OvulationTestResult::class as KClass<*>
-            }
-            SexualActivityRecord::class -> {
-                enumFieldNameToClass["mProtectionUsed"] =
-                    SexualActivityRecord.SexualActivityProtectionUsed::class as KClass<*>
-            }
-            CervicalMucusRecord::class -> {
-                enumFieldNameToClass["mSensation"] =
-                    CervicalMucusRecord.CervicalMucusSensation::class as KClass<*>
-                enumFieldNameToClass["mAppearance"] =
-                    CervicalMucusRecord.CervicalMucusAppearance::class as KClass<*>
-            }
-            Vo2MaxRecord::class -> {
-                enumFieldNameToClass["mMeasurementMethod"] =
-                    Vo2MaxRecord.Vo2MaxMeasurementMethod::class as KClass<*>
-            }
-            BasalBodyTemperatureRecord::class -> {
-                enumFieldNameToClass["mBodyTemperatureMeasurementLocation"] =
-                    BodyTemperatureMeasurementLocation::class as KClass<*>
-            }
-            BloodGlucoseRecord::class -> {
-                enumFieldNameToClass["mSpecimenSource"] =
-                    BloodGlucoseRecord.SpecimenSource::class as KClass<*>
-                enumFieldNameToClass["mRelationToMeal"] =
-                    BloodGlucoseRecord.RelationToMealType::class as KClass<*>
-                enumFieldNameToClass["mMealType"] = MealType::class as KClass<*>
-            }
-            BloodPressureRecord::class -> {
-                enumFieldNameToClass["mMeasurementLocation"] =
-                    BodyTemperatureMeasurementLocation::class as KClass<*>
-                enumFieldNameToClass["mBodyPosition"] =
-                    BloodPressureRecord.BodyPosition::class as KClass<*>
-            }
-            BodyTemperatureRecord::class -> {
-                enumFieldNameToClass["mMeasurementLocation"] =
-                    BodyTemperatureMeasurementLocation::class as KClass<*>
-            }
-            SkinTemperatureRecord::class -> {
-                enumFieldNameToClass["mMeasurementLocation"] =
-                    SkinTemperatureRecord::class as KClass<*>
-            }
-            ExerciseSessionRecord::class -> {
-                enumFieldNameToClass["mExerciseType"] = ExerciseSessionType::class as KClass<*>
-            }
-            PlannedExerciseSessionRecord::class -> {
-                enumFieldNameToClass["mPlannedExerciseType"] =
-                    ExerciseSessionType::class as KClass<*>
-            }
-            MindfulnessSessionRecord::class -> {
-                enumFieldNameToClass["mMindfulnessSessionType"] =
-                    MindfulnessSessionRecord::class as KClass<*>
-            }
-        }
-        if (enumFieldNameToClass.size > 0) {
-            for (entry in enumFieldNameToClass.entries) {
-                val fieldName = entry.key
-                val enumClass = entry.value
-                val enumFieldsWithValues: EnumFieldsWithValues =
-                    GeneralUtils.getStaticFieldNamesAndValues(enumClass)
-                field = EnumDropDown(this.requireContext(), fieldName, enumFieldsWithValues)
-                mLinearLayout.addView(field)
-                mFieldNameToFieldInput[fieldName] = field
-            }
+        enumFieldNameToClass.forEach { fieldName, enumClass ->
+            val enumFieldsWithValues: EnumFieldsWithValues =
+                GeneralUtils.getStaticFieldNamesAndValues(enumClass)
+            val field = EnumDropDown(this.requireContext(), fieldName, enumFieldsWithValues)
+            mLinearLayout.addView(field)
+            mFieldNameToFieldInput[fieldName] = field
         }
     }
 
@@ -329,6 +325,7 @@ class InsertRecordFragment : Fragment() {
                             mRecordsField.genericType as ParameterizedType,
                         )
                 }
+
                 else -> {
                     continue
                 }
@@ -347,6 +344,7 @@ class InsertRecordFragment : Fragment() {
                 fieldName = "mFloors"
                 field = EditableTextView(this.requireContext(), fieldName, INPUT_TYPE_INT)
             }
+
             ExerciseSessionRecord::class -> {
                 fieldName = "mExerciseRoute"
                 field =

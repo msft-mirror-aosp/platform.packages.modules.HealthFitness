@@ -103,18 +103,14 @@ public class CloudBackupManagerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
-
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
 
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mDatabaseTestRule.getDatabaseContext(), healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
@@ -148,17 +144,29 @@ public class CloudBackupManagerTest {
     }
 
     @Test
-    public void getChangesForBackup_dataTableIsNull_throwsUnsupportedOperationException() {
+    public void getChangesForBackup_noMoreChangeLogs_correctResponseReturned() {
         mTransactionTestUtils.insertRecords(
                 TEST_PACKAGE_NAME,
                 createStepsRecord(
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT));
-
         GetChangesForBackupResponse response = mCloudBackupManager.getChangesForBackup(null);
+        BackupChangeTokenHelper.BackupChangeToken firstBackupToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, response.getNextChangeToken());
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> mCloudBackupManager.getChangesForBackup(response.getNextChangeToken()));
+        GetChangesForBackupResponse secondResponse =
+                mCloudBackupManager.getChangesForBackup(response.getNextChangeToken());
+
+        assertThat(secondResponse.getChanges().size()).isEqualTo(0);
+        BackupChangeTokenHelper.BackupChangeToken secondBackupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager, secondResponse.getNextChangeToken());
+        assertThat(secondBackupChangeToken.getDataTableName()).isNull();
+        assertThat(secondBackupChangeToken.getDataTablePageToken())
+                .isEqualTo(EMPTY_PAGE_TOKEN.encode());
+        // Same change logs token so the next incremental call will start from the same point.
+        assertThat(secondBackupChangeToken.getChangeLogsRequestToken())
+                .isEqualTo(firstBackupToken.getChangeLogsRequestToken());
     }
 
     @Test

@@ -16,9 +16,12 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.TestUtils.TEST_USER;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -30,6 +33,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.health.connect.HealthConnectManager;
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -39,8 +43,6 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,6 +61,7 @@ public class AppInfoHelperTest {
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
                     .mockStatic(Environment.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -76,24 +79,21 @@ public class AppInfoHelperTest {
 
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
-        StorageContext healthConnectUserContext =
-                mHealthConnectDatabaseTestRule.getDatabaseContext();
-        TransactionManager transactionManager =
-                mHealthConnectDatabaseTestRule.getTransactionManager();
+        when(mContext.getUser()).thenReturn(TEST_USER);
+        when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
+
         when(mDrawable.getIntrinsicHeight()).thenReturn(200);
         when(mDrawable.getIntrinsicWidth()).thenReturn(200);
 
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(healthConnectUserContext)
-                        .setTransactionManager(transactionManager)
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
-        mTransactionTestUtils =
-                new TransactionTestUtils(healthConnectUserContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
     }
 
     @After
@@ -108,7 +108,7 @@ public class AppInfoHelperTest {
         when(mPackageManager.getApplicationIcon(TEST_PACKAGE_NAME)).thenReturn(mDrawable);
 
         mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
-                mContext, TEST_PACKAGE_NAME, TEST_APP_NAME, null, /* onlyReplace= */ false);
+                TEST_PACKAGE_NAME, TEST_APP_NAME, null, /* onlyReplace= */ false);
 
         verify(mPackageManager).getApplicationIcon(TEST_PACKAGE_NAME);
     }
@@ -122,7 +122,7 @@ public class AppInfoHelperTest {
         when(mPackageManager.getDefaultActivityIcon()).thenReturn(mDrawable);
 
         mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
-                mContext, TEST_PACKAGE_NAME, TEST_APP_NAME, null, /* onlyReplace= */ false);
+                TEST_PACKAGE_NAME, TEST_APP_NAME, null, /* onlyReplace= */ false);
 
         verify(mPackageManager).getDefaultActivityIcon();
     }
@@ -134,7 +134,7 @@ public class AppInfoHelperTest {
         when(mPackageManager.getApplicationIcon(TEST_PACKAGE_NAME)).thenReturn(mDrawable);
 
         mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
-                mContext, TEST_PACKAGE_NAME, TEST_APP_NAME, null, /* onlyReplace= */ false);
+                TEST_PACKAGE_NAME, TEST_APP_NAME, null, /* onlyReplace= */ false);
 
         verify(mPackageManager, times(1)).getApplicationInfo(eq(TEST_PACKAGE_NAME), any());
         verify(mPackageManager, times(0)).getApplicationIcon(TEST_PACKAGE_NAME);
@@ -149,8 +149,7 @@ public class AppInfoHelperTest {
 
         assertThat(doesRecordExistForPackage()).isFalse();
 
-        mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(
-                mContext, TEST_PACKAGE_NAME, TEST_APP_NAME);
+        mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(TEST_PACKAGE_NAME, TEST_APP_NAME);
 
         assertThat(doesRecordExistForPackage()).isTrue();
     }
@@ -164,8 +163,7 @@ public class AppInfoHelperTest {
 
         assertThat(doesRecordExistForPackage()).isTrue();
 
-        mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(
-                mContext, TEST_PACKAGE_NAME, TEST_APP_NAME);
+        mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(TEST_PACKAGE_NAME, TEST_APP_NAME);
 
         verify(mPackageManager, times(0)).getApplicationInfo(eq(TEST_PACKAGE_NAME), any());
         verify(mPackageManager, times(0)).getApplicationIcon(TEST_PACKAGE_NAME);

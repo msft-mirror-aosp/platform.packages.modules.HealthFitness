@@ -64,11 +64,7 @@ public class RateLimiterTest {
     @Before
     public void setUp() {
         SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    HealthConnectDeviceConfigManager.initializeInstance(mContext);
-                    HealthConnectDeviceConfigManager.getInitialisedInstance()
-                            .updateRateLimiterValues();
-                },
+                () -> new HealthConnectDeviceConfigManager(mContext).updateRateLimiterValues(),
                 Manifest.permission.READ_DEVICE_CONFIG);
         RateLimiter.updateEnableRateLimiterFlag(true);
     }
@@ -76,11 +72,7 @@ public class RateLimiterTest {
     @After
     public void tearDown() {
         SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    HealthConnectDeviceConfigManager.initializeInstance(mContext);
-                    HealthConnectDeviceConfigManager.getInitialisedInstance()
-                            .updateRateLimiterValues();
-                },
+                () -> new HealthConnectDeviceConfigManager(mContext).updateRateLimiterValues(),
                 Manifest.permission.READ_DEVICE_CONFIG);
     }
 

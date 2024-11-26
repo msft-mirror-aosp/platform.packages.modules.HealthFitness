@@ -157,27 +157,15 @@ public final class MigrationNotificationSender {
     }
 
     /** Constants used to identify migration notification types. */
-    public static final int NOTIFICATION_TYPE_MIGRATION_IN_PROGRESS = 0;
-
-    public static final int NOTIFICATION_TYPE_MIGRATION_COMPLETE = 1;
-    public static final int NOTIFICATION_TYPE_MIGRATION_APP_UPDATE_NEEDED = 2;
     public static final int NOTIFICATION_TYPE_MIGRATION_MODULE_UPDATE_NEEDED = 3;
-    public static final int NOTIFICATION_TYPE_MIGRATION_MORE_SPACE_NEEDED = 4;
+
     public static final int NOTIFICATION_TYPE_MIGRATION_PAUSED = 5;
-    public static final int NOTIFICATION_TYPE_MIGRATION_RESUME = 6;
-    public static final int NOTIFICATION_TYPE_MIGRATION_CANCELLED = 7;
 
     /** @hide */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-        NOTIFICATION_TYPE_MIGRATION_IN_PROGRESS,
-        NOTIFICATION_TYPE_MIGRATION_COMPLETE,
-        NOTIFICATION_TYPE_MIGRATION_APP_UPDATE_NEEDED,
         NOTIFICATION_TYPE_MIGRATION_MODULE_UPDATE_NEEDED,
-        NOTIFICATION_TYPE_MIGRATION_MORE_SPACE_NEEDED,
         NOTIFICATION_TYPE_MIGRATION_PAUSED,
-        NOTIFICATION_TYPE_MIGRATION_RESUME,
-        NOTIFICATION_TYPE_MIGRATION_CANCELLED,
     })
     public @interface MigrationNotificationType {}
 }

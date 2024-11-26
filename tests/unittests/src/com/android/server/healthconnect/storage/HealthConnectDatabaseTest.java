@@ -33,7 +33,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,7 +41,6 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
-import android.os.Environment;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -52,6 +50,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -61,7 +60,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
-import com.android.server.healthconnect.utils.TimeSourceImpl;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -85,16 +83,14 @@ public class HealthConnectDatabaseTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
                     .mockStatic(ExportImportLogger.class)
                     .setStrictness(Strictness.LENIENT)
+                    .addStaticMockFixtures(EnvironmentFixture::new)
                     .build();
 
     @Before
     public void setup() {
         mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
     }
 
     @Test
@@ -138,7 +134,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =
@@ -159,7 +155,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         injector = getHealthConnectInjector(mContext);
         transactionManager = injector.getTransactionManager();
-        transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        transactionTestUtils = new TransactionTestUtils(injector);
 
         assertPhrTablesExist(transactionManager);
         // read the StepsRecord and assert that it's intact
@@ -184,7 +180,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =
@@ -203,12 +199,7 @@ public class HealthConnectDatabaseTest {
 
         assertPhrTablesExist(transactionManager);
         // PHR functions should work properly.
-        MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        transactionManager,
-                        injector.getAppInfoHelper(),
-                        new TimeSourceImpl(),
-                        injector.getAccessLogsHelper());
+        MedicalDataSourceHelper medicalDataSourceHelper = injector.getMedicalDataSourceHelper();
         MedicalDataSource originalMedicalDataSource =
                 medicalDataSourceHelper.createMedicalDataSource(
                         mContext,
@@ -261,7 +252,6 @@ public class HealthConnectDatabaseTest {
     }
 
     private static HealthConnectInjector getHealthConnectInjector(Context context) {
-        TransactionManager.clearInstanceForTest();
         return HealthConnectInjectorImpl.newBuilderForTest(context)
                 .setHealthPermissionIntentAppsTracker(mock(HealthPermissionIntentAppsTracker.class))
                 .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))

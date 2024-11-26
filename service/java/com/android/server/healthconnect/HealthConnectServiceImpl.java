@@ -34,6 +34,7 @@ import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
+import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
 import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -78,7 +79,6 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadMedicalResourcesResponse;
-import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLogsResponseParcel;
@@ -116,10 +116,10 @@ import android.health.connect.aidl.InsertRecordsResponseParcel;
 import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
-import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
@@ -152,7 +152,6 @@ import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
@@ -169,6 +168,7 @@ import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.backuprestore.CloudBackupManager;
+import com.android.server.healthconnect.backuprestore.CloudRestoreManager;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
@@ -195,7 +195,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -210,6 +210,7 @@ import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInt
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.utils.TimeSource;
 
 import org.json.JSONException;
 
@@ -230,7 +231,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 /**
@@ -251,6 +251,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final TransactionManager mTransactionManager;
     @Nullable private final CloudBackupManager mCloudBackupManager;
+    @Nullable private final CloudRestoreManager mCloudRestoreManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final Context mContext;
@@ -283,19 +284,21 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final MigrationEntityHelper mMigrationEntityHelper;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthConnectMappings mHealthConnectMappings;
+    private final TimeSource mTimeSource;
+    private final DatabaseHelpers mDatabaseHelpers;
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
 
     private volatile UserHandle mCurrentForegroundUser;
 
     HealthConnectServiceImpl(
+            Context context,
             TransactionManager transactionManager,
             HealthConnectPermissionHelper permissionHelper,
             MigrationCleaner migrationCleaner,
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
-            Context context,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
@@ -309,7 +312,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             PriorityMigrationHelper priorityMigrationHelper,
             AppInfoHelper appInfoHelper,
             DeviceInfoHelper deviceInfoHelper,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            TimeSource timeSource,
+            DatabaseHelpers databaseHelpers,
+            MigrationEntityHelper migrationEntityHelper) {
+        mTimeSource = timeSource;
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = preferenceHelper;
@@ -319,6 +326,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mFirstGrantTimeManager = firstGrantTimeManager;
         mContext = context;
         mCurrentForegroundUser = context.getUser();
+        mDatabaseHelpers = databaseHelpers;
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mMigrationStateManager = migrationStateManager;
         mDeviceInfoHelper = deviceInfoHelper;
@@ -363,7 +371,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
         mChangeLogsHelper = changeLogsHelper;
-        mMigrationEntityHelper = new MigrationEntityHelper();
+        mMigrationEntityHelper = migrationEntityHelper;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
         mCloudBackupManager =
@@ -381,6 +389,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mPreferenceHelper,
                                 mExportImportSettingsStorage)
                         : null;
+        mCloudRestoreManager = Flags.cloudBackupAndRestore() ? new CloudRestoreManager() : null;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -510,15 +519,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mDataPermissionEnforcer.enforceRecordsWritePermissions(
                             recordInternals, attributionSource);
                     UpsertTransactionRequest insertRequest =
-                            new UpsertTransactionRequest(
-                                    attributionSource.getPackageName(),
+                            UpsertTransactionRequest.createForInsert(
+                                    Objects.requireNonNull(attributionSource.getPackageName()),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    mContext,
-                                    /* isInsertRequest */ true,
+                                    mAppInfoHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
-                                            recordInternals, attributionSource),
-                                    mAppInfoHelper);
+                                            recordInternals, attributionSource));
                     List<String> uuids =
                             mTransactionManager.insertAll(
                                     mAppInfoHelper, mAccessLogsHelper, insertRequest);
@@ -899,15 +906,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mDataPermissionEnforcer.enforceRecordsWritePermissions(
                             recordInternals, attributionSource);
                     UpsertTransactionRequest request =
-                            new UpsertTransactionRequest(
-                                    attributionSource.getPackageName(),
+                            UpsertTransactionRequest.createForUpdate(
+                                    Objects.requireNonNull(attributionSource.getPackageName()),
                                     recordInternals,
                                     mDeviceInfoHelper,
-                                    mContext,
-                                    /* isInsertRequest */ false,
+                                    mAppInfoHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
-                                            recordInternals, attributionSource),
-                                    mAppInfoHelper);
+                                            recordInternals, attributionSource));
                     mTransactionManager.updateAll(mAppInfoHelper, mAccessLogsHelper, request);
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
@@ -1252,7 +1257,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         throwExceptionIfDataSyncInProgress();
                         List<DataOrigin> dataOriginInPriorityOrder =
                                 mHealthDataCategoryPriorityHelper
-                                        .getPriorityOrder(dataCategory, mContext)
+                                        .syncAndGetPriorityOrder(dataCategory, mContext)
                                         .stream()
                                         .map(
                                                 (name) ->
@@ -1814,7 +1819,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA_PERMISSION, null);
         mBackupRestore.deleteAndResetEverything(userHandle);
         mMigrationStateManager.clearCaches(mContext);
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
         RateLimiter.clearCache();
         String[] packageNames = mContext.getPackageManager().getPackagesForUid(getCallingUid());
         for (String packageName : packageNames) {
@@ -2182,7 +2187,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, CREATE_MEDICAL_DATA_SOURCE)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(packageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2253,7 +2257,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_IDS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2361,7 +2364,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_REQUESTS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2459,7 +2461,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_DATA_SOURCE_WITH_DATA)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2528,7 +2529,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, UPSERT_MEDICAL_RESOURCES)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2623,7 +2623,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_IDS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2639,6 +2638,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException,
                                 unsupportedException.getErrorCode());
                         return;
+                    }
+
+                    // only stores the timestamp for calls made by ANY client, including the
+                    // controller.
+                    if (personalHealthRecordTelemetry()) {
+                        mPreferenceHelper.setLastPhrReadMedicalResourcesApiTimeStamp(
+                                mTimeSource.getInstantNow());
                     }
 
                     if (medicalResourceIds.isEmpty()) {
@@ -2745,7 +2751,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_REQUESTS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2761,6 +2766,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException,
                                 unsupportedException.getErrorCode());
                         return;
+                    }
+
+                    // only stores the timestamp for calls made by ANY client, including the
+                    // controller.
+                    if (personalHealthRecordTelemetry()) {
+                        mPreferenceHelper.setLastPhrReadMedicalResourcesApiTimeStamp(
+                                mTimeSource.getInstantNow());
                     }
 
                     enforceIsForegroundUser(userHandle);
@@ -2860,7 +2872,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_IDS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2932,7 +2943,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_REQUESTS)
-                        .setShouldLog(personalHealthRecordTelemetry())
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -3145,6 +3155,25 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void pushSettingsForRestore(
+            BackupSettings backupSettings, IEmptyResponseCallback callback) {
+        if (mCloudRestoreManager == null) return;
+        if (!cloudBackupAndRestore()) return;
+        checkParamsNonNull(backupSettings);
+        checkParamsNonNull(callback);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        mCloudRestoreManager.pushSettingsForRestore(backupSettings);
+                        callback.onResult();
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
