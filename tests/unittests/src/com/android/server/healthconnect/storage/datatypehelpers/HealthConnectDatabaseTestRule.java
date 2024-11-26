@@ -51,7 +51,10 @@ import java.io.File;
  *
  * <p>Mocking is done in the test class rather than here to avoid interferences for Mockito session
  * handling when multiple test rules are used. It avoids starting multiple sessions in parallel.
+ *
+ * @deprecated Use {@link com.android.server.healthconnect.SQLiteDatabaseFixture} instead.
  */
+@Deprecated
 public class HealthConnectDatabaseTestRule extends ExternalResource {
     private StorageContext mStorageContext;
     private final String mDatabaseName;
