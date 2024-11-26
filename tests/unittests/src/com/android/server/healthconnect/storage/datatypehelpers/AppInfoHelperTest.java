@@ -93,7 +93,7 @@ public class AppInfoHelperTest {
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
     }
 
     @After

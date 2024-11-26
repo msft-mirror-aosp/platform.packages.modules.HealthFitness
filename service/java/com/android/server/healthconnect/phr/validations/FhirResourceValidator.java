@@ -234,7 +234,11 @@ public class FhirResourceValidator {
                                         + " primitive type in field: "
                                         + fieldName);
                     }
-                    // TODO: b/361775172 - Call primitive type validator.
+
+                    if (Flags.phrFhirPrimitiveTypeValidation()) {
+                        FhirPrimitiveTypeValidator.validate(
+                                fieldObject, fieldName, fieldConfig.getR4Type());
+                    }
                 }
                 break;
             case KIND_RESOURCE:

@@ -115,7 +115,7 @@ public class AccessLogsHelperTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }

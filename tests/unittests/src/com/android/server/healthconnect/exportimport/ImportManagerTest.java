@@ -154,7 +154,7 @@ public class ImportManagerTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
@@ -259,14 +259,14 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -281,7 +281,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME)
                 .inOrder();
     }
@@ -296,7 +296,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -304,7 +304,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3)
                 .inOrder();
 
@@ -319,7 +319,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3, TEST_PACKAGE_NAME)
                 .inOrder();
     }

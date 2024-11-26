@@ -64,6 +64,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -198,6 +199,11 @@ class TrampolineActivityTest {
         whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
             MutableLiveData<Set<FitnessPermissionType>>(emptySet())
         }
+        whenever(allDataViewModel.deletionScreenState).then {
+            MutableLiveData(DeletionDataViewModel.DeletionScreenState.VIEW)
+        }
+        whenever(allDataViewModel.getDeletionScreenStateValue())
+            .thenReturn(DeletionDataViewModel.DeletionScreenState.VIEW)
         whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
         }
