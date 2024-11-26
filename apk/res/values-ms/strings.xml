@@ -339,14 +339,14 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sandaran dan pemulihan"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Eksport terakhir: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Eksport dan import"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"Eksport dijadualkan"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Eksport berjadual"</string>
     <string name="import_data" msgid="404502315533233094">"Import data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Pulihkan data daripada fail yang dieksport sebelum ini"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Pilih fail"</string>
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Fail yang anda pilih tidak serasi untuk dipulihkan. Pastikan anda memilih fail yang dieksport yang betul."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Ciri eksport membolehkan anda menyimpan data anda agar anda boleh memindahkan data tersebut kepada telefon baharu"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Ciri eksport membolehkan anda menyimpan data agar anda boleh memindahkan data tersebut kepada telefon baharu"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Ketahui lebih lanjut"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Hidup"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Mati"</string>

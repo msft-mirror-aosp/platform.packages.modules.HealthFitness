@@ -34,7 +34,7 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 App hat Zugriff}other{# Apps haben Zugriff}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Keine"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Eintragsdetails"</string>
-    <string name="backup_title" msgid="211503191266235085">"Back-up machen"</string>
+    <string name="backup_title" msgid="211503191266235085">"Backup machen"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datenquellen und Priorität"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Einheiten festlegen"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Einstellungen"</string>
@@ -336,7 +336,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Daten konnten nicht exportiert werden"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Beim Export für den <xliff:g id="DATE">%1$s</xliff:g> ist ein Problem aufgetreten. Bitte leg ein neues Datum für den Export fest und versuch es noch mal."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Nächster Export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up und Wiederherstellung"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup und Wiederherstellung"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Letzter Export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Export und Import"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Geplanter Export"</string>

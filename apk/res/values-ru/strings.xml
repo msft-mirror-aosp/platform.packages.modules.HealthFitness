@@ -39,7 +39,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Настроить единицы измерения"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Настройки"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Управление данными"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Импорт и экспорт данных"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Экспорт и импорт данных"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Доступ за последнее время"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"В последнее время приложения не получали доступ к сервису \"Здоровье и спорт\""</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Вся информация о доступе за последнее время"</string>
@@ -367,7 +367,7 @@
     <string name="export_next_button" msgid="657930567137105172">"Далее"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Отмена"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Далее"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Откуда импортировать:"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Источник импорта"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Выберите приложение для хранения файлов, чтобы импортировать данные."</string>
     <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Нажмите, чтобы выбрать аккаунт"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Выберите аккаунт"</string>
@@ -377,9 +377,9 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Перейти в Google Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Начало работы с сервисом \"Здоровье и спорт\""</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Сервис \"Здоровье и спорт\" хранит ваши данные о здоровье и физической активности, позволяя без труда синхронизировать их с другими приложениями на телефоне."</string>
-    <string name="share_data" msgid="3481932156368883946">"Делитесь данными с приложениями"</string>
+    <string name="share_data" msgid="3481932156368883946">"Делиться данными с приложениями"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Выбирайте, какую информацию каждое приложение сможет читать и сохранять в сервисе \"Здоровье и спорт\"."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Управляйте настройками и конфиденциальностью"</string>
+    <string name="manage_your_settings" msgid="7391184508015127137">"Управлять настройками и конфиденциальностью"</string>
     <string name="manage_your_settings_description" msgid="557943168930365334">"Настраивайте разрешения для приложений и управляйте своими данными."</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Начать"</string>
@@ -801,8 +801,8 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Google Play"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Автоматическое удаление"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Автоматическое удаление"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Укажите период, по истечении которого данные будут автоматически удаляться из приложения \"Здоровье и спорт\""</string>
-    <string name="auto_delete_learn_more" msgid="7416469042791307994">"Подробнее об автоматическом удалении…"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Укажите период, по истечении которого данные будут удаляться из сервиса \"Здоровье и спорт\"."</string>
+    <string name="auto_delete_learn_more" msgid="7416469042791307994">"Подробнее об автоматическом удалении"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Автоматически удалять данные"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Через # месяц}one{Через # месяц}few{Через # месяца}many{Через # месяцев}other{Через # месяца}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Никогда"</string>

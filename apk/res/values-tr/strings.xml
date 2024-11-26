@@ -346,7 +346,7 @@
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Seçtiğiniz dosya, geri yükleme işlemine uygun değil. Dışa aktarılacak dosyayı doğru seçtiğinizden emin olun."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz."</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Daha fazla bilgi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Açık"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Kapalı"</string>

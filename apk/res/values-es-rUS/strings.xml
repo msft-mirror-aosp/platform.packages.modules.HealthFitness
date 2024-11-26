@@ -339,7 +339,7 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Copia de seguridad y restablecimiento"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Última exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Importar y exportar"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"Se programó la exportación"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Exportación programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restablece datos desde un archivo exportado anteriormente"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Elegir archivo"</string>

@@ -334,12 +334,12 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"知道了"</string>
     <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"设置"</string>
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"无法导出数据"</string>
-    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>的导出任务出现问题。请设置新的排定导出任务并重试。"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>的导出任务出现问题。请设置新的定期导出任务并重试。"</string>
     <string name="next_export_time" msgid="3138247220014510213">"下次导出日期：<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"备份和恢复"</string>
     <string name="last_export_time" msgid="9205875050823594041">"上次导出日期：<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"导出和导入"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"已排定的导出任务"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"定期导出"</string>
     <string name="import_data" msgid="404502315533233094">"导入数据"</string>
     <string name="import_data_description" msgid="4040178599441724296">"利用之前导出的文件恢复数据"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"选择文件"</string>
@@ -348,8 +348,8 @@
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"您选择的文件无法进行恢复。请确保选择正确的导出文件。"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"您可以使用导出功能保存数据，以便将数据传输到新手机"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"了解详情"</string>
-    <string name="automatic_export_on" msgid="6972389773963624315">"已启用"</string>
-    <string name="automatic_export_off" msgid="3270255845008880841">"已停用"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"已开启"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"已关闭"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"选择频率"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"选择频率"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"选择一次保存数据，还是设为定期自动保存。"</string>
@@ -374,7 +374,7 @@
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"取消"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"完成"</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"如需更多选项，请安装云端存储空间应用，然后这里就会显示相关选项"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"转到 Play 商店"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"前往 Play 商店"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"开始使用健康数据共享"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"健康数据共享会存储您的健康与健身数据，让您可以轻松同步手机上的不同应用"</string>
     <string name="share_data" msgid="3481932156368883946">"与应用分享数据"</string>

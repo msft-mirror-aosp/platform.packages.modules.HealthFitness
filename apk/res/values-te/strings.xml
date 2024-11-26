@@ -364,7 +364,7 @@
     <string name="import_password_hint" msgid="5158553589723883063">"పాస్‌వర్డ్"</string>
     <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"మీ వద్ద ఇప్పటికీ మీ పాత ఫోన్ ఉంటే, మీరు కొత్త పాస్‌వర్డ్‌తో మీ డేటాను మళ్లీ ఎగుమతి చేయవచ్చు"</string>
     <string name="export_back_button" msgid="3550795479165524982">"వెనుకకు"</string>
-    <string name="export_next_button" msgid="657930567137105172">"తర్వాతకు"</string>
+    <string name="export_next_button" msgid="657930567137105172">"తర్వాత"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"రద్దు చేయండి"</string>
     <string name="import_next_button" msgid="5706322508691854289">"తర్వాత"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"దీని నుండి దిగుమతి చేయండి"</string>
@@ -845,9 +845,9 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"అన్ని మార్గాలను అనుమతించండి"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"అనుమతించవద్దు"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"ఎల్లవేళలా అనుమతించబడుతుంది"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"వ్యాయామ మార్గాలను యాక్సెస్ చేయండి"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"వ్యాయామ మార్గాలను యాక్సెస్ చేయడానికి అనుమతి"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"మార్గాలను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>ను అనుమతించండి"</string>
-    <string name="route_permissions_ask" msgid="3927020960754781917">"ప్రతిసారి అడగండి"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ప్రతిసారి అడగాలి"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"అనుమతించవద్దు"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"రెండు రకాల డేటాను ఎనేబుల్ చేయాలా?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"రెండు రకాల డేటాను డిజేబుల్ చేయాలా?"</string>

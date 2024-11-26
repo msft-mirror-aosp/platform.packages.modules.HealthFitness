@@ -259,8 +259,8 @@
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Idatzi atsedeneko bihotz-maiztasunari buruzko datuak"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Azalaren tenperatura"</string>
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"azalaren tenperatura"</string>
-    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Azalaren tenperatura irakurri"</string>
-    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Azalaren tenperatura idatzi"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Irakurri azalaren tenperatura"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Idatzi azalaren tenperatura"</string>
     <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Osasun-datu guztiak"</string>
     <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"osasun-datu guztiak"</string>
     <string name="all_medical_data_content_description" msgid="6103488863059447886">"Idatzi osasun-datu guztiak"</string>
@@ -269,8 +269,8 @@
     <string name="immunization_content_description" msgid="2910674919337229803">"Irakurri immunizazio-datuak"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness-a"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness-a"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Mindfulness-ari buruzko datuak irakurri"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Mindfulness-ari buruzko datuak idatzi"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Irakurri mindfulness-ari buruzko datuak"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Idatzi mindfulness-ari buruzko datuak"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Eman irakurtzeko baimena <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Eman idazteko baimena <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Utzi"</string>
@@ -346,7 +346,7 @@
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Ezin da leheneratu hautatu duzun fitxategia. Ziurtatu esportatutako fitxategi zuzena hautatzen duzula."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportatzeak datuak gordetzeko aukera ematen dizu, beste telefono batera transferitu ahal izateko"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportazioak datuak gordetzeko aukera ematen dizu, beste telefono batera transferitu ahal izateko"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Lortu informazio gehiago"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aktibatuta"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Desaktibatuta"</string>
