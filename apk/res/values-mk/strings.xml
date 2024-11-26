@@ -98,7 +98,7 @@
     <string name="background_read_request_description" msgid="1664402237648709581">"Ако дозволите, апликацијава ќе може да пристапува до податоците од Health Connect кога не ја користите апликацијата."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Пристап до минатите податоци"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до минатите податоци?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Дозволете апликацијава да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Дозволете ѝ на апликацијава да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дозволете ѝ на апликацијава да пристапува до сите минати податоци од Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Ако дозволите, апликацијава ќе може да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ако дозволите, апликацијава ќе може да пристапува до сите минати податоци од Health Connect."</string>

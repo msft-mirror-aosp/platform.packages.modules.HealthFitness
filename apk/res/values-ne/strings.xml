@@ -38,7 +38,7 @@
     <string name="browse_data_title" msgid="5232691805953326097">"डेटा ब्राउज गर्नुहोस्"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"जानकारी र कुन कुन एपले उक्त जानकारी एक्सेस गर्न सक्छन् भन्ने कुरा हेर्नुहोस्"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"स्वतः मेटाउने सुविधा, डेटाको स्रोत, ब्याकअप र रिस्टोर गर्ने सुविधा"</string>
-    <string name="backup_title" msgid="211503191266235085">"ब्याकअप गर्नुहोस्"</string>
+    <string name="backup_title" msgid="211503191266235085">"ब्याकअप"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"जानकारीका स्रोत तथा प्राथमिकता"</string>
     <string name="set_units_title" msgid="2657822539603758029">"एकाइ सेट गर्नुहोस्"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"प्राथमिकताहरू"</string>

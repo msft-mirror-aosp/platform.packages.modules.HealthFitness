@@ -417,9 +417,9 @@
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Εάν απενεργοποιήσετε την προγραμματισμένη εξαγωγή, δεν θα διαγραφούν τα δεδομένα που είχαν εξαχθεί προηγουμένως από την τοποθεσία αποθήκευσής τους"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Ρύθμιση προγραμματισμένης εξαγωγής"</string>
     <string name="choose_frequency_description" msgid="7698155810053504157">"Επιλέξτε τη συχνότητα εξαγωγής των δεδομένων σας"</string>
-    <string name="frequency_daily" msgid="3596412357416125727">"Ανά ημέρα"</string>
-    <string name="frequency_weekly" msgid="7302587625019573393">"Ανά εβδομάδα"</string>
-    <string name="frequency_monthly" msgid="729674398053825938">"Ανά μήνα"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Ημερήσια"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Εβδομαδιαία"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Μηνιαία"</string>
     <string name="export_destination_title" msgid="8352929396306002479">"Επιλέξτε τοποθ. αποθήκ. προγρ. εξαγωγών"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Επιλέξτε μια εφαρμογή αποθηκευτικού χώρου cloud για την εξαγωγή των δεδομένων σας"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
@@ -918,7 +918,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Το Health Connect θα διαγράφει όλα τα δεδομένα που είναι παλαιότερα των # μηνών. Μπορεί να χρειαστεί μία ημέρα για να εμφανιστούν αυτές οι αλλαγές στις συνδεδεμένες εφαρμογές σας.}other{Το Health Connect θα διαγράφει όλα τα δεδομένα που είναι παλαιότερα των # μηνών. Μπορεί να χρειαστεί μία ημέρα για να εμφανιστούν αυτές οι αλλαγές στις συνδεδεμένες εφαρμογές σας.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Διαγραφή δεδομένων από τις ακόλουθες κατηγορίες"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Τέλος"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Η Αυτόματη διαγραφή είναι ενεργοποιημένη. Τα δεδομένα που είναι παλαιότερα του # μήνα θα διαγραφούν}other{Η Αυτόματη διαγραφή είναι ενεργοποιημένη. Τα δεδομένα που είναι παλαιότερα των # μηνών θα διαγραφούν}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Ενεργοποιημένη Αυτόματη διαγραφή για δεδομένα πάνω από # μήνα}other{Ενεργοποιημένη Αυτόματη διαγραφή για δεδομένα πάνω από # μηνών}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Η Αυτόματη διαγραφή είναι απενεργοποιημένη"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Ορισμός προτεραιότητας εφαρμογών"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Εάν περισσότερες από μία εφαρμογές προσθέτουν δεδομένα τύπου \"<xliff:g id="DATA_TYPE">%s</xliff:g>\", το Health Connect δίνει προτεραιότητα στην εφαρμογή που βρίσκεται υψηλότερα σε αυτήν τη λίστα. Σύρετε τις εφαρμογές για να τις αναδιατάξετε."</string>

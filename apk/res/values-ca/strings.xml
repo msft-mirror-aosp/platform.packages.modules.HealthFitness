@@ -386,7 +386,7 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entesos"</string>
     <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Configura"</string>
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"No s\'han pogut exportar les dades"</string>
-    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Hi ha hagut un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"S\'ha produït un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Pròxima exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="next_export_text" msgid="6726252793571403846">"La pròxima exportació començarà aviat"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>
@@ -482,9 +482,9 @@
     <string name="time_range_message_category" msgid="1136451418397326356">"Aquesta acció suprimeix permanentment les dades de la categoria <xliff:g id="CATEGORY">%s</xliff:g> que s\'han afegit a Salut connectada durant el període de temps seleccionat"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Aquesta acció suprimeix permanentment les dades de l\'aplicació <xliff:g id="APP_DATA">%s</xliff:g> que s\'han afegit a Salut connectada durant el període de temps seleccionat"</string>
     <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Aquesta acció suprimeix permanentment les dades de la categoria <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_DATA">%2$s</xliff:g> que s\'han afegit a Salut connectada durant el període de temps seleccionat"</string>
-    <string name="time_range_one_day" msgid="7162709826595446727">"Suprimeix les dades de les 24 darreres hores"</string>
-    <string name="time_range_one_week" msgid="8754523384275645434">"Suprimeix les dades dels 7 darrers dies"</string>
-    <string name="time_range_one_month" msgid="3034747870231999766">"Suprimeix les dades dels 30 darrers dies"</string>
+    <string name="time_range_one_day" msgid="7162709826595446727">"Suprimeix les 24 darreres hores"</string>
+    <string name="time_range_one_week" msgid="8754523384275645434">"Suprimeix els 7 darrers dies"</string>
+    <string name="time_range_one_month" msgid="3034747870231999766">"Suprimeix els 30 darrers dies"</string>
     <string name="time_range_all" msgid="8167350212705839943">"Suprimeix totes les dades"</string>
     <string name="confirming_question_all" msgid="1585414659784742952">"Vols suprimir permanentment totes les dades des de sempre?"</string>
     <string name="confirming_question_one_day" msgid="8001434729335611950">"Vols suprimir permanentment totes les dades de les 24 darreres hores?"</string>
@@ -912,7 +912,7 @@
     <string name="range_off" msgid="8178520557618184215">"Desactivat"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Si canvies aquesta configuració, Salut connectada suprimirà les dades existents per reflectir les preferències noves"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Vols suprimir automàticament les dades passat # mes?}other{Vols suprimir automàticament les dades passats # mesos?}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mes.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions on pot haver-hi desades les teves dades.}other{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mesos.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions on pot haver-hi desades les teves dades.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mes.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions en què es puguin haver desat les teves dades.}other{Aquest procés també suprimeix dades de Salut connectada amb una antiguitat superior a # mesos.\n\nSi vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions en què es puguin haver desat les teves dades.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Estableix la supressió automàtica"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Les dades existents se suprimiran"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salut connectada suprimirà totes les dades amb una antiguitat superior a # mes. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}other{Salut connectada suprimirà totes les dades amb una antiguitat superior a # mesos. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}}"</string>
@@ -950,7 +950,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permet totes les rutes"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"No permetis"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permet sempre"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Accedeix a les rutes d\'exercici"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accedir a les rutes d\'exercici"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les rutes"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pregunta sempre"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"No permetis"</string>

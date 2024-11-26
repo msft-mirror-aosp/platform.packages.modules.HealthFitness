@@ -389,7 +389,7 @@
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>-н экспорттой холбоотой асуудал гарлаа. Хуваарьт шинэ экспорт тохируулаад, дахин оролдоно уу."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Дараагийн экспорт хийх огноо: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="next_export_text" msgid="6726252793571403846">"Дараагийн экспорт удахгүй эхэлнэ"</string>
-    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Нөөцлөх болон сэргээх"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Нөөцлөх, сэргээх"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Сүүлд экспорт хийсэн огноо: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_time_now" msgid="31498024135933750">"Сүүлийн экспорт: одоо"</string>
     <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Сүүлийн экспорт: 1 минутын өмнө}other{Сүүлийн экспорт: # минутын өмнө}}"</string>
@@ -912,13 +912,13 @@
     <string name="range_off" msgid="8178520557618184215">"Унтраалттай"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Таныг эдгээр тохиргоог өөрчилсөн үед Health Connect таны шинэ сонголтыг тусгахын тулд одоо байгаа өгөгдлийг устгана"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Өгөгдлийг # сарын дараа автоматаар устгах уу?}other{Өгөгдлийг # сарын дараа автоматаар устгах уу?}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Энэ нь мөн # сараас дээш хугацаатай өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}other{Энэ нь мөн # сараас дээш хугацаатай өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Энэ нь мөн # сараас илүү болсон өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}other{Энэ нь мөн # сараас илүү болсон өгөгдлийг Health Connect-с устгана.\n\nХэрэв та холбогдсон аппуудаасаа өгөгдлийг бүрэн устгахыг хүсвэл өгөгдлийг тань хадгалсан байж болох апп тус бүрийг шалгана уу.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Автоматаар устгах онцлогийг тохируулах"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Одоо байгаа өгөгдлийг устгана"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # сараас дээш хугацаатай хадгалсан бүх өгөгдлийг устгана. Эдгээр өөрчлөлт таны холбогдсон аппуудад гарч ирэхэд нэг өдөр зарцуулж магадгүй.}other{Health Connect # сараас дээш хугацаатай хадгалсан бүх өгөгдлийг устгана. Эдгээр өөрчлөлт таны холбогдсон аппуудад гарч ирэхэд нэг өдөр зарцуулж магадгүй.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Эдгээрээс устгах өгөгдөл"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Болсон"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Автоматаар устгах асаалттай байна. # сараас дээш хугацаатай өгөгдлийг устгана}other{Автоматаар устгах асаалттай байна. # сараас дээш хугацаатай өгөгдлийг устгана}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Автоматаар устгах асаалттай байна. # сараас илүү болсон өгөгдлийг устгана}other{Автоматаар устгах асаалттай байна. # сараас илүү болсон өгөгдлийг устгана}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Автоматаар устгах унтраалттай байна"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Аппын чухал байдлын эрэмбэ тохируулах"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Хэрэв нэгээс олон апп <xliff:g id="DATA_TYPE">%s</xliff:g>-н өгөгдөл нэмбэл Health Connect нь уг жагсаалт дахь хамгийн дээр байх аппыг чухалчилна. Аппуудыг дахин эрэмбэлэхийн тулд чирнэ үү."</string>

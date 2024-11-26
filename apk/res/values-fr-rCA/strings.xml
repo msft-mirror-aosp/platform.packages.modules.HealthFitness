@@ -420,7 +420,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Chaque jour"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Chaque semaine"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Chaque mois"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"Choisissez l\'endroit où enregistrer l\'exportation programmée"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Choisir l\'endroit où enregistrer l\'exportation programmée"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Veuillez choisir une appli de stockage infonuagique pour exporter vos données"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Connexion santé"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Connexion santé (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -918,7 +918,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Connexion santé supprimera toutes les données de plus de # mois. Les modifications peuvent prendre jusqu\'à un jour pour s\'afficher dans vos applis connectées.}one{Connexion santé supprimera toutes les données de plus de # mois. Les modifications peuvent prendre jusqu\'à un jour pour s\'afficher dans vos applis connectées.}other{Connexion santé supprimera toutes les données de plus de # mois. Les modifications peuvent prendre jusqu\'à un jour pour s\'afficher dans vos applis connectées.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Données à supprimer parmi les suivantes"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"OK"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{La suppression automatique est activée. Les données datant de plus de # mois seront supprimées}one{La suppression automatique est activée. Les données datant de plus de # mois seront supprimées}other{La suppression automatique est activée. Les données datant de plus de # mois seront supprimées}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Suppression automatique activée; les données de plus de # mois seront supprimées}one{Suppression automatique activée; les données de plus de # mois seront supprimées}other{Suppression automatique activée; les données de plus de # mois seront supprimées}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"La suppression automatique est désactivée"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Définir la priorité des applis"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Lorsque plus d\'une appli ajoute des données « <xliff:g id="DATA_TYPE">%s</xliff:g> », Health Connect priorise l\'appli la plus haute dans cette liste. Faites glisser les applis pour personnaliser l\'ordre de priorité."</string>
@@ -950,7 +950,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Autoriser tous les itinéraires"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne pas autoriser"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Toujours autoriser"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Accédez à tous les itinéraires d\'exercice"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accéder aux itinéraires d\'exercice"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Autorisez <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux itinéraires"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Toujours demander"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Ne pas autoriser"</string>

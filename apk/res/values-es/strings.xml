@@ -918,7 +918,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salud conectada eliminará todos los datos de hace más de # mes. Los cambios pueden tardar un día en aparecer en tus aplicaciones conectadas.}other{Salud conectada eliminará todos los datos de hace más de # meses. Los cambios pueden tardar un día en aparecer en tus aplicaciones conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Se eliminarán los datos de estas categorías"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Hecho"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{La eliminación automática está activada. Se eliminarán los datos que tengan más de # mes.}other{La eliminación automática está activada. Se eliminarán los datos que tengan más de # meses.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Eliminación automática activada. Se eliminarán los datos de más de # mes.}other{Eliminación automática activada. Se eliminarán los datos de más de # meses.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"La eliminación automática está desactivada"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Establecer prioridad de aplicaciones"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Si más de una aplicación añade datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, Salud conectada priorizará la aplicación que esté más arriba en esta lista. Arrastra las aplicaciones para reordenarlas."</string>

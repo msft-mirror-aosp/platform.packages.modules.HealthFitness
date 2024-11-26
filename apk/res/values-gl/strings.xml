@@ -94,7 +94,7 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite que a aplicación lea os datos de calorías queimadas"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Acceder aos datos en segundo plano"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda aos datos en segundo plano?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta aplicación acceda aos datos de Saúde conectada cando non a esteas usando"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permite que esta aplicación acceda aos datos de Saúde conectada cando non a esteas usando"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Se dás permiso, esta aplicación poderá acceder aos datos de Saúde conectada cando non esteas usando a aplicación."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Acceder aos datos anteriores"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda aos datos anteriores?"</string>
@@ -918,7 +918,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Saúde conectada eliminará todos os datos que teñan máis de # mes. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}other{Saúde conectada eliminará todos os datos que teñan máis de # meses. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Os datos eliminaranse das seguintes categorías"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Feito"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{A función Eliminación automática está activada. Eliminaranse os datos que teñan máis de # mes}other{A función Eliminación automática está activada. Eliminaranse os datos que teñan máis de # meses}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Eliminación automática activada. Elimínanse os datos con máis de # mes}other{Eliminación automática activada. Elimínanse os datos con máis de # meses}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"A función Eliminación automática está desactivada"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Definir prioridade de aplicacións"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"No caso de que máis dunha aplicación engada datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, Saúde conectada daralle prioridade á que apareza primeiro nesta lista. Arrastra as aplicacións para reordenalas."</string>

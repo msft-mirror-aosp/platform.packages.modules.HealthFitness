@@ -918,7 +918,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{A Health Connect a(z) # hónapnál régebbi összes adatot törli. Szükség lehet egy napra ahhoz, hogy ezek a változások tükröződjenek a társított alkalmazásokban.}other{A Health Connect a(z) # hónapnál régebbi összes adatot törli. Szükség lehet egy napra ahhoz, hogy ezek a változások tükröződjenek a társított alkalmazásokban.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Ezekből a kategóriákból lesznek törölve adatok"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Kész"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Az Automatikus törlés be van kapcsolva. A(z) # hónapnál régebbi adatok törlésre kerülnek.}other{Az Automatikus törlés be van kapcsolva. A(z) # hónapnál régebbi adatok törlésre kerülnek.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatikus törlés bekapcsolva. A(z) # hónapnál régebbi adatok törlődnek.}other{Automatikus törlés bekapcsolva. A(z) # hónapnál régebbi adatok törlődnek.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automatikus törlés kikapcsolva"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Alkalmazások elsőbbségének beállítása"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ha egynél több alkalmazás ad hozzá <xliff:g id="DATA_TYPE">%s</xliff:g> típusú adatokat, a Health Connect a listában legelöl szereplő alkalmazást részesíti előnyben. Húzással átrendezheti az alkalmazásokat."</string>

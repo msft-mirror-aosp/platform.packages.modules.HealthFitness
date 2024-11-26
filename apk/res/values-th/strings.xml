@@ -389,14 +389,14 @@
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"เกิดปัญหาเกี่ยวกับการส่งออกของวันที่ <xliff:g id="DATE">%1$s</xliff:g> โปรดตั้งค่าการส่งออกที่กำหนดเวลาใหม่แล้วลองอีกครั้ง"</string>
     <string name="next_export_time" msgid="3138247220014510213">"การส่งออกครั้งถัดไป: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="next_export_text" msgid="6726252793571403846">"การส่งออกครั้งถัดไปจะเริ่มในอีกไม่ช้า"</string>
-    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"การสำรองและคืนค่า"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"การสำรองและกู้คืนข้อมูล"</string>
     <string name="last_export_time" msgid="9205875050823594041">"การส่งออกครั้งล่าสุด: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_time_now" msgid="31498024135933750">"การส่งออกครั้งล่าสุด: ตอนนี้"</string>
     <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{การส่งออกครั้งล่าสุด: 1 นาทีที่ผ่านมา}other{การส่งออกครั้งล่าสุด: # นาทีที่ผ่านมา}}"</string>
     <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{การส่งออกครั้งล่าสุด: 1 ชั่วโมงที่ผ่านมา}other{การส่งออกครั้งล่าสุด: # ชั่วโมงที่ผ่านมา}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"การส่งออกครั้งล่าสุด: ไม่มี"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"การส่งออกที่กำหนดเวลาไว้"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"กำหนดเวลาการส่งออก"</string>
     <string name="import_data" msgid="404502315533233094">"นำเข้าข้อมูล"</string>
     <string name="import_data_description" msgid="4040178599441724296">"กู้คืนข้อมูลจากไฟล์ที่ส่งออกก่อนหน้านี้"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"กู้คืนข้อมูลไม่ได้"</string>
@@ -415,7 +415,7 @@
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"เปลี่ยนความถี่"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"การปิดการส่งออกที่กำหนดเวลาไว้จะไม่ลบข้อมูลที่ส่งออกก่อนหน้านี้จากตำแหน่งที่บันทึกไว้"</string>
-    <string name="choose_frequency" msgid="8119085390857180221">"ตั้งค่าการส่งออกที่กำหนดเวลาไว้"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"ตั้งค่ากำหนดเวลาการส่งออก"</string>
     <string name="choose_frequency_description" msgid="7698155810053504157">"เลือกความถี่ในการส่งออกข้อมูล"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ทุกสัปดาห์"</string>
@@ -516,7 +516,7 @@
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"เสร็จสิ้น"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"ปิด"</string>
     <string name="delete_dialog_success_title" msgid="900884533930984889">"ลบข้อมูลออกจาก Health Connect แล้ว"</string>
-    <string name="delete_dialog_success_message" msgid="7454086333205881294">"หากคุณต้องการลบข้อมูลออกจากแอปที่เชื่อมต่ออย่างสมบูรณ์ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"หากคุณต้องการลบข้อมูลทั้งหมดออกจากแอปที่เชื่อมต่อ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้"</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"เสร็จสิ้น"</string>
     <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"ดูแอปที่เชื่อมต่อ"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"กำลังลบข้อมูล"</string>
@@ -912,7 +912,7 @@
     <string name="range_off" msgid="8178520557618184215">"ปิดอยู่"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"เมื่อเปลี่ยนการตั้งค่าเหล่านี้ Health Connect จะลบข้อมูลที่มีอยู่เพื่อแสดงค่ากำหนดใหม่ของคุณ"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{ลบข้อมูลอัตโนมัติหลังผ่านไป # เดือนใช่ไหม}other{ลบข้อมูลอัตโนมัติหลังผ่านไป # เดือนใช่ไหม}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{การดำเนินการนี้จะลบข้อมูลที่เก่ากว่า # เดือนออกจาก Health Connect ด้วย\n\nหากคุณต้องการลบข้อมูลออกจากแอปที่เชื่อมต่ออย่างสมบูรณ์ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้}other{การดำเนินการนี้จะลบข้อมูลที่เก่ากว่า # เดือนออกจาก Health Connect ด้วย\n\nหากคุณต้องการลบข้อมูลออกจากแอปที่เชื่อมต่ออย่างสมบูรณ์ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{การดำเนินการนี้จะลบข้อมูลที่เก่ากว่า # เดือนออกจาก Health Connect ด้วย\n\nหากคุณต้องการลบข้อมูลทั้งหมดออกจากแอปที่เชื่อมต่อ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้}other{การดำเนินการนี้จะลบข้อมูลที่เก่ากว่า # เดือนออกจาก Health Connect ด้วย\n\nหากคุณต้องการลบข้อมูลทั้งหมดออกจากแอปที่เชื่อมต่อ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ตั้งค่าการลบอัตโนมัติ"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"ระบบจะลบข้อมูลที่มีอยู่"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect จะลบข้อมูลทั้งหมดที่เก่ากว่า # เดือน อาจใช้เวลา 1 วันเพื่อให้การเปลี่ยนแปลงเหล่านี้ปรากฏในแอปที่เชื่อมต่อ}other{Health Connect จะลบข้อมูลทั้งหมดที่เก่ากว่า # เดือน อาจใช้เวลา 1 วันเพื่อให้การเปลี่ยนแปลงเหล่านี้ปรากฏในแอปที่เชื่อมต่อ}}"</string>

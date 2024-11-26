@@ -43,7 +43,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Postavite jedinice"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferencije"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Upravljanje podacima"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Izvezi i uvezi podatke"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Izvoz i uvoz podataka"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Nedavni pristup"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Nijedna aplikacija nije pristupila Health Connectu u posljednje vrijeme"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Pogledajte sve nedavne pristupe"</string>

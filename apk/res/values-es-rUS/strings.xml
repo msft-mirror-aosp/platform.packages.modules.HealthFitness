@@ -396,7 +396,7 @@
     <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Última exportación: hace 1 hora}other{Última exportación hace # horas}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"Última exportación: ninguna"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"Se programó la exportación"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Exportación programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restablece datos desde un archivo exportado anteriormente"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"No se pudieron restablecer los datos"</string>
@@ -918,8 +918,8 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect borrará todos los datos que tengan más de # mes. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}other{Health Connect borrará todos los datos que tengan más de # meses. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Datos que se borrarán de las siguientes categorías"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Listo"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{La eliminación automática está activada. Se borrarán los datos de hace más de # mes.}other{La eliminación automática está activada. Se borrarán los datos de hace más de # meses.}}"</string>
-    <string name="auto_delete_off_toast" msgid="6530926709108821768">"La eliminación automática está desactivada"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Eliminación automática activada. Se borrarán los datos de hace más de # mes}other{Eliminación automática activada. Se borrarán los datos de hace más de # meses}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Eliminación automática desactivada"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Establecer prioridad de apps"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Si más de una app agrega datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, Health Connect priorizará la que esté más arriba en esta lista. Arrastra las apps para volver a ordenarlas."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Guardar"</string>
