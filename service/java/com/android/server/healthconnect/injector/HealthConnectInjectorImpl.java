@@ -145,6 +145,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? new HealthDataCategoryPriorityHelper(
+                                storageContext,
                                 mAppInfoHelper,
                                 mTransactionManager,
                                 mPreferenceHelper,

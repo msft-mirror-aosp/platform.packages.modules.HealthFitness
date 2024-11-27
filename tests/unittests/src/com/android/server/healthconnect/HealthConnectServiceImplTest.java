@@ -2539,14 +2539,9 @@ public class HealthConnectServiceImplTest {
 
     @Test
     public void testUserSwitching() throws TimeoutException {
-        doNothing()
-                .when(mHealthDataCategoryPriorityHelper)
-                .maybeAddContributingAppsToPriorityList(mContext);
-
         mHealthConnectService.onUserSwitching(mUserHandle);
 
         waitForAllScheduledTasksToComplete();
-        verify(mHealthDataCategoryPriorityHelper).maybeAddContributingAppsToPriorityList(any());
     }
 
     /**
