@@ -141,9 +141,8 @@ public abstract class RecordInternal<T extends Record> implements Serializable {
         return mPackageName;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
-    public RecordInternal<T> setPackageName(@Nullable String packageName) {
+    public RecordInternal<T> setPackageName(String packageName) {
         this.mPackageName = packageName;
         return this;
     }

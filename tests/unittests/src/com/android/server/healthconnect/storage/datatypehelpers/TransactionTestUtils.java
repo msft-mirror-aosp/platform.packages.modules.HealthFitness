@@ -105,13 +105,12 @@ public final class TransactionTestUtils {
         return mTransactionManager.insertAll(
                 appInfoHelper,
                 mHealthConnectInjector.getAccessLogsHelper(),
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForInsert(
                         packageName,
                         records,
                         mHealthConnectInjector.getDeviceInfoHelper(),
-                        /* isInsertRequest= */ true,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mHealthConnectInjector.getAppInfoHelper()));
+                        mHealthConnectInjector.getAppInfoHelper(),
+                        /* extraPermsStateMap= */ Collections.emptyMap()));
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */

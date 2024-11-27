@@ -67,7 +67,9 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
 
     public PriorityMigrationHelper(
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            TransactionManager transactionManager) {
+            TransactionManager transactionManager,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mTransactionManager = transactionManager;
     }

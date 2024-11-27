@@ -25,10 +25,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
 
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
@@ -36,7 +38,6 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -70,7 +71,7 @@ public class UpsertTransactionRequestTest {
 
     @Before
     public void setup() {
-        StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
@@ -87,25 +88,27 @@ public class UpsertTransactionRequestTest {
     @Test
     public void getPackageName_expectCorrectName() {
         UpsertTransactionRequest request1 =
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForInsert(
                         "package.name.1",
                         List.of(),
                         mDeviceInfoHelper,
-                        /* isInsertRequest= */ false,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mAppInfoHelper);
+                        mAppInfoHelper,
+                        /* extraPermsStateMap= */ Collections.emptyMap());
         assertThat(request1.getPackageName()).isEqualTo("package.name.1");
 
         UpsertTransactionRequest request2 =
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForUpdate(
                         "package.name.2",
                         List.of(),
                         mDeviceInfoHelper,
-                        /* isInsertRequest= */ false,
-                        /* useProvidedUuid= */ false,
-                        /* skipPackageNameAndLogs= */ false,
-                        mAppInfoHelper);
+                        mAppInfoHelper,
+                        /* extraPermsStateMap= */ Collections.emptyMap());
         assertThat(request2.getPackageName()).isEqualTo("package.name.2");
+
+        UpsertTransactionRequest request3 =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(), mDeviceInfoHelper, mAppInfoHelper);
+        assertThat(request3.getPackageName()).isNull();
     }
 
     @Test
@@ -115,13 +118,12 @@ public class UpsertTransactionRequestTest {
                         getStepsRecord().toRecordInternal(),
                         getBasalMetabolicRateRecord().toRecordInternal());
         UpsertTransactionRequest request =
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForUpdate(
                         "package.name",
                         records,
                         mDeviceInfoHelper,
-                        /* isInsertRequest= */ false,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mAppInfoHelper);
+                        mAppInfoHelper,
+                        /* extraPermsStateMap= */ Collections.emptyMap());
 
         assertThat(request.getRecordTypeIds())
                 .containsExactly(RECORD_TYPE_STEPS, RECORD_TYPE_BASAL_METABOLIC_RATE);

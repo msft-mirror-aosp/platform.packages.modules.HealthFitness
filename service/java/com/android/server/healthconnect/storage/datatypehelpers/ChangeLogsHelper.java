@@ -78,7 +78,9 @@ public final class ChangeLogsHelper extends DatabaseHelper {
 
     private final TransactionManager mTransactionManager;
 
-    public ChangeLogsHelper(TransactionManager transactionManager) {
+    public ChangeLogsHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 
