@@ -434,5 +434,4 @@ flag {
     namespace: "android_health_services"
     description: "Deprecates ExerciseSessionType#EXERCISE_SESSION_TYPE_GUIDED_BREATHING"
     bug: "373629817"
-    is_exported: true
 }
