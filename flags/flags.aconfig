@@ -7,6 +7,7 @@ flag {
     description: "Enables reading third-party exercise routes by apps who hold the corresponding permission."
     bug: "232379924"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -14,6 +15,7 @@ flag {
     namespace: "healthconnect"
     description: "Flag for adding the new data type skin temperature."
     bug: "319602927"
+    is_exported: true
 }
 
 flag {
@@ -21,6 +23,7 @@ flag {
     namespace: "healthconnect"
     description: "Flag for adding the new data type planned exercise sessions."
     bug: "319604661"
+    is_exported: true
 }
 
 flag {
@@ -28,6 +31,7 @@ flag {
     namespace: "healthconnect"
     description: "Permission to enable reading health data in the background."
     bug: "294558364"
+    is_exported: true
 }
 
 flag {
@@ -35,4 +39,5 @@ flag {
     namespace: "healthconnect"
     description: "Permission to enable reading past health data."
     bug: "325430290"
+    is_exported: true
 }
