@@ -35,7 +35,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static java.util.Objects.requireNonNull;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.PageTokenWrapper;
@@ -86,7 +85,6 @@ public final class DatabaseMerger {
 
     private static final String TAG = "HealthConnectDatabaseMerger";
 
-    private final Context mContext;
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
     private final HealthConnectMappings mHealthConnectMappings;
@@ -115,11 +113,9 @@ public final class DatabaseMerger {
 
     public DatabaseMerger(
             AppInfoHelper appInfoHelper,
-            Context context,
             DeviceInfoHelper deviceInfoHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             TransactionManager transactionManager) {
-        mContext = context;
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mHealthConnectMappings = HealthConnectMappings.getInstance();

@@ -23,6 +23,7 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -95,6 +96,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final MigrationUiStateManager mMigrationUiStateManager;
     private final DatabaseHelpers mDatabaseHelpers;
     private final MigrationEntityHelper mMigrationEntityHelper;
+    private final BackupRestore mBackupRestore;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -275,6 +277,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 new MigrationNotificationSender(
                                         context, mHealthConnectDeviceConfigManager))
                         : builder.mMigrationUiStateManager;
+        mBackupRestore =
+                new BackupRestore(
+                        mAppInfoHelper,
+                        mFirstGrantTimeManager,
+                        mMigrationStateManager,
+                        mPreferenceHelper,
+                        mTransactionManager,
+                        context,
+                        mDeviceInfoHelper,
+                        mHealthDataCategoryPriorityHelper);
     }
 
     @Override
@@ -420,6 +432,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public MigrationEntityHelper getMigrationEntityHelper() {
         return mMigrationEntityHelper;
+    }
+
+    @Override
+    public BackupRestore getBackupRestore() {
+        return mBackupRestore;
     }
 
     /**
