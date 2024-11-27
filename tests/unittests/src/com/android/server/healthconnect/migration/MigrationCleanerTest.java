@@ -75,7 +75,9 @@ public class MigrationCleanerTest {
 
         mCleaner =
                 new MigrationCleaner(
-                        mTransactionManager, healthConnectInjector.getPriorityMigrationHelper());
+                        mTransactionManager,
+                        healthConnectInjector.getPriorityMigrationHelper(),
+                        healthConnectInjector.getMigrationEntityHelper());
     }
 
     @Test

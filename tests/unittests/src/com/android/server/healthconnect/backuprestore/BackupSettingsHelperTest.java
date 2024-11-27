@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package healthconnect.backuprestore;
+package com.android.server.healthconnect.backuprestore;
 
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.AUTO_DELETE_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.DISTANCE_UNIT_PREF_KEY;
@@ -40,33 +40,29 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import android.Manifest;
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.backuprestore.BackupSettingsHelper;
-import com.android.server.healthconnect.backuprestore.CloudBackupSettings;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,7 +83,6 @@ public class BackupSettingsHelperTest {
 
     private PreferenceHelper mPreferenceHelper;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
-    private TransactionManager mTransactionManager;
     private BackupSettingsHelper mBackupSettingsHelper;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
 
@@ -116,7 +111,7 @@ public class BackupSettingsHelperTest {
 
         HealthConnectInjector.resetInstanceForTest();
 
-        StorageContext context = mDatabaseTestRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
         mPreferenceHelper = new FakePreferenceHelper();
         mExportImportSettingsStorage = mock(ExportImportSettingsStorage.class);
 
@@ -128,7 +123,6 @@ public class BackupSettingsHelperTest {
                         .setExportImportSettingsStorage(mExportImportSettingsStorage)
                         .build();
 
-        mTransactionManager = healthConnectInjector.getTransactionManager();
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
@@ -139,11 +133,6 @@ public class BackupSettingsHelperTest {
                         mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
 
         when(mExportImportSettingsStorage.getUri()).thenReturn(TEST_URI);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        DatabaseHelper.clearAllData(mTransactionManager);
     }
 
     @Test

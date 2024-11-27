@@ -68,6 +68,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -155,7 +156,9 @@ public final class TransactionManager {
                     }
 
                     accessLogsHelper.recordUpsertAccessLog(
-                            db, request.getPackageName(), request.getRecordTypeIds());
+                            db,
+                            Objects.requireNonNull(request.getPackageName()),
+                            request.getRecordTypeIds());
                     return request.getUUIdsInOrder();
                 });
     }
@@ -658,7 +661,9 @@ public final class TransactionManager {
                     }
 
                     accessLogsHelper.recordUpsertAccessLog(
-                            db, request.getPackageName(), request.getRecordTypeIds());
+                            db,
+                            Objects.requireNonNull(request.getPackageName()),
+                            request.getRecordTypeIds());
                 });
     }
 

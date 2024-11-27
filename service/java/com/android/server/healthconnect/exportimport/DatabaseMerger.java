@@ -461,14 +461,8 @@ public final class DatabaseMerger {
             // 2. we don't want to update the package name in the records as they already have the
             //    correct package name.
             UpsertTransactionRequest upsertTransactionRequest =
-                    new UpsertTransactionRequest(
-                            null /* packageName */,
-                            records,
-                            mDeviceInfoHelper,
-                            true /* isInsertRequest */,
-                            true /* useProvidedUuid */,
-                            true /* skipPackageName */,
-                            mAppInfoHelper);
+                    UpsertTransactionRequest.createForRestore(
+                            records, mDeviceInfoHelper, mAppInfoHelper);
             // This uses ON CONFLICT IGNORE strategy, which means that if the source data being
             // inserted into target db already exists, the source data will be ignored. We won't
             // apply updates to the target data.

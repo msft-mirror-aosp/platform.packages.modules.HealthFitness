@@ -40,10 +40,12 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.utils.TimeSource;
@@ -186,6 +188,14 @@ public abstract class HealthConnectInjector {
      * Injector.
      */
     public abstract MigrationUiStateManager getMigrationUiStateManager();
+
+    /** Getter for {@link DatabaseHelpers} instance initialised by the Health Connect Injector. */
+    public abstract DatabaseHelpers getDatabaseHelpers();
+
+    /**
+     * Getter for {@link MigrationEntityHelper} instance initialised by the Health Connect Injector.
+     */
+    public abstract MigrationEntityHelper getMigrationEntityHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

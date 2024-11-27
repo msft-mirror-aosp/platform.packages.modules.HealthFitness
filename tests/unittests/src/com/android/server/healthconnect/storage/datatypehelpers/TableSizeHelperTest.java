@@ -33,6 +33,7 @@ import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
@@ -83,7 +84,7 @@ public class TableSizeHelperTest {
 
     @Before
     public void setup() {
-        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        mContext = ApplicationProvider.getApplicationContext();
         FakeTimeSource mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
