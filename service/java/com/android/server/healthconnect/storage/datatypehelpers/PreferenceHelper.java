@@ -66,7 +66,9 @@ public class PreferenceHelper extends DatabaseHelper {
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public PreferenceHelper(TransactionManager transactionManager) {
+    public PreferenceHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 
