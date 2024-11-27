@@ -88,7 +88,7 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Дозволяє додатку зчитувати дані про спалені калорії"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Доступ до даних у фоновому режимі"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до даних у фоновому режимі?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Дозвольте цьому додатку доступ до даних Health Connect, коли ви не користуєтеся ним"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Дозволити цьому додатку доступ до даних Health Connect, коли ви не користуєтеся ним"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Якщо надати дозвіл, цей додаток матиме доступ до даних Health Connect, коли ви не користуєтеся ним."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Доступ до минулих даних"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до минулих даних?"</string>

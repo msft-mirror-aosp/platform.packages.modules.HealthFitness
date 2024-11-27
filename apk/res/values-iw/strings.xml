@@ -88,7 +88,7 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"מאפשרת לאפליקציה לקרוא את נתוני הקלוריות שנשרפו"</string>
     <string name="background_read_title" msgid="5061383169517186234">"גישה לנתונים ברקע"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> הרשאת גישה לנתונים ברקע?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"מתן הרשאה לאפליקציה הזו לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"האפליקציה הזו יכולה לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"אם תינתן הרשאה, האפליקציה הזו תוכל לגשת לנתונים של Health Connect גם כשהיא לא בשימוש."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"גישה לנתונים קודמים"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> הרשאה לגשת לנתונים קודמים?"</string>
@@ -367,7 +367,7 @@
     <string name="export_next_button" msgid="657930567137105172">"הבא"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ביטול"</string>
     <string name="import_next_button" msgid="5706322508691854289">"הבא"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"ייבוא מ-"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"מהיכן לייבא"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"עליך לבחור אפליקציית אחסון כדי לייבא את הנתונים"</string>
     <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"כדי לבחור חשבון צריך להקיש עליו"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"בחירת חשבון"</string>
@@ -807,7 +807,7 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{אחרי חודש אחד}one{אחרי # חודשים}two{אחרי חודשיים}other{אחרי # חודשים}}"</string>
     <string name="range_never" msgid="4429478261788361233">"אף פעם"</string>
     <string name="range_off" msgid="8178520557618184215">"מושבתת"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"כשמשנים את ההגדרות האלה, הנתונים הקיימים ב-Health Connect נמחקים כך שישקפו את ההעדפות החדשות"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"כשמשנים את ההגדרות האלה, הנתונים הקיימים ב-Health Connect נמחקים בהתאם להעדפות החדשות"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{למחוק אוטומטית את הנתונים אחרי חודש אחד?}one{למחוק אוטומטית את הנתונים אחרי # חודשים?}two{למחוק אוטומטית את הנתונים אחרי חודשיים?}other{למחוק אוטומטית את הנתונים אחרי # חודשים?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי חודש אחד. ההגדרה הזאת תמחק גם נתונים קיימים מלפני חודש.}one{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי # חודשים. ההגדרה הזאת תמחק גם נתונים קיימים מלפני # חודשים.}two{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי חודשיים. ההגדרה הזאת תמחק גם נתונים קיימים מלפני # חודשים.}other{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי # חודשים. ההגדרה הזאת תמחק גם נתונים קיימים מלפני # חודשים.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"הגדרת מחיקה אוטומטית"</string>

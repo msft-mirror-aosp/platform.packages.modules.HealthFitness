@@ -88,7 +88,7 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite que a aplicación lea os datos de calorías queimadas"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Acceder aos datos en segundo plano"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda aos datos en segundo plano?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta aplicación acceda aos datos de Saúde conectada cando non a esteas usando"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permite que esta aplicación acceda aos datos de Saúde conectada cando non a esteas usando"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Se dás permiso, esta aplicación poderá acceder aos datos de Saúde conectada cando non esteas usando a aplicación."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Acceder aos datos anteriores"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda aos datos anteriores?"</string>

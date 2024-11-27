@@ -367,7 +367,7 @@
     <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"မလုပ်တော့"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ရှေ့သို့"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"၎င်းမှ ထည့်သွင်းခြင်း-"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ရယူမည့် နေရာ"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"သင့်ဒေတာကို ထည့်သွင်းရန် သိုလှောင်ခန်းအက်ပ် ရွေးပါ"</string>
     <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"အကောင့်ရွေးရန် တို့ပါ"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"အကောင့်ရွေးခြင်း"</string>

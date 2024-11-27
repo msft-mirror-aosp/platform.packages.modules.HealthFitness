@@ -367,7 +367,7 @@
     <string name="export_next_button" msgid="657930567137105172">"ಮುಂದಿನದು"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ರದ್ದುಮಾಡಿ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ಮುಂದಿನದು"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"ನಿಂದ ಆಮದು ಮಾಡಿಕೊಳ್ಳಿ"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ಇಲ್ಲಿಂದ ಆಮದು ಮಾಡಿಕೊಳ್ಳಿ"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಂಗ್ರಹಣೆಯ ಆ್ಯಪ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"ಖಾತೆಯೊಂದನ್ನು ಆಯ್ಕೆಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"ಖಾತೆಯೊಂದನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>

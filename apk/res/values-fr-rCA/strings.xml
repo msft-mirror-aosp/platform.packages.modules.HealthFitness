@@ -845,7 +845,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Autoriser tous les itinéraires"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne pas autoriser"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Toujours autoriser"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Accédez à tous les itinéraires d\'exercice"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accéder aux itinéraires d\'exercice"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Autorisez <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux itinéraires"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Toujours demander"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Ne pas autoriser"</string>

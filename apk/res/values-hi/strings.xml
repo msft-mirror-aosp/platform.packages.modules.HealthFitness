@@ -336,10 +336,10 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"डेटा एक्सपोर्ट नहीं किया जा सका"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> को एक्सपोर्ट करने में समस्या हुई. एक्सपोर्ट के लिए तय किया गया नया शेड्यूल सेट अप करें और फिर से कोशिश करें."</string>
     <string name="next_export_time" msgid="3138247220014510213">"अगला एक्सपोर्ट किया जाएगा: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"बैकअप लेने और डेटा वापस पाने की सुविधा"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"डेटा का बैकअप लेना और उसे वापस पाना"</string>
     <string name="last_export_time" msgid="9205875050823594041">"आखिरी बार एक्सपोर्ट किया गया: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"डेटा एक्सपोर्ट और इंपोर्ट करें"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"एक्सपोर्ट के लिए तय किया गया शेड्यूल"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"एक्सपोर्ट के लिए शेड्यूल की सुविधा"</string>
     <string name="import_data" msgid="404502315533233094">"डेटा को इंपोर्ट करें"</string>
     <string name="import_data_description" msgid="4040178599441724296">"एक्सपोर्ट की गई पिछली फ़ाइल का डेटा वापस पाएं"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"फ़ाइल चुनें"</string>
@@ -373,7 +373,7 @@
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"कोई खाता चुनें"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"रद्द करें"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"हो गया"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"ज़्यादा विकल्पों के लिए, क्लाउड स्टोरेज की सुविधा वाले ऐप्लिकेशन डाउनलोड करें. इससे ये ऐप्लिकेशन यहां दिखेंगे"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"ज़्यादा विकल्पों के लिए, क्लाउड स्टोरेज की सुविधा वाले ऐप्लिकेशन डाउनलोड करें. ये ऐप्लिकेशन यहां दिखेंगे"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store पर जाएं"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect का इस्तेमाल शुरू करें"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect में, सेहत और फ़िटनेस से जुड़ा आपका डेटा सेव किया जाता है. इससे, अपने फ़ोन में अलग-अलग ऐप्लिकेशन को आसानी से सिंक करने में मदद मिलती है"</string>
@@ -800,7 +800,7 @@
     <string name="send_feedback_description" msgid="2887207112856240778">"यह बताएं कि आपको Health Connect के साथ, सेहत और फ़िटनेस बनाए रखने में मदद करने वाले कौनसे ऐप्लिकेशन इस्तेमाल करने हैं"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"अपने-आप मिटने की सुविधा"</string>
-    <string name="auto_delete_title" msgid="8761742828224207826">"अपने-आप मिटना"</string>
+    <string name="auto_delete_title" msgid="8761742828224207826">"अपने-आप मिटने की सुविधा"</string>
     <string name="auto_delete_header" msgid="4258649705159293715">"यह कंट्रोल करें कि Health Connect में आपका डेटा कितने समय तक सेव रहे. डेटा को तय समय के बाद मिटाने का शेड्यूल सेट करके ऐसा किया जा सकता है"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"अपने-आप मिटने की सुविधा के बारे में ज़्यादा जानें"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"डेटा अपने-आप मिटे"</string>

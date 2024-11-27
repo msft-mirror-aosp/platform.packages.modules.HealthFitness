@@ -39,7 +39,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Tetapkan unit"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferensi"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Kelola data"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Mengekspor dan mengimpor data"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Ekspor dan impor data"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Akses terbaru"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Tidak ada aplikasi yang baru-baru ini mengakses Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Lihat semua akses terbaru"</string>
@@ -770,7 +770,7 @@
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 kilojoule}other{# kilojoule}}"</string>
     <string name="percent" formatted="false" msgid="9199428244800776575">"{value,plural, =1{1%}other{#%}}"</string>
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 persen}other{# persen}}"</string>
-    <string name="units_cancel" msgid="5947097690625771995">"Batalkan"</string>
+    <string name="units_cancel" msgid="5947097690625771995">"Batal"</string>
     <string name="units_title" msgid="6504086463237869339">"Satuan"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Jarak"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Tinggi"</string>
