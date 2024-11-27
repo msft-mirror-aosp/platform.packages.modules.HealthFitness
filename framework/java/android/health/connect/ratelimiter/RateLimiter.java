@@ -20,8 +20,6 @@ import android.annotation.IntDef;
 import android.health.connect.HealthConnectException;
 import android.os.SystemClock;
 
-import com.android.internal.annotations.GuardedBy;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.Duration;
@@ -58,10 +56,6 @@ public final class RateLimiter {
             new HashMap<>();
     private static final Map<String, Integer> QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP =
             new HashMap<>();
-    private static final ReentrantReadWriteLock sLock = new ReentrantReadWriteLock();
-
-    @GuardedBy("sLock")
-    private static boolean sRateLimiterEnabled;
 
     public static final int QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE = 2000;
     public static final int QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 16000;
@@ -131,14 +125,6 @@ public final class RateLimiter {
 
     public static void tryAcquireApiCallQuota(
             int uid, @QuotaCategory.Type int quotaCategory, boolean isInForeground) {
-        sLock.readLock().lock();
-        try {
-            if (!sRateLimiterEnabled) {
-                return;
-            }
-        } finally {
-            sLock.readLock().unlock();
-        }
         if (quotaCategory == QuotaCategory.QUOTA_CATEGORY_UNDEFINED) {
             throw new IllegalArgumentException("Quota category not defined.");
         }
@@ -161,14 +147,6 @@ public final class RateLimiter {
             @QuotaCategory.Type int quotaCategory,
             boolean isInForeground,
             long memoryCost) {
-        sLock.readLock().lock();
-        try {
-            if (!sRateLimiterEnabled) {
-                return;
-            }
-        } finally {
-            sLock.readLock().unlock();
-        }
         if (quotaCategory == QuotaCategory.QUOTA_CATEGORY_UNDEFINED) {
             throw new IllegalArgumentException("Quota category not defined.");
         }
@@ -197,14 +175,6 @@ public final class RateLimiter {
     }
 
     public static void checkMaxChunkMemoryUsage(long memoryCost) {
-        sLock.readLock().lock();
-        try {
-            if (!sRateLimiterEnabled) {
-                return;
-            }
-        } finally {
-            sLock.readLock().unlock();
-        }
         long memoryLimit = getConfiguredMaxApiMemoryQuota(CHUNK_SIZE_LIMIT_IN_BYTES);
         if (memoryCost > memoryLimit) {
             throw new HealthConnectException(
@@ -217,14 +187,6 @@ public final class RateLimiter {
     }
 
     public static void checkMaxRecordMemoryUsage(long memoryCost) {
-        sLock.readLock().lock();
-        try {
-            if (!sRateLimiterEnabled) {
-                return;
-            }
-        } finally {
-            sLock.readLock().unlock();
-        }
         long memoryLimit = getConfiguredMaxApiMemoryQuota(RECORD_SIZE_LIMIT_IN_BYTES);
         if (memoryCost > memoryLimit) {
             throw new HealthConnectException(
@@ -239,15 +201,6 @@ public final class RateLimiter {
     public static void clearCache() {
         sUserIdToQuotasMap.clear();
         sQuotaBucketToAcrossAppsRemainingMemoryQuota.clear();
-    }
-
-    public static void updateEnableRateLimiterFlag(boolean enableRateLimiter) {
-        sLock.writeLock().lock();
-        try {
-            sRateLimiterEnabled = enableRateLimiter;
-        } finally {
-            sLock.writeLock().unlock();
-        }
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression

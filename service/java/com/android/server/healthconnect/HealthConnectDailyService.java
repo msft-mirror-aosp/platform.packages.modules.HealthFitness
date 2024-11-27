@@ -87,8 +87,6 @@ public class HealthConnectDailyService extends JobService {
                 healthConnectInjector.getExportImportSettingsStorage();
         ExportManager exportManager = healthConnectInjector.getExportManager();
         PreferenceHelper preferenceHelper = healthConnectInjector.getPreferenceHelper();
-        HealthConnectDeviceConfigManager healthConnectDeviceConfigManager =
-                healthConnectInjector.getHealthConnectDeviceConfigManager();
         MigrationStateManager migrationStateManager =
                 healthConnectInjector.getMigrationStateManager();
         AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
@@ -122,10 +120,7 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationCompletionJob(
-                                    context,
-                                    preferenceHelper,
-                                    healthConnectDeviceConfigManager,
-                                    migrationStateManager);
+                                    context, preferenceHelper, migrationStateManager);
                             jobFinished(params, false);
                         });
                 return true;
@@ -133,10 +128,7 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationPauseJob(
-                                    context,
-                                    preferenceHelper,
-                                    healthConnectDeviceConfigManager,
-                                    migrationStateManager);
+                                    context, preferenceHelper, migrationStateManager);
                             jobFinished(params, false);
                         });
                 return true;

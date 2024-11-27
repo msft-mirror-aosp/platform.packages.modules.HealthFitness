@@ -38,7 +38,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.when;
 
-import android.Manifest;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
@@ -47,7 +46,6 @@ import android.net.Uri;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
@@ -100,10 +98,6 @@ public class BackupSettingsHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        InstrumentationRegistry.getInstrumentation()
-                .getUiAutomation()
-                .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-
         HealthConnectInjector.resetInstanceForTest();
 
         Context context = ApplicationProvider.getApplicationContext();
