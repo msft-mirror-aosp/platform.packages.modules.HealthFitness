@@ -236,6 +236,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             settingsCategory?.addPreference(
                 ExportStatusPreference(requireContext(), lastExportTime, exportLocation).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
+                    it.isSelectable = false
                 }
             )
         } else if (
