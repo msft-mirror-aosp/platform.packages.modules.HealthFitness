@@ -188,10 +188,7 @@ public class BackupRestoreDatabaseHelper {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                // TODO: b/377648858 - the parameter name is confusing as it's
-                                // actually about recording read access logs. Confirm whether we
-                                // need it or not.
-                                /* shouldRecordDeleteAccessLogs= */ false);
+                                /* shouldRecordAccessLog= */ false);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
                 pageSize = MAXIMUM_PAGE_SIZE - backupChanges.size();
@@ -274,7 +271,6 @@ public class BackupRestoreDatabaseHelper {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
-                        // TODO: b/377648858 - revisit whether we should record access log
                         /* shouldRecordAccessLog= */ false);
 
         List<BackupChange> backupChanges =

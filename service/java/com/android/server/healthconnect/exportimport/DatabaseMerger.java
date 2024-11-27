@@ -22,6 +22,7 @@ import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
+import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
 import static com.android.healthfitness.flags.Flags.exportImport;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.APP_ID_PRIORITY_ORDER_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
@@ -55,6 +56,7 @@ import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -199,8 +201,10 @@ public final class DatabaseMerger {
                     mHealthConnectMappings
                             .getRecordIdToExternalRecordClassMap()
                             .get(recordTypeToMigrate);
+
             mergeRecordsOfType(
                     stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate, recordClass);
+
             deleteRecordsOfType(stagedDatabase, recordTypeToMigrate, recordClass);
         }
 
@@ -448,11 +452,23 @@ public final class DatabaseMerger {
             UpsertTransactionRequest upsertTransactionRequest =
                     UpsertTransactionRequest.createForRestore(
                             records, mDeviceInfoHelper, mAppInfoHelper);
-            // This uses ON CONFLICT IGNORE strategy, which means that if the source data being
-            // inserted into target db already exists, the source data will be ignored. We won't
-            // apply updates to the target data.
-            mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
 
+            // Both methods use ON CONFLICT IGNORE strategy, which means that if the source data
+            // being inserted into target db already exists, the source data will be ignored. We
+            // won't apply updates to the target data.
+            //
+            // Only generate change logs when any change logs token are present. Client apps can
+            // only read change logs if they have ever requested a change logs token.
+            if (cloudBackupAndRestore()
+                    && mTransactionManager.checkTableExists(ChangeLogsRequestHelper.TABLE_NAME)
+                    && mTransactionManager.getNumberOfEntriesInTheTable(
+                                    ChangeLogsRequestHelper.TABLE_NAME)
+                            != 0) {
+                mTransactionManager.insertAllWithoutAccessLogs(
+                        mAppInfoHelper, upsertTransactionRequest);
+            } else {
+                mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+            }
             currentToken = token;
         } while (!currentToken.isEmpty());
     }
