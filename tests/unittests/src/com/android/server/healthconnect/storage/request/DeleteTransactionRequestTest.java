@@ -36,17 +36,17 @@ import android.health.connect.datatypes.BloodGlucoseRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.StepsRecord;
-import android.os.Environment;
 
 import androidx.test.core.app.ApplicationProvider;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
@@ -54,7 +54,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
@@ -69,13 +68,9 @@ public class DeleteTransactionRequestTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -84,8 +79,6 @@ public class DeleteTransactionRequestTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector injector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)

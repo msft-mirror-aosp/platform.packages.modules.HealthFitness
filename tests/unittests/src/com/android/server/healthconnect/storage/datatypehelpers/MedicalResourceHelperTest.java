@@ -78,7 +78,6 @@ import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
@@ -87,6 +86,8 @@ import androidx.test.core.app.ApplicationProvider;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -128,13 +129,9 @@ public class MedicalResourceHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private static final long DATA_SOURCE_ROW_ID = 1234;
     private static final String INVALID_PAGE_TOKEN = "aw==";
@@ -142,7 +139,6 @@ public class MedicalResourceHelperTest {
 
     private MedicalResourceHelper mMedicalResourceHelper;
     private TransactionManager mTransactionManager;
-    private TransactionTestUtils mTransactionTestUtils;
     private AccessLogsHelper mAccessLogsHelper;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
@@ -159,12 +155,13 @@ public class MedicalResourceHelperTest {
                         .setTimeSource(mFakeTimeSource)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
         mUtil = new PhrTestUtils(context, healthConnectInjector);
+
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        transactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        transactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
     }
 
     @Test

@@ -32,7 +32,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -45,7 +44,6 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.UserHandle;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -54,7 +52,9 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -69,7 +69,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -114,14 +113,10 @@ public class ImportManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
-                    .setStrictness(Strictness.LENIENT)
                     .mockStatic(ExportImportLogger.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
+                    .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private ImportManager mImportManagerSpy;
 
@@ -129,7 +124,6 @@ public class ImportManagerTest {
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
-    private HealthConnectNotificationSender mNotificationSender;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
@@ -137,6 +131,7 @@ public class ImportManagerTest {
     private DeviceInfoHelper mDeviceInfoHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
+    @Mock private HealthConnectNotificationSender mNotificationSender;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
@@ -157,20 +152,19 @@ public class ImportManagerTest {
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mDatabaseHelpers = healthConnectInjector.getDatabaseHelpers();
-        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
-        mNotificationSender = mock(HealthConnectNotificationSender.class);
-
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
-        healthConnectInjector.getHealthConnectDeviceConfigManager();
+        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
+
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
-        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
 
         Instant timeStamp = Instant.parse("2024-06-04T16:39:12Z");
         Clock fakeClock = Clock.fixed(timeStamp, ZoneId.of("UTC"));
