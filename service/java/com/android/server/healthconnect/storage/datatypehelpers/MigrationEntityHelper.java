@@ -40,6 +40,10 @@ import java.util.List;
  */
 public final class MigrationEntityHelper extends DatabaseHelper {
 
+    public MigrationEntityHelper(DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
+    }
+
     @VisibleForTesting public static final String TABLE_NAME = "migration_entity_table";
     private static final String COLUMN_ENTITY_ID = "entity_id";
 

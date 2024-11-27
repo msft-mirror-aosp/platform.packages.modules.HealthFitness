@@ -26,6 +26,7 @@ import static com.android.server.healthconnect.storage.request.DeleteTransaction
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.RecordIdFilter;
@@ -36,6 +37,8 @@ import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.os.Environment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -82,9 +85,10 @@ public class DeleteTransactionRequestTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector injector =
-                HealthConnectInjectorImpl.newBuilderForTest(
-                                mHealthConnectDatabaseTestRule.getDatabaseContext())
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();

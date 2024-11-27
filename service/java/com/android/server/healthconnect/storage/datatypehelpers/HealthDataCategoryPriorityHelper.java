@@ -93,7 +93,9 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             TransactionManager transactionManager,
             PreferenceHelper preferenceHelper,
             PackageInfoUtils packageInfoUtils,
-            HealthConnectMappings healthConnectMappings) {
+            HealthConnectMappings healthConnectMappings,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mAppInfoHelper = appInfoHelper;
         mPackageInfoUtils = packageInfoUtils;
         mTransactionManager = transactionManager;
@@ -211,8 +213,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     }
 
     /**
-     * Refreshes the priority list and returns the list of package names based on priority
-     * for the input {@link HealthDataCategory}
+     * Refreshes the priority list and returns the list of package names based on priority for the
+     * input {@link HealthDataCategory}
      */
     public List<String> syncAndGetPriorityOrder(
             @HealthDataCategory.Type int type, Context context) {

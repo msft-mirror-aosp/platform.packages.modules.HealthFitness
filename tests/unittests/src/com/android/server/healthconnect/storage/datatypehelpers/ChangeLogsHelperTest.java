@@ -40,6 +40,8 @@ import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -79,7 +81,7 @@ public class ChangeLogsHelperTest {
 
     @Before
     public void setup() {
-        Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))

@@ -111,6 +111,7 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
                 .sorted()
                 .joinToString("\n")
         supportedMedicalPreference?.summary = sampleMedicalPermissions
+        supportedMedicalPreference?.isSelectable = false
 
         footer?.title = getString(R.string.medical_request_footer)
         footer?.setLearnMoreText(getString(R.string.medical_request_about_health_records))
