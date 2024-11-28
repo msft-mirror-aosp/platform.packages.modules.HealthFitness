@@ -34,6 +34,7 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
+import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -49,6 +50,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceH
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
 
 /**
@@ -200,6 +202,14 @@ public abstract class HealthConnectInjector {
 
     /** Getter for {@link BackupRestore} instance initialised by the Health Connect Injector. */
     public abstract BackupRestore getBackupRestore();
+
+    /**
+     * Getter for {@link PreferencesManager} instance initialised by the Health Connect Injector.
+     */
+    public abstract PreferencesManager getPreferencesManager();
+
+    /** Getter for {@link DailyCleanupJob} instance initialised by the Health Connect Injector. */
+    public abstract DailyCleanupJob getDailyCleanupJob();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

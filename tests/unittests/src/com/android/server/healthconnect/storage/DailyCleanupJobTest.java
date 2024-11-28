@@ -33,7 +33,7 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.AutoDeleteService;
+import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
-public class AutoDeleteServiceTest {
+public class DailyCleanupJobTest {
     private static final String AUTO_DELETE_DURATION_RECORDS_KEY =
             "auto_delete_duration_records_key";
 
@@ -87,6 +87,7 @@ public class AutoDeleteServiceTest {
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     private HealthConnectInjector mHealthConnectInjector;
+    private DailyCleanupJob mDailyCleanupJob;
 
     @Before
     public void setup() {
@@ -105,31 +106,14 @@ public class AutoDeleteServiceTest {
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mDailyCleanupJob = mHealthConnectInjector.getDailyCleanupJob();
     }
 
     @Test
-    public void testSetRecordRetentionPeriodInDays() {
-        AutoDeleteService.setRecordRetentionPeriodInDays(
-                30, mHealthConnectInjector.getPreferenceHelper());
-
-        verify(mPreferenceHelper)
-                .insertOrReplacePreference(
-                        Mockito.eq(AUTO_DELETE_DURATION_RECORDS_KEY),
-                        Mockito.eq(String.valueOf(30)));
-    }
-
-    @Test
-    public void testStartAutoDelete_getPreferenceReturnNull() {
+    public void testStartDailyCleanup_getPreferenceReturnNull() {
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY)).thenReturn(null);
 
-        AutoDeleteService.startAutoDelete(
-                mContext,
-                mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                mHealthConnectInjector.getPreferenceHelper(),
-                mHealthConnectInjector.getAppInfoHelper(),
-                mHealthConnectInjector.getTransactionManager(),
-                mHealthConnectInjector.getAccessLogsHelper(),
-                mHealthConnectInjector.getActivityDateHelper());
+        mDailyCleanupJob.startDailyCleanup();
 
         verify(mTransactionManager, Mockito.times(2))
                 .deleteWithoutChangeLogs(
@@ -140,18 +124,11 @@ public class AutoDeleteServiceTest {
     }
 
     @Test
-    public void testStartAutoDelete_getPreferenceReturnNonNull() {
+    public void testStartDailyCleanup_getPreferenceReturnNonNull() {
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY))
                 .thenReturn(String.valueOf(30));
 
-        AutoDeleteService.startAutoDelete(
-                mContext,
-                mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                mHealthConnectInjector.getPreferenceHelper(),
-                mHealthConnectInjector.getAppInfoHelper(),
-                mHealthConnectInjector.getTransactionManager(),
-                mHealthConnectInjector.getAccessLogsHelper(),
-                mHealthConnectInjector.getActivityDateHelper());
+        mDailyCleanupJob.startDailyCleanup();
 
         verify(mTransactionManager, Mockito.times(2))
                 .deleteWithoutChangeLogs(
