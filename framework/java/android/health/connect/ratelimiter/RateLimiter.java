@@ -18,13 +18,13 @@ package android.health.connect.ratelimiter;
 
 import android.annotation.IntDef;
 import android.health.connect.HealthConnectException;
+import android.os.SystemClock;
 
 import com.android.internal.annotations.GuardedBy;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -309,7 +309,7 @@ public final class RateLimiter {
 
     private static void spendAvailableResources(Quota quota, Integer quotaBucket, long memoryCost) {
         quota.setRemainingQuota(getAvailableQuota(quotaBucket, quota) - memoryCost);
-        quota.setLastUpdatedTime(Instant.now());
+        quota.setLastUpdatedTimeMillis(SystemClock.elapsedRealtime());
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -328,7 +328,11 @@ public final class RateLimiter {
             int uid, @QuotaBucket.Type int quotaBucket, float availableQuota, long cost) {
         sUserIdToQuotasMap
                 .get(uid)
-                .put(quotaBucket, new Quota(Instant.now(), availableQuota - cost));
+                .put(
+                        quotaBucket,
+                        new Quota(
+                                /* lastUpdatedTimeMillis= */ SystemClock.elapsedRealtime(),
+                                availableQuota - cost));
     }
 
     private static Map<Integer, Float> getQuotaBucketToAvailableQuotaMap(
@@ -356,12 +360,12 @@ public final class RateLimiter {
     }
 
     private static float getAvailableQuota(@QuotaBucket.Type int quotaBucket, Quota quota) {
-        Instant lastUpdatedTime = quota.getLastUpdatedTime();
-        Instant currentTime = Instant.now();
-        Duration timeSinceLastQuotaSpend = Duration.between(lastUpdatedTime, currentTime);
+        long lastUpdatedTimeMillis = quota.getLastUpdatedTimeMillis();
+        long currentTimeMillis = SystemClock.elapsedRealtime();
+        long timeSinceLastQuotaSpendMillis = currentTimeMillis - lastUpdatedTimeMillis;
         Duration window = getWindowDuration(quotaBucket);
         float accumulated =
-                timeSinceLastQuotaSpend.toMillis()
+                timeSinceLastQuotaSpendMillis
                         * (getConfiguredMaxRollingQuota(quotaBucket) / (float) window.toMillis());
         // Cannot accumulate more than the configured max quota.
         return Math.min(
@@ -386,13 +390,17 @@ public final class RateLimiter {
         if (!sQuotaBucketToAcrossAppsRemainingMemoryQuota.containsKey(quotaBucket)) {
             sQuotaBucketToAcrossAppsRemainingMemoryQuota.put(
                     quotaBucket,
-                    new Quota(Instant.now(), getConfiguredMaxRollingQuota(quotaBucket)));
+                    new Quota(
+                            /* lastUpdatedTimeMillis= */ SystemClock.elapsedRealtime(),
+                            getConfiguredMaxRollingQuota(quotaBucket)));
         }
         return sQuotaBucketToAcrossAppsRemainingMemoryQuota.get(quotaBucket);
     }
 
     private static Quota getInitialQuota(@QuotaBucket.Type int bucket) {
-        return new Quota(Instant.now(), getConfiguredMaxRollingQuota(bucket));
+        return new Quota(
+                /* lastUpdatedTimeMillis= */ SystemClock.elapsedRealtime(),
+                getConfiguredMaxRollingQuota(bucket));
     }
 
     private static Duration getWindowDuration(@QuotaBucket.Type int quotaBucket) {
