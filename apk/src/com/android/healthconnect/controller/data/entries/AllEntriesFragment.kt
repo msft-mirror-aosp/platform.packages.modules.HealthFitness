@@ -27,7 +27,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commitNow
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,18 +47,19 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
-import com.android.healthconnect.controller.selectabledeletion.DeletionConstants
-import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
+import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.utils.toInstant
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -70,9 +70,11 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
     companion object {
         private const val DELETION_TAG = "DeletionTag"
+        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY = "START_DELETION_ENTRIES_AND_ACCESS_KEY"
     }
 
     @Inject lateinit var logger: HealthConnectLogger
+    @Inject lateinit var timeSource: TimeSource
 
     private lateinit var permissionType: HealthPermissionType
     private val entriesViewModel: EntriesViewModel by activityViewModels()
@@ -229,7 +231,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
@@ -237,10 +238,12 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
             permissionType = fromPermissionTypeName(permissionTypeName)
         }
+        setLoggerPageId()
         setTitle(permissionType.upperCaseLabel())
         logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
 
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
+        setDateNavigationViewMaxDate()
         if (permissionType is MedicalPermissionType) {
             dateNavigationView.isVisible = false
         }
@@ -281,9 +284,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 it.layoutManager = LinearLayoutManager(context, VERTICAL, false)
             }
 
-        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
-            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
-        }
         return view
     }
 
@@ -339,8 +339,22 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 dateNavigationView.getPeriod(),
             )
         }
-        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+        setLoggerPageId()
         logger.logPageImpression()
+    }
+
+    private fun setLoggerPageId() {
+        when (permissionType) {
+            is FitnessPermissionType -> {
+                logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+            }
+            is MedicalPermissionType -> {
+                logger.setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
+            }
+            else -> {
+                logger.setPageId(PageName.UNKNOWN_PAGE)
+            }
+        }
     }
 
     private fun updateMenu(
@@ -405,7 +419,15 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 entriesViewModel.currentSelectedDate.value!!,
             )
         )
-        childFragmentManager.setFragmentResult(DeletionConstants.START_DELETION_KEY, bundleOf())
+        parentFragmentManager.setFragmentResult(START_DELETION_ENTRIES_AND_ACCESS_KEY, bundleOf())
+    }
+
+    private fun setDateNavigationViewMaxDate() {
+        if (permissionType == FitnessPermissionType.PLANNED_EXERCISE) {
+            dateNavigationView.setMaxDate(null)
+        } else {
+            dateNavigationView.setMaxDate(timeSource.currentTimeMillis().toInstant())
+        }
     }
 
     private fun observeEntriesUpdates() {

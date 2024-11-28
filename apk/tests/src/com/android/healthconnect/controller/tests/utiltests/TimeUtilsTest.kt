@@ -24,12 +24,14 @@ import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.formatDateTimeForTimePeriod
+import com.android.healthconnect.controller.utils.formatRecentAccessTime
 import com.android.healthconnect.controller.utils.getPeriodStartDate
 import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -44,6 +46,11 @@ class TimeUtilsTest {
         context.setLocale(Locale.US)
         dateFormatter = LocalDateTimeFormatter(context)
         timeSource = TestTimeSource
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+    }
+
+    @After
+    fun tearDown() {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
@@ -449,5 +456,43 @@ class TimeUtilsTest {
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
         assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun formatRecentAccessTime_24Hour_returns24HourString() {
+        (timeSource as TestTimeSource).setIs24Hour(true)
+        val time = Instant.parse("2024-11-20T20:15:45.000Z")
+        val result = formatRecentAccessTime(time, timeSource, context)
+
+        assertThat(result).isEqualTo("20:15")
+    }
+
+    @Test
+    fun formatRecentAccessTime_12Hour_korea_returnsSpecial12HourString() {
+        (timeSource as TestTimeSource).setIs24Hour(false)
+        context.setLocale(Locale.KOREA)
+        val time = Instant.parse("2024-11-20T20:15:45.000Z")
+        val result = formatRecentAccessTime(time, timeSource, context)
+
+        assertThat(result.substring(3)).isEqualTo("8:15")
+    }
+
+    @Test
+    fun formatRecentAccessTime_12Hour_korean_returnsSpecial12HourString() {
+        (timeSource as TestTimeSource).setIs24Hour(false)
+        context.setLocale(Locale.KOREAN)
+        val time = Instant.parse("2024-11-20T20:15:45.000Z")
+        val result = formatRecentAccessTime(time, timeSource, context)
+
+        assertThat(result.substring(3)).isEqualTo("8:15")
+    }
+
+    @Test
+    fun formatRecentAccessTime_12Hour_returns12HourString() {
+        (timeSource as TestTimeSource).setIs24Hour(false)
+        val time = Instant.parse("2024-11-20T20:15:45.000Z")
+        val result = formatRecentAccessTime(time, timeSource, context)
+
+        assertThat(result).isEqualTo("8:15 PM")
     }
 }

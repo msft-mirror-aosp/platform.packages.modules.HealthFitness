@@ -40,14 +40,10 @@ import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -71,9 +67,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 /**
@@ -85,35 +81,25 @@ import java.util.function.BiConsumer;
  */
 public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
-    private static final ConcurrentHashMap<UserHandle, HealthConnectDatabase>
-            mUserHandleToDatabaseMap = new ConcurrentHashMap<>();
-
-    @Nullable private static volatile TransactionManager sTransactionManager;
 
     private volatile HealthConnectDatabase mHealthConnectDatabase;
-    private UserHandle mUserHandle;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    private TransactionManager(
-            HealthConnectUserContext context,
+    public TransactionManager(
+            StorageContext storageContext,
             InternalHealthConnectMappings internalHealthConnectMappings) {
-        mHealthConnectDatabase = new HealthConnectDatabase(context);
-        mUserHandleToDatabaseMap.put(context.getCurrentUserHandle(), mHealthConnectDatabase);
-        mUserHandle = context.getCurrentUserHandle();
+        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
-    public void onUserUnlocked(HealthConnectUserContext healthConnectUserContext) {
-        if (!mUserHandleToDatabaseMap.containsKey(
-                healthConnectUserContext.getCurrentUserHandle())) {
-            mUserHandleToDatabaseMap.put(
-                    healthConnectUserContext.getCurrentUserHandle(),
-                    new HealthConnectDatabase(healthConnectUserContext));
-        }
+    /** Called when we are switching users. */
+    public void onUserSwitching() {
+        mHealthConnectDatabase.close();
+    }
 
-        mHealthConnectDatabase =
-                mUserHandleToDatabaseMap.get(healthConnectUserContext.getCurrentUserHandle());
-        mUserHandle = healthConnectUserContext.getCurrentUserHandle();
+    /** Setup the transaction manager for the new user. */
+    public void onUserUnlocked(StorageContext storageContext) {
+        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
     }
 
     /**
@@ -163,7 +149,9 @@ public final class TransactionManager {
                     }
 
                     accessLogsHelper.recordUpsertAccessLog(
-                            db, request.getPackageName(), request.getRecordTypeIds());
+                            db,
+                            Objects.requireNonNull(request.getPackageName()),
+                            request.getRecordTypeIds());
                     return request.getUUIdsInOrder();
                 });
     }
@@ -666,7 +654,9 @@ public final class TransactionManager {
                     }
 
                     accessLogsHelper.recordUpsertAccessLog(
-                            db, request.getPackageName(), request.getRecordTypeIds());
+                            db,
+                            Objects.requireNonNull(request.getPackageName()),
+                            request.getRecordTypeIds());
                 });
     }
 
@@ -716,10 +706,6 @@ public final class TransactionManager {
                 db -> {
                     deleteTableRequests.forEach(request -> db.execSQL(request.getDeleteCommand()));
                 });
-    }
-
-    public void onUserSwitching() {
-        mHealthConnectDatabase.close();
     }
 
     private void insertAll(
@@ -1057,50 +1043,5 @@ public final class TransactionManager {
     public interface TransactionRunnableWithReturn<R, E extends Throwable> {
         /** Task to be executed that throws throwable of type E and returns type R. */
         R run(SQLiteDatabase db) throws E;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static synchronized TransactionManager initializeInstance(
-            HealthConnectUserContext context) {
-        if (sTransactionManager == null) {
-            sTransactionManager =
-                    new TransactionManager(context, InternalHealthConnectMappings.getInstance());
-        }
-
-        return sTransactionManager;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static TransactionManager getInitialisedInstance() {
-        requireNonNull(sTransactionManager);
-
-        return sTransactionManager;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @com.android.internal.annotations.VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        sTransactionManager = null;
-    }
-
-    /** Cleans up the database and this manager, so unit tests can run correctly. */
-    @VisibleForTesting
-    public static void cleanUpForTest() {
-        if (sTransactionManager != null) {
-            // Close the DB before we delete the DB file to avoid the exception in b/333679690.
-            sTransactionManager.getWritableDb().close();
-            sTransactionManager.getReadableDb().close();
-            SQLiteDatabase.deleteDatabase(sTransactionManager.getDatabasePath());
-            sTransactionManager = null;
-        }
-    }
-
-    public UserHandle getCurrentUserHandle() {
-        return mUserHandle;
     }
 }

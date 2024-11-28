@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Eile"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lugemine: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Kirjutamine: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Lubade haldamine"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Aeg: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Tegevus"</string>
@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ratastooli lükkamised"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Ratastooli lükkamiste lugemine"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Ratastooli lükkamiste kirjutamine"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Tegevuse intensiivsus"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"tegevuse intensiivsus"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Tegevuse intensiivsuse andmete lugemine"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Tegevuse intensiivsuse andmete kirjutamine"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Ainevahetuse baaskiirus"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"ainevahetuse baaskiirus"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Ainevahetuse baaskiiruse lugemine"</string>
@@ -308,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"nahatemperatuur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Saate lugeda naha temperatuuri"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Saate kirjutada välja naha temperatuuri"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"See hõlmab kõiki Health Connectiga sünkroonitud ja sinna lisatud terviseandmeid. See ei pruugi olla teie täielik haiguslugu. Teie terviseandmetesse ei lisata ühtegi meditsiinilist kirjeldust."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Kõik terviseandmed"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"kõik terviseandmed"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Kõigi terviseandmete kirjutamine"</string>
@@ -317,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Haigused"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"haigused"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Haiguste andmete lugemine"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vaktsiinid"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vaktsiinid"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Vaktsiinide teabe lugemine"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaktsiinid"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaktsiinid"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Vaktsiinide teabe lugemine"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboritulemused"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboritulemused"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Laboritulemuste lugemine"</string>
@@ -369,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Kui annate juurdepääsu, saab see rakendus lugeda ning kirjutada andmeid, näiteks teavet allergiate, laboritulemuste, vaktsiinide ja muu kohta\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Kui annate juurdepääsu, saab see rakendus lugeda andmeid, näiteks teavet allergiate, laboritulemuste, vaktsiinide ja muu kohta\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Teave terviseandmete kohta"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Andmed jagamiseks"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Jagatavad andmed hõlmavad"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Kui lubate, saab <xliff:g id="APP_NAME">%1$s</xliff:g> teie terviseandmeid Health Connectiga jagada."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sünkroonige oma eri rakendustest ja allikatest pärit terviseandmed, et neid ühes kohas hoida"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Kas eemaldada kõik load?"</string>
@@ -428,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Nendel rakendustel pole enam juurdepääsu, kuid nende andmed on endiselt Health Connecti salvestatud."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> saab lugeda andmeid, mis lisati pärast kuupäeva <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Kui soovite hallata muid Androidi lube, mis sellele rakendusele antud on, tehke valikud Seaded &gt; Rakendused"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Andmete puhul, mida rakendusega <xliff:g id="APP_NAME">%1$s</xliff:g> jagate, kehtivad rakenduse privaatsuseeskirjad"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Teavet selle kohta, kuidas <xliff:g id="APP_NAME">%1$s</xliff:g> teie andmeid töötleb, leiate arendaja privaatsuseeskirjadest"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Kui soovite hallata muid Androidi lube, mis sellele rakendusele antud on, avage Seaded ja seejärel puudutage valikut Rakendused"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lugege privaatsuseeskirju"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Pääseti juurde viimase 24 tunni jooksul"</string>
@@ -668,7 +673,7 @@
     <string name="boot_camp" msgid="1554811887379786226">"Treeninglaager"</string>
     <string name="boxing" msgid="2200194516739940317">"Poks"</string>
     <string name="burpee" msgid="1434605818712603589">"Kosmonaut"</string>
-    <string name="calisthenics" msgid="9080623890020954493">"Võimlemisharjutused"</string>
+    <string name="calisthenics" msgid="9080623890020954493">"Kalisteenika"</string>
     <string name="cricket" msgid="7543586707938752011">"Kriket"</string>
     <string name="crunch" msgid="4265356947720591896">"Kõhulihaste harjutus"</string>
     <string name="dancing" msgid="4099572666298130171">"Tantsimine"</string>
@@ -785,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Muusika"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Muu"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Suunamiseta"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -1037,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integratsioon on pooleli"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connecti integreeritakse Androidi süsteemiga.\n\nTeie andmete ja lubade ülekandmine võib pisut aega võtta."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Ärge sulgege rakendust enne, kui teile kuvatakse märguanne, et töötlemine on lõpetatud."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connecti integratsioon on pooleli"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Vajalik on värskendus"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect integreeritakse Androidi süsteemiga ning saate juurdepääsu Health Connectile otse seadete kaudu."</string>
     <string name="update_button" msgid="4544529019832009496">"Värskenda"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Alustage värskendusega, et Health Connect integreeruks teie süsteemiseadetega"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Värskenda kohe"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Vajalik on süsteemivärskendus"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Enne jätkamist värskendage oma telefonisüsteemi."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Kui olete oma telefonile juba süsteemivärskenduse teinud, proovige integratsiooni jätkamiseks oma telefon taaskäivitada."</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Vajalik on Health Connecti rakenduse värskendamine"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Enne jätkamist värskendage Health Connecti rakendus uusimale versioonile."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Salvestusruumi on vaja juurde"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Integreerimisega jätkamiseks vajab Health Connect seadmes <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> salvestusruumi.\n\nVabastage seadmes salvestusruumi ja proovige siis uuesti."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Proovi uuesti"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Ruumi vabastamine"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Salvestusruumi on vaja juurde"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Integreerimisega jätkamiseks vajab Health Connect seadmes <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> salvestusruumi."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Integratsioon peatatud"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Health Connect sulgus Androidi süsteemiga integreerimise ajal.\n\nKlõpsake rakenduse uuesti avamiseks ning andmete ja lubade ülekandmise jätkamiseks „Jätka”."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Andmete säilitamiseks lõpetage toiming järgmise aja jooksul: <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
@@ -1064,11 +1068,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Puudutage, et integreerida Health Connect oma Androidi süsteemiga. Andmete säilitamiseks lõpetage toiming järgmise aja jooksul: <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Puudutage, et integreerida Health Connect oma Androidi süsteemiga."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Jätka"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Jätka Health Connecti integratsiooni"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Andmete säilitamiseks lõpetage toiming järgmise aja jooksul: <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Rakendus vajab värskendamist"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Rakendust <xliff:g id="APP_NAME">%1$s</xliff:g> tuleb värskendada, et Health Connectiga sünkroonimist jätkata"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Mõnda rakendust tuleb värskendada, et Health Connectiga sünkroonimist jätkata"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> tuleb värskendada, et Health Connectiga sünkroonimist jätkata Kõigile rakendustele ei pruugi värskendusi saadaval olla."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Mõni rakendus tuleb värskendada, et Health Connectiga sünkroonimist jätkata Kõigile rakendustele ei pruugi värskendusi saadaval olla."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Kontrollige värskendusi"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Lisateave"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect integratsioon"</string>
@@ -1083,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connecti integratsiooni ei viidud lõpule"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Teid teavitatakse, kui see muutub taas kättesaadavaks."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Selge"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connecti integratsiooni ei viidud lõpule"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Lisateave"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connecti integratsioon lõpetatud"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Avatud"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Mis on uut"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Teil on nüüd juurdepääs Health Connectile otse seadete kaudu. Desinstallige Health Connecti rakendus igal ajal, et vabastada salvestusruumi."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Selge"</string>
@@ -1127,8 +1125,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Vaadake ühilduvaid rakendusi"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Leidke veel rakendusi, mida rakendusega <xliff:g id="APP_NAME">%s</xliff:g> Health Connecti kaudu sünkroonida"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Kuva rakenduste poes"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ekraaniluku seadistamine"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Terviseandmete turvalisuse suurendamiseks määrake selle seadme jaoks PIN-kood, muster või parool"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Ekraaniluku seadistamine"</string>
     <string name="select_all" msgid="837499881590001166">"Vali kõik"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Ühendatud rakendused ei saa enam neid andmeid rakendusest Health Connect lugeda."</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"Märgitud"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Märkimata"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Treeningu kaardimarsruut on saadaval"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Järgmine päev"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Järgmine nädal"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Järgmine kuu"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Eelmine päev"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Eelmine nädal"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Eelmine kuu"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Kas kustutada kõik andmed jäädavalt?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Kas kustutada valitud andmed jäädavalt?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Kas kustutada kõik rakenduse <xliff:g id="APP_NAME">%s</xliff:g> andmed jäädavalt?"</string>
@@ -1148,12 +1158,37 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Kas kustutada valitud rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> kuu <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> kirjed jäädavalt?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Kas kustutada see rakenduse <xliff:g id="APP_NAME">%s</xliff:g> kirje jäädavalt?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Kas kustutada rakenduse <xliff:g id="APP_NAME">%2$s</xliff:g> kategooria <xliff:g id="DATA_TYPE">%1$s</xliff:g> andmed?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Sees"</string>
+    <string name="off" msgid="6996623844428550649">"Väljas"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Juurde pääsetud <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Juurde pääsetud eile <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Juurde pääsetud <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Luba alati"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Luba valitud"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Rakenduse kasutamise ajal"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Keeldu kõigist"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs treeningu- ja heaoluandmetele?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> taotleb juurdepääsu järgmisele: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nValige, kas lubada kõik või juhtida neid ükshaaval."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs seadmele <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Vormisolek ja heaolu"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"kogu aeg"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"kasutamise ajal"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Kogu aeg"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Kasutamise ajal"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> pääseb juurde kõikidele teie vormisoleku ja heaolu andmetele <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Lubatud juurde pääseda"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Lubatud lugeda"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Need load annavad rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääsu teie seadme andurite andmetele."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> rakendust on lubatud"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Ükski rakendus ei taotle"</string>
+    <string name="allowed" msgid="4158456017482263737">"Lubatud"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Pole lubatud"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Selle õigusega rakendustel on teie seadme andurite kaudu juurdepääs andmetele <xliff:g id="DATA_TYPE">%s</xliff:g>."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Kas eemaldada andmete <xliff:g id="DATA_TYPE">%s</xliff:g> juurdepääs kõigile kellas olevatele rakendustele?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Märge"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Rist"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Praegu pääseb <xliff:g id="APP_NAME">%1$s</xliff:g> juurde kõikidele teie treeningu- ja heaoluandmetele <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> kogu aeg juurdepääs treeningu- ja heaoluandmetele?"</string>
+    <string name="current_access" msgid="1457167070428176139">"Rakendusel <xliff:g id="APP_NAME">%1$s</xliff:g> on juurdepääs andmetele <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Hallake treeningu ja heaoluga seotud lubasid"</string>
 </resources>

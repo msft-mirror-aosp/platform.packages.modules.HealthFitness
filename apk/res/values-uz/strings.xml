@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Kecha"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Oʻqildi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Yozildi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Ruxsatlarni boshqarish"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Vaqt: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Faollik"</string>
@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"nogironlar aravasida yurish"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Nogironlar aravasida yurishni oʻqish"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Nogironlar aravasida yurishni yozish"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Faollik intensivligi"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"faollik intensivligi"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Faollik intensivligini oʻqish"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Faollik intensivligini yozish"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Metabolizmning asosiy darajasi"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"Metabolizmning asosiy darajasi"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Metabolizmning asosiy darajasini oʻqish"</string>
@@ -308,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"tana harorati"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Tana haroratini oʻqish uchun ruxsat"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Tana harorati haqida maʼlumotlarni yozish"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Bunga Health Connect ilovasiga sinxronlangan va qoʻshilgan barcha tibbiy qaydlar kiradi. Bu toʻliq tibbiy qaydingiz bo‘lmasligi mumkin va tibbiy qaydingiz tavsifini oʻz ichiga olmaydi."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Barcha tibbiy qaydlar"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"barcha tibbiy qaydlar"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Barcha tibbiy qaydlarni yozish"</string>
@@ -317,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Shartlar"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"shartlar"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Shartlarni oʻqish"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vaksinalar"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vaksinalar"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Vaksinalarni oʻqish"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaksinalar"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaksinalar"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Vaksinalarni oʻqish"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratoriya natijalari"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratoriya natijalari"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Laboratoriya natijalarini oʻqish"</string>
@@ -369,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Agar ruxsat bersangiz, ilova allergiya, laboratoriya natijalari, vaksina va boshqa maʼlumotlarni oʻqishi va yozishi mumkin.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Agar ruxsat bersangiz, ilova allergiya, laboratoriya natijalari, vaksina va boshqa maʼlumotlarni oʻqishi mumkin.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Tibbiy qaydlar haqida"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Ulashiladigan maʼlumot"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Data to share includes"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Agar ruxsat bersangiz, <xliff:g id="APP_NAME">%1$s</xliff:g> tibbiy qaydlarni Health Connect xizmatiga ulasha oladi."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Bir joyda saqlash uchun turli ilova va manbalardan tibbiy qaydlaringizni sinxronlang"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Barcha ruxsatlar taqiqlansinmi?"</string>
@@ -428,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Bu ilovalarda endi ruxsat yoʻq, lekin ularning maʼlumotlari Health Connect ichida saqlanib turadi"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> sanasidan keyin kiritilgan maʼlumotlarni oʻqishi mumkin"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Bu ilova olishi mumkin boʻlgan boshqa Android ruxsatlarini boshqarish uchun Sozlamalar &gt; Ilovalar rukniga kiring"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Axborotlar <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga ularning maxfiylik siyosati asosida ulashiladi"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi maʼlumotlaringizni qanday qayta ishlashi haqida dastur ishlab chiquvchining maxfiylik siyosati orqali tanishishingz mumkin"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Bu ilova olishi mumkin boʻlgan boshqa Android ruxsatlarini boshqarish uchun Sozlamalar &gt; Ilovalar rukniga kiring"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Maxfiylik siyosatini oʻqish"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Oxirgi 24 soat ichida kirilgan"</string>
@@ -785,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Musiqa"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Boshqa"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Boshqaruvsiz"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> d"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> st <xliff:g id="MIN">%2$s</xliff:g> d"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> st"</string>
@@ -985,7 +994,7 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Bu sozlama oʻzgartirilganda Health Connect mavjud maʼlumotlaringizni yangi sozlamalar asosida oʻchiradi"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Maʼlumotlar # oydan keyin avtomatik oʻchirilsinmi?}other{Maʼlumotlar # oydan keyin avtomatik oʻchirilsinmi?}}"</string>
     <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Bunda # oydan beri saqlangan maʼlumotlar ham Health Connect xizmatidan oʻchib ketadi.\n\nMaʼlumotlarni ulangan ilovalardan butunlay oʻchirishni istasangiz, axborot saqlanishi mumkin har bir ilovani tekshiring.}other{Bunda # oydan beri saqlangan maʼlumotlar ham Health Connect xizmatidan oʻchib ketadi.\n\nMaʼlumotlarni ulangan ilovalardan butunlay oʻchirishni istasangiz, axborot saqlanishi mumkin har bir ilovani tekshiring.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Avtomatik tozalanishini sozlash"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Avtomatik oʻchirishni sozlash"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Mavjud axborotlar tozalab tashlanadi"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # oydan beri saqlangan maʼlumotlarni oʻchiradi. Bu oʻzgarishlarning ulangan ilovalarda bajarilishi bir kun vaqt olishi mumkin.}other{Health Connect # oydan beri saqlangan maʼlumotlarni oʻchiradi. Bu oʻzgarishlarning ulangan ilovalarda bajarilishi bir kun vaqt olishi mumkin.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Quyidagi turdagi maʼlumotlar tozalanadi"</string>
@@ -1037,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integratsiya davom etmoqda"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect ilovasi Android tizimi bilan integratsiya qilinmoqda.\n\nMaʼlumotlaringiz va ruxsatlaringiz uzatilishi biroz vaqt olishi mumkin."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Jarayon tugaganligi haqida bildirishnoma olmaguningizcha ilovani yopmang."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect integratsiyasi davom etmoqda"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Yangilash zarur"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect Android tizimi bilan integratsiya qilinmoqda, shuning uchun siz unga sozlamalaringiz orqali bevosita kirishingiz mumkin."</string>
     <string name="update_button" msgid="4544529019832009496">"Yangilash"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Health Connect tizim sozlamalari bilan integratsiyani davom ettirishi uchun ushbu yangilanishni boshlang"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Hoziroq yangilash"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Tizimni yangilash zarur"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Davom etishdan oldin telefon tizimingizni yangilang"</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Agar telefoningiz tizimini allaqachon yangilagan boʻlsangiz, integratsiyani davom etish uchun telefoningizni qayta yoqing"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect yangilanishi kerak"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Davom etishdan oldin Health Connect ilovasini eng oxirgi versiyaga yangilang."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Xotirada koʻproq joy kerak"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect ilovasini integratsiya qilish uchun unga telefoningizdagi xotiradan <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> joy kerak.\n\nTelefoningizda biroz joy oching, keyin qaytadan urining."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Qayta urinish"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Xotiradan joy ochish"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Xotirada koʻproq joy kerak"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect ilovasini integratsiya qilish uchun unga telefoningizdagi xotiradan <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> joy kerak."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Integratsiya pauza qilindi"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Health Connect ilovasi Android tizimi bilan integratsiya qilinayotganda yopildi.\n\nIlovani qayta ochish hamda maʼlumotlar va ruxsatlarni uzatishda davom etish uchun “Davom etish” tugmasini bosing."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Health Connect maʼlumotlaringizni saqlab qolish uchun buni <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ichida tamomlashingiz kerak"</string>
@@ -1064,11 +1068,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Health Connect ilovasini Android tizimi bilan integratsiya qilishni davom ettirish uchun bosing. Maʼlumotlaringizni saqlab qolish uchun buni <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ichida tamomlashingiz kerak"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Health Connect ilovasini Android tizimi bilan integratsiya qilishni davom ettirish uchun bosing."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Davom etish"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect integratsiyasini davom ettiring"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Maʼlumotlaringizni saqlab qolish uchun buni <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ichida tamomlashingiz kerak"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Ilovani yangilash zarur"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect bilan sinxronlashda davom etish uchun <xliff:g id="APP_NAME">%1$s</xliff:g> yangilanishi kerak"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect bilan sinxronlashda davom etish uchun ayrim ilovalar yangilanishi kerak"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Health Connect bilan sinxronlashda davom etish uchun <xliff:g id="APP_NAME">%1$s</xliff:g> yangilanishi kerak. Yangilanishlar barcha ilovalar uchun chiqmasligi mumkin."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Health Connect bilan sinxronlashda davom etish uchun ayrim ilovalar yangilanishi kerak. Yangilanishlar barcha ilovalar uchun chiqmasligi mumkin."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Yangilanish mavjudligini tekshiring"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Batafsil"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect integratsiyasi"</string>
@@ -1083,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connect integratsiyasi tamomlanmadi"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Qayta ishga tushirilganda sizga bildirishnoma yuboriladi."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"OK"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connect integratsiyasi tamomlanmadi"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Batafsil"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connect integratsiya tamomlandi"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Ochish"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nima yangiliklar"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Endi Health Connect ilovasidan bevosita sozlamalar orqali foydalanishingiz mumkin. Xotirada joy ochish uchun istalgan vaqt Health Connect ilovasini oʻchirib tashlash mumkin."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
@@ -1127,8 +1125,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Mos ilovalar"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect orqali <xliff:g id="APP_NAME">%s</xliff:g> bilan sinxronlash uchun boshqa ilovalar toping"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"App Store orqali koʻrish"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ekran qulfini sozlash"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Salomatlik maʼlumotlarini yanada yaxshi himoyalash uchun bu qurilmada PIN kod, grafik kalit yoki parolni sozlang."</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Ekran qulfini sozlash"</string>
     <string name="select_all" msgid="837499881590001166">"Hammasini tanlash"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Ulangan ilovalar keyin Health Connect xizmatidan ushbu axborotni ololmaydi"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"Belgilandi"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Tanlanmagan"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Mashq marshruti xaritasi mavjud"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Keyingi kun"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Keyingi hafta"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Keyingi oy"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Avvalgi kun"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Avvalgi hafta"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Avvalgi oy"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Barcha maʼlumotlar butunlay oʻchirilsinmi?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Barcha <xliff:g id="APP_NAME">%s</xliff:g> maʼlumotlari oʻchirib tashlansinmi?"</string>
@@ -1153,4 +1163,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Kirilgan: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Kecha kirilgan: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Kirilgan: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Har doim ruxsat"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Belgilanganlarga ruxsat berish"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Bu ilova ishlatilayotganida"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Barchasini rad etish"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga saqlangan salomatlik va fitnes maʼlumotlaridan foydalanishga ruxsat berilsinmi?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi <xliff:g id="DATA_TYPES">%2$s</xliff:g> uchun ruxsat olmoqchi.\n\nHammasiga ruxsat bering yoki ularni alohida boshqaring."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga <xliff:g id="DATA_TYPE">%2$s</xliff:g> qurilmasidan foydalanishga ruxsat berilsinmi?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes va salomatlik"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"doimiy"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ilova ishlatilganda"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Doimiy"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Ilova ishlatilganda"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi salomatlik va fitnes maʼlumotlaridan <xliff:g id="ALLOW_MODE">%2$s</xliff:g> foydalanishi mumkin"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Ruxsat berilgan"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Oʻqishga ruxsat berilgan"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Bunday ruxsatlar <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga qurilma sensorlaridagi axborotlardan foydalanish imkonini beradi."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Ruxsat berilgan ilovalar: <xliff:g id="NUMBER_0">%1$d</xliff:g> / <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Ilovalar ruxsat soʻramagan"</string>
+    <string name="allowed" msgid="4158456017482263737">"Ruxsat berilgan"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Ruxsat berilmagan"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Bunday ruxsatga ega ilovalar qurilma sensorlaridagi quyidagi axborotlardan foydalana oladi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Soatdagi barcha ilovalarga quyidagi axborotlardan foydalanish ruxsati yopilsinmi: <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Tanlov belgisi"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Xoch belgisi"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Hozirda <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi salomatlik va fitnes maʼlumotlaridan <xliff:g id="ALLOW_MODE">%2$s</xliff:g> foydalanishi mumkin"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga har doim fitnes va salomatlik axborotidan foydalanishga ruxsat berilsinmi?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasining bunga ruxsati bor: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Fitnes va salomatlik ruxsatlarini boshqarish"</string>
 </resources>

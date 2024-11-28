@@ -18,22 +18,16 @@ package com.android.server.healthconnect.permission;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
-import static java.util.Objects.requireNonNull;
-
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
 import android.os.UserHandle;
-import android.util.ArrayMap;
-import android.util.ArraySet;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -44,46 +38,12 @@ import java.util.Set;
 public final class PackageInfoUtils {
     private static final String TAG = "HCPackageInfoUtils";
 
-    @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
-
-    /**
-     * Store PackageManager for each user. Keys are users, values are PackageManagers which get from
-     * each user.
-     */
-    private final Map<UserHandle, PackageManager> mUsersPackageManager = new ArrayMap<>();
-
-    private PackageInfoUtils() {}
-
-    /** Returns singleton instance of PackageInfoUtils */
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static synchronized PackageInfoUtils getInstance() {
-        if (sPackageInfoUtils == null) {
-            sPackageInfoUtils = new PackageInfoUtils();
-        }
-
-        return requireNonNull(sPackageInfoUtils);
-    }
-
-    Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
-            List<PackageInfo> packageInfos, UserHandle user) {
-        Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
-        for (PackageInfo info : packageInfos) {
-            if (info.sharedUserId != null) {
-                if (sharedUserNameToUids.get(info.sharedUserId) == null) {
-                    sharedUserNameToUids.put(info.sharedUserId, new ArraySet<>());
-                }
-                sharedUserNameToUids.get(info.sharedUserId).add(info.applicationInfo.uid);
-            }
-        }
-        return sharedUserNameToUids;
-    }
+    public PackageInfoUtils() {}
 
     public List<PackageInfo> getPackagesHoldingHealthPermissions(UserHandle user, Context context) {
         // TODO(b/260707328): replace with getPackagesHoldingPermissions
         List<PackageInfo> allInfos =
-                getPackageManagerAsUser(user, context)
+                getPackageManagerAsUser(context, user)
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
         List<PackageInfo> healthAppsInfos = new ArrayList<>();
 
@@ -95,12 +55,10 @@ public final class PackageInfoUtils {
         return healthAppsInfos;
     }
 
-    @SuppressWarnings("NullAway")
-    // TODO(b/317029272): fix this suppression
     boolean hasGrantedHealthPermissions(String[] packageNames, UserHandle user, Context context) {
         for (String packageName : packageNames) {
             PackageInfo info = getPackageInfoWithPermissionsAsUser(packageName, user, context);
-            if (anyRequestedHealthPermissionGranted(context, info)) {
+            if (info != null && anyRequestedHealthPermissionGranted(context, info)) {
                 return true;
             }
         }
@@ -108,8 +66,13 @@ public final class PackageInfoUtils {
     }
 
     @Nullable
-    String[] getPackagesForUid(int packageUid, UserHandle user, Context context) {
-        return getPackageManagerAsUser(user, context).getPackagesForUid(packageUid);
+    String[] getPackagesForUid(Context context, UserHandle user, int packageUid) {
+        return getPackageManagerAsUser(context, user).getPackagesForUid(packageUid);
+    }
+
+    String[] getPackagesForUidNonNull(Context context, UserHandle user, int packageUid) {
+        String[] packages = getPackagesForUid(context, user, packageUid);
+        return packages != null ? packages : new String[] {};
     }
 
     /**
@@ -119,10 +82,9 @@ public final class PackageInfoUtils {
      * @param packageInfo Package to check
      * @return If the given package is connected to Health Connect.
      */
-    public static boolean anyRequestedHealthPermissionGranted(
-            @Nullable Context context, @Nullable PackageInfo packageInfo) {
-        if (context == null || packageInfo == null || packageInfo.requestedPermissions == null) {
-            Log.w(TAG, "Can't extract requested permissions from the package info.");
+    private static boolean anyRequestedHealthPermissionGranted(
+            Context context, PackageInfo packageInfo) {
+        if (packageInfo.requestedPermissions == null) {
             return false;
         }
 
@@ -142,7 +104,7 @@ public final class PackageInfoUtils {
     public PackageInfo getPackageInfoWithPermissionsAsUser(
             String packageName, UserHandle user, Context context) {
         try {
-            return getPackageManagerAsUser(user, context)
+            return getPackageManagerAsUser(context, user)
                     .getPackageInfo(
                             packageName, PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
         } catch (PackageManager.NameNotFoundException e) {
@@ -155,7 +117,7 @@ public final class PackageInfoUtils {
     @Nullable
     String getSharedUserNameFromUid(int uid, Context context) {
         UserHandle user = UserHandle.getUserHandleForUid(uid);
-        PackageManager packageManager = getPackageManagerAsUser(user, context);
+        PackageManager packageManager = getPackageManagerAsUser(context, user);
         String[] packages = packageManager.getPackagesForUid(uid);
         if (packages == null || packages.length == 0) {
             Log.e(TAG, "Can't get package names for UID: " + uid);
@@ -172,31 +134,12 @@ public final class PackageInfoUtils {
         }
     }
 
-    Optional<String> getPackageNameFromUid(int uid) {
-        String[] packages = getPackageNamesForUid(uid);
-        if (packages.length != 1) {
-            Log.w(TAG, "Can't get one package name for UID: " + uid);
-            return Optional.empty();
-        }
-        return Optional.of(packages[0]);
-    }
-
-    String[] getPackageNamesForUid(int uid) {
-        PackageManager packageManager =
-                mUsersPackageManager.get(UserHandle.getUserHandleForUid(uid));
-        if (packageManager == null) {
-            return new String[] {};
-        }
-        String[] packages = packageManager.getPackagesForUid(uid);
-        return packages != null ? packages : new String[] {};
-    }
-
     @Nullable
     Integer getPackageUid(String packageName, UserHandle user, Context context) {
         Integer uid = null;
         try {
             uid =
-                    getPackageManagerAsUser(user, context)
+                    getPackageManagerAsUser(context, user)
                             .getPackageUid(
                                     packageName,
                                     PackageManager.PackageInfoFlags.of(/* flags= */ 0));
@@ -206,12 +149,62 @@ public final class PackageInfoUtils {
         return uid;
     }
 
-    private PackageManager getPackageManagerAsUser(UserHandle user, Context context) {
-        PackageManager packageManager = mUsersPackageManager.get(user);
-        if (packageManager == null) {
-            packageManager = context.getPackageManager();
-            mUsersPackageManager.put(user, packageManager);
+    /**
+     * Returns the list of health permissions granted to a given package name. It does not check if
+     * the given package name is valid.
+     */
+    public static List<String> getGrantedHealthPermissions(
+            Context context, String packageName, UserHandle user) {
+        PackageInfo packageInfo =
+                getPackageInfoUnchecked(
+                        packageName,
+                        user,
+                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS),
+                        context);
+
+        return getGrantedHealthPermissions(context, packageInfo);
+    }
+
+    /** Returns the list of health permissions granted to the given {@link PackageInfo}. */
+    public static List<String> getGrantedHealthPermissions(
+            Context context, PackageInfo packageInfo) {
+        Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(context);
+
+        if (packageInfo.requestedPermissions == null) {
+            return List.of();
         }
-        return packageManager;
+
+        List<String> grantedHealthPerms = new ArrayList<>(packageInfo.requestedPermissions.length);
+        for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
+            String currPerm = packageInfo.requestedPermissions[i];
+            if (packageInfo.requestedPermissionsFlags != null
+                    && healthPermissions.contains(currPerm)
+                    && ((packageInfo.requestedPermissionsFlags[i]
+                                    & PackageInfo.REQUESTED_PERMISSION_GRANTED)
+                            != 0)) {
+                grantedHealthPerms.add(currPerm);
+            }
+        }
+        return grantedHealthPerms;
+    }
+
+    /**
+     * Returns the list of {@link PackageInfo} for a given package. It does not check if the given
+     * package name is valid.
+     */
+    public static PackageInfo getPackageInfoUnchecked(
+            String packageName,
+            UserHandle user,
+            PackageManager.PackageInfoFlags flags,
+            Context context) {
+        try {
+            return getPackageManagerAsUser(context, user).getPackageInfo(packageName, flags);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new IllegalArgumentException("invalid package", e);
+        }
+    }
+
+    private static PackageManager getPackageManagerAsUser(Context context, UserHandle user) {
+        return context.createContextAsUser(user, /* flags */ 0).getPackageManager();
     }
 }

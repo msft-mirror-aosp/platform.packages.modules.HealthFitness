@@ -64,17 +64,20 @@ import android.util.Slog;
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
-import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.exportimport.DatabaseMerger;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.utils.FilesUtil;
 import com.android.server.healthconnect.utils.RunnableWithThrowable;
@@ -91,6 +94,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -177,6 +181,14 @@ public final class BackupRestore {
     @VisibleForTesting static final String STAGED_DATABASE_DIR = "remote_staged";
 
     @VisibleForTesting static final String STAGED_DATABASE_NAME = "healthconnect_staged.db";
+
+    private static final String DATABASE_BACKUP_FILE_NAME = "healthconnect_backup.db";
+    private static final String BACKUP_DIR = "backup";
+    private static final List<String> PHR_TABLES_TO_CLEAR =
+            List.of(
+                    MedicalDataSourceHelper.getMainTableName(),
+                    MedicalResourceHelper.getMainTableName(),
+                    MedicalResourceIndicesHelper.getTableName());
 
     private static final String TAG = "HealthConnectBackupRestore";
     private final ReentrantReadWriteLock mStatesLock = new ReentrantReadWriteLock(true);
@@ -265,9 +277,8 @@ public final class BackupRestore {
             Map<String, HealthConnectException> exceptionsByFileName,
             UserHandle userHandle,
             IDataStagingFinishedCallback callback) {
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
-        File stagedRemoteDataDir = dbContext.getDatabaseDir();
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
+        File stagedRemoteDataDir = dbContext.getDataDir();
         try {
             stagedRemoteDataDir.mkdirs();
 
@@ -358,7 +369,34 @@ public final class BackupRestore {
         Map<String, ParcelFileDescriptor> pfdsByFileName =
                 stageRemoteDataRequest.getPfdsByFileName();
 
-        var backupFilesByFileNames = getBackupFilesByFileNames(userHandle);
+        // If PERSONAL_HEALTH_RECORD_DISABLE_D2D is enabled, create a temporary copy of the
+        // HC database and delete all the PHR tables content.
+        // Set the default to the original database path, if the PERSONAL_HEALTH_RECORD_DISABLE_D2D
+        // is enabled, it will be updated to be database copy path.
+        File databasePath = mTransactionManager.getDatabasePath();
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, BACKUP_DIR);
+        File backupDataDir = dbContext.getDataDir();
+        if (Flags.personalHealthRecordDisableD2d()) {
+            databasePath = new File(backupDataDir, DATABASE_BACKUP_FILE_NAME);
+            try {
+                // Copies the HC database to the temp file.
+                copyDatabase(databasePath);
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to create local file for backup", e);
+                return;
+            }
+
+            try {
+                // Deletes the PHR tables content from the temp file.
+                deletePhrTablesContent(dbContext);
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to clear PHR tables.", e);
+                return;
+            }
+        }
+
+        var backupFilesByFileNames =
+                getBackupFilesByFileNames(userHandle, backupDataDir, databasePath);
         pfdsByFileName.forEach(
                 (fileName, pfd) -> {
                     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -378,7 +416,7 @@ public final class BackupRestore {
                 });
 
         if (Flags.d2dFileDeletionBugFix()) {
-            deleteBackupFiles(userHandle);
+            deleteBackupFiles(backupDataDir);
         }
     }
 
@@ -391,6 +429,35 @@ public final class BackupRestore {
         }
         backupFileNames.add(GRANT_TIME_FILE_NAME);
         return new BackupFileNamesSet(backupFileNames);
+    }
+
+    private void copyDatabase(File destination) throws IOException {
+        Slog.i(TAG, "Database copying started.");
+
+        if (!destination.exists() && !destination.mkdirs()) {
+            throw new IOException("Unable to create directory for the database copy.");
+        }
+
+        Files.copy(
+                mTransactionManager.getDatabasePath().toPath(),
+                destination.toPath(),
+                StandardCopyOption.REPLACE_EXISTING);
+
+        Slog.i(TAG, "Database copying completed: " + destination.toPath().toAbsolutePath());
+    }
+
+    private void deletePhrTablesContent(StorageContext dbContext) {
+        // Throwing a exception when calling this method implies that it was not possible to
+        // create a HC database from the file and, therefore, most probably the database was
+        // corrupted during the file copy.
+        try (HealthConnectDatabase exportDatabase =
+                new HealthConnectDatabase(dbContext, DATABASE_BACKUP_FILE_NAME)) {
+            SQLiteDatabase db = exportDatabase.getReadableDatabase();
+            for (String tableName : PHR_TABLES_TO_CLEAR) {
+                db.execSQL("DELETE FROM " + tableName + ";");
+            }
+        }
+        Slog.i(TAG, "Drop PHR tables completed.");
     }
 
     /** Updates the download state of the remote data. */
@@ -408,13 +475,12 @@ public final class BackupRestore {
     /** Deletes all the staged data and resets all the states. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(UserHandle userHandle) {
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
 
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
             dbContext.deleteDatabase(STAGED_DATABASE_NAME);
-            FilesUtil.deleteDir(dbContext.getDatabaseDir());
+            FilesUtil.deleteDir(dbContext.getDataDir());
         }
         setDataDownloadState(DATA_DOWNLOAD_STATE_UNKNOWN, true /* force */);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_UNKNOWN, true /* force */);
@@ -464,9 +530,8 @@ public final class BackupRestore {
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
     public Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
-        File[] allFiles = dbContext.getDatabaseDir().listFiles();
+        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
+        File[] allFiles = dbContext.getDataDir().listFiles();
         if (allFiles == null) {
             return Collections.emptySet();
         }
@@ -605,8 +670,8 @@ public final class BackupRestore {
         }
 
         int currentDbVersion = mTransactionManager.getDatabaseVersion();
-        DatabaseContext dbContext =
-                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, mCurrentForegroundUser);
+        StorageContext dbContext =
+                StorageContext.create(mContext, mCurrentForegroundUser, STAGED_DATABASE_DIR);
         File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
         if (stagedDbFile.exists()) {
             try (SQLiteDatabase stagedDb =
@@ -642,14 +707,12 @@ public final class BackupRestore {
         }
     }
 
-    private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
+    private Map<String, File> getBackupFilesByFileNames(
+            UserHandle userHandle, File backupDataDir, File databasePath) {
         ArrayMap<String, File> backupFilesByFileNames = new ArrayMap<>();
 
-        File databasePath = mTransactionManager.getDatabasePath();
         backupFilesByFileNames.put(STAGED_DATABASE_NAME, databasePath);
 
-        File backupDataDir = getBackupDataDirectoryForUser(userHandle.getIdentifier());
-        backupDataDir.mkdirs();
         File grantTimeFile = new File(backupDataDir, GRANT_TIME_FILE_NAME);
         try {
             grantTimeFile.createNewFile();
@@ -663,9 +726,12 @@ public final class BackupRestore {
         return backupFilesByFileNames;
     }
 
-    private void deleteBackupFiles(UserHandle userHandle) {
+    private void deleteBackupFiles(File backupDataDir) {
+        if (Flags.personalHealthRecordDisableD2d()) {
+            File databaseBackupFile = new File(backupDataDir, DATABASE_BACKUP_FILE_NAME);
+            databaseBackupFile.delete();
+        }
         // We only create a backup copy for grant times. DB is copied from source.
-        File backupDataDir = getBackupDataDirectoryForUser(userHandle.getIdentifier());
         File grantTimeFile = new File(backupDataDir, GRANT_TIME_FILE_NAME);
         grantTimeFile.delete();
     }
@@ -969,17 +1035,8 @@ public final class BackupRestore {
         }
     }
 
-    private static File getBackupDataDirectoryForUser(int userId) {
-        return getNamedHcDirectoryForUser("backup", userId);
-    }
-
-    private static File getNamedHcDirectoryForUser(String dirName, int userId) {
-        File hcDirectoryForUser = FilesUtil.getDataSystemCeHCDirectoryForUser(userId);
-        return new File(hcDirectoryForUser, dirName);
-    }
-
-    private void mergeGrantTimes(DatabaseContext dbContext) {
-        File restoredGrantTimeFile = new File(dbContext.getDatabaseDir(), GRANT_TIME_FILE_NAME);
+    private void mergeGrantTimes(StorageContext dbContext) {
+        File restoredGrantTimeFile = new File(dbContext.getDataDir(), GRANT_TIME_FILE_NAME);
         Slog.i(TAG, "Merging grant times.");
 
         UserGrantTimeState userGrantTimeState =
@@ -993,7 +1050,7 @@ public final class BackupRestore {
         }
     }
 
-    private void mergeDatabase(DatabaseContext dbContext) {
+    private void mergeDatabase(StorageContext dbContext) {
         synchronized (mMergingLock) {
             if (!dbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
                 Slog.i(TAG, "No staged db found.");

@@ -16,13 +16,22 @@
 
 package com.android.server.healthconnect.logging;
 
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_STORAGE_STATS;
+
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
+
 import android.content.Context;
 import android.health.HealthFitnessStatsLog;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.TableSizeHelper;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class to log Health Connect database stats.
@@ -59,5 +68,30 @@ class DatabaseStatsLogger {
                 numberOfIntervalRecords,
                 numberOfSeriesRecords,
                 numberOfChangeLogs);
+    }
+
+    /** Writes PHR database stats to statsd. */
+    static void logPhrDatabaseStats(
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper,
+            TableSizeHelper tableSizeHelper) {
+        if (!personalHealthRecordTelemetry()) {
+            return;
+        }
+
+        if (medicalDataSourceHelper.getMedicalDataSourcesCount() == 0
+                && medicalResourceHelper.getMedicalResourcesCount() == 0) {
+            return;
+        }
+
+        Long phrDbSizeLong =
+                tableSizeHelper.getFileBytes(
+                        Set.of(
+                                MedicalDataSourceHelper.getMainTableName(),
+                                MedicalResourceHelper.getMainTableName(),
+                                MedicalResourceIndicesHelper.getTableName()));
+        if (phrDbSizeLong != null) {
+            HealthFitnessStatsLog.write(HEALTH_CONNECT_PHR_STORAGE_STATS, phrDbSizeLong);
+        }
     }
 }

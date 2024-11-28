@@ -132,6 +132,7 @@ package android.health.connect {
 
   public final class HealthPermissions {
     field public static final String READ_ACTIVE_CALORIES_BURNED = "android.permission.health.READ_ACTIVE_CALORIES_BURNED";
+    field @FlaggedApi("com.android.healthfitness.flags.activity_intensity") public static final String READ_ACTIVITY_INTENSITY = "android.permission.health.READ_ACTIVITY_INTENSITY";
     field public static final String READ_BASAL_BODY_TEMPERATURE = "android.permission.health.READ_BASAL_BODY_TEMPERATURE";
     field public static final String READ_BASAL_METABOLIC_RATE = "android.permission.health.READ_BASAL_METABOLIC_RATE";
     field public static final String READ_BLOOD_GLUCOSE = "android.permission.health.READ_BLOOD_GLUCOSE";
@@ -156,7 +157,6 @@ package android.health.connect {
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES = "android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_CONDITIONS = "android.permission.health.READ_MEDICAL_DATA_CONDITIONS";
-    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_IMMUNIZATIONS = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_LABORATORY_RESULTS = "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_MEDICATIONS = "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PERSONAL_DETAILS = "android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS";
@@ -164,6 +164,7 @@ package android.health.connect {
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PREGNANCY = "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PROCEDURES = "android.permission.health.READ_MEDICAL_DATA_PROCEDURES";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_SOCIAL_HISTORY = "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_VACCINES = "android.permission.health.READ_MEDICAL_DATA_VACCINES";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_VISITS = "android.permission.health.READ_MEDICAL_DATA_VISITS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_VITAL_SIGNS = "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
@@ -185,6 +186,7 @@ package android.health.connect {
     field public static final String READ_WEIGHT = "android.permission.health.READ_WEIGHT";
     field public static final String READ_WHEELCHAIR_PUSHES = "android.permission.health.READ_WHEELCHAIR_PUSHES";
     field public static final String WRITE_ACTIVE_CALORIES_BURNED = "android.permission.health.WRITE_ACTIVE_CALORIES_BURNED";
+    field @FlaggedApi("com.android.healthfitness.flags.activity_intensity") public static final String WRITE_ACTIVITY_INTENSITY = "android.permission.health.WRITE_ACTIVITY_INTENSITY";
     field public static final String WRITE_BASAL_BODY_TEMPERATURE = "android.permission.health.WRITE_BASAL_BODY_TEMPERATURE";
     field public static final String WRITE_BASAL_METABOLIC_RATE = "android.permission.health.WRITE_BASAL_METABOLIC_RATE";
     field public static final String WRITE_BLOOD_GLUCOSE = "android.permission.health.WRITE_BLOOD_GLUCOSE";
@@ -451,6 +453,23 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.ActiveCaloriesBurnedRecord.Builder clearStartZoneOffset();
     method @NonNull public android.health.connect.datatypes.ActiveCaloriesBurnedRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
     method @NonNull public android.health.connect.datatypes.ActiveCaloriesBurnedRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.activity_intensity") public final class ActivityIntensityRecord extends android.health.connect.datatypes.IntervalRecord {
+    method public int getActivityIntensityType();
+    field public static final int ACTIVITY_INTENSITY_TYPE_MODERATE = 0; // 0x0
+    field public static final int ACTIVITY_INTENSITY_TYPE_VIGOROUS = 1; // 0x1
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> DURATION_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.lang.Long> INTENSITY_MINUTES_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> MODERATE_DURATION_TOTAL;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.time.Duration> VIGOROUS_DURATION_TOTAL;
+  }
+
+  public static final class ActivityIntensityRecord.Builder {
+    ctor public ActivityIntensityRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, @NonNull java.time.Instant, @NonNull java.time.Instant, int);
+    method @NonNull public android.health.connect.datatypes.ActivityIntensityRecord build();
+    method @NonNull public android.health.connect.datatypes.ActivityIntensityRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.ActivityIntensityRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
   }
 
   public final class AggregationType<T> {
@@ -986,7 +1005,7 @@ package android.health.connect.datatypes {
     field public static final int EXERCISE_SESSION_TYPE_FOOTBALL_AUSTRALIAN = 14; // 0xe
     field public static final int EXERCISE_SESSION_TYPE_FRISBEE_DISC = 15; // 0xf
     field public static final int EXERCISE_SESSION_TYPE_GOLF = 16; // 0x10
-    field public static final int EXERCISE_SESSION_TYPE_GUIDED_BREATHING = 17; // 0x11
+    field @Deprecated @FlaggedApi("com.android.healthfitness.flags.deprecate_exercise_session_type_breathing") public static final int EXERCISE_SESSION_TYPE_GUIDED_BREATHING = 17; // 0x11
     field public static final int EXERCISE_SESSION_TYPE_GYMNASTICS = 18; // 0x12
     field public static final int EXERCISE_SESSION_TYPE_HANDBALL = 19; // 0x13
     field public static final int EXERCISE_SESSION_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING = 20; // 0x14
@@ -1230,7 +1249,6 @@ package android.health.connect.datatypes {
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;
     field public static final int MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES = 2; // 0x2
     field public static final int MEDICAL_RESOURCE_TYPE_CONDITIONS = 7; // 0x7
-    field public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS = 1; // 0x1
     field public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6; // 0x6
     field public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9; // 0x9
     field public static final int MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS = 10; // 0xa
@@ -1238,6 +1256,7 @@ package android.health.connect.datatypes {
     field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
     field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8
     field public static final int MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY = 4; // 0x4
+    field public static final int MEDICAL_RESOURCE_TYPE_VACCINES = 1; // 0x1
     field public static final int MEDICAL_RESOURCE_TYPE_VISITS = 12; // 0xc
     field public static final int MEDICAL_RESOURCE_TYPE_VITAL_SIGNS = 5; // 0x5
   }

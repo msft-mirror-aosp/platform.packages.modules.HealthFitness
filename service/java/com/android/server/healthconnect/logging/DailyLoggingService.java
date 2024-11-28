@@ -17,15 +17,12 @@
 package com.android.server.healthconnect.logging;
 
 import android.content.Context;
-import android.os.UserHandle;
 import android.util.Slog;
 
-import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-
-import java.util.Objects;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.TableSizeHelper;
 
 /**
  * Class to log Health Connect metrics logged every 24hrs.
@@ -40,44 +37,57 @@ public class DailyLoggingService {
     /** Log daily metrics. */
     public static void logDailyMetrics(
             Context context,
-            UserHandle userHandle,
-            PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
+            UsageStatsCollector usageStatsCollector,
             TransactionManager transactionManager,
-            HealthConnectPermissionHelper healthConnectPermissionHelper) {
-        Objects.requireNonNull(context);
-        Objects.requireNonNull(userHandle);
-
-        logDatabaseStats(context, transactionManager);
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper,
+            TableSizeHelper tableSizeHelper) {
+        logDatabaseStats(
+                context,
+                transactionManager,
+                medicalDataSourceHelper,
+                medicalResourceHelper,
+                tableSizeHelper);
         logUsageStats(
                 context,
-                userHandle,
-                preferenceHelper,
-                accessLogsHelper,
-                healthConnectPermissionHelper);
+                usageStatsCollector,
+                medicalDataSourceHelper,
+                medicalResourceHelper);
     }
 
-    private static void logDatabaseStats(Context context, TransactionManager transactionManager) {
+    private static void logDatabaseStats(
+            Context context,
+            TransactionManager transactionManager,
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper,
+            TableSizeHelper tableSizeHelper) {
         try {
             DatabaseStatsLogger.log(context, transactionManager);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log database stats", exception);
         }
+        try {
+            DatabaseStatsLogger.logPhrDatabaseStats(
+                    medicalDataSourceHelper, medicalResourceHelper, tableSizeHelper);
+        } catch (Exception exception) {
+            Slog.e(
+                    HEALTH_CONNECT_DAILY_LOGGING_SERVICE,
+                    "Failed to log PHR database stats",
+                    exception);
+        }
     }
 
     private static void logUsageStats(
             Context context,
-            UserHandle userHandle,
-            PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper,
-            HealthConnectPermissionHelper healthConnectPermissionHelper) {
+            UsageStatsCollector usageStatsCollector,
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            MedicalResourceHelper medicalResourceHelper) {
         try {
             UsageStatsLogger.log(
                     context,
-                    userHandle,
-                    preferenceHelper,
-                    accessLogsHelper,
-                    healthConnectPermissionHelper);
+                    usageStatsCollector,
+                    medicalDataSourceHelper,
+                    medicalResourceHelper);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log usage stats", exception);
         }

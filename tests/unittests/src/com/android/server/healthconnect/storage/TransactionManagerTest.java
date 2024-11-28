@@ -27,12 +27,12 @@ import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
@@ -50,14 +50,16 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -65,7 +67,6 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -81,7 +82,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.time.Duration;
@@ -106,14 +106,9 @@ public class TransactionManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new com.android.server.healthconnect.storage.datatypehelpers
-                    .HealthConnectDatabaseTestRule();
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -126,29 +121,26 @@ public class TransactionManagerTest {
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
+    private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-
-        HealthConnectUserContext context = mHealthConnectDatabaseTestRule.getUserContext();
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-
-        AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
-        DeviceInfoHelper.resetInstanceForTest();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
+        mHealthDataCategoryPriorityHelper =
+                healthConnectInjector.getHealthDataCategoryPriorityHelper();
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
     @Test
@@ -166,7 +158,8 @@ public class TransactionManagerTest {
                         .addId(uuid)
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
 
         List<RecordInternal<?>> records =
                 mTransactionManager.readRecordsByIds(
@@ -192,7 +185,7 @@ public class TransactionManagerTest {
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
         ReadTransactionRequest request =
-                getReadTransactionRequest(
+                mTransactionTestUtils.getReadTransactionRequest(
                         ImmutableMap.of(
                                 RECORD_TYPE_STEPS,
                                 stepsUuids,
@@ -222,7 +215,8 @@ public class TransactionManagerTest {
                         .addClientRecordId("id")
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsByIds(
                 readTransactionRequest,
                 mAppInfoHelper,
@@ -246,7 +240,8 @@ public class TransactionManagerTest {
                         .setPageSize(1)
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         Throwable thrown =
                 assertThrows(
                         IllegalArgumentException.class,
@@ -282,7 +277,8 @@ public class TransactionManagerTest {
                         /* isAscending= */ true, /* timeMillis= */ 500, /* offset= */ 0);
 
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         Pair<List<RecordInternal<?>>, PageTokenWrapper> result =
                 mTransactionManager.readRecordsAndPageToken(
                         readTransactionRequest,
@@ -303,7 +299,8 @@ public class TransactionManagerTest {
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build();
 
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
                 readTransactionRequest,
                 mAppInfoHelper,
@@ -328,7 +325,8 @@ public class TransactionManagerTest {
                         .build();
 
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
                 readTransactionRequest,
                 mAppInfoHelper,
@@ -347,7 +345,8 @@ public class TransactionManagerTest {
                         .addId(UUID.randomUUID().toString())
                         .build();
         ReadTransactionRequest readTransactionRequest =
-                getReadTransactionRequest(request.toReadRecordsRequestParcel());
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
 
         Throwable thrown =
                 assertThrows(
@@ -492,7 +491,7 @@ public class TransactionManagerTest {
                         aggregationType,
                         TEST_PACKAGE_NAME,
                         /* packageFilters= */ List.of(),
-                        HealthDataCategoryPriorityHelper.getInstance(),
+                        mHealthDataCategoryPriorityHelper,
                         mInternalHealthConnectMappings,
                         mAppInfoHelper,
                         mTransactionManager,

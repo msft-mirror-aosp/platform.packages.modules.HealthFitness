@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Hôm qua"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Đọc: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Ghi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Quản lý quyền"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Thời gian: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Hoạt động"</string>
@@ -196,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"số lần đẩy xe lăn"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Đọc dữ liệu về số lần đẩy xe lăn"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Ghi dữ liệu về số lần đẩy xe lăn"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Dữ liệu về cường độ hoạt động"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"dữ liệu về cường độ hoạt động"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Đọc dữ liệu về cường độ hoạt động"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Ghi dữ liệu về cường độ hoạt động"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Tỷ lệ trao đổi chất cơ bản"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"tỷ lệ trao đổi chất cơ bản"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Đọc dữ liệu về tỷ lệ trao đổi chất cơ bản"</string>
@@ -308,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"nhiệt độ trên da"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Đọc dữ liệu về nhiệt độ trên da"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Ghi dữ liệu về nhiệt độ trên da"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Dữ liệu này bao gồm mọi hồ sơ sức khoẻ đã được đồng bộ hoá và thêm vào Health Connect. Đây có thể không phải là hồ sơ y tế đầy đủ và không bao gồm nội dung mô tả y tế về hồ sơ sức khoẻ của bạn."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Tất cả hồ sơ sức khoẻ"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"tất cả hồ sơ sức khoẻ"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Ghi tất cả hồ sơ sức khoẻ"</string>
@@ -317,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Tình trạng bệnh"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"tình trạng bệnh"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Đọc dữ liệu về tình trạng bệnh"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vắc-xin"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vắc-xin"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Đọc dữ liệu về vắc-xin"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vắc-xin"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vắc-xin"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Đọc dữ liệu về vắc-xin"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Kết quả xét nghiệm"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"kết quả xét nghiệm"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Đọc kết quả xét nghiệm"</string>
@@ -369,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Nếu bạn cấp quyền truy cập, ứng dụng này có thể đọc và ghi dữ liệu như tình trạng dị ứng, kết quả xét nghiệm, vắc-xin và nhiều dữ liệu khác\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Nếu bạn cấp quyền truy cập, ứng dụng này có thể đọc dữ liệu như tình trạng dị ứng, kết quả xét nghiệm, vắc-xin và nhiều dữ liệu khác\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Giới thiệu về hồ sơ sức khoẻ"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Dữ liệu cần chia sẻ"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Dữ liệu cần chia sẻ bao gồm"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Nếu bạn cho phép, <xliff:g id="APP_NAME">%1$s</xliff:g> có thể chia sẻ hồ sơ sức khoẻ của bạn với Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Đồng bộ hoá hồ sơ sức khoẻ từ nhiều nguồn và ứng dụng để lưu trữ hồ sơ ở cùng một nơi"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Xoá tất cả các quyền?"</string>
@@ -428,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Các ứng dụng này không còn quyền truy cập nhưng vẫn có dữ liệu được lưu trữ trong Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> có thể đọc dữ liệu được thêm sau ngày <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Để quản lý các quyền khác trên Android mà ứng dụng này có thể truy cập, hãy chuyển đến phần Cài đặt &gt; Ứng dụng"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Dữ liệu bạn chia sẻ với <xliff:g id="APP_NAME">%1$s</xliff:g> sẽ tuân theo chính sách quyền riêng tư của ứng dụng đó"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Bạn có thể tìm hiểu cách <xliff:g id="APP_NAME">%1$s</xliff:g> xử lý dữ liệu của bạn trong chính sách bảo mật của nhà phát triển"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Để quản lý các quyền khác trên Android mà ứng dụng này có thể truy cập, hãy chuyển đến phần Cài đặt, sau đó nhấn vào Ứng dụng"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Đọc chính sách quyền riêng tư"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Đã truy cập trong 24 giờ qua"</string>
@@ -785,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Nghe nhạc"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Khác"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Không có hướng dẫn"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> phút"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> giờ <xliff:g id="MIN">%2$s</xliff:g> phút"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> giờ"</string>
@@ -985,13 +994,13 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Khi bạn thay đổi những chế độ cài đặt này, Health Connect sẽ xoá dữ liệu hiện có dựa trên các lựa chọn ưu tiên mới của bạn"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Tự động xoá dữ liệu sau # tháng?}other{Tự động xoá dữ liệu sau # tháng?}}"</string>
     <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Thao tác này cũng xoá dữ liệu đã lưu hơn # tháng khỏi Health Connect.\n\nNếu bạn muốn xoá hoàn toàn dữ liệu khỏi các ứng dụng đã kết nối, hãy kiểm tra từng ứng dụng có thể đã lưu dữ liệu của bạn.}other{Thao tác này cũng xoá dữ liệu đã lưu hơn # tháng khỏi Health Connect.\n\nNếu bạn muốn xoá hoàn toàn dữ liệu khỏi các ứng dụng đã kết nối, hãy kiểm tra từng ứng dụng có thể đã lưu dữ liệu của bạn.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng xoá tự động"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng tự động xoá"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Dữ liệu hiện tại sẽ bị xoá"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}other{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Dữ liệu sẽ bị xoá khỏi các danh mục sau"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Xong"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Tính năng Xoá tự động ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}other{Tính năng Xoá tự động ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}}"</string>
-    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Tính năng Xoá tự động ở trạng thái tắt"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Tính năng Tự động xoá ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}other{Tính năng Tự động xoá ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Tính năng Tự động xoá ở trạng thái tắt"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Đặt thứ tự ưu tiên của ứng dụng"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Nếu nhiều ứng dụng thêm dữ liệu <xliff:g id="DATA_TYPE">%s</xliff:g>, Health Connect sẽ ưu tiên ứng dụng ở vị trí cao nhất trong danh sách này. Bạn có thể kéo các ứng dụng để sắp xếp lại chúng."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Lưu"</string>
@@ -1037,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Đang trong quá trình tích hợp"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Đang tích hợp Health Connect với hệ thống Android.\n\nCó thể mất chút thời gian để chuyển các quyền cũng như dữ liệu của bạn."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Đừng đóng ứng dụng cho đến khi bạn nhận được một thông báo cho biết quá trình đã hoàn tất."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Đang trong quá trình tích hợp Health Connect"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Cần cập nhật"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Đang tích hợp Health Connect với hệ thống Android để bạn có thể truy cập Health Connect ngay trong phần cài đặt"</string>
     <string name="update_button" msgid="4544529019832009496">"Cập nhật"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Hãy bắt đầu cập nhật để Health Connect có thể tiếp tục tích hợp với các chế độ cài đặt của hệ thống"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Cập nhật ngay"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Cần cập nhật hệ thống"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Trước khi tiếp tục, hãy cập nhật hệ thống cho điện thoại của bạn."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Nếu đã cập nhật hệ thống cho điện thoại của bạn, hãy thử khởi động lại điện thoại để tiếp tục tích hợp"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Cần cập nhật Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Trước khi tiếp tục, hãy cập nhật ứng dụng Health Connect lên phiên bản mới nhất."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Cần thêm dung lượng lưu trữ"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect cần <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> dung lượng lưu trữ trên điện thoại của bạn để có thể tiếp tục tích hợp.\n\nHãy giải phóng thêm dung lượng trên điện thoại rồi thử lại."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Thử lại"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Giải phóng dung lượng"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Cần thêm dung lượng lưu trữ"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect cần <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> dung lượng lưu trữ trên điện thoại của bạn để có thể tiếp tục tích hợp."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Đã tạm dừng tích hợp"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Ứng dụng Health Connect đã bị đóng trong quá trình tích hợp với hệ thống Android.\n\nHãy nhấp vào tiếp tục để mở lại ứng dụng này và tiếp tục chuyển các quyền cũng như dữ liệu của bạn."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Để duy trì dữ liệu Health Connect, hãy hoàn tất quá trình này trong vòng <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1064,11 +1068,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Hãy nhấn để tiếp tục tích hợp Health Connect với hệ thống Android Để duy trì dữ liệu của bạn, hãy hoàn tất trong vòng <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Hãy nhấn để tiếp tục tích hợp Health Connect với hệ thống Android"</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Tiếp tục"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Tiếp tục tích hợp Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Để duy trì dữ liệu của bạn, hãy hoàn tất trong vòng <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Cần cập nhật ứng dụng"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Bạn cần cập nhật <xliff:g id="APP_NAME">%1$s</xliff:g> để tiếp tục quá trinhf đồng bộ hoá với Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Bạn cần cập nhật một số ứng dụng để tiếp tục quá trình đồng bộ hoá với Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Bạn cần cập nhật <xliff:g id="APP_NAME">%1$s</xliff:g> để tiếp tục quá trình đồng bộ hoá với Health Connect. Chỉ một số ứng dụng có bản cập nhật."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Bạn cần cập nhật một số ứng dụng để tiếp tục quá trình đồng bộ hoá với Health Connect. Chỉ một số ứng dụng có bản cập nhật."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Kiểm tra để tìm bản cập nhật"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Tìm hiểu thêm"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Tích hợp Health Connect"</string>
@@ -1083,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Chưa tích hợp xong Health Connect"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Bạn sẽ nhận được thông báo khi quá trình tích hợp có thể tiếp tục."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Tôi hiểu"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Chưa tích hợp xong Health Connect"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Đọc thêm"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Đã tích hợp xong Health Connect"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Mở"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Tính năng mới"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Giờ đây, bạn có thể truy cập Health Connect ngay trong phần cài đặt. Gỡ cài đặt ứng dụng Health Connect bất cứ lúc nào để giải phóng không gian lưu trữ."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Tôi hiểu"</string>
@@ -1127,8 +1125,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Xem các ứng dụng tương thích"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Tìm các ứng dụng khác để đồng bộ hoá với <xliff:g id="APP_NAME">%s</xliff:g> qua Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Xem trên cửa hàng ứng dụng"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Đặt một phương thức khoá màn hình"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Để tăng cường bảo mật cho dữ liệu sức khoẻ của bạn, hãy đặt mã PIN, hình mở khoá hoặc mật khẩu cho thiết bị này"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Đặt phương thức khoá màn hình"</string>
     <string name="select_all" msgid="837499881590001166">"Chọn tất cả"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Các ứng dụng đã kết nối sẽ không thể đọc dữ liệu này từ Health Connect nữa"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"Đã đánh dấu"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Chưa chọn"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Có tuyến đường tập thể dục trên bản đồ"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Ngày tiếp theo"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Tuần tiếp theo"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Tháng tiếp theo"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Ngày trước"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Tuần trước"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Tháng trước"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Xoá vĩnh viễn toàn bộ dữ liệu?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Xoá vĩnh viễn dữ liệu đã chọn?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Xoá vĩnh viễn toàn bộ dữ liệu trên <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1148,12 +1158,37 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Xoá vĩnh viễn các mục đã chọn trên <xliff:g id="APP_NAME">%1$s</xliff:g> trong tháng <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Xoá vĩnh viễn mục này trên <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Xoá vĩnh viễn dữ liệu <xliff:g id="DATA_TYPE">%1$s</xliff:g> cho <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for on (8266542510798355807) -->
-    <skip />
-    <!-- no translation found for off (6996623844428550649) -->
-    <skip />
-    <!-- no translation found for wear_app_perms_24h_access (2997184871873750357) -->
-    <skip />
+    <string name="on" msgid="8266542510798355807">"Đang bật"</string>
+    <string name="off" msgid="6996623844428550649">"Đang tắt"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Truy cập lúc <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Truy cập hôm qua lúc <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Truy cập lúc <xliff:g id="TIME_DATE_1">%2$s</xliff:g> ngày <xliff:g id="TIME_DATE_0">%1$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Luôn cho phép"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Cho phép quyền đã chọn"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Trong khi dùng ứng dụng"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Từ chối tất cả"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào dữ liệu về sức khoẻ và hoạt động thể dục?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> đang yêu cầu quyền truy cập vào <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChọn cho phép tất cả hoặc kiểm soát từng quyền."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Sức khoẻ và hoạt động thể dục"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"mọi lúc"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"khi đang sử dụng"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Mọi lúc"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Khi đang sử dụng"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> có thể truy cập vào tất cả dữ liệu về sức khoẻ và hoạt động thể dục của bạn <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Được phép truy cập"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Được phép đọc"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Những quyền này cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào dữ liệu từ các cảm biến trên thiết bị của bạn."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Đã cho phép <xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> ứng dụng"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Không có ứng dụng nào đang yêu cầu"</string>
+    <string name="allowed" msgid="4158456017482263737">"Được phép"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Không được phép"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Các ứng dụng được cấp quyền này có thể truy cập vào dữ liệu <xliff:g id="DATA_TYPE">%s</xliff:g> từ các cảm biến trên thiết bị của bạn."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Xoá quyền truy cập vào <xliff:g id="DATA_TYPE">%s</xliff:g> cho mọi ứng dụng trên đồng hồ của bạn?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Dấu kiểm"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Dấu gạch chéo"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Hiện tại, <xliff:g id="APP_NAME">%1$s</xliff:g> có thể truy cập vào dữ liệu về sức khoẻ và hoạt động thể dục <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào dữ liệu về sức khoẻ và hoạt động thể dục của bạn mọi lúc?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> có quyền truy cập vào <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Quản lý quyền đối với dữ liệu về sức khoẻ và hoạt động thể dục"</string>
 </resources>

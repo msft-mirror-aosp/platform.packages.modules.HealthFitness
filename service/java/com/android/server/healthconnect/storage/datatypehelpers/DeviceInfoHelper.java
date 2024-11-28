@@ -31,7 +31,6 @@ import android.health.connect.datatypes.Device.DeviceType;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Pair;
 
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -56,9 +55,6 @@ public class DeviceInfoHelper extends DatabaseHelper {
     private static final String MODEL_COLUMN_NAME = "model";
     private static final String DEVICE_TYPE_COLUMN_NAME = "device_type";
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile DeviceInfoHelper sDeviceInfoHelper;
-
     /** Map to store deviceInfoId -> DeviceInfo mapping for populating record for read */
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private volatile ConcurrentHashMap<Long, DeviceInfo> mIdDeviceInfoMap;
@@ -69,7 +65,9 @@ public class DeviceInfoHelper extends DatabaseHelper {
 
     private final TransactionManager mTransactionManager;
 
-    private DeviceInfoHelper(TransactionManager transactionManager) {
+    public DeviceInfoHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 
@@ -204,28 +202,6 @@ public class DeviceInfoHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(DEVICE_TYPE_COLUMN_NAME, INTEGER));
 
         return columnInfo;
-    }
-
-    /** Clears instance for test. */
-    @VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void resetInstanceForTest() {
-        sDeviceInfoHelper = null;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static DeviceInfoHelper getInstance() {
-        return getInstance(TransactionManager.getInitialisedInstance());
-    }
-
-    /** Returns an instance of DeviceInfoHelper initialised using the given dependencies. */
-    public static synchronized DeviceInfoHelper getInstance(TransactionManager transactionManager) {
-        if (sDeviceInfoHelper == null) {
-            sDeviceInfoHelper = new DeviceInfoHelper(transactionManager);
-        }
-        return sDeviceInfoHelper;
     }
 
     private static final class DeviceInfo {

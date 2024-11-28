@@ -1,15 +1,23 @@
 package com.android.healthconnect.controller.tests.shared
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions
+import android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS
 import android.health.connect.HealthPermissions.READ_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
+import android.os.Build
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.platform.test.flag.junit.SetFlagsRule
+import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
@@ -20,12 +28,16 @@ import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.UNSUPPORTED_TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.WEAR_LEGACY_TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.WEAR_TEST_APP_PACKAGE_NAME
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.test.runTest
+import org.junit.Assume.assumeFalse
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,13 +47,14 @@ class HealthPermissionReaderTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val setFlagsRule = SetFlagsRule()
+    @get:Rule val checkFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     @Inject lateinit var permissionReader: HealthPermissionReader
     private lateinit var context: Context
 
     @Before
     fun setup() {
-        hiltRule.inject()
+        runWithShellPermissionIdentity({ hiltRule.inject() }, MANAGE_HEALTH_PERMISSIONS)
         context = InstrumentationRegistry.getInstrumentation().context
     }
 
@@ -84,7 +97,6 @@ class HealthPermissionReaderTest {
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY,
                 HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_CONDITIONS.toHealthPermission(),
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS.toHealthPermission(),
@@ -92,6 +104,7 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_MEDICAL_DATA_PREGNANCY.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_PROCEDURES.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY.toHealthPermission(),
+                HealthPermissions.READ_MEDICAL_DATA_VACCINES.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_VISITS.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS.toHealthPermission(),
                 HealthPermissions.WRITE_MEDICAL_DATA.toHealthPermission(),
@@ -162,7 +175,6 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
                 HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
                 HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
@@ -170,6 +182,7 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
                 HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VACCINES,
                 HealthPermissions.READ_MEDICAL_DATA_VISITS,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
                 HealthPermissions.WRITE_MEDICAL_DATA,
@@ -178,6 +191,53 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_PLANNED_EXERCISE,
                 HealthPermissions.WRITE_PLANNED_EXERCISE,
                 HealthPermissions.READ_HEALTH_DATA_HISTORY,
+            )
+    }
+
+    @RequiresFlagsEnabled(
+        Flags.FLAG_ACTIVITY_INTENSITY,
+        Flags.FLAG_ACTIVITY_INTENSITY_DB,
+        Flags.FLAG_HEALTH_CONNECT_MAPPINGS,
+    )
+    @Test
+    fun getHealthPermissions_activityIntensityFlagsEnabled_returnsPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsAtLeast(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
+            )
+    }
+
+    @RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY_DB, Flags.FLAG_HEALTH_CONNECT_MAPPINGS)
+    @RequiresFlagsDisabled(Flags.FLAG_ACTIVITY_INTENSITY)
+    @Test
+    fun getHealthPermissions_activityIntensityFlagDisabled_doesNotReturnPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsNoneOf(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
+            )
+    }
+
+    @RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_HEALTH_CONNECT_MAPPINGS)
+    @RequiresFlagsDisabled(Flags.FLAG_ACTIVITY_INTENSITY_DB)
+    @Test
+    fun getHealthPermissions_activityIntensityDbFlagDisabled_doesNotReturnPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsNoneOf(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
+            )
+    }
+
+    @RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_ACTIVITY_INTENSITY_DB)
+    @RequiresFlagsDisabled(Flags.FLAG_HEALTH_CONNECT_MAPPINGS)
+    @Test
+    fun getHealthPermissions_healthConnectMappingsFlagDisabled_doesNotReturnPermissions() {
+        assertThat(permissionReader.getHealthPermissions())
+            .containsNoneOf(
+                HealthPermissions.READ_ACTIVITY_INTENSITY,
+                HealthPermissions.WRITE_ACTIVITY_INTENSITY,
             )
     }
 
@@ -193,7 +253,8 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getAppsWithHealthPermissions_returnsSupportedApps() = runTest {
+    fun getAppsWithHealthPermissions_returnsSupportedApps_handHeldDevices() = runTest {
+        assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
         assertThat(permissionReader.getAppsWithHealthPermissions())
             .containsAtLeast(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2)
     }
@@ -205,9 +266,41 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getAppsWithHealthPermissions_doesNotReturnUnsupportedApps() = runTest {
+    fun getAppsWithHealthPermissions_doesNotReturnUnsupportedApps_handHeldDevices() = runTest {
+        assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
         assertThat(permissionReader.getAppsWithHealthPermissions())
             .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun getAppsWithHealthPermissions_returnAppsRequestingHealthPermissions_wearDevices() = runTest {
+        assumeTrue(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
+
+        val wearAppsWithHealthPermissions = permissionReader.getAppsWithHealthPermissions()
+        assertThat(wearAppsWithHealthPermissions)
+            .containsAtLeast(
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_PACKAGE_NAME_2,
+                WEAR_LEGACY_TEST_APP_PACKAGE_NAME, // Test split permissiom from BODY_SENSORS
+                WEAR_TEST_APP_PACKAGE_NAME,
+            )
+        // An app is not considered a wear app with health permissions if not requesting a system
+        // health permission, regardless of declaring an intent filter
+        assertThat(wearAppsWithHealthPermissions)
+            .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun getSystemHealthPermissions_returnSystemHealthPermissions() = runTest {
+        assertThat(permissionReader.getSystemHealthPermissions())
+            .containsExactly(
+                HealthPermissions.READ_HEART_RATE,
+                HealthPermissions.READ_OXYGEN_SATURATION,
+                HealthPermissions.READ_SKIN_TEMPERATURE,
+            )
     }
 
     @Test
@@ -306,7 +399,7 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermissions.WRITE_MEDICAL_DATA.toHealthPermission(),
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS.toHealthPermission(),
+                HealthPermissions.READ_MEDICAL_DATA_VACCINES.toHealthPermission(),
                 HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES,
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY,
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
@@ -349,7 +442,7 @@ class HealthPermissionReaderTest {
                 HealthPermissions.WRITE_SLEEP.toHealthPermission(),
                 HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermissions.WRITE_MEDICAL_DATA.toHealthPermission(),
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS.toHealthPermission(),
+                HealthPermissions.READ_MEDICAL_DATA_VACCINES.toHealthPermission(),
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY,
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
             )
@@ -362,7 +455,7 @@ class HealthPermissionReaderTest {
                     HealthPermissions.WRITE_SLEEP.toHealthPermission(),
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                     HealthPermissions.WRITE_MEDICAL_DATA.toHealthPermission(),
-                    HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS.toHealthPermission(),
+                    HealthPermissions.READ_MEDICAL_DATA_VACCINES.toHealthPermission(),
                     HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
                 )
             )

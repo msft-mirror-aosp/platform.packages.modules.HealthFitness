@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_P
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -41,6 +40,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.MedicalResource.MedicalResourceType;
@@ -50,6 +50,7 @@ import android.annotation.Nullable;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirVersion;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import org.json.JSONArray;
@@ -58,7 +59,6 @@ import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -67,10 +67,8 @@ import java.util.Set;
  * @hide
  */
 public class MedicalResourceValidator {
-    private static final FhirVersion R4_FHIR_VERSION = FhirVersion.parseFhirVersion("4.0.1");
-    private static final FhirVersion R4B_FHIR_VERSION = FhirVersion.parseFhirVersion("4.3.0");
-    private static final List<FhirVersion> SUPPORTED_FHIR_VERSIONS =
-            List.of(R4_FHIR_VERSION, R4B_FHIR_VERSION);
+    private static final String CONTAINED_FIELD = "contained";
+
     // For the values in these codes see
     // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-pregnancy-status-uv-ips.html
     private static final Set<String> PREGNANCY_LOINC_CODES =
@@ -95,12 +93,16 @@ public class MedicalResourceValidator {
     private final String mFhirData;
     private final FhirVersion mFhirVersion;
     private final String mDataSourceId;
+    private @Nullable FhirResourceValidator mFhirResourceValidator;
 
     /** Returns a validator for the provided {@link UpsertMedicalResourceRequest}. */
-    public MedicalResourceValidator(UpsertMedicalResourceRequest request) {
+    public MedicalResourceValidator(
+            UpsertMedicalResourceRequest request,
+            @Nullable FhirResourceValidator fhirResourceValidator) {
         mFhirData = request.getData();
         mFhirVersion = request.getFhirVersion();
         mDataSourceId = request.getDataSourceId();
+        mFhirResourceValidator = fhirResourceValidator;
     }
 
     /**
@@ -112,6 +114,7 @@ public class MedicalResourceValidator {
      *   <li>The extracted FHIR resource id cannot be empty
      *   <li>Fhir version needs to be a supported version
      *   <li>The extracted FHIR resource type needs to be a supported type
+     *   <li>The FHIR resource id cannot contain any "contained" resources
      *   <li>The resource needs to map to one of our permission categories
      * </ul>
      *
@@ -130,14 +133,18 @@ public class MedicalResourceValidator {
 
         validateResourceId(extractedFhirResourceId);
         validateFhirVersion(mFhirVersion, extractedFhirResourceId);
+        if (Flags.phrFhirStructuralValidation()) {
+            validateNoContainedResourcesPresent(parsedFhirJsonObj, extractedFhirResourceId);
+        }
 
         @FhirResourceType
         int fhirResourceTypeInt =
                 validateAndGetResourceType(
                         extractedFhirResourceTypeString, extractedFhirResourceId);
 
-        // TODO(b/350010200) Perform structural FHIR validation after FhirResourceValidator is
-        // implemented.
+        if (mFhirResourceValidator != null) {
+            mFhirResourceValidator.validateFhirResource(parsedFhirJsonObj, fhirResourceTypeInt);
+        }
 
         @MedicalResourceType
         int medicalResourceTypeInt =
@@ -165,11 +172,21 @@ public class MedicalResourceValidator {
     }
 
     private static String extractResourceId(JSONObject fhirJsonObj) {
+        Object id;
         try {
-            return fhirJsonObj.getString("id");
+            id = fhirJsonObj.get("id");
         } catch (JSONException e) {
             throw new IllegalArgumentException("Resource is missing id field");
         }
+
+        // The FHIR spec expects this to be a string, so throw an error if this is not a json string
+        // to avoid cases where null leads to an id value "null" for example, if we were to use
+        // JSONObject.getString("id") instead.
+        if (!(id instanceof String)) {
+            throw new IllegalArgumentException("Resource id should be a string");
+        }
+
+        return (String) id;
     }
 
     private static String extractResourceType(JSONObject fhirJsonObj, String resourceId) {
@@ -193,6 +210,30 @@ public class MedicalResourceValidator {
                     "Unsupported FHIR version "
                             + fhirVersion
                             + " for resource with id "
+                            + resourceId);
+        }
+    }
+
+    private static void validateNoContainedResourcesPresent(
+            JSONObject fhirJsonObject, String resourceId) {
+        if (!fhirJsonObject.has(CONTAINED_FIELD)) {
+            return;
+        }
+
+        JSONArray contained;
+        try {
+            contained = fhirJsonObject.getJSONArray(CONTAINED_FIELD);
+        } catch (JSONException exception) {
+            throw new IllegalArgumentException(
+                    "Contained resources are not supported. Found contained field for resource"
+                            + " with id "
+                            + resourceId);
+        }
+
+        if (contained.length() != 0) {
+            throw new IllegalArgumentException(
+                    "Contained resources are not supported. Found contained resource for resource"
+                            + " with id "
                             + resourceId);
         }
     }
@@ -241,7 +282,7 @@ public class MedicalResourceValidator {
                     FHIR_RESOURCE_TYPE_ORGANIZATION:
                 return MEDICAL_RESOURCE_TYPE_VISITS;
             case FHIR_RESOURCE_TYPE_IMMUNIZATION:
-                return MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+                return MEDICAL_RESOURCE_TYPE_VACCINES;
             case FHIR_RESOURCE_TYPE_OBSERVATION:
                 Integer classification = classifyObservation(json);
                 if (classification != null) {

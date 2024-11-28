@@ -72,6 +72,7 @@ import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceListParcelResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
@@ -79,11 +80,13 @@ import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
+import android.health.connect.aidl.MedicalResourceListParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -119,6 +122,8 @@ import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
+
+import com.android.healthfitness.flags.Flags;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -999,7 +1004,6 @@ public class HealthConnectManager {
                             callback) {
         try {
             mService.getCurrentPriority(
-                    mContext.getPackageName(),
                     dataCategory,
                     new IGetPriorityResponseCallback.Stub() {
                         @Override
@@ -1035,7 +1039,6 @@ public class HealthConnectManager {
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         try {
             mService.updatePriority(
-                    mContext.getPackageName(),
                     new UpdatePriorityRequestParcel(request),
                     new IEmptyResponseCallback.Stub() {
                         @Override
@@ -2080,8 +2083,7 @@ public class HealthConnectManager {
 
         Set<String> permissions = new HashSet<>();
         for (PermissionInfo perm : packageInfo.permissions) {
-            if (android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP.equals(
-                    perm.group)) {
+            if (HealthPermissions.isValidHealthPermission(perm)) {
                 permissions.add(perm.name);
             }
         }
@@ -2120,7 +2122,9 @@ public class HealthConnectManager {
      * Interoperability Resources (FHIR)</a> standard. The FHIR resource provided in {@link
      * UpsertMedicalResourceRequest#getData()} is expected to be valid FHIR in JSON representation
      * for the specified {@link UpsertMedicalResourceRequest#getFhirVersion()} according to the <a
-     * href="https://hl7.org/fhir/resourcelist.html">FHIR spec</a>.
+     * href="https://hl7.org/fhir/resourcelist.html">FHIR spec</a>. Structural validation checks
+     * such as resource structure, field types and presence of required fields are performed, but
+     * these checks may not cover all FHIR spec requirements and may change in future versions.
      *
      * <p>Each {@link UpsertMedicalResourceRequest} also has to meet the following requirements.
      *
@@ -2128,6 +2132,7 @@ public class HealthConnectManager {
      *   <li>The FHIR resource contains an "id" and "resourceType" field.
      *   <li>The FHIR resource type is in our accepted list of resource types. See {@link
      *       FhirResource} for the accepted types.
+     *   <li>The FHIR resource does not contain any "contained" resources.
      *   <li>The resource can be mapped to one of the READ_MEDICAL_DATA_ {@link HealthPermissions}
      *       categories.
      *   <li>The {@link UpsertMedicalResourceRequest#getDataSourceId()} is valid.
@@ -2178,20 +2183,41 @@ public class HealthConnectManager {
         }
 
         try {
-            mService.upsertMedicalResources(
-                    mContext.getAttributionSource(),
-                    requests,
-                    new IMedicalResourcesResponseCallback.Stub() {
-                        @Override
-                        public void onResult(List<MedicalResource> medicalResources) {
-                            returnResult(executor, medicalResources, callback);
-                        }
+            if (Flags.phrUpsertFixUseSharedMemory()) {
+                mService.upsertMedicalResourcesFromRequestsParcel(
+                        mContext.getAttributionSource(),
+                        new UpsertMedicalResourceRequestsParcel(requests),
+                        new IMedicalResourceListParcelResponseCallback.Stub() {
+                            @Override
+                            public void onResult(
+                                    MedicalResourceListParcel medicalResourceListParcel) {
+                                returnResult(
+                                        executor,
+                                        medicalResourceListParcel.getMedicalResources(),
+                                        callback);
+                            }
 
-                        @Override
-                        public void onError(HealthConnectExceptionParcel exception) {
-                            returnError(executor, exception, callback);
-                        }
-                    });
+                            @Override
+                            public void onError(HealthConnectExceptionParcel exception) {
+                                returnError(executor, exception, callback);
+                            }
+                        });
+            } else {
+                mService.upsertMedicalResources(
+                        mContext.getAttributionSource(),
+                        requests,
+                        new IMedicalResourcesResponseCallback.Stub() {
+                            @Override
+                            public void onResult(List<MedicalResource> medicalResources) {
+                                returnResult(executor, medicalResources, callback);
+                            }
+
+                            @Override
+                            public void onError(HealthConnectExceptionParcel exception) {
+                                returnError(executor, exception, callback);
+                            }
+                        });
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

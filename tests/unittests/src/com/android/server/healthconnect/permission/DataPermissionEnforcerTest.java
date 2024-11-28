@@ -45,7 +45,6 @@ import android.os.UserHandle;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 
@@ -75,8 +74,6 @@ public class DataPermissionEnforcerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        HealthConnectDeviceConfigManager.initializeInstance(mContext);
-
         mAttributionSource = buildAttributionSource();
 
         when(mContext.getUser()).thenReturn(UserHandle.CURRENT);

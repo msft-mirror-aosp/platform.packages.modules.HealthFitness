@@ -30,6 +30,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDa
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.SqlJoin.INNER_QUERY_ALIAS;
 import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_INNER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -106,18 +107,32 @@ public final class MedicalResourceHelper {
 
     @VisibleForTesting static final String DATA_SOURCE_ID_COLUMN_NAME = "data_source_id";
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
-    private static final String MEDICAL_RESOURCE_COLUMNS =
-            FHIR_RESOURCE_TYPE_COLUMN_NAME
-                    + ","
-                    + FHIR_RESOURCE_ID_COLUMN_NAME
-                    + ","
-                    + FHIR_DATA_COLUMN_NAME
-                    + ","
-                    + MedicalDataSourceHelper.getFhirVersionColumnName()
-                    + ","
-                    + MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()
-                    + ","
-                    + MedicalDataSourceHelper.getDataSourceUuidColumnName();
+    private static final String LAST_MODIFIED_TIMESTAMP_MEDICAL_RESOURCE_ALIAS =
+            "medical_resource_last_modified_time";
+
+    private static final String sLastModifiedTimeInInnerQuery =
+            String.format(
+                    "%1$s.%2$s AS %3$s",
+                    INNER_QUERY_ALIAS,
+                    LAST_MODIFIED_TIME_COLUMN_NAME,
+                    LAST_MODIFIED_TIMESTAMP_MEDICAL_RESOURCE_ALIAS);
+
+    private static final String sMedicalResourceLastModifiedTime =
+            String.format(
+                    "%1$s.%2$s AS %3$s",
+                    getMainTableName(),
+                    LAST_MODIFIED_TIME_COLUMN_NAME,
+                    LAST_MODIFIED_TIMESTAMP_MEDICAL_RESOURCE_ALIAS);
+
+    private static final List<String> sMedicalResourceColumns =
+            List.of(
+                    MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME,
+                    FHIR_RESOURCE_TYPE_COLUMN_NAME,
+                    FHIR_RESOURCE_ID_COLUMN_NAME,
+                    FHIR_DATA_COLUMN_NAME,
+                    MedicalDataSourceHelper.getFhirVersionColumnName(),
+                    MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName(),
+                    MedicalDataSourceHelper.getDataSourceUuidColumnName());
 
     /**
      * A block of SQL with a where clause to read based on the medical resource id composite key.
@@ -243,12 +258,14 @@ public final class MedicalResourceHelper {
         return MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME;
     }
 
-    public static String getLastModifiedColumnName() {
-        return LAST_MODIFIED_TIME_COLUMN_NAME;
-    }
-
     public static String getDataSourceIdColumnName() {
         return DATA_SOURCE_ID_COLUMN_NAME;
+    }
+
+    private static String getMedicalResourceColumns() {
+        List<String> medicalResourceColumns = new ArrayList<>(sMedicalResourceColumns);
+        medicalResourceColumns.add(sMedicalResourceLastModifiedTime);
+        return String.join(DELIMITER, medicalResourceColumns);
     }
 
     private static List<Pair<String, String>> getColumnInfo() {
@@ -294,6 +311,12 @@ public final class MedicalResourceHelper {
                         .getCommand());
     }
 
+    /** Returns the total number of medical resources in HC database. */
+    public int getMedicalResourcesCount() {
+        ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
+        return mTransactionManager.count(readTableRequest);
+    }
+
     /**
      * Reads the {@link MedicalResource}s stored in the HealthConnect database.
      *
@@ -311,7 +334,7 @@ public final class MedicalResourceHelper {
                 makeParametersAndArgs(medicalResourceIds, /* appId= */ null);
         String sql =
                 "SELECT "
-                        + MEDICAL_RESOURCE_COLUMNS
+                        + getMedicalResourceColumns()
                         + " FROM "
                         + RESOURCES_JOIN_DATA_SOURCES_JOIN_INDICES
                         + " WHERE "
@@ -512,7 +535,7 @@ public final class MedicalResourceHelper {
         Pair<String, String[]> paramsAndArgs = makeParametersAndArgs(medicalResourceIds, appId);
         return Pair.create(
                 "SELECT "
-                        + MEDICAL_RESOURCE_COLUMNS
+                        + getMedicalResourceColumns()
                         + " FROM "
                         + RESOURCES_JOIN_DATA_SOURCES_JOIN_INDICES
                         + " WHERE "
@@ -552,6 +575,10 @@ public final class MedicalResourceHelper {
             int pageSize,
             String callingPackageName,
             boolean enforceSelfRead) {
+        ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
+        if (request == null) {
+            throw new IllegalStateException("The pageTokenWrapper's request can not be null.");
+        }
         return mTransactionManager.runAsTransaction(
                 db -> {
                     ReadMedicalResourcesInternalResponse response;
@@ -567,7 +594,7 @@ public final class MedicalResourceHelper {
                         mAccessLogsHelper.addAccessLog(
                                 db,
                                 callingPackageName,
-                                Set.of(pageTokenWrapper.getRequest().getMedicalResourceType()),
+                                Set.of(request.getMedicalResourceType()),
                                 OPERATION_TYPE_READ,
                                 /* accessedMedicalDataSource= */ false);
                     }
@@ -591,15 +618,24 @@ public final class MedicalResourceHelper {
     }
 
     /** Creates {@link ReadTableRequest} for the given {@link PhrPageTokenWrapper}. */
-    @VisibleForTesting
-    static ReadTableRequest getReadTableRequestUsingRequestFilters(
+    public static ReadTableRequest getReadTableRequestUsingRequestFilters(
             PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
-        ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
+        // The INNER_QUERY_ALIAS refers to the medical_resource_table.
+        List<String> allColumns = new ArrayList<>(sMedicalResourceColumns);
+        allColumns.add(sLastModifiedTimeInInnerQuery);
         ReadTableRequest readTableRequest =
                 getReadTableRequestUsingPageSizeAndLastRowId(
-                        pageSize, pageTokenWrapper.getLastRowId());
+                                pageSize, pageTokenWrapper.getLastRowId())
+                        .setColumnNames(allColumns);
+        ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
         SqlJoin joinClause;
-        if (request.getDataSourceIds().isEmpty()) {
+        if (request == null) {
+            // If request is null, it means the request is to read out all the data without
+            // any filters applied. So we just join the tables without any filtering on them.
+            joinClause =
+                    joinWithMedicalResourceIndicesTable()
+                            .attachJoin(joinWithMedicalDataSourceTable());
+        } else if (request.getDataSourceIds().isEmpty()) {
             joinClause =
                     getJoinWithIndicesAndDataSourceTablesFilterOnMedicalResourceTypes(
                             Set.of(request.getMedicalResourceType()));
@@ -619,9 +655,15 @@ public final class MedicalResourceHelper {
     private static ReadTableRequest getReadTableRequestUsingRequestFiltersAndAppId(
             PhrPageTokenWrapper pageTokenWrapper, int pageSize, long appId) {
         ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
+        if (request == null) {
+            throw new IllegalArgumentException("Request can't be null when doing a filtered read.");
+        }
+        List<String> allColumns = new ArrayList<>(sMedicalResourceColumns);
+        allColumns.add(sLastModifiedTimeInInnerQuery);
         ReadTableRequest readTableRequest =
                 getReadTableRequestUsingPageSizeAndLastRowId(
-                        pageSize, pageTokenWrapper.getLastRowId());
+                                pageSize, pageTokenWrapper.getLastRowId())
+                        .setColumnNames(allColumns);
         SqlJoin joinClause;
         if (request.getDataSourceIds().isEmpty()) {
             joinClause =
@@ -802,12 +844,6 @@ public final class MedicalResourceHelper {
                         MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME,
                         MedicalResourceIndicesHelper.getParentColumnReference())
                 .setJoinType(SQL_JOIN_INNER);
-    }
-
-    static SqlJoin getJoinWithMedicalDataSourceFilterOnAppIds(Set<Long> appIds, SqlJoin extraJoin) {
-        return joinWithMedicalDataSourceTable()
-                .setSecondTableWhereClause(getAppIdsWhereClause(appIds))
-                .attachJoin(extraJoin);
     }
 
     private static SqlJoin joinWithMedicalDataSourceTable() {
@@ -1010,6 +1046,25 @@ public final class MedicalResourceHelper {
     }
 
     /**
+     * Create {@link ContentValues} for the given {@code dataSourceRowId}, {@code lastModifiedTime},
+     * {@code appInfoId} and {@link MedicalResource}.
+     *
+     * <p>This is only used in DatabaseMerger code, where we want to provide a lastModifiedTimestamp
+     * from the source database rather than based on the current time.
+     */
+    public static ContentValues getContentValues(
+            long dataSourceRowId, long lastModifiedTime, MedicalResource resource) {
+        FhirResource fhirResource = resource.getFhirResource();
+        ContentValues resourceContentValues = new ContentValues();
+        resourceContentValues.put(DATA_SOURCE_ID_COLUMN_NAME, dataSourceRowId);
+        resourceContentValues.put(FHIR_DATA_COLUMN_NAME, fhirResource.getData());
+        resourceContentValues.put(FHIR_RESOURCE_TYPE_COLUMN_NAME, fhirResource.getType());
+        resourceContentValues.put(FHIR_RESOURCE_ID_COLUMN_NAME, fhirResource.getId());
+        resourceContentValues.put(LAST_MODIFIED_TIME_COLUMN_NAME, lastModifiedTime);
+        return resourceContentValues;
+    }
+
+    /**
      * Creates a {@link MedicalResource} for the given {@code uuid} and {@link
      * UpsertMedicalResourceInternalRequest}.
      */
@@ -1041,7 +1096,7 @@ public final class MedicalResourceHelper {
      * @throws IllegalArgumentException if the cursor contains more than @link
      *     MAXIMUM_ALLOWED_CURSOR_COUNT} records.
      */
-    private static ReadMedicalResourcesInternalResponse getMedicalResources(
+    public static ReadMedicalResourcesInternalResponse getMedicalResources(
             SQLiteDatabase db,
             ReadTableRequest request,
             PhrPageTokenWrapper pageTokenWrapper,
@@ -1340,12 +1395,14 @@ public final class MedicalResourceHelper {
                         .build();
         FhirVersion fhirVersion =
                 parseFhirVersion(getCursorString(cursor, getFhirVersionColumnName()));
-        return new MedicalResource.Builder(
-                        getCursorInt(cursor, getMedicalResourceTypeColumnName()),
-                        getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),
-                        fhirVersion,
-                        fhirResource)
-                .build();
+        long lastModifiedTimestamp =
+                getCursorLong(cursor, LAST_MODIFIED_TIMESTAMP_MEDICAL_RESOURCE_ALIAS);
+        return new MedicalResource(
+                getCursorInt(cursor, getMedicalResourceTypeColumnName()),
+                getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),
+                fhirVersion,
+                fhirResource,
+                lastModifiedTimestamp);
     }
 
     /**
@@ -1408,7 +1465,7 @@ public final class MedicalResourceHelper {
         StringBuilder sql =
                 new StringBuilder(
                         "SELECT "
-                                + MEDICAL_RESOURCE_COLUMNS
+                                + getMedicalResourceColumns()
                                 + " FROM "
                                 + RESOURCES_JOIN_DATA_SOURCES_JOIN_INDICES
                                 + " WHERE "

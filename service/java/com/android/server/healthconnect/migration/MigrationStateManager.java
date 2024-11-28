@@ -54,7 +54,6 @@ import android.os.ext.SdkExtensions;
 import android.util.Slog;
 
 import com.android.internal.annotations.GuardedBy;
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -78,11 +77,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @hide
  */
 public final class MigrationStateManager {
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    @GuardedBy("sInstanceLock")
-    private static MigrationStateManager sMigrationStateManager;
 
-    private static final Object sInstanceLock = new Object();
     private static final String TAG = "MigrationStateManager";
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final PreferenceHelper mPreferenceHelper;
@@ -91,38 +86,18 @@ public final class MigrationStateManager {
     private final Set<StateChangedListener> mStateChangedListeners = new CopyOnWriteArraySet<>();
 
     private final Object mLock = new Object();
-    private volatile MigrationBroadcastScheduler mMigrationBroadcastScheduler;
+    private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
     private UserHandle mUserHandle;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private MigrationStateManager(
+    public MigrationStateManager(
             UserHandle userHandle,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            MigrationBroadcastScheduler migrationBroadcastScheduler) {
         mUserHandle = userHandle;
         mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
         mPreferenceHelper = preferenceHelper;
-    }
-
-    /**
-     * Initialises {@link MigrationStateManager} with the provided arguments and returns the
-     * instance.
-     *
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static MigrationStateManager initializeInstance(
-            UserHandle userHandle,
-            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
-            PreferenceHelper preferenceHelper) {
-        synchronized (sInstanceLock) {
-            if (Objects.isNull(sMigrationStateManager)) {
-                sMigrationStateManager =
-                        new MigrationStateManager(
-                                userHandle, healthConnectDeviceConfigManager, preferenceHelper);
-            }
-
-            return sMigrationStateManager;
-        }
+        mMigrationBroadcastScheduler = migrationBroadcastScheduler;
     }
 
     /** Re-initialize this class instance with the new user */
@@ -133,40 +108,11 @@ public final class MigrationStateManager {
         }
     }
 
-    /**
-     * Returns initialised instance of this class.
-     *
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static MigrationStateManager getInitialisedInstance() {
-        synchronized (sInstanceLock) {
-            Objects.requireNonNull(sMigrationStateManager);
-            return sMigrationStateManager;
-        }
-    }
-
-    /**
-     * Clears the initialized instance such that {@link #initializeInstance} will create a new
-     * instance, for use in tests.
-     */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @VisibleForTesting
-    public static void resetInitializedInstanceForTest() {
-        synchronized (sInstanceLock) {
-            sMigrationStateManager = null;
-        }
-    }
-
     /** Registers {@link StateChangedListener} for observing migration state changes. */
     public void addStateChangedListener(StateChangedListener listener) {
         synchronized (mLock) {
             mStateChangedListeners.add(listener);
         }
-    }
-
-    public void setMigrationBroadcastScheduler(
-            MigrationBroadcastScheduler migrationBroadcastScheduler) {
-        mMigrationBroadcastScheduler = migrationBroadcastScheduler;
     }
 
     /**
@@ -481,25 +427,19 @@ public final class MigrationStateManager {
         }
         mPreferenceHelper.insertOrReplacePreferencesTransaction(preferences);
 
-        if (mMigrationBroadcastScheduler != null) {
-            //noinspection Convert2Lambda
-            HealthConnectThreadScheduler.scheduleInternalTask(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                mMigrationBroadcastScheduler.scheduleNewJobs(context);
-                            } catch (Exception e) {
-                                Slog.e(TAG, "Migration broadcast schedule failed", e);
-                            }
+        //noinspection Convert2Lambda
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mMigrationBroadcastScheduler.scheduleNewJobs(
+                                    context, MigrationStateManager.this);
+                        } catch (Exception e) {
+                            Slog.e(TAG, "Migration broadcast schedule failed", e);
                         }
-                    });
-        } else if (Constants.DEBUG) {
-            Slog.d(
-                    TAG,
-                    "Unable to schedule migration broadcasts: "
-                            + "MigrationBroadcastScheduler object is null");
-        }
+                    }
+                });
 
         for (StateChangedListener listener : mStateChangedListeners) {
             listener.onChanged(migrationState);

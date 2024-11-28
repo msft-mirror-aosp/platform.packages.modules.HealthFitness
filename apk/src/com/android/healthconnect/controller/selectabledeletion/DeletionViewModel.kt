@@ -31,6 +31,7 @@ import com.android.healthconnect.controller.selectabledeletion.api.DeletePermiss
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -46,6 +47,9 @@ constructor(
     companion object {
         private const val TAG = "DeletionViewModel"
     }
+
+    // Artificial delay for reloads, to give enough time for the deletion task to end
+    private val defaultDelay = 2000L
 
     private lateinit var deletionType: DeletionType
 
@@ -84,58 +88,71 @@ constructor(
     val inactiveAppsReloadNeeded: LiveData<Boolean>
         get() = _inactiveAppsReloadNeeded
 
+    var removePermissions = false
+
     fun delete() {
         viewModelScope.launch {
-            _deletionProgress.value = (DeletionProgress.STARTED)
-
+            _deletionProgress.postValue(DeletionProgress.STARTED)
             try {
-                _deletionProgress.value = (DeletionProgress.PROGRESS_INDICATOR_CAN_START)
+                _deletionProgress.postValue(DeletionProgress.PROGRESS_INDICATOR_CAN_START)
 
                 when (deletionType) {
                     is DeleteHealthPermissionTypes -> {
                         deletePermissionTypesUseCase.invoke(
                             deletionType as DeleteHealthPermissionTypes
                         )
+                        delay(defaultDelay)
                         _permissionTypesReloadNeeded.postValue(true)
                     }
                     is DeleteEntries -> {
                         deleteEntriesUseCase.invoke(deletionType as DeleteEntries)
+                        delay(defaultDelay)
                         _entriesReloadNeeded.postValue(true)
                     }
                     is DeleteHealthPermissionTypesFromApp -> {
                         deletePermissionTypesFromAppUseCase.invoke(
-                            deletionType as DeleteHealthPermissionTypesFromApp
+                            deletionType as DeleteHealthPermissionTypesFromApp,
+                            removePermissions,
                         )
+                        delay(defaultDelay)
                         _appPermissionTypesReloadNeeded.postValue(true)
                     }
                     is DeleteEntriesFromApp -> {
                         deleteEntriesUseCase.invoke(
                             (deletionType as DeleteEntriesFromApp).toDeleteEntries()
                         )
+                        delay(defaultDelay)
                         _appEntriesReloadNeeded.postValue(true)
                     }
                     is DeleteAppData -> {
                         deleteAppDataUseCase.invoke((deletionType as DeleteAppData))
+                        delay(defaultDelay)
                         _connectedAppsReloadNeeded.postValue(true)
                     }
                     is DeletionType.DeleteInactiveAppData -> {
                         deletePermissionTypesFromAppUseCase.invoke(
                             (deletionType as DeletionType.DeleteInactiveAppData)
-                                .toDeleteHealthPermissionTypesFromApp()
+                                .toDeleteHealthPermissionTypesFromApp(),
+                            removePermissions = false,
                         )
+                        delay(defaultDelay)
                         _inactiveAppsReloadNeeded.postValue(true)
                     }
                 }
-
-                _deletionProgress.value = (DeletionProgress.COMPLETED)
+                _deletionProgress.postValue(DeletionProgress.COMPLETED)
             } catch (error: Exception) {
                 Log.e(TAG, "Failed to delete data", error)
-
-                _deletionProgress.value = (DeletionProgress.FAILED)
+                _deletionProgress.postValue(DeletionProgress.FAILED)
             } finally {
-                _deletionProgress.value = (DeletionProgress.PROGRESS_INDICATOR_CAN_END)
+                // delay to ensure that the success/failed dialog has been shown
+                delay(1000)
+                _deletionProgress.postValue(DeletionProgress.PROGRESS_INDICATOR_CAN_END)
             }
         }
+    }
+
+    fun resetInactiveAppsReloadNeeded() {
+        _inactiveAppsReloadNeeded.postValue(false)
     }
 
     fun resetPermissionTypesReloadNeeded() {

@@ -27,6 +27,9 @@
     <uses-permission android:name="android.permission.health.WRITE_EXERCISE"/>
     <uses-permission android:name="android.permission.health.WRITE_EXERCISE_ROUTE"/>
 
+    <!-- Used to check if App Ops considers the app to be in the background -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application android:label="CtsExerciseRouteTestAllRoutesReaderApp">
         <activity android:name="android.healthconnect.cts.testhelper.TestAppActivity"
             android:exported="true">
