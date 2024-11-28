@@ -2675,10 +2675,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
-                    // only stores the timestamp for calls made by ANY client, including the
-                    // controller.
                     if (personalHealthRecordTelemetry()) {
-                        mPreferenceHelper.setLastPhrReadMedicalResourcesApiTimeStamp(
+                        // Stores the timestamp for calls made by ANY client, including the
+                        // controller
+                        mPreferencesManager.setLastPhrReadMedicalResourcesApiTimeStamp(
                                 mTimeSource.getInstantNow());
                     }
 
@@ -2803,10 +2803,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
-                    // only stores the timestamp for calls made by ANY client, including the
-                    // controller.
                     if (personalHealthRecordTelemetry()) {
-                        mPreferenceHelper.setLastPhrReadMedicalResourcesApiTimeStamp(
+                        // Stores the timestamp for calls made by ANY client, including the
+                        // controller
+                        mPreferencesManager.setLastPhrReadMedicalResourcesApiTimeStamp(
                                 mTimeSource.getInstantNow());
                     }
 

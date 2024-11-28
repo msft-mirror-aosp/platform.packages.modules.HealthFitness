@@ -463,6 +463,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 ? new UsageStatsCollector(
                         context,
                         getPreferenceHelper(),
+                        getPreferencesManager(),
                         getAccessLogsHelper(),
                         getTimeSource(),
                         getMedicalResourceHelper(),

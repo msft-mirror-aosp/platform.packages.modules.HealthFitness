@@ -162,6 +162,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -297,6 +298,7 @@ public class HealthConnectServiceImplTest {
     @Mock private MigrationUiStateManager mMigrationUiStateManager;
     @Mock private Context mServiceContext;
     @Mock private PreferenceHelper mPreferenceHelper;
+    @Mock private PreferencesManager mPreferencesManager;
     @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
     @Mock private PackageManager mPackageManager;
     @Mock private PermissionManager mPermissionManager;
@@ -352,6 +354,7 @@ public class HealthConnectServiceImplTest {
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(mPreferenceHelper)
+                        .setPreferencesManager(mPreferencesManager)
                         .setTransactionManager(mTransactionManager)
                         .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
@@ -400,6 +403,7 @@ public class HealthConnectServiceImplTest {
     public void tearDown() throws TimeoutException {
         waitForAllScheduledTasksToComplete();
         clearInvocations(mPreferenceHelper);
+        clearInvocations(mPreferencesManager);
     }
 
     @Test
@@ -1373,7 +1377,7 @@ public class HealthConnectServiceImplTest {
         awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
-        verify(mPreferenceHelper, never()).setLastPhrReadMedicalResourcesApiTimeStamp(any());
+        verify(mPreferencesManager, never()).setLastPhrReadMedicalResourcesApiTimeStamp(any());
     }
 
     @Test
@@ -1406,7 +1410,7 @@ public class HealthConnectServiceImplTest {
                 List.of(
                         HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VACCINES),
                 1);
-        verify(mPreferenceHelper, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
     }
 
     @Test
@@ -1431,8 +1435,8 @@ public class HealthConnectServiceImplTest {
                 mReadMedicalResourcesResponseCallback);
 
         awaitAllExecutorsIdle();
-        assertThat(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp()).isNull();
-        verify(mPreferenceHelper, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+        assertThat(mPreferencesManager.getPhrLastReadMedicalResourcesApiTimeStamp()).isNull();
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
     }
 
     @Test
@@ -1454,8 +1458,7 @@ public class HealthConnectServiceImplTest {
         awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
-        assertThat(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp()).isNull();
-        verify(mPreferenceHelper, never()).setLastPhrReadMedicalResourcesApiTimeStamp(any());
+        verify(mPreferencesManager, never()).setLastPhrReadMedicalResourcesApiTimeStamp(any());
     }
 
     @Test
@@ -1484,7 +1487,7 @@ public class HealthConnectServiceImplTest {
                 () -> eq(READ_MEDICAL_RESOURCES_BY_IDS),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
                 1);
-        verify(mPreferenceHelper, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
     }
 
     @Test
@@ -1496,7 +1499,7 @@ public class HealthConnectServiceImplTest {
     })
     public void
             testReadMedicalResourcesByIds_telemetryFlagOnAndHasDataManagementPermission_expectMonthlyTimeStamp()
-                    throws InterruptedException {
+                    throws TimeoutException {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1506,8 +1509,8 @@ public class HealthConnectServiceImplTest {
                 List.of(getMedicalResourceId()),
                 mReadMedicalResourcesResponseCallback);
 
-        awaitAllExecutorsIdle();
-        verify(mPreferenceHelper, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+        waitForAllScheduledTasksToComplete();
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
     }
 
     @Test
