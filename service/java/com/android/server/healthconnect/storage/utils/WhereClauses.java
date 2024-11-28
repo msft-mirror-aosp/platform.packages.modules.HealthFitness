@@ -45,8 +45,9 @@ public final class WhereClauses {
         mLogicalOperator = logicalOperator;
     }
 
+
     public WhereClauses addWhereBetweenClause(String columnName, long start, long end) {
-        mClauses.add(columnName + " BETWEEN " + start + " AND " + end);
+        mClauses.add(columnName + " >= " + start + " AND " + columnName + " < " + end);
 
         return this;
     }
@@ -69,7 +70,7 @@ public final class WhereClauses {
             return addWhereLaterThanTimeClause(columnName, startTime);
         }
 
-        mClauses.add(columnName + " BETWEEN " + startTime + " AND " + endTime);
+        mClauses.add(columnName + " >= " + startTime + " AND " + columnName + " < " + endTime);
 
         return this;
     }
