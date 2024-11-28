@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -47,6 +48,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -68,6 +70,8 @@ import java.util.Objects;
  * @hide
  */
 public class HealthConnectInjectorImpl extends HealthConnectInjector {
+
+    private final Builder mBuilder;
 
     private final PackageInfoUtils mPackageInfoUtils;
     private final TransactionManager mTransactionManager;
@@ -107,6 +111,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
 
     private HealthConnectInjectorImpl(Builder builder) {
         Context context = builder.mContext;
+        mBuilder = builder;
         // Don't store the user and make it available via the injector, as this user is always
         // the first / system user, and doesn't change after that.
         // Any class that is using this user below are responsible for making sure that they
@@ -462,6 +467,26 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 getActivityDateHelper());
     }
 
+    @Override
+    public DatabaseStatsCollector getDatabaseStatsCollector() {
+        return mBuilder.mDatabaseStatsCollector == null
+                ? new DatabaseStatsCollector(getTransactionManager())
+                : mBuilder.mDatabaseStatsCollector;
+    }
+
+    @Override
+    public UsageStatsCollector getUsageStatsCollector(Context context) {
+        return mBuilder.mUsageStatsCollector == null
+                ? new UsageStatsCollector(
+                        context,
+                        getPreferenceHelper(),
+                        getAccessLogsHelper(),
+                        getTimeSource(),
+                        getMedicalResourceHelper(),
+                        getMedicalDataSourceHelper())
+                : mBuilder.mUsageStatsCollector;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -513,6 +538,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private MigrationUiStateManager mMigrationUiStateManager;
         @Nullable private MigrationEntityHelper mMigrationEntityHelper;
         @Nullable private PreferencesManager mPreferencesManager;
+        @Nullable private DatabaseStatsCollector mDatabaseStatsCollector;
+        @Nullable private UsageStatsCollector mUsageStatsCollector;
 
         private Builder(Context context) {
             mContext = context;
@@ -719,6 +746,20 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setPreferencesManager(PreferencesManager preferencesManager) {
             Objects.requireNonNull(preferencesManager);
             mPreferencesManager = preferencesManager;
+            return this;
+        }
+
+        /** Set fake or custom {@link DatabaseStatsCollector} */
+        public Builder setDatabaseStatsCollector(DatabaseStatsCollector databaseStatsCollector) {
+            Objects.requireNonNull(databaseStatsCollector);
+            mDatabaseStatsCollector = databaseStatsCollector;
+            return this;
+        }
+
+        /** Set fake or custom {@link UsageStatsCollector} */
+        public Builder setUsageStatsCollector(UsageStatsCollector usageStatsCollector) {
+            Objects.requireNonNull(usageStatsCollector);
+            mUsageStatsCollector = usageStatsCollector;
             return this;
         }
 

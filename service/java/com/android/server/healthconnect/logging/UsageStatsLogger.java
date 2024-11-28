@@ -20,12 +20,9 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PERMISSION_STA
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 
-import android.content.Context;
 import android.health.HealthFitnessStatsLog;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -38,11 +35,7 @@ import java.util.Map;
 final class UsageStatsLogger {
 
     /** Write Health Connect usage stats to statsd. */
-    static void log(
-            Context context,
-            UsageStatsCollector usageStatsCollector,
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper) {
+    static void log(UsageStatsCollector usageStatsCollector) {
         usageStatsCollector.upsertLastAccessLogTimeStamp();
         Map<String, List<String>> packageNameToPermissionsGranted =
                 usageStatsCollector.getPackagesHoldingHealthPermissions();
@@ -59,11 +52,8 @@ final class UsageStatsLogger {
         }
 
         logExportImportStats(usageStatsCollector);
-        logPermissionStats(context, packageNameToPermissionsGranted);
-        logPhrStats(
-                medicalDataSourceHelper,
-                medicalResourceHelper,
-                usageStatsCollector);
+        logPermissionStats(packageNameToPermissionsGranted);
+        logPhrStats(usageStatsCollector);
 
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS,
@@ -72,16 +62,13 @@ final class UsageStatsLogger {
                 isUserMonthlyActive);
     }
 
-    private static void logPhrStats(
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper,
-            UsageStatsCollector usageStatsCollector) {
+    private static void logPhrStats(UsageStatsCollector usageStatsCollector) {
         if (!personalHealthRecordTelemetry()) {
             return;
         }
 
-        int medicalDataSourcesCount = medicalDataSourceHelper.getMedicalDataSourcesCount();
-        int medicalResourcesCount = medicalResourceHelper.getMedicalResourcesCount();
+        int medicalDataSourcesCount = usageStatsCollector.getMedicalDataSourcesCount();
+        int medicalResourcesCount = usageStatsCollector.getMedicalResourcesCount();
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS,
                 medicalDataSourcesCount,
@@ -96,8 +83,7 @@ final class UsageStatsLogger {
                 HealthFitnessStatsLog.HEALTH_CONNECT_EXPORT_IMPORT_STATS_REPORTED, exportFrequency);
     }
 
-    static void logPermissionStats(
-            Context context, Map<String, List<String>> packageNameToPermissionsGranted) {
+    static void logPermissionStats(Map<String, List<String>> packageNameToPermissionsGranted) {
 
         if (!Flags.permissionMetrics()) {
             return;

@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.injector;
 
+import android.content.Context;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -43,6 +45,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -210,6 +213,17 @@ public abstract class HealthConnectInjector {
 
     /** Getter for {@link DailyCleanupJob} instance initialised by the Health Connect Injector. */
     public abstract DailyCleanupJob getDailyCleanupJob();
+
+    /**
+     * Getter for {@link DatabaseStatsCollector} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract DatabaseStatsCollector getDatabaseStatsCollector();
+
+    /**
+     * Getter for {@link UsageStatsCollector} instance initialised by the Health Connect Injector.
+     */
+    public abstract UsageStatsCollector getUsageStatsCollector(Context context);
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

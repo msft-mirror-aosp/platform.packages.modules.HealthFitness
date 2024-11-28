@@ -26,10 +26,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
-import android.os.UserHandle;
+
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.utils.TimeSource;
 
@@ -57,29 +60,27 @@ public final class UsageStatsCollector {
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
     private final Context mContext;
-    private final Map<String, PackageInfo> mPackageNameToPackageInfo = new HashMap<>();
-
     private final PreferenceHelper mPreferenceHelper;
     private final AccessLogsHelper mAccessLogsHelper;
+    private final MedicalDataSourceHelper mMedicalDataSourceHelper;
+    private final MedicalResourceHelper mMedicalResourceHelper;
     private final TimeSource mTimeSource;
+
+    @Nullable private Map<String, PackageInfo> mPackageNameToPackageInfo;
 
     public UsageStatsCollector(
             Context context,
-            UserHandle userHandle,
             PreferenceHelper preferenceHelper,
             AccessLogsHelper accessLogsHelper,
-            TimeSource timeSource) {
+            TimeSource timeSource,
+            MedicalResourceHelper medicalResourceHelper,
+            MedicalDataSourceHelper medicalDataSourceHelper) {
         mContext = context;
         mPreferenceHelper = preferenceHelper;
         mAccessLogsHelper = accessLogsHelper;
         mTimeSource = timeSource;
-        List<PackageInfo> allPackagesInstalledForUser =
-                context.createContextAsUser(userHandle, /* flag= */ 0)
-                        .getPackageManager()
-                        .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
-        for (PackageInfo packageInfo : allPackagesInstalledForUser) {
-            mPackageNameToPackageInfo.put(packageInfo.packageName, packageInfo);
-        }
+        mMedicalDataSourceHelper = medicalDataSourceHelper;
+        mMedicalResourceHelper = medicalResourceHelper;
     }
 
     /**
@@ -92,7 +93,7 @@ public final class UsageStatsCollector {
      */
     int getNumberOfAppsCompatibleWithHealthConnect() {
         int numberOfAppsGrantedHealthPermissions = 0;
-        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
+        for (PackageInfo info : getPackageNameToPackageInfo().values()) {
             if (hasRequestedHealthPermission(info)) {
                 numberOfAppsGrantedHealthPermissions++;
             }
@@ -108,7 +109,7 @@ public final class UsageStatsCollector {
      */
     public Map<String, List<String>> getPackagesHoldingHealthPermissions() {
         Map<String, List<String>> packageNameToPermissionsGranted = new HashMap<>();
-        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
+        for (PackageInfo info : getPackageNameToPackageInfo().values()) {
             List<String> grantedHealthPermissions =
                     PackageInfoUtils.getGrantedHealthPermissions(mContext, info);
             if (!grantedHealthPermissions.isEmpty()) {
@@ -208,6 +209,14 @@ public final class UsageStatsCollector {
         }
     }
 
+    int getMedicalResourcesCount() {
+        return mMedicalResourceHelper.getMedicalResourcesCount();
+    }
+
+    int getMedicalDataSourcesCount() {
+        return mMedicalDataSourceHelper.getMedicalDataSourcesCount();
+    }
+
     private boolean hasRequestedHealthPermission(PackageInfo packageInfo) {
         if (packageInfo == null || packageInfo.requestedPermissions == null) {
             return false;
@@ -220,5 +229,19 @@ public final class UsageStatsCollector {
             }
         }
         return false;
+    }
+
+    private Map<String, PackageInfo> getPackageNameToPackageInfo() {
+        if (mPackageNameToPackageInfo != null) {
+            return mPackageNameToPackageInfo;
+        }
+        mPackageNameToPackageInfo = new HashMap<>();
+        List<PackageInfo> allPackagesInstalledForUser =
+                mContext.getPackageManager()
+                        .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
+        for (PackageInfo packageInfo : allPackagesInstalledForUser) {
+            mPackageNameToPackageInfo.put(packageInfo.packageName, packageInfo);
+        }
+        return mPackageNameToPackageInfo;
     }
 }
