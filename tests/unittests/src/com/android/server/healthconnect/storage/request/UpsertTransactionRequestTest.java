@@ -28,19 +28,19 @@ import static org.mockito.Mockito.mock;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.os.Environment;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
 import org.junit.Before;
@@ -58,13 +58,9 @@ public class UpsertTransactionRequestTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private AppInfoHelper mAppInfoHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
@@ -78,11 +74,11 @@ public class UpsertTransactionRequestTest {
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
-        transactionTestUtils.insertApp("package.name");
-
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        transactionTestUtils.insertApp("package.name");
     }
 
     @Test

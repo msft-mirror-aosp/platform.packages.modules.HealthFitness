@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
@@ -51,7 +52,6 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
-import com.android.server.healthconnect.phr.ReadMedicalResourceRowsResponse;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.StorageContext;
@@ -289,8 +289,8 @@ public class BackupRestoreWithoutMocksTest {
         List<Pair<MedicalDataSource, Long>> dataSourceRowsStaged =
                 mPhrTestUtils.readMedicalDataSources(stagedDb);
         // Read the medicalResources and lastModifiedTimestamps.
-        ReadMedicalResourceRowsResponse medicalResourceRowsStaged =
-                mPhrTestUtils.readMedicalResources(stagedDb);
+        List<Pair<MedicalResource, Long>> medicalResourceRowsStaged =
+                mPhrTestUtils.readAllMedicalResources(stagedDb);
 
         mBackupRestore.merge();
 
@@ -305,9 +305,10 @@ public class BackupRestoreWithoutMocksTest {
         // Assert dataSources and their timestamps of the staged db is the same as original db.
         assertThat(dataSourceRowsOriginal).isEqualTo(dataSourceRowsStaged);
         // Read the medicalResources and lastModifiedTimestamps of original db after merge.
-        ReadMedicalResourceRowsResponse medicalResourceRowsOriginal =
-                mPhrTestUtils.readMedicalResources(originalDatabase);
+        List<Pair<MedicalResource, Long>> medicalResourceRowsOriginal =
+                mPhrTestUtils.readAllMedicalResources(originalDatabase);
         // Assert medicalResources and their timestamps of the staged db is the same as original db.
+        assertThat(medicalResourceRowsOriginal).hasSize(numOfResources);
         assertThat(medicalResourceRowsOriginal).isEqualTo(medicalResourceRowsStaged);
     }
 
@@ -345,8 +346,8 @@ public class BackupRestoreWithoutMocksTest {
         List<Pair<MedicalDataSource, Long>> dataSourceRowsStaged =
                 mPhrTestUtils.readMedicalDataSources(stagedDb);
         // Read the medicalResources and lastModifiedTimestamps.
-        ReadMedicalResourceRowsResponse medicalResourceRowsStaged =
-                mPhrTestUtils.readMedicalResources(stagedDb);
+        List<Pair<MedicalResource, Long>> medicalResourceRowsStaged =
+                mPhrTestUtils.readAllMedicalResources(stagedDb);
 
         mBackupRestore.merge();
 
@@ -361,9 +362,10 @@ public class BackupRestoreWithoutMocksTest {
         // Assert dataSources and their timestamps of the staged db is the same as original db.
         assertThat(dataSourceRowsOriginal).isEqualTo(dataSourceRowsStaged);
         // Read the medicalResources and lastModifiedTimestamps of original db after merge.
-        ReadMedicalResourceRowsResponse medicalResourceRowsOriginal =
-                mPhrTestUtils.readMedicalResources(originalDatabase);
+        List<Pair<MedicalResource, Long>> medicalResourceRowsOriginal =
+                mPhrTestUtils.readAllMedicalResources(originalDatabase);
         // Assert medicalResources and their timestamps of the staged db is the same as original db.
+        assertThat(medicalResourceRowsOriginal).hasSize(2);
         assertThat(medicalResourceRowsOriginal).isEqualTo(medicalResourceRowsStaged);
     }
 

@@ -249,8 +249,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                             () -> {
                                 for (String packageName : packageNames) {
                                     mHealthDataCategoryPriorityHelper
-                                            .maybeRemoveAppFromPriorityList(
-                                                    mContext, packageName, user);
+                                            .maybeRemoveAppFromPriorityList(packageName, user);
                                 }
                             });
                 }
