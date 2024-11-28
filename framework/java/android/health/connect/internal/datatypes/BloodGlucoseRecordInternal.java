@@ -21,6 +21,7 @@ import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.MealType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.BloodGlucose;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -110,4 +111,10 @@ public final class BloodGlucoseRecordInternal extends InstantRecordInternal<Bloo
         parcel.writeInt(mRelationToMeal);
         parcel.writeInt(mMealType);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }
