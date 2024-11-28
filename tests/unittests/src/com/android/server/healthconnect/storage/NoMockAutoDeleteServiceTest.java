@@ -21,18 +21,20 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.os.Environment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -42,7 +44,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
@@ -53,12 +54,9 @@ public class NoMockAutoDeleteServiceTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -73,17 +71,15 @@ public class NoMockAutoDeleteServiceTest {
 
     @Before
     public void setup() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        StorageContext context = testRule.getDatabaseContext();
-
+        Context context = ApplicationProvider.getApplicationContext();
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = mHealthConnectInjector.getTransactionManager();
-        DatabaseHelper.clearAllData(mTransactionManager);
-        mTransactionTestUtils = new TransactionTestUtils(context, mHealthConnectInjector);
+
+        mTransactionTestUtils = new TransactionTestUtils(mHealthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
@@ -111,7 +107,7 @@ public class NoMockAutoDeleteServiceTest {
                                 mHealthConnectInjector.getPreferenceHelper()))
                 .isEqualTo(30);
         AutoDeleteService.startAutoDelete(
-                testRule.getDatabaseContext(),
+                ApplicationProvider.getApplicationContext(),
                 mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
                 mHealthConnectInjector.getPreferenceHelper(),
                 mHealthConnectInjector.getAppInfoHelper(),

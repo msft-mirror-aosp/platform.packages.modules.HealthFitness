@@ -23,6 +23,7 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -44,10 +45,12 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.utils.TimeSource;
@@ -91,6 +94,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final MedicalResourceHelper mMedicalResourceHelper;
     private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
     private final MigrationUiStateManager mMigrationUiStateManager;
+    private final DatabaseHelpers mDatabaseHelpers;
+    private final MigrationEntityHelper mMigrationEntityHelper;
+    private final BackupRestore mBackupRestore;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -105,10 +111,14 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         UserHandle userHandle = builder.mUserHandle;
         StorageContext storageContext = StorageContext.create(context, userHandle);
 
+        mDatabaseHelpers = new DatabaseHelpers();
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthConnectMappings = HealthConnectMappings.getInstance();
         mTimeSource = builder.mTimeSource == null ? new TimeSourceImpl() : builder.mTimeSource;
-
+        mMigrationEntityHelper =
+                builder.mMigrationEntityHelper == null
+                        ? new MigrationEntityHelper(mDatabaseHelpers)
+                        : builder.mMigrationEntityHelper;
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
                         ? new HealthConnectDeviceConfigManager(context)
@@ -121,7 +131,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mAppInfoHelper =
                 builder.mAppInfoHelper == null
                         ? new AppInfoHelper(
-                                storageContext, mTransactionManager, mHealthConnectMappings)
+                                storageContext,
+                                mTransactionManager,
+                                mHealthConnectMappings,
+                                mDatabaseHelpers)
                         : builder.mAppInfoHelper;
         mPackageInfoUtils =
                 builder.mPackageInfoUtils == null
@@ -129,21 +142,25 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mPackageInfoUtils;
         mPreferenceHelper =
                 builder.mPreferenceHelper == null
-                        ? new PreferenceHelper(mTransactionManager)
+                        ? new PreferenceHelper(mTransactionManager, mDatabaseHelpers)
                         : builder.mPreferenceHelper;
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? new HealthDataCategoryPriorityHelper(
+                                storageContext,
                                 mAppInfoHelper,
                                 mTransactionManager,
                                 mPreferenceHelper,
                                 mPackageInfoUtils,
-                                mHealthConnectMappings)
+                                mHealthConnectMappings,
+                                mDatabaseHelpers)
                         : builder.mHealthDataCategoryPriorityHelper;
         mPriorityMigrationHelper =
                 builder.mPriorityMigrationHelper == null
                         ? new PriorityMigrationHelper(
-                                mHealthDataCategoryPriorityHelper, mTransactionManager)
+                                mHealthDataCategoryPriorityHelper,
+                                mTransactionManager,
+                                mDatabaseHelpers)
                         : builder.mPriorityMigrationHelper;
         mExportImportSettingsStorage =
                 builder.mExportImportSettingsStorage == null
@@ -172,24 +189,27 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
-                        ? new DeviceInfoHelper(mTransactionManager)
+                        ? new DeviceInfoHelper(mTransactionManager, mDatabaseHelpers)
                         : builder.mDeviceInfoHelper;
         mAccessLogsHelper =
                 builder.mAccessLogsHelper == null
-                        ? new AccessLogsHelper(mTransactionManager, mAppInfoHelper)
+                        ? new AccessLogsHelper(
+                                mTransactionManager, mAppInfoHelper, mDatabaseHelpers)
                         : builder.mAccessLogsHelper;
         mActivityDateHelper =
                 builder.mActivityDateHelper == null
                         ? new ActivityDateHelper(
-                                mTransactionManager, mInternalHealthConnectMappings)
+                                mTransactionManager,
+                                mInternalHealthConnectMappings,
+                                mDatabaseHelpers)
                         : builder.mActivityDateHelper;
         mChangeLogsHelper =
                 builder.mChangeLogsHelper == null
-                        ? new ChangeLogsHelper(mTransactionManager)
+                        ? new ChangeLogsHelper(mTransactionManager, mDatabaseHelpers)
                         : builder.mChangeLogsHelper;
         mChangeLogsRequestHelper =
                 builder.mChangeLogsRequestHelper == null
-                        ? new ChangeLogsRequestHelper(mTransactionManager)
+                        ? new ChangeLogsRequestHelper(mTransactionManager, mDatabaseHelpers)
                         : builder.mChangeLogsRequestHelper;
         mPermissionIntentAppsTracker =
                 builder.mPermissionIntentAppsTracker == null
@@ -229,7 +249,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mPermissionPackageChangesOrchestrator;
         mMigrationCleaner =
                 builder.mMigrationCleaner == null
-                        ? new MigrationCleaner(mTransactionManager, mPriorityMigrationHelper)
+                        ? new MigrationCleaner(
+                                mTransactionManager,
+                                mPriorityMigrationHelper,
+                                mMigrationEntityHelper)
                         : builder.mMigrationCleaner;
         mMedicalDataSourceHelper =
                 builder.mMedicalDataSourceHelper == null
@@ -254,6 +277,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 new MigrationNotificationSender(
                                         context, mHealthConnectDeviceConfigManager))
                         : builder.mMigrationUiStateManager;
+        mBackupRestore =
+                new BackupRestore(
+                        mAppInfoHelper,
+                        mFirstGrantTimeManager,
+                        mMigrationStateManager,
+                        mPreferenceHelper,
+                        mTransactionManager,
+                        context,
+                        mDeviceInfoHelper,
+                        mHealthDataCategoryPriorityHelper);
     }
 
     @Override
@@ -391,6 +424,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mMigrationUiStateManager;
     }
 
+    @Override
+    public DatabaseHelpers getDatabaseHelpers() {
+        return mDatabaseHelpers;
+    }
+
+    @Override
+    public MigrationEntityHelper getMigrationEntityHelper() {
+        return mMigrationEntityHelper;
+    }
+
+    @Override
+    public BackupRestore getBackupRestore() {
+        return mBackupRestore;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -440,6 +488,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private MedicalResourceHelper mMedicalResourceHelper;
         @Nullable private MigrationBroadcastScheduler mMigrationBroadcastScheduler;
         @Nullable private MigrationUiStateManager mMigrationUiStateManager;
+        @Nullable private MigrationEntityHelper mMigrationEntityHelper;
 
         private Builder(Context context) {
             mContext = context;
@@ -632,6 +681,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setMigrationUiStateManager(MigrationUiStateManager migrationUiStateManager) {
             Objects.requireNonNull(migrationUiStateManager);
             mMigrationUiStateManager = migrationUiStateManager;
+            return this;
+        }
+
+        /** Set fake or custom {@link MigrationEntityHelper} */
+        public Builder setMigrationEntityHelper(MigrationEntityHelper migrationEntityHelper) {
+            Objects.requireNonNull(migrationEntityHelper);
+            mMigrationEntityHelper = migrationEntityHelper;
             return this;
         }
 

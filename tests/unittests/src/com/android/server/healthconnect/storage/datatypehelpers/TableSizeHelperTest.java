@@ -29,14 +29,16 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
 import android.net.Uri;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -64,13 +66,9 @@ public class TableSizeHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private static final String PACKAGE_NAME = "com.my.package";
     private static final Instant INSTANT_NOW = Instant.now();
@@ -83,7 +81,7 @@ public class TableSizeHelperTest {
 
     @Before
     public void setup() {
-        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        mContext = ApplicationProvider.getApplicationContext();
         FakeTimeSource mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
@@ -92,7 +90,7 @@ public class TableSizeHelperTest {
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .setTimeSource(mFakeTimeSource)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, mHealthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(mHealthConnectInjector);
 
         mTableSizeHelper = new TableSizeHelper(mHealthConnectInjector.getTransactionManager());
     }

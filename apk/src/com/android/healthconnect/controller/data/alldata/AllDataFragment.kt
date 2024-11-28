@@ -29,14 +29,15 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
-import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
-import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.VIEW
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.DELETE
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.VIEW
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
@@ -198,7 +199,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             when (state) {
                 is AllDataViewModel.AllDataState.Loading -> {
                     setLoading(isLoading = true)
-                    if (viewModel.getScreenState() == VIEW) {
+                    if (viewModel.getDeletionScreenStateValue() == VIEW) {
                         updateMenu(screenState = VIEW)
                         triggerDeletionState(screenState = VIEW)
                     }
@@ -216,10 +217,14 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             }
         }
 
+        viewModel.deletionScreenState.observe(viewLifecycleOwner) { screenState ->
+            updateMenu(screenState)
+        }
+
         deletionViewModel.permissionTypesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
             ->
             if (isReloadNeeded) {
-                viewModel.setScreenState(VIEW)
+                viewModel.setDeletionScreenStateValue(VIEW)
                 loadAllData()
                 deletionViewModel.resetPermissionTypesReloadNeeded()
             }
@@ -249,9 +254,9 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             return
         }
 
-        setupSelectAllPreference(screenState = viewModel.getScreenState())
+        setupSelectAllPreference(screenState = viewModel.getDeletionScreenStateValue())
 
-        updateMenu(screenState = viewModel.getScreenState())
+        updateMenu(screenState = viewModel.getDeletionScreenStateValue())
         noDataPreference.isVisible = false
         footerPreference.isVisible = false
         topIntroPreference.isVisible = showMedicalData
@@ -280,24 +285,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
     }
 
-    private fun onDeletionMethod(preference: DeletionPermissionTypesPreference): () -> Unit {
-        return {
-            if (
-                preference.getHealthPermissionType() !in
-                    viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()
-            ) {
-                viewModel.addToDeleteSet(preference.getHealthPermissionType())
-            } else {
-                viewModel.removeFromDeleteSet(preference.getHealthPermissionType())
-            }
-            updateMenu(screenState = DELETE)
-        }
-    }
-
-    private fun updateMenu(
-        screenState: AllDataViewModel.AllDataDeletionScreenState,
-        hasData: Boolean = true,
-    ) {
+    private fun updateMenu(screenState: DeletionScreenState, hasData: Boolean = true) {
         if (!hasData && showMedicalData) {
             setupSharedMenu(viewLifecycleOwner, logger)
             return
@@ -342,13 +330,13 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     @VisibleForTesting
-    fun triggerDeletionState(screenState: AllDataViewModel.AllDataDeletionScreenState) {
-        viewModel.setScreenState(screenState)
+    fun triggerDeletionState(screenState: DeletionScreenState) {
+        viewModel.setDeletionScreenStateValue(screenState)
         setupSelectAllPreference(screenState)
         updateMenu(screenState)
 
         iterateThroughPreferenceGroup { permissionTypePreference ->
-            permissionTypePreference.showCheckbox(screenState == DELETE)
+            permissionTypePreference.setShowCheckbox(screenState == DELETE)
         }
 
         // scroll to top to show Select all preference when triggered
@@ -368,7 +356,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         deletionViewModel.setDeletionType(
             DeletionType.DeleteHealthPermissionTypes(
                 viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty(),
-                viewModel.getNumOfPermissionTypes(),
+                viewModel.getTheNumOfPermissionTypes(),
             )
         )
         childFragmentManager.setFragmentResult(START_DELETION_KEY, bundleOf())
@@ -379,33 +367,28 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         categoryIcon: Drawable?,
     ): Preference {
         val pref =
-            DeletionPermissionTypesPreference(requireContext()).also { preference ->
-                preference.setShowCheckbox(viewModel.getScreenState() == DELETE)
-                preference.setLogNameCheckbox(AllDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
-                preference.setLogNameNoCheckbox(AllDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
-
-                viewModel.setOfPermissionTypesToBeDeleted.observe(viewLifecycleOwner) { deleteSet ->
-                    preference.setIsChecked(permissionType in deleteSet)
-                }
-
-                preference.icon = categoryIcon
-                preference.setTitle(permissionType.upperCaseLabel())
-                preference.setHealthPermissionType(permissionType)
-
-                preference.setOnPreferenceClickListener(onDeletionMethod(preference)) {
-                    entriesViewModel.setScreenState(
-                        EntriesViewModel.EntriesDeletionScreenState.VIEW
+            DeletionPermissionTypesPreference(requireContext(), viewModel) {
+                findNavController()
+                    .navigate(
+                        navigationDestination(permissionType),
+                        bundleOf(PERMISSION_TYPE_NAME_KEY to permissionType.name),
                     )
-                    entriesViewModel.setAllEntriesSelectedValue(false)
-                    entriesViewModel.currentSelectedDate.value = null
-                    findNavController()
-                        .navigate(
-                            navigationDestination(permissionType),
-                            bundleOf(PERMISSION_TYPE_NAME_KEY to permissionType.name),
-                        )
-                    true
-                }
+                true
             }
+
+        pref.apply {
+            setShowCheckbox(viewModel.getDeletionScreenStateValue() == DELETE)
+            setLogNameCheckbox(AllDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
+            setLogNameNoCheckbox(AllDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
+
+            icon = categoryIcon
+            setTitle(permissionType.upperCaseLabel())
+            setHealthPermissionType(permissionType)
+
+            viewModel.setOfPermissionTypesToBeDeleted.observe(viewLifecycleOwner) { deleteSet ->
+                setIsChecked(permissionType in deleteSet)
+            }
+        }
 
         return pref
     }
@@ -415,9 +398,11 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         else R.id.action_medicalAllData_to_entriesAndAccess
     }
 
-    private fun setupSelectAllPreference(screenState: AllDataViewModel.AllDataDeletionScreenState) {
-        selectAllCheckboxPreference.isVisible = screenState == DELETE
-        if (screenState == DELETE) {
+    private fun setupSelectAllPreference(screenState: DeletionScreenState) {
+        val isDeletionState = screenState == DELETE
+        selectAllCheckboxPreference.isVisible = isDeletionState
+        topIntroPreference.isVisible = !isDeletionState
+        if (isDeletionState) {
             viewModel.allPermissionTypesSelected.observe(viewLifecycleOwner) {
                 allPermissionTypesSelected ->
                 selectAllCheckboxPreference.removeOnPreferenceClickListener()
@@ -436,9 +421,9 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         return {
             iterateThroughPreferenceGroup { permissionTypePreference ->
                 if (selectAllCheckboxPreference.getIsChecked()) {
-                    viewModel.addToDeleteSet(permissionTypePreference.getHealthPermissionType())
+                    viewModel.addToDeletionSet(permissionTypePreference.getHealthPermissionType())
                 } else {
-                    viewModel.removeFromDeleteSet(
+                    viewModel.removeFromDeletionSet(
                         permissionTypePreference.getHealthPermissionType()
                     )
                 }

@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"ਚਮੜੀ ਦਾ ਤਾਪਮਾਨ"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"ਚਮੜੀ ਦਾ ਤਾਪਮਾਨ ਪੜ੍ਹੋ"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"ਚਮੜੀ ਦਾ ਤਾਪਮਾਨ ਲਿਖੋ"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"ਇਸ ਵਿੱਚ Health Connect ਵਿੱਚ ਸਿੰਕ ਕੀਤੇ ਅਤੇ ਸ਼ਾਮਲ ਕੀਤੇ ਸਾਰੇ ਸਿਹਤ ਰਿਕਾਰਡ ਸ਼ਾਮਲ ਹਨ। ਇਸ ਵਿੱਚ ਤੁਹਾਡਾ ਸਾਰਾ ਡਾਕਟਰੀ ਰਿਕਾਰਡ ਨਹੀਂ ਹੋ ਸਕਦਾ ਅਤੇ ਇਸ ਵਿੱਚ ਤੁਹਾਡੇ ਸਿਹਤ ਰਿਕਾਰਡਾਂ ਦਾ ਡਾਕਟਰੀ ਵਰਣਨ ਸ਼ਾਮਲ ਨਹੀਂ ਹੈ।"</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"ਸਾਰੇ ਸਿਹਤ ਰਿਕਾਰਡ"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"ਸਾਰੇ ਸਿਹਤ ਰਿਕਾਰਡ"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"ਸਾਰੇ ਸਿਹਤ ਰਿਕਾਰਡਾਂ ਵਿੱਚ ਦਬਦੀਲੀ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ"</string>
@@ -791,6 +790,10 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"ਸੰਗੀਤ"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"ਹੋਰ"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ਮਾਰਗਦਰਸ਼ਨ ਤੋਂ ਬਿਨਾਂ"</string>
+    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
+    <skip />
+    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> ਮਿੰ."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ਘੰ. <xliff:g id="MIN">%2$s</xliff:g> ਮਿੰ."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ਘੰ."</string>
@@ -1043,23 +1046,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ਏਕੀਕਰਨ ਜਾਰੀ ਹੈ"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect ਦਾ Android ਸਿਸਟਮ ਨਾਲ ਏਕੀਕਰਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ।\n\nਤੁਹਾਡੇ ਡਾਟਾ ਅਤੇ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਟ੍ਰਾਂਸਫ਼ਰ ਕਰਨ ਵਿੱਚ ਕੁਝ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ।"</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"ਐਪ ਨੂੰ ਪ੍ਰਕਿਰਿਆ ਪੂਰੀ ਹੋਣ ਦੀ ਸੂਚਨਾ ਮਿਲਣ ਤੱਕ ਬੰਦ ਨਾ ਕਰੋ।"</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect ਏਕੀਕਰਨ ਜਾਰੀ ਹੈ"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"ਅੱਪਡੇਟ ਦੀ ਲੋੜ ਹੈ"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect ਦਾ Android ਸਿਸਟਮ ਨਾਲ ਏਕੀਕਰਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ, ਇਸ ਲਈ ਤੁਸੀਂ ਇਸ ਤੱਕ ਸਿੱਧਾ ਆਪਣੀਆਂ ਸੈਟਿੰਗਾਂ ਤੋਂ ਪਹੁੰਚ ਕਰ ਸਕਦੇ ਹੋ।"</string>
     <string name="update_button" msgid="4544529019832009496">"ਅੱਪਡੇਟ ਕਰੋ"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"ਅੱਪਡੇਟ ਸ਼ੁਰੂ ਕਰੋ, ਤਾਂ ਜੋ Health Connect ਤੁਹਾਡੀਆਂ ਸਿਸਟਮ ਸੈਟਿੰਗਾਂ ਨਾਲ ਏਕੀਕਰਨ ਕਰਨਾ ਜਾਰੀ ਰੱਖ ਸਕੇ"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"ਹੁਣੇ ਅੱਪਡੇਟ ਕਰੋ"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"ਸਿਸਟਮ ਅੱਪਡੇਟ ਕਰਨ ਦੀ ਲੋੜ ਹੈ"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"ਅੱਗੇ ਵਧਣ ਤੋਂ ਪਹਿਲਾਂ, ਆਪਣੇ ਫ਼ੋਨ ਸਿਸਟਮ ਨੂੰ ਅੱਪਡੇਟ ਕਰੋ।"</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"ਜੇ ਤੁਸੀਂ ਆਪਣੇ ਫ਼ੋਨ ਸਿਸਟਮ ਨੂੰ ਅੱਪਡੇਟ ਕਰ ਲਿਆ ਹੈ, ਤਾਂ ਏਕੀਕਰਨ ਨੂੰ ਜਾਰੀ ਰੱਖਣ ਲਈ ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਮੁੜ-ਸ਼ੁਰੂ ਕਰ ਕੇ ਦੇਖੋ"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect ਲਈ ਅੱਪਡੇਟ ਲੋੜੀਂਦੀ ਹੈ"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"ਅੱਗੇ ਵਧਣ ਤੋਂ ਪਹਿਲਾਂ, Health Connect ਐਪ ਨੂੰ ਨਵੀਨਤਮ ਵਰਜਨ \'ਤੇ ਅੱਪਡੇਟ ਕਰੋ।"</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"ਜ਼ਿਆਦਾ ਜਗ੍ਹਾ ਦੀ ਲੋੜ ਹੈ"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect ਨੂੰ ਏਕੀਕਰਨ ਕਰਨਾ ਜਾਰੀ ਰੱਖਣ ਲਈ, ਤੁਹਾਡੇ ਫ਼ੋਨ \'ਤੇ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ਦੀ ਸਟੋਰੇਜ ਜਗ੍ਹਾ ਚਾਹੀਦੀ ਹੈ।\n\nਆਪਣੇ ਫ਼ੋਨ \'ਤੇ ਕੁਝ ਜਗ੍ਹਾ ਖਾਲੀ ਕਰੋ ਅਤੇ ਫਿਰ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"</string>
     <string name="try_again_button" msgid="8745496819992160789">"ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"ਜਗ੍ਹਾ ਖਾਲੀ ਕਰੋ"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"ਜ਼ਿਆਦਾ ਜਗ੍ਹਾ ਦੀ ਲੋੜ ਹੈ"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect ਨੂੰ ਏਕੀਕਰਨ ਕਰਨਾ ਜਾਰੀ ਰੱਖਣ ਲਈ, ਤੁਹਾਡੇ ਫ਼ੋਨ \'ਤੇ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ਦੀ ਸਟੋਰੇਜ ਜਗ੍ਹਾ ਚਾਹੀਦੀ ਹੈ।"</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"ਏਕੀਕਰਨ ਰੋਕਿਆ ਗਿਆ"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Health Connect ਐਪ ਦੇ Android ਸਿਸਟਮ ਨਾਲ ਏਕੀਕਰਨ ਹੋਣ ਦੌਰਾਨ, ਇਹ ਐਪ ਬੰਦ ਹੋ ਗਈ ਸੀ।\n\nਐਪ ਨੂੰ ਮੁੜ ਤੋਂ ਖੋਲ੍ਹਣ ਲਈ, ਮੁੜ-ਚਾਲੂ ਕਰੋ \'ਤੇ ਕਲਿੱਕ ਕਰੋ ਅਤੇ ਆਪਣੇ ਡਾਟਾ ਅਤੇ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਟ੍ਰਾਂਸਫ਼ਰ ਕਰਨਾ ਜਾਰੀ ਰੱਖੋ।"</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"ਆਪਣੇ Health Connect ਡਾਟੇ ਨੂੰ ਬਰਕਰਾਰ ਰੱਖਣ ਲਈ, ਇਸ ਨੂੰ <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ਦੇ ਅੰਦਰ ਪੂਰਾ ਕਰੋ"</string>
@@ -1070,8 +1068,6 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Health Connect ਦਾ Android ਸਿਸਟਮ ਨਾਲ ਏਕੀਕਰਨ ਜਾਰੀ ਰੱਖਣ ਲਈ, ਟੈਪ ਕਰੋ। ਆਪਣੇ ਡਾਟੇ ਨੂੰ ਬਰਕਰਾਰ ਰੱਖਣ ਲਈ, ਇਸ ਨੂੰ <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ਦੇ ਅੰਦਰ ਪੂਰਾ ਕਰੋ"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Health Connect ਦਾ Android ਸਿਸਟਮ ਨਾਲ ਏਕੀਕਰਨ ਜਾਰੀ ਰੱਖਣ ਲਈ, ਟੈਪ ਕਰੋ।"</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"ਜਾਰੀ ਰੱਖੋ"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect ਦਾ ਏਕੀਕਰਨ ਮੁੜ-ਚਾਲੂ ਕਰੋ"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"ਆਪਣੇ ਡਾਟੇ ਨੂੰ ਬਰਕਰਾਰ ਰੱਖਣ ਲਈ, ਇਸ ਨੂੰ <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ਦੇ ਅੰਦਰ ਪੂਰਾ ਕਰੋ"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"ਐਪ ਅੱਪਡੇਟ ਕਰਨ ਦੀ ਲੋੜ ਹੈ"</string>
     <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Health Connect ਨਾਲ ਸਿੰਕ ਕਰਨਾ ਜਾਰੀ ਰੱਖਣ ਲਈ <xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਅੱਪਡੇਟ ਕਰਨਾ ਪਵੇਗਾ। ਹੋ ਸਕਦਾ ਹੈ ਕਿ ਅੱਪਡੇਟ ਸਾਰੀਆਂ ਐਪਾਂ ਲਈ ਉਪਲਬਧ ਨਾ ਹੋਣ।"</string>
     <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Health Connect ਨਾਲ ਸਿੰਕ ਕਰਨਾ ਜਾਰੀ ਰੱਖਣ ਲਈ ਕੁਝ ਐਪਾਂ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨਾ ਪਵੇਗਾ। ਹੋ ਸਕਦਾ ਹੈ ਕਿ ਅੱਪਡੇਟ ਸਾਰੀਆਂ ਐਪਾਂ ਲਈ ਉਪਲਬਧ ਨਾ ਹੋਣ।"</string>
@@ -1089,10 +1085,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connect ਏਕੀਕਰਨ ਪੂਰਾ ਨਹੀਂ ਹੋਇਆ"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"ਇਸ ਦੇ ਦੁਬਾਰਾ ਉਪਲਬਧ ਹੋਣ \'ਤੇ ਤੁਹਾਨੂੰ ਇੱਕ ਸੂਚਨਾ ਮਿਲੇਗੀ।"</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"ਸਮਝ ਲਿਆ"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connect ਏਕੀਕਰਨ ਪੂਰਾ ਨਹੀਂ ਹੋਇਆ"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"ਹੋਰ ਪੜ੍ਹੋ"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connect ਏਕੀਕਰਨ ਪੂਰਾ ਹੋਇਆ"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"ਖੋਲ੍ਹੋ"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ਨਵਾਂ ਕੀ ਹੈ"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"ਤੁਸੀਂ ਹੁਣ Health Connect ਤੱਕ ਸਿੱਧਾ ਆਪਣੀਆਂ ਸੈਟਿੰਗਾਂ ਤੋਂ ਪਹੁੰਚ ਕਰ ਸਕਦੇ ਹੋ। ਸਟੋਰੇਜ ਜਗ੍ਹਾ ਨੂੰ ਖਾਲੀ ਕਰਨ ਲਈ ਕਿਸੇ ਵੀ ਵੇਲੇ Health Connect ਐਪ ਨੂੰ ਅਣਸਥਾਪਤ ਕਰੋ।"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"ਸਮਝ ਲਿਆ"</string>
@@ -1195,12 +1187,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"ਕੀ ਤੁਹਾਡੀ ਘੜੀ ਤੋਂ ਸਾਰੀਆਂ ਐਪਾਂ ਲਈ <xliff:g id="DATA_TYPE">%s</xliff:g> ਦੀ ਪਹੁੰਚ ਨੂੰ ਹਟਾਉਣਾ ਹੈ?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"ਸਹੀ ਦਾ ਨਿਸ਼ਾਨ"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"ਗਲਤ ਦਾ ਨਿਸ਼ਾਨ"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"ਫ਼ਿਲਹਾਲ, <xliff:g id="APP_NAME">%1$s</xliff:g> ਫਿੱਟਨੈੱਸ ਅਤੇ ਤੰਦਰੁਸਤੀ ਡਾਟੇ ਤੱਕ ਪਹੁੰਚ ਕਰ ਸਕਦੀ ਹੈ <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"ਕੀ <xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਫਿੱਟਨੈੱਸ ਅਤੇ ਤੰਦਰੁਸਤੀ ਡਾਟੇ ਤੱਕ ਹਮੇਸ਼ਾਂ ਪਹੁੰਚ ਦੇਣੀ ਹੈ?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਕੋਲ <xliff:g id="DATA_TYPES">%2$s</xliff:g> ਤੱਕ ਪਹੁੰਚ ਹੈ।"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"ਫਿੱਟਨੈੱਸ ਅਤੇ ਤੰਦਰੁਸਤੀ ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ"</string>
 </resources>
