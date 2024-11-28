@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -196,6 +197,9 @@ public abstract class HealthConnectInjector {
      * Getter for {@link MigrationEntityHelper} instance initialised by the Health Connect Injector.
      */
     public abstract MigrationEntityHelper getMigrationEntityHelper();
+
+    /** Getter for {@link BackupRestore} instance initialised by the Health Connect Injector. */
+    public abstract BackupRestore getBackupRestore();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

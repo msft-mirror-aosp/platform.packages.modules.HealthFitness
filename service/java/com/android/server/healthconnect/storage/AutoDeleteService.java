@@ -78,7 +78,7 @@ public class AutoDeleteService {
             // Re-sync activity dates table
             activityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
-            healthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(context);
+            healthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         } catch (Exception e) {
             Slog.e(TAG, "Auto delete run failed", e);
             // Don't rethrow as that will crash system_server

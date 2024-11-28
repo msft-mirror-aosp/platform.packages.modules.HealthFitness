@@ -296,62 +296,72 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     HealthConnectServiceImpl(
             Context context,
+            TimeSource timeSource,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             TransactionManager transactionManager,
             HealthConnectPermissionHelper permissionHelper,
-            MigrationCleaner migrationCleaner,
             FirstGrantTimeManager firstGrantTimeManager,
+            MigrationEntityHelper migrationEntityHelper,
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
+            MigrationCleaner migrationCleaner,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
+            BackupRestore backupRestore,
             AccessLogsHelper accessLogsHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            InternalHealthConnectMappings internalHealthConnectMappings,
             PriorityMigrationHelper priorityMigrationHelper,
             AppInfoHelper appInfoHelper,
             DeviceInfoHelper deviceInfoHelper,
             PreferenceHelper preferenceHelper,
-            TimeSource timeSource,
-            DatabaseHelpers databaseHelpers,
-            MigrationEntityHelper migrationEntityHelper) {
-        mTimeSource = timeSource;
-        mAccessLogsHelper = accessLogsHelper;
-        mTransactionManager = transactionManager;
-        mPreferenceHelper = preferenceHelper;
-        mChangeLogsRequestHelper = changeLogsRequestHelper;
-        mActivityDateHelper = activityDateHelper;
-        mPermissionHelper = permissionHelper;
-        mFirstGrantTimeManager = firstGrantTimeManager;
+            DatabaseHelpers databaseHelpers) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
-        mDatabaseHelpers = databaseHelpers;
-        mPermissionManager = mContext.getSystemService(PermissionManager.class);
+        mTimeSource = timeSource;
+
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
+        mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
+        mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
+
+        mTransactionManager = transactionManager;
+        mPermissionHelper = permissionHelper;
+        mFirstGrantTimeManager = firstGrantTimeManager;
+
+        mMigrationEntityHelper = migrationEntityHelper;
         mMigrationStateManager = migrationStateManager;
-        mDeviceInfoHelper = deviceInfoHelper;
+        mMigrationUiStateManager = migrationUiStateManager;
+        mMigrationUiStateManager.attachTo(migrationStateManager);
+        migrationCleaner.attachTo(migrationStateManager);
+
+        mMedicalResourceHelper = medicalResourceHelper;
+        mMedicalDataSourceHelper = medicalDataSourceHelper;
+
+        mExportManager = exportManager;
+        mExportImportSettingsStorage = exportImportSettingsStorage;
+        mBackupRestore = backupRestore;
+
+        mAccessLogsHelper = accessLogsHelper;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mActivityDateHelper = activityDateHelper;
+        mChangeLogsHelper = changeLogsHelper;
+        mChangeLogsRequestHelper = changeLogsRequestHelper;
+        mPriorityMigrationHelper = priorityMigrationHelper;
+        mAppInfoHelper = appInfoHelper;
+        mDeviceInfoHelper = deviceInfoHelper;
+        mPreferenceHelper = preferenceHelper;
+        mDatabaseHelpers = databaseHelpers;
+
+        mPermissionManager = mContext.getSystemService(PermissionManager.class);
+        mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
+        mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
                         mPermissionManager, mContext, internalHealthConnectMappings);
-        mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
-        mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
-        mAppInfoHelper = appInfoHelper;
-        mBackupRestore =
-                new BackupRestore(
-                        mAppInfoHelper,
-                        mFirstGrantTimeManager,
-                        mMigrationStateManager,
-                        mPreferenceHelper,
-                        mTransactionManager,
-                        mContext,
-                        mDeviceInfoHelper,
-                        mHealthDataCategoryPriorityHelper);
-        mMigrationUiStateManager = migrationUiStateManager;
-        mExportImportSettingsStorage = exportImportSettingsStorage;
         if (Flags.exportImport()) {
             Clock clockForLogging = Flags.exportImportFastFollow() ? Clock.systemUTC() : null;
             mImportManager =
@@ -366,17 +376,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         } else {
             mImportManager = null;
         }
-        mExportManager = exportManager;
-        migrationCleaner.attachTo(migrationStateManager);
-        mMigrationUiStateManager.attachTo(migrationStateManager);
-        mPriorityMigrationHelper = priorityMigrationHelper;
-        mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
-        mMedicalResourceHelper = medicalResourceHelper;
-        mMedicalDataSourceHelper = medicalDataSourceHelper;
-        mChangeLogsHelper = changeLogsHelper;
-        mMigrationEntityHelper = migrationEntityHelper;
-        mInternalHealthConnectMappings = internalHealthConnectMappings;
-        mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
         mCloudBackupManager =
                 Flags.cloudBackupAndRestore()
                         ? new CloudBackupManager(
@@ -397,11 +396,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
         mCurrentForegroundUser = currentForegroundUser;
-        mBackupRestore.setupForUser(currentForegroundUser);
-        HealthConnectThreadScheduler.scheduleInternalTask(
-                () ->
-                        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(
-                                mContext));
     }
 
     @Override
@@ -1260,7 +1254,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         throwExceptionIfDataSyncInProgress();
                         List<DataOrigin> dataOriginInPriorityOrder =
                                 mHealthDataCategoryPriorityHelper
-                                        .syncAndGetPriorityOrder(dataCategory, mContext)
+                                        .syncAndGetPriorityOrder(dataCategory)
                                         .stream()
                                         .map(
                                                 (name) ->
@@ -2818,6 +2812,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     throwExceptionIfDataSyncInProgress();
 
                     PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request);
+                    if (pageTokenWrapper.getRequest() == null) {
+                        throw new IllegalStateException("The request can not be null.");
+                    }
                     logger.setMedicalResourceTypes(
                             Set.of(pageTokenWrapper.getRequest().getMedicalResourceType()));
                     ReadMedicalResourcesInternalResponse response;

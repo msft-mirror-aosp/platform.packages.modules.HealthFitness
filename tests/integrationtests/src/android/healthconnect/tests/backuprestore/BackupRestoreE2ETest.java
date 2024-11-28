@@ -131,7 +131,7 @@ public class BackupRestoreE2ETest {
         }
         mBackupRestoreApkPackageName = getBackupRestoreApkPackageName();
         // enable backup on the test device
-        mBackupUtils.enableBackup(true);
+        mBackupUtils.enableBackupForUser(true, UserHandle.myUserId());
         // switch backup transport to local
         mBackupUtils.setBackupTransportForUser(
                 mBackupUtils.getLocalTransportName(), UserHandle.myUserId());
@@ -174,7 +174,8 @@ public class BackupRestoreE2ETest {
                 mPhrTestUtil.upsertVaccineMedicalResources(dataSourceId, numOfMedicalResources);
         assertThat(medicalResources).hasSize(numOfMedicalResources);
 
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // Delete records.
         verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
@@ -184,7 +185,8 @@ public class BackupRestoreE2ETest {
         mPhrTestUtil.deleteMedicalDataSourceWithData(dataSourceId);
         readMedicalResourcesAndAssertEmpty(medicalResources);
 
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         assertWithTimeout(() -> readAndAssertMedicalResourcesExistUsingIds(medicalResources));
         assertWithTimeout(() -> readAndAssertRecordsExistUsingIds(insertedRecords));
@@ -203,12 +205,14 @@ public class BackupRestoreE2ETest {
                         this::getCompleteActiveCaloriesBurnedRecord, numOfRecords);
         assertThat(insertedRecords).hasSize(numOfRecords);
 
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
         readAndAssertRecordsNotExistUsingIds(insertedRecords);
 
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         assertWithTimeout(() -> readAndAssertRecordsExistUsingIds(insertedRecords));
         log("Data Restore state = " + getHealthConnectDataRestoreState());
@@ -256,14 +260,16 @@ public class BackupRestoreE2ETest {
                 .isEqualTo(insertedExerciseSession.getMetadata().getId());
 
         // Proceed with backup.
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // Delete the now backed up records from the database.
         verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
         readAndAssertRecordsNotExistUsingIds(insertedTrainingPlans);
         readAndAssertRecordsNotExistUsingIds(insertedExercises);
 
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         assertWithTimeout(
                 () -> {
@@ -302,7 +308,8 @@ public class BackupRestoreE2ETest {
 
         // trigger backup, only test app 1 has grant time now, so the staged backup file should
         // contains only grant time for test app 1, not test app 2
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // grant permissions to simulate the case where permission controller module is restored
         // before HC module.
@@ -325,7 +332,8 @@ public class BackupRestoreE2ETest {
         // trigger restore, now the staged backup file which contains grant time for test app 1
         // should override ONLY the newly created grant time of test app 1, but not the
         // test app 2's.
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // assert that test app 1's grant time is restored correctly
         assertWithTimeout(
@@ -357,12 +365,14 @@ public class BackupRestoreE2ETest {
                         });
 
         // trigger backup, the staged backup file should contains  grant time for test app 1.
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
         Thread.sleep(1000); // add some delay so second grant time is definitely different
 
         // revoke all permissions and then restore the grant time file.
         revokeAllPermissions(TEST_APP_1_PACKAGE_NAME, "");
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // Since permissions haven't been restored, expect null access date.
         assertWithTimeout(

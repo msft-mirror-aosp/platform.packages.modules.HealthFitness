@@ -369,29 +369,30 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mServiceContext,
+                        healthConnectInjector.getTimeSource(),
+                        healthConnectInjector.getInternalHealthConnectMappings(),
                         healthConnectInjector.getTransactionManager(),
                         healthConnectInjector.getHealthConnectPermissionHelper(),
-                        healthConnectInjector.getMigrationCleaner(),
                         healthConnectInjector.getFirstGrantTimeManager(),
+                        healthConnectInjector.getMigrationEntityHelper(),
                         healthConnectInjector.getMigrationStateManager(),
                         mMigrationUiStateManager,
+                        healthConnectInjector.getMigrationCleaner(),
                         healthConnectInjector.getMedicalResourceHelper(),
                         healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
                         healthConnectInjector.getExportImportSettingsStorage(),
+                        healthConnectInjector.getBackupRestore(),
                         healthConnectInjector.getAccessLogsHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
                         healthConnectInjector.getActivityDateHelper(),
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
-                        healthConnectInjector.getInternalHealthConnectMappings(),
                         healthConnectInjector.getPriorityMigrationHelper(),
                         healthConnectInjector.getAppInfoHelper(),
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getPreferenceHelper(),
-                        healthConnectInjector.getTimeSource(),
-                        healthConnectInjector.getDatabaseHelpers(),
-                        healthConnectInjector.getMigrationEntityHelper());
+                        healthConnectInjector.getDatabaseHelpers());
     }
 
     @After
@@ -2539,14 +2540,9 @@ public class HealthConnectServiceImplTest {
 
     @Test
     public void testUserSwitching() throws TimeoutException {
-        doNothing()
-                .when(mHealthDataCategoryPriorityHelper)
-                .maybeAddContributingAppsToPriorityList(mContext);
-
         mHealthConnectService.onUserSwitching(mUserHandle);
 
         waitForAllScheduledTasksToComplete();
-        verify(mHealthDataCategoryPriorityHelper).maybeAddContributingAppsToPriorityList(any());
     }
 
     /**
