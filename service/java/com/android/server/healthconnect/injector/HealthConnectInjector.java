@@ -22,7 +22,6 @@ import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
@@ -101,12 +100,6 @@ public abstract class HealthConnectInjector {
      * Getter for {@link MigrationStateManager} instance initialised by the Health Connect Injector.
      */
     public abstract MigrationStateManager getMigrationStateManager();
-
-    /**
-     * Getter for {@link HealthConnectDeviceConfigManager} instance initialised by the Health
-     * Connect Injector.
-     */
-    public abstract HealthConnectDeviceConfigManager getHealthConnectDeviceConfigManager();
 
     /** Getter for {@link DeviceInfoHelper} instance initialised by the Health Connect Injector. */
     public abstract DeviceInfoHelper getDeviceInfoHelper();

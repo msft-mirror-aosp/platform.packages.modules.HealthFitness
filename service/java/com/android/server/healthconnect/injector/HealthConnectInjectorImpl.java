@@ -22,7 +22,6 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
@@ -80,7 +79,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final PreferenceHelper mPreferenceHelper;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final ExportManager mExportManager;
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
@@ -127,15 +125,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mMigrationEntityHelper == null
                         ? new MigrationEntityHelper(mDatabaseHelpers)
                         : builder.mMigrationEntityHelper;
-        mHealthConnectDeviceConfigManager =
-                builder.mHealthConnectDeviceConfigManager == null
-                        ? new HealthConnectDeviceConfigManager(context)
-                        : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
                         ? new TransactionManager(storageContext, mInternalHealthConnectMappings)
                         : builder.mTransactionManager;
-
         mAppInfoHelper =
                 builder.mAppInfoHelper == null
                         ? new AppInfoHelper(
@@ -184,16 +177,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mExportManager;
         mMigrationBroadcastScheduler =
                 builder.mMigrationBroadcastScheduler == null
-                        ? new MigrationBroadcastScheduler(
-                                userHandle, mHealthConnectDeviceConfigManager)
+                        ? new MigrationBroadcastScheduler(userHandle)
                         : builder.mMigrationBroadcastScheduler;
         mMigrationStateManager =
                 builder.mMigrationStateManager == null
                         ? new MigrationStateManager(
-                                userHandle,
-                                mHealthConnectDeviceConfigManager,
-                                mPreferenceHelper,
-                                mMigrationBroadcastScheduler)
+                                userHandle, mPreferenceHelper, mMigrationBroadcastScheduler)
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
@@ -282,8 +271,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 context,
                                 userHandle,
                                 mMigrationStateManager,
-                                new MigrationNotificationSender(
-                                        context, mHealthConnectDeviceConfigManager))
+                                new MigrationNotificationSender(context))
                         : builder.mMigrationUiStateManager;
         mBackupRestore =
                 new BackupRestore(
@@ -334,11 +322,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public ExportManager getExportManager() {
         return mExportManager;
-    }
-
-    @Override
-    public HealthConnectDeviceConfigManager getHealthConnectDeviceConfigManager() {
-        return mHealthConnectDeviceConfigManager;
     }
 
     @Override
@@ -514,7 +497,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private PreferenceHelper mPreferenceHelper;
         @Nullable private ExportImportSettingsStorage mExportImportSettingsStorage;
         @Nullable private ExportManager mExportManager;
-        @Nullable private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
         @Nullable private MigrationStateManager mMigrationStateManager;
         @Nullable private DeviceInfoHelper mDeviceInfoHelper;
         @Nullable private AppInfoHelper mAppInfoHelper;
@@ -594,14 +576,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setExportManager(ExportManager exportManager) {
             Objects.requireNonNull(exportManager);
             mExportManager = exportManager;
-            return this;
-        }
-
-        /** Set fake or custom {@link HealthConnectDeviceConfigManager} */
-        public Builder setHealthConnectDeviceConfigManager(
-                HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
-            Objects.requireNonNull(healthConnectDeviceConfigManager);
-            mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
             return this;
         }
 
