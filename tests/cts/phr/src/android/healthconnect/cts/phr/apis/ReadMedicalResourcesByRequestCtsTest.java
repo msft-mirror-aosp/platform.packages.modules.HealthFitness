@@ -26,6 +26,7 @@ import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MEDICAL_RESOURCE_TYPES_LIST;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
@@ -43,6 +44,7 @@ import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellP
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -546,6 +548,39 @@ public class ReadMedicalResourcesByRequestCtsTest {
         assertThat(receiver2.getResponse().getMedicalResources()).hasSize(2);
         assertThat(receiver2.getResponse().getNextPageToken()).isNotEmpty();
         assertThat(receiver2.getResponse().getRemainingCount()).isEqualTo(3);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT
+    })
+    public void
+            testReadMedicalResourcesByRequest_moreTotalResourcesThanPageSize_returnsAllRequested()
+                    throws InterruptedException {
+        // Given we insert 2 Allergies followed by 2 Vaccines
+        MedicalDataSource dataSource1 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        mUtil.upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_ALLERGY);
+        mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        mUtil.upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+
+        // When we read all vaccines with page size 2
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest vaccinesRequestWithPageSize2 =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .setPageSize(2)
+                        .build();
+        mManager.readMedicalResources(
+                vaccinesRequestWithPageSize2, Executors.newSingleThreadExecutor(), receiver);
+
+        // Then we receive all vaccines in one page
+        assertThat(receiver.getResponse().getMedicalResources()).hasSize(2);
+        assertThat(receiver.getResponse().getNextPageToken()).isNull();
+        assertThat(receiver.getResponse().getRemainingCount()).isEqualTo(0);
     }
 
     @Test
