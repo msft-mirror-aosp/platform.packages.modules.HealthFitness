@@ -398,10 +398,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void onUserSwitching(UserHandle currentForegroundUser) {
         mCurrentForegroundUser = currentForegroundUser;
         mBackupRestore.setupForUser(currentForegroundUser);
-        HealthConnectThreadScheduler.scheduleInternalTask(
-                () ->
-                        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(
-                                mContext));
     }
 
     @Override
@@ -1260,7 +1256,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         throwExceptionIfDataSyncInProgress();
                         List<DataOrigin> dataOriginInPriorityOrder =
                                 mHealthDataCategoryPriorityHelper
-                                        .syncAndGetPriorityOrder(dataCategory, mContext)
+                                        .syncAndGetPriorityOrder(dataCategory)
                                         .stream()
                                         .map(
                                                 (name) ->
@@ -2818,6 +2814,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     throwExceptionIfDataSyncInProgress();
 
                     PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request);
+                    if (pageTokenWrapper.getRequest() == null) {
+                        throw new IllegalStateException("The request can not be null.");
+                    }
                     logger.setMedicalResourceTypes(
                             Set.of(pageTokenWrapper.getRequest().getMedicalResourceType()));
                     ReadMedicalResourcesInternalResponse response;
