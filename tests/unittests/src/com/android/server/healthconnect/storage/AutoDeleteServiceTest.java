@@ -135,7 +135,7 @@ public class AutoDeleteServiceTest {
                 .deleteWithoutChangeLogs(
                         Mockito.argThat(this::checkTableNames_getPreferenceReturnNull));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
-        verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);
+        verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable();
         verify(mActivityDateHelper, times(1)).reSyncForAllRecords();
     }
 
@@ -166,7 +166,7 @@ public class AutoDeleteServiceTest {
                                 shouldRecordDeleteAccessLog -> !shouldRecordDeleteAccessLog),
                         any());
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
-        verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);
+        verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable();
         verify(mActivityDateHelper, times(1)).reSyncForAllRecords();
     }
 

@@ -90,29 +90,30 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mContext,
+                        mHealthConnectInjector.getTimeSource(),
+                        mHealthConnectInjector.getInternalHealthConnectMappings(),
                         mTransactionManager,
                         mHealthConnectInjector.getHealthConnectPermissionHelper(),
-                        mHealthConnectInjector.getMigrationCleaner(),
                         mHealthConnectInjector.getFirstGrantTimeManager(),
+                        mHealthConnectInjector.getMigrationEntityHelper(),
                         mMigrationStateManager,
                         mMigrationUiStateManager,
+                        mHealthConnectInjector.getMigrationCleaner(),
                         mHealthConnectInjector.getMedicalResourceHelper(),
                         mHealthConnectInjector.getMedicalDataSourceHelper(),
                         mExportManager,
                         mExportImportSettingsStorage,
+                        mHealthConnectInjector.getBackupRestore(),
                         mHealthConnectInjector.getAccessLogsHelper(),
                         mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
                         mHealthConnectInjector.getActivityDateHelper(),
                         mHealthConnectInjector.getChangeLogsHelper(),
                         mHealthConnectInjector.getChangeLogsRequestHelper(),
-                        mHealthConnectInjector.getInternalHealthConnectMappings(),
                         mHealthConnectInjector.getPriorityMigrationHelper(),
                         mHealthConnectInjector.getAppInfoHelper(),
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mPreferenceHelper,
-                        mHealthConnectInjector.getTimeSource(),
-                        mDatabaseHelpers,
-                        mHealthConnectInjector.getMigrationEntityHelper());
+                        mDatabaseHelpers);
     }
 
     @Override
@@ -176,7 +177,6 @@ public class HealthConnectManagerService extends SystemService {
     }
 
     private void switchToSetupForUser(UserHandle user) {
-        // Note: This is for test setup debugging, please don't surround with DEBUG flag
         Slog.d(TAG, "switchToSetupForUser: " + user);
         StorageContext storageContext = StorageContext.create(mContext, mCurrentForegroundUser);
         mTransactionManager.onUserUnlocked(storageContext);
@@ -188,7 +188,9 @@ public class HealthConnectManagerService extends SystemService {
                 .getHealthPermissionIntentAppsTracker()
                 .onUserUnlocked(mCurrentForegroundUser);
 
+        mHealthConnectInjector.getBackupRestore().setupForUser(mCurrentForegroundUser);
         mHealthConnectInjector.getAppInfoHelper().setupForUser(storageContext);
+        mHealthConnectInjector.getHealthDataCategoryPriorityHelper().setupForUser(storageContext);
 
         if (Flags.clearCachesAfterSwitchingUser()) {
             // Clear preferences cache again after the user switching is done as there's a race
