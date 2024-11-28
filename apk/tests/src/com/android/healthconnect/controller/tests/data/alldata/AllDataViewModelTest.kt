@@ -34,6 +34,7 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -267,7 +268,7 @@ class AllDataViewModelTest {
     fun addToDeleteSet_updatesDeleteSetCorrectly() = runTest {
         assertThat(viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()).isEmpty()
 
-        viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
+        viewModel.addToDeletionSet(FitnessPermissionType.DISTANCE)
 
         assertThat(viewModel.setOfPermissionTypesToBeDeleted.value)
             .containsExactly(FitnessPermissionType.DISTANCE)
@@ -275,35 +276,35 @@ class AllDataViewModelTest {
 
     @Test
     fun removeFromDeleteSet_updatesDeleteSetCorrectly() {
-        viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
-        viewModel.addToDeleteSet(FitnessPermissionType.MENSTRUATION)
-        viewModel.removeFromDeleteSet(FitnessPermissionType.DISTANCE)
+        viewModel.addToDeletionSet(FitnessPermissionType.DISTANCE)
+        viewModel.addToDeletionSet(FitnessPermissionType.MENSTRUATION)
+        viewModel.removeFromDeletionSet(FitnessPermissionType.DISTANCE)
 
         assertThat(viewModel.setOfPermissionTypesToBeDeleted.value)
             .containsExactly(FitnessPermissionType.MENSTRUATION)
     }
 
     @Test
-    fun setScreenState_setsCorrectly() {
-        viewModel.setScreenState(AllDataViewModel.AllDataDeletionScreenState.DELETE)
+    fun setDeletionScreenState_setsCorrectly() {
+        viewModel.setDeletionScreenStateValue(DeletionDataViewModel.DeletionScreenState.DELETE)
 
-        assertThat(viewModel.getScreenState())
-            .isEqualTo(AllDataViewModel.AllDataDeletionScreenState.DELETE)
+        assertThat(viewModel.getDeletionScreenStateValue())
+            .isEqualTo(DeletionDataViewModel.DeletionScreenState.DELETE)
     }
 
     @Test
-    fun getScreenState_getsCorrectValue() {
-        viewModel.setScreenState(AllDataViewModel.AllDataDeletionScreenState.VIEW)
+    fun getDeletionScreenState_getsCorrectValue() {
+        viewModel.setDeletionScreenStateValue(DeletionDataViewModel.DeletionScreenState.VIEW)
 
-        assertThat(viewModel.getScreenState())
-            .isEqualTo(AllDataViewModel.AllDataDeletionScreenState.VIEW)
+        assertThat(viewModel.getDeletionScreenStateValue())
+            .isEqualTo(DeletionDataViewModel.DeletionScreenState.VIEW)
     }
 
     @Test
     fun resetDeleteSet_emptiesDeleteSet() {
-        viewModel.addToDeleteSet(FitnessPermissionType.MENSTRUATION)
-        viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
-        viewModel.resetDeleteSet()
+        viewModel.addToDeletionSet(FitnessPermissionType.MENSTRUATION)
+        viewModel.addToDeletionSet(FitnessPermissionType.DISTANCE)
+        viewModel.resetDeletionSet()
 
         assertThat(viewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
@@ -341,7 +342,7 @@ class AllDataViewModelTest {
         viewModel.loadAllFitnessData()
         advanceUntilIdle()
 
-        assertThat(viewModel.getNumOfPermissionTypes()).isEqualTo(3)
+        assertThat(viewModel.getTheNumOfPermissionTypes()).isEqualTo(3)
     }
 
     private fun prepareAnswer(
