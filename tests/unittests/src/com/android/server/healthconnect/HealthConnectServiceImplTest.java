@@ -392,7 +392,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getAppInfoHelper(),
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getPreferenceHelper(),
-                        healthConnectInjector.getDatabaseHelpers());
+                        healthConnectInjector.getDatabaseHelpers(),
+                        healthConnectInjector.getPreferencesManager());
     }
 
     @After

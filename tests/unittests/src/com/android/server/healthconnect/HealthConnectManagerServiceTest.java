@@ -25,7 +25,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import android.Manifest;
 import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -83,9 +82,6 @@ public class HealthConnectManagerServiceTest {
 
     @Before
     public void setUp() throws PackageManager.NameNotFoundException {
-        InstrumentationRegistry.getInstrumentation()
-                .getUiAutomation()
-                .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
         HealthConnectInjector.resetInstanceForTest();
         when(mJobScheduler.forNamespace(HEALTH_CONNECT_DAILY_JOB_NAMESPACE))
                 .thenReturn(mJobScheduler);

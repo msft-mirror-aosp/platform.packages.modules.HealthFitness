@@ -21,6 +21,7 @@ import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Power;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -61,4 +62,10 @@ public final class BasalMetabolicRateRecordInternal
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mBasalMetabolicRate);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }

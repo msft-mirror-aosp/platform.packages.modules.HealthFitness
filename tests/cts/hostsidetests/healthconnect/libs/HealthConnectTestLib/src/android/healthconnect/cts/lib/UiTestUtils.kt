@@ -207,6 +207,11 @@ object UiTestUtils {
         getUiDevice().waitForIdle()
     }
 
+    fun scrollDownToAndFindText(text: String) {
+        scrollDownTo(By.text(text))
+        findText(text)
+    }
+
     fun skipOnboardingIfAppears() {
         val uiObject = findObjectOrNull(By.text("Get started"))
         uiObject?.click()

@@ -20,6 +20,7 @@ import android.health.connect.datatypes.BoneMassRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Mass;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -58,4 +59,10 @@ public final class BoneMassRecordInternal extends InstantRecordInternal<BoneMass
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mMass);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }
