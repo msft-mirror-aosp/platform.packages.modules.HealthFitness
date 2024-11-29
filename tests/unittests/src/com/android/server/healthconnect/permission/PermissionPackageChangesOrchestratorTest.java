@@ -42,7 +42,6 @@ import androidx.test.core.app.ApplicationProvider;
 import com.android.compatibility.common.util.FeatureUtil;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
@@ -63,7 +62,6 @@ public class PermissionPackageChangesOrchestratorTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(TransactionManager.class)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
                     .mockStatic(HealthDataCategoryPriorityHelper.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();

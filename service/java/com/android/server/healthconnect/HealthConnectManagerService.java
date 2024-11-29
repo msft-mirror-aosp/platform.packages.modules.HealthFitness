@@ -60,7 +60,6 @@ public class HealthConnectManagerService extends SystemService {
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final ExportManager mExportManager;
     private final PreferenceHelper mPreferenceHelper;
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
     private final DatabaseHelpers mDatabaseHelpers;
     private final HealthConnectInjector mHealthConnectInjector;
@@ -75,8 +74,6 @@ public class HealthConnectManagerService extends SystemService {
 
         HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
         mHealthConnectInjector = HealthConnectInjector.getInstance();
-        mHealthConnectDeviceConfigManager =
-                mHealthConnectInjector.getHealthConnectDeviceConfigManager();
         mTransactionManager = mHealthConnectInjector.getTransactionManager();
         mPreferenceHelper = mHealthConnectInjector.getPreferenceHelper();
         mMigrationStateManager = mHealthConnectInjector.getMigrationStateManager();
@@ -113,7 +110,8 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getAppInfoHelper(),
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mPreferenceHelper,
-                        mDatabaseHelpers);
+                        mDatabaseHelpers,
+                        mHealthConnectInjector.getPreferencesManager());
     }
 
     @Override
@@ -122,7 +120,6 @@ public class HealthConnectManagerService extends SystemService {
         new MigratorPackageChangesReceiver(mMigrationStateManager)
                 .registerBroadcastReceiver(mContext);
         publishBinderService(Context.HEALTHCONNECT_SERVICE, mHealthConnectService);
-        mHealthConnectDeviceConfigManager.updateRateLimiterValues();
     }
 
     /**
@@ -143,7 +140,6 @@ public class HealthConnectManagerService extends SystemService {
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
         mMigrationStateManager.onUserSwitching(mContext, to.getUserHandle());
-
         mCurrentForegroundUser = to.getUserHandle();
 
         if (mUserManager.isUserUnlocked(to.getUserHandle())) {

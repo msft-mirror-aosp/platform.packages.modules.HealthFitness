@@ -20,6 +20,7 @@ import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.OvulationTestRecord;
 import android.health.connect.datatypes.OvulationTestRecord.OvulationTestResult;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -59,4 +60,10 @@ public final class OvulationTestRecordInternal extends InstantRecordInternal<Ovu
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeInt(mResult);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }

@@ -30,7 +30,6 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.Nullable;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteConstraintException;
@@ -586,12 +585,10 @@ public final class TransactionManager {
     /**
      * Size of Health Connect database in bytes.
      *
-     * @param context Context
      * @return Size of the database
      */
-    public long getDatabaseSize(Context context) {
-        requireNonNull(context);
-        return context.getDatabasePath(getReadableDb().getPath()).length();
+    public long getDatabaseSize() {
+        return mHealthConnectDatabase.getDatabasePath().length();
     }
 
     /**
@@ -697,8 +694,8 @@ public final class TransactionManager {
     /**
      * ONLY DO OPERATIONS IN A SINGLE TRANSACTION HERE
      *
-     * <p>This is because this function is called from {@link AutoDeleteService}, and we want to
-     * make sure that either all its operation succeed or fail in a single run.
+     * <p>This is because this function is called from {@link DailyCleanupJob}, and we want to make
+     * sure that either all its operation succeed or fail in a single run.
      */
     public void deleteWithoutChangeLogs(List<DeleteTableRequest> deleteTableRequests) {
         requireNonNull(deleteTableRequests);

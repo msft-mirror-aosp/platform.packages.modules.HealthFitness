@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage;
 
-import android.content.Context;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -25,10 +24,10 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,63 +37,54 @@ import java.util.List;
  *
  * @hide
  */
-// TODO(b/368073286): Add a constructor here (and remove service from the name).
-public class AutoDeleteService {
-    private static final String AUTO_DELETE_DURATION_RECORDS_KEY =
-            "auto_delete_duration_records_key";
+public class DailyCleanupJob {
+
     private static final String TAG = "HealthConnectAutoDelete";
 
-    /** Gets auto delete period for automatically deleting record entries */
-    public static int getRecordRetentionPeriodInDays(PreferenceHelper preferenceHelper) {
-        String result = preferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY);
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final PreferencesManager mPreferencesManager;
+    private final AppInfoHelper mAppInfoHelper;
+    private final TransactionManager mTransactionManager;
+    private final AccessLogsHelper mAccessLogsHelper;
+    private final ActivityDateHelper mActivityDateHelper;
 
-        if (result == null) return 0;
-        return Integer.parseInt(result);
-    }
-
-    /** Sets auto delete period for automatically deleting record entries */
-    public static void setRecordRetentionPeriodInDays(int days, PreferenceHelper preferenceHelper) {
-        preferenceHelper.insertOrReplacePreference(
-                AUTO_DELETE_DURATION_RECORDS_KEY, String.valueOf(days));
-    }
-
-    /** Starts the Auto Deletion process. */
-    public static void startAutoDelete(
-            Context context,
+    public DailyCleanupJob(
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            PreferenceHelper preferenceHelper,
+            PreferencesManager preferencesManager,
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
             AccessLogsHelper accessLogsHelper,
             ActivityDateHelper activityDateHelper) {
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mPreferencesManager = preferencesManager;
+        mAppInfoHelper = appInfoHelper;
+        mTransactionManager = transactionManager;
+        mAccessLogsHelper = accessLogsHelper;
+        mActivityDateHelper = activityDateHelper;
+    }
+
+    /** Starts the Auto Deletion process. */
+    public void startDailyCleanup() {
         try {
             // Only do transactional operations here - as this job might get cancelled for several
             // reasons, such as: User switch, low battery etc.
-            deleteStaleRecordEntries(preferenceHelper, transactionManager, accessLogsHelper);
-            deleteStaleChangeLogEntries(transactionManager);
-            deleteStaleAccessLogEntries(transactionManager);
+            deleteStaleRecordEntries();
+            deleteStaleChangeLogEntries();
+            deleteStaleAccessLogEntries();
             // Update the recordTypesUsed by packages if required after the deletion of records.
-            appInfoHelper.syncAppInfoRecordTypesUsed();
+            mAppInfoHelper.syncAppInfoRecordTypesUsed();
             // Re-sync activity dates table
-            activityDateHelper.reSyncForAllRecords();
+            mActivityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
-            healthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
+            mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         } catch (Exception e) {
             Slog.e(TAG, "Auto delete run failed", e);
             // Don't rethrow as that will crash system_server
         }
     }
 
-    private static void deleteStaleRecordEntries(
-            PreferenceHelper preferenceHelper,
-            TransactionManager transactionManager,
-            AccessLogsHelper accessLogsHelper) {
-        String recordAutoDeletePeriodString =
-                preferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY);
-        int recordAutoDeletePeriod =
-                recordAutoDeletePeriodString == null
-                        ? 0
-                        : Integer.parseInt(recordAutoDeletePeriodString);
+    private void deleteStaleRecordEntries() {
+        int recordAutoDeletePeriod = mPreferencesManager.getRecordRetentionPeriodInDays();
         if (recordAutoDeletePeriod != 0) {
             // 0 represents that no period is set,to delete only if not 0 else don't do anything
             List<DeleteTableRequest> deleteTableRequests = new ArrayList<>();
@@ -108,10 +98,10 @@ public class AutoDeleteService {
                                 deleteTableRequests.add(request);
                             });
             try {
-                transactionManager.deleteAll(
+                mTransactionManager.deleteAll(
                         new DeleteTransactionRequest(deleteTableRequests),
                         /* shouldRecordDeleteAccessLogs= */ false,
-                        accessLogsHelper);
+                        mAccessLogsHelper);
             } catch (Exception exception) {
                 Slog.e(TAG, "Auto delete for records failed", exception);
                 // Don't rethrow as that will crash system_server
@@ -119,9 +109,9 @@ public class AutoDeleteService {
         }
     }
 
-    private static void deleteStaleChangeLogEntries(TransactionManager transactionManager) {
+    private void deleteStaleChangeLogEntries() {
         try {
-            transactionManager.deleteWithoutChangeLogs(
+            mTransactionManager.deleteWithoutChangeLogs(
                     List.of(
                             ChangeLogsHelper.getDeleteRequestForAutoDelete(),
                             ChangeLogsRequestHelper.getDeleteRequestForAutoDelete()));
@@ -131,9 +121,9 @@ public class AutoDeleteService {
         }
     }
 
-    private static void deleteStaleAccessLogEntries(TransactionManager transactionManager) {
+    private void deleteStaleAccessLogEntries() {
         try {
-            transactionManager.deleteWithoutChangeLogs(
+            mTransactionManager.deleteWithoutChangeLogs(
                     List.of(AccessLogsHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Access logs failed", exception);

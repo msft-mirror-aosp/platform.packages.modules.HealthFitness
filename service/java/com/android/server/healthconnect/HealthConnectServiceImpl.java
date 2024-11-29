@@ -190,7 +190,6 @@ import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.phr.validations.FhirResourceValidator;
 import com.android.server.healthconnect.phr.validations.MedicalResourceValidator;
-import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -212,6 +211,7 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.utils.TimeSource;
 
@@ -289,6 +289,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final HealthConnectMappings mHealthConnectMappings;
     private final TimeSource mTimeSource;
     private final DatabaseHelpers mDatabaseHelpers;
+    private final PreferencesManager mPreferencesManager;
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
 
@@ -319,7 +320,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             AppInfoHelper appInfoHelper,
             DeviceInfoHelper deviceInfoHelper,
             PreferenceHelper preferenceHelper,
-            DatabaseHelpers databaseHelpers) {
+            DatabaseHelpers databaseHelpers,
+            PreferencesManager preferencesManager) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -355,6 +357,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mDeviceInfoHelper = deviceInfoHelper;
         mPreferenceHelper = preferenceHelper;
         mDatabaseHelpers = databaseHelpers;
+        mPreferencesManager = preferencesManager;
 
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
@@ -1339,7 +1342,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
-                        AutoDeleteService.setRecordRetentionPeriodInDays(days, mPreferenceHelper);
+                        mPreferencesManager.setRecordRetentionPeriodInDays(days);
                         callback.onResult();
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
@@ -1368,7 +1371,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         throwExceptionIfDataSyncInProgress();
         try {
             mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
-            return AutoDeleteService.getRecordRetentionPeriodInDays(mPreferenceHelper);
+            return mPreferencesManager.getRecordRetentionPeriodInDays();
         } catch (Exception e) {
             if (e instanceof SecurityException) {
                 throw e;
@@ -3296,8 +3299,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 mAppInfoHelper,
                 mHealthDataCategoryPriorityHelper,
                 mPriorityMigrationHelper,
-                mPreferenceHelper,
-                mMigrationEntityHelper);
+                mMigrationEntityHelper,
+                mPreferencesManager);
     }
 
     private void enforceCallingPackageBelongsToUid(String packageName, int callingUid) {
