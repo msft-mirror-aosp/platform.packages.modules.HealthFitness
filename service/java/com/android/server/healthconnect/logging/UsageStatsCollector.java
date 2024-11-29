@@ -34,6 +34,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
 
 import java.time.Instant;
@@ -61,6 +62,7 @@ public final class UsageStatsCollector {
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
     private final Context mContext;
     private final PreferenceHelper mPreferenceHelper;
+    private final PreferencesManager mPreferencesManager;
     private final AccessLogsHelper mAccessLogsHelper;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
@@ -71,12 +73,14 @@ public final class UsageStatsCollector {
     public UsageStatsCollector(
             Context context,
             PreferenceHelper preferenceHelper,
+            PreferencesManager preferencesManager,
             AccessLogsHelper accessLogsHelper,
             TimeSource timeSource,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper) {
         mContext = context;
         mPreferenceHelper = preferenceHelper;
+        mPreferencesManager = preferencesManager;
         mAccessLogsHelper = accessLogsHelper;
         mTimeSource = timeSource;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
@@ -122,7 +126,7 @@ public final class UsageStatsCollector {
     /** Returns whether the current user is considered as a PHR monthly active user. */
     public boolean isPhrMonthlyActiveUser() {
         Instant lastReadMedicalResourcesApiTimeStamp =
-                mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp();
+                mPreferencesManager.getPhrLastReadMedicalResourcesApiTimeStamp();
         if (lastReadMedicalResourcesApiTimeStamp == null) {
             return false;
         }
