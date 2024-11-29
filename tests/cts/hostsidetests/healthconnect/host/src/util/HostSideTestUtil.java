@@ -47,7 +47,7 @@ public class HostSideTestUtil {
 
     /** Clears all data on the device, including access logs. */
     public static void clearData(ITestDevice device) throws Exception {
-        triggerTestInTestApp(device, DAILY_LOG_TESTS_ACTIVITY, "deleteAllRecordsAddedForTest");
+        triggerTestInTestApp(device, DAILY_LOG_TESTS_ACTIVITY, "deleteAllStagedRemoteData");
         // Next two lines will delete newly added Access Logs as all access logs over 7 days are
         // deleted by the AutoDeleteService which is run by the daily job.
         increaseDeviceTimeByDays(device, 10);
