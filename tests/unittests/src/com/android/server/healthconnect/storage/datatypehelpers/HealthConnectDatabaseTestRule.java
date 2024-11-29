@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.DEFAULT_DATABASE_NAME;
 
 import static org.mockito.Mockito.when;
@@ -70,14 +69,10 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
 
     @Override
     public void before() {
-        File mockDataDirectory =
-                InstrumentationRegistry.getInstrumentation()
-                        .getContext()
-                        .getDir("mock_data", Context.MODE_PRIVATE);
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        File mockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
-        mStorageContext =
-                StorageContext.create(
-                        InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
+        mStorageContext = StorageContext.create(context, context.getUser());
     }
 
     @Override

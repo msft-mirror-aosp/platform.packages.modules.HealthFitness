@@ -47,12 +47,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
-import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -97,7 +95,6 @@ public class HealthDataCategoryPriorityHelperTest {
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(TransactionManager.class)
                     .mockStatic(AppInfoHelper.class)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
                     .mockStatic(PackageInfoUtils.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectManager.class)
@@ -106,8 +103,6 @@ public class HealthDataCategoryPriorityHelperTest {
     @Mock private Cursor mCursor;
     @Mock private TransactionManager mTransactionManager;
     @Mock private AppInfoHelper mAppInfoHelper;
-    @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
-    @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private PackageInfoUtils mPackageInfoUtils;
     @Mock private PackageInfo mPackageInfo1;
     @Mock private PackageInfo mPackageInfo2;
@@ -152,7 +147,6 @@ public class HealthDataCategoryPriorityHelperTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setAppInfoHelper(mAppInfoHelper)
                         .setTransactionManager(mTransactionManager)
-                        .setHealthConnectDeviceConfigManager(mHealthConnectDeviceConfigManager)
                         .setPreferenceHelper(mPreferenceHelper)
                         .setPackageInfoUtils(mPackageInfoUtils)
                         .build();

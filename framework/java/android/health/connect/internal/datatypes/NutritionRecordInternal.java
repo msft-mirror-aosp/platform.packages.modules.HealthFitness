@@ -25,6 +25,7 @@ import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Mass;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -714,4 +715,10 @@ public final class NutritionRecordInternal extends IntervalRecordInternal<Nutrit
         parcel.writeDouble(mFolicAcid);
         parcel.writeDouble(mSugar);
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 }

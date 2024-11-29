@@ -61,7 +61,6 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStatic;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStaticClasses;
 import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -108,7 +107,6 @@ public class ExportManagerTest {
                     .mockStatic(HealthConnectManager.class)
                     .mockStatic(Environment.class)
                     .setStrictness(Strictness.LENIENT)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
                     .mockStatic(ExportImportLogger.class)
                     .build();
 

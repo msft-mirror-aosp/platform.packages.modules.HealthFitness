@@ -27,8 +27,6 @@ import android.os.Binder;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -54,21 +52,15 @@ public final class MigrationNotificationSender {
 
     private final Context mContext;
     private final MigrationNotificationFactory mNotificationFactory;
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
-    public MigrationNotificationSender(
-            Context context, HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
+    public MigrationNotificationSender(Context context) {
         mContext = context;
         mNotificationFactory = new MigrationNotificationFactory(mContext);
-        mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
     }
 
     /** Sends a notification to the current user based on the notification type. */
     public void sendNotification(
             @MigrationNotificationType int notificationType, UserHandle userHandle) {
-        if (!mHealthConnectDeviceConfigManager.areMigrationNotificationsEnabled()) {
-            return;
-        }
         createNotificationChannel(userHandle);
         try {
             Notification notification =

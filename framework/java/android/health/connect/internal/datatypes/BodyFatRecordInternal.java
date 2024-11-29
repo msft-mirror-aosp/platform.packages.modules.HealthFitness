@@ -20,6 +20,7 @@ import android.health.connect.datatypes.BodyFatRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Percentage;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -59,4 +60,10 @@ public final class BodyFatRecordInternal extends InstantRecordInternal<BodyFatRe
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mPercentage);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }

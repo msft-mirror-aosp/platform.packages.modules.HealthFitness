@@ -36,7 +36,6 @@ import android.os.PersistableBundle;
 import android.os.UserHandle;
 
 import com.android.server.healthconnect.HealthConnectDailyService;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.time.Instant;
@@ -53,20 +52,16 @@ public final class MigrationStateChangeJob {
     static final int MIN_JOB_ID = MigrationStateChangeJob.class.hashCode();
 
     /** Schedules a job to complete migration. */
-    public static void scheduleMigrationCompletionJob(
-            HealthConnectDeviceConfigManager deviceConfigManager,
-            Context context,
-            UserHandle userHandle) {
-        if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
-            return;
-        }
+    public static void scheduleMigrationCompletionJob(Context context, UserHandle userHandle) {
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         final PersistableBundle extras = new PersistableBundle();
         extras.putInt(EXTRA_USER_ID, userHandle.getIdentifier());
         extras.putString(EXTRA_JOB_NAME_KEY, MIGRATION_COMPLETE_JOB_NAME);
         JobInfo.Builder builder =
                 new JobInfo.Builder(MIN_JOB_ID + userHandle.getIdentifier(), componentName)
-                        .setPeriodic(deviceConfigManager.getMigrationCompletionJobRunInterval())
+                        .setPeriodic(
+                                MigrationConstants.MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS
+                                        .toMillis())
                         .setExtras(extras);
 
         HealthConnectDailyService.schedule(
@@ -77,20 +72,16 @@ public final class MigrationStateChangeJob {
     }
 
     /** Schedules a job to pause migration. */
-    public static void scheduleMigrationPauseJob(
-            HealthConnectDeviceConfigManager deviceConfigManager,
-            Context context,
-            UserHandle userHandle) {
-        if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
-            return;
-        }
+    public static void scheduleMigrationPauseJob(Context context, UserHandle userHandle) {
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         final PersistableBundle extras = new PersistableBundle();
         extras.putInt(EXTRA_USER_ID, userHandle.getIdentifier());
         extras.putString(EXTRA_JOB_NAME_KEY, MIGRATION_PAUSE_JOB_NAME);
         JobInfo.Builder builder =
                 new JobInfo.Builder(MIN_JOB_ID + userHandle.getIdentifier(), componentName)
-                        .setPeriodic(deviceConfigManager.getMigrationPauseJobRunInterval())
+                        .setPeriodic(
+                                MigrationConstants.MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS
+                                        .toMillis())
                         .setExtras(extras);
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
@@ -103,11 +94,7 @@ public final class MigrationStateChangeJob {
     public static void executeMigrationCompletionJob(
             Context context,
             PreferenceHelper preferenceHelper,
-            HealthConnectDeviceConfigManager deviceConfigManager,
             MigrationStateManager migrationStateManager) {
-        if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
-            return;
-        }
         if (migrationStateManager.getMigrationState() == MIGRATION_STATE_COMPLETE) {
             return;
         }
@@ -124,11 +111,9 @@ public final class MigrationStateChangeJob {
                 Instant.parse(currentStateStartTime)
                         .plusMillis(
                                 migrationStateManager.getMigrationState() == MIGRATION_STATE_IDLE
-                                        ? deviceConfigManager.getIdleStateTimeoutPeriod().toMillis()
-                                        : deviceConfigManager
-                                                .getNonIdleStateTimeoutPeriod()
-                                                .toMillis())
-                        .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
+                                        ? MigrationConstants.IDLE_STATE_TIMEOUT_DAYS.toMillis()
+                                        : MigrationConstants.NON_IDLE_STATE_TIMEOUT_DAYS.toMillis())
+                        .minusMillis(MigrationConstants.EXECUTION_TIME_BUFFER_MINUTES.toMillis());
 
         if (migrationStateManager.getMigrationState() == MIGRATION_STATE_ALLOWED
                 || migrationStateManager.getMigrationState() == MIGRATION_STATE_IN_PROGRESS) {
@@ -136,7 +121,9 @@ public final class MigrationStateChangeJob {
             if (!Objects.isNull(allowedStateTimeout)) {
                 Instant parsedAllowedStateTimeout =
                         Instant.parse(allowedStateTimeout)
-                                .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
+                                .minusMillis(
+                                        MigrationConstants.EXECUTION_TIME_BUFFER_MINUTES
+                                                .toMillis());
                 executionTime =
                         executionTime.isAfter(parsedAllowedStateTimeout)
                                 ? parsedAllowedStateTimeout
@@ -154,11 +141,7 @@ public final class MigrationStateChangeJob {
     public static void executeMigrationPauseJob(
             Context context,
             PreferenceHelper preferenceHelper,
-            HealthConnectDeviceConfigManager deviceConfigManager,
             MigrationStateManager migrationStateManager) {
-        if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
-            return;
-        }
         if (migrationStateManager.getMigrationState() != MIGRATION_STATE_IN_PROGRESS) {
             return;
         }
@@ -172,9 +155,8 @@ public final class MigrationStateChangeJob {
 
         Instant executionTime =
                 Instant.parse(currentStateStartTime)
-                        .plusMillis(
-                                deviceConfigManager.getInProgressStateTimeoutPeriod().toMillis())
-                        .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
+                        .plusMillis(MigrationConstants.IN_PROGRESS_STATE_TIMEOUT_HOURS.toMillis())
+                        .minusMillis(MigrationConstants.EXECUTION_TIME_BUFFER_MINUTES.toMillis());
 
         if (Instant.now().isAfter(executionTime)) {
             // If we move to ALLOWED from IN_PROGRESS, then we have reached the IN_PROGRESS_TIMEOUT
