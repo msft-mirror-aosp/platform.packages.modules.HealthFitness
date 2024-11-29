@@ -534,90 +534,102 @@ public class HealthConnectServiceImplTest {
 
     @Test
     public void testStartMigration_noShowMigrationInfoIntentAvailable_returnsError()
-            throws Exception {
+            throws InterruptedException, RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         mHealthConnectService.startMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
     @Test
-    public void testStartMigration_showMigrationInfoIntentAvailable() throws Exception {
+    public void testStartMigration_showMigrationInfoIntentAvailable()
+            throws MigrationStateManager.IllegalMigrationStateException,
+                    InterruptedException,
+                    RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
         mHealthConnectService.startMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).startMigration(mServiceContext);
     }
 
     @Test
     public void testFinishMigration_noShowMigrationInfoIntentAvailable_returnsError()
-            throws Exception {
+            throws InterruptedException, RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         mHealthConnectService.finishMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
     @Test
-    public void testFinishMigration_showMigrationInfoIntentAvailable() throws Exception {
+    public void testFinishMigration_showMigrationInfoIntentAvailable()
+            throws MigrationStateManager.IllegalMigrationStateException,
+                    InterruptedException,
+                    RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
         mHealthConnectService.finishMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).finishMigration(mServiceContext);
     }
 
     @Test
     public void testWriteMigration_noShowMigrationInfoIntentAvailable_returnsError()
-            throws Exception {
+            throws InterruptedException, RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         mHealthConnectService.writeMigrationData(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE,
                 mock(MigrationEntityParcel.class),
                 mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
     @Test
-    public void testWriteMigration_showMigrationInfoIntentAvailable() throws Exception {
+    public void testWriteMigration_showMigrationInfoIntentAvailable()
+            throws MigrationStateManager.IllegalMigrationStateException,
+                    InterruptedException,
+                    RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
         mHealthConnectService.writeMigrationData(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE,
                 mock(MigrationEntityParcel.class),
                 mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).validateWriteMigrationData();
         verify(mMigrationCallback).onSuccess();
     }
 
     @Test
     public void testInsertMinSdkExtVersion_noShowMigrationInfoIntentAvailable_returnsError()
-            throws Exception {
+            throws InterruptedException, RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         mHealthConnectService.insertMinDataMigrationSdkExtensionVersion(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, 0, mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
     @Test
-    public void testInsertMinSdkExtVersion_showMigrationInfoIntentAvailable() throws Exception {
+    public void testInsertMinSdkExtVersion_showMigrationInfoIntentAvailable()
+            throws MigrationStateManager.IllegalMigrationStateException,
+                    InterruptedException,
+                    RemoteException {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
         mHealthConnectService.insertMinDataMigrationSdkExtensionVersion(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, 0, mMigrationCallback);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).validateSetMinSdkVersion();
         verify(mMigrationCallback).onSuccess();
     }
@@ -628,7 +640,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.configureScheduledExport(
                 new ScheduledExportSettings.Builder().setUri(Uri.parse(TEST_URI)).build(),
                 mUserHandle);
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
 
         assertThat(mInternalTaskScheduler.getCompletedTaskCount()).isEqualTo(taskCount + 1);
     }
@@ -692,7 +704,8 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testGetMedicalDataSourcesByIds_telemetryFlagOff_expectNoLogs() throws Exception {
+    public void testGetMedicalDataSourcesByIds_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.getMedicalDataSourcesByIds(
@@ -700,7 +713,7 @@ public class HealthConnectServiceImplTest {
                 List.of(UUID.randomUUID().toString()),
                 mMedicalDataSourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -713,7 +726,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testGetMedicalDataSourcesByIds_telemetryFlagOn_expectCorrectLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.getMedicalDataSourcesByIds(
@@ -721,7 +734,7 @@ public class HealthConnectServiceImplTest {
                 List.of(UUID.randomUUID().toString()),
                 mMedicalDataSourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(GET_MEDICAL_DATA_SOURCES_BY_IDS),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -927,7 +940,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testGetMedicalDataSourcesByRequests_telemetryFlagOff_expectNoLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.getMedicalDataSourcesByRequest(
@@ -935,7 +948,7 @@ public class HealthConnectServiceImplTest {
                 getGetMedicalDataSourceRequest(Set.of("com.abc")),
                 mMedicalDataSourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -948,7 +961,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testGetMedicalDataSourcesByRequests_telemetryFlagOn_expectCorrectLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.getMedicalDataSourcesByRequest(
@@ -956,7 +969,7 @@ public class HealthConnectServiceImplTest {
                 getGetMedicalDataSourceRequest(Set.of("com.abc")),
                 mMedicalDataSourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(GET_MEDICAL_DATA_SOURCES_BY_REQUESTS),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -1194,7 +1207,8 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testUpsertMedicalResources_telemetryFlagOff_expectNoLogs() throws Exception {
+    public void testUpsertMedicalResources_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.upsertMedicalResources(
@@ -1205,7 +1219,7 @@ public class HealthConnectServiceImplTest {
                                 .build()),
                 mMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -1217,7 +1231,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testUpsertMedicalResourcesFromRequestsParcel_telemetryFlagOff_expectNoLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
@@ -1231,7 +1245,7 @@ public class HealthConnectServiceImplTest {
                                         .build())),
                 mMedicalResourceListParcelResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -1243,7 +1257,8 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testUpsertMedicalResources_telemetryFlagOn_expectCorrectLogs() throws Exception {
+    public void testUpsertMedicalResources_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.upsertMedicalResources(
@@ -1254,7 +1269,7 @@ public class HealthConnectServiceImplTest {
                                 .build()),
                 mMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(UPSERT_MEDICAL_RESOURCES),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -1273,7 +1288,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testUpsertMedicalResourcesFromRequestsParcel_telemetryFlagOn_expectCorrectLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
@@ -1287,7 +1302,7 @@ public class HealthConnectServiceImplTest {
                                         .build())),
                 mMedicalResourceListParcelResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(UPSERT_MEDICAL_RESOURCES),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -1344,7 +1359,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testReadMedicalResourcesByRequests_telemetryFlagOff_expectNoLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
 
@@ -1355,7 +1370,7 @@ public class HealthConnectServiceImplTest {
                         .toParcel(),
                 mReadMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         verify(mPreferenceHelper, never()).setLastPhrReadMedicalResourcesApiTimeStamp(any());
@@ -1369,7 +1384,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testReadMedicalResourcesByRequests_telemetryFlagOn_expectCorrectLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
 
@@ -1380,7 +1395,7 @@ public class HealthConnectServiceImplTest {
                         .toParcel(),
                 mReadMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(READ_MEDICAL_RESOURCES_BY_REQUESTS),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -1403,7 +1418,7 @@ public class HealthConnectServiceImplTest {
     })
     public void
             testReadMedicalResourcesByRequests_telemetryFlagOnAndHasDataManagementPermission_expectMonthlyTimeStamp()
-                    throws Exception {
+                    throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1415,7 +1430,7 @@ public class HealthConnectServiceImplTest {
                         .toParcel(),
                 mReadMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertThat(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp()).isNull();
         verify(mPreferenceHelper, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
     }
@@ -1426,7 +1441,8 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testReadMedicalResourcesByIds_telemetryFlagOff_expectNoLogs() throws Exception {
+    public void testReadMedicalResourcesByIds_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
 
@@ -1435,7 +1451,7 @@ public class HealthConnectServiceImplTest {
                 List.of(getMedicalResourceId()),
                 mReadMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertThat(mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp()).isNull();
@@ -1449,7 +1465,8 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testReadMedicalResourcesByIds_telemetryFlagOn_expectCorrectLogs() throws Exception {
+    public void testReadMedicalResourcesByIds_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
 
@@ -1458,7 +1475,7 @@ public class HealthConnectServiceImplTest {
                 List.of(getMedicalResourceId()),
                 mReadMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(READ_MEDICAL_RESOURCES_BY_IDS),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -1479,7 +1496,7 @@ public class HealthConnectServiceImplTest {
     })
     public void
             testReadMedicalResourcesByIds_telemetryFlagOnAndHasDataManagementPermission_expectMonthlyTimeStamp()
-                    throws Exception {
+                    throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1489,7 +1506,7 @@ public class HealthConnectServiceImplTest {
                 List.of(getMedicalResourceId()),
                 mReadMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         verify(mPreferenceHelper, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
     }
 
@@ -2014,7 +2031,8 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testCreateMedicalDataSource_telemetryFlagOff_expectNoLogs() throws Exception {
+    public void testCreateMedicalDataSource_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.createMedicalDataSource(
@@ -2022,7 +2040,7 @@ public class HealthConnectServiceImplTest {
                 getCreateMedicalDataSourceRequest(),
                 mMedicalDataSourceCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -2034,7 +2052,8 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testCreateMedicalDataSource_telemetryFlagOn_expectCorrectLogs() throws Exception {
+    public void testCreateMedicalDataSource_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.createMedicalDataSource(
@@ -2042,7 +2061,7 @@ public class HealthConnectServiceImplTest {
                 getCreateMedicalDataSourceRequest(),
                 mMedicalDataSourceCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(CREATE_MEDICAL_DATA_SOURCE),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -2076,13 +2095,13 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalDataSourceWithData_telemetryFlagOff_expectNoLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.deleteMedicalDataSourceWithData(
                 mAttributionSource, UUID.randomUUID().toString(), mEmptyResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -2095,13 +2114,13 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalDataSourceWithData_telemetryFlagOn_expectCorrectLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.deleteMedicalDataSourceWithData(
                 mAttributionSource, UUID.randomUUID().toString(), mEmptyResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(DELETE_MEDICAL_DATA_SOURCE_WITH_DATA),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -2250,13 +2269,14 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
-    public void testDeleteMedicalResourcesByIds_telemetryFlagOff_expectNoLogs() throws Exception {
+    public void testDeleteMedicalResourcesByIds_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.deleteMedicalResourcesByIds(
                 mAttributionSource, List.of(getMedicalResourceId()), mEmptyResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -2269,13 +2289,13 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalResourcesByIds_telemetryFlagOn_expectCorrectLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
 
         mHealthConnectService.deleteMedicalResourcesByIds(
                 mAttributionSource, List.of(getMedicalResourceId()), mEmptyResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(DELETE_MEDICAL_RESOURCES_BY_IDS),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -2351,7 +2371,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalResourcesByRequests_telemetryFlagOff_expectNoLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
@@ -2361,7 +2381,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.deleteMedicalResourcesByRequest(
                 mAttributionSource, request, mEmptyResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
         assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
     }
@@ -2374,7 +2394,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void testDeleteMedicalResourcesByRequests_telemetryFlagOn_expectCorrectLogs()
-            throws Exception {
+            throws InterruptedException {
         setUpSuccessfulMocksForPhrTelemetry();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
@@ -2384,7 +2404,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.deleteMedicalResourcesByRequest(
                 mAttributionSource, request, mEmptyResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
+        awaitAllExecutorsIdle();
         assertPhrApiWestWorldWrites(
                 () -> eq(DELETE_MEDICAL_RESOURCES_BY_REQUESTS),
                 () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
@@ -2735,5 +2755,13 @@ public class HealthConnectServiceImplTest {
         fileWriter.write("Contents of file " + fileName);
         fileWriter.close();
         return file;
+    }
+
+    /**
+     * Waits until all executors in {@link HealthConnectServiceImpl} idle. For now this just waits
+     * for a fixed duration with {@link Thread#sleep(long)}, this could be improved later.
+     */
+    private static void awaitAllExecutorsIdle() throws InterruptedException {
+        Thread.sleep(500);
     }
 }
