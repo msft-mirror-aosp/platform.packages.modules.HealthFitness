@@ -358,7 +358,7 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
     }
 
     private void clearData() throws Exception {
-        triggerTestInTestApp(DAILY_LOG_TESTS_ACTIVITY, "deleteAllRecordsAddedForTest");
+        triggerTestInTestApp(DAILY_LOG_TESTS_ACTIVITY, "deleteAllStagedRemoteData");
         // Next two lines will delete newly added Access Logs as all access logs over 7 days are
         // deleted by the AutoDeleteService which is run by the daily job.
         increaseDeviceTimeByDays(10);
