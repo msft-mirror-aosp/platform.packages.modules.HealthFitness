@@ -21,6 +21,7 @@ import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.time.Duration;
@@ -149,6 +150,12 @@ public final class PlannedExerciseSessionRecordInternal
                         ? null
                         : mCompletedExerciseSessionId.toString());
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     /** Convert this object to an external representation. */
     @Override

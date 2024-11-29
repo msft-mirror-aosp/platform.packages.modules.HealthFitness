@@ -259,7 +259,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         updateMenu(screenState = viewModel.getDeletionScreenStateValue())
         noDataPreference.isVisible = false
         footerPreference.isVisible = false
-        topIntroPreference.isVisible = showMedicalData
 
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
@@ -399,10 +398,9 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun setupSelectAllPreference(screenState: DeletionScreenState) {
-        val isDeletionState = screenState == DELETE
-        selectAllCheckboxPreference.isVisible = isDeletionState
-        topIntroPreference.isVisible = !isDeletionState
-        if (isDeletionState) {
+        selectAllCheckboxPreference.isVisible = screenState == DELETE
+        topIntroPreference.isVisible = showMedicalData && screenState == VIEW
+        if (screenState == DELETE) {
             viewModel.allPermissionTypesSelected.observe(viewLifecycleOwner) {
                 allPermissionTypesSelected ->
                 selectAllCheckboxPreference.removeOnPreferenceClickListener()
