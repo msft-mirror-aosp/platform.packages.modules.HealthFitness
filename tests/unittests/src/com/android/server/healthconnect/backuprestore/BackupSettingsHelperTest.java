@@ -238,7 +238,7 @@ public class BackupSettingsHelperTest {
     }
 
     @Test
-    public void autoDeleteSettingsOff_setsExportSettingsCorrectly() {
+    public void autoDeleteSettingsOff_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY, AutoDeleteFrequency.AUTO_DELETE_RANGE_NEVER.toString());
 
@@ -249,7 +249,7 @@ public class BackupSettingsHelperTest {
     }
 
     @Test
-    public void autoDeleteSettingsThreeMonths_setsExportSettingsCorrectly() {
+    public void autoDeleteSettingsThreeMonths_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY,
                 AutoDeleteFrequency.AUTO_DELETE_RANGE_THREE_MONTHS.toString());
@@ -261,7 +261,7 @@ public class BackupSettingsHelperTest {
     }
 
     @Test
-    public void autoDeleteSettingsEighteenMonths_setsExportSettingsCorrectly() {
+    public void autoDeleteSettingsEighteenMonths_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY,
                 AutoDeleteFrequency.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.toString());
