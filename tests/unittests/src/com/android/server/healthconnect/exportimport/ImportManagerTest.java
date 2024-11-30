@@ -21,6 +21,7 @@ import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE;
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_STARTED;
 
+import static com.android.server.healthconnect.TestUtils.assertTableSize;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
@@ -44,11 +45,14 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.net.Uri;
 import android.os.UserHandle;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
@@ -61,10 +65,12 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -108,6 +114,9 @@ public class ImportManagerTest {
     private static final int TEST_COMPRESSED_FILE_SIZE = 1042;
 
     @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
@@ -128,6 +137,8 @@ public class ImportManagerTest {
     private DatabaseHelpers mDatabaseHelpers;
     private DeviceInfoHelper mDeviceInfoHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
+
+    private StorageContext mStorageContext;
 
     @Mock private HealthConnectNotificationSender mNotificationSender;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
@@ -151,6 +162,7 @@ public class ImportManagerTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
+        mStorageContext = StorageContext.create(mContext, mContext.getUser());
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -579,6 +591,86 @@ public class ImportManagerTest {
                                 expectedOriginalFileSize,
                                 TEST_COMPRESSED_FILE_SIZE),
                 times(1));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void copiesAllData_usingInsertAllWithoutAccessLogs() throws Exception {
+        List<String> uuids =
+                mTransactionTestUtils.insertRecords(
+                        TEST_PACKAGE_NAME,
+                        createStepsRecord(123, 345, 100),
+                        createBloodPressureRecord(234, 120.0, 80.0));
+
+        File zipToImport = zipExportedDb(exportCurrentDb());
+
+        mDatabaseHelpers.clearAllData(mTransactionManager);
+
+        // Insert a change log so insertAllWithoutAccessLogs is called instead of insertAll.
+        mTransactionTestUtils.insertChangeLog();
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        verify(mNotificationSender, times(1))
+                .sendNotificationAsUser(
+                        ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_IN_PROGRESS,
+                        DEFAULT_USER_HANDLE);
+        verify(mNotificationSender, times(1))
+                .sendNotificationAsUser(
+                        ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
+                        DEFAULT_USER_HANDLE);
+
+        List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
+        List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
+        ReadTransactionRequest request =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        ImmutableMap.of(
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                stepsUuids,
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
+                                bloodPressureUuids));
+
+        List<RecordInternal<?>> records =
+                mTransactionManager.readRecordsByIds(
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
+        assertThat(records).hasSize(2);
+        assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
+        assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+                .isEqualTo(DATA_IMPORT_ERROR_NONE);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void copiesAllData_changeLogsTokenExists_generateChangeLogs() throws Exception {
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
+        File zipToImport = zipExportedDb(exportCurrentDb());
+        mDatabaseHelpers.clearAllData(mTransactionManager);
+        HealthConnectDatabase originalDatabase = new HealthConnectDatabase(mStorageContext);
+
+        // Insert a change log.
+        mTransactionTestUtils.insertChangeLog();
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        assertTableSize(originalDatabase, ChangeLogsHelper.TABLE_NAME, 1);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void copiesAllData_noChangeLogsToken_noChangeLogs() throws Exception {
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
+        File zipToImport = zipExportedDb(exportCurrentDb());
+        mDatabaseHelpers.clearAllData(mTransactionManager);
+        HealthConnectDatabase originalDatabase = new HealthConnectDatabase(mStorageContext);
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        assertTableSize(originalDatabase, ChangeLogsHelper.TABLE_NAME, 0);
     }
 
     private File exportCurrentDb() throws Exception {

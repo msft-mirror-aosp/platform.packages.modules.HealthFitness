@@ -46,7 +46,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY)
+@RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_HEALTH_CONNECT_MAPPINGS)
 @HiltAndroidTest
 class ActivityIntensityFormatterTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
