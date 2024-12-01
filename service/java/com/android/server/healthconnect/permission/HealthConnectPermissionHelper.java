@@ -65,6 +65,7 @@ public final class HealthConnectPermissionHelper {
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final AppInfoHelper mAppInfoHelper;
     private final HealthConnectMappings mHealthConnectMappings;
+
     /**
      * Constructs a {@link HealthConnectPermissionHelper}.
      *
@@ -114,8 +115,7 @@ public final class HealthConnectPermissionHelper {
                     PackageManager.FLAG_PERMISSION_USER_SET,
                     checkedUser);
             mAppInfoHelper.getOrInsertAppInfoId(packageName);
-            addToPriorityListIfRequired(packageName, permissionName);
-
+            addToPriorityListIfRequired(packageName, permissionName, user);
         } finally {
             Binder.restoreCallingIdentity(token);
         }
@@ -152,7 +152,7 @@ public final class HealthConnectPermissionHelper {
                     permissionFlags,
                     checkedUser);
 
-            removeFromPriorityListIfRequired(packageName, permissionName);
+            removeFromPriorityListIfRequired(packageName, permissionName, user);
 
         } finally {
             Binder.restoreCallingIdentity(token);
@@ -261,23 +261,23 @@ public final class HealthConnectPermissionHelper {
                         + HealthConnectManager.CATEGORY_HEALTH_PERMISSIONS);
     }
 
-    private void addToPriorityListIfRequired(String packageName, String permissionName) {
+    private void addToPriorityListIfRequired(
+            String packageName, String permissionName, UserHandle user) {
         if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.appendToPriorityList(
                     packageName,
                     mHealthConnectMappings.getHealthDataCategoryForWritePermission(permissionName),
-                    mContext,
-                    /* isInactiveApp= */ false);
+                    user);
         }
     }
 
-    private void removeFromPriorityListIfRequired(String packageName, String permissionName) {
+    private void removeFromPriorityListIfRequired(
+            String packageName, String permissionName, UserHandle user) {
         if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
                     packageName,
                     mHealthConnectMappings.getHealthDataCategoryForWritePermission(permissionName),
-                    this,
-                    mContext.getUser());
+                    user);
         }
     }
 
@@ -320,7 +320,7 @@ public final class HealthConnectPermissionHelper {
                     MASK_PERMISSION_FLAGS,
                     PackageManager.FLAG_PERMISSION_USER_SET,
                     user);
-            removeFromPriorityListIfRequired(packageName, perm);
+            removeFromPriorityListIfRequired(packageName, perm, user);
         }
     }
 

@@ -20,17 +20,19 @@ import static org.junit.Assert.assertThrows;
 
 import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.BackupSettings;
-import android.os.Environment;
 import android.platform.test.flag.junit.SetFlagsRule;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.backuprestore.CloudRestoreManager;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 
 /** Unit test for class {@link CloudRestoreManager}. */
 @RunWith(AndroidJUnit4.class)
@@ -43,18 +45,13 @@ public class CloudRestoreManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private CloudRestoreManager mCloudRestoreManager;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         mCloudRestoreManager = new CloudRestoreManager();
     }
 

@@ -23,8 +23,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.Constants;
-import android.util.Log;
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -34,7 +32,6 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,43 +63,10 @@ public class PreferenceHelper extends DatabaseHelper {
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public PreferenceHelper(TransactionManager transactionManager) {
+    public PreferenceHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
-    }
-
-    /** Sets timestamp of the last time any PHR <b>read medical resources</b> API is called. */
-    public synchronized void setLastPhrReadMedicalResourcesApiTimeStamp(Instant instant) {
-        insertOrReplacePreference(
-                PREFS_KEY_PHR_LAST_READ_MEDICAL_RESOURCES_API,
-                String.valueOf(instant.toEpochMilli()));
-    }
-
-    /**
-     * Returns timestamp of the last time any PHR <b>read medical resources</b> API is called,
-     * <code>null</code> if it's not stored or the stored value is unfetchable for some reason.
-     */
-    @Nullable
-    public synchronized Instant getPhrLastReadMedicalResourcesApiTimeStamp() {
-        String epochMilliString = getPreference(PREFS_KEY_PHR_LAST_READ_MEDICAL_RESOURCES_API);
-        if (epochMilliString == null) {
-            return null;
-        }
-        try {
-            long epochMilli = Long.parseLong(epochMilliString);
-            return Instant.ofEpochMilli(epochMilli);
-        } catch (Exception exception) {
-            if (Constants.DEBUG) {
-                Log.e(
-                        TAG,
-                        "Stored epoch milli for \""
-                                + PREFS_KEY_PHR_LAST_READ_MEDICAL_RESOURCES_API
-                                + "\" is corrupted, it cannot be converted to an Instant. Its"
-                                + "string value is: "
-                                + epochMilliString,
-                        exception);
-            }
-            return null;
-        }
     }
 
     /** Note: Overrides existing preference (if it exists) with the new value */

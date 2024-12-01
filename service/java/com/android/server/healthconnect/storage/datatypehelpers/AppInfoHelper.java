@@ -115,7 +115,9 @@ public final class AppInfoHelper extends DatabaseHelper {
     public AppInfoHelper(
             StorageContext userContext,
             TransactionManager transactionManager,
-            HealthConnectMappings healthConnectMappings) {
+            HealthConnectMappings healthConnectMappings,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mUserContext = userContext;
         mTransactionManager = transactionManager;
         mHealthConnectMappings = healthConnectMappings;

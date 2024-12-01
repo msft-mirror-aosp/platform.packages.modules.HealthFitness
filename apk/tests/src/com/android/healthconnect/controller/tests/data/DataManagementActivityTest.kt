@@ -41,6 +41,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
@@ -102,6 +103,11 @@ class DataManagementActivityTest {
         whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
             MutableLiveData<Set<FitnessPermissionType>>(emptySet())
         }
+        whenever(allDataViewModel.deletionScreenState).then {
+            MutableLiveData(DeletionDataViewModel.DeletionScreenState.VIEW)
+        }
+        whenever(allDataViewModel.getDeletionScreenStateValue())
+            .thenReturn(DeletionDataViewModel.DeletionScreenState.VIEW)
     }
 
     @Test

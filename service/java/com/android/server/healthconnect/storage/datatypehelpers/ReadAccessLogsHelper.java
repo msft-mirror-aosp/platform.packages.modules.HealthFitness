@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @hide
  */
-public class ReadAccessLogsHelper extends DatabaseHelper {
+public class ReadAccessLogsHelper {
 
     public static final String TABLE_NAME = "read_access_logs_table";
     private static final int NUM_COLS = 6;
@@ -42,7 +42,6 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
     private static final String READ_TIME = "read_time";
     private static final String WRITE_TIME = "write_time";
 
-    @Override
     protected String getMainTableName() {
         return TABLE_NAME;
     }

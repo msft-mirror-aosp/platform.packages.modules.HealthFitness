@@ -24,7 +24,6 @@ import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.NUM_OF_TABLES;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.assertNumberOfTables;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
@@ -134,7 +133,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =
@@ -155,7 +154,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.enableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         injector = getHealthConnectInjector(mContext);
         transactionManager = injector.getTransactionManager();
-        transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        transactionTestUtils = new TransactionTestUtils(injector);
 
         assertPhrTablesExist(transactionManager);
         // read the StepsRecord and assert that it's intact
@@ -180,7 +179,7 @@ public class HealthConnectDatabaseTest {
         mSetFlagsRule.disableFlags(FLAG_PERSONAL_HEALTH_RECORD_DATABASE);
         HealthConnectInjector injector = getHealthConnectInjector(mContext);
         TransactionManager transactionManager = injector.getTransactionManager();
-        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(mContext, injector);
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(injector);
         // insert a StepsRecord with TEST_PACKAGE_NAME
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         RecordInternal<StepsRecord> originalStepsRecordInternal =
@@ -216,7 +215,7 @@ public class HealthConnectDatabaseTest {
     // hence this methods needs to be called in individual tests rather than in @Before method.
     private HealthConnectDatabase initializeEmptyHealthConnectDatabase() {
         HealthConnectDatabase healthConnectDatabase =
-                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER));
+                new HealthConnectDatabase(StorageContext.create(mContext, mContext.getUser()));
 
         // Make sure there is nothing there already.
         File databasePath = healthConnectDatabase.getDatabasePath();

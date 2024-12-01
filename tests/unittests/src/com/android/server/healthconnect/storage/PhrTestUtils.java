@@ -38,7 +38,8 @@ import android.net.Uri;
 import android.util.Pair;
 
 import com.android.server.healthconnect.injector.HealthConnectInjector;
-import com.android.server.healthconnect.phr.ReadMedicalResourceRowsResponse;
+import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
+import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
@@ -49,6 +50,7 @@ import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInt
 import com.google.common.truth.Correspondence;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -269,23 +271,43 @@ public class PhrTestUtils {
                 SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    /**
-     * Reads {@link MedicalResource}s and their associated last_modified_timestamp and returns it
-     * inside {@link ReadMedicalResourceRowsResponse}.
-     */
-    public ReadMedicalResourceRowsResponse readMedicalResources(
-            HealthConnectDatabase stagedDatabase) {
-        ReadMedicalResourceRowsResponse response;
+    private ReadMedicalResourcesInternalResponse readMedicalResources(
+            SQLiteDatabase stagedDatabase, PhrPageTokenWrapper pageTokenWrapper) {
         ReadTableRequest readTableRequest =
-                MedicalResourceHelper.getReadTableRequestForAllMedicalResources(
-                        DEFAULT_LONG, MAXIMUM_PAGE_SIZE);
-        try (Cursor cursor =
-                stagedDatabase
-                        .getReadableDatabase()
-                        .rawQuery(readTableRequest.getReadCommand(), null)) {
-            response = MedicalResourceHelper.getMedicalResourceRows(cursor, MAXIMUM_PAGE_SIZE);
-        }
-        return response;
+                MedicalResourceHelper.getReadTableRequestUsingRequestFilters(
+                        pageTokenWrapper, MAXIMUM_PAGE_SIZE);
+        return MedicalResourceHelper.getMedicalResources(
+                stagedDatabase, readTableRequest, pageTokenWrapper, MAXIMUM_PAGE_SIZE);
+    }
+
+    /**
+     * Reads all the {@link MedicalResource}s and their associated last_modified_timestamp from the
+     * given {@link HealthConnectDatabase}..
+     */
+    public List<Pair<MedicalResource, Long>> readAllMedicalResources(
+            HealthConnectDatabase stagedDatabase) {
+        SQLiteDatabase db = stagedDatabase.getReadableDatabase();
+        List<Pair<MedicalResource, Long>> result = new ArrayList<>();
+        String nextPageToken = null;
+        do {
+
+            PhrPageTokenWrapper phrPageTokenWrapper =
+                    PhrPageTokenWrapper.fromPageTokenAllowingNull(nextPageToken);
+            ReadMedicalResourcesInternalResponse response =
+                    readMedicalResources(db, phrPageTokenWrapper);
+
+            result.addAll(
+                    response.getMedicalResources().stream()
+                            .map(
+                                    medicalResource ->
+                                            new Pair<>(
+                                                    medicalResource,
+                                                    medicalResource.getLastModifiedTimestamp()))
+                            .toList());
+            nextPageToken = response.getPageToken();
+
+        } while (nextPageToken != null);
+        return result;
     }
 
     /**

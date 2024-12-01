@@ -21,6 +21,7 @@ import android.annotation.Nullable;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -96,6 +97,12 @@ public final class SleepSessionRecordInternal extends IntervalRecordInternal<Sle
         parcel.writeString(mTitle);
         SleepStageInternal.writeStagesToParcel(mStages, parcel);
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     @Override
     public void populateIntervalRecordFrom(@NonNull Parcel parcel) {

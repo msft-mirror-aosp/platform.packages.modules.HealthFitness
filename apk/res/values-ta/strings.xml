@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"தோல் வெப்பநிலை"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"தோல் வெப்பநிலையைப் படி"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"தோல் வெப்பநிலையை எழுது"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Health Connect உடன் ஒத்திசைக்கப்பட்ட மற்றும் அதில் சேர்க்கப்பட்ட உடல்நலம் குறித்த சுருக்கமான தகவல்கள் இதில் அடங்கும். இது உங்களின் முழுமையான மருத்துப் பதிவாக இல்லாமல் இருக்கலாம் மற்றும் உங்கள் உடல்நலம் குறித்த சுருக்கமான தகவல்களின் மருத்துவ விளக்கமும் இதில் இருக்காது."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள் அனைத்தும்"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள் அனைத்தும்"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள் அனைத்தையும் எழுதும்"</string>
@@ -791,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"இசை"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"மற்றவை"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"வழிகாட்டல் இல்லை"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"நடுத்தரம்"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"தீவிரம்"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>நி"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>ம.நே <xliff:g id="MIN">%2$s</xliff:g>நி"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>ம.நே"</string>
@@ -1043,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ஒருங்கிணைப்பு செயலிலுள்ளது"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Android சிஸ்டத்துடன் Health Connect ஆப்ஸ் ஒருங்கிணைக்கப்படுகிறது.\n\nஉங்கள் தரவும் அனுமதிகளும் மாற்றப்படுவதால் இதற்குச் சிறிது நேரம் ஆகலாம்."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"செயலாக்கம் நிறைவடைந்துவிட்டது எனும் அறிவிப்பைப் பெறும் வரை ஆப்ஸை மூட வேண்டாம்."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect ஒருங்கிணைப்பு செயலிலுள்ளது"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"புதுப்பிப்பு தேவை"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Android சிஸ்டத்துடன் Health Connect ஒருங்கிணைக்கப்படுவதால், உங்கள் அமைப்புகளில் இருந்து அதை நேரடியாக அணுகலாம்."</string>
     <string name="update_button" msgid="4544529019832009496">"புதுப்பி"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"இந்தப் புதுப்பிப்பைத் தொடங்குங்கள். இதனால், உங்கள் சிஸ்டம் அமைப்புகளுடன் Health Connect ஆப்ஸால் தொடர்ந்து ஒருங்கிணைக்க முடியும்"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"இப்போது புதுப்பி"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"சிஸ்டம் புதுப்பிப்பு தேவை"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"தொடர்வதற்கு முன்பு, உங்கள் மொபைல் சிஸ்டத்தைப் புதுப்பியுங்கள்."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"உங்கள் மொபைல் சிஸ்டத்தை ஏற்கெனவே புதுப்பித்திருந்தால், ஒருங்கிணைப்பைத் தொடர உங்கள் மொபைலை மீண்டும் தொடங்கிப் பாருங்கள்"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect புதுப்பிப்பு தேவை"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"தொடர்வதற்கு முன்பு, Health Connect ஆப்ஸைச் சமீபத்திய பதிப்பிற்குப் புதுப்பியுங்கள்."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"கூடுதல் சேமிப்பிடம் தேவை"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"ஒருங்கிணைப்பைத் தொடர, Health Connect ஆப்ஸுக்கு உங்கள் மொபைலில் <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> சேமிப்பிடம் தேவை.\n\nஉங்கள் மொபைலில் சிறிது சேமிப்பிடத்தைக் காலியாக்கிவிட்டு மீண்டும் முயலுங்கள்."</string>
     <string name="try_again_button" msgid="8745496819992160789">"மீண்டும் முயலுங்கள்"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"சேமிப்பிடத்தைக் காலியாக்கு"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"கூடுதல் சேமிப்பிடம் தேவை"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"ஒருங்கிணைப்பைத் தொடர, Health Connect ஆப்ஸுக்கு உங்கள் மொபைலில் <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> சேமிப்பிடம் தேவை."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"ஒருங்கிணைப்பு இடைநிறுத்தப்பட்டுள்ளது"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Android சிஸ்டத்துடன் ஒருங்கிணைக்கப்படும்போது Health Connect ஆப்ஸ் மூடப்பட்டது.\n\nஆப்ஸை மீண்டும் திறந்து உங்கள் தரவையும் அனுமதிகளையும் தொடர்ந்து மாற்ற \'மீண்டும் தொடங்கு\' என்பதைக் கிளிக் செய்யுங்கள்."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"உங்கள் Health Connect தரவை வைத்திருக்க, இதை <xliff:g id="TIME_NEEDED">%1$s</xliff:g>க்குள் நிறைவுசெய்யுங்கள்"</string>
@@ -1070,8 +1066,6 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Android சிஸ்டத்துடன் Health Connect ஆப்ஸைத் தொடர்ந்து ஒருங்கிணைக்க தட்டுங்கள். உங்கள் தரவை வைத்திருக்க, இதை <xliff:g id="TIME_NEEDED">%1$s</xliff:g>க்குள் நிறைவுசெய்யுங்கள்"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Android சிஸ்டத்துடன் Health Connect ஆப்ஸைத் தொடர்ந்து ஒருங்கிணைக்க தட்டுங்கள்."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"தொடருங்கள்"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect ஒருங்கிணைப்பை மீண்டும் தொடங்குங்கள்"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"உங்கள் தரவை வைத்திருக்க, இதை <xliff:g id="TIME_NEEDED">%1$s</xliff:g>க்குள் நிறைவுசெய்யுங்கள்"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"ஆப்ஸ் புதுப்பிப்பு தேவை"</string>
     <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Health Connect உடன் தொடர்ந்து ஒத்திசைக்க <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸைப் புதுப்பிக்க வேண்டும். புதுப்பிப்புகள் சில ஆப்ஸுக்குக் கிடைக்காமல் போகலாம்."</string>
     <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Health Connect உடன் தொடர்ந்து ஒத்திசைக்க சில ஆப்ஸைப் புதுப்பிக்க வேண்டும். புதுப்பிப்புகள் சில ஆப்ஸுக்குக் கிடைக்காமல் போகலாம்."</string>
@@ -1089,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connect ஒருங்கிணைப்பு நிறைவடையவில்லை"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"மீண்டும் ஒருங்கிணைப்பு கிடைக்கும்போது அறிவிப்பைப் பெறுவீர்கள்."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"சரி"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connect ஒருங்கிணைப்பு நிறைவடையவில்லை"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"மேலும் காட்டு"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connect ஒருங்கிணைப்பு நிறைவடைந்தது"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"திற"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"புதிதாக உள்ளவை"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"இப்போது உங்கள் அமைப்புகளில் இருந்து நேரடியாக Health Connect ஆப்ஸை அணுகலாம். சேமிப்பிடத்தைக் காலியாக்க எப்போது வேண்டுமானாலும் Health Connect ஆப்ஸை நிறுவல் நீக்கலாம்."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"சரி"</string>
@@ -1195,12 +1185,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"உங்கள் வாட்ச்சில் உள்ள அனைத்து ஆப்ஸுக்கும் <xliff:g id="DATA_TYPE">%s</xliff:g> அணுகலை அகற்றவா?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"தேர்வுக்குறி"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"இல்லை குறி"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"தற்போது, <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் உடற்பயிற்சி மற்றும் ஆரோக்கியம் குறித்த தரவை <xliff:g id="ALLOW_MODE">%2$s</xliff:g> அணுக முடியும்"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"உடற்பயிற்சி மற்றும் ஆரோக்கியம் குறித்த தரவை <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸ் எப்போதும் அணுக அனுமதிக்கவா?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸ் <xliff:g id="DATA_TYPES">%2$s</xliff:g>க்கான அணுகலைக் கொண்டுள்ளது."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"உடற்பயிற்சி மற்றும் ஆரோக்கியத்திற்கான அனுமதிகளை நிர்வகியுங்கள்"</string>
 </resources>

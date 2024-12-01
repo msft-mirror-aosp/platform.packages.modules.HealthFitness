@@ -21,6 +21,7 @@ import android.annotation.Nullable;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.MindfulnessSessionRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -48,6 +49,12 @@ public final class MindfulnessSessionRecordInternal
         parcel.writeString(mTitle);
         parcel.writeString(mNotes);
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     @Override
     public MindfulnessSessionRecord toExternalRecord() {
