@@ -393,7 +393,7 @@
     <string name="time_range_message_category" msgid="1136451418397326356">"हे निवडलेल्या कालावधीमधील Health Connect मध्ये जोडलेला <xliff:g id="CATEGORY">%s</xliff:g> डेटा कायमचा हटवते"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"हे निवडलेल्या कालावधीमधील Health Connect मध्ये जोडलेला <xliff:g id="APP_DATA">%s</xliff:g> डेटा कायमचा हटवते"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"मागील २४ तासांमधील डेटा हटवा"</string>
-    <string name="time_range_one_week" msgid="8754523384275645434">"मागील सात दिवसांमधील डेटा हटवा"</string>
+    <string name="time_range_one_week" msgid="8754523384275645434">"मागील ७ दिवसांमधील डेटा हटवा"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"मागील ३० दिवसांमधील डेटा हटवा"</string>
     <string name="time_range_all" msgid="8167350212705839943">"सर्व डेटा हटवा"</string>
     <string name="confirming_question_all" msgid="1585414659784742952">"आतापर्यंतचा सर्व डेटा कायमचा हटवायचा आहे का?"</string>
@@ -801,13 +801,13 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"ऑटो-डिलीट"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"ऑटो-डिलीट"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"तुमचा डेटा सेट केलेल्या वेळेनंतर हटवण्यासाठी शेड्युल करून Health Connect मध्ये किती काळ स्टोअर केला जातो ते नियंत्रित करा"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"तुमचा डेटा सेट केलेल्या वेळेनंतर हटवण्यासाठी शेड्यूल करून Health Connect मध्ये किती काळ स्टोअर केला जातो ते नियंत्रित करा"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"ऑटो-डिलीटबद्दल अधिक जाणून घ्या"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"डेटा ऑटो-डिलीट करा"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{# महिन्यानंतर}other{# महिन्यांनंतर}}"</string>
     <string name="range_never" msgid="4429478261788361233">"कधीही नाही"</string>
     <string name="range_off" msgid="8178520557618184215">"बंद आहे"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"तुम्ही ही सेटिंग्ज बदलता, तेव्हा Health Connect तुमची नवीन प्राधान्ये प्रतिबिंबित करण्यासाठी सध्याचा डेटा हटवते"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"तुम्ही ही सेटिंग्ज बदलता, तेव्हा Health Connect तुमची नवीन प्राधान्ये प्रतिबिंबित करण्यासाठी सद्य डेटा हटवते"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# महिन्यानंतर डेटा ऑटो-डिलीट करायचा का?}other{# महिन्यांनंतर डेटा ऑटो-डिलीट करायचा का?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect # महिन्यानंतर नवीन डेटा ऑटो-डिलीट करेल. हे सेट केल्याने सध्याचा # महिन्यापेक्षा जुना डेटादेखील हटवला जाईल.}other{Health Connect # महिन्यांनंतर नवीन डेटा ऑटो-डिलीट करेल. हे सेट केल्याने सध्याचा # महिन्यांपेक्षा जुना डेटादेखील हटवला जाईल.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ऑटो-डिलीट सेट करा"</string>

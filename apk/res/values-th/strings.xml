@@ -336,10 +336,10 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"ส่งออกข้อมูลไม่ได้"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"เกิดปัญหาเกี่ยวกับการส่งออกของวันที่ <xliff:g id="DATE">%1$s</xliff:g> โปรดตั้งค่าการส่งออกที่กำหนดเวลาใหม่แล้วลองอีกครั้ง"</string>
     <string name="next_export_time" msgid="3138247220014510213">"การส่งออกครั้งถัดไป: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"การสำรองและคืนค่า"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"การสำรองและกู้คืนข้อมูล"</string>
     <string name="last_export_time" msgid="9205875050823594041">"การส่งออกครั้งล่าสุด: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ส่งออกและนำเข้า"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"การส่งออกที่กำหนดเวลาไว้"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"กำหนดเวลาการส่งออก"</string>
     <string name="import_data" msgid="404502315533233094">"นำเข้าข้อมูล"</string>
     <string name="import_data_description" msgid="4040178599441724296">"กู้คืนข้อมูลจากไฟล์ที่ส่งออกก่อนหน้านี้"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"เลือกไฟล์"</string>

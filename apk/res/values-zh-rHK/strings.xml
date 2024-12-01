@@ -339,9 +339,9 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"備份與還原"</string>
     <string name="last_export_time" msgid="9205875050823594041">"上次匯出時間：<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"匯出與匯入"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"已預定匯出"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"定期匯出"</string>
     <string name="import_data" msgid="404502315533233094">"匯入資料"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"從先前已匯出的檔案還原資料"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"從先前匯出的檔案還原資料"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"選擇檔案"</string>
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
@@ -373,7 +373,7 @@
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"選擇帳戶"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"取消"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"完成"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"如需更多選項，安裝雲端儲存空間應用程式即可在此查看資料"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"如需使用更多選項，請安裝雲端儲存空間應用程式"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"前往「Play 商店」"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"開始使用 Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect 能儲存健康和健身資料，方便你同步處理手機上各個應用程式的資料"</string>
@@ -391,7 +391,7 @@
     <string name="time_range_message_all" msgid="7280888587242744729">"此操作會永久刪除所選時段內新增至 Health Connect 的所有資料"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="DATA_TYPE">%s</xliff:g>資料"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="CATEGORY">%s</xliff:g>資料"</string>
-    <string name="time_range_message_app_data" msgid="2590800457710603556">"此操作會永久刪除所選時段內新增至 Health Connect 的「<xliff:g id="APP_DATA">%s</xliff:g>」資料"</string>
+    <string name="time_range_message_app_data" msgid="2590800457710603556">"此操作會永久刪除所選時段內新增至「健康資料同步」的「<xliff:g id="APP_DATA">%s</xliff:g>」資料"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"刪除過去 24 小時的資料"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"刪除過去 7 天的資料"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"刪除過去 30 天的資料"</string>

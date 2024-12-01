@@ -810,7 +810,7 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Khi bạn thay đổi những chế độ cài đặt này, Health Connect sẽ xoá dữ liệu hiện có dựa trên các lựa chọn ưu tiên mới của bạn"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Tự động xoá dữ liệu sau # tháng?}other{Tự động xoá dữ liệu sau # tháng?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect sẽ tự động xoá dữ liệu mới sau # tháng. Chế độ cài đặt này cũng sẽ xoá dữ liệu hiện có đã lưu hơn # tháng.}other{Health Connect sẽ tự động xoá dữ liệu mới sau # tháng. Chế độ cài đặt này cũng sẽ xoá dữ liệu hiện có đã lưu hơn # tháng.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng xoá tự động"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng tự động xoá"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Dữ liệu hiện tại sẽ bị xoá"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}other{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Dữ liệu sẽ bị xoá khỏi các danh mục sau"</string>

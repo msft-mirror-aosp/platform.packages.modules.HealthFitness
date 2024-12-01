@@ -339,7 +339,7 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Öryggisafritun og endurheimt"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Síðasti útflutningur: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Út- og innflutningur"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"Tímasettur útflutningur"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Áætlaður útflutningur"</string>
     <string name="import_data" msgid="404502315533233094">"Flytja inn gögn"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Endurheimtu gögn úr skrá sem hefur áður verið flutt út"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Velja skrá"</string>

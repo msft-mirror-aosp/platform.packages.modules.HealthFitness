@@ -799,8 +799,8 @@
     <string name="send_feedback" msgid="7756927746070096780">"Giv feedback"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Fortæl os, hvilke sundheds- og motionsapps du gerne vil bruge med Health Connect"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Butik"</string>
-    <string name="auto_delete_button" msgid="8536451792268513619">"Slet automatisk"</string>
-    <string name="auto_delete_title" msgid="8761742828224207826">"Slet automatisk"</string>
+    <string name="auto_delete_button" msgid="8536451792268513619">"Automatisk sletning"</string>
+    <string name="auto_delete_title" msgid="8761742828224207826">"Automatisk sletning"</string>
     <string name="auto_delete_header" msgid="4258649705159293715">"Bestem, hvor længe dine data skal gemmes i Health Connect, ved at planlægge sletning af dataene efter et bestemt tidspunkt"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Få flere oplysninger om automatisk sletning"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Slet data automatisk"</string>

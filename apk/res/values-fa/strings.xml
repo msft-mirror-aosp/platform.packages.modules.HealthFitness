@@ -304,7 +304,7 @@
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"مجاز به خواندن"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"مجاز به نوشتن"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"برنامه‌ای مجاز نشده"</string>
-    <string name="no_apps_denied" msgid="743327680286446017">"برنامه‌ای غیرمجاز نشده"</string>
+    <string name="no_apps_denied" msgid="743327680286446017">"برنامه‌ای رد نشده"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"دسترسی همه برنامه‌ها برداشته شود؟"</string>
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"هیچ‌یک از برنامه‌هایتان دیگر نمی‌تواند به Health Connect دسترسی داشته باشد یا داده‌های جدید به آن اضافه کند. این موضوع باعث حذف داده‌های موجود نمی‌شود.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً مکان، دوربین، یا میکروفون) اثر نمی‌گذارد."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"برداشتن همه موارد"</string>
@@ -865,7 +865,7 @@
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"‫Health Connect درحال ادغام شدن با سیستم Android است تا بتوانید مستقیماً از تنظیمات به آن دسترسی داشته باشید."</string>
     <string name="update_button" msgid="4544529019832009496">"به‌روزرسانی"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"این به‌روزرسانی را آغاز کنید تا Health Connect بتواند یکپارچه‌سازی با تنظیمات سیستم را ادامه دهد"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"اکنون به‌روز شود"</string>
+    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"اکنون به‌روز کردن"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"به‌روزرسانی سیستم لازم است"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"قبل‌از ادامه دادن، سیستم تلفنتان را به‌روز کنید."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"اگر قبلاً سیستم تلفن را به‌روز کرده‌اید، تلفن را برای ادامه یکپارچه‌سازی بازراه‌اندازی کنید"</string>
@@ -907,7 +907,7 @@
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"هروقت دوباره دردسترس قرار بگیرد اعلان دریافت خواهید کرد."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"متوجه‌ام"</string>
     <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"یکپارچه‌سازی Health Connect تکمیل نشد"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"جزئیات بیشتر"</string>
+    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"خواندن شرح بلندتر"</string>
     <string name="migration_complete_notification_title" msgid="4988631739109332404">"یکپارچه‌سازی Health Connect تکمیل شد"</string>
     <string name="migration_complete_notification_action" msgid="5350322865206331186">"باز کردن"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ویژگی‌های جدید"</string>
@@ -919,7 +919,7 @@
     <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"متوجه‌ام"</string>
     <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"باید به‌روزرسانی شود"</string>
     <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"قبل‌از ادامه دادن بازیابی داده‌ها، سیستم تلفن را به‌روز کنید."</string>
-    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"به‌روز شود"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"اکنون به‌روز کردن"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"مجموع داده"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"منابع برنامه"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"منابع برنامه را به فهرست اضافه کنید تا ببینید که مجموع داده‌ها چگونه می‌تواند تغییر کند. برداشتن برنامه از این فهرست باعث می‌شود که آن برنامه دیگر در مجموع دخیل نباشد، اما همچنان اجازه نوشتن خواهد داشت."</string>

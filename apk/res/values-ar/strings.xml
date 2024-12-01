@@ -39,7 +39,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"ضبط الوحدات"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"الإعدادات المفضّلة"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"إدارة البيانات"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"تصدير البيانات واستيرادها"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"يتيح تصدير البيانات واستيرادها"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"التطبيقات التي وصلت مؤخرًا إلى البيانات الصحية"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"لم تستخدم أي تطبيقات Health Connect مؤخرًا."</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"الاطّلاع على كل عمليات الوصول الحديثة"</string>
@@ -341,7 +341,7 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"التصدير والاستيراد"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"عملية التصدير المُجدوَلة"</string>
     <string name="import_data" msgid="404502315533233094">"استيراد البيانات"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"استعادة البيانات من ملف تم تصديره في السابق"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"يتيح استعادة البيانات من ملف تم تصديره في السابق"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"اختيار ملف"</string>
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
@@ -349,7 +349,7 @@
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"تسمح ميزة التصدير بحفظ البيانات حتى تتمكن من نقلها إلى هاتف جديد"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"مزيد من المعلومات"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"مفعَّل"</string>
-    <string name="automatic_export_off" msgid="3270255845008880841">"غير مفعَّل"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"الخيار غير مفعَّل"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"اختيار معدّل التكرار"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"اختيار معدّل حفظ البيانات"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"يمكنك اختيار حفظ البيانات مرة واحدة أو الضبط على حفظها تلقائيًا في أوقات منتظمة."</string>
@@ -373,7 +373,7 @@
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"اختيار حساب"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"إلغاء"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"تم"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"للحصول على مزيد من الخيارات، يجب تثبيت تطبيقات مخصَّصة للتخزين في السحابة الإلكترونية لعرضها هنا"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"للحصول على مزيد من الخيارات، يجب تثبيت تطبيقات مخصَّصة للتخزين في السحابة الإلكترونية لكي تظهر هنا"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"الانتقال إلى \"متجر Play\""</string>
     <string name="onboarding_title" msgid="8550656211291180188">"بدء استخدام Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على هاتفك."</string>
@@ -807,7 +807,7 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{بعد شهر واحد}zero{بعد # شهر}two{بعد شهرَين}few{بعد # أشهر}many{بعد # شهرًا}other{بعد # شهر}}"</string>
     <string name="range_never" msgid="4429478261788361233">"أبدًا"</string>
     <string name="range_off" msgid="8178520557618184215">"الخيار غير مفعَّل"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"عند تغيير هذه الإعدادات، يحذف تطبيق Health Connect البيانات الحالية لإظهار الإعدادات المفضّلة الجديدة"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"عند تغيير هذه الإعدادات، يحذف تطبيق Health Connect البيانات الحالية بما يتوافق مع الإعدادات المفضّلة الجديدة"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{هل تريد حذف البيانات تلقائيًا بعد شهر واحد؟}zero{هل تريد حذف البيانات تلقائيًا بعد # شهر؟}two{هل تريد حذف البيانات تلقائيًا بعد # شهرَين؟}few{هل تريد حذف البيانات تلقائيًا بعد # أشهر؟}many{هل تريد حذف البيانات تلقائيًا بعد # شهرًا؟}other{هل تريد حذف البيانات تلقائيًا بعد # شهر؟}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{سيحذف تطبيق Health Connect البيانات الجديدة تلقائيًا بعد شهر واحد. سيؤدي ضبط هذه الميزة أيضًا إلى حذف البيانات الحالية الأقدم من شهر واحد.}zero{سيحذف تطبيق Health Connect البيانات الجديدة تلقائيًا بعد # شهر. سيؤدي ضبط هذه الميزة أيضًا إلى حذف البيانات الحالية الأقدم من # شهر.}two{سيحذف تطبيق Health Connect البيانات الجديدة تلقائيًا بعد شهرَين. سيؤدي ضبط هذه الميزة أيضًا إلى حذف البيانات الحالية الأقدم من شهرَين.}few{سيحذف تطبيق Health Connect البيانات الجديدة تلقائيًا بعد # أشهر. سيؤدي ضبط هذه الميزة أيضًا إلى حذف البيانات الحالية الأقدم من # أشهر.}many{سيحذف تطبيق Health Connect البيانات الجديدة تلقائيًا بعد # شهرًا. سيؤدي ضبط هذه الميزة أيضًا إلى حذف البيانات الحالية الأقدم من # شهرًا.}other{سيحذف تطبيق Health Connect البيانات الجديدة تلقائيًا بعد # شهر. سيؤدي ضبط هذه الميزة أيضًا إلى حذف البيانات الحالية الأقدم من # شهر.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ضبط ميزة \"الحذف التلقائي\""</string>
