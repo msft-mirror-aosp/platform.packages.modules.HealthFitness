@@ -65,7 +65,9 @@ public class DeviceInfoHelper extends DatabaseHelper {
 
     private final TransactionManager mTransactionManager;
 
-    public DeviceInfoHelper(TransactionManager transactionManager) {
+    public DeviceInfoHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 

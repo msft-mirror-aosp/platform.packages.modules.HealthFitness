@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"دمای پوست"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"خواندن دمای پوست"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"نوشتن دمای پوست"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"این شامل همه سوابق سلامتی همگام‌سازی‌شده با Health Connect و اضافه‌شده به آن می‌شود. این داده‌ها ممکن است سابقه پزشکی کامل شما را دربر نگیرد و شامل شرح پزشکی از سوابق سلامتی شما نیست."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"همه سوابق سلامتی"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"همه سوابق سلامتی"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"نوشتن همه سوابق سلامتی"</string>
@@ -375,8 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"اگر اجازه دسترسی بدهید، این برنامه می‌تواند داده‌هایی مثل حساسیت‌ها، نتایج آزمایشگاه، واکسن‌ها، و موارد دیگر را بخواند و بنویسد\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"اگر اجازه دسترسی بدهید، این برنامه می‌تواند داده‌هایی مثل حساسیت‌ها، نتایج آزمایشگاه، واکسن‌ها، و موارد دیگر را بخواند\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"درباره سوابق سلامتی"</string>
-    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
-    <skip />
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"داده‌هایی که هم‌رسانی می‌شود عبارت‌اند از"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"اگر اجازه دهید، <xliff:g id="APP_NAME">%1$s</xliff:g> می‌تواند سوابق سلامتی شما را با Health Connect هم‌رسانی کند."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"سوابق سلامتی خود را از برنامه‌ها و منابع مختلف همگام‌سازی کنید تا آن‌ها را در یک مکان داشته باشید"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"همه اجازه‌ها برداشته شود؟"</string>
@@ -792,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"موسیقی"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"سایر موارد"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"بدون راهنما"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"متوسط"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"شدید"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> دقیقه"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ساعت و <xliff:g id="MIN">%2$s</xliff:g> دقیقه"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ساعت"</string>
@@ -1044,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"یکپارچه‌سازی درحال انجام است"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"‫Health Connect درحال ادغام شدن با سیستم Android است.\n\nممکن است مدتی طول بکشد تا داده‌ها و اجازه‌ها منتقل شوند."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"تا وقتی اعلانی مبنی بر تکمیل فرایند دریافت نکرده‌اید برنامه را نبندید."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"یکپارچه‌سازی Health Connect درحال انجام است"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"به‌روزرسانی لازم است"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"‫Health Connect درحال ادغام شدن با سیستم Android است تا بتوانید مستقیماً از تنظیمات به آن دسترسی داشته باشید."</string>
     <string name="update_button" msgid="4544529019832009496">"به‌روزرسانی"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"این به‌روزرسانی را آغاز کنید تا Health Connect بتواند یکپارچه‌سازی با تنظیمات سیستم را ادامه دهد"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"اکنون به‌روز کردن"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"به‌روزرسانی سیستم لازم است"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"قبل‌از ادامه دادن، سیستم تلفنتان را به‌روز کنید."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"اگر قبلاً سیستم تلفن را به‌روز کرده‌اید، تلفن را برای ادامه یکپارچه‌سازی بازراه‌اندازی کنید"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"به‌روزرسانی Health Connect لازم است"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"قبل‌از ادامه دادن، برنامه Health Connect را به جدیدترین نسخه به‌روز کنید."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"فضای بیشتری لازم است"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"برای ادامه یکپارچه‌سازی، Health Connect به <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> فضای ذخیره‌سازی در تلفن نیاز دارد.\n\nمقداری فضا در تلفنتان آزاد کنید و سپس دوباره امتحان کنید."</string>
     <string name="try_again_button" msgid="8745496819992160789">"امتحان مجدد"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"آزاد کردن فضا"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"فضای بیشتری لازم است"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect برای ادامه یکپارچه‌سازی به <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> فضای ذخیره‌سازی در تلفن نیاز دارد."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"یکپارچه‌سازی موقتاً متوقف شد"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"برنامه Health Connect درحین ادغام شدن با سیستم Android بسته شد.\n\nبرای باز کردن مجدد برنامه و ادامه پیدا کردن انتقال داده‌ها و اجازه‌ها، روی «ازسرگیری» کلیک کنید."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"برای حفظ داده‌های Health Connect، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
@@ -1071,8 +1066,6 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، تک‌ضرب بزنید. برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، تک‌ضرب بزنید."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"ادامه"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"ازسرگیری یکپارچه‌سازی Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"به‌روزرسانی برنامه لازم است"</string>
     <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> برای ادامه همگام‌سازی با Health Connect باید به‌روز شود. ممکن است به‌روزرسانی‌ها برای همه برنامه‌ها دردسترس نباشد."</string>
     <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"برخی‌از برنامه‌ها برای ادامه همگام‌سازی با Health Connect باید به‌روز شوند. ممکن است به‌روزرسانی‌ها برای همه برنامه‌ها دردسترس نباشد."</string>
@@ -1090,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"یکپارچه‌سازی Health Connect تکمیل نشد"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"هروقت دوباره دردسترس قرار بگیرد اعلان دریافت خواهید کرد."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"متوجه‌ام"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"یکپارچه‌سازی Health Connect تکمیل نشد"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"خواندن شرح بلندتر"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"یکپارچه‌سازی Health Connect تکمیل شد"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"باز کردن"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ویژگی‌های جدید"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"اکنون می‌توانید مستقیماً از تنظیمات به Health Connect دسترسی داشته باشید. هروقت خواستید برنامه Health Connect را حذف نصب کنید تا فضای ذخیره‌سازی آزاد شود."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"متوجه‌ام"</string>
@@ -1196,12 +1185,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"دسترسی به <xliff:g id="DATA_TYPE">%s</xliff:g> برای همه برنامه‌های روی ساعت برداشته شود؟"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"علامت تأیید"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"علامت ضربدر"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"درحال‌حاضر <xliff:g id="APP_NAME">%1$s</xliff:g> می‌تواند <xliff:g id="ALLOW_MODE">%2$s</xliff:g> به داده‌های تناسب اندام و تندرستی دسترسی داشته باشد"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه می‌دهید همیشه به داده‌های تناسب اندام و تندرستی دسترسی داشته باشد؟"</string>
+    <string name="current_access" msgid="1457167070428176139">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> به <xliff:g id="DATA_TYPES">%2$s</xliff:g> دسترسی دارد."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"مدیریت اجازه‌های تناسب اندام و تندرستی"</string>
 </resources>

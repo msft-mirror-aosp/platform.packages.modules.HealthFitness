@@ -32,6 +32,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
@@ -49,27 +50,32 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
+import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import com.google.common.collect.ImmutableList;
@@ -79,11 +85,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -104,14 +110,9 @@ public class TransactionManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new com.android.server.healthconnect.storage.datatypehelpers
-                    .HealthConnectDatabaseTestRule();
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -128,22 +129,22 @@ public class TransactionManagerTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
         mHealthDataCategoryPriorityHelper =
                 healthConnectInjector.getHealthDataCategoryPriorityHelper();
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
     @Test
@@ -525,5 +526,54 @@ public class TransactionManagerTest {
         assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(HeartRateRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    public void insertAll_noChangeLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(
+                                createStepsRecord(500, 750, 100)
+                                        .setPackageName(TEST_PACKAGE_NAME)
+                                        .setUuid(UUID.randomUUID())),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+
+        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
+                .isEqualTo(0);
+    }
+
+    @Test
+    public void insertAllWithoutAccessLogs_addChangeLogs_withNoAccessLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(
+                                createStepsRecord(500, 750, 100)
+                                        .setPackageName(TEST_PACKAGE_NAME)
+                                        .setUuid(UUID.randomUUID())),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        mTransactionManager.insertAllWithoutAccessLogs(mAppInfoHelper, upsertTransactionRequest);
+
+        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
+                .isEqualTo(1);
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void insertAll_addAccessLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForInsert(
+                        TEST_PACKAGE_NAME /* packageName */,
+                        List.of(createStepsRecord(500, 750, 100).setPackageName(TEST_PACKAGE_NAME)),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper,
+                        Collections.emptyMap());
+        mTransactionManager.insertAll(mAppInfoHelper, mAccessLogsHelper, upsertTransactionRequest);
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isNotEmpty();
     }
 }

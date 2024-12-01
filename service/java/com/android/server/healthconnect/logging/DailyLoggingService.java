@@ -16,13 +16,9 @@
 
 package com.android.server.healthconnect.logging;
 
-import android.content.Context;
 import android.util.Slog;
 
-import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TableSizeHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 
 /**
  * Class to log Health Connect metrics logged every 24hrs.
@@ -36,58 +32,25 @@ public class DailyLoggingService {
 
     /** Log daily metrics. */
     public static void logDailyMetrics(
-            Context context,
             UsageStatsCollector usageStatsCollector,
-            TransactionManager transactionManager,
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper,
-            TableSizeHelper tableSizeHelper) {
-        logDatabaseStats(
-                context,
-                transactionManager,
-                medicalDataSourceHelper,
-                medicalResourceHelper,
-                tableSizeHelper);
-        logUsageStats(
-                context,
-                usageStatsCollector,
-                medicalDataSourceHelper,
-                medicalResourceHelper);
+            DatabaseStatsCollector databaseStatsCollector) {
+        logDatabaseStats(databaseStatsCollector, usageStatsCollector);
+        logUsageStats(usageStatsCollector);
     }
 
     private static void logDatabaseStats(
-            Context context,
-            TransactionManager transactionManager,
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper,
-            TableSizeHelper tableSizeHelper) {
+            DatabaseStatsCollector databaseStatsCollector,
+            UsageStatsCollector usageStatsCollector) {
         try {
-            DatabaseStatsLogger.log(context, transactionManager);
+            DatabaseStatsLogger.log(databaseStatsCollector, usageStatsCollector);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log database stats", exception);
         }
-        try {
-            DatabaseStatsLogger.logPhrDatabaseStats(
-                    medicalDataSourceHelper, medicalResourceHelper, tableSizeHelper);
-        } catch (Exception exception) {
-            Slog.e(
-                    HEALTH_CONNECT_DAILY_LOGGING_SERVICE,
-                    "Failed to log PHR database stats",
-                    exception);
-        }
     }
 
-    private static void logUsageStats(
-            Context context,
-            UsageStatsCollector usageStatsCollector,
-            MedicalDataSourceHelper medicalDataSourceHelper,
-            MedicalResourceHelper medicalResourceHelper) {
+    private static void logUsageStats(UsageStatsCollector usageStatsCollector) {
         try {
-            UsageStatsLogger.log(
-                    context,
-                    usageStatsCollector,
-                    medicalDataSourceHelper,
-                    medicalResourceHelper);
+            UsageStatsLogger.log(usageStatsCollector);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log usage stats", exception);
         }

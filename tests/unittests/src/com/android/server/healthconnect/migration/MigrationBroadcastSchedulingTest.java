@@ -19,8 +19,6 @@ package com.android.server.healthconnect.migration;
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_ALLOWED;
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS;
 
-import static com.android.server.healthconnect.HealthConnectDeviceConfigManager.MIGRATION_STATE_ALLOWED_COUNT_DEFAULT_FLAG_VALUE;
-import static com.android.server.healthconnect.HealthConnectDeviceConfigManager.MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE;
 import static com.android.server.healthconnect.migration.MigrationBroadcastScheduler.MIGRATION_BROADCAST_NAMESPACE;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_STATE_CHANGE_NAMESPACE;
 
@@ -41,7 +39,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -55,7 +52,6 @@ import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
 import org.mockito.verification.VerificationMode;
 
-import java.time.Duration;
 import java.util.Objects;
 
 /** Unit tests for broadcast scheduling logic in {@link MigrationBroadcastScheduler} */
@@ -68,7 +64,6 @@ public class MigrationBroadcastSchedulingTest {
                     .spyStatic(MigrationStateManager.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectThreadScheduler.class)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
@@ -76,19 +71,8 @@ public class MigrationBroadcastSchedulingTest {
     @Mock private JobScheduler mJobScheduler;
     @Mock private MigrationStateManager mMigrationStateManager;
     @Mock private PreferenceHelper mPreferenceHelper;
-    @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
     private MigrationBroadcastScheduler mMigrationBroadcastScheduler;
-
-    private static final int MIGRATION_STATE_ALLOWED_COUNT_MOCK_VALUE =
-            MIGRATION_STATE_ALLOWED_COUNT_DEFAULT_FLAG_VALUE;
-    private static final int MIGRATION_STATE_IN_PROGRESS_COUNT_MOCK_VALUE =
-            MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE;
-
-    private static final Duration NON_IDLE_STATE_TIMEOUT_MOCK_VALUE =
-            Duration.ofDays(
-                    HealthConnectDeviceConfigManager
-                            .NON_IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE);
 
     private final long mMinPeriodMillis = JobInfo.getMinPeriodMillis();
     private final long mIntervalGreaterThanMinPeriod = mMinPeriodMillis + 1000;
@@ -99,18 +83,9 @@ public class MigrationBroadcastSchedulingTest {
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn("packageName");
         when(mJobScheduler.forNamespace(MIGRATION_BROADCAST_NAMESPACE)).thenReturn(mJobScheduler);
-        when(mHealthConnectDeviceConfigManager.getMigrationStateAllowedCount())
-                .thenReturn(MIGRATION_STATE_ALLOWED_COUNT_MOCK_VALUE);
-        when(mHealthConnectDeviceConfigManager.getMigrationStateInProgressCount())
-                .thenReturn(MIGRATION_STATE_IN_PROGRESS_COUNT_MOCK_VALUE);
-        when(mHealthConnectDeviceConfigManager.getNonIdleStateTimeoutPeriod())
-                .thenReturn(NON_IDLE_STATE_TIMEOUT_MOCK_VALUE);
 
         mMigrationBroadcastScheduler =
-                Mockito.spy(
-                        new MigrationBroadcastScheduler(
-                                UserHandle.getUserHandleForUid(0),
-                                mHealthConnectDeviceConfigManager));
+                Mockito.spy(new MigrationBroadcastScheduler(UserHandle.getUserHandleForUid(0)));
     }
 
     @Test
@@ -129,7 +104,6 @@ public class MigrationBroadcastSchedulingTest {
         MigrationStateManager migrationStateManager =
                 new MigrationStateManager(
                         UserHandle.getUserHandleForUid(0),
-                        mHealthConnectDeviceConfigManager,
                         mPreferenceHelper,
                         mMigrationBroadcastScheduler);
         migrationStateManager.updateMigrationState(mContext, MIGRATION_STATE_IN_PROGRESS);
