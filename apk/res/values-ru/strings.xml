@@ -790,10 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Музыка"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Другое"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Без руководства"</string>
-    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
-    <skip />
-    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
-    <skip />
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Умеренные"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Интенсивные"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> мин."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ч. <xliff:g id="MIN">%2$s</xliff:g> мин."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ч."</string>
@@ -1070,7 +1068,7 @@
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Продолжить"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Требуется обновление"</string>
     <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Чтобы приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" синхронизировалось с сервисом \"Здоровье и спорт\", обновите его. Обновления могут быть доступны не для всех приложений."</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Чтобы некоторые приложения синхронизировались с сервисом \"Здоровье и спорт\", обновите их. Обновления могут быть доступны не для всех приложений."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Необходимо обновить некоторые приложения, чтобы они синхронизировались с сервисом \"Здоровье и спорт\". Обновления могут быть доступны не для всех приложений."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Проверить наличие обновлений"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Подробнее"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Интеграция приложения \"Здоровье и спорт\""</string>
