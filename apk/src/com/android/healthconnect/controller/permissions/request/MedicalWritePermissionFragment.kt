@@ -23,8 +23,8 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MedicalWritePermissionPageElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.FooterPreference
@@ -111,6 +111,7 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
                 .sorted()
                 .joinToString("\n")
         supportedMedicalPreference?.summary = sampleMedicalPermissions
+        supportedMedicalPreference?.isSelectable = false
 
         footer?.title = getString(R.string.medical_request_footer)
         footer?.setLearnMoreText(getString(R.string.medical_request_about_health_records))
@@ -121,29 +122,29 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
     }
 
     private fun setupAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        logger.logImpression(MedicalWritePermissionPageElement.ALLOW_WRITE_HEALTH_RECORDS_BUTTON)
         getAllowButton().isEnabled = true
 
         getAllowButton().setOnClickListener {
             viewModel.setMedicalPermissionRequestConcluded(true)
             viewModel.updateMedicalPermissions(true)
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(
+                MedicalWritePermissionPageElement.ALLOW_WRITE_HEALTH_RECORDS_BUTTON
+            )
         }
     }
 
     private fun setupDontAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        logger.logImpression(MedicalWritePermissionPageElement.CANCEL_WRITE_HEALTH_RECORDS_BUTTON)
 
         getDontAllowButton().setOnClickListener {
             viewModel.setMedicalPermissionRequestConcluded(true)
             viewModel.updateMedicalPermissions(false)
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(
+                MedicalWritePermissionPageElement.CANCEL_WRITE_HEALTH_RECORDS_BUTTON
+            )
         }
     }
 }

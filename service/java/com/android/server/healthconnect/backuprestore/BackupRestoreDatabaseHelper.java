@@ -32,8 +32,8 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.health.connect.proto.backuprestore.BackupData;
 import android.util.Pair;
-import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -49,9 +49,6 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -191,10 +188,7 @@ public class BackupRestoreDatabaseHelper {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                // TODO: b/377648858 - the parameter name is confusing as it's
-                                // actually about recording read access logs. Confirm whether we
-                                // need it or not.
-                                /* shouldRecordDeleteAccessLogs= */ false);
+                                /* shouldRecordAccessLog= */ false);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
                 pageSize = MAXIMUM_PAGE_SIZE - backupChanges.size();
@@ -277,7 +271,6 @@ public class BackupRestoreDatabaseHelper {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
-                        // TODO: b/377648858 - revisit whether we should record access log
                         /* shouldRecordAccessLog= */ false);
 
         List<BackupChange> backupChanges =
@@ -335,15 +328,6 @@ public class BackupRestoreDatabaseHelper {
     }
 
     private static byte[] serializeRecordInternal(RecordInternal<?> recordInternal) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ObjectOutputStream objectOutputStream =
-                        new ObjectOutputStream(byteArrayOutputStream)) {
-            objectOutputStream.writeObject(recordInternal);
-            objectOutputStream.flush();
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            Slog.e(TAG, "Failed to serialize an internal record", e);
-            return new byte[0];
-        }
+        return BackupData.newBuilder().setRecord(recordInternal.toProto()).build().toByteArray();
     }
 }

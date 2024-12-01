@@ -20,6 +20,7 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.HeartRateVariabilityRmssdRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /** @hide */
@@ -37,6 +38,12 @@ public final class HeartRateVariabilityRmssdRecordInternal
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mHeartRateVariabilityMillis);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 
     public double getHeartRateVariabilityMillis() {
         return mHeartRateVariabilityMillis;

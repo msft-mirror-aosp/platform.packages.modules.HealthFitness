@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura cutánea"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lee la temperatura cutánea"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escribe la temperatura cutánea"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Esto incluye todos los registros de salud que se sincronizaron y agregaron a Health Connect. Es posible que no se trate de tu historial médico completo y no incluya una descripción médica de tus registros de salud."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Todos los registros de salud"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"todos los registros de salud"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Escribir todos los registros de salud"</string>
@@ -375,8 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si otorgas acceso, la app podrá leer y escribir datos como alergias, resultados de laboratorio, vacunas y más\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Si otorgas acceso, la app podrá leer datos como alergias, resultados de laboratorio, vacunas y más\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Información sobre los registros de salud"</string>
-    <!-- no translation found for medical_request_data_to_share (6778034304921873317) -->
-    <skip />
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Los datos para compartir incluyen"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Si lo permites, <xliff:g id="APP_NAME">%1$s</xliff:g> podrá compartir tus registros de salud con Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sincroniza los registros de salud de diferentes apps y fuentes para tenerlos en un solo lugar"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"¿Quieres quitar todos los permisos?"</string>
@@ -792,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Música"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Otro"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Sin guía"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Moderada"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Vigorosa"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -1044,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integración en curso"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect se está integrando al sistema Android.\n\nEl proceso puede demorar unos minutos mientras se transfieren tus datos y permisos."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"No cierres la app hasta que recibas una notificación que te indique que se completó el proceso."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Integración con Health Connect en curso"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Debes actualizar la app"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect se está integrando al sistema Android para que puedas acceder directamente desde la configuración."</string>
     <string name="update_button" msgid="4544529019832009496">"Actualizar"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Inicia esta actualización para que Health Connect pueda continuar integrándose con la configuración del sistema"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Actualizar ahora"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Actualización del sistema necesaria"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Antes de continuar, actualiza el sistema de tu teléfono."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Si ya actualizaste el sistema del teléfono, intenta reiniciarlo para continuar con la integración"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Debes actualizar Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Antes de continuar, actualiza la app de Health Connect a su última versión."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Necesitas más espacio"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect necesita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> de espacio de almacenamiento en tu teléfono para continuar con la integración.\n\nLibera espacio en el teléfono y vuelve a intentar."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Reintentar"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Liberar espacio"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Necesitas más espacio"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect necesita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> de espacio de almacenamiento en tu teléfono para continuar con la integración."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Se pausó la integración"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"La app de Health Connect se cerró durante la integración con el sistema Android.\n\nHaz clic en Reanudar para abrir nuevamente la app y continuar con la transferencia de datos y permisos."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Para preservar los datos de Health Connect, completa este proceso en un plazo de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1071,8 +1066,6 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Presiona para continuar integrando Health Connect con el sistema Android. Para preservar tus datos, completa el proceso en un plazo de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Presiona para continuar integrando Health Connect con el sistema Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Continuar"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reanuda la integración con Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Para preservar tus datos, completa el proceso en un plazo de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Se debe actualizar la app"</string>
     <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> debe actualizarse para seguir sincronizándose con Health Connect Es posible que no haya actualizaciones disponibles para todas las apps."</string>
     <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Algunas apps deben actualizarse para seguir sincronizándose con Health Connect. Es posible que no haya actualizaciones disponibles para todas las apps."</string>
@@ -1090,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"La integración con Health Connect no se completó"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Recibirás una notificación cuando vuelva a estar disponible."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Entendido"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"La integración con Health Connect no se completó"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Leer más"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Se completó la integración con Health Connect"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Abrir"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novedades"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Ya puedes acceder a Health Connect directamente desde la configuración. Desinstala la app de Health Connect en cualquier momento para liberar espacio de almacenamiento."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Entendido"</string>
@@ -1196,12 +1185,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quieres quitar el acceso a <xliff:g id="DATA_TYPE">%s</xliff:g> para todas las apps de tu reloj?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificación"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Marca de tachado"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"Actualmente, <xliff:g id="APP_NAME">%1$s</xliff:g> puede acceder a los datos de actividad física y bienestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos de actividad física y bienestar todo el tiempo?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> tiene acceso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Administrar permisos de salud y bienestar"</string>
 </resources>

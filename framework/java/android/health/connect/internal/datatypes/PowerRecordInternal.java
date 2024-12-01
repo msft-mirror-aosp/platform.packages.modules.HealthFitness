@@ -22,6 +22,7 @@ import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Power;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -82,6 +83,12 @@ public class PowerRecordInternal
             parcel.writeLong(powerRecordSample.getEpochMillis());
         }
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     private List<PowerRecord.PowerRecordSample> getExternalSamples() {
         List<PowerRecord.PowerRecordSample> powerRecords =

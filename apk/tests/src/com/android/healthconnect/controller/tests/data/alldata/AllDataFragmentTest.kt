@@ -43,13 +43,13 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.alldata.AllDataFragment
 import com.android.healthconnect.controller.data.alldata.AllDataFragment.Companion.IS_BROWSE_MEDICAL_DATA_SCREEN
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
-import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
 import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.ALLERGIES_INTOLERANCES
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.VACCINES
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.DELETE
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
@@ -392,6 +392,12 @@ class AllDataFragmentTest {
         }
 
         assertCheckboxShown("Select all")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
     }
 
     @Test
@@ -619,6 +625,56 @@ class AllDataFragmentTest {
         }
         assertCheckboxShown("Distance")
         assertCheckboxShown("Heart rate")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun inDeletionState_medicalData_checkboxesRemainOnOrientationChange() = runTest {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        val scenario = launchMedicalAllDataFragment()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
+        }
+
+        advanceUntilIdle()
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+
+        scenario.recreate()
+
+        onView(withText("Select all")).perform(scrollTo())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
+            val selectAllCheckboxPreference =
+                fragment.preferenceScreen.findPreference("key_select_all")
+                    as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isTrue()
+            fragment.preferenceScreen.children.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            assertThat(permissionTypePreference.getIsChecked()).isTrue()
+                        }
+                    }
+                }
+            }
+        }
+        assertCheckboxShown("Allergies")
+        assertCheckboxShown("Vaccines")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
     }
 
     private fun assertCheckboxShown(title: String, tag: String = "checkbox") {

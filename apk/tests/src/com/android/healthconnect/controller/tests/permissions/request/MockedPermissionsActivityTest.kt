@@ -85,6 +85,7 @@ import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MedicalWritePermissionPageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags
@@ -320,6 +321,10 @@ class MockedPermissionsActivityTest {
         verify(healthConnectLogger, atLeast(1))
             .setPageId(PageName.REQUEST_WRITE_MEDICAL_PERMISSION_PAGE)
         verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(MedicalWritePermissionPageElement.ALLOW_WRITE_HEALTH_RECORDS_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(MedicalWritePermissionPageElement.CANCEL_WRITE_HEALTH_RECORDS_BUTTON)
     }
 
     @Test

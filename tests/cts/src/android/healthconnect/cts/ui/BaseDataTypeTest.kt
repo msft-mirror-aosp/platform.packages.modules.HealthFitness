@@ -24,6 +24,7 @@ import android.healthconnect.cts.lib.UiTestUtils.findDescAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findObject
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
+import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
@@ -98,6 +99,10 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
     @After
     fun tearDown() {
         TestUtils.deleteAllStagedRemoteData()
+        permissions.forEach {
+            grantPermissionViaPackageManager(context, APP_WITH_READ_WRITE_PERMISSIONS, it)
+            assertPermissionGranted(it, APP_WITH_READ_WRITE_PERMISSIONS)
+        }
     }
 
     @Test

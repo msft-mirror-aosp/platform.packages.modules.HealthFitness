@@ -88,6 +88,16 @@ public class PhrPageTokenWrapperTest {
     }
 
     @Test
+    public void phrPageTokenWrapper_encodeAndDecodeWithoutFilters_success() {
+        PhrPageTokenWrapper expected = PhrPageTokenWrapper.from(LAST_ROW_ID);
+
+        String pageToken = expected.encode();
+        PhrPageTokenWrapper result = PhrPageTokenWrapper.from(pageToken);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
     public void phrPageTokenWrapper_encodeWithNegativeLastRowId_throws() {
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
@@ -162,14 +172,17 @@ public class PhrPageTokenWrapperTest {
     }
 
     @Test
-    public void phrPageTokenWrapper_pageTokenNull_throws() {
+    public void phrPageTokenWrapper_pageTokenNull_returnsEmptyPageToken() {
         String pageTokenNull = null;
-        assertThrows(IllegalArgumentException.class, () -> PhrPageTokenWrapper.from(pageTokenNull));
+
+        assertThat(PhrPageTokenWrapper.fromPageTokenAllowingNull(pageTokenNull))
+                .isEqualTo(PhrPageTokenWrapper.EMPTY_PAGE_TOKEN);
     }
 
     @Test
-    public void phrPageTokenWrapper_pageTokenEmpty_throws() {
-        assertThrows(IllegalArgumentException.class, () -> PhrPageTokenWrapper.from(""));
+    public void phrPageTokenWrapper_pageTokenEmpty_returnsEmptyPageToken() {
+        assertThat(PhrPageTokenWrapper.fromPageTokenAllowingNull(""))
+                .isEqualTo(PhrPageTokenWrapper.EMPTY_PAGE_TOKEN);
     }
 
     @Test
