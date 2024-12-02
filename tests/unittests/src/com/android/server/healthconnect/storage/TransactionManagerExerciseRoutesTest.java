@@ -22,7 +22,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.Manifest;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
@@ -35,7 +34,6 @@ import android.health.connect.internal.datatypes.RecordInternal;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
@@ -96,9 +94,6 @@ public class TransactionManagerExerciseRoutesTest {
 
     @Before
     public void setup() {
-        InstrumentationRegistry.getInstrumentation()
-                .getUiAutomation()
-                .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)

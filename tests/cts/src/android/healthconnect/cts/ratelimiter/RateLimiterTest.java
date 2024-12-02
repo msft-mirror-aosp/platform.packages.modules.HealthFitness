@@ -25,7 +25,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
-import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -50,7 +49,6 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.compatibility.common.util.ApiTest;
 
@@ -75,9 +73,6 @@ public class RateLimiterTest {
     private static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
     private static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
     private static final Duration WINDOW_15M = Duration.ofMinutes(15);
-    public static final String ENABLE_RATE_LIMITER_FLAG = "enable_rate_limiter";
-    private final UiAutomation mUiAutomation =
-            InstrumentationRegistry.getInstrumentation().getUiAutomation();
 
     @Rule
     public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();

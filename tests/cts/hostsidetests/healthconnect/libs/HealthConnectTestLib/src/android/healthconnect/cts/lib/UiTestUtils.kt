@@ -43,6 +43,7 @@ object UiTestUtils {
     private val WAIT_TIMEOUT = Duration.ofSeconds(5)
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
     private val FIND_OBJECT_TIMEOUT = Duration.ofMillis(500)
+    private val NEW_WINDOW_TIMEOUT_MILLIS = 3000L
 
     private val TAG = UiTestUtils::class.java.simpleName
 
@@ -111,6 +112,14 @@ object UiTestUtils {
     fun findObjectAndClick(selector: BySelector) {
         findObject(selector).click()
         getUiDevice().waitForIdle()
+    }
+
+    fun clickOnDescAndWaitForNewWindow(text: String) {
+        findDesc(text).clickAndWait(Until.newWindow(), NEW_WINDOW_TIMEOUT_MILLIS)
+    }
+
+    fun clickOnTextAndWaitForNewWindow(text: String) {
+        findText(text).clickAndWait(Until.newWindow(), NEW_WINDOW_TIMEOUT_MILLIS)
     }
 
     /**
@@ -205,6 +214,11 @@ object UiTestUtils {
                 .click()
         }
         getUiDevice().waitForIdle()
+    }
+
+    fun scrollDownToAndFindText(text: String) {
+        scrollDownTo(By.text(text))
+        findText(text)
     }
 
     fun skipOnboardingIfAppears() {

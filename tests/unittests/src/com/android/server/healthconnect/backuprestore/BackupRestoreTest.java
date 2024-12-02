@@ -24,6 +24,7 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 
+import static com.android.compatibility.common.util.SystemUtil.eventually;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.BACKUP_RESTORE_JOBS_NAMESPACE;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
@@ -537,9 +538,11 @@ public class BackupRestoreTest {
         when(SQLiteDatabase.openDatabase(any(), any())).thenReturn(mockDb);
 
         mBackupRestore.scheduleAllJobs();
-        Thread.sleep(2000);
-        assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_STATE_KEY))
-                .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
+
+        eventually(
+                () ->
+                        assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_STATE_KEY))
+                                .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE)));
     }
 
     @Test

@@ -21,6 +21,7 @@ import android.health.connect.datatypes.CervicalMucusRecord.CervicalMucusAppeara
 import android.health.connect.datatypes.CervicalMucusRecord.CervicalMucusSensation;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -76,4 +77,10 @@ public final class CervicalMucusRecordInternal extends InstantRecordInternal<Cer
         parcel.writeInt(mSensation);
         parcel.writeInt(mAppearance);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }

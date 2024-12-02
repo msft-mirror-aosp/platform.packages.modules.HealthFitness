@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura e lëkurës"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lexo temperaturën e lëkurës"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Shkruaj temperaturën e lëkurës"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Kjo përfshin të gjitha të dhënat shëndetësore që janë sinkronizuar dhe shtuar te Health Connect. Kjo mund të mos jetë kartela jote e plotë mjekësore dhe nuk përfshin një përshkrim mjekësor për të dhënat e tua mjekësore."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Të gjitha të dhënat shëndetësore"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"të gjitha të dhënat shëndetësore"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Të shkruajë të gjitha të dhënat shëndetësore"</string>
@@ -791,10 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Muzikë"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Tjetër"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Pa udhëzime"</string>
-    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
-    <skip />
-    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
-    <skip />
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Mesatar"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"I vrullshëm"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> orë e <xliff:g id="MIN">%2$s</xliff:g> min."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> orë"</string>
@@ -1188,12 +1185,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Të hiqet qasja për <xliff:g id="DATA_TYPE">%s</xliff:g> për të gjitha aplikacionet në orën tënde?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Shenja e zgjedhjes"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Shenja e kryqëzimit"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"Aktualisht, <xliff:g id="APP_NAME">%1$s</xliff:g> mund të ketë qasje te të dhënat për fitnesin dhe mirëqenien <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Të lejohet që <xliff:g id="APP_NAME">%1$s</xliff:g> të ketë qasje te të dhënat për fitnesin dhe mirëqenien gjatë gjithë kohës?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ka qasje te <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Menaxho lejet për fitnesin dhe mirëqenien"</string>
 </resources>

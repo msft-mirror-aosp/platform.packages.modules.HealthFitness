@@ -66,13 +66,16 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
+import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import com.google.common.collect.ImmutableList;
@@ -86,6 +89,7 @@ import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -522,5 +526,54 @@ public class TransactionManagerTest {
         assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(HeartRateRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    public void insertAll_noChangeLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(
+                                createStepsRecord(500, 750, 100)
+                                        .setPackageName(TEST_PACKAGE_NAME)
+                                        .setUuid(UUID.randomUUID())),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+
+        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
+                .isEqualTo(0);
+    }
+
+    @Test
+    public void insertAllWithoutAccessLogs_addChangeLogs_withNoAccessLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(
+                                createStepsRecord(500, 750, 100)
+                                        .setPackageName(TEST_PACKAGE_NAME)
+                                        .setUuid(UUID.randomUUID())),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        mTransactionManager.insertAllWithoutAccessLogs(mAppInfoHelper, upsertTransactionRequest);
+
+        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
+                .isEqualTo(1);
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void insertAll_addAccessLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForInsert(
+                        TEST_PACKAGE_NAME /* packageName */,
+                        List.of(createStepsRecord(500, 750, 100).setPackageName(TEST_PACKAGE_NAME)),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper,
+                        Collections.emptyMap());
+        mTransactionManager.insertAll(mAppInfoHelper, mAccessLogsHelper, upsertTransactionRequest);
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isNotEmpty();
     }
 }
