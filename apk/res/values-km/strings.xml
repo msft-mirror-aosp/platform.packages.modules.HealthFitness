@@ -790,10 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"តន្ត្រី"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"ផ្សេងៗ"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"គ្មានការណែនាំ"</string>
-    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
-    <skip />
-    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
-    <skip />
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"មធ្យម"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"ខ្លាំងក្លា"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>ន"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>ម៉ <xliff:g id="MIN">%2$s</xliff:g>ន"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>ម៉"</string>

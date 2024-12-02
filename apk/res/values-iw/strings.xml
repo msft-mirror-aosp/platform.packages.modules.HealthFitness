@@ -312,7 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"טמפרטורת העור"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"קריאה של טמפרטורת העור"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"כתיבה של טמפרטורת העור"</string>
-    <string name="browse_health_records_intro" msgid="1611488691642390523">"זה כולל את כל הסיכומים על המצב הבריאותי שסונכרנו עם Health Connect ונוספו לאפליקציה הזו. יכול להיות שזה לא התיק הרפואי המלא שלך, ולא כולל תיאור רפואי של הסיכומים על המצב הבריאותי."</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"זה כולל את כל הסיכומים על המצב הבריאותי שסונכרנו עם Health Connect ונוספו לאפליקציה הזו. המידע לא כולל את התיק הרפואי המלא שלך, וגם לא תיאורים רפואיים מסיכום המצב הבריאותי שלך."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"כל הסיכומים על המצב הבריאותי"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"כל הסיכומים על המצב הבריאותי"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"אישור לכתיבה של כל הסיכומים על המצב הבריאותי"</string>
@@ -790,10 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"מוזיקה"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"אחר"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ללא הדרכה"</string>
-    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
-    <skip />
-    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
-    <skip />
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"מתונה"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"אינטנסיבית"</string>
     <string name="minute_duration" msgid="9035288227090160206">"דקה (<xliff:g id="MINUTE">%1$s</xliff:g>)"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> שע’ <xliff:g id="MIN">%2$s</xliff:g> דק’"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> שע‘"</string>
