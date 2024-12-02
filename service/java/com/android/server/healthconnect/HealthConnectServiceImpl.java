@@ -2625,6 +2625,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 validator.validateAndCreateInternalRequest());
                     }
 
+                    // Check that ids within the list of upsert requests are unique
+                    Set<MedicalResourceId> idsToUpsert =
+                            validatedMedicalResourcesToUpsert.stream()
+                                    .map(UpsertMedicalResourceInternalRequest::getMedicalResourceId)
+                                    .collect(toSet());
+                    if (idsToUpsert.size() != validatedMedicalResourcesToUpsert.size()) {
+                        throw new IllegalArgumentException(
+                                "Found multiple upsert requests with the same FHIR resource id,"
+                                        + " type and data source id.");
+                    }
+
                     List<MedicalResource> medicalResources =
                             mMedicalResourceHelper.upsertMedicalResources(
                                     callingPackageName, validatedMedicalResourcesToUpsert);

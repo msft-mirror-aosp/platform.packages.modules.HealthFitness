@@ -19,6 +19,7 @@ package com.android.server.healthconnect.storage.request;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
+import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource.FhirResourceType;
 import android.health.connect.datatypes.FhirVersion;
@@ -112,6 +113,15 @@ public final class UpsertMedicalResourceInternalRequest {
         requireNonNull(fhirVersion);
         mFhirVersion = fhirVersion.toString();
         return this;
+    }
+
+    /**
+     * Creates a {@link MedicalResourceId} from the provided values.
+     *
+     * @throws IllegalArgumentException if any values are invalid.
+     */
+    public MedicalResourceId getMedicalResourceId() {
+        return new MedicalResourceId(mDataSourceId, mFhirResourceType, mFhirResourceId);
     }
 
     @Override
