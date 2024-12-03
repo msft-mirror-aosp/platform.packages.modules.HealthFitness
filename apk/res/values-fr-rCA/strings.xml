@@ -838,7 +838,7 @@
     <string name="specimen_source_tears" msgid="4368541832400624080">"Larmes"</string>
     <string name="specimen_source_whole_blood" msgid="8884838851343307557">"Sang total"</string>
     <string name="blood_glucose_general" msgid="7566279829618085436">"Général"</string>
-    <string name="blood_glucose_fasting" msgid="2122662399203934350">"Jeûne"</string>
+    <string name="blood_glucose_fasting" msgid="2122662399203934350">"À jeun"</string>
     <string name="blood_glucose_before_meal" msgid="5125498172701953751">"Avant le repas"</string>
     <string name="blood_glucose_after_meal" msgid="8101398122897992346">"Après le repas"</string>
     <string name="mealtype_label" msgid="5402474235944051844">"Type de repas"</string>
@@ -872,7 +872,7 @@
     <string name="potassium" msgid="723134189945209756">"Potassium"</string>
     <string name="protein" msgid="2731834509320364994">"Protéines"</string>
     <string name="riboflavin" msgid="5329306869379867435">"Riboflavine"</string>
-    <string name="saturated_fat" msgid="3174504848270051265">"Gras saturés"</string>
+    <string name="saturated_fat" msgid="3174504848270051265">"Grasses saturées"</string>
     <string name="selenium" msgid="8129594078116221891">"Sélénium"</string>
     <string name="sodium" msgid="7687341876185019438">"Sodium"</string>
     <string name="sugar" msgid="656190285547502122">"Sucre"</string>
