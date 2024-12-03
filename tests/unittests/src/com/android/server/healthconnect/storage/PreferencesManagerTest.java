@@ -20,17 +20,19 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
 
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
-import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 
 import org.junit.Before;
@@ -46,21 +48,17 @@ public class PreferencesManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private PreferencesManager mPreferencesManager;
 
     @Before
     public void setup() {
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(
-                                mHealthConnectDatabaseTestRule.getDatabaseContext())
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
