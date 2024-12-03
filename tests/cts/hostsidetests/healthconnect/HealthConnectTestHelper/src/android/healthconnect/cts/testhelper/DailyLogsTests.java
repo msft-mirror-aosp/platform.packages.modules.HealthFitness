@@ -102,6 +102,5 @@ public class DailyLogsTests {
     public void deleteAllStagedRemoteData() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
-        mPhrTestUtils.deleteAllMedicalData();
     }
 }
