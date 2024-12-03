@@ -64,6 +64,7 @@ import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
@@ -682,10 +683,17 @@ public final class MedicalResourceHelper {
             int pageSize, long lastRowId) {
         // The limit is set to pageSize + 1, so that we know if there are more resources
         // than the pageSize for creating the pageToken.
-        return new ReadTableRequest(getMainTableName())
-                .setWhereClause(getReadByLastRowIdWhereClause(lastRowId))
-                .setOrderBy(getOrderByClause())
-                .setLimit(pageSize + 1);
+        ReadTableRequest request =
+                new ReadTableRequest(getMainTableName())
+                        .setWhereClause(getReadByLastRowIdWhereClause(lastRowId));
+
+        if (Flags.phrReadMedicalResourcesFixQueryLimit()) {
+            request.setFinalOrderBy(getOrderByClause()).setFinalLimit(pageSize + 1);
+        } else {
+            request.setOrderBy(getOrderByClause()).setLimit(pageSize + 1);
+        }
+
+        return request;
     }
 
     static ReadTableRequest getReadRequestForDistinctResourceTypesBelongingToDataSourceIds(
@@ -1103,10 +1111,18 @@ public final class MedicalResourceHelper {
             int pageSize) {
         ReadMedicalResourcesInternalResponse response;
         // Get the count from a requests with no limit,
-        Integer originalLimit = request.getLimit();
-        request.setLimit(null);
-        int totalRowCount = TransactionManager.count(request, db);
-        request.setLimit(originalLimit);
+        int totalRowCount;
+        if (Flags.phrReadMedicalResourcesFixQueryLimit()) {
+            Integer originalLimit = request.getFinalLimit();
+            request.setFinalLimit(null);
+            totalRowCount = TransactionManager.count(request, db);
+            request.setFinalLimit(originalLimit);
+        } else {
+            Integer originalLimit = request.getLimit();
+            request.setLimit(null);
+            totalRowCount = TransactionManager.count(request, db);
+            request.setLimit(originalLimit);
+        }
         try (Cursor cursor = db.rawQuery(request.getReadCommand(), null)) {
             response = getMedicalResources(cursor, pageTokenWrapper, pageSize, totalRowCount);
         }

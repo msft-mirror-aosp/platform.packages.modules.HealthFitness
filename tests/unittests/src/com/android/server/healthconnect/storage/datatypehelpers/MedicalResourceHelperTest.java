@@ -333,6 +333,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT})
     public void getReadTableRequest_usingRequest_correctQuery() {
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
@@ -350,9 +351,7 @@ public class MedicalResourceHelperTest {
                                 + "fhir_data,fhir_version,medical_resource_type,"
                                 + "data_source_uuid,inner_query_result.last_modified_time"
                                 + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
-                                + " medical_resource_table ORDER BY medical_resource_row_id LIMIT "
-                                + (DEFAULT_PAGE_SIZE + 1)
-                                + " ) AS"
+                                + " medical_resource_table ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
                                 + " medical_resource_indices_table WHERE medical_resource_type IN "
                                 + "("
@@ -362,11 +361,18 @@ public class MedicalResourceHelperTest {
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
-                                + " = medical_data_source_table.medical_data_source_row_id");
+                                + " = medical_data_source_table.medical_data_source_row_id"
+                                + " ORDER BY medical_resource_row_id"
+                                + " LIMIT "
+                                + (DEFAULT_PAGE_SIZE + 1));
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @EnableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT
+    })
     public void getReadTableRequest_usingRequestWithDataSourceIds_correctQuery() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
@@ -392,9 +398,7 @@ public class MedicalResourceHelperTest {
                                 + "fhir_data,fhir_version,medical_resource_type,data_source_uuid,"
                                 + "inner_query_result.last_modified_time"
                                 + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
-                                + " medical_resource_table ORDER BY medical_resource_row_id LIMIT "
-                                + (DEFAULT_PAGE_SIZE + 1)
-                                + " ) AS"
+                                + " medical_resource_table ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
                                 + " medical_resource_indices_table WHERE medical_resource_type IN "
                                 + "("
@@ -407,7 +411,10 @@ public class MedicalResourceHelperTest {
                                 + String.join(", ", dataSourceIdHexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.medical_data_source_row_id");
+                                + " medical_data_source_table.medical_data_source_row_id"
+                                + " ORDER BY medical_resource_row_id"
+                                + " LIMIT "
+                                + (DEFAULT_PAGE_SIZE + 1));
     }
 
     @Test
