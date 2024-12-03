@@ -602,7 +602,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                             : appInfoHelper.getPackageName(appInfoId);
             record.setPackageName(packageName);
             populateRecordValue(cursor, record);
-            record.setAppInfoId(appInfoId);
 
             return record;
         } catch (InstantiationException
