@@ -1,0 +1,235 @@
+/*
+ * Copyright (C) 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.server.healthconnect.storage.datatypehelpers;
+
+import static com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper.ReadAccessLog;
+import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
+import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+
+import static com.google.common.truth.Truth.assertThat;
+
+import static org.mockito.Mockito.mock;
+
+import android.content.Context;
+import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.BloodPressureRecord;
+import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.internal.datatypes.RecordInternal;
+import android.os.Environment;
+
+import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.storage.TransactionManager;
+
+import com.google.common.collect.ImmutableList;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.quality.Strictness;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
+
+public class ReadAccessLogsHelperTest {
+
+    private static final String TEST_APP_PACKAGE_READER = "test.app.package.reader";
+    private static final String TEST_APP_PACKAGE_WRITER = "test.app.package.writer";
+    private long mWriterAppInfoId;
+
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
+    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new HealthConnectDatabaseTestRule();
+
+    private ReadAccessLogsHelper mReadAccessLogsHelper;
+    private TransactionManager mTransactionManager;
+
+    @Before
+    public void setup() {
+        Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .build();
+        mReadAccessLogsHelper = healthConnectInjector.getReadAccessLogsHelper();
+        AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+
+        transactionTestUtils.insertApp(TEST_APP_PACKAGE_READER);
+        transactionTestUtils.insertApp(TEST_APP_PACKAGE_WRITER);
+        mWriterAppInfoId = appInfoHelper.getAppInfoId(TEST_APP_PACKAGE_WRITER);
+    }
+
+    @Test
+    public void insertReadAccessLogs_queryLogsReturnsAllLogs() {
+        RecordInternal<StepsRecord> stepsRecordRecordInternal =
+                createStepsRecord(mWriterAppInfoId, 123, Instant.now().toEpochMilli(), 100);
+        RecordInternal<BloodPressureRecord> bloodPressureRecordRecordInternal =
+                createBloodPressureRecord(mWriterAppInfoId, 1234, 120, 80);
+        long readTimeStamp = Instant.now().toEpochMilli();
+        List<ReadAccessLog> expectedReadAccessLogs =
+                List.of(
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                /* readTimeStamp= */ readTimeStamp,
+                                /* wasReadRecordWrittenInPast30Days= */ true),
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
+                                /* readTimeStamp= */ readTimeStamp,
+                                /* wasReadRecordWrittenInPast30Days= */ false));
+
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mReadAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                            db,
+                            ImmutableList.of(
+                                    stepsRecordRecordInternal, bloodPressureRecordRecordInternal),
+                            TEST_APP_PACKAGE_READER,
+                            /* readTimeStamp= */ readTimeStamp);
+                });
+        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+
+        assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
+    }
+
+    @Test
+    public void insertReadAccessLogsOfSameDataType_insertsOnlyLatestPerDataType() {
+        RecordInternal<StepsRecord> stepsRecordRecordInternalOne =
+                createStepsRecord(mWriterAppInfoId, 123, 345, 100);
+        RecordInternal<StepsRecord> stepsRecordRecordInternalTwo =
+                createStepsRecord(mWriterAppInfoId, 123, 350, 100);
+        RecordInternal<BloodPressureRecord> bloodPressureRecordRecordInternalOne =
+                createBloodPressureRecord(mWriterAppInfoId, 1234, 120, 80);
+        RecordInternal<BloodPressureRecord> bloodPressureRecordRecordInternalTwo =
+                createBloodPressureRecord(mWriterAppInfoId, Instant.now().toEpochMilli(), 120, 80);
+        long readTimeStamp = Instant.now().toEpochMilli();
+        List<ReadAccessLog> expectedReadAccessLogs =
+                List.of(
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
+                                /* readTimeStamp= */ readTimeStamp,
+                                /* wasReadRecordWrittenInPast30Days= */ true),
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                /* readTimeStamp= */ readTimeStamp,
+                                /* wasReadRecordWrittenInPast30Days= */ false));
+
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mReadAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                            db,
+                            ImmutableList.of(
+                                    stepsRecordRecordInternalOne,
+                                    bloodPressureRecordRecordInternalOne,
+                                    stepsRecordRecordInternalTwo,
+                                    bloodPressureRecordRecordInternalTwo),
+                            TEST_APP_PACKAGE_READER,
+                            /* readTimeStamp= */ readTimeStamp);
+                });
+        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+
+        assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
+    }
+
+    @Test
+    public void insertReadAccessLogsForAggregation() {
+        long endTime = Instant.now().toEpochMilli();
+        long readTime = Instant.now().toEpochMilli();
+        List<ReadAccessLog> expectedReadAccessLogs =
+                List.of(
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                                /* readTimeStamp= */ readTime,
+                                /* wasReadRecordWrittenInPast30Days= */ true),
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                /* readTimeStamp= */ readTime,
+                                /* wasReadRecordWrittenInPast30Days= */ true));
+
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mReadAccessLogsHelper.recordReadAccessLogForAggregationReads(
+                            db,
+                            ImmutableList.of(TEST_APP_PACKAGE_WRITER),
+                            TEST_APP_PACKAGE_READER,
+                            Set.of(
+                                    RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                    RecordTypeIdentifier.RECORD_TYPE_DISTANCE),
+                            /* endTimeStamp= */ endTime,
+                            /* readTimeStamp= */ readTime);
+                });
+        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+
+        assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
+    }
+
+    @Test
+    public void insertReadAccessLogsOfSamePackage_insertsOnlyForDifferentPackage() {
+        long endTime = Instant.now().toEpochMilli();
+        long readTime = Instant.now().toEpochMilli();
+        List<ReadAccessLog> expectedReadAccessLogs =
+                List.of(
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                /* readTimeStamp= */ readTime,
+                                /* wasReadRecordWrittenInPast30Days= */ true));
+
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mReadAccessLogsHelper.recordReadAccessLogForAggregationReads(
+                            db,
+                            ImmutableList.of(TEST_APP_PACKAGE_WRITER, TEST_APP_PACKAGE_READER),
+                            TEST_APP_PACKAGE_READER,
+                            Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS),
+                            /* endTimeStamp= */ endTime,
+                            /* readTimeStamp= */ readTime);
+                });
+        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+
+        assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
+    }
+}
