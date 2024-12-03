@@ -166,7 +166,6 @@ import android.util.Pair;
 import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
@@ -3282,11 +3281,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 || mBackupRestore.isRestoreMergingInProgress();
     }
 
-    @VisibleForTesting
-    Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
-        return mBackupRestore.getStagedRemoteFileNames(userHandle);
-    }
-
     private DataMigrationManager getDataMigrationManager(UserHandle userHandle) {
         final Context userContext = mContext.createContextAsUser(userHandle, 0);
 
@@ -3306,10 +3300,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private void enforceCallingPackageBelongsToUid(String packageName, int callingUid) {
         int packageUid;
         try {
-            packageUid =
-                    mContext.getPackageManager()
-                            .getPackageUid(
-                                    packageName, /* flags */ PackageManager.PackageInfoFlags.of(0));
+            packageUid = mContext.getPackageManager().getPackageUid(packageName, /* flags */ 0);
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalStateException(packageName + " not found");
         }
@@ -3346,7 +3337,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int claimedCallingUid = getPackageUid(actualCallingUserContext, claimedCallingPackage);
         if (claimedCallingUid != actualCallingUid) {
             throw new SecurityException(
-                    claimedCallingPackage + " does not belong to uid " + actualCallingUid);
+                    claimedCallingPackage
+                            + ", with uid "
+                            + claimedCallingUid
+                            + " does not belong to uid "
+                            + actualCallingUid);
         }
     }
 
