@@ -26,6 +26,10 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.queryAccessLo
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -89,13 +93,15 @@ public class DailyLogsTests {
     }
 
     /**
-     * Deletes the records added by the test app.
+     * Deletes the records added by the test app as well as the staged remote data.
      *
      * <p>Triggered in the teardown of HealthConnectDailyLogsStatsTests after database stats are
      * collected and verified.
      */
     @Test
-    public void deleteAllRecordsAddedForTest() throws InterruptedException {
+    public void deleteAllStagedRemoteData() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
+        mPhrTestUtils.deleteAllMedicalData();
     }
 }
