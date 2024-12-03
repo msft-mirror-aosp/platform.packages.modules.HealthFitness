@@ -19,9 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.BloodPressureRecordHelper.BLOOD_PRESSURE_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper.STEPS_TABLE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
@@ -38,7 +36,6 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.StepsRecord;
-import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.util.Pair;
@@ -339,48 +336,6 @@ public class RecordHelperTest {
             assertThat(result.first).hasSize(1);
             assertThat(result.first.get(0).getClientRecordId()).isEqualTo("id2");
             assertThat(result.second).isEqualTo(EMPTY_PAGE_TOKEN);
-        }
-    }
-
-    @Test
-    public void getInternalRecords_recordTimeForInstantRecords_startTime() {
-        RecordHelper<?> helper = new BloodPressureRecordHelper();
-        String uid =
-                mTransactionTestUtils
-                        .insertRecords(
-                                TEST_PACKAGE_NAME, createBloodPressureRecord(4000, 5000, 100))
-                        .get(0);
-        ReadTableRequest request = new ReadTableRequest(BLOOD_PRESSURE_RECORD_TABLE_NAME);
-        try (Cursor cursor = mTransactionManager.read(request)) {
-            List<RecordInternal<?>> records =
-                    helper.getInternalRecords(cursor, mDeviceInfoHelper, mAppInfoHelper);
-            assertThat(records).hasSize(1);
-
-            BloodPressureRecordInternal record = (BloodPressureRecordInternal) records.get(0);
-            assertThat(record.getUuid()).isEqualTo(UUID.fromString(uid));
-            assertThat(record.getRecordTime()).isEqualTo(4000);
-        }
-    }
-
-    @Test
-    public void getInternalRecords_recordTimeForIntervalRecords_endTime() {
-        RecordHelper<?> helper = new StepsRecordHelper();
-        String uid =
-                mTransactionTestUtils
-                        .insertRecords(TEST_PACKAGE_NAME, createStepsRecord(4000, 5000, 100))
-                        .get(0);
-        ReadTableRequest request = new ReadTableRequest(STEPS_TABLE_NAME);
-        try (Cursor cursor = mTransactionManager.read(request)) {
-            List<RecordInternal<?>> records =
-                    helper.getInternalRecords(cursor, mDeviceInfoHelper, mAppInfoHelper);
-            assertThat(records).hasSize(1);
-
-            StepsRecordInternal record = (StepsRecordInternal) records.get(0);
-            assertThat(record.getUuid()).isEqualTo(UUID.fromString(uid));
-            assertThat(record.getStartTimeInMillis()).isEqualTo(4000);
-            assertThat(record.getEndTimeInMillis()).isEqualTo(5000);
-            assertThat(record.getRecordTime()).isEqualTo(5000);
-            assertThat(record.getCount()).isEqualTo(100);
         }
     }
 

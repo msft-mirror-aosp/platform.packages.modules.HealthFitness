@@ -91,11 +91,6 @@ public abstract class InstantRecordInternal<T extends InstantRecord> extends Rec
         populateInstantRecordTo(parcel);
     }
 
-    @Override
-    public long getRecordTime() {
-        return getTimeInMillis();
-    }
-
     Instant getTime() {
         return Instant.ofEpochMilli(mTime);
     }
