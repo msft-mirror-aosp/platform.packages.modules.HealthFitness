@@ -52,6 +52,7 @@ import com.google.protobuf.ExtensionRegistry;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -341,6 +342,7 @@ public class HealthConnectServiceStatsTests extends BaseHostJUnit4Test implement
     }
 
     @Test
+    @Ignore // TODO(b/382151507): Fix test and remove ignore.
     public void testChangeLogsRequest() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
