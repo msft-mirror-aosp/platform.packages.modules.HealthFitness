@@ -181,12 +181,30 @@ public final class TransactionTestUtils {
                 .setClientRecordId(clientId);
     }
 
+    public static RecordInternal<StepsRecord> createStepsRecord(
+            long appInfoId, long startTimeMillis, long endTimeMillis, int stepsCount) {
+        return new StepsRecordInternal()
+                .setCount(stepsCount)
+                .setStartTime(startTimeMillis)
+                .setEndTime(endTimeMillis)
+                .setAppInfoId(appInfoId);
+    }
+
     public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
             long timeMillis, double systolic, double diastolic) {
         return new BloodPressureRecordInternal()
                 .setSystolic(systolic)
                 .setDiastolic(diastolic)
                 .setTime(timeMillis);
+    }
+
+    public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
+            long appInfoId, long timeMillis, double systolic, double diastolic) {
+        return new BloodPressureRecordInternal()
+                .setSystolic(systolic)
+                .setDiastolic(diastolic)
+                .setTime(timeMillis)
+                .setAppInfoId(appInfoId);
     }
 
     /** Creates an exercise sessions with a route. */
@@ -234,6 +252,16 @@ public final class TransactionTestUtils {
                 uuids.addAll(getCursorUUIDList(cursor, UUIDS_COLUMN_NAME));
             }
             return uuids.build();
+        }
+    }
+
+    /** Returns the number of rows in the specified table. */
+    public long getRowCount(String tableName) {
+        try (Cursor cursor =
+                mTransactionManager.rawQuery(
+                        "SELECT count(*) FROM " + tableName + ";", /* selectionArgs= */ null)) {
+            cursor.moveToNext();
+            return cursor.getInt(0);
         }
     }
 

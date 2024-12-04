@@ -1038,6 +1038,107 @@ public class UpsertMedicalResourcesCtsTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_multipleIdenticalUpsertRequests_throws()
+            throws InterruptedException {
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest, upsertRequest),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_identicalUpsertRequestsButDifferentFhirVersion_throws()
+            throws InterruptedException {
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest1 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+        UpsertMedicalResourceRequest upsertRequest2 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId, FHIR_VERSION_R4B, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest1, upsertRequest2),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void
+            testUpsertMedicalResources_identicalUpsertRequestsButDifferentResourceType_succeeds()
+                    throws InterruptedException {
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String id = "id-1";
+        UpsertMedicalResourceRequest upsertRequest1 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId,
+                                FHIR_VERSION_R4,
+                                new ImmunizationBuilder().setId(id).toJson())
+                        .build();
+        UpsertMedicalResourceRequest upsertRequest2 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId,
+                                FHIR_VERSION_R4,
+                                new AllergyBuilder().setId(id).toJson())
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest1, upsertRequest2),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+        assertThat(receiver.getResponse()).hasSize(2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_identicalUpsertRequestsButDifferentDataSource_succeeds()
+            throws InterruptedException {
+        String dataSourceId1 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("1")).getId();
+        String dataSourceId2 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("2")).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest1 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId1, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+        UpsertMedicalResourceRequest upsertRequest2 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId2, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest1, upsertRequest2),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+        assertThat(receiver.getResponse()).hasSize(2);
+    }
+
+    @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testUpsertMedicalResources_unsupportedResourceType_throws()
             throws InterruptedException {
