@@ -214,7 +214,7 @@ public class DailyLoggingServiceTest {
     public void testDatabaseLogsStats() {
 
         when(mTransactionManager.getDatabaseSize()).thenReturn(1L);
-        when(mTransactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
+        when(mTransactionManager.queryNumEntries(any())).thenReturn(0L);
 
         for (String tableName :
                 new String[] {
@@ -227,7 +227,7 @@ public class DailyLoggingServiceTest {
                     SpeedRecordHelper.TABLE_NAME,
                     HeartRateRecordHelper.TABLE_NAME
                 }) {
-            when(mTransactionManager.getNumberOfEntriesInTheTable(tableName)).thenReturn(2L);
+            when(mTransactionManager.queryNumEntries(tableName)).thenReturn(2L);
         }
 
         DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
@@ -249,7 +249,7 @@ public class DailyLoggingServiceTest {
     @Test
     public void testDatabaseLogsStats_userDoesNotUseHealthConnect() {
         when(mTransactionManager.getDatabaseSize()).thenReturn(1L);
-        when(mTransactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
+        when(mTransactionManager.queryNumEntries(any())).thenReturn(0L);
 
         DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
 
@@ -446,7 +446,6 @@ public class DailyLoggingServiceTest {
 
         ExtendedMockito.verify(
                 () ->
-
                         HealthFitnessStatsLog.write(
                                 eq(HEALTH_CONNECT_PERMISSION_STATS),
                                 eq(CONNECTED_APP_PACKAGE_NAME),

@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.backuprestore;
 
-import static com.android.server.healthconnect.TestUtils.assertTableSize;
+import static com.android.server.healthconnect.TestUtils.queryNumEntries;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.GRANT_TIME_FILE_NAME;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.STAGED_DATABASE_DIR;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.STAGED_DATABASE_NAME;
@@ -172,9 +172,9 @@ public class BackupRestoreWithoutMocksTest {
         // Ensure the original database contains the inserted data above.
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_table", 1);
-        assertTableSize(originalDatabase, "steps_record_table", 1);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "steps_record_table")).isEqualTo(1);
 
         // Create the files where the database and the grant time files will be backed up to.
         File dbFileBacked = createAndGetEmptyFile(mContext.getDataDir(), STAGED_DATABASE_NAME);
@@ -200,9 +200,9 @@ public class BackupRestoreWithoutMocksTest {
         // Ensure the backed up database does not contain PHR data but includes everything else.
         try (HealthConnectDatabase backupDatabase =
                 new HealthConnectDatabase(mContext, dbFileBacked.getName())) {
-            assertTableSize(backupDatabase, "medical_data_source_table", 0);
-            assertTableSize(backupDatabase, "medical_resource_table", 0);
-            assertTableSize(backupDatabase, "steps_record_table", 1);
+            assertThat(queryNumEntries(backupDatabase, "medical_data_source_table")).isEqualTo(0);
+            assertThat(queryNumEntries(backupDatabase, "medical_resource_table")).isEqualTo(0);
+            assertThat(queryNumEntries(backupDatabase, "steps_record_table")).isEqualTo(1);
         }
         assertThat(GrantTimeXmlHelper.parseGrantTime(grantTimeFileBacked).toString())
                 .isEqualTo(userGrantTimeState.toString());
@@ -222,9 +222,9 @@ public class BackupRestoreWithoutMocksTest {
         // Ensure the original database contains the inserted data above.
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_table", 1);
-        assertTableSize(originalDatabase, "steps_record_table", 1);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "steps_record_table")).isEqualTo(1);
 
         // Create the files where the database and the grant time files will be backed up to.
         File dbFileBacked = createAndGetEmptyFile(mContext.getDataDir(), STAGED_DATABASE_NAME);
@@ -250,9 +250,9 @@ public class BackupRestoreWithoutMocksTest {
         // Ensure the backed up database does not contain PHR data but includes everything else.
         try (HealthConnectDatabase backupDatabase =
                 new HealthConnectDatabase(mContext, dbFileBacked.getName())) {
-            assertTableSize(backupDatabase, "medical_data_source_table", 1);
-            assertTableSize(backupDatabase, "medical_resource_table", 1);
-            assertTableSize(backupDatabase, "steps_record_table", 1);
+            assertThat(queryNumEntries(backupDatabase, "medical_data_source_table")).isEqualTo(1);
+            assertThat(queryNumEntries(backupDatabase, "medical_resource_table")).isEqualTo(1);
+            assertThat(queryNumEntries(backupDatabase, "steps_record_table")).isEqualTo(1);
         }
         assertThat(GrantTimeXmlHelper.parseGrantTime(grantTimeFileBacked).toString())
                 .isEqualTo(userGrantTimeState.toString());
@@ -282,9 +282,10 @@ public class BackupRestoreWithoutMocksTest {
                 rowIdUuidPair.first,
                 INSTANT_NOW_PLUS_TEN_SEC,
                 numOfResources);
-        assertTableSize(stagedDb, "medical_data_source_table", 1);
-        assertTableSize(stagedDb, "medical_resource_table", numOfResources);
-        assertTableSize(stagedDb, "medical_resource_indices_table", numOfResources);
+        assertThat(queryNumEntries(stagedDb, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_table")).isEqualTo(numOfResources);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_indices_table"))
+                .isEqualTo(numOfResources);
         // Read the dataSources and lastModifiedTimestamps.
         List<Pair<MedicalDataSource, Long>> dataSourceRowsStaged =
                 mPhrTestUtils.readMedicalDataSources(stagedDb);
@@ -296,9 +297,11 @@ public class BackupRestoreWithoutMocksTest {
 
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_table", numOfResources);
-        assertTableSize(originalDatabase, "medical_resource_indices_table", numOfResources);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table"))
+                .isEqualTo(numOfResources);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
+                .isEqualTo(numOfResources);
         // Read the dataSources and lastModifiedTimestamps of original db after merge.
         List<Pair<MedicalDataSource, Long>> dataSourceRowsOriginal =
                 mPhrTestUtils.readMedicalDataSources(originalDatabase);
@@ -339,9 +342,9 @@ public class BackupRestoreWithoutMocksTest {
                 rowIdUuidPair.second,
                 rowIdUuidPair.first,
                 INSTANT_NOW_PLUS_TWENTY_SEC);
-        assertTableSize(stagedDb, "medical_data_source_table", 1);
-        assertTableSize(stagedDb, "medical_resource_table", 2);
-        assertTableSize(stagedDb, "medical_resource_indices_table", 2);
+        assertThat(queryNumEntries(stagedDb, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_table")).isEqualTo(2);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_indices_table")).isEqualTo(2);
         // Read the dataSources and lastModifiedTimestamps.
         List<Pair<MedicalDataSource, Long>> dataSourceRowsStaged =
                 mPhrTestUtils.readMedicalDataSources(stagedDb);
@@ -353,9 +356,10 @@ public class BackupRestoreWithoutMocksTest {
 
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_table", 2);
-        assertTableSize(originalDatabase, "medical_resource_indices_table", 2);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(2);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
+                .isEqualTo(2);
         // Read the dataSources and lastModifiedTimestamps of original db after merge.
         List<Pair<MedicalDataSource, Long>> dataSourceRowsOriginal =
                 mPhrTestUtils.readMedicalDataSources(originalDatabase);
@@ -387,9 +391,10 @@ public class BackupRestoreWithoutMocksTest {
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         // Verify data exists.
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_indices_table", 1);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
+                .isEqualTo(1);
         // Create the staged db file.
         StorageContext dbContext =
                 StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
@@ -415,21 +420,22 @@ public class BackupRestoreWithoutMocksTest {
                 rowIdUuidPair.second,
                 rowIdUuidPair.first,
                 INSTANT_NOW_PLUS_TWENTY_SEC);
-        assertTableSize(stagedDb, "medical_data_source_table", 1);
-        assertTableSize(stagedDb, "medical_resource_table", 2);
-        assertTableSize(stagedDb, "medical_resource_indices_table", 2);
+        assertThat(queryNumEntries(stagedDb, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_table")).isEqualTo(2);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_indices_table")).isEqualTo(2);
 
         mBackupRestore.merge();
 
         // We expect the medical_data_source table to contain 1 dataSource. Even though there was
         // 1 dataSource in original database and 1 in the staged database, they both have the
         // same unique ids so the one in the stagedDatabase will be ignored.
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
         // We expect 3 rows in both medical_resource and medical_resource_indices tables,
         // since there was one medicalResource in the original database and two medicalResources
         // in the staged database.
-        assertTableSize(originalDatabase, "medical_resource_table", 3);
-        assertTableSize(originalDatabase, "medical_resource_indices_table", 3);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(3);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
+                .isEqualTo(3);
     }
 
     @Test
@@ -448,9 +454,10 @@ public class BackupRestoreWithoutMocksTest {
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         // Verify data exists.
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_table", 1);
-        assertTableSize(originalDatabase, "medical_resource_indices_table", 1);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(1);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
+                .isEqualTo(1);
         // Create the staged db file.
         StorageContext dbContext =
                 StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
@@ -476,22 +483,23 @@ public class BackupRestoreWithoutMocksTest {
                 rowIdUuidPair.second,
                 rowIdUuidPair.first,
                 INSTANT_NOW_PLUS_TWENTY_SEC);
-        assertTableSize(stagedDb, "medical_data_source_table", 1);
-        assertTableSize(stagedDb, "medical_resource_table", 2);
-        assertTableSize(stagedDb, "medical_resource_indices_table", 2);
+        assertThat(queryNumEntries(stagedDb, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_table")).isEqualTo(2);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_indices_table")).isEqualTo(2);
 
         mBackupRestore.merge();
 
         // We expect the medical_data_source table to contain 1 dataSource. Even though there was
         // 1 dataSource in original database and 1 in the staged database, they both have the
         // same unique ids so the one in the stagedDatabase will be ignored.
-        assertTableSize(originalDatabase, "medical_data_source_table", 1);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(1);
         // Overall we have 3 medicalResources in both original and staged database but
         // we expect 2 rows in both medical_resource and medical_resource_indices tables after merge
         // since one of the vaccine resources in the stagedDatabase is a duplicate of an existing
         // resource in the original database.
-        assertTableSize(originalDatabase, "medical_resource_table", 2);
-        assertTableSize(originalDatabase, "medical_resource_indices_table", 2);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(2);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
+                .isEqualTo(2);
     }
 
     @Test
@@ -518,17 +526,18 @@ public class BackupRestoreWithoutMocksTest {
                 rowIdUuidPair.second,
                 rowIdUuidPair.first,
                 INSTANT_NOW_PLUS_TWENTY_SEC);
-        assertTableSize(stagedDb, "medical_data_source_table", 1);
-        assertTableSize(stagedDb, "medical_resource_table", 2);
-        assertTableSize(stagedDb, "medical_resource_indices_table", 2);
+        assertThat(queryNumEntries(stagedDb, "medical_data_source_table")).isEqualTo(1);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_table")).isEqualTo(2);
+        assertThat(queryNumEntries(stagedDb, "medical_resource_indices_table")).isEqualTo(2);
 
         mBackupRestore.merge();
 
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "medical_data_source_table", 0);
-        assertTableSize(originalDatabase, "medical_resource_table", 0);
-        assertTableSize(originalDatabase, "medical_resource_indices_table", 0);
+        assertThat(queryNumEntries(originalDatabase, "medical_data_source_table")).isEqualTo(0);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_table")).isEqualTo(0);
+        assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
+                .isEqualTo(0);
     }
 
     private static File createAndGetEmptyFile(File dir, String fileName) throws IOException {

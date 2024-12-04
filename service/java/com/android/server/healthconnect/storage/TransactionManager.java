@@ -550,7 +550,7 @@ public final class TransactionManager {
      * @param tableName Name of table
      * @return Number of entries in the given table
      */
-    public long getNumberOfEntriesInTheTable(String tableName) {
+    public long queryNumEntries(String tableName) {
         requireNonNull(tableName);
         return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
     }
