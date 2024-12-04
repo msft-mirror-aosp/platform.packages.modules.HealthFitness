@@ -208,10 +208,19 @@ object UiTestUtils {
         try {
             waitDisplayed(selector) { it.click() }
         } catch (e: Exception) {
-            getUiDevice()
-                .findObject(By.scrollable(true))
-                .scrollUntil(Direction.DOWN, Until.findObject(selector))
-                .click()
+            val scrollable = getUiDevice().findObject(By.scrollable(true))
+
+            if (scrollable == null) {
+                throw objectNotFoundExceptionWithDump(
+                    "Scrollable not found while trying to find $selector"
+                )
+            }
+
+            val obj = scrollable.scrollUntil(Direction.DOWN, Until.findObject(selector))
+
+            findObject(selector)
+
+            obj.click()
         }
         getUiDevice().waitForIdle()
     }

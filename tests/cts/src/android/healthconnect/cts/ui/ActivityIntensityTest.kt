@@ -38,7 +38,6 @@ class ActivityIntensityTest : BaseDataTypeTest<ActivityIntensityRecord>() {
 
     override val sameCategoryDataTypeString = "Steps"
     override val anotherCategoryString = "Vitals"
-    override val anotherCategoryDataTypeString = "Respiratory rate"
 
     override fun createRecord() =
         ActivityIntensityRecord.Builder(

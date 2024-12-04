@@ -166,7 +166,6 @@ import android.util.Pair;
 import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
@@ -2625,6 +2624,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 validator.validateAndCreateInternalRequest());
                     }
 
+                    // Check that ids within the list of upsert requests are unique
+                    Set<MedicalResourceId> idsToUpsert =
+                            validatedMedicalResourcesToUpsert.stream()
+                                    .map(UpsertMedicalResourceInternalRequest::getMedicalResourceId)
+                                    .collect(toSet());
+                    if (idsToUpsert.size() != validatedMedicalResourcesToUpsert.size()) {
+                        throw new IllegalArgumentException(
+                                "Found multiple upsert requests with the same FHIR resource id,"
+                                        + " type and data source id.");
+                    }
+
                     List<MedicalResource> medicalResources =
                             mMedicalResourceHelper.upsertMedicalResources(
                                     callingPackageName, validatedMedicalResourcesToUpsert);
@@ -3282,11 +3292,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 || mBackupRestore.isRestoreMergingInProgress();
     }
 
-    @VisibleForTesting
-    Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
-        return mBackupRestore.getStagedRemoteFileNames(userHandle);
-    }
-
     private DataMigrationManager getDataMigrationManager(UserHandle userHandle) {
         final Context userContext = mContext.createContextAsUser(userHandle, 0);
 
@@ -3306,10 +3311,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private void enforceCallingPackageBelongsToUid(String packageName, int callingUid) {
         int packageUid;
         try {
-            packageUid =
-                    mContext.getPackageManager()
-                            .getPackageUid(
-                                    packageName, /* flags */ PackageManager.PackageInfoFlags.of(0));
+            packageUid = mContext.getPackageManager().getPackageUid(packageName, /* flags */ 0);
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalStateException(packageName + " not found");
         }
@@ -3346,7 +3348,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int claimedCallingUid = getPackageUid(actualCallingUserContext, claimedCallingPackage);
         if (claimedCallingUid != actualCallingUid) {
             throw new SecurityException(
-                    claimedCallingPackage + " does not belong to uid " + actualCallingUid);
+                    claimedCallingPackage
+                            + ", with uid "
+                            + claimedCallingUid
+                            + " does not belong to uid "
+                            + actualCallingUid);
         }
     }
 
