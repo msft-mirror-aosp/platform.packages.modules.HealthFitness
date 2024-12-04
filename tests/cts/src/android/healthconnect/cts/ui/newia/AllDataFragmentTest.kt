@@ -26,10 +26,11 @@ import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Volume
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
+import android.healthconnect.cts.lib.UiTestUtils.clickOnDescAndWaitForNewWindow
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
@@ -87,7 +88,7 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun allDataFragment_clickOnDataSourcesIcon_navigatesToDataSources() {
         context.launchDataActivity {
-            findObjectAndClick(By.desc("Data sources and priority"))
+            clickOnDescAndWaitForNewWindow("Data sources and priority")
             scrollDownToAndFindText("App sources")
         }
     }
@@ -113,7 +114,7 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
     fun allDataFragment_clickOnPermissionType_navigatesToEntriesAndAccess() {
         context.launchDataActivity {
             findText("Activity")
-            findTextAndClick("Steps")
+            clickOnTextAndWaitForNewWindow("Steps")
 
             findText("Entries")
             findText("Access")
