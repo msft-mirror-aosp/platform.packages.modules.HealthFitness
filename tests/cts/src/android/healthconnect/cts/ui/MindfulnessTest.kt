@@ -38,7 +38,6 @@ class MindfulnessTest : BaseDataTypeTest<MindfulnessSessionRecord>() {
     override val permissions = listOf(READ_MINDFULNESS, WRITE_MINDFULNESS)
     override val sameCategoryDataTypeString = null
     override val anotherCategoryString = "Activity"
-    override val anotherCategoryDataTypeString = "TODO: lul"
 
     override fun createRecord() =
         MindfulnessSessionRecord.Builder(
