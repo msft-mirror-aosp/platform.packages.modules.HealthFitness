@@ -31,6 +31,7 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUN
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
@@ -71,7 +72,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -162,6 +165,26 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         mManager.getMedicalDataSources(List.of(), Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesById_exceedsMaxPageSize_throws()
+            throws InterruptedException {
+        List<String> dataSourceIds = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            dataSourceIds.add(UUID.randomUUID().toString());
+        }
+
+        Exception exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                mManager.getMedicalDataSources(
+                                        dataSourceIds,
+                                        Executors.newSingleThreadExecutor(),
+                                        new HealthConnectReceiver<>()));
+        assertThat(exception.getMessage()).contains("The number of requested IDs must be <= 5000");
     }
 
     @Test

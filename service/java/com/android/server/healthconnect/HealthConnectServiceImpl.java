@@ -2272,6 +2272,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException.getErrorCode());
                         return;
                     }
+
+                    if (ids.size() > MAXIMUM_PAGE_SIZE) {
+                        HealthConnectException invalidSizeException =
+                                new HealthConnectException(
+                                        ERROR_INVALID_ARGUMENT,
+                                        "The number of requested IDs must be <= "
+                                                + MAXIMUM_PAGE_SIZE);
+                        tryAndThrowException(
+                                errorCallback,
+                                invalidSizeException,
+                                invalidSizeException.getErrorCode());
+                        return;
+                    }
                     List<UUID> dataSourceUuids =
                             validateMedicalDataSourceIds(ids.stream().collect(toSet())).stream()
                                     .toList();
