@@ -16,16 +16,14 @@
 package android.healthconnect.cts.ui.phr
 
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findText
-import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
 import org.junit.Before
@@ -44,40 +42,36 @@ class ConnectedAppFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appWithMedicalAndFitnessPermissions_showsCombinedPermssionsScreen() {
         context.launchMainActivity {
-            scrollDownTo(By.text("App permissions"))
-            findTextAndClick("App permissions")
-            scrollDownTo(By.text("Health Connect cts test app 2"))
-            findTextAndClick("Health Connect cts test app 2")
+            scrollDownToAndFindText("App permissions")
+            clickOnTextAndWaitForNewWindow("App permissions")
+            scrollDownToAndFindText("Health Connect cts test app 2")
+            clickOnTextAndWaitForNewWindow("Health Connect cts test app 2")
 
             findText("Health Connect cts test app 2")
-            findText("Permissions")
-            scrollDownTo(By.text("Fitness and wellness"))
-            findText("Fitness and wellness")
-            scrollDownTo(By.text("Health records"))
-            findText("Health records")
-            scrollDownTo(By.text("Additional access"))
-            findText("Additional access")
+            scrollDownToAndFindText("Permissions")
+            scrollDownToAndFindText("Fitness and wellness")
+            scrollDownToAndFindText("Health records")
+            scrollDownToAndFindText("Additional access")
 
-            scrollDownTo(By.text("Manage app"))
-            findText("Manage app")
-            scrollDownTo(By.text("See app data"))
-            findText("See app data")
-            scrollDownTo(By.text("Remove access for this app"))
-            findText("Remove access for this app")
+            scrollDownToAndFindText("Manage app")
+            scrollDownToAndFindText("See app data")
+            scrollDownToAndFindText("Remove access for this app")
         }
     }
 
     @Test
     fun appWithFitnessPermissionsOnly_showsFitnessPermissionsScreen() {
         context.launchMainActivity {
-            scrollDownToAndClick(By.text("App permissions"))
-            scrollDownToAndClick(By.text("CtsHealthConnectTestAppBWithNormalReadWritePermission"))
+            scrollDownToAndFindText("App permissions")
+            clickOnTextAndWaitForNewWindow("App permissions")
 
-            scrollDownTo(By.text("Allowed to read"))
-            scrollDownTo(By.text("Allowed to write"))
+            scrollDownToAndFindText("CtsHealthConnectTestAppBWithNormalReadWritePermission")
+            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppBWithNormalReadWritePermission")
 
-            scrollDownTo(By.text("See app data"))
-            findText("See app data")
+            scrollDownToAndFindText("Allowed to read")
+            scrollDownToAndFindText("Allowed to write")
+
+            scrollDownToAndFindText("See app data")
         }
     }
 }
