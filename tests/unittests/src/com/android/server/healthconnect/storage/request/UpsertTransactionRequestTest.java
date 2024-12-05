@@ -28,6 +28,7 @@ import static org.mockito.Mockito.mock;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.util.ArrayMap;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -49,7 +50,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
-import java.util.Collections;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -89,7 +89,7 @@ public class UpsertTransactionRequestTest {
                         List.of(),
                         mDeviceInfoHelper,
                         mAppInfoHelper,
-                        /* extraPermsStateMap= */ Collections.emptyMap());
+                        /* extraPermsStateMap= */ new ArrayMap<>());
         assertThat(request1.getPackageName()).isEqualTo("package.name.1");
 
         UpsertTransactionRequest request2 =
@@ -98,7 +98,7 @@ public class UpsertTransactionRequestTest {
                         List.of(),
                         mDeviceInfoHelper,
                         mAppInfoHelper,
-                        /* extraPermsStateMap= */ Collections.emptyMap());
+                        /* extraPermsStateMap= */ new ArrayMap<>());
         assertThat(request2.getPackageName()).isEqualTo("package.name.2");
 
         UpsertTransactionRequest request3 =
@@ -119,7 +119,7 @@ public class UpsertTransactionRequestTest {
                         records,
                         mDeviceInfoHelper,
                         mAppInfoHelper,
-                        /* extraPermsStateMap= */ Collections.emptyMap());
+                        /* extraPermsStateMap= */ new ArrayMap<>());
 
         assertThat(request.getRecordTypeIds())
                 .containsExactly(RECORD_TYPE_STEPS, RECORD_TYPE_BASAL_METABOLIC_RATE);
