@@ -387,6 +387,12 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             viewModel.setOfPermissionTypesToBeDeleted.observe(viewLifecycleOwner) { deleteSet ->
                 setIsChecked(permissionType in deleteSet)
             }
+
+            entriesViewModel.setScreenState(
+                EntriesViewModel.EntriesDeletionScreenState.VIEW
+            )
+            entriesViewModel.setAllEntriesSelectedValue(false)
+            entriesViewModel.currentSelectedDate.value = null
         }
 
         return pref
