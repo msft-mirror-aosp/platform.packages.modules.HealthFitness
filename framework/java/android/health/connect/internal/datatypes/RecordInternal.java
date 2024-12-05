@@ -366,12 +366,6 @@ public abstract class RecordInternal<T extends Record> {
     public abstract LocalDate getLocalDate();
 
     /**
-     * @return the time at which the record ended. This matches the end time for an InstantRecord
-     *     and time for IntervalRecord.
-     */
-    public abstract long getRecordTime();
-
-    /**
      * Populate {@code bundle} with the data required to un-bundle self. This is used suring IPC
      * transmissions
      */
