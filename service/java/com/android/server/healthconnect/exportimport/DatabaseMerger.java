@@ -464,8 +464,8 @@ public final class DatabaseMerger {
                     && mTransactionManager.getNumberOfEntriesInTheTable(
                                     ChangeLogsRequestHelper.TABLE_NAME)
                             != 0) {
-                mTransactionManager.insertAllWithoutAccessLogs(
-                        mAppInfoHelper, upsertTransactionRequest);
+                mTransactionManager.insertAllRecords(
+                        mAppInfoHelper, /* accessLogsHelper */ null, upsertTransactionRequest);
             } else {
                 mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
             }

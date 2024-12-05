@@ -108,24 +108,58 @@ public final class TransactionManager {
      * @return List of uids of the inserted {@link RecordInternal}, in the same order as they
      *     presented to {@code request}.
      */
-    public List<String> insertAll(
+    // TODO(b/382009199): Refactor this class so that the helpers can be send in the constructor.
+    public List<String> insertAllRecords(
             AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper,
+            @Nullable AccessLogsHelper accessLogsHelper,
             UpsertTransactionRequest request)
             throws SQLiteException {
-        return insertAll(appInfoHelper, accessLogsHelper, request, /* ignoreConflict= */ false);
-    }
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Inserting " + request.getUpsertRequests().size() + " requests.");
+        }
 
-    /**
-     * Inserts all the {@link RecordInternal} in {@code request} into the HealthConnect database
-     * without adding access logs.
-     *
-     * @param appInfoHelper app info helper.
-     * @param request an insert request.
-     */
-    public void insertAllWithoutAccessLogs(
-            AppInfoHelper appInfoHelper, UpsertTransactionRequest request) throws SQLiteException {
-        insertAll(appInfoHelper, /* accessLogsHelper= */ null, request, /* ignoreConflict= */ true);
+        long currentTime = Instant.now().toEpochMilli();
+        ChangeLogsHelper.ChangeLogs insertionChangelogs =
+                new ChangeLogsHelper.ChangeLogs(OPERATION_TYPE_UPSERT, currentTime);
+        ChangeLogsHelper.ChangeLogs modificationChangelogs =
+                new ChangeLogsHelper.ChangeLogs(OPERATION_TYPE_UPSERT, currentTime);
+
+        return runAsTransaction(
+                db -> {
+                    for (UpsertTableRequest upsertRequest : request.getUpsertRequests()) {
+                        insertionChangelogs.addUUID(
+                                upsertRequest.getRecordInternal().getRecordType(),
+                                upsertRequest.getRecordInternal().getAppInfoId(),
+                                upsertRequest.getRecordInternal().getUuid());
+                        addChangelogsForOtherModifiedRecords(
+                                appInfoHelper.getAppInfoId(
+                                        upsertRequest.getRecordInternal().getPackageName()),
+                                upsertRequest,
+                                modificationChangelogs);
+                        if (request.shouldPreferNewRecord()) {
+                            insertOrReplaceRecord(db, upsertRequest);
+                        } else {
+                            insertOrIgnore(db, upsertRequest);
+                        }
+                    }
+                    for (UpsertTableRequest insertRequestsForChangeLog :
+                            insertionChangelogs.getUpsertTableRequests()) {
+                        insertRecord(db, insertRequestsForChangeLog);
+                    }
+                    for (UpsertTableRequest modificationChangelog :
+                            modificationChangelogs.getUpsertTableRequests()) {
+                        insertRecord(db, modificationChangelog);
+                    }
+
+                    if (request.shouldGenerateAccessLogs()) {
+                        Objects.requireNonNull(accessLogsHelper)
+                                .recordUpsertAccessLog(
+                                        db,
+                                        Objects.requireNonNull(request.getPackageName()),
+                                        request.getRecordTypeIds());
+                    }
+                    return request.getUUIdsInOrder();
+                });
     }
 
     /**
@@ -689,59 +723,6 @@ public final class TransactionManager {
         runAsTransaction(
                 db -> {
                     insertRequests(db, upsertTableRequests, insert);
-                });
-    }
-
-    private List<String> insertAll(
-            AppInfoHelper appInfoHelper,
-            @Nullable AccessLogsHelper accessLogsHelper,
-            UpsertTransactionRequest request,
-            boolean ignoreConflict)
-            throws SQLiteException {
-        if (Constants.DEBUG) {
-            Slog.d(TAG, "Inserting " + request.getUpsertRequests().size() + " requests.");
-        }
-
-        long currentTime = Instant.now().toEpochMilli();
-        ChangeLogsHelper.ChangeLogs insertionChangelogs =
-                new ChangeLogsHelper.ChangeLogs(OPERATION_TYPE_UPSERT, currentTime);
-        ChangeLogsHelper.ChangeLogs modificationChangelogs =
-                new ChangeLogsHelper.ChangeLogs(OPERATION_TYPE_UPSERT, currentTime);
-
-        return runAsTransaction(
-                db -> {
-                    for (UpsertTableRequest upsertRequest : request.getUpsertRequests()) {
-                        insertionChangelogs.addUUID(
-                                upsertRequest.getRecordInternal().getRecordType(),
-                                upsertRequest.getRecordInternal().getAppInfoId(),
-                                upsertRequest.getRecordInternal().getUuid());
-                        addChangelogsForOtherModifiedRecords(
-                                appInfoHelper.getAppInfoId(
-                                        upsertRequest.getRecordInternal().getPackageName()),
-                                upsertRequest,
-                                modificationChangelogs);
-                        if (ignoreConflict) {
-                            insertOrIgnore(db, upsertRequest);
-                        } else {
-                            insertOrReplaceRecord(db, upsertRequest);
-                        }
-                    }
-                    for (UpsertTableRequest insertRequestsForChangeLog :
-                            insertionChangelogs.getUpsertTableRequests()) {
-                        insertRecord(db, insertRequestsForChangeLog);
-                    }
-                    for (UpsertTableRequest modificationChangelog :
-                            modificationChangelogs.getUpsertTableRequests()) {
-                        insertRecord(db, modificationChangelog);
-                    }
-
-                    if (accessLogsHelper != null) {
-                        accessLogsHelper.recordUpsertAccessLog(
-                                db,
-                                Objects.requireNonNull(request.getPackageName()),
-                                request.getRecordTypeIds());
-                    }
-                    return request.getUUIdsInOrder();
                 });
     }
 
