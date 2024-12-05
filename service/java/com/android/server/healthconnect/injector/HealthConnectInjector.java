@@ -51,6 +51,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
@@ -217,6 +218,11 @@ public abstract class HealthConnectInjector {
      * Getter for {@link UsageStatsCollector} instance initialised by the Health Connect Injector.
      */
     public abstract UsageStatsCollector getUsageStatsCollector(Context context);
+
+    /**
+     * Getter for {@link ReadAccessLogsHelper} instance initialised by the Health Connect Injector.
+     */
+    public abstract ReadAccessLogsHelper getReadAccessLogsHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
