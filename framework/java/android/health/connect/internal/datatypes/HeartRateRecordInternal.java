@@ -21,6 +21,7 @@ import android.annotation.Nullable;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -114,6 +115,12 @@ public class HeartRateRecordInternal
             parcel.writeLong(heartRateSample.getEpochMillis());
         }
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     private List<HeartRateRecord.HeartRateSample> getExternalSamples() {
         List<HeartRateRecord.HeartRateSample> heartRateRecords =

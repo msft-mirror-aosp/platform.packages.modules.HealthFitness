@@ -21,6 +21,7 @@ import android.health.connect.datatypes.BodyTemperatureMeasurementLocation;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Temperature;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -79,4 +80,10 @@ public final class BasalBodyTemperatureRecordInternal
         parcel.writeInt(mMeasurementLocation);
         parcel.writeDouble(mTemperature);
     }
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }

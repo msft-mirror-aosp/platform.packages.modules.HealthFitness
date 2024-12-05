@@ -37,7 +37,7 @@ constructor(
         withContext(dispatcher) {
             val recordIdFilters =
                 deleteEntries.idsToDataTypes.entries.map { (id, dataType) ->
-                    RecordIdFilter.fromId(dataType.recordClass, id)
+                    RecordIdFilter.fromId(dataType.java, id)
                 }
 
             healthConnectManager.deleteRecords(recordIdFilters, Runnable::run) {}

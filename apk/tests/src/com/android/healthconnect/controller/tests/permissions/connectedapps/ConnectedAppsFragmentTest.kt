@@ -619,7 +619,7 @@ class ConnectedAppsFragmentTest {
         onView(
                 withText(
                     "Old permissions test app needs to be updated to " +
-                        "continue syncing with Health Connect"
+                        "continue syncing with Health Connect. Updates may not be available for all apps."
                 )
             )
             .check(matches(isDisplayed()))
@@ -650,7 +650,11 @@ class ConnectedAppsFragmentTest {
 
         launchFragment<ConnectedAppsFragment>(Bundle())
         onView(withText("App update needed")).check(matches(isDisplayed()))
-        onView(withText("Some apps need to be updated to continue syncing with Health Connect"))
+        onView(
+                withText(
+                    "Some apps need to be updated to continue syncing with Health Connect. Updates may not be available for all apps."
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Learn more")).check(matches(isDisplayed()))
         onView(withText("Check for updates")).check(matches(not(isDisplayed())))
@@ -681,7 +685,11 @@ class ConnectedAppsFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
         onView(withText("App update needed")).check(matches(isDisplayed()))
-        onView(withText("Some apps need to be updated to continue syncing with Health Connect"))
+        onView(
+                withText(
+                    "Some apps need to be updated to continue syncing with Health Connect. Updates may not be available for all apps."
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Learn more")).check(matches(isDisplayed()))
         onView(withText("Check for updates")).check(matches(isDisplayed()))

@@ -76,6 +76,8 @@ java_defaults {
         ":UnsupportedTestApp",
         ":OldPermissionsTestApp",
         ":MedicalPermissionsTestApp",
+        ":HealthConnectUITestApp6",
+        ":HealthConnectUITestApp7",
     ],
     test_config_template: "AndroidTestTemplate.xml",
     visibility: ["//visibility:private"],

@@ -22,7 +22,6 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -52,7 +51,6 @@ public class HealthConnectInjectorTest {
         MockitoAnnotations.initMocks(this);
 
         Context context = InstrumentationRegistry.getContext();
-        HealthConnectDeviceConfigManager.initializeInstance(context);
         mBuilder =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
@@ -71,12 +69,12 @@ public class HealthConnectInjectorTest {
     public void testProductionInjector_injectorReturnsOriginalPackageInfoUtils() {
         HealthConnectInjector healthConnectInjector = mBuilder.build();
 
-        assertThat(healthConnectInjector.getPackageInfoUtils())
-                .isEqualTo(PackageInfoUtils.getInstance());
+        assertThat(healthConnectInjector.getPackageInfoUtils()).isNotEqualTo(mPackageInfoUtils);
     }
 
     @Test
-    public void setFakeHealthDataCategoryPriorityHelper_injectorReturnsFakeTransactionManager() {
+    public void
+            setFakeHealthDataCategoryPriorityHelper_injectorReturnsFakeHealthDataCategoryPriorityHelper() {
         HealthConnectInjector healthConnectInjector =
                 mBuilder.setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .build();
@@ -90,6 +88,6 @@ public class HealthConnectInjectorTest {
         HealthConnectInjector healthConnectInjector = mBuilder.build();
 
         assertThat(healthConnectInjector.getHealthDataCategoryPriorityHelper())
-                .isEqualTo(HealthDataCategoryPriorityHelper.getInstance());
+                .isNotEqualTo(mHealthDataCategoryPriorityHelper);
     }
 }

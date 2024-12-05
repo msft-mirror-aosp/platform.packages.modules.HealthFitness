@@ -18,7 +18,9 @@ package com.android.healthconnect.controller.tests.selectabledeletion.api
 import android.health.connect.DeleteUsingFiltersRequest
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypesFromApp
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteMedicalPermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
@@ -52,6 +54,7 @@ class DeletePermissionTypesFromAppUseCaseTest {
     private val deleteMedicalPermissionTypesFromAppUseCase:
         DeleteMedicalPermissionTypesFromAppUseCase =
         mock(DeleteMedicalPermissionTypesFromAppUseCase::class.java)
+    private val deleteAppDataUseCase: DeleteAppDataUseCase = mock(DeleteAppDataUseCase::class.java)
 
     @Captor lateinit var filtersCaptor: ArgumentCaptor<DeleteUsingFiltersRequest>
 
@@ -62,6 +65,7 @@ class DeletePermissionTypesFromAppUseCaseTest {
             DeletePermissionTypesFromAppUseCase(
                 deleteFitnessPermissionTypesFromAppUseCase,
                 deleteMedicalPermissionTypesFromAppUseCase,
+                deleteAppDataUseCase,
                 Dispatchers.Main,
             )
     }
@@ -83,11 +87,11 @@ class DeletePermissionTypesFromAppUseCaseTest {
     }
 
     @Test
-    fun permissionTypes_delete_deletionInvokedCorrectly() = runTest {
+    fun permissionTypes_deleteSomeData_deletionInvokedCorrectly() = runTest {
         useCase.invoke(
             DeleteHealthPermissionTypesFromApp(
                 setOf(FitnessPermissionType.DISTANCE),
-                totalPermissionTypes = 1,
+                totalPermissionTypes = 2,
                 "package.name",
                 "app name",
             )
@@ -97,7 +101,7 @@ class DeletePermissionTypesFromAppUseCaseTest {
         val expectedDeletionType =
             DeleteHealthPermissionTypesFromApp(
                 setOf(FitnessPermissionType.DISTANCE),
-                totalPermissionTypes = 1,
+                totalPermissionTypes = 2,
                 "package.name",
                 "app name",
             )
@@ -106,10 +110,28 @@ class DeletePermissionTypesFromAppUseCaseTest {
     }
 
     @Test
-    fun permissionTypes_deleteFitnessAndMedical_deletionInvokedCorrectly() = runTest {
+    fun permissionTypes_deleteAllData_deletionInvokedCorrectly() = runTest {
         useCase.invoke(
             DeleteHealthPermissionTypesFromApp(
-                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATIONS),
+                setOf(FitnessPermissionType.DISTANCE),
+                totalPermissionTypes = 1,
+                "package.name",
+                "app name",
+            )
+        )
+        advanceUntilIdle()
+
+        val expectedDeletionType = DeletionType.DeleteAppData("package.name", "app name")
+        verify(deleteAppDataUseCase).invoke(expectedDeletionType)
+        verifyZeroInteractions(deleteFitnessPermissionTypesFromAppUseCase)
+        verifyZeroInteractions(deleteMedicalPermissionTypesFromAppUseCase)
+    }
+
+    @Test
+    fun permissionTypes_deleteSomeFitnessAndMedical_deletionInvokedCorrectly() = runTest {
+        useCase.invoke(
+            DeleteHealthPermissionTypesFromApp(
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.VACCINES),
                 totalPermissionTypes = 4,
                 "package.name",
                 "app name",
@@ -119,7 +141,7 @@ class DeletePermissionTypesFromAppUseCaseTest {
 
         val expectedDeletionType =
             DeleteHealthPermissionTypesFromApp(
-                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATIONS),
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.VACCINES),
                 totalPermissionTypes = 4,
                 "package.name",
                 "app name",
@@ -129,10 +151,28 @@ class DeletePermissionTypesFromAppUseCaseTest {
     }
 
     @Test
-    fun permissionTypes_deleteMedical_deletionInvokedCorrectly() = runTest {
+    fun permissionTypes_deleteAllFitnessAndMedical_deletionInvokedCorrectly() = runTest {
         useCase.invoke(
             DeleteHealthPermissionTypesFromApp(
-                setOf(MedicalPermissionType.IMMUNIZATIONS),
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.VACCINES),
+                totalPermissionTypes = 2,
+                "package.name",
+                "app name",
+            )
+        )
+        advanceUntilIdle()
+
+        val expectedDeletionType = DeletionType.DeleteAppData("package.name", "app name")
+        verify(deleteAppDataUseCase).invoke(expectedDeletionType)
+        verifyZeroInteractions(deleteFitnessPermissionTypesFromAppUseCase)
+        verifyZeroInteractions(deleteMedicalPermissionTypesFromAppUseCase)
+    }
+
+    @Test
+    fun permissionTypes_deleteSomeMedical_deletionInvokedCorrectly() = runTest {
+        useCase.invoke(
+            DeleteHealthPermissionTypesFromApp(
+                setOf(MedicalPermissionType.VACCINES),
                 totalPermissionTypes = 3,
                 "package.name",
                 "app name",
@@ -142,12 +182,30 @@ class DeletePermissionTypesFromAppUseCaseTest {
 
         val expectedDeletionType =
             DeleteHealthPermissionTypesFromApp(
-                setOf(MedicalPermissionType.IMMUNIZATIONS),
+                setOf(MedicalPermissionType.VACCINES),
                 totalPermissionTypes = 3,
                 "package.name",
                 "app name",
             )
         verify(deleteMedicalPermissionTypesFromAppUseCase).invoke(expectedDeletionType)
         verifyZeroInteractions(deleteFitnessPermissionTypesFromAppUseCase)
+    }
+
+    @Test
+    fun permissionTypes_deleteAllMedical_deletionInvokedCorrectly() = runTest {
+        useCase.invoke(
+            DeleteHealthPermissionTypesFromApp(
+                setOf(MedicalPermissionType.VACCINES),
+                totalPermissionTypes = 1,
+                "package.name",
+                "app name",
+            )
+        )
+        advanceUntilIdle()
+
+        val expectedDeletionType = DeletionType.DeleteAppData("package.name", "app name")
+        verify(deleteAppDataUseCase).invoke(expectedDeletionType)
+        verifyZeroInteractions(deleteFitnessPermissionTypesFromAppUseCase)
+        verifyZeroInteractions(deleteMedicalPermissionTypesFromAppUseCase)
     }
 }

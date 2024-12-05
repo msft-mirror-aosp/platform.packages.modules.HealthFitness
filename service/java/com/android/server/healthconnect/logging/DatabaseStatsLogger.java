@@ -16,13 +16,18 @@
 
 package com.android.server.healthconnect.logging;
 
-import android.content.Context;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_STORAGE_STATS;
+
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
+
 import android.health.HealthFitnessStatsLog;
 
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 
-import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class to log Health Connect database stats.
@@ -32,10 +37,14 @@ import java.util.Objects;
 class DatabaseStatsLogger {
 
     /** Write Health Connect database stats to statsd. */
-    static void log(Context context, TransactionManager transactionManager) {
+    static void log(
+            DatabaseStatsCollector databaseStatsCollector,
+            UsageStatsCollector usageStatsCollector) {
+        logGeneralDatabaseStats(databaseStatsCollector);
+        logPhrDatabaseStats(databaseStatsCollector, usageStatsCollector);
+    }
 
-        DatabaseStatsCollector databaseStatsCollector =
-                new DatabaseStatsCollector(transactionManager, context);
+    private static void logGeneralDatabaseStats(DatabaseStatsCollector databaseStatsCollector) {
         long numberOfInstantRecords = databaseStatsCollector.getNumberOfInstantRecordRows();
         long numberOfIntervalRecords = databaseStatsCollector.getNumberOfIntervalRecordRows();
         long numberOfSeriesRecords = databaseStatsCollector.getNumberOfSeriesRecordRows();
@@ -51,7 +60,6 @@ class DatabaseStatsLogger {
             return;
         }
 
-        Objects.requireNonNull(context);
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_STORAGE_STATS,
                 databaseStatsCollector.getDatabaseSize(),
@@ -59,5 +67,26 @@ class DatabaseStatsLogger {
                 numberOfIntervalRecords,
                 numberOfSeriesRecords,
                 numberOfChangeLogs);
+    }
+
+    /** Writes PHR database stats to statsd. */
+    private static void logPhrDatabaseStats(
+            DatabaseStatsCollector databaseStatsCollector,
+            UsageStatsCollector usageStatsCollector) {
+        if (!personalHealthRecordTelemetry()
+                || (usageStatsCollector.getMedicalResourcesCount() == 0
+                        && usageStatsCollector.getMedicalDataSourcesCount() == 0)) {
+            return;
+        }
+
+        Long phrDbSizeLong =
+                databaseStatsCollector.getFileBytes(
+                        Set.of(
+                                MedicalDataSourceHelper.getMainTableName(),
+                                MedicalResourceHelper.getMainTableName(),
+                                MedicalResourceIndicesHelper.getTableName()));
+        if (phrDbSizeLong != null) {
+            HealthFitnessStatsLog.write(HEALTH_CONNECT_PHR_STORAGE_STATS, phrDbSizeLong);
+        }
     }
 }

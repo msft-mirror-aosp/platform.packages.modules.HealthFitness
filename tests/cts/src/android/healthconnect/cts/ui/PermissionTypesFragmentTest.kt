@@ -53,7 +53,7 @@ class PermissionTypesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
-            if (!TestUtils.isHardwareSupported()) {
+            if (!TestUtils.isHealthConnectFullySupported()) {
                 return
             }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
@@ -66,7 +66,7 @@ class PermissionTypesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
-            if (!TestUtils.isHardwareSupported()) {
+            if (!TestUtils.isHealthConnectFullySupported()) {
                 return
             }
             verifyDeleteRecords(

@@ -32,14 +32,14 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataFragment
-import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
-import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.DELETE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.DELETE
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.Constants
@@ -62,7 +62,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -83,7 +83,7 @@ class AppDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
     @Inject lateinit var appInfoReader: AppInfoReader
@@ -93,8 +93,8 @@ class AppDataFragmentTest {
     fun setup() {
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
-        val appDataUseCase = AppDataUseCase(manager, Dispatchers.Main)
-        appDataViewModel = AppDataViewModel(appInfoReader, appDataUseCase)
+        val allDataUseCase = AllDataUseCase(manager, Dispatchers.Main)
+        appDataViewModel = AppDataViewModel(appInfoReader, allDataUseCase)
         toggleAnimation(false)
     }
 
@@ -102,7 +102,6 @@ class AppDataFragmentTest {
     fun tearDown() {
         toggleAnimation(true)
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -155,8 +154,7 @@ class AppDataFragmentTest {
         onView(withText("Health records")).check(doesNotExist())
         onView(withText("Vaccines")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
-        onView(withText("Data from Health Connect test app will show here"))
-            .check(doesNotExist())
+        onView(withText("Data from Health Connect test app will show here")).check(doesNotExist())
     }
 
     @Test
@@ -165,7 +163,7 @@ class AppDataFragmentTest {
             listOf(
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.EXERCISE,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -187,13 +185,12 @@ class AppDataFragmentTest {
         onView(withText("Body measurements")).check(doesNotExist())
         onView(withText("Cycle tracking")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
-        onView(withText("Data from Health Connect test app will show here"))
-            .check(doesNotExist())
+        onView(withText("Data from Health Connect test app will show here")).check(doesNotExist())
     }
 
     @Test
     fun medicalDataOnly_populatedDataTypesDisplayed() = runTest {
-        mockData(listOf(MedicalPermissionType.IMMUNIZATIONS))
+        mockData(listOf(MedicalPermissionType.VACCINES))
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -241,7 +238,7 @@ class AppDataFragmentTest {
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
                 MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -300,7 +297,7 @@ class AppDataFragmentTest {
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
                 MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -319,7 +316,7 @@ class AppDataFragmentTest {
         onView(withText("Vaccines")).perform(click())
         onIdle()
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(MedicalPermissionType.IMMUNIZATIONS))
+            .containsExactlyElementsIn(setOf(MedicalPermissionType.VACCINES))
         onView(withText("Vaccines")).perform(click())
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
@@ -698,7 +695,7 @@ class AppDataFragmentTest {
                     FitnessPermissionType.DISTANCE,
                     FitnessPermissionType.STEPS,
                     MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                    MedicalPermissionType.IMMUNIZATIONS,
+                    MedicalPermissionType.VACCINES,
                 )
             )
             val scenario =
@@ -721,7 +718,7 @@ class AppDataFragmentTest {
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.STEPS,
                         MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                        MedicalPermissionType.IMMUNIZATIONS,
+                        MedicalPermissionType.VACCINES,
                     )
                 )
             onView(withText("Select all")).perform(click())
@@ -743,7 +740,7 @@ class AppDataFragmentTest {
                                             FitnessPermissionType.DISTANCE,
                                             FitnessPermissionType.STEPS,
                                             MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                                            MedicalPermissionType.IMMUNIZATIONS,
+                                            MedicalPermissionType.VACCINES,
                                         )
                                 ) {
                                     assertThat(permissionTypePreference.getIsChecked()).isFalse()

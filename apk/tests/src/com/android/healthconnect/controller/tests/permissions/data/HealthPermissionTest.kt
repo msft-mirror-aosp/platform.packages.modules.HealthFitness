@@ -112,9 +112,9 @@ class HealthPermissionTest {
             .isEqualTo(MedicalPermission(MedicalPermissionType.CONDITIONS))
 
         assertThat(
-                fromPermissionString("android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS")
+                fromPermissionString("android.permission.health.READ_MEDICAL_DATA_VACCINES")
             )
-            .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATIONS))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.VACCINES))
 
         assertThat(
                 fromPermissionString(

@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
@@ -62,11 +62,11 @@ public class MedicalResourceIndicesHelperTest {
         long rowId = 1L;
         ContentValues contentValues =
                 MedicalResourceIndicesHelper.getContentValues(
-                        rowId, MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+                        rowId, MEDICAL_RESOURCE_TYPE_VACCINES);
 
         assertThat(contentValues.get(getMedicalResourceTypeColumnName()))
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
         assertThat(contentValues.get(MedicalResourceIndicesHelper.getParentColumnReference()))
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
     }
 }

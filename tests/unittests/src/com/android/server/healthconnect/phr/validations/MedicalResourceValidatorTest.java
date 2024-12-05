@@ -104,7 +104,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -127,7 +127,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4B)
@@ -155,7 +155,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -182,7 +182,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -282,6 +282,41 @@ public class MedicalResourceValidatorTest {
     }
 
     @Test
+    public void testValidateAndCreateInternalRequest_nullId_throws() {
+        String immunizationJson = new ImmunizationBuilder().set("id", JSONObject.NULL).toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown).hasMessageThat().contains("id should be a string");
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nonStringId_throws() {
+        String immunizationJson = new ImmunizationBuilder().set("id", 123).toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown).hasMessageThat().contains("id should be a string");
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nullString_succeeds() {
+        String immunizationJson = new ImmunizationBuilder().set("id", "null").toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        UpsertMedicalResourceInternalRequest internalRequest =
+                validator.validateAndCreateInternalRequest();
+
+        assertThat(internalRequest.getFhirResourceId()).isEqualTo("null");
+    }
+
+    @Test
     public void testValidateAndCreateInternalRequest_unsupportedFhirVersion_throws() {
         UpsertMedicalResourceRequest upsertRequest =
                 getUpsertMedicalResourceRequestBuilder()
@@ -319,6 +354,88 @@ public class MedicalResourceValidatorTest {
                                 + FHIR_RESOURCE_TYPE_UNSUPPORTED
                                 + " for resource with id "
                                 + FHIR_RESOURCE_ID_IMMUNIZATION);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_nullResourceType_throws() {
+        String immunizationJson =
+                new ImmunizationBuilder()
+                        .setId(FHIR_RESOURCE_ID_IMMUNIZATION)
+                        .set("resourceType", JSONObject.NULL)
+                        .toJson();
+        MedicalResourceValidator validator = makeValidator(immunizationJson);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Unsupported FHIR resource type null for resource with id "
+                                + FHIR_RESOURCE_ID_IMMUNIZATION);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_containedResourceInResource_throws() {
+        String resourceId = "id1";
+        String medicationStatementWithContainedResource =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .setContainedMedication(new MedicationsBuilder.MedicationBuilder())
+                        .toJson();
+        MedicalResourceValidator validator =
+                makeValidator(medicationStatementWithContainedResource);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Contained resources are not supported. Found contained resource for"
+                                + " resource with id "
+                                + resourceId);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_containedFieldNotArray_throws()
+            throws JSONException {
+        String resourceId = "id1";
+        String medicationStatementWithInvalidContained =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .set("contained", new JSONObject("{}"))
+                        .toJson();
+        MedicalResourceValidator validator = makeValidator(medicationStatementWithInvalidContained);
+
+        var thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        validator::validateAndCreateInternalRequest);
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        "Contained resources are not supported. Found contained field for resource"
+                                + " with id "
+                                + resourceId);
+    }
+
+    @Test
+    public void testValidateAndCreateInternalRequest_emptyContainedArray_succeeds()
+            throws JSONException {
+        String resourceId = "id1";
+        String medicationStatementWithEmptyContained =
+                new MedicationsBuilder.MedicationStatementR4Builder()
+                        .setId(resourceId)
+                        .set("contained", new JSONArray("[]"))
+                        .toJson();
+
+        MedicalResourceValidator validator = makeValidator(medicationStatementWithEmptyContained);
+
+        assertThat(validator.validateAndCreateInternalRequest().getData())
+                .isEqualTo(medicationStatementWithEmptyContained);
     }
 
     @Test
@@ -580,7 +697,9 @@ public class MedicalResourceValidatorTest {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, code)
+                        .removeAllEffectiveMultiTypeFields()
                         .set("effectiveDateTime", "2021-04-20")
+                        .removeAllValueMultiTypeFields()
                         .set("valueDateTime", "2021-08-07")
                         .toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
@@ -607,6 +726,7 @@ public class MedicalResourceValidatorTest {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, value.mCode)
+                        .removeAllValueMultiTypeFields()
                         .set("valueCodeableConcept", value.mValueCodeableConcept)
                         .toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);

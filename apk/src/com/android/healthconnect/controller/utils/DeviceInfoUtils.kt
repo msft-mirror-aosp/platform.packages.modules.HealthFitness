@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.FEEDBACK_INTENT_RESULT_CODE
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.USER_INITIATED_FEEDBACK_BUCKET_ID
+import com.android.healthfitness.flags.Flags
 import com.android.settingslib.HelpUtils
 import dagger.Module
 import dagger.Provides
@@ -35,6 +36,8 @@ interface DeviceInfoUtils {
     fun openSendFeedbackActivity(activity: FragmentActivity)
 
     fun isIntentHandlerAvailable(context: Context, intent: Intent): Boolean
+
+    fun isOnWatch(context: Context): Boolean
 }
 
 class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
@@ -102,10 +105,16 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
         return isHardwareSupported(context) && !isProfile(context)
     }
 
+    override fun isOnWatch(context: Context): Boolean {
+        val pm: PackageManager = context.packageManager
+        return pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+    }
+
     private fun isHardwareSupported(context: Context): Boolean {
         val pm: PackageManager = context.packageManager
+        val disabledOnWatch = isOnWatch(context) && !Flags.replaceBodySensorPermissionEnabled()
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            !disabledOnWatch &&
             !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
             !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
     }

@@ -30,6 +30,8 @@ class FakeDeviceInfoUtils : DeviceInfoUtils {
 
     private var isHealthConnectAvailable = true
 
+    private var isIntentHandlerAvailable = false
+
     var helpCenterInvoked = false
     var backupAndRestoreHelpCenterInvoked = false
 
@@ -51,6 +53,10 @@ class FakeDeviceInfoUtils : DeviceInfoUtils {
 
     fun setHealthConnectAvailable(isAvailable: Boolean) {
         isHealthConnectAvailable = isAvailable
+    }
+
+    fun setIntentHandlerAvailability(available: Boolean) {
+        isIntentHandlerAvailable = available
     }
 
     override fun isHealthConnectAvailable(context: Context): Boolean {
@@ -76,6 +82,10 @@ class FakeDeviceInfoUtils : DeviceInfoUtils {
     override fun openSendFeedbackActivity(activity: FragmentActivity) {}
 
     override fun isIntentHandlerAvailable(context: Context, intent: Intent): Boolean {
+        return isIntentHandlerAvailable
+    }
+
+    override fun isOnWatch(context: Context): Boolean {
         return false
     }
 }

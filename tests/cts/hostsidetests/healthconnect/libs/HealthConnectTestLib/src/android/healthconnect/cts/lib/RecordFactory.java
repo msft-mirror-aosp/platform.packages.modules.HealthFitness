@@ -32,9 +32,27 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 public abstract class RecordFactory<T extends Record> {
+
+    public static final ZonedDateTime YESTERDAY_11AM =
+            LocalDate.now(ZoneId.systemDefault())
+                    .minusDays(1)
+                    .atTime(11, 0)
+                    .atZone(ZoneId.systemDefault());
+
+    public static final ZonedDateTime MIDNIGHT_ONE_WEEK_AGO =
+            YESTERDAY_11AM.truncatedTo(ChronoUnit.DAYS).minusDays(7);
+
+    public static final LocalDateTime YESTERDAY_10AM_LOCAL =
+            LocalDate.now(ZoneId.systemDefault()).minusDays(1).atTime(LocalTime.parse("10:00"));
 
     /**
      * Returns a record with all possible fields of this data type set to non-default values.

@@ -324,6 +324,8 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
 
     @Override
     public String[] getNotificationStringResources() {
+        // Resources referenced here must be explicitly kept in apk/res/raw/keep.xml to avoid
+        // removal during shrinking
         return new String[] {
             IMPORT_IN_PROGRESS_NOTIFICATION_TITLE,
             IMPORT_COMPLETE_NOTIFICATION_TITLE,

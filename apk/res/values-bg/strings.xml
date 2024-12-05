@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Вчера"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Четене: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Записване: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управление на разрешенията"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активност"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"бутания на инвалидна количка"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Четене на бутанията на инвалидна количка"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Записване на бутанията на инвалидна количка"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Интензивност на активността"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"интензивност на активността"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Четене на данните за интензивността на активността"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Запис на данните за интензивността на активността"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Основна обмяна на веществата"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"основна обмяна на веществата"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Четене на данните за основната обмяна на веществата"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"температура на кожата"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Четене на температурата на кожата"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Записване на температурата на кожата"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Това включва всички здравни картони, синхронизирани със и добавени към Health Connect. Това може да не е пълният ви медицински картон и не включва медицинско описание на здравните ви картони."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Всички здравни картони"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"всички здравни картони"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Записване на всички здравни картони"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Състояния"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"състояния"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Четене на състоянията"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Ваксини"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"ваксини"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Четене на данните за ваксините"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Ваксини"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"ваксини"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Четене на данните за ваксините"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Лабораторни резултати"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"лабораторни резултати"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Четене на лабораторните резултати"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ако предоставите достъп, приложението ще може да чете и записва данни, като например алергии, лабораторни резултати, ваксини и др.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ако предоставите достъп, приложението ще може да чете данни, като например алергии, лабораторни резултати, ваксини и др.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Всичко за здравните картони"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Данни, които да се споделят"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Данните, които ще бъдат споделени, включват"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Ако предоставите разрешението, <xliff:g id="APP_NAME">%1$s</xliff:g> ще може да споделя здравните ви картони с Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Синхронизирайте здравните си картони от различни приложения и източници, за да ги съхранявате на едно място"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Да се премахнат ли всички разрешения?"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Тези приложения вече нямат достъп, но техни данни все още се съхраняват в Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да чете данни, добавени след <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"За да управлявате други разрешения за Android, до които това приложение има достъп, отворете „Настройки &gt; Приложения“"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Данните, които споделяте с приложението <xliff:g id="APP_NAME">%1$s</xliff:g>, се обхващат от декларацията му за поверителност"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"В декларацията за поверителност на програмиста можете да научите как <xliff:g id="APP_NAME">%1$s</xliff:g> обработва данните ви"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"За да управлявате другите разрешения за Android, до които това приложение има достъп, отворете „Настройки“ и след това „Приложения“"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Прочетете декларацията за поверителност"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Осъществен бе достъп през последните 24 часа"</string>
@@ -793,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Музика"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Друго"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Без напътствия"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Средно"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Интензивно"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> мин"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ч и <xliff:g id="MIN">%2$s</xliff:g> мин"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ч"</string>
@@ -998,7 +997,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect ще изтрие всички данни, които са по-стари от # месец. Може да мине един ден, преди тези промени да се покажат в свързаните ви приложения.}other{Health Connect ще изтрие всички данни, които са по-стари от # месеца. Може да мине един ден, преди тези промени да се покажат в свързаните ви приложения.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Данни, които ще бъдат изтрити от тези"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Готово"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Автоматичното изтриване е включено. Данните, по-стари от # месец, ще бъдат изтрити}other{Автоматичното изтриване е включено. Данните, по-стари от # месеца, ще бъдат изтрити}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Авт. изтриване е включено. Данните, по-стари от # месец, ще бъдат изтрити}other{Авт. изтриване е включено. Данните, по-стари от # месеца, ще бъдат изтрити}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Автоматичното изтриване е изключено"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Задаване на приоритет за приложенията"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ако повече от едно приложение добави данни от типа „<xliff:g id="DATA_TYPE">%s</xliff:g>“, Health Connect дава приоритет на това, което е най-напред в списъка. Можете да промените реда на приложенията чрез преместване с плъзгане."</string>
@@ -1045,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Интегрирането е в ход"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect се интегрира със системата Android.\n\nПрехвърлянето на данните и разрешенията ви може да отнеме известно време."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Не затваряйте приложението, преди да получите известие, че процесът е завършен."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Интегрирането на Health Connect е в ход"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Необходима е актуализация"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect се интегрира със системата Android, така че да имате достъп до приложението директно от настройките."</string>
     <string name="update_button" msgid="4544529019832009496">"Актуализиране"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Стартирайте тази актуализация, така че Health Connect да може да продължи да се интегрира със системните ви настройки"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Актуализиране сега"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Необходима е системна актуализация"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Преди да продължите, актуализирайте системата на телефона си."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Ако вече сте актуализирали системата на телефона си, рестартирайте го, така че интегрирането да продължи"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Необходима е актуализация на Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Преди да продължите, актуализирайте приложението Health Connect до най-новата версия."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Необходимо е още място"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"За да продължи интегрирането, Health Connect се нуждае от <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> свободно място в хранилището на телефона ви.\n\nОсвободете място на телефона си и опитайте отново."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Нов опит"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Освобождаване на място"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Необходимо е още място"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"За да продължи интегрирането, Health Connect се нуждае от <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> свободно място в хранилището на телефона ви."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Интегрирането е поставено на пауза"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Приложението Health Connect бе затворено, докато се интегрираше в системата Android.\n\nКликнете върху бутона за възобновяване, за да отворите приложението отново и да продължите прехвърлянето на данните и разрешенията си."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"За да запазите данните си в Health Connect, завършете процеса в рамките на <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1072,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Докоснете, за да продължите интегрирането на Health Connect със системата Android. За да запазите данните си, завършете процеса в рамките на <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Докоснете, за да продължите интегрирането на Health Connect със системата Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Напред"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Възобновяване на интегрирането на Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"За да запазите данните си, завършете процеса в рамките на <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Необходима е актуализация на приложението"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> трябва да се актуализира, за да продължи да се синхронизира с Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Някои приложения трябва да бъдат актуализирани, за да продължат да се синхронизират с Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> трябва да се актуализира, за да продължи да се синхронизира с Health Connect. Актуализациите може да не са налице за всички приложения."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Някои приложения трябва да бъдат актуализирани, за да продължат да се синхронизират с Health Connect. Актуализациите може да не са налице за всички приложения."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Проверка за актуализации"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Научете повече"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Интегриране на Health Connect"</string>
@@ -1091,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Интегрирането на Health Connect не бе завършено"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Ще получите известие, когато отново е налице."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Разбрах"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Интегрирането на Health Connect не бе завършено"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Прочетете още"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Интегрирането на Health Connect завърши"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Отваряне"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Новите неща"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Вече можете да осъществявате достъп до Health Connect директно от настройките. Имате възможност да деинсталирате приложението по всяко време, за да освободите място в хранилището."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Разбрах"</string>
@@ -1135,8 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Преглед на съвместимите приложения"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Намерете още приложения, които да синхронизирате с(ъс) <xliff:g id="APP_NAME">%s</xliff:g> чрез Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Преглед в магазина за приложения"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Задаване на опция за заключване на екрана"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"За допълнителна сигурност на здравните ви данни задайте ПИН код, фигура или парола за това устройство"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Задаване на опция за заключване на екрана"</string>
     <string name="select_all" msgid="837499881590001166">"Избиране на всички"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Свързаните приложения вече няма да могат да четат тези данни от Health Connect"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"С отметка"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Без отметка"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Налице е маршрут на картата за упражнения"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Следващият ден"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Следващата седмица"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Следващият месец"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Предишният ден"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Предишната седмица"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Предишният месец"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Да се изтрият ли за постоянно всички данни?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Да се изтрият ли за постоянно избраните данни?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Да се изтрият ли за постоянно всички данни от <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1161,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Осъществен достъп: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Осъществен достъп: вчера, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Осъществен достъп: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Разрешаване винаги"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Разреш. на избраните"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"При употреба на приложението"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Отказване на всички"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до данните за физическата активност и благосъстоянието?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> иска достъп до <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nМожете да изберете да разрешите всички или да ги контролирате поотделно."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическа активност и благосъстояние"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"през цялото време"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"при използване"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"През цялото време"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"При използване"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до всичките ви данни за физическата активност и благосъстоянието <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"С разрешение за достъп"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"С разрешение за четене"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Тези разрешения дават на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до данните от сензорите на устройството ви."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> от <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> приложения имат разрешение"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Няма заявяващи достъп приложения"</string>
+    <string name="allowed" msgid="4158456017482263737">"Разрешено"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Не е разрешено"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Приложенията с това разрешение имат достъп до данните за <xliff:g id="DATA_TYPE">%s</xliff:g> от сензорите на устройството ви."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Да се премахне ли достъпът до <xliff:g id="DATA_TYPE">%s</xliff:g> за всички приложения на часовника ви?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Отметка"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Кръстче"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Понастоящем <xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до данните за физическата активност и благосъстоянието <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до данните за физическата активност и благосъстоянието по всяко време?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Управление на разрешенията за физическата активност и благосъстоянието"</string>
 </resources>

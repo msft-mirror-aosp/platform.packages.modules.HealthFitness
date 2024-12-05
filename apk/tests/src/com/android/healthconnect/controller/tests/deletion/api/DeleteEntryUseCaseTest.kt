@@ -20,7 +20,6 @@ import android.health.connect.RecordIdFilter
 import android.health.connect.datatypes.StepsRecord
 import com.android.healthconnect.controller.deletion.DeletionType.DeleteDataEntry
 import com.android.healthconnect.controller.deletion.api.DeleteEntryUseCase
-import com.android.healthconnect.controller.shared.DataType
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -63,7 +62,7 @@ class DeleteEntryUseCaseTest {
             .`when`(manager)
             .deleteRecords(anyListOf(RecordIdFilter::class.java), any(), any())
 
-        useCase.invoke(DeleteDataEntry("test_id", DataType.STEPS, 0))
+        useCase.invoke(DeleteDataEntry("test_id", StepsRecord::class, 0))
 
         verify(manager, times(1)).deleteRecords(listCaptor.capture(), any(), any())
         assertThat(listCaptor.value[0].id).isEqualTo("test_id")
