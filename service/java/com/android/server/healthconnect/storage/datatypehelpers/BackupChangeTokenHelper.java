@@ -49,7 +49,7 @@ import java.util.List;
  *
  * @hide
  */
-public class BackupChangeTokenHelper extends DatabaseHelper {
+public class BackupChangeTokenHelper {
     private static final String TABLE_NAME = "backup_change_token_table";
     private static final String DATA_TABLE_NAME_COLUMN_NAME = "data_table_name";
     private static final String DATA_TABLE_PAGE_TOKEN_COLUMN_NAME = "data_table_page_token";
@@ -154,7 +154,6 @@ public class BackupChangeTokenHelper extends DatabaseHelper {
         return TABLE_NAME;
     }
 
-    @Override
     protected String getMainTableName() {
         return TABLE_NAME;
     }

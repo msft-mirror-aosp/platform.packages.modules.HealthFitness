@@ -19,6 +19,7 @@
 package com.android.healthconnect.controller.dataentries.formatters.shared
 
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord
+import android.health.connect.datatypes.ActivityIntensityRecord
 import android.health.connect.datatypes.BasalBodyTemperatureRecord
 import android.health.connect.datatypes.BasalMetabolicRateRecord
 import android.health.connect.datatypes.BloodGlucoseRecord
@@ -61,6 +62,7 @@ import android.health.connect.datatypes.WeightRecord
 import android.health.connect.datatypes.WheelchairPushesRecord
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.ActiveCaloriesBurnedFormatter
+import com.android.healthconnect.controller.dataentries.formatters.ActivityIntensityFormatter
 import com.android.healthconnect.controller.dataentries.formatters.BasalBodyTemperatureFormatter
 import com.android.healthconnect.controller.dataentries.formatters.BasalMetabolicRateFormatter
 import com.android.healthconnect.controller.dataentries.formatters.BloodGlucoseFormatter
@@ -149,6 +151,7 @@ constructor(
     private val skinTemperatureFormatter: SkinTemperatureFormatter,
     private val plannedExerciseSessionRecordFormatter: PlannedExerciseSessionRecordFormatter,
     private val mindfulnessSessionFormatter: MindfulnessSessionFormatter,
+    private val activityIntensityFormatter: ActivityIntensityFormatter,
 ) {
 
     suspend fun format(record: Record, showDataOrigin: Boolean = true): FormattedEntry {
@@ -198,6 +201,7 @@ constructor(
             is PlannedExerciseSessionRecord ->
                 plannedExerciseSessionRecordFormatter.format(record, appName)
             is MindfulnessSessionRecord -> mindfulnessSessionFormatter.format(record, appName)
+            is ActivityIntensityRecord -> activityIntensityFormatter.format(record, appName)
             else -> throw IllegalArgumentException("${record::class.java} Not supported!")
         }
     }

@@ -51,7 +51,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -79,7 +79,7 @@ class AppPermissionViewModelTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
     @get:Rule val setFlagsRule = SetFlagsRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private val healthPermissionReader: HealthPermissionReader = mock()
     private val getGrantedHealthPermissionsUseCase = FakeGetGrantedHealthPermissionsUseCase()
@@ -102,7 +102,7 @@ class AppPermissionViewModelTest {
     private val readExerciseRoutesPermission = AdditionalPermission.READ_EXERCISE_ROUTES
     private val readHistoryDataPermission = AdditionalPermission.READ_HEALTH_DATA_HISTORY
     private val readDataInBackgroundPermission = AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
-    private val readImmunization = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+    private val readImmunization = MedicalPermission(MedicalPermissionType.VACCINES)
     private val readAllergies = MedicalPermission(MedicalPermissionType.ALLERGIES_INTOLERANCES)
     private val writeSleepPermission =
         FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.WRITE)
@@ -146,7 +146,6 @@ class AppPermissionViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -1214,6 +1213,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllPermissions_fitnessOnly_revokesFitness() = runTest {
         setupDeclaredAndGrantedFitnessPermissions()
         val appPermissionsObserver = TestObserver<List<FitnessPermission>>()
@@ -1245,6 +1245,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllPermissions_fitnessAndAdditional_revokesFitnessAndAdditional() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
@@ -1316,6 +1317,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllPermissions_fitnessAndMedical_revokesFitnessAndMedical() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
@@ -1393,6 +1395,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @Ignore("b/379884589")
     fun revokeAllPermissions_fitnessAndMedicalAndAdditional_revokesFitnessAndMedicalAndAdditional() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)

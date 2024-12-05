@@ -36,7 +36,12 @@ import android.health.connect.datatypes.ExerciseCompletionGoal
 import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseRoute
 import android.health.connect.datatypes.ExerciseSegmentType
+import android.health.connect.datatypes.ExerciseSessionRecord
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PlannedExerciseStep
+import android.health.connect.datatypes.SkinTemperatureRecord
+import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Velocity
 import androidx.lifecycle.MutableLiveData
@@ -68,7 +73,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SKIN_TEMPERATURE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TestData.WARSAW_ROUTE
 import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock
 import com.android.healthconnect.controller.tests.utils.getPlannedExerciseStep
@@ -104,6 +108,7 @@ class DataEntryDetailsFragmentTest {
     @BindValue
     val viewModel: DataEntryDetailsViewModel = mock(DataEntryDetailsViewModel::class.java)
     private lateinit var context: Context
+
     @BindValue val healthConnectLogger: HealthConnectLogger = org.mockito.kotlin.mock()
 
     @Before
@@ -177,7 +182,7 @@ class DataEntryDetailsFragmentTest {
                                 headerA11y = "07:06 • TEST_APP_NAME",
                                 title = "12 hour sleeping",
                                 titleA11y = "12 hour sleeping",
-                                dataType = DataType.SLEEP,
+                                dataType = SleepSessionRecord::class,
                                 notes = "notes",
                             )
                         )
@@ -370,7 +375,7 @@ class DataEntryDetailsFragmentTest {
                     headerA11y = "from 07:06 to 08:06 • Health Connect test app",
                     title = "Running • Morning Run",
                     titleA11y = "Running • Morning Run",
-                    dataType = DataType.PLANNED_EXERCISE,
+                    dataType = PlannedExerciseSessionRecord::class,
                     notes = "Morning quick run by the park",
                 )
             )
@@ -499,7 +504,7 @@ class DataEntryDetailsFragmentTest {
             headerA11y = "16:00 - 17:00 • TEST_APP_NAME",
             title = "+0.5℃ (avg variation)",
             titleA11y = "+0.5 degrees Celsius (average variation)",
-            dataType = DataType.SKIN_TEMPERATURE,
+            dataType = SkinTemperatureRecord::class,
         )
     }
 
@@ -563,7 +568,7 @@ class DataEntryDetailsFragmentTest {
             headerA11y = "07:06 • TEST_APP_NAME",
             title = "12 hour sleeping",
             titleA11y = "12 hour sleeping",
-            dataType = DataType.SLEEP,
+            dataType = SleepSessionRecord::class,
             notes = "notes",
         )
     }
@@ -575,7 +580,7 @@ class DataEntryDetailsFragmentTest {
             headerA11y = "07:06 • TEST_APP_NAME",
             title = "12 hour running",
             titleA11y = "12 hour running",
-            dataType = DataType.EXERCISE,
+            dataType = ExerciseSessionRecord::class,
             notes = "notes",
             route =
                 if (showSession) {
@@ -593,7 +598,7 @@ class DataEntryDetailsFragmentTest {
             headerA11y = "07:06 - 8:06 • TEST_APP_NAME",
             title = "100 bpm",
             titleA11y = "100 beats per minute",
-            dataType = DataType.HEART_RATE,
+            dataType = HeartRateRecord::class,
         )
     }
 

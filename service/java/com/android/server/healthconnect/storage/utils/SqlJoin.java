@@ -35,7 +35,7 @@ public final class SqlJoin {
     public static final String SQL_JOIN_INNER = "INNER";
     public static final String SQL_JOIN_LEFT = "LEFT";
 
-    private static final String INNER_QUERY_ALIAS = "inner_query_result";
+    public static final String INNER_QUERY_ALIAS = "inner_query_result";
 
     /** @hide */
     @StringDef(

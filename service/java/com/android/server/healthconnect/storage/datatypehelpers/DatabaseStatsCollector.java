@@ -16,10 +16,14 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import android.content.Context;
+import android.annotation.Nullable;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+
+import java.util.Collection;
 
 /**
  * Helper class to collect Health Connect database stats for logging.
@@ -28,19 +32,19 @@ import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappi
  */
 public class DatabaseStatsCollector {
 
+    private static final long NO_DATA = -1;
+
     private final TransactionManager mTransactionManager;
-    private final Context mContext;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings =
             InternalHealthConnectMappings.getInstance();
 
-    public DatabaseStatsCollector(TransactionManager transactionManager, Context context) {
+    public DatabaseStatsCollector(TransactionManager transactionManager) {
         mTransactionManager = transactionManager;
-        mContext = context;
     }
 
     /** Get the size of Health Connect database. */
     public long getDatabaseSize() {
-        return mTransactionManager.getDatabaseSize(mContext);
+        return mTransactionManager.getDatabaseSize();
     }
 
     /** Get the number of interval record entries in Health Connect database. */
@@ -49,9 +53,7 @@ public class DatabaseStatsCollector {
         for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof IntervalRecordHelper
                     && !(recordHelper instanceof SeriesRecordHelper)) {
-                count +=
-                        mTransactionManager.getNumberOfEntriesInTheTable(
-                                recordHelper.getMainTableName());
+                count += getNumberOfRowsInTable(recordHelper.getMainTableName());
             }
         }
         return count;
@@ -62,9 +64,7 @@ public class DatabaseStatsCollector {
         long count = 0L;
         for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof SeriesRecordHelper) {
-                count +=
-                        mTransactionManager.getNumberOfEntriesInTheTable(
-                                recordHelper.getMainTableName());
+                count += getNumberOfRowsInTable(recordHelper.getMainTableName());
             }
         }
         return count;
@@ -75,9 +75,7 @@ public class DatabaseStatsCollector {
         long count = 0L;
         for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof InstantRecordHelper) {
-                count +=
-                        mTransactionManager.getNumberOfEntriesInTheTable(
-                                recordHelper.getMainTableName());
+                count += getNumberOfRowsInTable(recordHelper.getMainTableName());
             }
         }
         return count;
@@ -85,6 +83,53 @@ public class DatabaseStatsCollector {
 
     /** Get the number of change log entries in Health Connect database. */
     public long getNumberOfChangeLogs() {
-        return mTransactionManager.getNumberOfEntriesInTheTable(ChangeLogsHelper.TABLE_NAME);
+        return getNumberOfRowsInTable(ChangeLogsHelper.TABLE_NAME);
+    }
+
+    /** Get the number of rows in the given table. */
+    private long getNumberOfRowsInTable(String tableName) {
+        return mTransactionManager.getNumberOfEntriesInTheTable(tableName);
+    }
+
+    /**
+     * Reads the total number of bytes of disk used to store the given tables. See <a
+     * href="https://sqlite.org/dbstat.html">SQLite {@code dbstat} documentation</a>.
+     *
+     * @param tables a collection of table names to add together
+     * @return the total number of bytes used to store those tables, or null if this information
+     *     cannot be read
+     */
+    @Nullable
+    public Long getFileBytes(Collection<String> tables) {
+        if (tables.isEmpty()) {
+            return 0L;
+        }
+        StringBuilder sql = new StringBuilder("SELECT SUM(pgsize) FROM dbstat WHERE name IN (");
+        String[] args = new String[tables.size()];
+        int index = 0;
+        for (String table : tables) {
+            sql.append("?,");
+            args[index++] = table;
+        }
+        sql.setCharAt(sql.length() - 1, ')');
+        try {
+            long bytes =
+                    mTransactionManager.runAsTransaction(
+                            db -> {
+                                try (Cursor cursor = db.rawQuery(sql.toString(), args)) {
+                                    if (!cursor.moveToFirst()) {
+                                        return NO_DATA;
+                                    }
+                                    return cursor.getLong(0);
+                                }
+                            });
+            if (bytes == NO_DATA) {
+                return null;
+            }
+            return bytes;
+        } catch (SQLiteException e) {
+            // This can happen if the dbstat table does not exist. If so, carry on.
+            return null;
+        }
     }
 }

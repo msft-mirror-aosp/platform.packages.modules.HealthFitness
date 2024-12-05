@@ -16,9 +16,9 @@
 
 package android.healthconnect.cts.phr.apis;
 
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_FOREGROUND_APP;
@@ -75,7 +75,8 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     private HealthConnectManager mManager;
     private PhrCtsTestUtils mUtil;
@@ -188,7 +189,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                     assertThat(dataSourceReadReceiver.getResponse()).isEmpty();
                     mManager.readMedicalResources(
                             new ReadMedicalResourcesInitialRequest.Builder(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                            MEDICAL_RESOURCE_TYPE_VACCINES)
                                     .build(),
                             Executors.newSingleThreadExecutor(),
                             resourceReadReceiver);
@@ -265,7 +266,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                     assertThat(dataSourceReadReceiver.getResponse()).isEmpty();
                     mManager.readMedicalResources(
                             new ReadMedicalResourcesInitialRequest.Builder(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                            MEDICAL_RESOURCE_TYPE_VACCINES)
                                     .build(),
                             Executors.newSingleThreadExecutor(),
                             resourceReadReceiver);
@@ -364,7 +365,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSource_inForegroundOnlyReadPerm_throws() {
-        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_VACCINES);
 
         HealthConnectException exception =
                 assertThrows(

@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Dünən"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Oxuma: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Yazma: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"İcazələri idarə edin"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Saat: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Fəaliyyət"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"əlil arabası təkanı"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Əlil arabası təkanını oxumaq"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Əlil arabası təkanını yazmaq"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Fəaliyyət intensivliyi"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"fəaliyyət intensivliyi"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Fəaliyyət intensivliyini oxuyun"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Fəaliyyət intensivliyini yazın"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Əsas metabolik səviyyə"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"əsas metabolik səviyyə"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Bazal metabolik dərəcəni oxumaq"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"dəri temperaturu"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Dəri temperaturunun oxunması"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Dəri temperaturunun yazılması"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Buraya Health Connect ilə sinxronlaşdırılan və ona əlavə edilən bütün sağlamlıq qeydləri daxildir. Bu, sağlamlıq tarixçənizi tam əhatə etməyə bilər və sağlamlıq qeydlərinizin tibbi təsvirini ehtiva etmir."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Bütün sağlamlıq qeydləri"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"bütün sağlamlıq qeydləri"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Bütün sağlamlıq qeydlərini əlavə edin"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Vəziyyətlər"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"vəziyyətlər"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Şərtləri oxuyun"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Peyvəndlər"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"peyvəndlər"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Peyvəndlər haqqında oxuyun"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Peyvəndlər"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"peyvəndlər"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Peyvəndlər haqqında oxuyun"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratoriya nəticələri"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratoriya nəticələri"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Laboratoriya nəticələrini oxuyun"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"İcazə versəniz, tətbiq allergiya, laboratoriya nəticələri, peyvəndlər və s. kimi datanı oxuya və yaza bilər\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"İcazə versəniz, tətbiq allergiya, laboratoriya nəticələri, peyvəndlər və s. kimi datanı oxuya bilər\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Sağlamlıq qeydləri haqqında"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Paylaşılacaq data"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Paylaşılacaq dataya daxildir"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"İcazə versəniz, <xliff:g id="APP_NAME">%1$s</xliff:g> sağlamlıq qeydlərini Health Connect ilə paylaşa bilər."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sağlamlıq qeydlərini bir yerdə saxlamaq üçün fərqli tətbiq və mənbələrdən sinxronlaşdırın"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Bütün icazələr silinsin?"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Bu tətbiqlərin artıq girişi yoxdur, lakin hələ də Health Connect\'də data saxlayırlar"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> tarixindən sonra əlavə edilən datanı oxuya bilər"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Bu tətbiqin daxil ola biləcəyi digər Android icazələrini idarə etmək üçün Ayarlar &gt; Tətbiqlər bölməsinə keçin"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilə paylaşdığınız data onun məxfilik siyasəti ilə qorunur"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Developerin məxfilik siyasətində <xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinin datanı necə idarə etdiyini öyrənə bilərsiniz"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Bu tətbiqin daxil ola biləcəyi digər Android icazələrini idarə etmək üçün Ayarlara keçin, sonra Tətbiqlər seçiminə toxunun"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Məxfilik Siyasətini oxuyun"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Son 24 saat ərzində giriş edilib"</string>
@@ -793,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Musiqi"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Digər"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Təlimatsız"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Orta"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Güclü"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> d"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> s <xliff:g id="MIN">%2$s</xliff:g> dəq"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> s"</string>
@@ -1045,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"İnteqrasiya edilir"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect Android sistemi ilə inteqrasiya edilir.\n\nData və icazələrin ötürülməsi bir qədər vaxt apara bilər."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Proses tamamlanana qədər tətbiqi bağlamayın."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect inteqrasiya edilir"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Güncəllənmə lazımdır"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Ayarlardan daxil ola bilməyiniz üçün Health Connect Android sistemi ilə inteqrasiya edilir."</string>
     <string name="update_button" msgid="4544529019832009496">"Güncəlləyin"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Health Connect-in sistem ayarları ilə inteqrasiyaya davam etməsi üçün bu güncəllənməni başladın"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"İndi güncəlləyin"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Sistem güncəllənməlidir"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Davam etməzdən əvvəl telefon sistemini güncəlləyin."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Telefon sistemi güncəllənibsə, inteqrasiyaya davam etmək üçün telefonu yenidən başladın"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect güncəllənməlidir"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Davam etməzdən əvvəl Health Connect tətbiqini son versiyaya güncəlləyin."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Daha çox yer lazımdır"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"İnteqrasiyanın davam etməsi üçün Health Connect telefonda <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> yaddaş yeri tələb edir.\n\nTelefonda yer boşaldıb, yenidən cəhd edin."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Yenə sınayın"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Yer boşaldın"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Daha çox yer lazımdır"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"İnteqrasiyaya davam etmək üçün Health Connect telefonda <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> yaddaş yeri tələb edir."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"İnteqrasiyaya pauza verildi"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Android sistemi ilə inteqrasiya zamanı Health Connect bağlandı.\n\nTətbiqi yenidən açmaq üçün \"bərpa edin\" üzərinə klikləyin, data və icazələrin ötürülməsinə davam edin."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Health Connect datasını saxlamaq üçün <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ərzində tamamlayın"</string>
@@ -1072,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Health Connect-in Android sistemi ilə inteqrasiyasını davam etdirmək üçün toxunun. Datanı saxlamaq üçün <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ərzində tamamlayın"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Health Connect-in Android sistemi ilə inteqrasiyasını davam etdirmək üçün toxunun."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Davam edin"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect inteqrasiyasını bərpa edin"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Datanı saxlamaq üçün <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ərzində tamamlayın"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Tətbiq güncəllənməlidir"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect ilə sinxronlaşdırmağa davam etmək üçün <xliff:g id="APP_NAME">%1$s</xliff:g> güncəllənməlidir"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect ilə sinxronlaşdırmağa davam etmək üçün bəzi tətbiqlər güncəllənməlidir"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Health Connect ilə sinxronlaşdırmağa davam etmək üçün <xliff:g id="APP_NAME">%1$s</xliff:g> güncəllənməlidir. Bütün tətbiqlər üçün güncəllənmə əlçatan olmaya bilər."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Health Connect ilə sinxronlaşdırmağa davam etmək üçün bəzi tətbiqlər güncəllənməlidir. Bütün tətbiqlər üçün güncəllənmə əlçatan olmaya bilər."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Güncəllənmələri yoxlayın"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Ətraflı məlumat"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect inteqrasiyası"</string>
@@ -1091,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connect inteqrasiya edilmədi"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Yenidən əlçatan olduqda bildiriş alacaqsınız."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Anladım"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connect inteqrasiya edilmədi"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Ətraflı oxuyun"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connect inteqrasiya edildi"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Açın"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Yeniliklər"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Birbaşa ayarlardan Health Connect-ə daxil ola bilərsiniz. Yaddaş yerini artırmaq üçün Health Connect tətbiqini sistemdən silin."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Anladım"</string>
@@ -1135,26 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Uyğun tətbiqlərə baxın"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect vasitəsilə <xliff:g id="APP_NAME">%s</xliff:g> ilə sinxronlaşdırmaq üçün digər tətbiqləri tapın"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Tətbiq mağazasında baxın"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ekran kilidini ayarlayın"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Sağlamlıq datanızın əlavə təhlükəsizliyi üçün bu cihaza PIN, model və ya parol təyin edin"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Ekran kilidi ayarlayın"</string>
     <string name="select_all" msgid="837499881590001166">"Hamısını seçin"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Əlaqələndirilmiş tətbiqlər artıq bu Health Connect datasına giriş edə bilməyəcək"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"İşarələnib"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"İşarələnməyib"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Məşq xəritəsi marşrutu əlçatandır"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Növbəti gün"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Növbəti həftə"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Növbəti ay"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Keçən gün"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Keçən həftə"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Keçən ay"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Bütün data həmişəlik silinsin?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Seçilmiş data həmişəlik silinsin?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Bütün <xliff:g id="APP_NAME">%s</xliff:g> datası həmişəlik silinsin?"</string>
@@ -1179,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Daxil olunub: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Daxil olunub: dünən <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Daxil olunub: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Həmişə icazə verin"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Seçilənə icazə verin"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Tətbiqdən istifadə edərkən"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Hamısını rədd edin"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinin fitnes və sağlamlıq datasına daxil olmasına icazə verilsin?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_TYPES">%2$s</xliff:g> datasına giriş tələb edir.\n\nHamısına icazə verməyi və ya ayrı-ayrılıqda nəzarət etməyi seçin."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinə <xliff:g id="DATA_TYPE">%2$s</xliff:g> datası üçün giriş icazəsi verilsin?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes və sağlamlıq"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"hər zaman"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"istifadə edilən zaman"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Hər zaman"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"İstifadə edilən zaman"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> bütün fitnes və sağlamlıq datanıza daxil ola bilər <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Girişə icazə verilir"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Oxumağa icazə verilir"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Bu icazələr <xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinin cihaz sensorlarından dataya girişinə imkan verir."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> tətbiqdən <xliff:g id="NUMBER_0">%1$d</xliff:g> ədədi icazəlidir"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Heç bir tətbiq tələb olunmur"</string>
+    <string name="allowed" msgid="4158456017482263737">"İcazə verilib"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"İcazə verilməyib"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Bu icazəyə malik tətbiqlər cihaz sensorlarından <xliff:g id="DATA_TYPE">%s</xliff:g> tipli dataya daxil ola bilər."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Saatınızdakı bütün tətbiqlər üçün <xliff:g id="DATA_TYPE">%s</xliff:g> girişi silinsin?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Təsdiq işarəsi"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Çarpaz nişan"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Hazırda <xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinin fitnes və sağlamlıq datasına giriş icazəsi var (<xliff:g id="ALLOW_MODE">%2$s</xliff:g>)"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"<xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinə hər zaman fitnes və sağlamlıq datasına giriş icazəsi verilsin?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinin <xliff:g id="DATA_TYPES">%2$s</xliff:g> datasına giriş icazəsi var."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Fitnes və sağlamlıq icazələrini idarə edin"</string>
 </resources>

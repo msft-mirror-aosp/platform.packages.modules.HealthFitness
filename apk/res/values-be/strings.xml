@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Учора"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Счытванне: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Запіс: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Кіраваць дазволамі"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Актыўнасць"</string>
@@ -312,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"тэмпература скуры"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Чытанне даных пра тэмпературу скуры"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Запіс даных пра тэмпературу скуры"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Сюды ўваходзіць уся інфармацыя пра стан здароўя, сінхранізаваная і дададзеная ў праграму \"Здароўе і спорт\". Гэта не абавязкова павінна быць ваша поўная медыцынская карта, таксама яна не ўключае медыцынскае апісанне вашай інфармацыі пра стан здароўя."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Уся інфармацыя пра стан здароўя"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"уся інфармацыя пра стан здароўя"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Запісваць усю інфармацыю пра стан здароўя"</string>
@@ -321,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Расстройствы здароўя"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"расстройствы здароўя"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Чытаць звесткі пра расстройствы здароўя"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Вакцыны"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"вакцыны"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Чытаць даныя пра вакцыны"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Прышчэпкі"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"прышчэпкі"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Чытаць даныя пра прышчэпкі"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Вынікі аналізаў"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"вынікі аналізаў"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Чытаць вынікі аналізаў"</string>
@@ -373,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Калі вы дазволіце доступ, праграма зможа счытваць і запісваць такія даныя, як інфармацыя пра алергію і прышчэпкі, вынікі аналізаў і шмат іншага\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Калі вы дазволіце доступ, праграма зможа счытваць такія даныя, як інфармацыя пра алергію і прышчэпкі, вынікі аналізаў і шмат іншага\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Аб інфармацыі пра стан здароўя"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Даныя для абагульвання"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Даныя для абагульвання ўключаюць наступныя:"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Калі вы дазволіце доступ, праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" зможа абагульваць вашу інфармацыю пра стан здароўя з платформай \"Здароўе і спорт\"."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Сінхранізуйце інфармацыю пра стан здароўя з розных праграм і крыніц, каб яна захоўвалася ў адным месцы"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Выдаліць усе дазволы?"</string>
@@ -432,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"У гэтых праграм больш няма доступу да праграмы \"Здароўе і спорт\", аднак іх даныя па-ранейшаму там захоўваюцца"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> можа счытваць даныя, дададзеныя пасля <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Каб кіраваць іншымі дазволамі Android, якія можа мець гэта праграма, адкрыйце \"Налады &gt; Праграмы\""</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Даныя, якія вы абагульваеце з праграмай \"<xliff:g id="APP_NAME">%1$s</xliff:g>\", падпадаюць пад дзеянне палітыкі прыватнасці"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Даведацца пра тое, як праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" апрацоўвае вашы даныя, можна ў палітыцы прыватнасці распрацоўшчыка"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Каб кіраваць іншымі дазволамі гэтай праграмы ў Android, адкрыйце \"Налады\" і выберыце \"Праграмы\""</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Азнаёміцца з палітыкай прыватнасці"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Апошні доступ у папярэднія 24 гадзіны"</string>
@@ -789,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Музыка"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Іншае"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Без кантролю"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Умераная"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Высокая"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> хв"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> гадз <xliff:g id="MIN">%2$s</xliff:g> хв"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> гадз"</string>
@@ -1041,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Выконваецца інтэграцыя"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Ідзе інтэграцыя праграмы \"Здароўе і спорт\" з сістэмай Android.\n\nПерадача вашых даных і дазволаў можа заняць некаторы час."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Не закрывайце праграму, пакуль не атрымаеце апавяшчэння аб завяршэнні гэтага працэсу."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Ідзе інтэграцыя праграмы \"Здароўе і спорт\""</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Патрабуецца абнаўленне"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Праграма \"Здароўе і спорт\" інтэгруецца з сістэмай Android, таму ў вас ёсць доступ да яе непасрэдна з налад."</string>
     <string name="update_button" msgid="4544529019832009496">"Абнавіць"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Запусціце гэтае абнаўленне, каб праграма \"Здароўе і спорт\" працягнула абнаўленне з наладамі вашай сістэмы"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Абнавіць"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Патрабуецца абнаўленне сістэмы"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Спачатку абнавіце сістэму свайго тэлефона."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Калі вы ўжо абнавілі сістэму свайго тэлефона, паспрабуйце перазапусціць тэлефон, каб працягнуць інтэграцыю"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Патрабуецца абнаўленне праграмы \"Здароўе і спорт\""</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Спачатку абнавіце праграму \"Здароўе і спорт\" да апошняй версіі."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Патрабуецца больш месца"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Праграме \"Здароўе і спорт\" патрабуецца <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> месца ў сховішчы тэлефона, каб працягнуць інтэграцыю.\n\nАчысціце месца на тэлефоне, а потым паўтарыце спробу."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Паўтарыць спробу"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Ачысціць месца"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Патрабуецца больш месца"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Праграме \"Здароўе і спорт\" патрабуецца <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> месца ў сховішчы тэлефона, каб працягнуць інтэграцыю."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Інтэграцыя прыпынена"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Праграма \"Здароўе і спорт\" была закрыта ў час інтэграцыі з сістэмай Android.\n\nКаб адкрыць праграму зноў і працягнуць перанос вашых даных і дазволаў, націсніце \"Узнавіць\"."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Каб захаваць свае даныя з праграмы \"Здароўе і спорт\", выканайце гэтае дзеянне за <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1068,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Націсніце, каб працягнуць інтэграцыю праграмы \"Здароўе і спорт\" з сістэмай Android. Каб захаваць свае даныя, выканайце гэтае дзеянне за <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Націсніце, каб працягнуць інтэграцыю праграмы \"Здароўе і спорт\" з сістэмай Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Працягнуць"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Узнавіце інтэграванне праграмы \"Здароўе і спорт\""</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Каб захаваць свае даныя, выканайце гэтае дзеянне за <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Патрабуецца абнаўленне праграмы"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Каб сінхранізацыя даных з сэрвісам \"Здароўе і спорт\" не перапынілася, праграму \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" неабходна абнавіць"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Каб сінхранізацыя даных з сэрвісам \"Здароўе і спорт\" не перапынілася, некаторыя праграмы неабходна абнавіць"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Каб сінхранізацыя даных з сэрвісам \"Здароўе і спорт\" не перапынілася, праграму \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" неабходна абнавіць. Абнаўленні могуць быць даступнымі не для ўсіх праграм."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Каб сінхранізацыя даных з сэрвісам \"Здароўе і спорт\" не перапынілася, некаторыя праграмы неабходна абнавіць. Абнаўленні могуць быць даступнымі не для ўсіх праграм."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Праверыць наяўнасць абнаўленняў"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Даведацца больш"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Інтэграцыя праграмы \"Здароўе і спорт\""</string>
@@ -1087,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Не ўдалося выканаць інтэграцыю праграмы \"Здароўе і спорт\""</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Вы атрымаеце апавяшчэнне, калі яно стане даступным зноў."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"OK"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Не ўдалося выканаць інтэграцыю праграмы \"Здароўе і спорт\""</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Чытаць далей"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Інтэграцыя праграмы \"Здароўе і спорт\" завершана"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Адкрыць"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Што новага"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Цяпер у вас ёсць доступ да праграмы \"Здароўе і спорт\" непасрэдна з налад. Каб вызваліць месца ў сховішчы, яе можна выдаліць у любы час."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
@@ -1131,26 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Паглядзець сумяшчальныя праграмы"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Знайдзіце больш праграм для сінхранізацыі з праграмай \"<xliff:g id="APP_NAME">%s</xliff:g>\" праз \"Здароўе і спорт\""</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Паглядзець у краме праграм"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Наладзьце блакіроўку экрана"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Для дадатковай бяспекі даных пра здароўе наладзьце на гэтай прыладзе PIN-код, узор разблакіроўкі ці пароль"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Наладзіць блакіроўку экрана"</string>
     <string name="select_all" msgid="837499881590001166">"Выбраць усё"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Падключаныя праграмы больш не змогуць счытваць гэтыя даныя з платформы \"Здароўе і спорт\""</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Выбрана"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Не выбрана"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Даступная карта з трэніровачным маршрутам"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Наступны дзень"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Наступны тыдзень"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Наступны месяц"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Папярэдні дзень"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Папярэдні тыдзень"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Папярэдні месяц"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Назаўсёды выдаліць усе даныя?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Назаўсёды выдаліць выбраныя даныя?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Назаўсёды выдаліць усе даныя праграмы \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
@@ -1175,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Апошні раз доступ быў атрыманы ў <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Апошні раз доступ быў атрыманы ўчора ў <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Апошні раз доступ быў атрыманы ў <xliff:g id="TIME_DATE_1">%2$s</xliff:g> <xliff:g id="TIME_DATE_0">%1$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Заўсёды дазволена"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Дазволіць выбраныя"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Падчас выкарыстання праграмы"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Адхіліць усе"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да даных пра фізічную актыўнасць і фізічны стан?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" запытвае доступ да наступных даных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nВы можаце даць усе дазволы ці кіраваць дазволамі паасобку."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да наступных даных: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Фітнес і здароўе"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"заўсёды"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"падчас выкарыстання"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Заўсёды"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Падчас выкарыстання"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" можа атрымліваць доступ да даных пра фітнес і здароўе <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Доступ дазволены"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Дазволена счытваць"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"З гэтымі дазволамі праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" можа атрымліваць доступ да даных з датчыкаў прылады."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Праграм з дазволам: <xliff:g id="NUMBER_0">%1$d</xliff:g> з <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Ні адна праграма не запытвае дазвол"</string>
+    <string name="allowed" msgid="4158456017482263737">"Дазволена"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Забаронена"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Праграмы з такім дазволам могуць атрымліваць доступ да даных \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" з датчыкаў прылады."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Забараніць усім праграмам доступ да даных \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" на гадзінніку?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Птушка"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Крыжык"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"На гэты момант <xliff:g id="APP_NAME">%1$s</xliff:g> мае доступ да даных пра фізічную актыўнасць і фізічны стан <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" пастаянны доступ да даных пра фізічную актыўнасць і фізічны стан?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> мае доступ да наступнай інфармацыі: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Дазволы на кіраванне данымі пра фізічную актыўнасць і фізічны стан"</string>
 </resources>

@@ -128,6 +128,44 @@ class AccessFragmentTest {
     }
 
     @Test
+    fun fitnessAccessFragment_logFitnessImpression() {
+        val map =
+            mapOf(
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to emptyList(),
+                AppAccessState.Inactive to emptyList(),
+            )
+        whenever(viewModel.appMetadataMap).then {
+            MutableLiveData<AccessScreenState>(WithData(map))
+        }
+        launchFragment<AccessFragment>(distanceBundle)
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(DataAccessElement.DATA_ACCESS_APP_BUTTON)
+    }
+
+    @Test
+    fun medicalAccessFragment_logMedicalImpression() {
+        val map =
+            mapOf(
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to emptyList(),
+                AppAccessState.Inactive to emptyList(),
+            )
+        whenever(viewModel.appMetadataMap).then {
+            MutableLiveData<AccessScreenState>(WithData(map))
+        }
+        launchFragment<AccessFragment>(immunizationBundle)
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_MEDICAL_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(DataAccessElement.DATA_ACCESS_APP_BUTTON)
+    }
+
+    @Test
     fun dataAccessFragment_readSection_isDisplayed() {
         val map =
             mapOf(
@@ -150,9 +188,6 @@ class AccessFragmentTest {
                 )
             )
             .check(doesNotExist())
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ACCESS_PAGE)
-        verify(healthConnectLogger).logPageImpression()
-        verify(healthConnectLogger).logImpression(DataAccessElement.DATA_ACCESS_APP_BUTTON)
     }
 
     @Test
@@ -179,7 +214,8 @@ class AccessFragmentTest {
                 )
             )
             .check(doesNotExist())
-        verify(healthConnectLogger, times(2)).logImpression(DataAccessElement.DATA_ACCESS_APP_BUTTON)
+        verify(healthConnectLogger, times(2))
+            .logImpression(DataAccessElement.DATA_ACCESS_APP_BUTTON)
     }
 
     @Test
@@ -373,7 +409,7 @@ class AccessFragmentTest {
     private val immunizationBundle: Bundle
         get() {
             val bundle = Bundle()
-            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.IMMUNIZATIONS.name)
+            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.VACCINES.name)
             return bundle
         }
 

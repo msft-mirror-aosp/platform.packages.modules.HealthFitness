@@ -66,7 +66,7 @@ import javax.inject.Inject
 class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
@@ -289,7 +289,7 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
                     }
                 val switchPreference =
                     HealthSwitchPreference(requireContext()).also {
-                        // it.icon = healthCategory.icon(requireContext())
+                        it.icon = permission.medicalPermissionType.icon(requireContext())
                         it.setTitle(
                             fromPermissionType(permission.medicalPermissionType).uppercaseLabel
                         )

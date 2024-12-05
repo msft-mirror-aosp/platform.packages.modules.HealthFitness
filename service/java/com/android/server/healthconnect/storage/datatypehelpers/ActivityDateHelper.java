@@ -61,7 +61,9 @@ public final class ActivityDateHelper extends DatabaseHelper {
 
     public ActivityDateHelper(
             TransactionManager transactionManager,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }

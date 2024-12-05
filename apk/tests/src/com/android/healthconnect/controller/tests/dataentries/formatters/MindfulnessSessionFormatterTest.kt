@@ -26,7 +26,6 @@ import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.MindfulnessSessionFormatter
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.getMetaData
@@ -51,7 +50,9 @@ import org.junit.Test
 @HiltAndroidTest
 class MindfulnessSessionFormatterTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
+
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
 
     @Inject lateinit var formatter: MindfulnessSessionFormatter
@@ -84,9 +85,9 @@ class MindfulnessSessionFormatterTest {
                     uuid = "",
                     header = "07:06 - 07:22 • com.app.name",
                     headerA11y = "from 07:06 to 07:22 • com.app.name",
-                    title = "16 m, Unknown type",
-                    titleA11y = "16 minutes, Unknown type",
-                    dataType = DataType.MINDFULNESS_SESSION,
+                    title = "Unknown type • 16 m",
+                    titleA11y = "Unknown type • 16 minutes",
+                    dataType = MindfulnessSessionRecord::class,
                     notes = null,
                     route = null,
                     isClickable = false,
@@ -115,9 +116,9 @@ class MindfulnessSessionFormatterTest {
                     uuid = "test_id",
                     header = "07:06 - 07:22 • com.app.name",
                     headerA11y = "from 07:06 to 07:22 • com.app.name",
-                    title = "foo-title, Meditation",
-                    titleA11y = "foo-title, Meditation",
-                    dataType = DataType.MINDFULNESS_SESSION,
+                    title = "Meditation • foo-title",
+                    titleA11y = "Meditation • foo-title",
+                    dataType = MindfulnessSessionRecord::class,
                     notes = "foo-notes",
                     route = null,
                     isClickable = false,

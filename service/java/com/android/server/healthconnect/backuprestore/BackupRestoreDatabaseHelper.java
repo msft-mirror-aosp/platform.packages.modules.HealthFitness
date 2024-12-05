@@ -27,11 +27,13 @@ import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.health.connect.proto.backuprestore.BackupData;
 import android.util.Pair;
-import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -47,12 +49,12 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Performs various operations on the Health Connect database for cloud backup and restore.
@@ -69,7 +71,7 @@ public class BackupRestoreDatabaseHelper {
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
 
-    // TODO: b/369799948 - maybe also allow client passes its own page size.
+    // TODO: b/377648858 - maybe also allow client passes its own page size.
     @VisibleForTesting static final int MAXIMUM_PAGE_SIZE = 5000;
     private static final String TAG = "BackupRestoreDatabaseHelper";
 
@@ -139,7 +141,7 @@ public class BackupRestoreDatabaseHelper {
         String changeLogsTablePageToken =
                 changeLogsPageToken == null ? getChangeLogsPageToken() : changeLogsPageToken;
 
-        //  TODO: b/369799948 - find a better approach to force the dependent data type orders
+        //  TODO: b/377648858 - find a better approach to force the dependent data type orders
         List<Integer> recordTypes = getRecordTypes();
 
         List<BackupChange> backupChanges = new ArrayList<>();
@@ -186,10 +188,7 @@ public class BackupRestoreDatabaseHelper {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                // TODO: b/369799948 - the parameter name is confusing as it's
-                                // actually about recording read access logs. Confirm whether we
-                                // need it or not.
-                                /* shouldRecordDeleteAccessLogs= */ false);
+                                /* shouldRecordAccessLog= */ false);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
                 pageSize = MAXIMUM_PAGE_SIZE - backupChanges.size();
@@ -235,6 +234,62 @@ public class BackupRestoreDatabaseHelper {
         return mChangeLogsRequestHelper.getNextPageToken(tokenRequest, rowId);
     }
 
+    /** Gets incremental data changes based on change logs. */
+    GetChangesForBackupResponse getIncrementalChanges(@Nullable String changeLogsPageToken) {
+        if (changeLogsPageToken == null) {
+            throw new IllegalStateException("No proper change logs token");
+        }
+        ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
+                mChangeLogsRequestHelper.getRequest(/* packageName= */ "", changeLogsPageToken);
+        // Use the default page size (1000) for now.
+        ChangeLogsRequest request = new ChangeLogsRequest.Builder(changeLogsPageToken).build();
+        ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
+                mChangeLogsHelper.getChangeLogs(
+                        mAppInfoHelper, changeLogsTokenRequest, request, mChangeLogsRequestHelper);
+
+        // Only UUIDs for upsert requests are returned.
+        Map<Integer, List<UUID>> recordTypeToInsertedUuids =
+                ChangeLogsHelper.getRecordTypeToInsertedUuids(
+                        changeLogsResponse.getChangeLogsMap());
+
+        Set<String> grantedExtraReadPermissions =
+                recordTypeToInsertedUuids.keySet().stream()
+                        .map(mInternalHealthConnectMappings::getRecordHelper)
+                        .flatMap(recordHelper -> recordHelper.getExtraReadPermissions().stream())
+                        .collect(Collectors.toSet());
+
+        List<RecordInternal<?>> recordInternals =
+                mTransactionManager.readRecordsByIds(
+                        new ReadTransactionRequest(
+                                mAppInfoHelper,
+                                /* packageName= */ "",
+                                recordTypeToInsertedUuids,
+                                DEFAULT_LONG,
+                                grantedExtraReadPermissions,
+                                /* isInForeground= */ true,
+                                /* isReadingSelfData= */ false),
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
+
+        List<BackupChange> backupChanges =
+                new ArrayList<>(convertRecordsToBackupChange(recordInternals));
+
+        // Include UUIDs for all deleted records.
+        List<ChangeLogsResponse.DeletedLog> deletedLogs =
+                ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
+        backupChanges.addAll(convertDeletedLogsToBackupChange(deletedLogs));
+
+        String backupChangeTokenRowId =
+                BackupChangeTokenHelper.getBackupChangeTokenRowId(
+                        mTransactionManager,
+                        null,
+                        EMPTY_PAGE_TOKEN.encode(),
+                        changeLogsResponse.getNextPageToken());
+        return new GetChangesForBackupResponse(backupChanges, backupChangeTokenRowId);
+    }
+
     private List<BackupChange> convertRecordsToBackupChange(List<RecordInternal<?>> records) {
         return records.stream()
                 .map(
@@ -245,11 +300,25 @@ public class BackupRestoreDatabaseHelper {
                             }
                             return new BackupChange(
                                     record.getUuid().toString(),
-                                    // TODO: b/369799948 - add proper encryption version.
+                                    // TODO: b/377648858 - add proper encryption version.
                                     /* version= */ 0,
                                     /* isDeletion= */ false,
                                     serializeRecordInternal(record));
                         })
+                .toList();
+    }
+
+    private List<BackupChange> convertDeletedLogsToBackupChange(
+            List<ChangeLogsResponse.DeletedLog> deletedLogs) {
+        return deletedLogs.stream()
+                .map(
+                        deletedLog ->
+                                new BackupChange(
+                                        deletedLog.getDeletedRecordId(),
+                                        // TODO: b/369799948 - add proper encryption version.
+                                        /* version= */ 0,
+                                        /* isDeletion= */ true,
+                                        null))
                 .toList();
     }
 
@@ -259,15 +328,6 @@ public class BackupRestoreDatabaseHelper {
     }
 
     private static byte[] serializeRecordInternal(RecordInternal<?> recordInternal) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ObjectOutputStream objectOutputStream =
-                        new ObjectOutputStream(byteArrayOutputStream)) {
-            objectOutputStream.writeObject(recordInternal);
-            objectOutputStream.flush();
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            Slog.e(TAG, "Failed to serialize an internal record", e);
-            return new byte[0];
-        }
+        return BackupData.newBuilder().setRecord(recordInternal.toProto()).build().toByteArray();
     }
 }

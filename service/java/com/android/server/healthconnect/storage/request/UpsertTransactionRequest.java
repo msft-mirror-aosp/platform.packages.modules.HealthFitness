@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.addNam
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.Nullable;
-import android.content.Context;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -57,64 +56,81 @@ import java.util.stream.Collectors;
 public class UpsertTransactionRequest {
     private static final String TAG = "HealthConnectUTR";
     private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
-    private final String mPackageName;
+    @Nullable private final String mPackageName;
 
     @RecordTypeIdentifier.RecordType Set<Integer> mRecordTypes = new ArraySet<>();
     @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsToState;
 
-    public UpsertTransactionRequest(
-            @Nullable String packageName,
+    /** Create an upsert request for insert API calls. */
+    public static UpsertTransactionRequest createForInsert(
+            String packageName,
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
-            Context context,
-            boolean isInsertRequest,
-            Map<String, Boolean> extraPermsStateMap,
-            AppInfoHelper appInfoHelper) {
-        this(
+            AppInfoHelper appInfoHelper,
+            Map<String, Boolean> extraPermsStateMap) {
+        for (RecordInternal<?> recordInternal : recordInternals) {
+            // Override each record package to the given package i.e. the API caller package.
+            StorageUtils.addPackageNameTo(recordInternal, packageName);
+            // For insert, we should generate a fresh UUID. Don't let the client choose it.
+            addNameBasedUUIDTo(recordInternal);
+        }
+        return new UpsertTransactionRequest(
                 packageName,
                 recordInternals,
                 deviceInfoHelper,
-                context,
-                isInsertRequest,
-                false /* useProvidedUuid */,
-                false /* skipPackageNameAndLogs */,
-                extraPermsStateMap,
-                appInfoHelper);
+                appInfoHelper,
+                true /* isInsertRequest */,
+                extraPermsStateMap);
     }
 
-    public UpsertTransactionRequest(
-            @Nullable String packageName,
+    /** Create an upsert request for update API calls. */
+    public static UpsertTransactionRequest createForUpdate(
+            String packageName,
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
-            Context context,
-            boolean isInsertRequest,
-            boolean useProvidedUuid,
-            boolean skipPackageName,
-            AppInfoHelper appInfoHelper) {
-        this(
+            AppInfoHelper appInfoHelper,
+            Map<String, Boolean> extraPermsStateMap) {
+        for (RecordInternal<?> recordInternal : recordInternals) {
+            // Override each record package to the given package i.e. the API caller package.
+            StorageUtils.addPackageNameTo(recordInternal, packageName);
+            // For update requests, generate uuid if the clientRecordID is present, else use the
+            // uuid passed as input.
+            StorageUtils.updateNameBasedUUIDIfRequired(recordInternal);
+        }
+        return new UpsertTransactionRequest(
                 packageName,
                 recordInternals,
                 deviceInfoHelper,
-                context,
-                isInsertRequest,
-                useProvidedUuid,
-                skipPackageName,
-                Collections.emptyMap(),
-                appInfoHelper);
+                appInfoHelper,
+                false /* isInsertRequest */,
+                extraPermsStateMap);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    /** Create an upsert request for restore operation. */
+    public static UpsertTransactionRequest createForRestore(
+            List<RecordInternal<?>> recordInternals,
+            DeviceInfoHelper deviceInfoHelper,
+            AppInfoHelper appInfoHelper) {
+        // Ensure each record has a record id set.
+        for (RecordInternal<?> recordInternal : recordInternals) {
+            Objects.requireNonNull(recordInternal.getUuid());
+        }
+        return new UpsertTransactionRequest(
+                null,
+                recordInternals,
+                deviceInfoHelper,
+                appInfoHelper,
+                true /* isInsertRequest */,
+                Collections.emptyMap());
+    }
+
     private UpsertTransactionRequest(
             @Nullable String packageName,
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
-            Context context,
+            AppInfoHelper appInfoHelper,
             boolean isInsertRequest,
-            // TODO(b/329237732): Use builder pattern for this class.
-            boolean useProvidedUuid,
-            boolean skipPackageName,
-            Map<String, Boolean> extraPermsStateMap,
-            AppInfoHelper appInfoHelper) {
+            Map<String, Boolean> extraPermsStateMap) {
         mPackageName = packageName;
         if (extraPermsStateMap != null && !extraPermsStateMap.isEmpty()) {
             mExtraWritePermissionsToState = new ArrayMap<>();
@@ -122,25 +138,8 @@ public class UpsertTransactionRequest {
         }
 
         for (RecordInternal<?> recordInternal : recordInternals) {
-            if (!skipPackageName) {
-                StorageUtils.addPackageNameTo(recordInternal, packageName);
-            }
-            appInfoHelper.populateAppInfoId(recordInternal, context, /* requireAllFields= */ true);
+            appInfoHelper.populateAppInfoId(recordInternal, /* requireAllFields= */ true);
             deviceInfoHelper.populateDeviceInfoId(recordInternal);
-
-            if (isInsertRequest) {
-                if (useProvidedUuid && recordInternal.getUuid() != null) {
-                    // Do nothing i.e. leave the UUID as provided. This is desired for backup and
-                    // restore to ensure references between records remain intact.
-                } else {
-                    // Otherwise, we should generate a fresh UUID. Don't let the client choose it.
-                    addNameBasedUUIDTo(recordInternal);
-                }
-            } else {
-                // For update requests, generate uuid if the clientRecordID is present, else use the
-                // uuid passed as input.
-                StorageUtils.updateNameBasedUUIDIfRequired(recordInternal);
-            }
             mRecordTypes.add(recordInternal.getRecordType());
             recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
             addRequest(recordInternal, isInsertRequest);
@@ -192,7 +191,8 @@ public class UpsertTransactionRequest {
         mUpsertRequests.add(request);
     }
 
-    public String getPackageName() {
+    // Package name is currently null for upsert requests coming from restore / import.
+    public @Nullable String getPackageName() {
         return mPackageName;
     }
 

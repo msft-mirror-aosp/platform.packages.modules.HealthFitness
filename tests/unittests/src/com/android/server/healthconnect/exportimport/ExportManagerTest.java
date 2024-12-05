@@ -20,6 +20,7 @@ import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXP
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
+import static com.android.server.healthconnect.TestUtils.assertTableSize;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_ZIP_FILE_NAME;
@@ -39,22 +40,29 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
+import android.healthconnect.cts.phr.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
-import android.os.Environment;
+import android.platform.test.annotations.DisableFlags;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Slog;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStatic;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStaticClasses;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -62,9 +70,9 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
+import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
 import org.junit.After;
@@ -89,33 +97,32 @@ public class ExportManagerTest {
     private static final String REMOTE_EXPORT_DATABASE_DIR_NAME = "remote";
     private static final String REMOTE_EXPORT_ZIP_FILE_NAME = "remote_file.zip";
     private static final String REMOTE_EXPORT_DATABASE_FILE_NAME = "remote_file.db";
-    private static final String ORIGINAL_DATABASE_NAME = "healthconnect.db";
 
     @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
                     .mockStatic(ExportImportLogger.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
+                    .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
-    private StorageContext mContext;
+    private Context mContext;
     private TransactionTestUtils mTransactionTestUtils;
     private ExportManager mExportManager;
     private StorageContext mExportedDbContext;
     private Instant mTimeStamp;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
+    private PhrTestUtils mPhrTestUtils;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -124,17 +131,16 @@ public class ExportManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        mContext = mDatabaseTestRule.getDatabaseContext();
-        TransactionManager transactionManager = mDatabaseTestRule.getTransactionManager();
+        mContext = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(transactionManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        TransactionManager transactionManager = healthConnectInjector.getTransactionManager();
 
         mTimeStamp = Instant.parse("2024-06-04T16:39:12Z");
         Clock fakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
@@ -143,6 +149,8 @@ public class ExportManagerTest {
         mExportManager =
                 new ExportManager(
                         mContext, fakeClock, mExportImportSettingsStorage, transactionManager);
+
+        mPhrTestUtils = new PhrTestUtils(mContext, healthConnectInjector);
 
         mExportedDbContext =
                 StorageContext.create(
@@ -158,12 +166,59 @@ public class ExportManagerTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT})
+    public void testWhenPhrExportNotDisabled_tableContentIsExported() throws Exception {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
+        mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
+        assertThat(mTransactionTestUtils.getRowCount("medical_data_source_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.getRowCount("medical_resource_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.getRowCount("medical_resource_indices_table"))
+                .isEqualTo(1);
+
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
+
+        decompressExportedZip();
+        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+                new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
+            assertTableSize(remoteExportHealthConnectDatabase, "medical_data_source_table", 1);
+            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_table", 1);
+            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_indices_table", 1);
+        }
+    }
+
+    @Test
+    @EnableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT
+    })
+    public void testDisableExportForPhr_deletesPhrTablesContent() throws Exception {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
+        mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
+        assertThat(mTransactionTestUtils.getRowCount("medical_data_source_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.getRowCount("medical_resource_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.getRowCount("medical_resource_indices_table"))
+                .isEqualTo(1);
+
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
+
+        decompressExportedZip();
+        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+                new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
+            assertTableSize(remoteExportHealthConnectDatabase, "medical_data_source_table", 0);
+            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_table", 0);
+            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_indices_table", 0);
+        }
+    }
+
+    @Test
     public void deletesAccessLogsTableContent() throws Exception {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
-        HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "access_logs_table", 2);
+        assertThat(mTransactionTestUtils.getRowCount("access_logs_table")).isEqualTo(2);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
@@ -204,9 +259,7 @@ public class ExportManagerTest {
     public void deletesChangeLogsTableContent() throws Exception {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
-        HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "change_logs_table", 2);
+        assertThat(mTransactionTestUtils.getRowCount("change_logs_table")).isEqualTo(2);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
@@ -220,9 +273,7 @@ public class ExportManagerTest {
     @Test
     public void runExport_whenCompleted_deletesLocalCopies() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "steps_record_table", 1);
+        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
@@ -296,9 +347,7 @@ public class ExportManagerTest {
     @Test
     public void makesRemoteCopyOfDatabase() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "steps_record_table", 1);
+        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
@@ -315,10 +364,7 @@ public class ExportManagerTest {
         // Inserting multiple rows to vary the size for testing of size logging
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(124, 457, 7));
-
-        HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "steps_record_table", 2);
+        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(2);
 
         mExportImportSettingsStorage.setLastExportError(
                 ScheduledExportStatus.DATA_EXPORT_ERROR_NONE, mTimeStamp);
@@ -353,9 +399,7 @@ public class ExportManagerTest {
     @Test
     public void updatesLastSuccessfulExport_onSuccessOnly() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "steps_record_table", 1);
+        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
 
         // running a successful export records a "last successful export"
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
@@ -402,10 +446,9 @@ public class ExportManagerTest {
         when(contentResolver.query(any(), any(), any(), any(), any())).thenReturn(cursor);
         when(cursor.moveToFirst()).thenReturn(true);
         when(cursor.getString(anyInt())).thenReturn(REMOTE_EXPORT_ZIP_FILE_NAME);
+
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
-        assertTableSize(originalDatabase, "steps_record_table", 1);
+        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
 
         // Running a successful export records a "last successful export".
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
@@ -438,14 +481,6 @@ public class ExportManagerTest {
                                         (mExportedDbContext.getDatabasePath(
                                                 REMOTE_EXPORT_ZIP_FILE_NAME))))
                         .build());
-    }
-
-    private void assertTableSize(HealthConnectDatabase database, String tableName, int tableRows) {
-        Cursor cursor =
-                database.getWritableDatabase()
-                        .rawQuery("SELECT count(*) FROM " + tableName + ";", null);
-        cursor.moveToNext();
-        assertThat(cursor.getInt(0)).isEqualTo(tableRows);
     }
 
     private void assertExportStartRecorded() {

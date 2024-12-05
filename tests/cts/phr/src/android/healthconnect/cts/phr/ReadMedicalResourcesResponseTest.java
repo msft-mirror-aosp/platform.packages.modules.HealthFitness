@@ -16,7 +16,7 @@
 
 package android.healthconnect.cts.phr;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.PAGE_TOKEN;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceAllergy;
@@ -75,7 +75,7 @@ public class ReadMedicalResourcesResponseTest {
                 List.of(
                         getMedicalResource(),
                         getMedicalResourceBuilder()
-                                .setType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                .setType(MEDICAL_RESOURCE_TYPE_VACCINES)
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                 .setFhirResource(getFhirResourceAllergy())
                                 .build());
@@ -141,7 +141,7 @@ public class ReadMedicalResourcesResponseTest {
                 new ReadMedicalResourcesResponse(
                         List.of(
                                 getMedicalResourceBuilder()
-                                        .setType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                        .setType(MEDICAL_RESOURCE_TYPE_VACCINES)
                                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                         .setFhirResource(getFhirResourceAllergy())
                                         .build()),
@@ -169,7 +169,7 @@ public class ReadMedicalResourcesResponseTest {
                 List.of(
                         getMedicalResource(),
                         getMedicalResourceBuilder()
-                                .setType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                .setType(MEDICAL_RESOURCE_TYPE_VACCINES)
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                 .setFhirResource(getFhirResourceAllergy())
                                 .build());

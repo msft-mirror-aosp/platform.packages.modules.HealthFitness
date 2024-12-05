@@ -43,6 +43,7 @@ object UiTestUtils {
     private val WAIT_TIMEOUT = Duration.ofSeconds(5)
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
     private val FIND_OBJECT_TIMEOUT = Duration.ofMillis(500)
+    private val NEW_WINDOW_TIMEOUT_MILLIS = 3000L
 
     private val TAG = UiTestUtils::class.java.simpleName
 
@@ -113,6 +114,14 @@ object UiTestUtils {
         getUiDevice().waitForIdle()
     }
 
+    fun clickOnDescAndWaitForNewWindow(text: String) {
+        findDesc(text).clickAndWait(Until.newWindow(), NEW_WINDOW_TIMEOUT_MILLIS)
+    }
+
+    fun clickOnTextAndWaitForNewWindow(text: String) {
+        findText(text).clickAndWait(Until.newWindow(), NEW_WINDOW_TIMEOUT_MILLIS)
+    }
+
     /**
      * Returns an object with given text if it's visible on the screen or throws otherwise.
      *
@@ -129,6 +138,28 @@ object UiTestUtils {
      */
     fun findTextAndClick(text: String) {
         findObjectAndClick(By.text(text))
+    }
+
+    /**
+     * Returns an object with given content description if it's visible on the screen.
+     *
+     * Throws if the object is not visible.
+     *
+     * Use this if the text label is expected to be visible on the screen without scrolling.
+     */
+    fun findDesc(desc: String): UiObject2 {
+        return findObject(By.desc(desc))
+    }
+
+    /**
+     * Clicks on an object with give content description if it's visible on the screen.
+     *
+     * Throws if the object is not visible.
+     *
+     * Use this if the object is expected to be visible on the screen without scrolling.
+     */
+    fun findDescAndClick(desc: String) {
+        findObjectAndClick(By.desc(desc))
     }
 
     /** Throws an exception if given object is visible on the screen. */
@@ -163,7 +194,10 @@ object UiTestUtils {
     }
 
     fun scrollDownTo(selector: BySelector) {
-        waitFindObject(By.scrollable(true)).scrollUntil(Direction.DOWN, Until.findObject(selector))
+        val scrollable = waitFindObjectOrNull(By.scrollable(true), FIND_OBJECT_TIMEOUT.toMillis())
+
+        scrollable?.scrollUntil(Direction.DOWN, Until.findObject(selector))
+        findObject(selector)
     }
 
     fun scrollUpTo(selector: BySelector) {
@@ -174,12 +208,26 @@ object UiTestUtils {
         try {
             waitDisplayed(selector) { it.click() }
         } catch (e: Exception) {
-            getUiDevice()
-                .findObject(By.scrollable(true))
-                .scrollUntil(Direction.DOWN, Until.findObject(selector))
-                .click()
+            val scrollable = getUiDevice().findObject(By.scrollable(true))
+
+            if (scrollable == null) {
+                throw objectNotFoundExceptionWithDump(
+                    "Scrollable not found while trying to find $selector"
+                )
+            }
+
+            val obj = scrollable.scrollUntil(Direction.DOWN, Until.findObject(selector))
+
+            findObject(selector)
+
+            obj.click()
         }
         getUiDevice().waitForIdle()
+    }
+
+    fun scrollDownToAndFindText(text: String) {
+        scrollDownTo(By.text(text))
+        findText(text)
     }
 
     fun skipOnboardingIfAppears() {

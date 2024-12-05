@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Gister"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Gelees: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Geskryf: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Bestuur toestemmings"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tyd: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktiwiteit"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"rolstoelstote"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Lees rolstoelstote"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Skryf rolstoelstote"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Aktiwiteitintensiteit"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"aktiwiteitintensiteit"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Lees aktiwiteitintensiteit"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Skryf aktiwiteitintensiteit"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Basale metaboliese koers"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"basale metaboliese koers"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Lees basale metaboliese koers"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"veltemperatuur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lees veltemperatuur"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Skryf veltemperatuur neer"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Dit sluit al die gesondheidrekords in wat gesinkroniseer is met Health Connect en daarby gevoeg is. Dit is dalk nie jou volledige mediese rekord nie en sluit nie ’n mediese beskrywing van jou gesondheidsrekords in nie."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Alle gesondheidrekords"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"alle gesondheidrekords"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Skryf alle gesondheidrekords"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Toestande"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"toestande"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Lees toestande"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Entstowwe"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"entstowwe"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Lees data oor entstowwe"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Entstowwe"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"entstowwe"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Lees data oor entstowwe"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratoriumuitslae"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratoriumuitslae"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Lees data oor laboratoriumuitslae"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"As jy toegang gee, kan die app data soos allergieë, laboratoriumresultate, entstowwe en meer lees en skryf\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"As jy toegang gee, kan die app data soos allergieë, laboratoriumresultate, entstowwe en meer lees\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Meer oor gesondheidrekords"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Data om te deel"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Data om te deel sluit in"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"As jy dit toelaat, kan <xliff:g id="APP_NAME">%1$s</xliff:g> jou gesondheidrekords met Health Connect deel."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sinkroniseer jou gesondheidrekords vanaf jou verskillende apps en bronne om dit op een plek te hou"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Verwyder alle toestemmings?"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Hierdie apps het nie meer toegang nie, maar het steeds data wat in Health Connect geberg is"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan data lees wat ná <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> bygevoeg is"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Gaan na Instellings &gt; Apps om ander Android-toestemmings te bestuur waartoe hierdie app toegang het"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Data wat jy met <xliff:g id="APP_NAME">%1$s</xliff:g> deel, word deur hul privaatheidsbeleid gedek"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Jy kan in die ontwikkelaar se privaatheidsbeleid uitvind hoe <xliff:g id="APP_NAME">%1$s</xliff:g> jou data hanteer."</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Gaan na Instellings en tik dan op Apps om ander Android-toestemmings te bestuur waartoe hierdie app toegang het"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lees die privaatheidsbeleid"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"In afgelope 24 uur gebruik"</string>
@@ -793,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Musiek"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Ander"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Onbegelei"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Matig"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Energiek"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> m."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> u. <xliff:g id="MIN">%2$s</xliff:g> min."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> u."</string>
@@ -1045,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrasie is aan die gang"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect word tans met die Android-stelsel geïntegreer.\n\nDit kan ’n rukkie neem vir jou data en toestemmings om oorgedra te word."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Moenie die app toemaak totdat jy ’n kennisgewing gekry het dat die proses voltooi is nie."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect-integrasie is aan die gang"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Opdatering is nodig"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect word met die Android-stelsel geïntegreer sodat jy direk van jou instellings af toegang daartoe kan kry."</string>
     <string name="update_button" msgid="4544529019832009496">"Dateer op"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Begin hierdie opdatering sodat Health Connect kan voortgaan om met jou stelselinstellings te integreer"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Dateer nou op"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Stelselopdatering is nodig"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Dateer jou foonstelsel op voordat jy voortgaan."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"As jy reeds jou foonstelsel opgedateer het, kan jy probeer om jou foon te herbegin sodat jy met die integrasie kan voortgaan"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect-opdatering nodig"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Voordat jy voortgaan, moet jy die Health Connect-app na die jongste weergawe opdateer."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Nog spasie nodig"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect het <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> se bergingspasie op jou foon nodig sodat die integrasie kan voortgaan.\n\nMaak spasie op jou foon beskikbaar en probeer dan weer."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Probeer weer"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Maak spasie beskikbaar"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Nog spasie nodig"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect het <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> se bergingspasie op jou foon nodig sodat die integrasie kan voortgaan."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Integrasie is onderbreek"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Die Health Connect-app het toegemaak terwyl die proses om dit met die Android-stelsel te integreer, aan die gang was.\n\nKlik hervat om die app weer oop te maak en voort te gaan om jou data en toestemmings oor te dra."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Voltooi dit binne <xliff:g id="TIME_NEEDED">%1$s</xliff:g> as jy jou Health Connect-data wil behou"</string>
@@ -1072,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Tik om voort te gaan om Health Connect met die Android-stelsel te integreer. Voltooi dit binne <xliff:g id="TIME_NEEDED">%1$s</xliff:g> as jy jou data wil behou"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Tik om voort te gaan om Health Connect met die Android-stelsel te integreer."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Gaan voort"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Hervat Health Connect-integrasie"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Voltooi dit binne <xliff:g id="TIME_NEEDED">%1$s</xliff:g> as jy jou data wil behou"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Appopdatering word benodig"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> moet opgedateer word om steeds met Health Connect te sinkroniseer"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Sommige apps moet opgedateer word om steeds met Health Connect te sinkroniseer"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> moet opgedateer word om steeds met Health Connect te sinkroniseer. Opdaterings is dalk nie vir alle apps beskikbaar nie."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Sommige apps moet opgedateer word om steeds met Health Connect te sinkroniseer. Opdaterings is dalk nie vir alle apps beskikbaar nie."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Kyk vir opdaterings"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Meer inligting"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-integrasie"</string>
@@ -1091,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connect-integrasie is nie voltooi nie."</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Jy sal ’n kennisgewing kry wanneer dit weer beskikbaar word."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Het dit"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connect-integrasie is nie voltooi nie."</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Lees meer"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connect-integrasie is voltooi"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Oop"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Wat’s nuut"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Jy kan nou direk van jou instellings af toegang tot Health Connect kry. Deïnstalleer die Health Connect-app enige tyd om bergingspasie beskikbaar te maak."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Het dit"</string>
@@ -1135,26 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Sien versoenbare apps"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Kry nog apps om met <xliff:g id="APP_NAME">%s</xliff:g> te sinkroniseer via Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Sien in appwinkel"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Stel ’n skermslot"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Stel ’n PIN, patroon of wagwoord vir hierdie toestel vir bykomende sekuriteit vir jou gesondheiddata"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Stel skermslot"</string>
     <string name="select_all" msgid="837499881590001166">"Kies alles"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Gekoppelde apps sal nie meer hierdie data van Health Connect af kan lees nie"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Gemerk"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Nie gemerk nie"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Oefeningkaartroete is beskikbaar"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Volgende dag"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Volgende week"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Volgende maand"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Vorige dag"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Vorige week"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Vorige maand"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Vee alle data permanent uit?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Vee geselekteerde data permanent uit?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Vee alle <xliff:g id="APP_NAME">%s</xliff:g>-data permanent uit?"</string>
@@ -1179,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Ingegaan <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Gister ingegaan <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Ingegaan <xliff:g id="TIME_DATE_0">%1$s</xliff:g><xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Laat heeltyd toe"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Laat toe indien gekies"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Terwyl die app gebruik is"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Weier almal"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Laat <xliff:g id="APP_NAME">%1$s</xliff:g> toe om toegang tot fiksheid- en welstanddata te kry?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> versoek toegang tot <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nKies om alles toe te laat of hulle individueel te beheer."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Gee <xliff:g id="APP_NAME">%1$s</xliff:g> toegang tot <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fiksheid en welstand"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"altyd"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"terwyl in gebruik"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Altyd"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Terwyl in gebruik"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan <xliff:g id="ALLOW_MODE">%2$s</xliff:g> toegang tot al jou fiksheid- en welstanddata kry"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Toegelaat om toegang te kry"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Toegelaat om te lees"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Hierdie toestemmings gee <xliff:g id="APP_NAME">%1$s</xliff:g> toegang tot data van jou toestelsensors af."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> van <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> apps toegelaat"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Geen apps wat versoek nie"</string>
+    <string name="allowed" msgid="4158456017482263737">"Toegelaat"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Nie toegelaat nie"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Apps met hierdie toestemming kan toegang tot <xliff:g id="DATA_TYPE">%s</xliff:g>-data van jou toestelsensors af kry."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Verwyder <xliff:g id="DATA_TYPE">%s</xliff:g>-toegang vir alle apps op jou horlosie?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Regmerk"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Kruismerk"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"<xliff:g id="APP_NAME">%1$s</xliff:g> het tans toegang tot fiksheid- en welstanddata <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Laat <xliff:g id="APP_NAME">%1$s</xliff:g> toe om altyd toegang tot fiksheid- en welstanddata te hê?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> het toegang tot <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Bestuur fiksheid- en welstandtoestemmings"</string>
 </resources>

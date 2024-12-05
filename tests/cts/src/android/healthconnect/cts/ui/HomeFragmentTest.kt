@@ -24,9 +24,9 @@ import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
-import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
 import android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest
+import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -36,6 +36,7 @@ import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
@@ -56,12 +57,13 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHealthConnectFullySupported()) {
+                return
+            }
+
             TestUtils.deleteAllStagedRemoteData()
             TestUtils.deleteAllMedicalData()
 
-            if (!TestUtils.isHardwareSupported()) {
-                return
-            }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
                 StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
@@ -71,7 +73,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
-            if (!TestUtils.isHardwareSupported()) {
+            if (!TestUtils.isHealthConnectFullySupported()) {
                 return
             }
             TestUtils.deleteAllStagedRemoteData()
@@ -82,6 +84,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @Test
     fun homeFragment_opensAppPermissions() {
         context.launchMainActivity {
+            scrollDownTo(By.text("App permissions"))
             findTextAndClick("App permissions")
 
             findText("Allowed access")
@@ -94,6 +97,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun homeFragment_oldIa_opensDataManagement() {
         context.launchMainActivity {
+            scrollDownTo(By.text("Data and access"))
             findTextAndClick("Data and access")
 
             findText("Browse data")
@@ -108,6 +112,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun homeFragment_newIa_opensDataManagement() {
         context.launchMainActivity {
+            scrollDownTo(By.text("Data and access"))
             findTextAndClick("Data and access")
 
             findText("Activity")

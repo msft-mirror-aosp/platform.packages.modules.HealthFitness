@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 // TODO(b/303023796): Make this final.
 public class PreferenceHelper extends DatabaseHelper {
+    private static final String TAG = "PreferenceHelper";
     private static final String TABLE_NAME = "preference_table";
     private static final String KEY_COLUMN_NAME = "key";
     public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
@@ -53,10 +54,18 @@ public class PreferenceHelper extends DatabaseHelper {
     private static final String VALUE_COLUMN_NAME = "value";
     private final TransactionManager mTransactionManager;
 
+    /**
+     * Key to store timestamp of the last time any PHR <b>read medical resources</b> API is called.
+     */
+    private static final String PREFS_KEY_PHR_LAST_READ_MEDICAL_RESOURCES_API =
+            "phr_last_read_medical_resources_api";
+
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public PreferenceHelper(TransactionManager transactionManager) {
+    public PreferenceHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 

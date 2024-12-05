@@ -47,8 +47,6 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 
-import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
-import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
@@ -143,6 +141,8 @@ import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.healthfitness.flags.Flags;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -181,10 +181,6 @@ public final class TestUtils {
     public static final String PKG_TEST_APP = "android.healthconnect.test.app";
     private static final String TEST_APP_RECEIVER =
             PKG_TEST_APP + "." + TestAppReceiver.class.getSimpleName();
-
-    public static boolean isHardwareAutomotive() {
-        return hasSystemFeature(AUTOMOTIVE_FEATURE);
-    }
 
     public static ChangeLogTokenResponse getChangeLogToken(ChangeLogTokenRequest request)
             throws InterruptedException {
@@ -616,7 +612,10 @@ public final class TestUtils {
     }
 
     public static void deleteAllStagedRemoteData() {
-        HealthConnectManager service = getHealthConnectManager();
+        deleteAllStagedRemoteData(getHealthConnectManager());
+    }
+
+    public static void deleteAllStagedRemoteData(HealthConnectManager service) {
         runWithShellPermissionIdentity(
                 () ->
                         // TODO(b/241542162): Avoid reflection once TestApi can be called from CTS
@@ -1074,17 +1073,28 @@ public final class TestUtils {
         receiver.verifyNoExceptionOrThrow(3);
     }
 
-    public static boolean isHardwareSupported() {
-        return isHardwareSupported(ApplicationProvider.getApplicationContext());
+    public static boolean isHealthConnectFullySupported() {
+        return isHealthConnectFullySupported(ApplicationProvider.getApplicationContext());
     }
 
-    /** returns true if the hardware is supported by HealthConnect. */
-    public static boolean isHardwareSupported(Context context) {
+    public static boolean isHealthConnectFullySupported(Context context) {
         PackageManager pm = context.getPackageManager();
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
                 && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
+    }
+
+    public static boolean areHealthPermissionsSupported() {
+        return areHealthPermissionsSupported(ApplicationProvider.getApplicationContext());
+    }
+
+    /** returns true if the hardware is supported by HealthConnect. */
+    public static boolean areHealthPermissionsSupported(Context context) {
+        PackageManager pm = context.getPackageManager();
+        boolean isWatchEnabled = pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+          && Flags.replaceBodySensorPermissionEnabled();
+        return isHealthConnectFullySupported(context) || isWatchEnabled;
     }
 
     /** Gets the priority list after getting the MANAGE_HEALTH_DATA permission. */
