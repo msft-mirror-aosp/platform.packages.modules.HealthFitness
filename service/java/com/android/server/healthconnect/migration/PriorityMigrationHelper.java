@@ -80,7 +80,7 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
      */
     public synchronized void populatePreMigrationPriority() {
         // Populating table only if it was not already populated.
-        if (mTransactionManager.getNumberOfEntriesInTheTable(PRE_MIGRATION_TABLE_NAME) == 0) {
+        if (mTransactionManager.queryNumEntries(PRE_MIGRATION_TABLE_NAME) == 0) {
             populatePreMigrationTable();
         }
     }

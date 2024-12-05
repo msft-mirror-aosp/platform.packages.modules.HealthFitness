@@ -256,13 +256,8 @@ public final class TransactionTestUtils {
     }
 
     /** Returns the number of rows in the specified table. */
-    public long getRowCount(String tableName) {
-        try (Cursor cursor =
-                mTransactionManager.rawQuery(
-                        "SELECT count(*) FROM " + tableName + ";", /* selectionArgs= */ null)) {
-            cursor.moveToNext();
-            return cursor.getInt(0);
-        }
+    public long queryNumEntries(String tableName) {
+        return mTransactionManager.queryNumEntries(tableName);
     }
 
     /** Returns a valid UUID string. */

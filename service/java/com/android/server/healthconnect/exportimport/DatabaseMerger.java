@@ -461,8 +461,7 @@ public final class DatabaseMerger {
             // only read change logs if they have ever requested a change logs token.
             if (cloudBackupAndRestore()
                     && mTransactionManager.checkTableExists(ChangeLogsRequestHelper.TABLE_NAME)
-                    && mTransactionManager.getNumberOfEntriesInTheTable(
-                                    ChangeLogsRequestHelper.TABLE_NAME)
+                    && mTransactionManager.queryNumEntries(ChangeLogsRequestHelper.TABLE_NAME)
                             != 0) {
                 mTransactionManager.insertAllRecords(
                         mAppInfoHelper, /* accessLogsHelper */ null, upsertTransactionRequest);

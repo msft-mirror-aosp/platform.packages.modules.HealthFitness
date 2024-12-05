@@ -20,7 +20,7 @@ import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXP
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
-import static com.android.server.healthconnect.TestUtils.assertTableSize;
+import static com.android.server.healthconnect.TestUtils.queryNumEntries;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_ZIP_FILE_NAME;
@@ -172,19 +172,20 @@ public class ExportManagerTest {
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
         mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
-        assertThat(mTransactionTestUtils.getRowCount("medical_data_source_table")).isEqualTo(1);
-        assertThat(mTransactionTestUtils.getRowCount("medical_resource_table")).isEqualTo(1);
-        assertThat(mTransactionTestUtils.getRowCount("medical_resource_indices_table"))
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_data_source_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_indices_table"))
                 .isEqualTo(1);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
-        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+        try (HealthConnectDatabase exportedDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
-            assertTableSize(remoteExportHealthConnectDatabase, "medical_data_source_table", 1);
-            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_table", 1);
-            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_indices_table", 1);
+            assertThat(queryNumEntries(exportedDatabase, "medical_data_source_table")).isEqualTo(1);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_table")).isEqualTo(1);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_indices_table"))
+                    .isEqualTo(1);
         }
     }
 
@@ -198,19 +199,20 @@ public class ExportManagerTest {
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
         mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
-        assertThat(mTransactionTestUtils.getRowCount("medical_data_source_table")).isEqualTo(1);
-        assertThat(mTransactionTestUtils.getRowCount("medical_resource_table")).isEqualTo(1);
-        assertThat(mTransactionTestUtils.getRowCount("medical_resource_indices_table"))
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_data_source_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_indices_table"))
                 .isEqualTo(1);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
-        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+        try (HealthConnectDatabase exportedDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
-            assertTableSize(remoteExportHealthConnectDatabase, "medical_data_source_table", 0);
-            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_table", 0);
-            assertTableSize(remoteExportHealthConnectDatabase, "medical_resource_indices_table", 0);
+            assertThat(queryNumEntries(exportedDatabase, "medical_data_source_table")).isEqualTo(0);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_table")).isEqualTo(0);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_indices_table"))
+                    .isEqualTo(0);
         }
     }
 
@@ -218,14 +220,14 @@ public class ExportManagerTest {
     public void deletesAccessLogsTableContent() throws Exception {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
-        assertThat(mTransactionTestUtils.getRowCount("access_logs_table")).isEqualTo(2);
+        assertThat(mTransactionTestUtils.queryNumEntries("access_logs_table")).isEqualTo(2);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
-        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+        try (HealthConnectDatabase exportedDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
-            assertTableSize(remoteExportHealthConnectDatabase, "access_logs_table", 0);
+            assertThat(queryNumEntries(exportedDatabase, "access_logs_table")).isEqualTo(0);
         }
     }
 
@@ -259,21 +261,21 @@ public class ExportManagerTest {
     public void deletesChangeLogsTableContent() throws Exception {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
-        assertThat(mTransactionTestUtils.getRowCount("change_logs_table")).isEqualTo(2);
+        assertThat(mTransactionTestUtils.queryNumEntries("change_logs_table")).isEqualTo(2);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
-        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+        try (HealthConnectDatabase exportedDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
-            assertTableSize(remoteExportHealthConnectDatabase, "change_logs_table", 0);
+            assertThat(queryNumEntries(exportedDatabase, "change_logs_table")).isEqualTo(0);
         }
     }
 
     @Test
     public void runExport_whenCompleted_deletesLocalCopies() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("steps_record_table")).isEqualTo(1);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
@@ -347,14 +349,14 @@ public class ExportManagerTest {
     @Test
     public void makesRemoteCopyOfDatabase() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("steps_record_table")).isEqualTo(1);
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         decompressExportedZip();
-        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+        try (HealthConnectDatabase exportedDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
-            assertTableSize(remoteExportHealthConnectDatabase, "steps_record_table", 1);
+            assertThat(queryNumEntries(exportedDatabase, "steps_record_table")).isEqualTo(1);
         }
     }
 
@@ -364,7 +366,7 @@ public class ExportManagerTest {
         // Inserting multiple rows to vary the size for testing of size logging
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(124, 457, 7));
-        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(2);
+        assertThat(mTransactionTestUtils.queryNumEntries("steps_record_table")).isEqualTo(2);
 
         mExportImportSettingsStorage.setLastExportError(
                 ScheduledExportStatus.DATA_EXPORT_ERROR_NONE, mTimeStamp);
@@ -399,7 +401,7 @@ public class ExportManagerTest {
     @Test
     public void updatesLastSuccessfulExport_onSuccessOnly() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("steps_record_table")).isEqualTo(1);
 
         // running a successful export records a "last successful export"
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
@@ -448,7 +450,7 @@ public class ExportManagerTest {
         when(cursor.getString(anyInt())).thenReturn(REMOTE_EXPORT_ZIP_FILE_NAME);
 
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
-        assertThat(mTransactionTestUtils.getRowCount("steps_record_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("steps_record_table")).isEqualTo(1);
 
         // Running a successful export records a "last successful export".
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
