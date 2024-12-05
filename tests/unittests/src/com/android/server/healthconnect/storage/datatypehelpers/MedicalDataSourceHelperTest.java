@@ -20,7 +20,7 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
@@ -30,9 +30,10 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_FHIR_VERSION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.createAllergyMedicalResource;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.createImmunizationMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResource;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 
+import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
 import static com.android.server.healthconnect.storage.PhrTestUtils.makeUpsertRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DATA_SOURCE_UUID_COLUMN_NAME;
@@ -56,10 +57,10 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import android.content.ContentValues;
@@ -77,14 +78,15 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -122,13 +124,9 @@ public class MedicalDataSourceHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private static final Instant INSTANT_NOW = Instant.now();
     private static final Instant INSTANT_NOW_PLUS_TEN_SEC = INSTANT_NOW.plusSeconds(10);
@@ -142,52 +140,36 @@ public class MedicalDataSourceHelperTest {
     private AccessLogsHelper mAccessLogsHelper;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
-    private Context mContext;
+
+    @Mock private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private Drawable mDrawable;
 
     @Before
     public void setup() throws NameNotFoundException {
-        AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
 
-        mContext = spy(mHealthConnectDatabaseTestRule.getDatabaseContext());
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
+        when(mContext.getUser()).thenReturn(TEST_USER);
+        when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
+        when(mContext.getPackageManager()).thenReturn(mPackageManager);
+
+        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
+                        .setTimeSource(mFakeTimeSource)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
 
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
-        mMedicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        mTransactionManager, mAppInfoHelper, mFakeTimeSource, mAccessLogsHelper);
-        mMedicalResourceHelper =
-                new MedicalResourceHelper(
-                        mTransactionManager,
-                        mAppInfoHelper,
-                        mMedicalDataSourceHelper,
-                        mFakeTimeSource,
-                        mAccessLogsHelper);
-        // We set the context to null, because we only use insertApp in this set of tests and
-        // we don't need context for that.
-        mTransactionTestUtils =
-                new TransactionTestUtils(
-                        mHealthConnectDatabaseTestRule.getDatabaseContext(), mTransactionManager);
-        mUtil =
-                new PhrTestUtils(
-                        mContext,
-                        mTransactionManager,
-                        mMedicalResourceHelper,
-                        mMedicalDataSourceHelper);
-        when(mContext.getPackageManager()).thenReturn(mPackageManager);
+        mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
+        mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mUtil = new PhrTestUtils(mContext, healthConnectInjector);
     }
 
     @After
@@ -210,7 +192,7 @@ public class MedicalDataSourceHelperTest {
         CreateTableRequest expected =
                 new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, columnInfo)
                         .addForeignKey(
-                                AppInfoHelper.getInstance().getMainTableName(),
+                                AppInfoHelper.TABLE_NAME,
                                 List.of(MedicalDataSourceHelper.getAppInfoIdColumnName()),
                                 List.of(PRIMARY_COLUMN_NAME));
 
@@ -671,12 +653,12 @@ public class MedicalDataSourceHelperTest {
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+                PhrDataFactory::createVaccineMedicalResource, dataSource1, INSTANT_NOW);
         upsertResourceAtTime(
                 PhrDataFactory::createAllergyMedicalResource,
                 dataSource1,
                 INSTANT_NOW_PLUS_TEN_SEC);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
         List<MedicalDataSource> result =
@@ -748,7 +730,7 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ true,
@@ -770,13 +752,13 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void getById_inBgWithoutBgPerm_noWritePerm_immunizationReadPermOnly_noAccessLog() {
+    public void getById_inBgWithoutBgPerm_noWritePerm_vaccineReadPermOnly_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ true,
@@ -804,12 +786,11 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationPackage1 =
-                createImmunizationMedicalResource(dataSource1.getId());
+        MedicalResource vaccineDS1 = createVaccineMedicalResource(dataSource1.getId());
         MedicalResource allergyResourcePackage2 = createAllergyMedicalResource(dataSource2.getId());
 
         mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(immunizationPackage1)));
+                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(vaccineDS1)));
         mMedicalResourceHelper.upsertMedicalResources(
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                 List.of(makeUpsertRequest(allergyResourcePackage2)));
@@ -852,17 +833,16 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationPackage1 =
-                createImmunizationMedicalResource(dataSource1.getId());
+        MedicalResource vaccineDS1 = createVaccineMedicalResource(dataSource1.getId());
         MedicalResource allergyPackage2 = createAllergyMedicalResource(dataSource2.getId());
 
         mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(immunizationPackage1)));
+                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(vaccineDS1)));
         mMedicalResourceHelper.upsertMedicalResources(
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(allergyPackage2)));
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -870,12 +850,12 @@ public class MedicalDataSourceHelperTest {
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // no write permission.
-        // The data that the calling app can read: dataSource1 (through immunization
+        // The data that the calling app can read: dataSource1 (through vaccine
         // read permission)
         // In this case, read access log is created based on the intention of the
-        // app and the fact that the app has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+        // app and the fact that the app has MEDICAL_RESOURCE_TYPE_VACCINES
         // even though the actual data accessed is self data.
         AccessLog expected =
                 new AccessLog(
@@ -896,14 +876,13 @@ public class MedicalDataSourceHelperTest {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         String dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME).getId();
-        MedicalResource immunizationDifferentPackage =
-                createImmunizationMedicalResource(dataSource);
+        MedicalResource vaccineDifferentPackage = createVaccineMedicalResource(dataSource);
         mMedicalResourceHelper.upsertMedicalResources(
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
-                List.of(makeUpsertRequest(immunizationDifferentPackage)));
+                List.of(makeUpsertRequest(vaccineDifferentPackage)));
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource)),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -911,10 +890,10 @@ public class MedicalDataSourceHelperTest {
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // no write permission.
-        // The data that the calling app can read: any dataSource belonging to the any immunization
-        // resources as the app has immunization permission.
+        // The data that the calling app can read: any dataSource belonging to the any vaccine
+        // resources as the app has vaccine permission.
         // In this case, read access log is created.
         AccessLog expected =
                 new AccessLog(
@@ -931,11 +910,11 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void getById_inForegroundOrBgWithPerm_hasReadImmunization_nothingRead_noAccessLog() {
+    public void getById_inForegroundOrBgWithPerm_hasReadVaccine_nothingRead_noAccessLog() {
         List<UUID> dataSourceIds = List.of(UUID.fromString("a6194e35-698c-4706-918f-00bf959f123b"));
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 dataSourceIds,
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -977,10 +956,10 @@ public class MedicalDataSourceHelperTest {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource.getId())),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false,
@@ -988,10 +967,9 @@ public class MedicalDataSourceHelperTest {
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // has write permission.
-        // The data that the calling app can read: dataSource of the
-        // immunization
+        // The data that the calling app can read: dataSource of the vaccine
         // In this case, read access log is created based on the intention of the app
         // even though the actual data accessed is self data.
         AccessLog expected =
@@ -1016,18 +994,18 @@ public class MedicalDataSourceHelperTest {
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+                PhrDataFactory::createVaccineMedicalResource, dataSource1, INSTANT_NOW);
         upsertResourceAtTime(
                 PhrDataFactory::createAllergyMedicalResource,
                 dataSource1,
                 INSTANT_NOW_PLUS_TEN_SEC);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true,
@@ -1039,30 +1017,30 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void getByIds_inBgWithoutBgPermNoWritePermImmunizationReadPermOnly_correctResult() {
+    public void getByIds_inBgWithoutBgPermNoWritePermVaccineReadPermOnly_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+                PhrDataFactory::createVaccineMedicalResource, dataSource1, INSTANT_NOW);
         // Even though the reader does not have Allergy read permissions, this resource needs to
         // be considered for calculating the MedicalDataSource's last data update time.
         upsertResourceAtTime(
                 PhrDataFactory::createAllergyMedicalResource,
                 dataSource1,
                 INSTANT_NOW_PLUS_TEN_SEC);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
         // App is in background without background read perm, no write permission but has
-        // immunization read permission. App can read dataSources belonging to immunizations that
+        // vaccine read permission. App can read dataSources belonging to vaccines that
         // the app wrote itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true,
@@ -1074,8 +1052,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void
-            getById_inBgWithoutBgPermNoWritePermBothAllergyAndImmunizationReadPerm_correctResult() {
+    public void getById_inBgWithoutBgPermNoWritePermBothAllergyAndVaccineReadPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
                 mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
@@ -1083,15 +1060,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -1100,7 +1075,7 @@ public class MedicalDataSourceHelperTest {
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, no write permission but has
-        // immunization read permission. App can read dataSources belonging to immunizations
+        // vaccine read permission. App can read dataSources belonging to vaccines
         // and allergy resource types that the app wrote itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
@@ -1111,7 +1086,7 @@ public class MedicalDataSourceHelperTest {
                                         dataSource1Package2.getId())),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true,
@@ -1125,7 +1100,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void getById_inForegroundOrinBgWithBgPermNoWritePermHasImmunizationPerm_correctResult() {
+    public void getById_inForegroundOrinBgWithBgPermNoWritePermHasVaccinePerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
                 mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
@@ -1135,30 +1110,28 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package2,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, no write permission but has
-        // immunization read permission. App can read all dataSources belonging to immunizations.
+        // vaccine read permission. App can read all dataSources belonging to vaccines.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                         toUuids(
                                 List.of(
                                         dataSource1Package1.getId(), dataSource2Package1.getId(),
                                         dataSource1Package2.getId(), dataSource2Package2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false,
@@ -1183,15 +1156,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -1232,11 +1203,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
@@ -1281,11 +1250,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
@@ -1294,8 +1261,8 @@ public class MedicalDataSourceHelperTest {
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
-        // has allergy resource type and immunization read permissions.
-        // App can read dataSources belonging to allergy and immunization resource types.
+        // has allergy resource type and vaccine read permissions.
+        // App can read dataSources belonging to allergy and vaccine resource types.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                         toUuids(
@@ -1304,7 +1271,7 @@ public class MedicalDataSourceHelperTest {
                                         dataSource1Package2.getId(), dataSource2Package2.getId())),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false,
@@ -1320,8 +1287,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void
-            getByIds_inForegroundOrBgWithBgPermHasWritePermHasReadImmunizationPerm_correctResult() {
+    public void getByIds_inForegroundOrBgWithBgPermHasWritePermHasReadVaccinePerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
                 mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
@@ -1331,29 +1297,27 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types.
+        // vaccine resource types.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                         toUuids(
                                 List.of(
                                         dataSource1Package1.getId(), dataSource2Package1.getId(),
                                         dataSource1Package2.getId(), dataSource2Package2.getId())),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false,
@@ -1393,27 +1357,25 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // The packageName set is empty so no filtering based on packageNames.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types.
+        // vaccine resource types.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -1437,27 +1399,25 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // The app's package name is included in the list of packages.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types written by any of the given packages.
+        // vaccine resource types written by any of the given packages.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -1482,27 +1442,25 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package2,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // The app's package name is not included in the list of packages.
         // App can read dataSources belonging to
-        // immunization resource types written by any of the given packages.
+        // vaccine resource types written by any of the given packages.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -1524,15 +1482,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
@@ -1566,15 +1522,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
@@ -1608,11 +1562,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in background without background read perm, has write permission and
@@ -1643,26 +1595,24 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has write permission and
-        // has read immunization permission.
+        // has read vaccine permission.
         // The packageNames is empty so no filtering is applied.
         // App can read dataSources they wrote themselves.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1685,26 +1635,24 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has write permission and
-        // has read immunization permission.
+        // has read vaccine permission.
         // The app's package name is included in the list of packages.
         // App can read dataSources they wrote themselves.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1727,15 +1675,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in background without background read perm, has write permission and
-        // has read immunization permission.
+        // has read vaccine permission.
         // The app's package name is not included in the list of packages.
         // App can read not dataSources.
         assertThrows(
@@ -1743,7 +1689,7 @@ public class MedicalDataSourceHelperTest {
                 () -> {
                     mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                             Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                            Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                             DATA_SOURCE_PACKAGE_NAME,
                             /* hasWritePermission= */ true,
                             /* isCalledFromBgWithoutBgRead= */ true);
@@ -1762,26 +1708,24 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has no write permission and
-        // has read immunization permission.
+        // has read vaccine permission.
         // The packageNames is empty so no filtering based on packageNames.
-        // App can read dataSources belonging to immunizations the app wrote itself.
+        // App can read dataSources belonging to vaccines the app wrote itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1803,21 +1747,19 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in background without background read perm, has no write permission and
-        // has read immunization permission.
+        // has read vaccine permission.
         // The app's package name is included in the list of packages.
-        // App can read dataSources belonging to immunizations the app wrote itself.
+        // App can read dataSources belonging to vaccines the app wrote itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1837,15 +1779,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in background without background read perm, has no write permission and
-        // has read immunization permission.
+        // has read vaccine permission.
         // The app's package name is not included in the list of packages.
         // App can read no dataSources.
         assertThrows(
@@ -1853,7 +1793,7 @@ public class MedicalDataSourceHelperTest {
                 () -> {
                     mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                             Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                            Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                             DATA_SOURCE_PACKAGE_NAME,
                             /* hasWritePermission= */ false,
                             /* isCalledFromBgWithoutBgRead= */ true);
@@ -1872,29 +1812,27 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, no write permission but has
-        // immunization and allergy read permission.
+        // vaccine and allergy read permission.
         // PackageNames is empty so no filtering based on packageNames is applied.
         // App can read dataSources belonging to
-        // immunizations and allergy resource types that the app wrote itself.
+        // vaccines and allergy resource types that the app wrote itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1917,27 +1855,25 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, no write permission but has
-        // immunization and allergy read permission. App can read dataSources belonging to
-        // immunizations and allergy resource types that the app wrote itself.
+        // vaccine and allergy read permission. App can read dataSources belonging to
+        // vaccines and allergy resource types that the app wrote itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
@@ -1961,15 +1897,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
@@ -2004,15 +1938,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
@@ -2046,11 +1978,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in foreground or background with background read perm, has write permission but
@@ -2081,11 +2011,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
@@ -2123,11 +2051,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
@@ -2165,15 +2091,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -2182,16 +2106,16 @@ public class MedicalDataSourceHelperTest {
                 INSTANT_NOW_PLUS_TWENTY_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
-        // has allergy and immunization resource types read permission.
+        // has allergy and vaccine resource types read permission.
         // The packageNames is empty so no filtering applied based on that.
-        // App can read only read dataSources belonging to the allergy and immunization
+        // App can read only read dataSources belonging to the allergy and vaccine
         // resource types written by any apps.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2216,15 +2140,13 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -2233,15 +2155,15 @@ public class MedicalDataSourceHelperTest {
                 INSTANT_NOW_PLUS_TWENTY_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
-        // has allergy and immunization resource types read permission.
-        // App can read only read dataSources belonging to the allergy and immunization
+        // has allergy and vaccine resource types read permission.
+        // App can read only read dataSources belonging to the allergy and vaccine
         // resource types written by the provided packageNames.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2267,27 +2189,25 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization resource type read permission.
+        // has vaccine resource type read permission.
         // The packageNames is empty so no filtering is applied based on that.
-        // App can read dataSources belonging to the immunization resource types written by any
+        // App can read dataSources belonging to the vaccine resource types written by any
         // apps and any other dataSources that the app wrote itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         /* packageNames= */ Set.of(),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2312,27 +2232,25 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package1,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization resource type read permission.
+        // has vaccine resource type read permission.
         // App itself is included in the packageNames.
-        // App can read dataSources belonging to the immunization resource types written by the
+        // App can read dataSources belonging to the vaccine resource types written by the
         // provided packageNames and all dataSources written by the app itself.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2357,27 +2275,25 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // Insert more data with later modified time.
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1Package2,
                 INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization resource type read permission.
+        // has vaccine resource type read permission.
         // App itself is not included in the packageNames.
-        // App can read dataSources belonging to the immunization resource types written by the
+        // App can read dataSources belonging to the vaccine resource types written by the
         // provided packageNames.
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                         Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
@@ -2399,9 +2315,9 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+                PhrDataFactory::createVaccineMedicalResource, dataSource1, INSTANT_NOW);
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -2415,9 +2331,9 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource2, INSTANT_NOW);
+                PhrDataFactory::createVaccineMedicalResource, dataSource2, INSTANT_NOW);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource,
+                PhrDataFactory::createVaccineMedicalResource,
                 dataSource2,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -2448,7 +2364,7 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
         Instant nowMinus10Seconds = INSTANT_NOW.minusSeconds(10);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource, nowMinus10Seconds);
+                PhrDataFactory::createVaccineMedicalResource, dataSource, nowMinus10Seconds);
         MedicalResource resource2 =
                 upsertResourceAtTime(
                         PhrDataFactory::createDifferentAllergyMedicalResource,
@@ -2502,9 +2418,9 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+                PhrDataFactory::createVaccineMedicalResource, dataSource1, INSTANT_NOW);
         upsertResourceAtTime(
-                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                PhrDataFactory::createDifferentVaccineMedicalResource,
                 dataSource1,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -2518,9 +2434,9 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource2, INSTANT_NOW);
+                PhrDataFactory::createVaccineMedicalResource, dataSource2, INSTANT_NOW);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource,
+                PhrDataFactory::createVaccineMedicalResource,
                 dataSource2,
                 INSTANT_NOW_PLUS_TEN_SEC);
         upsertResourceAtTime(
@@ -2552,7 +2468,7 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
         Instant nowMinus10Seconds = INSTANT_NOW.minusSeconds(10);
         upsertResourceAtTime(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource, nowMinus10Seconds);
+                PhrDataFactory::createVaccineMedicalResource, dataSource, nowMinus10Seconds);
         MedicalResource resource2 =
                 upsertResourceAtTime(
                         PhrDataFactory::createDifferentAllergyMedicalResource,
@@ -2610,7 +2526,9 @@ public class MedicalDataSourceHelperTest {
                         "data_source_uuid",
                         "package_name");
         String expectedQuery =
-                "SELECT MAX(medical_resource_table.last_modified_time) AS last_data_update_time,"
+                "SELECT MAX(medical_resource_table.last_modified_time) AS"
+                        + " last_data_update_time,inner_query_result.last_modified_time AS"
+                        + " last_data_source_update_time,"
                         + String.join(",", groupByColumnNames)
                         + " FROM ( SELECT * FROM medical_data_source_table WHERE"
                         + " medical_data_source_row_id IN (SELECT medical_data_source_row_id FROM ("
@@ -2653,7 +2571,9 @@ public class MedicalDataSourceHelperTest {
                         "data_source_uuid",
                         "package_name");
         String expectedQuery =
-                "SELECT MAX(medical_resource_table.last_modified_time) AS last_data_update_time,"
+                "SELECT MAX(medical_resource_table.last_modified_time) AS"
+                        + " last_data_update_time,inner_query_result.last_modified_time AS"
+                        + " last_data_source_update_time,"
                         + String.join(",", groupByColumnNames)
                         + " FROM ( SELECT * FROM medical_data_source_table WHERE"
                         + " medical_data_source_row_id IN (SELECT medical_data_source_row_id FROM"
@@ -2686,23 +2606,21 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // The packageName set is empty so no filtering based on packageNames.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types.
+        // vaccine resource types.
         // So access log will be created based on the app permission to access dataSources
-        // belonging to immunizations.
+        // belonging to vaccines.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 /* packageNames= */ Set.of(),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -2728,20 +2646,19 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
                 mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
 
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // The packageName set is empty so no filtering based on packageNames.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types. In this case the only immunization resource type is for
+        // vaccine resource types. In this case the only vaccine resource type is for
         // the app itself. Since the read happened through a read permission, access log will be
         // created.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 /* packageNames= */ Set.of(),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -2771,21 +2688,19 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // The app's package name is included in the list of packages.
         // App can read dataSources they wrote themselves and dataSources belonging to
-        // immunization resource types written by any of the given packages.
-        // Since some immunization resource types were read, an access log will be created.
+        // vaccine resource types written by any of the given packages.
+        // Since some vaccine resource types were read, an access log will be created.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -2815,21 +2730,19 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
         // App is in foreground or background with background read perm, has write permission and
-        // has immunization read permissions.
+        // has vaccine read permissions.
         // The app's package name is not included in the list of packages.
         // App can read dataSources belonging to
-        // immunization resource types written by any of the given packages.
+        // vaccine resource types written by any of the given packages.
         // Access log is created since the app has access through read permission.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -2859,17 +2772,15 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in background without background read perm, has write permission and
         // no read permissions.
         // App can read dataSources they wrote themself, which in this case belong to the
-        // immunization and allergy resources written. No access log should be created.
+        // vaccine and allergy resources written. No access log should be created.
         mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
                 /* packageNames= */ Set.of(),
                 /* grantedMedicalResourceTypes= */ Set.of(),
@@ -2902,11 +2813,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in foreground or background with background read perm, has write permission but
@@ -2946,11 +2855,9 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
                 mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
-        mUtil.upsertResource(
-                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
 
         // App is in foreground or background with background read perm, no write permission but
@@ -3043,7 +2950,7 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
         assertThrows(
@@ -3094,7 +3001,7 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
                 UUID.fromString(dataSource1.getId()), /* packageName= */ DATA_SOURCE_PACKAGE_NAME);
@@ -3108,7 +3015,7 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ true);
 
         assertThat(mAccessLogsHelper.queryAccessLogs())
@@ -3124,7 +3031,7 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
@@ -3134,14 +3041,14 @@ public class MedicalDataSourceHelperTest {
         // resource type from another package.
         // When the calling app, calls the delete API, we expect access log to be created for
         // the deleted dataSource belonging to the app and the medical resources associated
-        // with that dataSource which in this case would be immunization and allergy.
+        // with that dataSource which in this case would be vaccine and allergy.
         AccessLog deleteAccessLog =
                 new AccessLog(
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
                         /* medicalResourceTypes= */ Set.of(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                         /* isMedicalDataSourceAccessed= */ true);
 
@@ -3369,14 +3276,7 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_DISPLAY_NAME,
                         DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
-        MedicalResourceHelper resourceHelper =
-                new MedicalResourceHelper(
-                        mTransactionManager,
-                        mAppInfoHelper,
-                        mMedicalDataSourceHelper,
-                        new FakeTimeSource(INSTANT_NOW),
-                        mAccessLogsHelper);
-        MedicalResource medicalResource = createImmunizationMedicalResource(dataSource.getId());
+        MedicalResource medicalResource = createVaccineMedicalResource(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertRequest =
                 new UpsertMedicalResourceInternalRequest()
                         .setMedicalResourceType(medicalResource.getType())
@@ -3386,7 +3286,7 @@ public class MedicalDataSourceHelperTest {
                         .setData(medicalResource.getFhirResource().getData())
                         .setDataSourceId(dataSource.getId());
         MedicalResource resource =
-                resourceHelper
+                mMedicalResourceHelper
                         .upsertMedicalResources(DATA_SOURCE_PACKAGE_NAME, List.of(upsertRequest))
                         .get(0);
 
@@ -3398,7 +3298,7 @@ public class MedicalDataSourceHelperTest {
                         toUuids(List.of(dataSource.getId())));
         assertThat(result).isEmpty();
         List<MedicalResource> resourceResult =
-                resourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
                         List.of(resource.getId()));
         assertThat(resourceResult).isEmpty();
     }

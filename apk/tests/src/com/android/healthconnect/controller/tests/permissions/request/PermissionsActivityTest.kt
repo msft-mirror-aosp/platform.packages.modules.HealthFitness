@@ -37,7 +37,7 @@ import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES
 import android.health.connect.HealthPermissions.READ_SLEEP
 import android.health.connect.HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED
 import android.health.connect.HealthPermissions.WRITE_EXERCISE
@@ -106,15 +106,15 @@ class PermissionsActivityTest {
         private val fitnessPermissions =
             arrayOf(READ_EXERCISE, READ_SLEEP, WRITE_SKIN_TEMPERATURE, WRITE_ACTIVE_CALORIES_BURNED)
         private val fitnessAndMedicalPermissions =
-            arrayOf(READ_EXERCISE, READ_MEDICAL_DATA_IMMUNIZATIONS)
+            arrayOf(READ_EXERCISE, READ_MEDICAL_DATA_VACCINES)
         private val fitnessAndAdditionalPermissions =
             arrayOf(WRITE_SLEEP, READ_HEALTH_DATA_IN_BACKGROUND)
         private val medicalPermissions =
-            arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
+            arrayOf(READ_MEDICAL_DATA_VACCINES, WRITE_MEDICAL_DATA)
         private val medicalAndAdditionalPermissions =
-            arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_HEALTH_DATA_IN_BACKGROUND)
+            arrayOf(READ_MEDICAL_DATA_VACCINES, READ_HEALTH_DATA_IN_BACKGROUND)
         private val allThreeCombined =
-            arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS)
+            arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_SLEEP, READ_MEDICAL_DATA_VACCINES)
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -344,11 +344,11 @@ class PermissionsActivityTest {
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestOnlyWriteMedicalPermission_clickOnAllow_sendsResultOk() {
-        val permissions = arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
+        val permissions = arrayOf(READ_MEDICAL_DATA_VACCINES, WRITE_MEDICAL_DATA)
         val startActivityIntent = getPermissionScreenIntent(permissions)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -372,17 +372,17 @@ class PermissionsActivityTest {
             .isEqualTo(expectedResults)
 
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA))
+            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_VACCINES, WRITE_MEDICAL_DATA))
     }
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestOnlyWriteMedicalPermission_clickOnDontAllow_sendsResultOk() {
-        val permissions = arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
+        val permissions = arrayOf(READ_MEDICAL_DATA_VACCINES, WRITE_MEDICAL_DATA)
         val startActivityIntent = getPermissionScreenIntent(permissions)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -406,7 +406,7 @@ class PermissionsActivityTest {
             .isEqualTo(expectedResults)
 
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_IMMUNIZATIONS))
+            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_VACCINES))
     }
 
     @Test
@@ -415,13 +415,13 @@ class PermissionsActivityTest {
         val permissions =
             arrayOf(
                 READ_MEDICAL_DATA_CONDITIONS,
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 WRITE_MEDICAL_DATA,
             )
         val startActivityIntent = getPermissionScreenIntent(permissions)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -441,7 +441,7 @@ class PermissionsActivityTest {
 
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactlyElementsIn(
-                listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_MEDICAL_DATA_CONDITIONS)
+                listOf(READ_MEDICAL_DATA_VACCINES, READ_MEDICAL_DATA_CONDITIONS)
             )
     }
 
@@ -451,13 +451,13 @@ class PermissionsActivityTest {
         val permissions =
             arrayOf(
                 READ_MEDICAL_DATA_CONDITIONS,
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 WRITE_MEDICAL_DATA,
             )
         val startActivityIntent = getPermissionScreenIntent(permissions)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -478,7 +478,7 @@ class PermissionsActivityTest {
             .isEqualTo(expectedResults)
 
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_IMMUNIZATIONS))
+            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_VACCINES))
     }
 
     @Test
@@ -487,7 +487,7 @@ class PermissionsActivityTest {
         val permissions =
             arrayOf(
                 READ_MEDICAL_DATA_CONDITIONS,
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 READ_SLEEP,
                 WRITE_EXERCISE,
                 WRITE_MEDICAL_DATA,
@@ -495,7 +495,7 @@ class PermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -514,7 +514,7 @@ class PermissionsActivityTest {
         assertThat(permissionManager.grantHealthPermissionInvocations).isEqualTo(2)
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactlyElementsIn(
-                listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_MEDICAL_DATA_CONDITIONS)
+                listOf(READ_MEDICAL_DATA_VACCINES, READ_MEDICAL_DATA_CONDITIONS)
             )
     }
 
@@ -524,7 +524,7 @@ class PermissionsActivityTest {
         val permissions =
             arrayOf(
                 READ_MEDICAL_DATA_CONDITIONS,
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 READ_SLEEP,
                 WRITE_EXERCISE,
                 WRITE_MEDICAL_DATA,
@@ -532,7 +532,7 @@ class PermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -550,7 +550,7 @@ class PermissionsActivityTest {
         assertThat(permissionManager.revokeHealthPermissionInvocations).isEqualTo(2)
         assertThat(permissionManager.grantHealthPermissionInvocations).isEqualTo(1)
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_IMMUNIZATIONS))
+            .containsExactlyElementsIn(listOf(READ_MEDICAL_DATA_VACCINES))
     }
 
     @Test
@@ -559,14 +559,14 @@ class PermissionsActivityTest {
         val permissions =
             arrayOf(
                 READ_MEDICAL_DATA_CONDITIONS,
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 READ_HEALTH_DATA_IN_BACKGROUND,
                 WRITE_MEDICAL_DATA,
             )
         val startActivityIntent = getPermissionScreenIntent(permissions)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+            listOf(READ_MEDICAL_DATA_VACCINES),
         )
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -584,7 +584,7 @@ class PermissionsActivityTest {
 
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactlyElementsIn(
-                listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_MEDICAL_DATA_CONDITIONS)
+                listOf(READ_MEDICAL_DATA_VACCINES, READ_MEDICAL_DATA_CONDITIONS)
             )
     }
 
@@ -594,7 +594,7 @@ class PermissionsActivityTest {
         val permissions =
             arrayOf(
                 READ_MEDICAL_DATA_CONDITIONS,
-                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_VACCINES,
                 READ_HEALTH_DATA_IN_BACKGROUND,
                 WRITE_MEDICAL_DATA,
             )
@@ -830,6 +830,7 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestAdditional_clickOnAllow_includesAllInResponse() {
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
@@ -855,6 +856,7 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestAdditional_clickOnDontAllow_includesAllInResponse() {
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
@@ -985,7 +987,7 @@ class PermissionsActivityTest {
         val startActivityIntent =
             getPermissionScreenIntent(
                 arrayOf(
-                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    READ_MEDICAL_DATA_VACCINES,
                     READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                     READ_EXERCISE,
                     WRITE_SLEEP,
@@ -1045,7 +1047,7 @@ class PermissionsActivityTest {
         assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
             .isEqualTo(
                 arrayOf(
-                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    READ_MEDICAL_DATA_VACCINES,
                     READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                     READ_EXERCISE,
                     WRITE_SLEEP,

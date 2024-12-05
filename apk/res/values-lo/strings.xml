@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"ມື້ວານນີ້"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"ອ່ານ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"ຂຽນ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ຈັດການການອະນຸຍາດ"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ເວລາ: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"ກິດຈະກຳ"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ການຍູ້ລໍ້ຍູ້"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"ອ່ານຂໍ້ມູນການຍູ້ລໍ້ຍູ້"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"ຂຽນຂໍ້ມູນການຍູ້ລໍ້ຍູ້"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"ຄວາມໜັກຂອງກິດຈະກຳ"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"ຄວາມໜັກຂອງກິດຈະກຳ"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"ອ່ານຂໍ້ມູນຄວາມໜັກຂອງກິດຈະກຳ"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"ຂຽນຂໍ້ມູນຄວາມໜັກຂອງກິດຈະກຳ"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"ອັດຕາການເຜົາຜານໃນເວລາພັກຜ່ອນ"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"ອັດຕາການເຜົາຜານໃນເວລາພັກຜ່ອນ"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"ອ່ານອັດຕາການເຜົາຜານໃນເວລາພັກຜ່ອນ"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"ອຸນຫະພູມຜິວໜັງ"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"ອ່ານຂໍ້ມູນອຸນຫະພູມຜິວໜັງ"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"ຂຽນຂໍ້ມູນອຸນຫະພູມຜິວໜັງ"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"ເຊິ່ງນີ້ຮວມເຖິງຂໍ້ມູນສຸຂະພາບທັງໝົດທີ່ຊິ້ງ ແລະ ເພີ່ມໃສ່ໃນ Health Connect. ຂໍ້ມູນນີ້ອາດບໍ່ແມ່ນຂໍ້ມູນທາງການແພດທັງໝົດຂອງທ່ານ ແລະ ບໍ່ຮວມເຖິງຄຳອະທິບາຍທາງການແພດກ່ຽວກັບຂໍ້ມູນສຸຂະພາບຂອງທ່ານ."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"ຂໍ້ມູນສຸຂະພາບທັງໝົດ"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"ຂໍ້ມູນສຸຂະພາບທັງໝົດ"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"ຂຽນຂໍ້ມູນສຸຂະພາບທັງໝົດ"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"ເງື່ອນໄຂ"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"ເງື່ອນໄຂ"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"ອ່ານເງື່ອນໄຂ"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"ວັກຊີນ"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"ວັກຊີນ"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"ອ່ານຂໍ້ມູນວັກຊີນ"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"ວັກຊີນ"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"ວັກຊີນ"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"ອ່ານຂໍ້ມູນວັກຊີນ"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"ຜົນກວດ"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"ຜົນກວດ"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"ອ່ານຜົນກວດ"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"ຫາກທ່ານໃຫ້ສິດເຂົ້າເຖິງ, ແອັບນີ້ຈະສາມາດອ່ານ ແລະ ຂຽນຂໍ້ມູນໄດ້ ເຊັ່ນ: ອາການແພ້, ຜົນກວດ, ວັກຊີນ ແລະ ອື່ນໆ\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"ຫາກທ່ານໃຫ້ສິດເຂົ້າເຖິງ, ແອັບນີ້ຈະສາມາດອ່ານຂໍ້ມູນໄດ້ ເຊັ່ນ: ອາການແພ້, ຜົນກວດ, ວັກຊີນ ແລະ ອື່ນໆ\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"ກ່ຽວກັບຂໍ້ມູນສຸຂະພາບ"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"ຂໍ້ມູນເພື່ອແບ່ງປັນ"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"ຂໍ້ມູນທີ່ຈະແບ່ງປັນຮວມມີ"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"ຫາກທ່ານອະນຸຍາດ, <xliff:g id="APP_NAME">%1$s</xliff:g> ຈະສາມາດແບ່ງປັນຂໍ້ມູນສຸຂະພາບຂອງທ່ານກັບ Health Connect ໄດ້."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"ຊິ້ງຂໍ້ມູນສຸຂະພາບຂອງທ່ານຈາກແອັບ ແລະ ແຫຼ່ງຕ່າງໆຂອງທ່ານເພື່ອເກັບພວກມັນໄວ້ບ່ອນດຽວ"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ລຶບການອະນຸຍາດທັງໝົດອອກບໍ?"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ແອັບເຫຼົ່ານີ້ບໍ່ມີສິດເຂົ້າເຖິງອີກຕໍ່ໄປແລ້ວ, ແຕ່ຍັງຄົງມີຂໍ້ມູນທີ່ຈັດເກັບໄວ້ໃນ Health Connect ຢູ່"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> ສາມາດອ່ານຂໍ້ມູນທີ່ເພີ່ມເຂົ້າຫຼັງຈາກວັນທີ <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> ໄດ້"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"ເພື່ອຈັດການການອະນຸຍາດ Android ອື່ນທີ່ແອັບນີ້ສາມາດເຂົ້າເຖິງໄດ້, ໃຫ້ເຂົ້າໄປການຕັ້ງຄ່າ &gt; ແອັບ"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"ຂໍ້ມູນທີ່ທ່ານແບ່ງປັນກັບ <xliff:g id="APP_NAME">%1$s</xliff:g> ແມ່ນຢູ່ພາຍໃຕ້ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວຂອງເຂົາເຈົ້າ"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"ທ່ານສາມາດສຶກສາວິທີທີ່ <xliff:g id="APP_NAME">%1$s</xliff:g> ຈັດການຂໍ້ມູນຂອງທ່ານໄດ້ໃນນະໂຍບາຍຄວາມເປັນສ່ວນຕົວຂອງນັກພັດທະນາ"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"ເພື່ອຈັດການການອະນຸຍາດອື່ນໆຂອງ Android ທີ່ແອັບນີ້ສາມາດເຂົ້າເຖິງໄດ້, ໃຫ້ເຂົ້າໄປການຕັ້ງຄ່າ, ຈາກນັ້ນແຕະແອັບ"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"ອ່ານນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"ເຂົ້າເຖິງໃນ 24 ຊົ່ວໂມງທີ່ຜ່ານມາ"</string>
@@ -793,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"ເພງ"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"ອື່ນໆ"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ຝຶກດ້ວຍຕົນເອງ"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"ປານກາງ"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"ແຂງແຮງ"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>ນທ"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>ຊມ <xliff:g id="MIN">%2$s</xliff:g>ນທ"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>ຊມ"</string>
@@ -1045,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ກຳລັງດຳເນີນການເຊື່ອມໂຍງ"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect ກຳລັງຖືກເຊື່ອມໂຍງເຂົ້າກັບລະບົບ Android.\n\nຂັ້ນຕອນນີ້ອາດໃຊ້ເວລາໄລຍະໜຶ່ງໃນລະຫວ່າງທີ່ໂອນຍ້າຍຂໍ້ມູນ ແລະ ການອະນຸຍາດຂອງທ່ານ."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"ກະລຸນາຢ່າປິດແອັບຈົນກວ່າທ່ານຈະໄດ້ຮັບການແຈ້ງເຕືອນວ່າຂະບວນການສຳເລັດແລ້ວ."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"ກຳລັງດຳເນີນການເຊື່ອມໂຍງ Health Connect"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"ຕ້ອງອັບເດດ"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect ກຳລັງຖືກເຊື່ອມໂຍງເຂົ້າກັບລະບົບ Android ເພື່ອໃຫ້ທ່ານສາມາດເຂົ້າເຖິງໄດ້ໂດຍກົງຈາກການຕັ້ງຄ່າຂອງທ່ານ."</string>
     <string name="update_button" msgid="4544529019832009496">"ອັບເດດ"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"ເລີ່ມການອັບເດດນີ້ເພື່ອໃຫ້ Health Connect ສາມາດສືບຕໍ່ການເຊື່ອມໂຍງກັບການຕັ້ງຄ່າລະບົບຂອງທ່ານໄດ້"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"ອັບເດດຕອນນີ້"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"ຕ້ອງອັບເດດລະບົບ"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"ກ່ອນທີ່ຈະດຳເນີນການຕໍ່, ໃຫ້ອັບເດດລະບົບໂທລະສັບຂອງທ່ານ."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"ຫາກທ່ານອັບເດດລະບົບໂທລະສັບຂອງທ່ານແລ້ວ, ໃຫ້ລອງຣີສະຕາດໂທລະສັບຂອງທ່ານເພື່ອສືບຕໍ່ການເຊື່ອມໂຍງ"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"ຕ້ອງອັບເດດ Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"ກ່ອນທີ່ຈະດຳເນີນການຕໍ່, ໃຫ້ອັບເດດແອັບ Health Connect ເປັນເວີຊັນຫຼ້າສຸດ."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"ຕ້ອງການພື້ນທີ່ເພີ່ມເຕີມ"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect ຕ້ອງການພື້ນທີ່ຈັດເກັບຂໍ້ມູນ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ຢູ່ໂທລະສັບຂອງທ່ານເພື່ອສືບຕໍ່ການເຊື່ອມໂຍງ.\n\nເພີ່ມພື້ນທີ່ຫວ່າງຢູ່ໂທລະສັບຂອງທ່ານ ແລ້ວລອງໃໝ່."</string>
     <string name="try_again_button" msgid="8745496819992160789">"ລອງໃໝ່"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"ເພີ່ມພື້ນທີ່ຫວ່າງ"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"ຕ້ອງການພື້ນທີ່ເພີ່ມເຕີມ"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect ຕ້ອງການພື້ນທີ່ຈັດເກັບຂໍ້ມູນ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ຢູ່ໂທລະສັບຂອງທ່ານເພື່ອສືບຕໍ່ການເຊື່ອມໂຍງ."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"ຢຸດການເຊື່ອມໂຍງໄວ້ຊົ່ວຄາວແລ້ວ"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"ແອັບ Health Connect ປິດລົງໃນລະຫວ່າງການເຊື່ອມໂຍງກັບລະບົບ Android.\n\nຄລິກ ສືບຕໍ່ ເພື່ອເປີດແອັບຄືນໃໝ່ ແລະ ສືບຕໍ່ໂອນຍ້າຍຂໍ້ມູນ ແລະ ການອະນຸຍາດຂອງທ່ານ."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"ເພື່ອຮັກສາຂໍ້ມູນ Health Connect ຂອງທ່ານໄວ້, ໃຫ້ສຳເລັດຂະບວນການນີ້ພາຍໃນ <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1072,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"ແຕະເພື່ອສືບຕໍ່ການເຊື່ອມໂຍງ Health Connect ກັບລະບົບ Android. ເພື່ອຮັກສາຂໍ້ມູນຂອງທ່ານໄວ້, ໃຫ້ສຳເລັດຂະບວນການນີ້ພາຍໃນ <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"ແຕະເພື່ອສືບຕໍ່ການເຊື່ອມໂຍງ Health Connect ກັບລະບົບ Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"ສືບຕໍ່"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"ສືບຕໍ່ການເຊື່ອມໂຍງ Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"ເພື່ອຮັກສາຂໍ້ມູນຂອງທ່ານໄວ້, ໃຫ້ສຳເລັດຂະບວນການນີ້ພາຍໃນ <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"ຕ້ອງອັບເດດແອັບ"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"ຕ້ອງໄດ້ອັບເດດ <xliff:g id="APP_NAME">%1$s</xliff:g> ກ່ອນຈຶ່ງຈະຊິ້ງກັບ Health Connect ຕໍ່ໄດ້"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"ບາງແອັບຕ້ອງໄດ້ອັບເດດກ່ອນຈຶ່ງຈະຊິ້ງກັບ Health Connect ຕໍ່ໄດ້"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"ຕ້ອງໄດ້ອັບເດດ <xliff:g id="APP_NAME">%1$s</xliff:g> ກ່ອນຈຶ່ງຈະຊິ້ງກັບ Health Connect ຕໍ່ໄດ້. ການອັບເດດອາດບໍ່ມີໃຫ້ສຳລັບແອັບທັງໝົດ."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"ບາງແອັບຕ້ອງໄດ້ອັບເດດກ່ອນຈຶ່ງຈະຊິ້ງກັບ Health Connect ຕໍ່ໄດ້. ການອັບເດດອາດບໍ່ມີໃຫ້ສຳລັບແອັບທັງໝົດ."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"ກວດສອບການອັບເດດ"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"ສຶກສາເພີ່ມເຕີມ"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"ການເຊື່ອມໂຍງ Health Connect"</string>
@@ -1091,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"ການເຊື່ອມໂຍງ Health Connect ບໍ່ສຳເລັດສົມບູນ"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"ທ່ານຈະໄດ້ຮັບການແຈ້ງເຕືອນເມື່ອການເຊື່ອມໂຍງພ້ອມດຳເນີນການອີກເທື່ອໜຶ່ງ."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"ເຂົ້າໃຈແລ້ວ"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"ການເຊື່ອມໂຍງ Health Connect ບໍ່ສຳເລັດສົມບູນ"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"ອ່ານເພີ່ມເຕີມ"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"ສຳເລັດການເຊື່ອມໂຍງ Health Connect ແລ້ວ"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"ເປີດ"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ມີຫຍັງໃໝ່"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"ທ່ານສາມາດເຂົ້າເຖິງ Health Connect ໄດ້ໂດຍກົງຈາກການຕັ້ງຄ່າຂອງທ່ານ. ຖອນການຕິດຕັ້ງແອັບ Health Connect ໄດ້ຕະຫຼອດເວລາເພື່ອເພີ່ມພື້ນທີ່ຈັດເກັບຂໍ້ມູນ."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"ເຂົ້າໃຈແລ້ວ"</string>
@@ -1135,8 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"ເບິ່ງແອັບທີ່ເຂົ້າກັນໄດ້"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"ຊອກຫາແອັບເພີ່ມເຕີມເພື່ອຊິ້ງກັບ <xliff:g id="APP_NAME">%s</xliff:g> ຜ່ານ Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"ເບິ່ງໃນ App Store"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"ຕັ້ງການລັອກໜ້າຈໍ"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"ເພື່ອຄວາມປອດໄພເພີ່ມເຕີມສໍາລັບຂໍ້ມູນສຸຂະພາບຂອງທ່ານ, ໃຫ້ຕັ້ງ PIN, ຮູບແບບ ຫຼື ລະຫັດຜ່ານສໍາລັບອຸປະກອນນີ້"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"ຕັ້ງການລັອກໜ້າຈໍ"</string>
     <string name="select_all" msgid="837499881590001166">"ເລືອກທັງໝົດ"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"ແອັບທີ່ເຊື່ອມຕໍ່ໄວ້ຈະບໍ່ສາມາດອ່ານຂໍ້ມູນນີ້ຈາກ Health Connect ໄດ້ອີກຕໍ່ໄປ"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"ເລືອກແລ້ວ"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"ຍັງບໍ່ໄດ້ເລືອກ"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"ແຜນທີ່ເສັ້ນທາງອອກກໍາລັງກາຍມີໃຫ້ໃຊ້"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"ມື້ຕໍ່ໄປ"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"ອາທິດໜ້າ"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"ເດືອນຕໍ່ໄປ"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"ມື້ກ່ອນໜ້າ"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"ອາທິດກ່ອນ"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"ເດືອນກ່ອນ"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"ລຶບຂໍ້ມູນທັງໝົດອອກຢ່າງຖາວອນບໍ?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"ລຶບຂໍ້ມູນທີ່ເລືອກອອກຢ່າງຖາວອນບໍ?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"ລຶບຂໍ້ມູນ <xliff:g id="APP_NAME">%s</xliff:g> ທັງໝົດອອກຢ່າງຖາວອນບໍ?"</string>
@@ -1161,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"ເຂົ້າເຖິງເມື່ອ <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"ເຂົ້າເຖິງມື້ວານນີ້ເມື່ອ <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"ເຂົ້າເຖິງເມື່ອ <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"ອະນຸຍາດຕະຫຼອດເວລາ"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"ອະນຸຍາດລາຍການທີ່ເລືອກ"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"ອະນຸຍາດສະເພາະໃນເວລາໃຊ້ແອັບ"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"ປະຕິເສດທັງໝົດ"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"ອະນຸຍາດໃຫ້ <xliff:g id="APP_NAME">%1$s</xliff:g> ເຂົ້າເຖິງຂໍ້ມູນຟິດເນສ ແລະ ຄວາມແຂງແຮງສົມບູນບໍ?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ກຳລັງຮ້ອງຂໍສິດເຂົ້າເຖິງ <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nເລືອກວ່າຈະອະນຸຍາດທັງໝົດ ຫຼື ຄວບຄຸມເທື່ອລະລາຍການ."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"ອະນຸຍາດໃຫ້ <xliff:g id="APP_NAME">%1$s</xliff:g> ເຂົ້າເຖິງ <xliff:g id="DATA_TYPE">%2$s</xliff:g> ໄດ້ບໍ?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"ການອອກກຳລັງກາຍ ແລະ ສຸຂະພາບ"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"ຕະຫຼອດເວລາ"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ໃນລະຫວ່າງທີ່ນຳໃຊ້ຢູ່"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"ຕະຫຼອດເວລາ"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"ໃນລະຫວ່າງທີ່ນຳໃຊ້ຢູ່"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ສາມາດເຂົ້າເຖິງຂໍ້ມູນການອອກກໍາລັງກາຍ ແລະ ສຸຂະພາບທັງໝົດຂອງທ່ານ <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"ໄດ້ຮັບອະນຸຍາດໃຫ້ເຂົ້າເຖິງ"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"ໄດ້ຮັບອະນຸຍາດໃຫ້ອ່ານ"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"ການອະນຸຍາດເຫຼົ່ານີ້ໃຫ້ <xliff:g id="APP_NAME">%1$s</xliff:g> ເຂົ້າເຖິງຂໍ້ມູນຈາກເຊັນເຊີອຸປະກອນຂອງທ່ານ."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"ອະນຸຍາດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ແອັບຈາກທັງໝົດ <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> ແອັບແລ້ວ"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"ບໍ່ມີແອັບທີ່ກໍາລັງຮ້ອງຂໍ"</string>
+    <string name="allowed" msgid="4158456017482263737">"ອະນຸຍາດແລ້ວ"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"ບໍ່ອະນຸຍາດ"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"ແອັບທີ່ມີການອະນຸຍາດນີ້ສາມາດເຂົ້າເຖິງຂໍ້ມູນ <xliff:g id="DATA_TYPE">%s</xliff:g> ຈາກເຊັນເຊີອຸປະກອນຂອງທ່ານ."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"ລຶບສິດເຂົ້າເຖິງ <xliff:g id="DATA_TYPE">%s</xliff:g> ອອກສໍາລັບແອັບທັງໝົດຢູ່ໂມງຂອງທ່ານບໍ?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"ໝາຍຖືກ"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"ເຄື່ອງໝາຍຂີດຂ້າແບບໄຂວ່ກັນ"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"ປັດຈຸບັນ, <xliff:g id="APP_NAME">%1$s</xliff:g> ສາມາດເຂົ້າເຖິງຂໍ້ມູນການອອກກຳລັງກາຍ ແລະ ສຸຂະພາບ <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"ອະນຸຍາດໃຫ້ <xliff:g id="APP_NAME">%1$s</xliff:g> ເຂົ້າເຖິງຂໍ້ມູນການອອກກຳລັງກາຍ ແລະ ສຸຂະພາບຕະຫຼອດເວລາບໍ?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ມີສິດເຂົ້າເຖິງຂໍ້ມູນ <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"ຈັດການສິດດ້ານການອອກກຳລັງກາຍ ແລະ ສຸຂະພາບ"</string>
 </resources>

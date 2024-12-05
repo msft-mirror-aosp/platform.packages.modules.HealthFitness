@@ -44,6 +44,7 @@ import java.util.Set;
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class FhirResource implements Parcelable {
+    // LINT.IfChange
     /**
      * FHIR resource type for <a href="https://www.hl7.org/fhir/immunization.html">Immunization</a>.
      */
@@ -124,6 +125,8 @@ public final class FhirResource implements Parcelable {
      * Organization</a>.
      */
     public static final int FHIR_RESOURCE_TYPE_ORGANIZATION = 14;
+
+    // LINT.ThenChange(/service/proto/phr/fhir_spec_extractor.py:fhir_resource_type_mapping)
 
     /** @hide */
     @IntDef({

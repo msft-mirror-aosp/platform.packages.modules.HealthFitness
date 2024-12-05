@@ -17,26 +17,26 @@
 package android.healthconnect.cts.ui
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.healthconnect.cts.utils.AssumptionCheckerRule
 import android.healthconnect.cts.utils.TestUtils
 import androidx.test.core.app.ApplicationProvider
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.compatibility.common.util.SystemUtil.runShellCommandOrThrow
+import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Before
 import org.junit.Rule
 
 open class HealthConnectBaseTest {
-    @get:Rule
-    val disableAnimationRule = DisableAnimationRule()
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
 
-    @get:Rule
-    val freezeRotationRule = FreezeRotationRule()
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     @get:Rule
     var mSupportedHardwareRule =
         AssumptionCheckerRule(
-            { TestUtils.isHardwareSupported() },
+            { TestUtils.isHealthConnectFullySupported() },
             "Tests should run on supported hardware only.",
         )
 
@@ -58,5 +58,17 @@ open class HealthConnectBaseTest {
             runShellCommandOrThrow("input keyevent 82")
         }
         runShellCommandOrThrow("wm dismiss-keyguard")
+    }
+
+    fun assertPermissionGranted(permission: String, packageName: String) {
+        assertWithMessage("$permission for $packageName is not granted")
+            .that(context.packageManager.checkPermission(permission, packageName))
+            .isEqualTo(PackageManager.PERMISSION_GRANTED)
+    }
+
+    fun assertPermissionDenied(permission: String, packageName: String) {
+        assertWithMessage("$permission for $packageName is not denied")
+            .that(context.packageManager.checkPermission(permission, packageName))
+            .isEqualTo(PackageManager.PERMISSION_DENIED)
     }
 }

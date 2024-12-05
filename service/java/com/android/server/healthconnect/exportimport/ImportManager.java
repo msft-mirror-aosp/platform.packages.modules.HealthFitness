@@ -111,7 +111,6 @@ public class ImportManager {
         mDatabaseMerger =
                 new DatabaseMerger(
                         appInfoHelper,
-                        context,
                         deviceInfoHelper,
                         healthDataCategoryPriorityHelper,
                         transactionManager);

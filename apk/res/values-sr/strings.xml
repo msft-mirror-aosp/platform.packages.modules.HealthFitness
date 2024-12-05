@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Јуче"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Прочитано је: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Уписано је: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управљај дозволама"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Време: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активности"</string>
@@ -312,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"температура коже"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Читај податке о температури коже"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Уписуј податке о температури коже"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"То обухвата сву здравствену евиденцију која је синхронизована са Повезивањем здравља и додата у њега. Ово можда није комплетна медицинска евиденција и не садржи медицински опис здравствене евиденције."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Сва здравствена евиденција"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"сва здравствена евиденција"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Уписивање све здравствене евиденције"</string>
@@ -321,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Здравствено стање"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"здравствено стање"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Читање података о здравственом стању"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Вакцине"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"вакцине"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Читање података о вакцинама"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Вакцине"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"вакцине"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Читање података о вакцинама"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Лабораторијски резултати"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"лабораторијски резултати"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Читање података о лабораторијским резултатима"</string>
@@ -373,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ако дате приступ, апликација може да чита и уписује податке, на пример, алергије, лабораторијске резултате, вакцине и друго\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ако дате приступ, апликација може да чита податке, на пример, алергије, лабораторијске резултате, вакцине и друго\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"О здравственој евиденцији"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Подаци за дељење"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Подаци за дељење обухватају"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Ако дозволите, <xliff:g id="APP_NAME">%1$s</xliff:g> може да дели вашу здравствену евиденцију са Повезивањем здравља."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Синхронизујте здравствену евиденцију из различитих апликација и извора да бисте је држали на једном месту"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Желите да уклоните све дозволе?"</string>
@@ -432,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Ове апликације више немају приступ, али и даље имају сачуване податке у Повезивању здравља"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да чита податке додате после <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Да бисте управљали другим дозволама за Android којима ова апликација може да приступа, идите у Подешавања &gt; Апликације"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Податке које делите са апликацијом <xliff:g id="APP_NAME">%1$s</xliff:g> регулише њена политика приватности"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"У политици приватности програмера можете да сазнате како <xliff:g id="APP_NAME">%1$s</xliff:g> управља вашим подацима"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Да бисте управљали другим дозволама за Android којима ова апликација може да приступа, идите у Подешавања, па додирните Апликације"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Прочитајте политику приватности"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Приступљено у последња 24 сата"</string>
@@ -492,7 +493,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Једном дневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Једном недељно"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Једном месечно"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"Одаберите место чувања заказаног извоза"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Одаберите где ће се сачувати заказани извоз"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Изаберите апликацију за простор у клауду да бисте извозили податке"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Повезивање здравља"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Повезивање здравља (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -789,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Музика"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Друго"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Без вођења"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Умерено"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Интензивно"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> мин"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> с <xliff:g id="MIN">%2$s</xliff:g> мин"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> с"</string>
@@ -1041,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Интеграција је у току"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Повезивање здравља се интегрише са Android системом.\n\nМоже да прође извесно време док се подаци и дозволе пренесу."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Не затварајте апликацију док не добијете обавештење да је процес довршен."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Интеграција Повезивања здравља је у току"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Потребно је ажурирање"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Повезивање здравља се интегрише са Android системом да бисте могли директно да му приступате из подешавања."</string>
     <string name="update_button" msgid="4544529019832009496">"Ажурирај"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Започните ово ажурирање да би Повезивање здравља могло да настави интеграцију са подешавањима система"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Ажурирај"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Потребно је ажурирање система"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Пре него што наставите, ажурирајте систем телефона."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Ако сте већ ажурирали систем телефона, пробајте да рестартујете телефон како бисте наставили интеграцију"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Потребно је ажурирање Повезивања здравља"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Пре него што наставите, ажурирајте апликацију Повезивање здравља на најновију верзију."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Потребно је још простора"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Повезивању здравља треба <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> меморијског простора на телефону да би се интеграција наставила.\n\nОслободите нешто простора на телефону и пробајте поново."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Пробај поново"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Ослободи простор"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Потребно је још простора"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Повезивању здравља треба <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> меморијског простора на телефону да би наставило интегрисање."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Интеграција је паузирана"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Апликација Повезивање здравља се затворила док је трајала њена интеграција са Android системом.\n\nКликните на Настави да бисте поново отворили апликацију и наставили да преносите податке и дозволе."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Да бисте задржали податке Повезивања здравља, довршите ово у року од <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1068,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Додирните да бисте наставили интеграцију Повезивања здравља са Android системом. Да бисте задржали податке, довршите ово у року од <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Додирните да бисте наставили интеграцију Повезивања здравља са Android системом."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Настави"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Наставите интеграцију Повезивања здравља"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Да бисте задржали податке, довршите ово у року од <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Треба да ажурирате апликацију"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> треба да се ажурира како бисте наставили синхронизацију са Повезивањем здравља"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Треба да ажурирате неке апликације како бисте наставили синхронизацију са Повезивањем здравља"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> треба да се ажурира како бисте наставили синхронизацију са Повезивањем здравља. Ажурирања можда нису доступна за све апликације."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Треба да ажурирате неке апликације како бисте наставили синхронизацију са Повезивањем здравља. Ажурирања можда нису доступна за све апликације."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Проверите да ли има ажурирања"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Сазнајте више"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Интеграција Повезивања здравља"</string>
@@ -1087,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Интеграција Повезивања здравља није довршена"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Добићете обавештење када поново постане доступна."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Важи"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Интеграција Повезивања здравља није довршена"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Прочитајте више"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Интеграција Повезивања здравља је довршена"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Отвори"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Шта је ново"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Сада можете да приступате Повезивању здравља директно из подешавања. Деинсталирајте апликацију Повезивање здравља у било ком тренутку да бисте ослободили меморијски простор."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Важи"</string>
@@ -1131,8 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Погледајте компатибилне апликације"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Пронађите још апликација које ћете синхронизовати са апликацијом <xliff:g id="APP_NAME">%s</xliff:g> преко Повезивања здравља"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Прикажи у продавници апликација"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Подесите откључавање екрана"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Подесите PIN, шаблон или лозинку за овај уређај да бисте побољшали безбедност података о здрављу"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Подеси откључавање екрана"</string>
     <string name="select_all" msgid="837499881590001166">"Изабери све"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Повезане апликације више неће моћи да читају ове податке из Повезивања здравља"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"Означено"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Није означено"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Доступна је мапа руте вежбања"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Следећи дан"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Следећа недеља"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Следећи месец"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Претходни дан"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Претходна недеља"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Претходни месец"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Желите трајно да избришете све податке?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Желите трајно да избришете изабране податке?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Желите трајно да избришете све податке за: <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1157,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Приступљено: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Приступано јуче: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Приступано: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Дозволи увек"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Дозволи изабрано"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Док користим апликацију"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Одбиј све"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Желите да дозволите да <xliff:g id="APP_NAME">%1$s</xliff:g> приступа подацима о фитнесу и велнесу?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> тражи приступ за: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nИзаберите да ли желите да дозволите све или да их контролишете појединачно."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Дозвољавате да <xliff:g id="APP_NAME">%1$s</xliff:g> приступа уређају <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Фитнес и велнес"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"све време"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"док се користи"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Све време"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Док се користи"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да приступа свим подацима о фитнесу и велнесу у режиму <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Дозвољен приступ"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Дозвољено читање"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Ове дозволе дају апликацији <xliff:g id="APP_NAME">%1$s</xliff:g> приступ подацима са сензора уређаја."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Апликације са дозволом: <xliff:g id="NUMBER_0">%1$d</xliff:g> од <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Ниједна апликација не захтева дозволу"</string>
+    <string name="allowed" msgid="4158456017482263737">"Дозвољено"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Није дозвољено"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Апликације са овом дозволом могу да приступају подацима (<xliff:g id="DATA_TYPE">%s</xliff:g>) са сензора уређаја."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Желите да уклоните приступ подацима (<xliff:g id="DATA_TYPE">%s</xliff:g>) свим апликацијама на сату?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Знак потврде"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Знак x"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Тренутно, <xliff:g id="APP_NAME">%1$s</xliff:g> може да приступа подацима о фитнесу и велнесу <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Желите да дозволите да <xliff:g id="APP_NAME">%1$s</xliff:g> стално приступа подацима о фитнесу и велнесу?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> има приступ за: <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Управљај дозволама за фитнес и велнес"</string>
 </resources>

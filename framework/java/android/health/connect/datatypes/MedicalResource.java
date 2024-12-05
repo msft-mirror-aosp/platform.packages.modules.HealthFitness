@@ -45,8 +45,8 @@ import java.util.Set;
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResource implements Parcelable {
 
-    /** Medical resource type labelling data as immunizations. */
-    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS = 1;
+    /** Medical resource type labelling data as vaccines. */
+    public static final int MEDICAL_RESOURCE_TYPE_VACCINES = 1;
 
     /** Medical resource type labelling data as allergies or intolerances. */
     public static final int MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES = 2;
@@ -100,7 +100,6 @@ public final class MedicalResource implements Parcelable {
     @IntDef({
         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
         MEDICAL_RESOURCE_TYPE_CONDITIONS,
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
@@ -108,6 +107,7 @@ public final class MedicalResource implements Parcelable {
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
         MEDICAL_RESOURCE_TYPE_PROCEDURES,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+        MEDICAL_RESOURCE_TYPE_VACCINES,
         MEDICAL_RESOURCE_TYPE_VISITS,
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
     })
@@ -119,6 +119,27 @@ public final class MedicalResource implements Parcelable {
     @NonNull private final String mDataSourceId;
     @NonNull private final FhirVersion mFhirVersion;
     @NonNull private final FhirResource mFhirResource;
+
+    /** @hide */
+    private long mLastModifiedTimestamp;
+
+    /**
+     * Creates a new instance of {@link MedicalResource} which takes in {@code
+     * lastModifiedTimestamp} as a parameter as well. The {@code lastModifiedTimestamp} is currently
+     * only used internally to ensure D2D merge process, copies over the exact timestamp of when the
+     * {@link MedicalResource} was modified.
+     *
+     * @hide
+     */
+    public MedicalResource(
+            @MedicalResourceType int type,
+            @NonNull String dataSourceId,
+            @NonNull FhirVersion fhirVersion,
+            @NonNull FhirResource fhirResource,
+            long lastModifiedTimestamp) {
+        this(type, dataSourceId, fhirVersion, fhirResource);
+        mLastModifiedTimestamp = lastModifiedTimestamp;
+    }
 
     /**
      * Creates a new instance of {@link MedicalResource}. Please see {@link MedicalResource.Builder}
@@ -179,7 +200,7 @@ public final class MedicalResource implements Parcelable {
      * Returns the medical resource type, assigned by the Android Health Platform at insertion time.
      *
      * <p>For a list of supported types, see the {@link MedicalResource} type constants, such as
-     * {@link #MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS}. Clients should be aware that this list is non
+     * {@link #MEDICAL_RESOURCE_TYPE_VACCINES}. Clients should be aware that this list is non
      * exhaustive and may increase in future releases when additional types will need to be handled.
      */
     @MedicalResourceType
@@ -211,6 +232,15 @@ public final class MedicalResource implements Parcelable {
         return mFhirResource;
     }
 
+    /**
+     * Returns the last modified timestamp for this {@link MedicalResource}.
+     *
+     * @hide
+     */
+    public long getLastModifiedTimestamp() {
+        return mLastModifiedTimestamp;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -235,7 +265,6 @@ public final class MedicalResource implements Parcelable {
             Set.of(
                     MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                     MEDICAL_RESOURCE_TYPE_CONDITIONS,
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
                     MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
@@ -243,6 +272,7 @@ public final class MedicalResource implements Parcelable {
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
                     MEDICAL_RESOURCE_TYPE_PROCEDURES,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+                    MEDICAL_RESOURCE_TYPE_VACCINES,
                     MEDICAL_RESOURCE_TYPE_VISITS,
                     MEDICAL_RESOURCE_TYPE_VITAL_SIGNS);
 

@@ -53,7 +53,6 @@ class CombinedAdditionalPermissionsFragment : Hilt_CombinedAdditionalPermissions
     private val category: PreferenceCategory by pref(CATEGORY)
     private val footer: FooterPreference by pref(FOOTER)
 
-    private var pageName = PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE
     private var allowButtonName: ElementName =
         RequestCombinedAdditionalPermissionsElement.ALLOW_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON
     private var cancelButtonName: ElementName =
@@ -64,10 +63,8 @@ class CombinedAdditionalPermissionsFragment : Hilt_CombinedAdditionalPermissions
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
-    override fun onResume() {
-        super.onResume()
-        logger.setPageId(pageName)
-        logger.logPageImpression()
+    init {
+        this.setPageName(PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -148,7 +145,7 @@ class CombinedAdditionalPermissionsFragment : Hilt_CombinedAdditionalPermissions
     }
 
     private fun showCombinedAdditionalPermissions(screenState: AdditionalScreenState.ShowCombined) {
-        pageName = PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE
+        this.setPageName(PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE)
         allowButtonName =
             RequestCombinedAdditionalPermissionsElement.ALLOW_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON
         cancelButtonName =

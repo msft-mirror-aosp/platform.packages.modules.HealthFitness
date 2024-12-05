@@ -23,14 +23,15 @@ import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.healthconnect.cts.lib.TestAppProxy
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
-import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -38,6 +39,7 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
+import java.time.Duration
 import java.time.Instant
 import org.junit.After
 import org.junit.Before
@@ -70,16 +72,16 @@ class AppEntriesFragmentTest : HealthConnectBaseTest() {
     fun appEntriesScreen_displaysCorrectly() {
         context.launchMainActivity {
             scrollDownTo(By.text("App permissions"))
-            findTextAndClick("App permissions")
-            findTextAndClick("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+            clickOnTextAndWaitForNewWindow("App permissions")
+            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
-            scrollToEnd()
-            findTextAndClick("See app data")
+            scrollDownTo(By.text("See app data"))
+            clickOnTextAndWaitForNewWindow("See app data")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
             findText("Activity")
-            findTextAndClick("Steps")
+            clickOnTextAndWaitForNewWindow("Steps")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             verifyTextNotFound("Entries")
@@ -97,11 +99,14 @@ class AppEntriesFragmentTest : HealthConnectBaseTest() {
     fun appEntriesScreen_deletesAllData() {
         context.launchMainActivity {
             scrollDownTo(By.text("App permissions"))
-            findTextAndClick("App permissions")
-            findTextAndClick("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+            clickOnTextAndWaitForNewWindow("App permissions")
+            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
-            scrollToEnd()
-            findTextAndClick("See app data")
+            scrollDownTo(By.text("See app data"))
+            clickOnTextAndWaitForNewWindow("See app data")
+
+            findText("Activity")
+            clickOnTextAndWaitForNewWindow("Steps")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             verifyObjectNotFound(By.text("Select all"))
@@ -110,6 +115,7 @@ class AppEntriesFragmentTest : HealthConnectBaseTest() {
             findTextAndClick("Select all")
             findObjectAndClick(By.desc("Delete data"))
             findTextAndClick("Delete")
+            waitDisplayed(By.text("Done"), Duration.ofSeconds(3))
             findTextAndClick("Done")
             findText("No data")
         }

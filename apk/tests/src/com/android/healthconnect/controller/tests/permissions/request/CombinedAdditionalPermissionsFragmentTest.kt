@@ -54,6 +54,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -143,7 +144,8 @@ class CombinedAdditionalPermissionsFragmentTest {
         onView(withText("Don't allow")).check(matches(isDisplayed()))
         onView(withText("Allow")).check(matches(isDisplayed()))
 
-        verify(healthConnectLogger).setPageId(PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE)
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger)
             .logImpression(

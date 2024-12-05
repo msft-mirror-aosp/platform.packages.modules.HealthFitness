@@ -19,20 +19,7 @@ import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthDataCategory
 import android.health.connect.TimeInstantRangeFilter
-import android.health.connect.datatypes.ActiveCaloriesBurnedRecord
-import android.health.connect.datatypes.CyclingPedalingCadenceRecord
-import android.health.connect.datatypes.DistanceRecord
-import android.health.connect.datatypes.ElevationGainedRecord
-import android.health.connect.datatypes.ExerciseSessionRecord
-import android.health.connect.datatypes.FloorsClimbedRecord
-import android.health.connect.datatypes.PlannedExerciseSessionRecord
-import android.health.connect.datatypes.PowerRecord
-import android.health.connect.datatypes.SpeedRecord
-import android.health.connect.datatypes.StepsCadenceRecord
-import android.health.connect.datatypes.StepsRecord
-import android.health.connect.datatypes.TotalCaloriesBurnedRecord
-import android.health.connect.datatypes.Vo2MaxRecord
-import android.health.connect.datatypes.WheelchairPushesRecord
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteCategoryUseCase
 import com.google.common.truth.Truth.assertThat
@@ -82,7 +69,8 @@ class DeleteCategoryUseCaseTest {
 
         useCase.invoke(
             deleteCategory,
-            TimeInstantRangeFilter.Builder().setStartTime(startTime).setEndTime(endTime).build())
+            TimeInstantRangeFilter.Builder().setStartTime(startTime).setEndTime(endTime).build(),
+        )
 
         Mockito.verify(manager, Mockito.times(1))
             .deleteRecords(filtersCaptor.capture(), any(), any())
@@ -92,22 +80,15 @@ class DeleteCategoryUseCaseTest {
         assertThat((filtersCaptor.value.timeRangeFilter as TimeInstantRangeFilter).endTime)
             .isEqualTo(endTime)
         assertThat(filtersCaptor.value.dataOrigins).isEmpty()
+        val healthConnectMappings = HealthConnectMappings.getInstance()
         assertThat(filtersCaptor.value.recordTypes)
-            .containsExactly(
-                TotalCaloriesBurnedRecord::class.java,
-                ActiveCaloriesBurnedRecord::class.java,
-                DistanceRecord::class.java,
-                StepsRecord::class.java,
-                StepsCadenceRecord::class.java,
-                SpeedRecord::class.java,
-                PowerRecord::class.java,
-                WheelchairPushesRecord::class.java,
-                FloorsClimbedRecord::class.java,
-                ElevationGainedRecord::class.java,
-                Vo2MaxRecord::class.java,
-                CyclingPedalingCadenceRecord::class.java,
-                ExerciseSessionRecord::class.java,
-                PlannedExerciseSessionRecord::class.java)
+            .containsExactlyElementsIn(
+                healthConnectMappings.allRecordTypeIdentifiers
+                    .associateWith { healthConnectMappings.getRecordCategoryForRecordType(it) }
+                    .filterValues { it == HealthDataCategory.ACTIVITY }
+                    .keys
+                    .map { healthConnectMappings.recordIdToExternalRecordClassMap[it]!! }
+            )
     }
 
     private fun prepareAnswer(): (InvocationOnMock) -> Nothing? {

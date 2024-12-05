@@ -117,6 +117,16 @@
         </activity>
 
         <activity
+            android:name=".permissions.app.wear.WearViewAppInfoPermissionsActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".permissions.connectedapps.wear.WearSettingsPermissionActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
             android:name=".permissions.request.PermissionsActivity"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -125,6 +135,11 @@
                 <action android:name="android.health.connect.action.REQUEST_HEALTH_PERMISSIONS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".permissions.request.wear.WearGrantPermissionsActivity"
+            android:exported="false">
         </activity>
 
         <activity

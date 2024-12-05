@@ -25,7 +25,6 @@ import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils.loadAnimation
 import android.widget.TextView
 import androidx.annotation.StringRes
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
@@ -35,11 +34,12 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEnt
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.settingslib.widget.SettingsBasePreferenceFragment
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.EntryPointAccessors
 
 /** A base fragment that represents a page in Health Connect. */
-abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
+abstract class HealthPreferenceFragment : SettingsBasePreferenceFragment() {
 
     private lateinit var logger: HealthConnectLogger
     private lateinit var loadingView: View
@@ -57,8 +57,9 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setupLogger()
         super.onCreate(savedInstanceState)
-        val appBarLayout = requireActivity().findViewById<AppBarLayout>(
-            com.android.settingslib.collapsingtoolbar.R.id.app_bar)
+        val appBarLayout =
+            requireActivity()
+                .findViewById<AppBarLayout>(com.android.settingslib.collapsingtoolbar.R.id.app_bar)
         appBarLayout?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
         appBarLayout?.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
     }
@@ -72,7 +73,7 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         logger.setPageId(pageName)
         val rootView =
@@ -138,7 +139,9 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
         if (animate) {
             val animation: Animation =
                 loadAnimation(
-                    context, if (shown) android.R.anim.fade_in else android.R.anim.fade_out)
+                    context,
+                    if (shown) android.R.anim.fade_in else android.R.anim.fade_out,
+                )
             if (shown) {
                 view.visibility = View.VISIBLE
             } else {
@@ -151,7 +154,8 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
                         override fun onAnimationEnd(animation: Animation) {
                             view.visibility = View.INVISIBLE
                         }
-                    })
+                    }
+                )
             }
             view.startAnimation(animation)
         } else {
@@ -163,7 +167,9 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
     private fun setupLogger() {
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                requireContext().applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                requireContext().applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
         logger.setPageId(pageName)
     }
