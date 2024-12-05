@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.selectabledeletion
 
+import android.health.connect.datatypes.StepsRecord
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
@@ -25,7 +26,6 @@ import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppData
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.google.common.truth.Truth.assertThat
@@ -34,7 +34,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -53,7 +53,7 @@ class DeletionViewModelTest {
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase =
         mock(DeletePermissionTypesUseCase::class.java)
@@ -80,7 +80,6 @@ class DeletionViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -140,10 +139,25 @@ class DeletionViewModelTest {
     }
 
     @Test
+    fun permissionTypes_deleteWithRemovingPermissions_deletionInvokedCorrectly() = runTest {
+        val deletionType =
+            DeletionType.DeleteHealthPermissionTypes(
+                setOf(FitnessPermissionType.DISTANCE),
+                totalPermissionTypes = 1,
+            )
+        viewModel.removePermissions = true
+        viewModel.setDeletionType(deletionType)
+        viewModel.delete()
+        advanceUntilIdle()
+
+        verify(deletePermissionTypesUseCase).invoke(deletionType)
+    }
+
+    @Test
     fun permissionTypes_deleteFitnessAndMedical_deletionInvokedCorrectly() = runTest {
         val deletionType =
             DeletionType.DeleteHealthPermissionTypes(
-                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATIONS),
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.VACCINES),
                 4,
             )
         viewModel.setDeletionType(deletionType = deletionType)
@@ -156,13 +170,164 @@ class DeletionViewModelTest {
     @Test
     fun permissionTypes_deleteMedical_deletionInvokedCorrectly() = runTest {
         val deletionType =
-            DeletionType.DeleteHealthPermissionTypes(setOf(MedicalPermissionType.IMMUNIZATIONS), 2)
+            DeletionType.DeleteHealthPermissionTypes(setOf(MedicalPermissionType.VACCINES), 2)
         viewModel.setDeletionType(deletionType)
         viewModel.delete()
         advanceUntilIdle()
 
         verify(deletePermissionTypesUseCase).invoke(deletionType)
     }
+
+    // TODO
+    @Test
+    fun permissionTypesFromApp_resetAppPermissionTypesReloadNeeded_valueSetCorrectly() = runTest {
+        val testObserver = TestObserver<Boolean>()
+        viewModel.appPermissionTypesReloadNeeded.observeForever(testObserver)
+        viewModel.resetAppPermissionTypesReloadNeeded()
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).isEqualTo(false)
+    }
+
+    @Test
+    fun permissionTypesFromApp_deleteSet_setCorrectly() = runTest {
+        val deleteSet =
+            setOf(
+                FitnessPermissionType.DISTANCE,
+                FitnessPermissionType.HEART_RATE,
+                FitnessPermissionType.STEPS,
+            )
+        val numPermissionTypes = 4
+        viewModel.setDeletionType(
+            DeletionType.DeleteHealthPermissionTypesFromApp(
+                deleteSet,
+                numPermissionTypes,
+                "some.package",
+                "appName",
+            )
+        )
+
+        assertThat(viewModel.getDeletionType() is DeletionType.DeleteHealthPermissionTypesFromApp)
+            .isTrue()
+        val actualDeletionType =
+            viewModel.getDeletionType() as DeletionType.DeleteHealthPermissionTypesFromApp
+        assertThat(actualDeletionType.healthPermissionTypes)
+            .isEqualTo(
+                setOf(
+                    FitnessPermissionType.DISTANCE,
+                    FitnessPermissionType.HEART_RATE,
+                    FitnessPermissionType.STEPS,
+                )
+            )
+        assertThat(actualDeletionType.totalPermissionTypes).isEqualTo(numPermissionTypes)
+        assertThat(actualDeletionType.packageName).isEqualTo("some.package")
+        assertThat(actualDeletionType.appName).isEqualTo("appName")
+    }
+
+    @Test
+    fun permissionTypesFromApp_deleteFitnessWithoutRemovingPermissions_deletionInvokedCorrectly() =
+        runTest {
+            val deletionType =
+                DeletionType.DeleteHealthPermissionTypesFromApp(
+                    setOf(FitnessPermissionType.DISTANCE),
+                    totalPermissionTypes = 4,
+                    "some.package",
+                    "appName",
+                )
+            viewModel.setDeletionType(deletionType)
+            viewModel.delete()
+            advanceUntilIdle()
+
+            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, false)
+        }
+
+    @Test
+    fun permissionTypesFromApp_deleteFitnessWithRemovingPermissions_deletionInvokedCorrectly() =
+        runTest {
+            val deletionType =
+                DeletionType.DeleteHealthPermissionTypesFromApp(
+                    setOf(FitnessPermissionType.DISTANCE),
+                    totalPermissionTypes = 4,
+                    "some.package",
+                    "appName",
+                )
+            viewModel.setDeletionType(deletionType)
+            viewModel.removePermissions = true
+            viewModel.delete()
+            advanceUntilIdle()
+
+            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, true)
+        }
+
+    @Test
+    fun permissionTypesFromApp_deleteMedicalWithoutRemovingPermissions_deletionInvokedCorrectly() =
+        runTest {
+            val deletionType =
+                DeletionType.DeleteHealthPermissionTypesFromApp(
+                    setOf(MedicalPermissionType.VACCINES),
+                    2,
+                    "some.package",
+                    "appName",
+                )
+            viewModel.setDeletionType(deletionType)
+            viewModel.delete()
+            advanceUntilIdle()
+
+            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, false)
+        }
+
+    @Test
+    fun permissionTypesFromApp_deleteMedicalWithRemovingPermissions_deletionInvokedCorrectly() =
+        runTest {
+            val deletionType =
+                DeletionType.DeleteHealthPermissionTypesFromApp(
+                    setOf(MedicalPermissionType.VACCINES),
+                    1,
+                    "some.package",
+                    "appName",
+                )
+            viewModel.setDeletionType(deletionType)
+            viewModel.removePermissions = true
+            viewModel.delete()
+            advanceUntilIdle()
+
+            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, true)
+        }
+
+    @Test
+    fun permissionTypesFromApp_deleteFitnessAndMedicalWithoutRemovingPermissions_deletionInvokedCorrectly() =
+        runTest {
+            val deletionType =
+                DeletionType.DeleteHealthPermissionTypesFromApp(
+                    setOf(MedicalPermissionType.VACCINES, FitnessPermissionType.STEPS),
+                    3,
+                    "some.package",
+                    "appName",
+                )
+            viewModel.setDeletionType(deletionType)
+            viewModel.delete()
+            advanceUntilIdle()
+
+            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, false)
+        }
+
+    @Test
+    fun permissionTypesFromApp_deleteFitnessAndMedicalWithRemovingPermissions_deletionInvokedCorrectly() =
+        runTest {
+            val deletionType =
+                DeletionType.DeleteHealthPermissionTypesFromApp(
+                    setOf(MedicalPermissionType.VACCINES, FitnessPermissionType.STEPS),
+                    2,
+                    "some.package",
+                    "appName",
+                )
+            viewModel.setDeletionType(deletionType)
+            viewModel.removePermissions = true
+            viewModel.delete()
+            advanceUntilIdle()
+
+            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, true)
+        }
 
     @Test
     fun entries_resetEntriesReloadNeeded_valueSetCorrectly() = runTest {
@@ -218,7 +383,7 @@ class DeletionViewModelTest {
     }
 
     @Test
-    fun appPermissionTypes_delete_deletionInvokesCorrectly() = runTest {
+    fun appEntries_delete_deletionInvokesCorrectly() = runTest {
         val deletionType =
             DeletionType.DeleteEntriesFromApp(
                 mapOf(
@@ -272,7 +437,7 @@ private val FORMATTED_STEPS =
         headerA11y = "from 7:06 to 7:06",
         title = "12 steps",
         titleA11y = "12 steps",
-        dataType = DataType.STEPS,
+        dataType = StepsRecord::class,
     )
 private val FORMATTED_STEPS_2 =
     FormattedEntry.FormattedDataEntry(
@@ -281,5 +446,5 @@ private val FORMATTED_STEPS_2 =
         headerA11y = "from 8:06 to 8:06",
         title = "15 steps",
         titleA11y = "15 steps",
-        dataType = DataType.STEPS,
+        dataType = StepsRecord::class,
     )

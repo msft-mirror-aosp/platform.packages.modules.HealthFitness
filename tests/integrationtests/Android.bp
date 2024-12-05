@@ -38,6 +38,7 @@ android_test {
         "compatibility-device-util-axt",
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
+        "cts-healthconnect-phr-lib",
     ],
     srcs: [
         "src/android/healthconnect/tests/backuprestore/*.java",

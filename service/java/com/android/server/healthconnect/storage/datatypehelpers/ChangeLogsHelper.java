@@ -54,9 +54,11 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -67,16 +69,18 @@ import java.util.stream.Collectors;
  */
 public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
-    private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
+    @VisibleForTesting public static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     @VisibleForTesting public static final String APP_ID_COLUMN_NAME = "app_id";
     @VisibleForTesting public static final String UUIDS_COLUMN_NAME = "uuids";
     @VisibleForTesting public static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
-    private static final String TIME_COLUMN_NAME = "time";
+    @VisibleForTesting public static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
 
     private final TransactionManager mTransactionManager;
 
-    public ChangeLogsHelper(TransactionManager transactionManager) {
+    public ChangeLogsHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 
@@ -94,6 +98,32 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
                 .createIndexOn(RECORD_TYPE_COLUMN_NAME)
                 .createIndexOn(APP_ID_COLUMN_NAME);
+    }
+
+    /** Returns datatypes being written/updates in past 30 days. */
+    public Set<Integer> getRecordTypesWrittenInPast30Days() {
+        Set<Integer> recordTypesWrittenInPast30Days = new HashSet<>();
+        WhereClauses whereClauses =
+                new WhereClauses(AND)
+                        .addWhereEqualsClause(
+                                OPERATION_TYPE_COLUMN_NAME,
+                                String.valueOf(OperationType.OPERATION_TYPE_UPSERT))
+                        .addWhereGreaterThanOrEqualClause(
+                                TIME_COLUMN_NAME,
+                                Instant.now().minus(30, ChronoUnit.DAYS).toEpochMilli());
+
+        final ReadTableRequest readTableRequest =
+                new ReadTableRequest(TABLE_NAME)
+                        .setColumnNames(List.of(RECORD_TYPE_COLUMN_NAME))
+                        .setWhereClause(whereClauses)
+                        .setDistinctClause(true);
+
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            while (cursor.moveToNext()) {
+                recordTypesWrittenInPast30Days.add(getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME));
+            }
+        }
+        return recordTypesWrittenInPast30Days;
     }
 
     @Override

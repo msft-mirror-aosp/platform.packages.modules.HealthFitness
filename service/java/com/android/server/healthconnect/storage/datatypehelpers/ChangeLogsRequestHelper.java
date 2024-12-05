@@ -56,8 +56,8 @@ import java.util.List;
  * @hide
  */
 public final class ChangeLogsRequestHelper extends DatabaseHelper {
+    public static final String TABLE_NAME = "change_log_request_table";
     static final int DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS = 32;
-    private static final String TABLE_NAME = "change_log_request_table";
     private static final String PACKAGES_TO_FILTERS_COLUMN_NAME = "packages_to_filter";
     private static final String RECORD_TYPES_COLUMN_NAME = "record_types";
     private static final String PACKAGE_NAME_COLUMN_NAME = "package_name";
@@ -66,7 +66,9 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
 
     private final TransactionManager mTransactionManager;
 
-    public ChangeLogsRequestHelper(TransactionManager transactionManager) {
+    public ChangeLogsRequestHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 

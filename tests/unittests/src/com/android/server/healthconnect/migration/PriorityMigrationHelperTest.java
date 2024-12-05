@@ -37,6 +37,7 @@ import android.health.connect.HealthDataCategory;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
@@ -71,10 +72,11 @@ public class PriorityMigrationHelperTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        PriorityMigrationHelper.clearInstanceForTest();
         mPriorityMigrationHelper =
-                PriorityMigrationHelper.getInstance(
-                        mHealthDataCategoryPriorityHelper, mTransactionManager);
+                new PriorityMigrationHelper(
+                        mHealthDataCategoryPriorityHelper,
+                        mTransactionManager,
+                        new DatabaseHelpers());
     }
 
     @Test

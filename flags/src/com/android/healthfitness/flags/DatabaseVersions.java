@@ -34,6 +34,7 @@ public final class DatabaseVersions {
     public static final int DB_VERSION_PERSONAL_HEALTH_RECORD = 15;
 
     public static final int DB_VERSION_ACTIVITY_INTENSITY = 16;
+    public static final int DB_VERSION_ECOSYSTEM_METRICS = 17;
 
     // For historical reasons, we do not support versions below this
     // See go/hc-mainline-dev/trunk_stable/db-and-aconfig#a-bit-of-history

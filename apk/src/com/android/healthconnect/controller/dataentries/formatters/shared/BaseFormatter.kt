@@ -20,7 +20,6 @@ import android.health.connect.datatypes.Record
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import java.time.Instant
 
@@ -35,19 +34,16 @@ abstract class BaseFormatter<T : Record>(private val context: Context) : Formatt
             record = record,
             header = getHeader(record, appName),
             headerA11y = getHeaderA11y(record, appName),
-            unitPreferences = unitPreferences)
+            unitPreferences = unitPreferences,
+        )
     }
 
     abstract suspend fun formatRecord(
         record: T,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry
-
-    protected fun getDataType(record: T): DataType {
-        return DataType.values().first { it.recordClass == record::class.java }
-    }
 
     protected fun getStartTime(record: T): Instant {
         return when (record) {
@@ -60,17 +56,27 @@ abstract class BaseFormatter<T : Record>(private val context: Context) : Formatt
     private fun getHeader(record: T, appName: String): String {
         if (appName == "")
             return context.getString(
-                R.string.data_entry_header_without_source_app, getFormattedTime(record))
+                R.string.data_entry_header_without_source_app,
+                getFormattedTime(record),
+            )
         return context.getString(
-            R.string.data_entry_header_with_source_app, getFormattedTime(record), appName)
+            R.string.data_entry_header_with_source_app,
+            getFormattedTime(record),
+            appName,
+        )
     }
 
     private fun getHeaderA11y(record: T, appName: String): String {
         if (appName == "")
             return context.getString(
-                R.string.data_entry_header_without_source_app, getFormattedA11yTime(record))
+                R.string.data_entry_header_without_source_app,
+                getFormattedA11yTime(record),
+            )
         return context.getString(
-            R.string.data_entry_header_with_source_app, getFormattedA11yTime(record), appName)
+            R.string.data_entry_header_with_source_app,
+            getFormattedA11yTime(record),
+            appName,
+        )
     }
 
     private fun getFormattedTime(record: T): String {

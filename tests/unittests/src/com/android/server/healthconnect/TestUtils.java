@@ -16,7 +16,12 @@
 
 package com.android.server.healthconnect;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import android.database.Cursor;
 import android.os.UserHandle;
+
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -71,4 +76,16 @@ public final class TestUtils {
                 15);
     }
 
+    /**
+     * For a given {@link HealthConnectDatabase} and {@code tableName}, asserts whether the number
+     * of rows in that table are equal to {@code tableRows}.
+     */
+    public static void assertTableSize(
+            HealthConnectDatabase database, String tableName, int tableRows) {
+        Cursor cursor =
+                database.getWritableDatabase()
+                        .rawQuery("SELECT count(*) FROM " + tableName + ";", null);
+        cursor.moveToNext();
+        assertThat(cursor.getInt(0)).isEqualTo(tableRows);
+    }
 }

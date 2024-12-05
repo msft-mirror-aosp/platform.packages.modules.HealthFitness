@@ -18,7 +18,7 @@ package com.android.server.healthconnect.storage;
 
 import static android.database.DatabaseUtils.queryNumEntries;
 
-import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ACTIVITY_INTENSITY;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
 import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
 import static com.android.healthfitness.flags.Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES;
@@ -39,6 +39,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -66,8 +67,8 @@ public class DatabaseUpgradeHelperTest {
 
     private static final int NUM_OF_TABLES_AT_MIN_SUPPORTED_VERSION = 57;
     private static final int NUM_OF_TABLES_AT_MINDFULNESS_VERSION = 64;
-    private static final int NUM_OF_TABLES_IN_STAGING = 68;
-    private static final int LATEST_DB_VERSION_IN_STAGING = DB_VERSION_ACTIVITY_INTENSITY;
+    private static final int NUM_OF_TABLES_IN_STAGING = 69;
+    private static final int LATEST_DB_VERSION_IN_STAGING = DB_VERSION_ECOSYSTEM_METRICS;
 
     private SQLiteDatabase mSQLiteDatabase;
 
@@ -132,7 +133,8 @@ public class DatabaseUpgradeHelperTest {
                 List.of(
                         MedicalDataSourceHelper.getMainTableName(),
                         MedicalResourceHelper.getMainTableName(),
-                        MedicalResourceIndicesHelper.getTableName()));
+                        MedicalResourceIndicesHelper.getTableName(),
+                        ReadAccessLogsHelper.TABLE_NAME));
         assertColumnsExist(
                 mSQLiteDatabase,
                 AccessLogsHelper.TABLE_NAME,

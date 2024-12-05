@@ -18,7 +18,12 @@ package com.android.server.healthconnect.storage.request;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.android.server.healthconnect.storage.utils.OrderByClause;
+import com.android.server.healthconnect.storage.utils.SqlJoin;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +32,42 @@ import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class ReadTableRequestTest {
+
+    @Test
+    public void testGetReadQuery_hasTwoLimitsAndNoJoinClause_throws() {
+        ReadTableRequest request = new ReadTableRequest("tableName").setLimit(5).setFinalLimit(5);
+
+        assertThrows(IllegalArgumentException.class, () -> request.getReadCommand());
+    }
+
+    @Test
+    public void testGetCountQuery_hasTwoLimitsAndNoJoinClause_throws() {
+        ReadTableRequest request = new ReadTableRequest("tableName").setLimit(5).setFinalLimit(5);
+
+        assertThrows(IllegalArgumentException.class, () -> request.getCountCommand());
+    }
+
+    @Test
+    public void testGetReadQuery_hasTwoOrderByClauseAndNoJoinClause_throws() {
+        OrderByClause orderByClause = new OrderByClause().addOrderByClause("columnName", true);
+        ReadTableRequest request =
+                new ReadTableRequest("tableName")
+                        .setOrderBy(orderByClause)
+                        .setFinalOrderBy(orderByClause);
+
+        assertThrows(IllegalArgumentException.class, () -> request.getReadCommand());
+    }
+
+    @Test
+    public void testGetCountQuery_hasTwoOrderByClauseAndNoJoinClause_throws() {
+        OrderByClause orderByClause = new OrderByClause().addOrderByClause("columnName", true);
+        ReadTableRequest request =
+                new ReadTableRequest("tableName")
+                        .setOrderBy(orderByClause)
+                        .setFinalOrderBy(orderByClause);
+
+        assertThrows(IllegalArgumentException.class, () -> request.getCountCommand());
+    }
 
     @Test
     public void testGetReadCommand_simpleQuery() {
@@ -50,7 +91,39 @@ public class ReadTableRequestTest {
     }
 
     @Test
+    public void testGetReadCommand_simpleQueryOrderBy() {
+        ReadTableRequest request =
+                new ReadTableRequest("tableName")
+                        .setOrderBy(new OrderByClause().addOrderByClause("column", true));
+
+        assertThat(request.getReadCommand()).isEqualTo("SELECT * FROM tableName ORDER BY column");
+    }
+
+    @Test
+    public void testGetReadCommand_simpleQueryFinalLimit() {
+        ReadTableRequest request = new ReadTableRequest("tableName").setFinalLimit(5);
+
+        assertThat(request.getReadCommand()).isEqualTo("SELECT * FROM tableName LIMIT 5");
+    }
+
+    @Test
+    public void testGetReadCommand_simpleQueryFinalOrderBy() {
+        ReadTableRequest request =
+                new ReadTableRequest("tableName")
+                        .setOrderBy(new OrderByClause().addOrderByClause("column", true));
+
+        assertThat(request.getReadCommand()).isEqualTo("SELECT * FROM tableName ORDER BY column");
+    }
+
+    @Test
     public void testGetCountCommand_simpleQueryLimit() {
+        ReadTableRequest request = new ReadTableRequest("tableName").setLimit(5);
+
+        assertThat(request.getCountCommand()).isEqualTo("SELECT COUNT(*) FROM tableName LIMIT 5");
+    }
+
+    @Test
+    public void testGetCountCommand_simpleQueryFinalLimit() {
         ReadTableRequest request = new ReadTableRequest("tableName").setLimit(5);
 
         assertThat(request.getCountCommand()).isEqualTo("SELECT COUNT(*) FROM tableName LIMIT 5");
@@ -132,6 +205,69 @@ public class ReadTableRequestTest {
     }
 
     @Test
+    public void testGetReadCommand_joinClauseWithLimitAndOrderBy() {
+        ReadTableRequest request =
+                new ReadTableRequest("tableName")
+                        .setLimit(5)
+                        .setOrderBy(new OrderByClause().addOrderByClause("columnName", true))
+                        .setJoinClause(
+                                new SqlJoin(
+                                        "tableName",
+                                        "otherTableName",
+                                        "selfColumn",
+                                        "otherColumn"));
+
+        assertThat(request.getReadCommand())
+                .isEqualTo(
+                        "SELECT * FROM ( SELECT * FROM tableName ORDER BY columnName LIMIT 5 ) AS"
+                                + " inner_query_result  INNER JOIN otherTableName ON"
+                                + " inner_query_result.selfColumn = otherTableName.otherColumn");
+    }
+
+    @Test
+    public void testGetReadCommand_joinClauseWithFinalLimitFinalAndOrderBy() {
+        ReadTableRequest request =
+                new ReadTableRequest("tableName")
+                        .setFinalLimit(5)
+                        .setFinalOrderBy(new OrderByClause().addOrderByClause("columnName", true))
+                        .setJoinClause(
+                                new SqlJoin(
+                                        "tableName",
+                                        "otherTableName",
+                                        "selfColumn",
+                                        "otherColumn"));
+
+        assertThat(request.getReadCommand())
+                .isEqualTo(
+                        "SELECT * FROM ( SELECT * FROM tableName ) AS inner_query_result  INNER"
+                                + " JOIN otherTableName ON inner_query_result.selfColumn ="
+                                + " otherTableName.otherColumn ORDER BY columnName LIMIT 5");
+    }
+
+    @Test
+    public void testGetReadCommand_joinClauseWithBothLimitsAndOrderBys() {
+        ReadTableRequest request =
+                new ReadTableRequest("tableName")
+                        .setLimit(4)
+                        .setFinalLimit(5)
+                        .setOrderBy(new OrderByClause().addOrderByClause("columnName1", true))
+                        .setFinalOrderBy(new OrderByClause().addOrderByClause("columnName2", true))
+                        .setJoinClause(
+                                new SqlJoin(
+                                        "tableName",
+                                        "otherTableName",
+                                        "selfColumn",
+                                        "otherColumn"));
+
+        assertThat(request.getReadCommand())
+                .isEqualTo(
+                        "SELECT * FROM ( SELECT * FROM tableName ORDER BY columnName1 LIMIT 4 ) AS"
+                            + " inner_query_result  INNER JOIN otherTableName ON"
+                            + " inner_query_result.selfColumn = otherTableName.otherColumn ORDER BY"
+                            + " columnName2 LIMIT 5");
+    }
+
+    @Test
     public void testGetReadCommand_unionQuery() {
         ReadTableRequest request = new ReadTableRequest("tableName").setColumnNames(List.of("col"));
         ReadTableRequest unionRequest =
@@ -142,6 +278,20 @@ public class ReadTableRequestTest {
                 .isEqualTo(
                         "SELECT * FROM (SELECT col FROM otherTableName) UNION ALL SELECT col FROM"
                                 + " tableName");
+    }
+
+    @Test
+    public void testGetReadCommand_unionQueryWithLimitInBothQueries() {
+        ReadTableRequest request =
+                new ReadTableRequest("tableName").setColumnNames(List.of("col")).setLimit(2);
+        ReadTableRequest unionRequest =
+                new ReadTableRequest("otherTableName").setColumnNames(List.of("col")).setLimit(5);
+        request.setUnionReadRequests(List.of(unionRequest));
+
+        assertThat(request.getReadCommand())
+                .isEqualTo(
+                        "SELECT * FROM (SELECT col FROM otherTableName LIMIT 5) UNION ALL SELECT"
+                                + " col FROM tableName LIMIT 2");
     }
 
     @Test
