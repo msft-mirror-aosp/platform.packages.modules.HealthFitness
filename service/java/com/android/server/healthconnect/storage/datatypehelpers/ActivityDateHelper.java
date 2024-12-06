@@ -61,7 +61,9 @@ public final class ActivityDateHelper extends DatabaseHelper {
 
     public ActivityDateHelper(
             TransactionManager transactionManager,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
@@ -146,7 +148,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
                     db.execSQL(deleteTableRequest.getDeleteCommand());
                     upsertTableRequests.forEach(
                             upsertTableRequest ->
-                                    mTransactionManager.insertOrIgnore(db, upsertTableRequest));
+                                    mTransactionManager.insertOrIgnoreOnConflict(
+                                            db, upsertTableRequest));
                 });
     }
 

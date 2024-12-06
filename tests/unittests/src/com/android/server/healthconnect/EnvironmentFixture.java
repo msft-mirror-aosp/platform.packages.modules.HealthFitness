@@ -22,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.test.core.app.ApplicationProvider;
 
@@ -36,6 +37,8 @@ import java.io.File;
  * the test.
  */
 public class EnvironmentFixture implements StaticMockFixture {
+
+    private static final String TAG = "EnvironmentFixture";
 
     private final String mName;
     private final int mFileMode;
@@ -85,5 +88,6 @@ public class EnvironmentFixture implements StaticMockFixture {
         if (!file.delete()) {
             throw new IllegalStateException("Failed to delete " + file.getName());
         }
+        Log.v(TAG, "Deleted " + file.getName());
     }
 }

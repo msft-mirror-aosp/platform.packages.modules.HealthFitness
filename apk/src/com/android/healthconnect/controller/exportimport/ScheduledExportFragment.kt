@@ -169,6 +169,7 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
         preferenceScreen.addPreference(
             ExportStatusPreference(requireContext(), nextExportText, nextExportLocation).also {
                 it.order = EXPORT_STATUS_PREFERENCE_ORDER
+                it.isSelectable = false
             })
     }
 

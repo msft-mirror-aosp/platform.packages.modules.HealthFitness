@@ -20,6 +20,7 @@ import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -63,4 +64,10 @@ public final class DistanceRecordInternal extends IntervalRecordInternal<Distanc
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mDistance);
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 }

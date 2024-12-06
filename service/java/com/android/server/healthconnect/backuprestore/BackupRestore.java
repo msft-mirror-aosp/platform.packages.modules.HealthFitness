@@ -224,7 +224,6 @@ public final class BackupRestore {
         mDatabaseMerger =
                 new DatabaseMerger(
                         appInfoHelper,
-                        context,
                         deviceInfoHelper,
                         healthDataCategoryPriorityHelper,
                         transactionManager);

@@ -72,6 +72,7 @@ import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceListParcelResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
@@ -79,11 +80,13 @@ import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
+import android.health.connect.aidl.MedicalResourceListParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -119,6 +122,8 @@ import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
+
+import com.android.healthfitness.flags.Flags;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -2178,20 +2183,41 @@ public class HealthConnectManager {
         }
 
         try {
-            mService.upsertMedicalResources(
-                    mContext.getAttributionSource(),
-                    requests,
-                    new IMedicalResourcesResponseCallback.Stub() {
-                        @Override
-                        public void onResult(List<MedicalResource> medicalResources) {
-                            returnResult(executor, medicalResources, callback);
-                        }
+            if (Flags.phrUpsertFixUseSharedMemory()) {
+                mService.upsertMedicalResourcesFromRequestsParcel(
+                        mContext.getAttributionSource(),
+                        new UpsertMedicalResourceRequestsParcel(requests),
+                        new IMedicalResourceListParcelResponseCallback.Stub() {
+                            @Override
+                            public void onResult(
+                                    MedicalResourceListParcel medicalResourceListParcel) {
+                                returnResult(
+                                        executor,
+                                        medicalResourceListParcel.getMedicalResources(),
+                                        callback);
+                            }
 
-                        @Override
-                        public void onError(HealthConnectExceptionParcel exception) {
-                            returnError(executor, exception, callback);
-                        }
-                    });
+                            @Override
+                            public void onError(HealthConnectExceptionParcel exception) {
+                                returnError(executor, exception, callback);
+                            }
+                        });
+            } else {
+                mService.upsertMedicalResources(
+                        mContext.getAttributionSource(),
+                        requests,
+                        new IMedicalResourcesResponseCallback.Stub() {
+                            @Override
+                            public void onResult(List<MedicalResource> medicalResources) {
+                                returnResult(executor, medicalResources, callback);
+                            }
+
+                            @Override
+                            public void onError(HealthConnectExceptionParcel exception) {
+                                returnError(executor, exception, callback);
+                            }
+                        });
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2597,6 +2623,7 @@ public class HealthConnectManager {
      * @param ids Identifiers for data sources to get.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if the size of {@code ids} is more than 5000.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void getMedicalDataSources(
@@ -2610,6 +2637,11 @@ public class HealthConnectManager {
         if (ids.isEmpty()) {
             returnResult(executor, List.of(), callback);
             return;
+        }
+
+        if (ids.size() > MAXIMUM_PAGE_SIZE) {
+            throw new IllegalArgumentException(
+                    "The number of requested IDs must be <= " + MAXIMUM_PAGE_SIZE);
         }
 
         try {

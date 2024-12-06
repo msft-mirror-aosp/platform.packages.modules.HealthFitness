@@ -22,7 +22,8 @@ import android.content.Context
 import android.health.connect.datatypes.ActivityIntensityRecord
 import android.health.connect.datatypes.Metadata
 import android.platform.test.annotations.RequiresFlagsEnabled
-import android.platform.test.flag.junit.SetFlagsRule
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.ActivityIntensityFormatter
@@ -46,10 +47,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@RequiresFlagsEnabled(Flags.FLAG_ACTIVITY_INTENSITY)
+@RequiresFlagsEnabled(
+    Flags.FLAG_ACTIVITY_INTENSITY,
+    Flags.FLAG_ACTIVITY_INTENSITY_DB,
+    Flags.FLAG_HEALTH_CONNECT_MAPPINGS,
+)
 @HiltAndroidTest
 class ActivityIntensityFormatterTest {
-    @get:Rule val setFlagsRule = SetFlagsRule()
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 

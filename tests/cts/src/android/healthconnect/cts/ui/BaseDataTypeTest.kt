@@ -24,6 +24,7 @@ import android.healthconnect.cts.lib.UiTestUtils.findDescAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findObject
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
+import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
@@ -36,6 +37,7 @@ import android.healthconnect.cts.utils.TestUtils.readAllRecords
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
+import com.android.healthfitness.flags.AconfigFlagHelper
 import com.google.common.truth.Truth.assertThat
 import java.time.Duration.ofSeconds
 import org.junit.After
@@ -50,7 +52,6 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
     abstract val permissions: List<String>
     abstract val sameCategoryDataTypeString: String?
     abstract val anotherCategoryString: String
-    abstract val anotherCategoryDataTypeString: String
 
     abstract fun createRecord(): T
 
@@ -98,6 +99,10 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
     @After
     fun tearDown() {
         TestUtils.deleteAllStagedRemoteData()
+        permissions.forEach {
+            grantPermissionViaPackageManager(context, APP_WITH_READ_WRITE_PERMISSIONS, it)
+            assertPermissionGranted(it, APP_WITH_READ_WRITE_PERMISSIONS)
+        }
     }
 
     @Test
@@ -188,7 +193,9 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
         context.launchMainActivity {
             scrollDownToAndClick(By.text("App permissions"))
             findTextAndClick(APP_WITH_READ_WRITE_PERMISSIONS_LABEL)
-            findTextAndClick("Fitness and wellness")
+            if (AconfigFlagHelper.isPersonalHealthRecordEnabled()) {
+                findTextAndClick("Fitness and wellness")
+            }
             findTextAndClick("Allow all")
         }
 

@@ -23,6 +23,7 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.ActivityIntensityRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -45,6 +46,12 @@ public final class ActivityIntensityRecordInternal
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
         parcel.writeInt(mActivityIntensityType);
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     @Override
     public ActivityIntensityRecord toExternalRecord() {

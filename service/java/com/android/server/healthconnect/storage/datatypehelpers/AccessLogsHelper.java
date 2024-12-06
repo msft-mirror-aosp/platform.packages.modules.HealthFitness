@@ -90,7 +90,11 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
 
-    public AccessLogsHelper(TransactionManager transactionManager, AppInfoHelper appInfoHelper) {
+    public AccessLogsHelper(
+            TransactionManager transactionManager,
+            AppInfoHelper appInfoHelper,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
     }
@@ -281,7 +285,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         ContentValues contentValues =
                 populateCommonColumns(appInfoId, recordTypeIds.stream().toList(), operationType);
         UpsertTableRequest request = new UpsertTableRequest(TABLE_NAME, contentValues);
-        mTransactionManager.insertRecord(db, request);
+        mTransactionManager.insert(db, request);
     }
 
     @VisibleForTesting

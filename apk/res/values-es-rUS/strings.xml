@@ -312,8 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura cutánea"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lee la temperatura cutánea"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escribe la temperatura cutánea"</string>
-    <!-- no translation found for browse_health_records_intro (1611488691642390523) -->
-    <skip />
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Esto incluye todos los registros de salud que se sincronizaron y agregaron a Health Connect. Es posible que no se trate de tu historial médico completo y no incluya una descripción médica de tus registros de salud."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Todos los registros de salud"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"todos los registros de salud"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Escribir todos los registros de salud"</string>
@@ -791,10 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Música"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Otro"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Sin guía"</string>
-    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
-    <skip />
-    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
-    <skip />
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Moderada"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Vigorosa"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -1188,12 +1185,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quieres quitar el acceso a <xliff:g id="DATA_TYPE">%s</xliff:g> para todas las apps de tu reloj?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificación"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Marca de tachado"</string>
-    <!-- no translation found for current_allow_mode (6716206063077569218) -->
-    <skip />
-    <!-- no translation found for allow_all_the_time_prompt (5625132426961157398) -->
-    <skip />
-    <!-- no translation found for current_access (1457167070428176139) -->
-    <skip />
-    <!-- no translation found for manage_fitness_and_wellness_permissions (6198936108436598267) -->
-    <skip />
+    <string name="current_allow_mode" msgid="6716206063077569218">"Actualmente, <xliff:g id="APP_NAME">%1$s</xliff:g> puede acceder a los datos de actividad física y bienestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos de actividad física y bienestar todo el tiempo?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> tiene acceso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Administrar permisos de salud y bienestar"</string>
 </resources>

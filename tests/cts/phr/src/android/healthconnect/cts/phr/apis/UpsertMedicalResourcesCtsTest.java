@@ -53,6 +53,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_UPSERT_FIX_USE_SHARED_MEMORY;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -155,31 +156,22 @@ public class UpsertMedicalResourcesCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_writeLimitExceeded_throws() throws Exception {
         MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
-
         // Make the maximum number of calls allowed by quota. Minus 1 because of the above call.
         int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-            String resourceData = new ImmunizationBuilder().setId("Immunization" + i).toJson();
-            UpsertMedicalResourceRequest request =
-                    new UpsertMedicalResourceRequest.Builder(
-                                    dataSource.getId(), FHIR_VERSION_R4, resourceData)
-                            .build();
-            mManager.upsertMedicalResources(
-                    List.of(request), Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-        }
+        float remainingQuota = mUtil.tryAcquireCallQuotaNTimesForWrite(dataSource, maximumCalls);
 
-        // Make 1 extra create call and check quota is exceeded.
+        // Exceed the quota by using up any remaining quota that accumulated during the previous
+        // calls and make one additional call.
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        String resourceData =
-                new ImmunizationBuilder().setId("Immunization" + maximumCalls).toJson();
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                dataSource.getId(), FHIR_VERSION_R4, resourceData)
+                                dataSource.getId(), FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
                         .build();
-        mManager.upsertMedicalResources(
-                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+        int additionalCalls = (int) Math.ceil(remainingQuota) + 1;
+        for (int i = 0; i < additionalCalls; i++) {
+            mManager.upsertMedicalResources(
+                    List.of(request), Executors.newSingleThreadExecutor(), receiver);
+        }
 
         HealthConnectException exception = receiver.assertAndGetException();
         assertThat(exception.getErrorCode())
@@ -286,9 +278,9 @@ public class UpsertMedicalResourcesCtsTest {
         TestUtils.setLowerRateLimitsForTesting(false);
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
-        // TODO: b/380022133 - Increase this to 2mb after using shared memory in
-        //  UpsertMedicalResourceRequest. Right now we can only insert around 500kb before getting
-        //  an exception "android.os.TransactionTooLargeException: data parcel size".
+        // Without writing the upsert requests to shared memory, we are able to insert around
+        // 500kb before getting an exception "android.os.TransactionTooLargeException: data parcel
+        // size". The test below tests writing 2mb of data with shared memory enabled.
         int sizeToInsert = 500000;
         int totalRequestSize = 0;
         int requestCounter = 0;
@@ -307,6 +299,39 @@ public class UpsertMedicalResourcesCtsTest {
         mManager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
 
         receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION,
+        FLAG_PHR_UPSERT_FIX_USE_SHARED_MEMORY
+    })
+    public void testUpsertMedicalResources_insert2mbOfDataTestingSharedMemory_succeeds()
+            throws InterruptedException {
+        TestUtils.setLowerRateLimitsForTesting(false);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        int sizeToInsert = 2000000;
+        int totalRequestSize = 0;
+        int requestCounter = 0;
+        List<UpsertMedicalResourceRequest> requests = new ArrayList<>();
+        while (totalRequestSize < sizeToInsert) {
+            requestCounter++;
+            UpsertMedicalResourceRequest request =
+                    makeImmunizationUpsertRequest(dataSourceId, String.valueOf(requestCounter));
+            requests.add(request);
+            // Get the parcel size of the request and add it to the totalRequestSize
+            Parcel parcel = Parcel.obtain();
+            request.writeToParcel(parcel, 0);
+            totalRequestSize += parcel.dataSize();
+        }
+
+        mManager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+        assertThat(receiver.getResponse().size()).isAtLeast(500);
     }
 
     @Test
@@ -1001,6 +1026,107 @@ public class UpsertMedicalResourcesCtsTest {
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_multipleIdenticalUpsertRequests_throws()
+            throws InterruptedException {
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest, upsertRequest),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_identicalUpsertRequestsButDifferentFhirVersion_throws()
+            throws InterruptedException {
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest1 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+        UpsertMedicalResourceRequest upsertRequest2 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId, FHIR_VERSION_R4B, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest1, upsertRequest2),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void
+            testUpsertMedicalResources_identicalUpsertRequestsButDifferentResourceType_succeeds()
+                    throws InterruptedException {
+        String dataSourceId = mUtil.createDataSource(getCreateMedicalDataSourceRequest()).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String id = "id-1";
+        UpsertMedicalResourceRequest upsertRequest1 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId,
+                                FHIR_VERSION_R4,
+                                new ImmunizationBuilder().setId(id).toJson())
+                        .build();
+        UpsertMedicalResourceRequest upsertRequest2 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId,
+                                FHIR_VERSION_R4,
+                                new AllergyBuilder().setId(id).toJson())
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest1, upsertRequest2),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+        assertThat(receiver.getResponse()).hasSize(2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_identicalUpsertRequestsButDifferentDataSource_succeeds()
+            throws InterruptedException {
+        String dataSourceId1 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("1")).getId();
+        String dataSourceId2 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("2")).getId();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest1 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId1, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+        UpsertMedicalResourceRequest upsertRequest2 =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSourceId2, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest1, upsertRequest2),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+        assertThat(receiver.getResponse()).hasSize(2);
     }
 
     @Test

@@ -37,8 +37,9 @@ public final class MigrationCleaner {
 
     public MigrationCleaner(
             TransactionManager transactionManager,
-            PriorityMigrationHelper priorityMigrationHelper) {
-        mMigrationEntityHelper = new MigrationEntityHelper();
+            PriorityMigrationHelper priorityMigrationHelper,
+            MigrationEntityHelper migrationEntityHelper) {
+        mMigrationEntityHelper = migrationEntityHelper;
         mTransactionManager = transactionManager;
         mPriorityMigrationHelper = priorityMigrationHelper;
     }

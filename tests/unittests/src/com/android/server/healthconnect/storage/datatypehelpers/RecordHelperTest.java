@@ -19,7 +19,9 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.BloodPressureRecordHelper.BLOOD_PRESSURE_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper.STEPS_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
@@ -28,6 +30,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
@@ -35,19 +38,21 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
-import android.os.Environment;
 import android.util.Pair;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
@@ -73,12 +78,9 @@ public class RecordHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
 
     private TransactionTestUtils mTransactionTestUtils;
 
@@ -88,7 +90,7 @@ public class RecordHelperTest {
 
     @Before
     public void setup() throws Exception {
-        StorageContext context = testRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
@@ -96,11 +98,11 @@ public class RecordHelperTest {
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
     @Test
@@ -337,6 +339,48 @@ public class RecordHelperTest {
             assertThat(result.first).hasSize(1);
             assertThat(result.first.get(0).getClientRecordId()).isEqualTo("id2");
             assertThat(result.second).isEqualTo(EMPTY_PAGE_TOKEN);
+        }
+    }
+
+    @Test
+    public void getInternalRecords_recordTimeForInstantRecords_startTime() {
+        RecordHelper<?> helper = new BloodPressureRecordHelper();
+        String uid =
+                mTransactionTestUtils
+                        .insertRecords(
+                                TEST_PACKAGE_NAME, createBloodPressureRecord(4000, 5000, 100))
+                        .get(0);
+        ReadTableRequest request = new ReadTableRequest(BLOOD_PRESSURE_RECORD_TABLE_NAME);
+        try (Cursor cursor = mTransactionManager.read(request)) {
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(cursor, mDeviceInfoHelper, mAppInfoHelper);
+            assertThat(records).hasSize(1);
+
+            BloodPressureRecordInternal record = (BloodPressureRecordInternal) records.get(0);
+            assertThat(record.getUuid()).isEqualTo(UUID.fromString(uid));
+            assertThat(record.getRecordTime()).isEqualTo(4000);
+        }
+    }
+
+    @Test
+    public void getInternalRecords_recordTimeForIntervalRecords_endTime() {
+        RecordHelper<?> helper = new StepsRecordHelper();
+        String uid =
+                mTransactionTestUtils
+                        .insertRecords(TEST_PACKAGE_NAME, createStepsRecord(4000, 5000, 100))
+                        .get(0);
+        ReadTableRequest request = new ReadTableRequest(STEPS_TABLE_NAME);
+        try (Cursor cursor = mTransactionManager.read(request)) {
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(cursor, mDeviceInfoHelper, mAppInfoHelper);
+            assertThat(records).hasSize(1);
+
+            StepsRecordInternal record = (StepsRecordInternal) records.get(0);
+            assertThat(record.getUuid()).isEqualTo(UUID.fromString(uid));
+            assertThat(record.getStartTimeInMillis()).isEqualTo(4000);
+            assertThat(record.getEndTimeInMillis()).isEqualTo(5000);
+            assertThat(record.getRecordTime()).isEqualTo(5000);
+            assertThat(record.getCount()).isEqualTo(100);
         }
     }
 

@@ -20,6 +20,7 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.IntermenstrualBleedingRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /** @hide */
@@ -32,6 +33,12 @@ public final class IntermenstrualBleedingRecordInternal
 
     @Override
     void populateInstantRecordTo(@NonNull Parcel parcel) {}
+
+    @Override
+    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
+
+    @Override
+    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 
     @NonNull
     @Override

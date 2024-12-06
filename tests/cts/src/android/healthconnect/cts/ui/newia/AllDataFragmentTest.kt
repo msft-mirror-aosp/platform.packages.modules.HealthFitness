@@ -26,10 +26,12 @@ import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Volume
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
+import android.healthconnect.cts.lib.UiTestUtils.clickOnDescAndWaitForNewWindow
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
@@ -71,28 +73,23 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun allDataFragment_showsAllAvailableDataTypes() {
         context.launchDataActivity {
-            findText("Activity")
-            findText("Steps")
-            scrollDownTo(By.text("Body measurements"))
-            findText("Body measurements")
-            findText("Height")
-            scrollDownTo(By.text("Cycle tracking"))
-            findText("Cycle tracking")
-            findText("Ovulation test")
-            scrollDownTo(By.text("Sleep"))
-            findText("Sleep")
-            scrollDownTo(By.text("Vitals"))
-            findText("Vitals")
-            findText("Heart rate")
+            scrollDownToAndFindText("Activity")
+            scrollDownToAndFindText("Steps")
+            scrollDownToAndFindText("Body measurements")
+            scrollDownToAndFindText("Height")
+            scrollDownToAndFindText("Cycle tracking")
+            scrollDownToAndFindText("Ovulation test")
+            scrollDownToAndFindText("Sleep")
+            scrollDownToAndFindText("Vitals")
+            scrollDownToAndFindText("Heart rate")
         }
     }
 
     @Test
     fun allDataFragment_clickOnDataSourcesIcon_navigatesToDataSources() {
         context.launchDataActivity {
-            findObjectAndClick(By.desc("Data sources and priority"))
-            scrollDownTo(By.text("App sources"))
-            findText("App sources")
+            clickOnDescAndWaitForNewWindow("Data sources and priority")
+            scrollDownToAndFindText("App sources")
         }
     }
 
@@ -117,7 +114,7 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
     fun allDataFragment_clickOnPermissionType_navigatesToEntriesAndAccess() {
         context.launchDataActivity {
             findText("Activity")
-            findTextAndClick("Steps")
+            clickOnTextAndWaitForNewWindow("Steps")
 
             findText("Entries")
             findText("Access")
