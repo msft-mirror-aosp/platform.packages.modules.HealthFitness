@@ -67,7 +67,7 @@ public class HeartRateRecordHelper
 
     @Override
     @Nullable
-    public final AggregateResult<?> getAggregateResult(
+    public final AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case HEART_RATE_RECORD_BPM_MAX:

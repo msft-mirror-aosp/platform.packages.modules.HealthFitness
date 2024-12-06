@@ -54,7 +54,7 @@ public final class HeightRecordHelper extends InstantRecordHelper<HeightRecordIn
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;
         switch (aggregationType.getAggregationTypeIdentifier()) {
