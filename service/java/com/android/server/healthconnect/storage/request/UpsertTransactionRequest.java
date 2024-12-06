@@ -36,9 +36,7 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,11 +53,12 @@ import java.util.stream.Collectors;
  */
 public class UpsertTransactionRequest {
     private static final String TAG = "HealthConnectUTR";
-    private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
-    @Nullable private final String mPackageName;
 
+    @Nullable private final String mPackageName;
+    private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
     @RecordTypeIdentifier.RecordType Set<Integer> mRecordTypes = new ArraySet<>();
-    @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsToState;
+    private final boolean mShouldGenerateAccessLogs;
+    private final boolean mShouldPreferNewRecord;
 
     /** Create an upsert request for insert API calls. */
     public static UpsertTransactionRequest createForInsert(
@@ -67,7 +66,7 @@ public class UpsertTransactionRequest {
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
-            Map<String, Boolean> extraPermsStateMap) {
+            ArrayMap<String, Boolean> extraPermsStateMap) {
         for (RecordInternal<?> recordInternal : recordInternals) {
             // Override each record package to the given package i.e. the API caller package.
             StorageUtils.addPackageNameTo(recordInternal, packageName);
@@ -80,6 +79,8 @@ public class UpsertTransactionRequest {
                 deviceInfoHelper,
                 appInfoHelper,
                 true /* isInsertRequest */,
+                true /* shouldGenerateAccessLogs */,
+                true /* shouldPreferNewRecord */,
                 extraPermsStateMap);
     }
 
@@ -89,7 +90,7 @@ public class UpsertTransactionRequest {
             List<RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
-            Map<String, Boolean> extraPermsStateMap) {
+            ArrayMap<String, Boolean> extraPermsStateMap) {
         for (RecordInternal<?> recordInternal : recordInternals) {
             // Override each record package to the given package i.e. the API caller package.
             StorageUtils.addPackageNameTo(recordInternal, packageName);
@@ -103,6 +104,8 @@ public class UpsertTransactionRequest {
                 deviceInfoHelper,
                 appInfoHelper,
                 false /* isInsertRequest */,
+                true /* shouldGenerateAccessLogs */,
+                true /* shouldPreferNewRecord */,
                 extraPermsStateMap);
     }
 
@@ -121,7 +124,9 @@ public class UpsertTransactionRequest {
                 deviceInfoHelper,
                 appInfoHelper,
                 true /* isInsertRequest */,
-                Collections.emptyMap());
+                false /* shouldGenerateAccessLogs */,
+                false /* shouldPreferNewRecord */,
+                null /* extraPermsStateMap */);
     }
 
     private UpsertTransactionRequest(
@@ -130,25 +135,26 @@ public class UpsertTransactionRequest {
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             boolean isInsertRequest,
-            Map<String, Boolean> extraPermsStateMap) {
-        mPackageName = packageName;
-        if (extraPermsStateMap != null && !extraPermsStateMap.isEmpty()) {
-            mExtraWritePermissionsToState = new ArrayMap<>();
-            mExtraWritePermissionsToState.putAll(extraPermsStateMap);
+            boolean shouldGenerateAccessLogs,
+            boolean shouldPreferNewRecord,
+            @Nullable ArrayMap<String, Boolean> extraPermsStateMap) {
+        if (shouldGenerateAccessLogs) {
+            Objects.requireNonNull(packageName);
         }
-
+        mPackageName = packageName;
         for (RecordInternal<?> recordInternal : recordInternals) {
             appInfoHelper.populateAppInfoId(recordInternal, /* requireAllFields= */ true);
             deviceInfoHelper.populateDeviceInfoId(recordInternal);
             mRecordTypes.add(recordInternal.getRecordType());
             recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
-            addRequest(recordInternal, isInsertRequest);
+            addRequest(recordInternal, isInsertRequest, extraPermsStateMap);
         }
-
+        mShouldGenerateAccessLogs = shouldGenerateAccessLogs;
+        mShouldPreferNewRecord = shouldPreferNewRecord;
         if (!mRecordTypes.isEmpty() && Constants.DEBUG) {
             Slog.d(
                     TAG,
-                    "Upserting transaction for "
+                    "Upsert transaction for "
                             + packageName
                             + " with size "
                             + recordInternals.size());
@@ -175,14 +181,17 @@ public class UpsertTransactionRequest {
         return whereClauseForUpdateRequest;
     }
 
-    private void addRequest(RecordInternal<?> recordInternal, boolean isInsertRequest) {
+    private void addRequest(
+            RecordInternal<?> recordInternal,
+            boolean isInsertRequest,
+            @Nullable ArrayMap<String, Boolean> extraPermsStateMap) {
         RecordHelper<?> recordHelper =
                 InternalHealthConnectMappings.getInstance()
                         .getRecordHelper(recordInternal.getRecordType());
         Objects.requireNonNull(recordHelper);
 
         UpsertTableRequest request =
-                recordHelper.getUpsertTableRequest(recordInternal, mExtraWritePermissionsToState);
+                recordHelper.getUpsertTableRequest(recordInternal, extraPermsStateMap);
         request.setRecordType(recordHelper.getRecordIdentifier());
         if (!isInsertRequest) {
             request.setUpdateWhereClauses(generateWhereClausesForUpdate(recordInternal));
@@ -191,12 +200,26 @@ public class UpsertTransactionRequest {
         mUpsertRequests.add(request);
     }
 
-    // Package name is currently null for upsert requests coming from restore / import.
+    // Package name can be null if we don't need to generate access log, like when we are restoring
+    // data.
     public @Nullable String getPackageName() {
         return mPackageName;
     }
 
     public Set<Integer> getRecordTypeIds() {
         return mRecordTypes;
+    }
+
+    /** Returns whether we should be generating access logs for this request. */
+    public boolean shouldGenerateAccessLogs() {
+        return mShouldGenerateAccessLogs;
+    }
+
+    /**
+     * Returns whether the new record being upserted should be preferred in case of existing
+     * duplicate records
+     */
+    public boolean shouldPreferNewRecord() {
+        return mShouldPreferNewRecord;
     }
 }
