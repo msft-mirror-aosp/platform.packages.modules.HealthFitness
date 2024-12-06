@@ -53,7 +53,7 @@ public class DatabaseStatsCollector {
         for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof IntervalRecordHelper
                     && !(recordHelper instanceof SeriesRecordHelper)) {
-                count += getNumberOfRowsInTable(recordHelper.getMainTableName());
+                count += queryNumEntries(recordHelper.getMainTableName());
             }
         }
         return count;
@@ -64,7 +64,7 @@ public class DatabaseStatsCollector {
         long count = 0L;
         for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof SeriesRecordHelper) {
-                count += getNumberOfRowsInTable(recordHelper.getMainTableName());
+                count += queryNumEntries(recordHelper.getMainTableName());
             }
         }
         return count;
@@ -75,7 +75,7 @@ public class DatabaseStatsCollector {
         long count = 0L;
         for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof InstantRecordHelper) {
-                count += getNumberOfRowsInTable(recordHelper.getMainTableName());
+                count += queryNumEntries(recordHelper.getMainTableName());
             }
         }
         return count;
@@ -83,12 +83,12 @@ public class DatabaseStatsCollector {
 
     /** Get the number of change log entries in Health Connect database. */
     public long getNumberOfChangeLogs() {
-        return getNumberOfRowsInTable(ChangeLogsHelper.TABLE_NAME);
+        return queryNumEntries(ChangeLogsHelper.TABLE_NAME);
     }
 
     /** Get the number of rows in the given table. */
-    private long getNumberOfRowsInTable(String tableName) {
-        return mTransactionManager.getNumberOfEntriesInTheTable(tableName);
+    private long queryNumEntries(String tableName) {
+        return mTransactionManager.queryNumEntries(tableName);
     }
 
     /**
