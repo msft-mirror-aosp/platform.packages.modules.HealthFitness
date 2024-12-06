@@ -466,7 +466,8 @@ public final class DatabaseMerger {
                 mTransactionManager.insertAllRecords(
                         mAppInfoHelper, /* accessLogsHelper */ null, upsertTransactionRequest);
             } else {
-                mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+                mTransactionManager.insertOrIgnoreOnConflict(
+                        upsertTransactionRequest.getUpsertRequests());
             }
             currentToken = token;
         } while (!currentToken.isEmpty());

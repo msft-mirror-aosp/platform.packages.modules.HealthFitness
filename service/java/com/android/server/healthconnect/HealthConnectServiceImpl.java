@@ -1228,7 +1228,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 attributionSource.getPackageName(), request, mAppInfoHelper)
                         .setHasManageHealthDataPermission(hasDataManagementPermission(uid, pid));
         int numberOfRecordsDeleted =
-                mTransactionManager.deleteAll(
+                mTransactionManager.deleteAllRecords(
                         deleteTransactionRequest, shouldRecordDeleteAccessLogs, mAccessLogsHelper);
         tryAndReturnResult(callback, logger);
         HealthConnectThreadScheduler.scheduleInternalTask(
