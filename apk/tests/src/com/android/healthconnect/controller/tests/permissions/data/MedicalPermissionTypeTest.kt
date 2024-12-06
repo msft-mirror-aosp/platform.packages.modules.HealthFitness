@@ -16,7 +16,7 @@
 package com.android.healthconnect.controller.tests.permissions.data
 
 import android.content.Context
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromMedicalResourceType
@@ -47,8 +47,8 @@ class MedicalPermissionTypeTest {
 
     @Test
     fun fromMedicalResourceType_immunization() {
-        assertThat(fromMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS))
-            .isEqualTo(MedicalPermissionType.IMMUNIZATIONS)
+        assertThat(fromMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES))
+            .isEqualTo(MedicalPermissionType.VACCINES)
     }
 
     @Test
@@ -60,8 +60,8 @@ class MedicalPermissionTypeTest {
 
     @Test
     fun toMedicalResourceType_immunization() {
-        assertThat(toMedicalResourceType(MedicalPermissionType.IMMUNIZATIONS))
-            .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        assertThat(toMedicalResourceType(MedicalPermissionType.VACCINES))
+            .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES)
     }
 
     @Test

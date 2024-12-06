@@ -30,36 +30,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
-import android.health.connect.ReadRecordsRequest;
-import android.health.connect.ReadRecordsRequestUsingFilters;
-import android.health.connect.ReadRecordsResponse;
-import android.health.connect.TimeInstantRangeFilter;
-import android.health.connect.datatypes.Record;
-import android.health.connect.datatypes.StepsRecord;
-import android.os.OutcomeReceiver;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Pair;
 
-import androidx.test.InstrumentationRegistry;
-
-import com.android.compatibility.common.util.SystemUtil;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
-import com.android.server.healthconnect.storage.StorageContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import org.junit.After;
@@ -77,11 +62,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 
 // TODO(b/261432978): add test for sharedUser backup
 public class FirstGrantTimeUnitTest {
@@ -89,13 +71,14 @@ public class FirstGrantTimeUnitTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(MigrationStateManager.class)
+                    .mockStatic(HealthConnectManager.class)
                     .mockStatic(HealthConnectThreadScheduler.class)
-                    .spyStatic(HealthDataCategoryPriorityHelper.class)
+                    .spyStatic(UserHandle.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
     private static final String SELF_PACKAGE_NAME = "com.android.healthconnect.unittests";
+    private static final int SELF_PACKAGE_UID = 123;
     private static final UserHandle CURRENT_USER = Process.myUserHandle();
 
     private static final int DEFAULT_VERSION = 1;
@@ -107,37 +90,59 @@ public class FirstGrantTimeUnitTest {
     @Mock private UserManager mUserManager;
     @Mock private Context mContext;
     @Mock private FirstGrantTimeDatastore mDatastore;
-    @Mock private PackageInfoUtils mPackageInfoUtils;
 
-    private HealthConnectInjectorImpl.Builder mHealthConnectInjectorBuilder;
+    private FirstGrantTimeManager mFirstGrantTimeManager;
 
     @Before
-    public void setUp() {
-        Context context = InstrumentationRegistry.getContext();
+    public void setUp() throws PackageManager.NameNotFoundException {
         MockitoAnnotations.initMocks(this);
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> HealthConnectDeviceConfigManager.initializeInstance(mContext),
-                Manifest.permission.READ_DEVICE_CONFIG);
-        TransactionManager.initializeInstance(StorageContext.create(context, CURRENT_USER));
+
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
+        when(mTracker.supportsPermissionUsageIntent(anyString(), any())).thenReturn(true);
+
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
-        when(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
-                .thenReturn(true);
-        when(mContext.createContextAsUser(any(), anyInt())).thenReturn(context);
-        when(mContext.getApplicationContext()).thenReturn(context);
+
+        when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
+        when(mContext.getApplicationContext()).thenReturn(mContext);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
         when(mContext.getSystemService(UserManager.class)).thenReturn(mUserManager);
         when(mContext.getUser()).thenReturn(CURRENT_USER);
-        when(mUserManager.isUserUnlocked()).thenReturn(true);
 
-        mHealthConnectInjectorBuilder =
+        when(mUserManager.isUserUnlocked(any())).thenReturn(true);
+        ExtendedMockito.when(UserHandle.getUserHandleForUid(SELF_PACKAGE_UID))
+                .thenReturn(CURRENT_USER);
+
+        when(mPackageManager.getPackageUid(eq(SELF_PACKAGE_NAME), any()))
+                .thenReturn(SELF_PACKAGE_UID);
+        when(mPackageManager.getPackagesForUid(SELF_PACKAGE_UID))
+                .thenReturn(new String[] {SELF_PACKAGE_NAME});
+
+        PackageInfo packageInfo = new PackageInfo();
+        packageInfo.packageName = SELF_PACKAGE_NAME;
+        packageInfo.requestedPermissions = new String[] {HealthPermissions.WRITE_STEPS};
+        packageInfo.requestedPermissionsFlags =
+                new int[] {PackageInfo.REQUESTED_PERMISSION_GRANTED};
+        when(mPackageManager.getPackageInfo(eq(SELF_PACKAGE_NAME), any())).thenReturn(packageInfo);
+        when(mPackageManager.getInstalledPackages(any())).thenReturn(List.of(packageInfo));
+
+        ExtendedMockito.when(
+                        HealthConnectManager.isHealthPermission(
+                                mContext, HealthPermissions.WRITE_STEPS))
+                .thenReturn(true);
+        ExtendedMockito.when(HealthConnectManager.getHealthPermissions(mContext))
+                .thenReturn(Set.of(HealthPermissions.WRITE_STEPS));
+
+        mFirstGrantTimeManager =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setMigrationStateManager(mMigrationStateManager)
                         .setFirstGrantTimeDatastore(mDatastore)
-                        .setHealthPermissionIntentAppsTracker(mTracker);
+                        .setHealthPermissionIntentAppsTracker(mTracker)
+                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
+                        .build()
+                        .getFirstGrantTimeManager();
     }
 
     @After
@@ -146,51 +151,50 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
-    public void testSetFirstGrantTimeForAnApp_expectOtherAppsGrantTimesRemained() {
+    public void testSetFirstGrantTimeForAnApp_expectOtherAppsGrantTimesRemained()
+            throws PackageManager.NameNotFoundException {
         Instant instant1 = Instant.parse("2023-02-11T10:00:00Z");
         Instant instant2 = Instant.parse("2023-02-12T10:00:00Z");
         Instant instant3 = Instant.parse("2023-02-13T10:00:00Z");
         String anotherPackage = "another.package";
-        // mock PackageInfoUtils
+
+        // mock packageManager
         List<Pair<String, Integer>> packageNameAndUidPairs =
-                Arrays.asList(new Pair<>(SELF_PACKAGE_NAME, 0), new Pair<>(anotherPackage, 1));
-        // Need to re-initialize so that it uses the PackageInfoUtils mock
+                Arrays.asList(new Pair<>(SELF_PACKAGE_NAME, 123), new Pair<>(anotherPackage, 456));
         List<PackageInfo> packageInfos = new ArrayList<>();
         for (Pair<String, Integer> pair : packageNameAndUidPairs) {
             String packageName = pair.first;
             int uid = pair.second;
             PackageInfo packageInfo = new PackageInfo();
             packageInfo.packageName = packageName;
+            packageInfo.requestedPermissions = new String[] {HealthPermissions.WRITE_STEPS};
+            packageInfo.requestedPermissionsFlags =
+                    new int[] {PackageInfo.REQUESTED_PERMISSION_GRANTED};
             packageInfos.add(packageInfo);
-            when(mPackageInfoUtils.getPackageUid(
-                            eq(packageName), any(UserHandle.class), any(Context.class)))
-                    .thenReturn(uid);
-            when(mPackageInfoUtils.getPackageNameForUid(eq(mContext), eq(uid)))
-                    .thenReturn(Optional.of(packageName));
+            when(mPackageManager.getPackageUid(eq(packageName), any())).thenReturn(uid);
+            when(mPackageManager.getPackagesForUid(uid)).thenReturn(new String[] {packageName});
+            when(mPackageManager.getPackageInfo(eq(packageName), any())).thenReturn(packageInfo);
+
+            ExtendedMockito.when(UserHandle.getUserHandleForUid(uid)).thenReturn(CURRENT_USER);
         }
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(
-                        any(UserHandle.class), any(Context.class)))
-                .thenReturn(packageInfos);
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
+        when(mPackageManager.getInstalledPackages(any())).thenReturn(packageInfos);
+
+        // Mock Datastore.
         UserGrantTimeState currentGrantTimeState = new UserGrantTimeState(DEFAULT_VERSION);
         currentGrantTimeState.setPackageGrantTime(SELF_PACKAGE_NAME, instant1);
         currentGrantTimeState.setPackageGrantTime(anotherPackage, instant2);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(currentGrantTimeState);
-        // mock permission intent tracker
-        when(mTracker.supportsPermissionUsageIntent(anyString(), ArgumentMatchers.any()))
-                .thenReturn(true);
-        ArgumentCaptor<UserGrantTimeState> captor =
-                ArgumentCaptor.forClass(UserGrantTimeState.class);
 
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(instant1);
-        assertThat(firstGrantTimeManager.getFirstGrantTime(anotherPackage, CURRENT_USER))
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(anotherPackage, CURRENT_USER))
                 .hasValue(instant2);
 
-        firstGrantTimeManager.setFirstGrantTime(SELF_PACKAGE_NAME, instant3, CURRENT_USER);
-        verify(mDatastore).writeForUser(captor.capture(), eq(CURRENT_USER), anyInt());
+        ArgumentCaptor<UserGrantTimeState> captor =
+                ArgumentCaptor.forClass(UserGrantTimeState.class);
+        mFirstGrantTimeManager.setFirstGrantTime(SELF_PACKAGE_NAME, instant3, CURRENT_USER);
+        verify(mDatastore).writeForUser(captor.capture(), eq(CURRENT_USER), eq(DATA_TYPE_CURRENT));
 
         UserGrantTimeState newUserGrantTimeState = captor.getValue();
         assertThat(newUserGrantTimeState.getPackageGrantTimes().keySet()).hasSize(2);
@@ -201,117 +205,56 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUnknownPackage_throwsException() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
-        firstGrantTimeManager.getFirstGrantTime("android.unknown_package", CURRENT_USER);
+    public void testUnknownPackage_throwsException() throws PackageManager.NameNotFoundException {
+        String unknownPackage = "android.unknown_package";
+        when(mPackageManager.getPackageUid(eq(unknownPackage), any()))
+                .thenThrow(new PackageManager.NameNotFoundException());
+        mFirstGrantTimeManager.getFirstGrantTime(unknownPackage, CURRENT_USER);
     }
 
     @Test
     public void testCurrentPackage_intentNotSupported_grantTimeIsNull() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
-
         when(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .thenReturn(false);
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isEmpty();
     }
 
     @Test
     public void testOnPermissionsChangedCalledWhileDeviceIsLocked_getGrantTimeNotNullAfterUnlock()
             throws TimeoutException {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
         // before device is unlocked
-        when(mUserManager.isUserUnlocked()).thenReturn(false);
+        when(mUserManager.isUserUnlocked(any())).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT)).thenReturn(null);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED)).thenReturn(null);
-        int uid = 123;
-        String[] packageNames = {"package.name"};
-        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
-                .thenReturn(true);
-        firstGrantTimeManager.onPermissionsChanged(uid);
+        mFirstGrantTimeManager.onPermissionsChanged(SELF_PACKAGE_UID);
         waitForAllScheduledTasksToComplete();
         // after device is unlocked
-        when(mUserManager.isUserUnlocked()).thenReturn(true);
+        when(mUserManager.isUserUnlocked(any())).thenReturn(true);
         UserGrantTimeState currentGrantTimeState = new UserGrantTimeState(DEFAULT_VERSION);
         Instant now = Instant.parse("2023-02-14T10:00:00Z");
         currentGrantTimeState.setPackageGrantTime(SELF_PACKAGE_NAME, now);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(currentGrantTimeState);
 
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(now);
     }
 
     @Test
-    public void
-            testOnPermissionsChangedCalled_withHealthPermissionsUid_expectBackgroundTaskAdded() {
-        int uid = 123;
-        String[] packageNames = {"package.name"};
-        PackageInfo packageInfo = new PackageInfo();
-        packageInfo.packageName = packageNames[0];
-        packageInfo.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_EXERCISE,
-                };
-        packageInfo.requestedPermissionsFlags =
-                new int[] {
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                };
-        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(packageInfo));
-        when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
-                .thenReturn(true);
-        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
-                .thenReturn(true);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
-
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
-
-        firstGrantTimeManager.onPermissionsChanged(uid);
+    public void testOnPermissionsChanged_withHealthPermissionsUid_expectBackgroundTaskAdded() {
+        mFirstGrantTimeManager.onPermissionsChanged(SELF_PACKAGE_UID);
 
         ExtendedMockito.verify(
                 () -> HealthConnectThreadScheduler.scheduleInternalTask(any()), times(1));
     }
 
     @Test
-    public void
-            testOnPermissionsChangedCalled_withNoHealthPermissionsUid_expectNoBackgroundTaskAdded()
-                    throws TimeoutException {
-        int uid = 123;
-        String[] packageNames = {"package.name"};
-        PackageInfo packageInfo = new PackageInfo();
-        packageInfo.packageName = packageNames[0];
-        packageInfo.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_EXERCISE,
-                };
-        packageInfo.requestedPermissionsFlags =
-                new int[] {
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                };
-        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackageNamesForUid(mContext, uid)).thenReturn(packageNames);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(packageInfo));
-        when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
-                .thenReturn(true);
-        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
+    public void testOnPermissionsChanged_withNoHealthPermissionsUid_expectNoBackgroundTaskAdded() {
+        when(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .thenReturn(false);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
 
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
-
-        firstGrantTimeManager.onPermissionsChanged(uid);
+        mFirstGrantTimeManager.onPermissionsChanged(SELF_PACKAGE_UID);
 
         ExtendedMockito.verify(
                 () -> HealthConnectThreadScheduler.scheduleInternalTask(any()), times(0));
@@ -319,11 +262,9 @@ public class FirstGrantTimeUnitTest {
 
     @Test
     public void testCurrentPackage_intentSupported_grantTimeIsNotNull() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
         // Calling getFirstGrantTime will set grant time for the package
         Optional<Instant> firstGrantTime =
-                firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER);
+                mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER);
         assertThat(firstGrantTime).isPresent();
 
         assertThat(firstGrantTime.get()).isGreaterThan(Instant.now().minusSeconds((long) 1e3));
@@ -345,82 +286,57 @@ public class FirstGrantTimeUnitTest {
 
     @Test
     public void testCurrentPackage_noGrantTimeBackupBecameAvailable_grantTimeEqualToStaged() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isPresent();
         Instant backupTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(null, backupTime);
-        firstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        mFirstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(backupTime);
     }
 
     @Test
     public void testCurrentPackage_noBackup_useRecordedTime() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
         Instant stateTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(stateTime, null);
 
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(stateTime);
-        firstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        mFirstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(stateTime);
     }
 
     @Test
     public void testCurrentPackage_noBackup_grantTimeEqualToStaged() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
         Instant backupTime = Instant.now().minusSeconds((long) 1e5);
         Instant stateTime = backupTime.plusSeconds(10);
         UserGrantTimeState stagedState = setupGrantTimeState(stateTime, backupTime);
 
-        firstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        mFirstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(backupTime);
     }
 
     @Test
     public void testCurrentPackage_backupDataLater_stagedDataSkipped() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
         Instant stateTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(stateTime, stateTime.plusSeconds(1));
 
-        firstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
-        assertThat(firstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
+        mFirstGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
+        assertThat(mFirstGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .hasValue(stateTime);
     }
 
     @Test
     public void testWriteStagedData_getStagedStateForCurrentPackage_returnsCorrectState() {
-        FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
         Instant stateTime = Instant.now().minusSeconds((long) 1e5);
         setupGrantTimeState(stateTime, null);
 
-        UserGrantTimeState state = firstGrantTimeManager.getGrantTimeStateForUser(CURRENT_USER);
+        UserGrantTimeState state = mFirstGrantTimeManager.getGrantTimeStateForUser(CURRENT_USER);
         assertThat(state.getSharedUserGrantTimes()).isEmpty();
         assertThat(state.getPackageGrantTimes().containsKey(SELF_PACKAGE_NAME)).isTrue();
         assertThat(state.getPackageGrantTimes().get(SELF_PACKAGE_NAME)).isEqualTo(stateTime);
-    }
-
-    @Test(expected = HealthConnectException.class)
-    public <T extends Record> void testReadRecords_withNoIntent_throwsException()
-            throws InterruptedException {
-        TimeInstantRangeFilter filter =
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
-                        .setEndTime(Instant.now().plusMillis(3000))
-                        .build();
-        ReadRecordsRequestUsingFilters<StepsRecord> request =
-                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
-                        .setTimeRangeFilter(filter)
-                        .build();
-        readRecords(request);
     }
 
     private UserGrantTimeState setupGrantTimeState(Instant currentTime, Instant stagedTime) {
@@ -436,45 +352,5 @@ public class FirstGrantTimeUnitTest {
         }
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED)).thenReturn(backupState);
         return backupState;
-    }
-
-    private static <T extends Record> List<T> readRecords(ReadRecordsRequest<T> request)
-            throws InterruptedException {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(service).isNotNull();
-        assertThat(request.getRecordType()).isNotNull();
-        AtomicReference<List<T>> response = new AtomicReference<>();
-        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
-                new AtomicReference<>();
-        service.readRecords(
-                request,
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(ReadRecordsResponse<T> result) {
-                        response.set(result.getRecords());
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        healthConnectExceptionAtomicReference.set(exception);
-                        latch.countDown();
-                    }
-                });
-        assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
-        if (healthConnectExceptionAtomicReference.get() != null) {
-            throw healthConnectExceptionAtomicReference.get();
-        }
-        return response.get();
-    }
-
-    private FirstGrantTimeManager createFirstGrantTimeManager(boolean useMockPackageInfoUtils) {
-        if (useMockPackageInfoUtils) {
-            mHealthConnectInjectorBuilder.setPackageInfoUtils(mPackageInfoUtils);
-        }
-        return mHealthConnectInjectorBuilder.build().getFirstGrantTimeManager();
     }
 }

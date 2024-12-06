@@ -24,9 +24,12 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.navigateBackToHomeScreen
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.platform.test.annotations.RequiresFlagsDisabled
@@ -58,11 +61,12 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
         context.launchMainActivity {
             navigateToManageAppPermissions()
 
-            waitDisplayed(By.text("Delete app data"))
-            waitDisplayed(By.text("Additional access"))
-            clickOnText("Additional access")
-            waitDisplayed(By.text("Access past data"))
-            waitDisplayed(By.text("Access data in the background"))
+            scrollDownTo(By.text("Delete app data"))
+            findText("Delete app data")
+            scrollDownTo(By.text("Additional access"))
+            findTextAndClick("Additional access")
+            findText("Access past data")
+            findText("Access data in the background")
         }
     }
 
@@ -139,6 +143,7 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     private fun navigateToManageAppPermissions() {
+        scrollDownTo(By.text("App permissions"))
         clickOnText("App permissions")
         clickOnText("Health Connect cts test app")
         waitDisplayed(By.text("Health Connect cts test app"))

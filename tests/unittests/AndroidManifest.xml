@@ -23,6 +23,14 @@
     <!-- The application has to be debuggable for static mocking to work. -->
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner"/>
+        <activity android:name=".EmptyActivity"
+            android:label="EmptyActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS"/>
+            </intent-filter>
+        </activity>
     </application>
 
     <!-- To get visibility of the app with health permissions definitions,
@@ -31,7 +39,6 @@
         android:name="androidx.test.runner.AndroidJUnitRunner"
         android:label="HealthConnect Unit Tests"
         android:targetPackage="com.android.healthconnect.unittests"/>
-    <uses-permission android:name="android.permission.READ_DEVICE_CONFIG"/>
 
     <uses-permission android:name="android.permission.health.READ_STEPS"/>
 </manifest>

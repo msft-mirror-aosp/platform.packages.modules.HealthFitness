@@ -18,6 +18,7 @@ package com.android.healthfitness.flags;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.DB_VERSION_TO_DB_FLAG_MAP;
 import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isEcosystemMetricsEnabled;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 
@@ -137,9 +138,11 @@ public class AconfigFlagHelperTest {
                 assertTrue(
                         String.format(
                                 "DB version %d hasn't been rolled out yet, it's likely a mistake to"
-                                    + " set DatabaseVersions#LAST_ROLLED_OUT_DB_VERSION to a number"
-                                    + " greater than %d. Make sure you follow the instructions in"
-                                    + " go/hc-mainline-dev/trunk_stable/add-db-changes.",
+                                        + " set DatabaseVersions#LAST_ROLLED_OUT_DB_VERSION to a "
+                                        + "number"
+                                        + " greater than %d. Make sure you follow the "
+                                        + "instructions in"
+                                        + " go/hc-mainline-dev/trunk_stable/add-db-changes.",
                                 dbVersion, dbVersion),
                         dbVersion > LAST_ROLLED_OUT_DB_VERSION);
             }
@@ -170,5 +173,30 @@ public class AconfigFlagHelperTest {
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void phr_featureFlagTrueAndDbFalse_expectFalse() {
         assertThat(isPersonalHealthRecordEnabled()).isFalse();
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES)
+    @DisableFlags(Flags.FLAG_ECOSYSTEM_METRICS)
+    public void isEcosystemMetricsEnabled_featureFlagOff_expectFalse() {
+        assertThat(isEcosystemMetricsEnabled()).isFalse();
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ECOSYSTEM_METRICS)
+    @DisableFlags(Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES)
+    public void isEcosystemMetricsEnabled_dbFlagOff_expectFalse() {
+        assertThat(isEcosystemMetricsEnabled()).isFalse();
+    }
+
+    @Test
+    @EnableFlags({
+        Flags.FLAG_ECOSYSTEM_METRICS,
+        Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void isEcosystemMetricsEnabled_bothFlagsOn_expectTrue() {
+        assertThat(isEcosystemMetricsEnabled()).isTrue();
     }
 }

@@ -16,21 +16,26 @@
 
 package com.android.server.healthconnect.injector;
 
+import android.content.Context;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.logging.UsageStatsCollector;
+import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
+import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -38,10 +43,18 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
+import com.android.server.healthconnect.utils.TimeSource;
 
 /**
  * Interface for Health Connect Dependency Injector.
@@ -88,12 +101,6 @@ public abstract class HealthConnectInjector {
      * Getter for {@link MigrationStateManager} instance initialised by the Health Connect Injector.
      */
     public abstract MigrationStateManager getMigrationStateManager();
-
-    /**
-     * Getter for {@link HealthConnectDeviceConfigManager} instance initialised by the Health
-     * Connect Injector.
-     */
-    public abstract HealthConnectDeviceConfigManager getHealthConnectDeviceConfigManager();
 
     /** Getter for {@link DeviceInfoHelper} instance initialised by the Health Connect Injector. */
     public abstract DeviceInfoHelper getDeviceInfoHelper();
@@ -155,6 +162,67 @@ public abstract class HealthConnectInjector {
 
     /** Getter for {@link MigrationCleaner} instance initialised by the Health Connect Injector. */
     public abstract MigrationCleaner getMigrationCleaner();
+
+    /**
+     * Getter for {@link MedicalResourceHelper} instance initialised by the Health Connect Injector.
+     */
+    public abstract MedicalResourceHelper getMedicalResourceHelper();
+
+    /**
+     * Getter for {@link MedicalDataSourceHelper} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract MedicalDataSourceHelper getMedicalDataSourceHelper();
+
+    /** Getter for {@link TimeSource} instance initialised by the Health Connect Injector. */
+    public abstract TimeSource getTimeSource();
+
+    /**
+     * Getter for {@link MigrationBroadcastScheduler} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract MigrationBroadcastScheduler getMigrationBroadcastScheduler();
+
+    /**
+     * Getter for {@link MigrationUiStateManager} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract MigrationUiStateManager getMigrationUiStateManager();
+
+    /** Getter for {@link DatabaseHelpers} instance initialised by the Health Connect Injector. */
+    public abstract DatabaseHelpers getDatabaseHelpers();
+
+    /**
+     * Getter for {@link MigrationEntityHelper} instance initialised by the Health Connect Injector.
+     */
+    public abstract MigrationEntityHelper getMigrationEntityHelper();
+
+    /** Getter for {@link BackupRestore} instance initialised by the Health Connect Injector. */
+    public abstract BackupRestore getBackupRestore();
+
+    /**
+     * Getter for {@link PreferencesManager} instance initialised by the Health Connect Injector.
+     */
+    public abstract PreferencesManager getPreferencesManager();
+
+    /** Getter for {@link DailyCleanupJob} instance initialised by the Health Connect Injector. */
+    public abstract DailyCleanupJob getDailyCleanupJob();
+
+    /**
+     * Getter for {@link DatabaseStatsCollector} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract DatabaseStatsCollector getDatabaseStatsCollector();
+
+    /**
+     * Getter for {@link UsageStatsCollector} instance initialised by the Health Connect Injector.
+     */
+    public abstract UsageStatsCollector getUsageStatsCollector(Context context);
+
+    /**
+     * Getter for {@link ReadAccessLogsHelper} instance initialised by the Health Connect Injector.
+     */
+    public abstract ReadAccessLogsHelper getReadAccessLogsHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

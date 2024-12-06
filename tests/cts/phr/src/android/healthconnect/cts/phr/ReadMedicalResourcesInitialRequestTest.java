@@ -17,7 +17,7 @@
 package android.healthconnect.cts.phr;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.DataFactory.DEFAULT_PAGE_SIZE;
@@ -51,10 +51,10 @@ public class ReadMedicalResourcesInitialRequestTest {
     @Test
     public void testRequestBuilder_requiredFieldsOnly() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
-        assertThat(request.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+        assertThat(request.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
         assertThat(request.getDataSourceIds()).isEmpty();
         assertThat(request.getPageSize()).isEqualTo(DEFAULT_PAGE_SIZE);
     }
@@ -64,13 +64,13 @@ public class ReadMedicalResourcesInitialRequestTest {
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
-                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
                         .build();
 
-        assertThat(request.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+        assertThat(request.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
         assertThat(request.getDataSourceIds())
                 .containsExactly(DATA_SOURCE_ID, DIFFERENT_DATA_SOURCE_ID);
         assertThat(request.getPageSize()).isEqualTo(100);
@@ -79,7 +79,7 @@ public class ReadMedicalResourcesInitialRequestTest {
     @Test
     public void testRequestBuilder_clearDataSourceIds() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .clearDataSourceIds()
@@ -101,7 +101,7 @@ public class ReadMedicalResourcesInitialRequestTest {
                 IllegalArgumentException.class,
                 () ->
                         new ReadMedicalResourcesInitialRequest.Builder(
-                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                        MEDICAL_RESOURCE_TYPE_VACCINES)
                                 .addDataSourceId("foo"));
     }
 
@@ -111,7 +111,7 @@ public class ReadMedicalResourcesInitialRequestTest {
                 IllegalArgumentException.class,
                 () ->
                         new ReadMedicalResourcesInitialRequest.Builder(
-                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                        MEDICAL_RESOURCE_TYPE_VACCINES)
                                 .setPageSize(MAXIMUM_PAGE_SIZE + 1));
     }
 
@@ -121,14 +121,14 @@ public class ReadMedicalResourcesInitialRequestTest {
                 IllegalArgumentException.class,
                 () ->
                         new ReadMedicalResourcesInitialRequest.Builder(
-                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                        MEDICAL_RESOURCE_TYPE_VACCINES)
                                 .setPageSize(MINIMUM_PAGE_SIZE - 1));
     }
 
     @Test
     public void testRequestBuilder_fromExistingBuilder() {
         ReadMedicalResourcesInitialRequest.Builder original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100);
         ReadMedicalResourcesInitialRequest request =
@@ -140,7 +140,7 @@ public class ReadMedicalResourcesInitialRequestTest {
     @Test
     public void testRequestBuilder_fromExistingInstance() {
         ReadMedicalResourcesInitialRequest original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
                         .build();
@@ -153,7 +153,7 @@ public class ReadMedicalResourcesInitialRequestTest {
     @Test
     public void testToString() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
                         .build();
@@ -169,12 +169,12 @@ public class ReadMedicalResourcesInitialRequestTest {
     @Test
     public void testEquals_sameRequests() {
         ReadMedicalResourcesInitialRequest request1 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
                         .build();
         ReadMedicalResourcesInitialRequest request2 =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
                         .build();
@@ -186,7 +186,7 @@ public class ReadMedicalResourcesInitialRequestTest {
     @Test
     public void testEquals_comparesAllValues() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .build();
         ReadMedicalResourcesInitialRequest requestDifferentType =

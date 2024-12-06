@@ -183,7 +183,7 @@ public final class BundleHelper {
     private static final String END_ZONE_OFFSET = PREFIX + "END_ZONE_OFFSET";
 
     /** Converts an insert records request to a bundle. */
-    public static Bundle fromInsertRecordsRequest(List<Record> records) {
+    public static Bundle fromInsertRecordsRequest(List<? extends Record> records) {
         Bundle bundle = new Bundle();
         bundle.putString(QUERY_TYPE, INSERT_RECORDS_QUERY);
         bundle.putParcelableArrayList(RECORD_LIST, new ArrayList<>(fromRecordList(records)));

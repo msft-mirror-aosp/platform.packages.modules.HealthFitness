@@ -18,11 +18,13 @@ package com.android.healthconnect.controller.shared
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.health.connect.HealthDataCategory
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings
 import androidx.annotation.StringRes
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.permissions.data.fromHealthPermissionCategory
 import com.android.healthconnect.controller.shared.CategoriesMappers.ACTIVITY_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.BODY_MEASUREMENTS_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.CYCLE_TRACKING_PERMISSION_GROUPS
@@ -37,7 +39,47 @@ object HealthDataCategoryExtensions {
     /** Additional category for medical permission types. */
     const val MEDICAL = 1000
 
+    private val DATA_CATEGORY_TO_HEALTH_PERMISSION_TYPE_MAP =
+        createDataCategoryToHealthPermissionTypeMap()
+
+    private fun createDataCategoryToHealthPermissionTypeMap():
+        Map<Int, List<HealthPermissionType>> {
+
+        if (!Flags.healthConnectMappings()) {
+            return emptyMap()
+        }
+
+        val specialCases =
+            mapOf(
+                HealthDataCategory.ACTIVITY to listOf(FitnessPermissionType.EXERCISE_ROUTE),
+                MEDICAL to MedicalPermissionType.entries,
+            )
+
+        val healthConnectMappings = HealthConnectMappings.getInstance()
+
+        return healthConnectMappings.allRecordTypeIdentifiers
+            .map { recordTypeId ->
+                healthConnectMappings.getRecordCategoryForRecordType(recordTypeId) to
+                    healthConnectMappings.getHealthPermissionCategoryForRecordType(recordTypeId)
+            }
+            .groupBy({ it.first }, { fromHealthPermissionCategory(it.second) })
+            .toMutableMap()
+            .apply { specialCases.forEach { merge(it.key, it.value) { a, b -> a + b } } }
+            .mapValues { it.value.distinct() }
+            .toMap()
+    }
+
     fun @receiver:HealthDataCategoryInt Int.healthPermissionTypes(): List<HealthPermissionType> {
+        if (!Flags.healthConnectMappings()) {
+            return this.healthPermissionTypesLegacy()
+        }
+
+        return DATA_CATEGORY_TO_HEALTH_PERMISSION_TYPE_MAP[this]
+            ?: throw IllegalArgumentException("Category $this is not supported.")
+    }
+
+    private fun @receiver:HealthDataCategoryInt Int.healthPermissionTypesLegacy():
+        List<HealthPermissionType> {
         return when (this) {
             HealthDataCategory.ACTIVITY -> ACTIVITY_PERMISSION_GROUPS
             HealthDataCategory.BODY_MEASUREMENTS -> BODY_MEASUREMENTS_PERMISSION_GROUPS
@@ -183,6 +225,10 @@ val FITNESS_DATA_CATEGORIES = getAllFitnessDataCategories()
  * Allows code being unit tested with different flag values.
  */
 fun getAllFitnessDataCategories() =
+    if (Flags.healthConnectMappings()) HealthConnectMappings.getInstance().allHealthDataCategories
+    else getAllFitnessDataCategoriesLegacy()
+
+fun getAllFitnessDataCategoriesLegacy() =
     listOfNotNull(
         HealthDataCategory.ACTIVITY,
         HealthDataCategory.BODY_MEASUREMENTS,

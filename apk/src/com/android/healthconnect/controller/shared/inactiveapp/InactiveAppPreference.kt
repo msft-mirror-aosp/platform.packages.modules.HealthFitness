@@ -30,7 +30,7 @@ import com.android.settingslib.widget.AppPreference
 import dagger.hilt.android.EntryPointAccessors
 
 /** Custom preference for displaying an inactive app. */
-class InactiveAppPreference constructor(context: Context) : AppPreference(context) {
+class InactiveAppPreference(context: Context) : AppPreference(context) {
     private var deleteButtonListener: OnClickListener? = null
 
     private var logger: HealthConnectLogger
@@ -41,7 +41,9 @@ class InactiveAppPreference constructor(context: Context) : AppPreference(contex
         isSelectable = false
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
     }
 
@@ -63,7 +65,8 @@ class InactiveAppPreference constructor(context: Context) : AppPreference(contex
             widgetFrameParent.paddingStart,
             widgetFrameParent.paddingTop,
             /* end = */ 0,
-            widgetFrameParent.paddingBottom)
+            widgetFrameParent.paddingBottom,
+        )
     }
 
     /** Sets the listener for delete button click. */

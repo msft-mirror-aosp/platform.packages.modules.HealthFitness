@@ -91,6 +91,7 @@ class OnboardingActivity : Hilt_OnboardingActivity() {
         if (isPersonalHealthRecordEnabled()) {
             onboardingDescription.setText(R.string.onboarding_description_health_records)
             withHealthConnectTitle.setVisibility(View.VISIBLE)
+            logger.logImpression(OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR)
         } else {
             onboardingDescription.setText(R.string.onboarding_description)
             withHealthConnectTitle.setVisibility(View.GONE)

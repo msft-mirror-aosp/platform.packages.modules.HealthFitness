@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.exportimport;
 
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_CLEARING_LOG_TABLES;
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_CLEARING_PHR_TABLES;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_NONE;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS;
@@ -32,6 +33,7 @@ import android.net.Uri;
 import android.os.UserHandle;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
@@ -41,6 +43,9 @@ import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -83,6 +88,12 @@ public class ExportManager {
     @VisibleForTesting
     public static final List<String> TABLES_TO_CLEAR =
             List.of(AccessLogsHelper.TABLE_NAME, ChangeLogsHelper.TABLE_NAME);
+
+    private static final List<String> PHR_TABLES_TO_CLEAR =
+            List.of(
+                    MedicalDataSourceHelper.getMainTableName(),
+                    MedicalResourceHelper.getMainTableName(),
+                    MedicalResourceIndicesHelper.getTableName());
 
     public ExportManager(
             Context context,
@@ -142,6 +153,24 @@ public class ExportManager {
                 sendNotificationIfEnabled(
                         userHandle, NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
+            }
+
+            if (Flags.personalHealthRecordDisableExportImport()) {
+                try {
+                    deletePhrTablesContent(dbContext);
+                } catch (Exception e) {
+                    Slog.e(TAG, "Failed to clear phr tables in preparation for export", e);
+                    Slog.d(TAG, "Original file size: " + intSizeInKb(localExportDbFile));
+                    recordError(
+                            DATA_EXPORT_ERROR_CLEARING_PHR_TABLES,
+                            startTimeMillis,
+                            intSizeInKb(localExportDbFile),
+                            /* Compressed size will be 0, not yet compressed */
+                            intSizeInKb(localExportZipFile));
+                    sendNotificationIfEnabled(
+                            userHandle, NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
+                    return false;
+                }
             }
 
             try {
@@ -247,11 +276,11 @@ public class ExportManager {
     }
 
     private File getLocalExportDbFile(StorageContext dbContext) {
-        return new File(dbContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
+        return new File(dbContext.getDataDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
     }
 
     private File getLocalExportZipFile(StorageContext dbContext) {
-        return new File(dbContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
+        return new File(dbContext.getDataDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
     }
 
     private void exportLocally(File destination) throws IOException {
@@ -294,6 +323,16 @@ public class ExportManager {
             }
         }
         Slog.i(TAG, "Drop log tables completed.");
+    }
+
+    private void deletePhrTablesContent(StorageContext dbContext) {
+        try (HealthConnectDatabase exportDatabase =
+                new HealthConnectDatabase(dbContext, LOCAL_EXPORT_DATABASE_FILE_NAME)) {
+            for (String tableName : PHR_TABLES_TO_CLEAR) {
+                exportDatabase.getWritableDatabase().execSQL("DELETE FROM " + tableName + ";");
+            }
+        }
+        Slog.i(TAG, "Drop phr tables completed.");
     }
 
     /***

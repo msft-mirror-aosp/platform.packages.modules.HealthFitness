@@ -23,7 +23,7 @@
         android:id="@+id/radio_group_time_range"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingStart="0dp"
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
         android:checkedButton="@+id/radio_button_never">
         <RadioButton

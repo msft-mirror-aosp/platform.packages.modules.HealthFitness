@@ -30,7 +30,6 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.Nullable;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteConstraintException;
@@ -40,11 +39,8 @@ import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
-
-import androidx.annotation.VisibleForTesting;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -70,6 +66,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -84,17 +81,13 @@ import java.util.function.BiConsumer;
 public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
 
-    @Nullable private static volatile TransactionManager sTransactionManager;
-
     private volatile HealthConnectDatabase mHealthConnectDatabase;
-    private UserHandle mUserHandle;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    private TransactionManager(
+    public TransactionManager(
             StorageContext storageContext,
             InternalHealthConnectMappings internalHealthConnectMappings) {
         mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
-        mUserHandle = storageContext.getUser();
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
@@ -105,11 +98,7 @@ public final class TransactionManager {
 
     /** Setup the transaction manager for the new user. */
     public void onUserUnlocked(StorageContext storageContext) {
-        if (mUserHandle.equals(storageContext.getUser())) {
-            return;
-        }
         mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
-        mUserHandle = storageContext.getUser();
     }
 
     /**
@@ -119,9 +108,10 @@ public final class TransactionManager {
      * @return List of uids of the inserted {@link RecordInternal}, in the same order as they
      *     presented to {@code request}.
      */
-    public List<String> insertAll(
+    // TODO(b/382009199): Refactor this class so that the helpers can be send in the constructor.
+    public List<String> insertAllRecords(
             AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper,
+            @Nullable AccessLogsHelper accessLogsHelper,
             UpsertTransactionRequest request)
             throws SQLiteException {
         if (Constants.DEBUG) {
@@ -146,9 +136,12 @@ public final class TransactionManager {
                                         upsertRequest.getRecordInternal().getPackageName()),
                                 upsertRequest,
                                 modificationChangelogs);
-                        insertOrReplaceRecord(db, upsertRequest);
+                        if (request.shouldPreferNewRecord()) {
+                            insertOrReplaceRecord(db, upsertRequest);
+                        } else {
+                            insertOrIgnore(db, upsertRequest);
+                        }
                     }
-
                     for (UpsertTableRequest insertRequestsForChangeLog :
                             insertionChangelogs.getUpsertTableRequests()) {
                         insertRecord(db, insertRequestsForChangeLog);
@@ -158,8 +151,13 @@ public final class TransactionManager {
                         insertRecord(db, modificationChangelog);
                     }
 
-                    accessLogsHelper.recordUpsertAccessLog(
-                            db, request.getPackageName(), request.getRecordTypeIds());
+                    if (request.shouldGenerateAccessLogs()) {
+                        Objects.requireNonNull(accessLogsHelper)
+                                .recordUpsertAccessLog(
+                                        db,
+                                        Objects.requireNonNull(request.getPackageName()),
+                                        request.getRecordTypeIds());
+                    }
                     return request.getUUIdsInOrder();
                 });
     }
@@ -401,7 +399,7 @@ public final class TransactionManager {
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
             DeviceInfoHelper deviceInfoHelper,
-            boolean shouldRecordDeleteAccessLogs)
+            boolean shouldRecordAccessLog)
             throws SQLiteException {
         // TODO(b/308158714): Make these build time checks once we have different classes.
         checkArgument(
@@ -431,7 +429,7 @@ public final class TransactionManager {
         }
 
         if (Flags.addMissingAccessLogs()) {
-            if (!request.isReadingSelfData() && shouldRecordDeleteAccessLogs) {
+            if (!request.isReadingSelfData() && shouldRecordAccessLog) {
                 accessLogsHelper.recordReadAccessLog(
                         getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
             }
@@ -586,7 +584,7 @@ public final class TransactionManager {
      * @param tableName Name of table
      * @return Number of entries in the given table
      */
-    public long getNumberOfEntriesInTheTable(String tableName) {
+    public long queryNumEntries(String tableName) {
         requireNonNull(tableName);
         return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
     }
@@ -594,12 +592,10 @@ public final class TransactionManager {
     /**
      * Size of Health Connect database in bytes.
      *
-     * @param context Context
      * @return Size of the database
      */
-    public long getDatabaseSize(Context context) {
-        requireNonNull(context);
-        return context.getDatabasePath(getReadableDb().getPath()).length();
+    public long getDatabaseSize() {
+        return mHealthConnectDatabase.getDatabasePath().length();
     }
 
     /**
@@ -662,7 +658,9 @@ public final class TransactionManager {
                     }
 
                     accessLogsHelper.recordUpsertAccessLog(
-                            db, request.getPackageName(), request.getRecordTypeIds());
+                            db,
+                            Objects.requireNonNull(request.getPackageName()),
+                            request.getRecordTypeIds());
                 });
     }
 
@@ -703,8 +701,8 @@ public final class TransactionManager {
     /**
      * ONLY DO OPERATIONS IN A SINGLE TRANSACTION HERE
      *
-     * <p>This is because this function is called from {@link AutoDeleteService}, and we want to
-     * make sure that either all its operation succeed or fail in a single run.
+     * <p>This is because this function is called from {@link DailyCleanupJob}, and we want to make
+     * sure that either all its operation succeed or fail in a single run.
      */
     public void deleteWithoutChangeLogs(List<DeleteTableRequest> deleteTableRequests) {
         requireNonNull(deleteTableRequests);
@@ -712,6 +710,11 @@ public final class TransactionManager {
                 db -> {
                     deleteTableRequests.forEach(request -> db.execSQL(request.getDeleteCommand()));
                 });
+    }
+
+    /** Check if a table exists. */
+    public boolean checkTableExists(String tableName) {
+        return StorageUtils.checkTableExists(getReadableDb(), tableName);
     }
 
     private void insertAll(
@@ -1049,53 +1052,5 @@ public final class TransactionManager {
     public interface TransactionRunnableWithReturn<R, E extends Throwable> {
         /** Task to be executed that throws throwable of type E and returns type R. */
         R run(SQLiteDatabase db) throws E;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static synchronized TransactionManager initializeInstance(
-            StorageContext storageContext) {
-        if (sTransactionManager == null) {
-            sTransactionManager =
-                    new TransactionManager(
-                            storageContext, InternalHealthConnectMappings.getInstance());
-        }
-
-        return sTransactionManager;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static TransactionManager getInitialisedInstance() {
-        requireNonNull(sTransactionManager);
-
-        return sTransactionManager;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @com.android.internal.annotations.VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        if (sTransactionManager != null) {
-            sTransactionManager = null;
-        }
-    }
-
-    /** Cleans up the database and this manager, so unit tests can run correctly. */
-    @VisibleForTesting
-    public static void cleanUpForTest() {
-        if (sTransactionManager != null) {
-            // Close the DB before we delete the DB file to avoid the exception in b/333679690.
-            sTransactionManager.getWritableDb().close();
-            sTransactionManager.getReadableDb().close();
-            SQLiteDatabase.deleteDatabase(sTransactionManager.getDatabasePath());
-            sTransactionManager = null;
-        }
-    }
-
-    public UserHandle getCurrentUserHandle() {
-        return mUserHandle;
     }
 }

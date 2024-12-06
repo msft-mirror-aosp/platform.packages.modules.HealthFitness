@@ -32,7 +32,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -42,11 +41,10 @@ import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
+import android.util.ArrayMap;
 
 import com.android.server.healthconnect.injector.HealthConnectInjector;
-import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
-import com.android.server.healthconnect.permission.FirstGrantTimeManager;
-import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -56,11 +54,7 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import com.google.common.collect.ImmutableList;
 
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,31 +66,9 @@ public final class TransactionTestUtils {
     private static final Set<String> NO_EXTRA_PERMS = Set.of();
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
-    private final Context mContext;
     private final HealthConnectInjector mHealthConnectInjector;
 
-    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
-    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
-    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
-    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
-
-    public TransactionTestUtils(Context context, TransactionManager transactionManager) {
-        MockitoAnnotations.initMocks(this);
-        DeviceInfoHelper.resetInstanceForTest();
-        AppInfoHelper.resetInstanceForTest();
-
-        mContext = context;
-        mTransactionManager = transactionManager;
-        mHealthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
-                        .setTransactionManager(transactionManager)
-                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
-                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
-                        .build();
-    }
-
-    public TransactionTestUtils(Context context, HealthConnectInjector injector) {
-        mContext = context;
+    public TransactionTestUtils(HealthConnectInjector injector) {
         mTransactionManager = injector.getTransactionManager();
         mHealthConnectInjector = injector;
     }
@@ -107,9 +79,19 @@ public final class TransactionTestUtils {
         mTransactionManager.insert(
                 new UpsertTableRequest(
                         AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
-        AppInfoHelper.resetInstanceForTest();
-        assertThat(AppInfoHelper.getInstance().getAppInfoId(packageName))
+        mHealthConnectInjector.getAppInfoHelper().clearCache();
+        assertThat(mHealthConnectInjector.getAppInfoHelper().getAppInfoId(packageName))
                 .isNotEqualTo(DEFAULT_LONG);
+    }
+
+    /** Inserts {@code packageName} into the given {@link HealthConnectDatabase}. */
+    public void insertApp(HealthConnectDatabase db, String packageName) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PACKAGE_COLUMN_NAME, packageName);
+        mTransactionManager.insert(
+                db.getWritableDatabase(),
+                new UpsertTableRequest(
+                        AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
     }
 
     /** Inserts records attributed to the given package. */
@@ -120,21 +102,19 @@ public final class TransactionTestUtils {
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, List<RecordInternal<?>> records) {
         AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
-        return mTransactionManager.insertAll(
+        return mTransactionManager.insertAllRecords(
                 appInfoHelper,
                 mHealthConnectInjector.getAccessLogsHelper(),
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForInsert(
                         packageName,
                         records,
                         mHealthConnectInjector.getDeviceInfoHelper(),
-                        mContext,
-                        /* isInsertRequest= */ true,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mHealthConnectInjector.getAppInfoHelper()));
+                        mHealthConnectInjector.getAppInfoHelper(),
+                        /* extraPermsStateMap= */ new ArrayMap<>()));
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */
-    public static ReadTransactionRequest getReadTransactionRequest(
+    public ReadTransactionRequest getReadTransactionRequest(
             Map<Integer, List<UUID>> recordTypeToUuids) {
         return getReadTransactionRequest(TEST_PACKAGE_NAME, recordTypeToUuids);
     }
@@ -142,19 +122,19 @@ public final class TransactionTestUtils {
     /**
      * Creates a {@link ReadTransactionRequest} from the given package name and record to id map.
      */
-    public static ReadTransactionRequest getReadTransactionRequest(
+    public ReadTransactionRequest getReadTransactionRequest(
             String packageName, Map<Integer, List<UUID>> recordTypeToUuids) {
         return getReadTransactionRequest(
                 packageName, recordTypeToUuids, /* isReadingSelfData= */ false);
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given parameters. */
-    public static ReadTransactionRequest getReadTransactionRequest(
+    public ReadTransactionRequest getReadTransactionRequest(
             String packageName,
             Map<Integer, List<UUID>> recordTypeToUuids,
             boolean isReadingSelfData) {
         return new ReadTransactionRequest(
-                AppInfoHelper.getInstance(),
+                mHealthConnectInjector.getAppInfoHelper(),
                 packageName,
                 recordTypeToUuids,
                 /* startDateAccessMillis= */ 0,
@@ -167,8 +147,7 @@ public final class TransactionTestUtils {
      * Creates a {@link ReadTransactionRequest} from the given {@link ReadRecordsRequestParcel
      * request}.
      */
-    public static ReadTransactionRequest getReadTransactionRequest(
-            ReadRecordsRequestParcel request) {
+    public ReadTransactionRequest getReadTransactionRequest(ReadRecordsRequestParcel request) {
         return getReadTransactionRequest(TEST_PACKAGE_NAME, request);
     }
 
@@ -176,10 +155,10 @@ public final class TransactionTestUtils {
      * Creates a {@link ReadTransactionRequest} from the given package name and {@link
      * ReadRecordsRequestParcel request}.
      */
-    public static ReadTransactionRequest getReadTransactionRequest(
+    public ReadTransactionRequest getReadTransactionRequest(
             String packageName, ReadRecordsRequestParcel request) {
         return new ReadTransactionRequest(
-                AppInfoHelper.getInstance(),
+                mHealthConnectInjector.getAppInfoHelper(),
                 packageName,
                 request,
                 /* startDateAccessMillis= */ 0,
@@ -202,12 +181,30 @@ public final class TransactionTestUtils {
                 .setClientRecordId(clientId);
     }
 
+    public static RecordInternal<StepsRecord> createStepsRecord(
+            long appInfoId, long startTimeMillis, long endTimeMillis, int stepsCount) {
+        return new StepsRecordInternal()
+                .setCount(stepsCount)
+                .setStartTime(startTimeMillis)
+                .setEndTime(endTimeMillis)
+                .setAppInfoId(appInfoId);
+    }
+
     public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
             long timeMillis, double systolic, double diastolic) {
         return new BloodPressureRecordInternal()
                 .setSystolic(systolic)
                 .setDiastolic(diastolic)
                 .setTime(timeMillis);
+    }
+
+    public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
+            long appInfoId, long timeMillis, double systolic, double diastolic) {
+        return new BloodPressureRecordInternal()
+                .setSystolic(systolic)
+                .setDiastolic(diastolic)
+                .setTime(timeMillis)
+                .setAppInfoId(appInfoId);
     }
 
     /** Creates an exercise sessions with a route. */
@@ -256,6 +253,11 @@ public final class TransactionTestUtils {
             }
             return uuids.build();
         }
+    }
+
+    /** Returns the number of rows in the specified table. */
+    public long queryNumEntries(String tableName) {
+        return mTransactionManager.queryNumEntries(tableName);
     }
 
     /** Returns a valid UUID string. */

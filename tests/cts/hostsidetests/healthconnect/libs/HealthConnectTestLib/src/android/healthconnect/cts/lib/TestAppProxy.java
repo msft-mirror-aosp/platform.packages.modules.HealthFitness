@@ -108,7 +108,7 @@ public class TestAppProxy {
     }
 
     /** Inserts records to HC on behalf of the app. */
-    public List<String> insertRecords(List<Record> records) throws Exception {
+    public List<String> insertRecords(List<? extends Record> records) throws Exception {
         Bundle requestBundle = BundleHelper.fromInsertRecordsRequest(records);
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toInsertRecordsResponse(responseBundle);

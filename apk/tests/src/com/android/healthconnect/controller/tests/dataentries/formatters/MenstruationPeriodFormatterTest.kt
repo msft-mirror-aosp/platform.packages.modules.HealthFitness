@@ -25,7 +25,6 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.getMetaData
@@ -75,7 +74,7 @@ class MenstruationPeriodFormatterTest {
                     headerA11y = TEST_APP_NAME,
                     title = "Period day 1 of 6",
                     titleA11y = "Period day 1 of 6",
-                    dataType = DataType.MENSTRUATION_PERIOD,
+                    dataType = MenstruationPeriodRecord::class,
                     startTime = start,
                     endTime = end,
                 )
@@ -96,7 +95,7 @@ class MenstruationPeriodFormatterTest {
                     headerA11y = TEST_APP_NAME,
                     title = "Period day 6 of 6",
                     titleA11y = "Period day 6 of 6",
-                    dataType = DataType.MENSTRUATION_PERIOD,
+                    dataType = MenstruationPeriodRecord::class,
                     startTime = start,
                     endTime = end,
                 )
@@ -124,7 +123,7 @@ class MenstruationPeriodFormatterTest {
                     headerA11y = header,
                     title = "Period (6 days)",
                     titleA11y = "Period (6 days)",
-                    dataType = DataType.MENSTRUATION_PERIOD,
+                    dataType = MenstruationPeriodRecord::class,
                     startTime = start,
                     endTime = end,
                 )
@@ -152,7 +151,7 @@ class MenstruationPeriodFormatterTest {
                     headerA11y = header,
                     title = "Period (1 day)",
                     titleA11y = "Period (1 day)",
-                    dataType = DataType.MENSTRUATION_PERIOD,
+                    dataType = MenstruationPeriodRecord::class,
                     startTime = start,
                     endTime = end,
                 )

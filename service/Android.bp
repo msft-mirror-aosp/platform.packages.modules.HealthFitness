@@ -36,7 +36,6 @@ java_sdk_library {
     defaults: [
         "framework-system-server-module-defaults",
         "framework-system-server-module-optimize-defaults",
-        "healthfitness-phr-fhir-validation-defaults",
     ],
     apex_available: ["com.android.healthfitness"],
     libs: [
@@ -77,4 +76,8 @@ java_sdk_library {
             "-XepOpt:NullAway:AnnotatedPackages=com.android.server.healthconnect",
         ],
     },
+    java_resources: select(release_flag("RELEASE_HC_PHR_FHIR_STRUCTURAL_VALIDATION"), {
+        true: [":generate-fhir-spec-r4-binarypb"],
+        default: [],
+    }),
 }

@@ -17,7 +17,7 @@
 package com.android.server.healthconnect.phr;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 
@@ -46,7 +46,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_createUsingInitialRequest_success() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .build();
@@ -60,7 +60,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_encodeAndDecodeWithoutDataSources_success() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         PhrPageTokenWrapper expected =
                 PhrPageTokenWrapper.from(request.toParcel()).cloneWithNewLastRowId(LAST_ROW_ID);
@@ -74,7 +74,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_encodeAndDecodeWithAllFilters_success() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .build();
@@ -88,9 +88,19 @@ public class PhrPageTokenWrapperTest {
     }
 
     @Test
+    public void phrPageTokenWrapper_encodeAndDecodeWithoutFilters_success() {
+        PhrPageTokenWrapper expected = PhrPageTokenWrapper.from(LAST_ROW_ID);
+
+        String pageToken = expected.encode();
+        PhrPageTokenWrapper result = PhrPageTokenWrapper.from(pageToken);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
     public void phrPageTokenWrapper_encodeWithNegativeLastRowId_throws() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         assertThrows(
                 IllegalStateException.class,
@@ -162,20 +172,23 @@ public class PhrPageTokenWrapperTest {
     }
 
     @Test
-    public void phrPageTokenWrapper_pageTokenNull_throws() {
+    public void phrPageTokenWrapper_pageTokenNull_returnsEmptyPageToken() {
         String pageTokenNull = null;
-        assertThrows(IllegalArgumentException.class, () -> PhrPageTokenWrapper.from(pageTokenNull));
+
+        assertThat(PhrPageTokenWrapper.fromPageTokenAllowingNull(pageTokenNull))
+                .isEqualTo(PhrPageTokenWrapper.EMPTY_PAGE_TOKEN);
     }
 
     @Test
-    public void phrPageTokenWrapper_pageTokenEmpty_throws() {
-        assertThrows(IllegalArgumentException.class, () -> PhrPageTokenWrapper.from(""));
+    public void phrPageTokenWrapper_pageTokenEmpty_returnsEmptyPageToken() {
+        assertThat(PhrPageTokenWrapper.fromPageTokenAllowingNull(""))
+                .isEqualTo(PhrPageTokenWrapper.EMPTY_PAGE_TOKEN);
     }
 
     @Test
     public void phrPageTokenWrapper_fromInvalidRowId_throws() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         assertThrows(
                 IllegalStateException.class,
