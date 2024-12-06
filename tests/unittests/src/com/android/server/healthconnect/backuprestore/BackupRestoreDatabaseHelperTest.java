@@ -500,7 +500,7 @@ public class BackupRestoreDatabaseHelperTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ true,
                 mAccessLogsHelper);
