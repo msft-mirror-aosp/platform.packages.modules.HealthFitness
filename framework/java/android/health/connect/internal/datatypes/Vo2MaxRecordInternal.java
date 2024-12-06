@@ -20,7 +20,6 @@ import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.Vo2MaxRecord;
 import android.health.connect.datatypes.Vo2MaxRecord.Vo2MaxMeasurementMethod;
-import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -79,10 +78,4 @@ public final class Vo2MaxRecordInternal extends InstantRecordInternal<Vo2MaxReco
         parcel.writeInt(mMeasurementMethod);
         parcel.writeDouble(mVo2MillilitersPerMinuteKilogram);
     }
-
-    @Override
-    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
-
-    @Override
-    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }
