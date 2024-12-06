@@ -20,14 +20,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import android.health.connect.HealthConnectDataState;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager.StateChangedListener;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 
@@ -49,15 +53,31 @@ public class MigrationCleanerTest {
     @Mock private TransactionManager mTransactionManager;
     @Mock private MigrationStateManager mMigrationStateManager;
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     private MigrationCleaner mCleaner;
 
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
         // needed for now as some classes call it directly and not via constructor.
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(
+                                InstrumentationRegistry.getInstrumentation().getContext())
+                        .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setMigrationStateManager(mMigrationStateManager)
+                        .build();
 
-        mCleaner = new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());
+        mCleaner =
+                new MigrationCleaner(
+                        mTransactionManager,
+                        healthConnectInjector.getPriorityMigrationHelper(),
+                        healthConnectInjector.getMigrationEntityHelper());
     }
 
     @Test

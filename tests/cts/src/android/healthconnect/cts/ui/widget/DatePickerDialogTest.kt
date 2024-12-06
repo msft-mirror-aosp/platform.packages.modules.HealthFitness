@@ -21,8 +21,13 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.DialogInterface
 import android.healthconnect.cts.ui.HealthConnectBaseTest
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.annotation.UiThreadTest
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
@@ -30,7 +35,10 @@ import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 
+@RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
 class DatePickerDialogTest : HealthConnectBaseTest() {
+
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     @Test
     @UiThreadTest

@@ -16,6 +16,7 @@
 package com.android.healthconnect.testapps.toolbox
 
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord
+import android.health.connect.datatypes.ActivityIntensityRecord
 import android.health.connect.datatypes.BasalBodyTemperatureRecord
 import android.health.connect.datatypes.BasalMetabolicRateRecord
 import android.health.connect.datatypes.BloodGlucoseRecord
@@ -74,9 +75,10 @@ object Constants {
     const val INPUT_TYPE_INT = InputType.TYPE_CLASS_NUMBER
     const val INPUT_TYPE_TEXT = InputType.TYPE_CLASS_TEXT
 
-    val DATA_TYPE_PERMISSIONS =
+    val FITNESS_READ_PERMISSIONS =
         arrayOf(
             "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+            "android.permission.health.READ_ACTIVITY_INTENSITY",
             "android.permission.health.READ_BASAL_BODY_TEMPERATURE",
             "android.permission.health.READ_BASAL_METABOLIC_RATE",
             "android.permission.health.READ_BLOOD_GLUCOSE",
@@ -115,7 +117,12 @@ object Constants {
             "android.permission.health.READ_WEIGHT",
             "android.permission.health.READ_INTERMENSTRUAL_BLEEDING",
             "android.permission.health.READ_WHEELCHAIR_PUSHES",
+        )
+
+    val FITNESS_WRITE_PERMISSIONS =
+        arrayOf(
             "android.permission.health.WRITE_ACTIVE_CALORIES_BURNED",
+            "android.permission.health.WRITE_ACTIVITY_INTENSITY",
             "android.permission.health.WRITE_BASAL_BODY_TEMPERATURE",
             "android.permission.health.WRITE_BASAL_METABOLIC_RATE",
             "android.permission.health.WRITE_BLOOD_GLUCOSE",
@@ -155,6 +162,7 @@ object Constants {
             "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING",
             "android.permission.health.WRITE_EXERCISE_ROUTE",
         )
+    val FITNESS_PERMISSIONS = FITNESS_READ_PERMISSIONS + FITNESS_WRITE_PERMISSIONS
 
     const val READ_HEALTH_DATA_IN_BACKGROUND =
         "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
@@ -162,11 +170,29 @@ object Constants {
 
     val ADDITIONAL_PERMISSIONS = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_HEALTH_DATA_HISTORY)
 
-    const val READ_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"
+    const val READ_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_VACCINES"
     const val WRITE_ALL_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA"
-    val MEDICAL_PERMISSIONS = arrayOf(WRITE_ALL_MEDICAL_DATA, READ_IMMUNIZATION)
+    val MEDICAL_READ_PERMISSIONS =
+        arrayOf(
+            "android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES",
+            "android.permission.health.READ_MEDICAL_DATA_CONDITIONS",
+            "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS",
+            "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS",
+            "android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS",
+            "android.permission.health.READ_MEDICAL_DATA_PRACTITIONER_DETAILS",
+            "android.permission.health.READ_MEDICAL_DATA_PREGNANCY",
+            "android.permission.health.READ_MEDICAL_DATA_PROCEDURES",
+            "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY",
+            "android.permission.health.READ_MEDICAL_DATA_VACCINES",
+            "android.permission.health.READ_MEDICAL_DATA_VISITS",
+            "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS",
+        )
+    val MEDICAL_WRITE_PERMISSIONS = arrayOf("android.permission.health.WRITE_MEDICAL_DATA")
+    val MEDICAL_PERMISSIONS = MEDICAL_READ_PERMISSIONS + MEDICAL_WRITE_PERMISSIONS
 
-    val HEALTH_PERMISSIONS = DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS + MEDICAL_PERMISSIONS
+    val MEDICAL_WRITE_AND_OTHERS =
+        MEDICAL_WRITE_PERMISSIONS + FITNESS_PERMISSIONS + ADDITIONAL_PERMISSIONS
+    val HEALTH_PERMISSIONS = FITNESS_PERMISSIONS + ADDITIONAL_PERMISSIONS + MEDICAL_PERMISSIONS
 
     /** Represents Category group for HealthConnect data. */
     enum class HealthDataCategory(
@@ -217,6 +243,7 @@ object Constants {
             listOf(
                 HealthPermissionType.PLANNED_EXERCISE,
                 HealthPermissionType.ACTIVE_CALORIES_BURNED,
+                HealthPermissionType.ACTIVITY_INTENSITY,
                 HealthPermissionType.DISTANCE,
                 HealthPermissionType.ELEVATION_GAINED,
                 HealthPermissionType.FLOORS_CLIMBED,
@@ -283,6 +310,7 @@ object Constants {
             ActiveCaloriesBurnedRecord::class,
             R.string.active_calories_burned_label,
         ),
+        ACTIVITY_INTENSITY(ActivityIntensityRecord::class, R.string.activity_intensity_label),
         DISTANCE(DistanceRecord::class, R.string.distance_label),
         ELEVATION_GAINED(ElevationGainedRecord::class, R.string.elevation_gained_label),
         FLOORS_CLIMBED(FloorsClimbedRecord::class, R.string.floors_climbed_label),

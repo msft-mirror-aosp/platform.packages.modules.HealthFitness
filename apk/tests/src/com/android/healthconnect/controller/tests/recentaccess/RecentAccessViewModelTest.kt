@@ -18,10 +18,11 @@ package com.android.healthconnect.controller.tests.recentaccess
 import android.health.connect.Constants
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.BasalMetabolicRateRecord
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.health.connect.datatypes.RecordTypeIdentifier
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
-import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.R
@@ -42,10 +43,8 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionAppsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeRecentAccessUseCase
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -55,7 +54,7 @@ import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -69,15 +68,14 @@ import org.junit.Test
 @HiltAndroidTest
 class RecentAccessViewModelTest {
 
-    @get:Rule val setFlagsRule = SetFlagsRule()
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     private val timeSource = TestTimeSource
     private val fakeRecentAccessUseCase = FakeRecentAccessUseCase()
@@ -101,7 +99,6 @@ class RecentAccessViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -536,10 +533,9 @@ class RecentAccessViewModelTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun loadRecentAccessApps_medicalPermissionsEnabled_returnsCorrectAppPermissionsType() =
         runTest {
-            (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
-
             val packageName = TEST_APP_PACKAGE_NAME
 
             val time1 = MIDNIGHT.plusSeconds(60)
@@ -787,9 +783,9 @@ class RecentAccessViewModelTest {
         assertRecentAccessEquality(actual, expected)
     }
 
-    @DisableFlags(Flags.FLAG_MINDFULNESS)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
-    fun loadRecentAccessApps_mindfulness_flagDisabled() = runTest {
+    fun loadRecentAccessApps_healthRecords_read() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME
 
         val accessTime = Instant.ofEpochMilli(timeSource.currentTimeMillis()).minusSeconds(1)
@@ -797,22 +793,14 @@ class RecentAccessViewModelTest {
             listOf(
                     AccessLog(
                         packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.UPSERT,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
                         accessTime.toEpochMilli(),
                         Constants.READ,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.DELETE,
-                    ),
+                        setOf(
+                            MEDICAL_RESOURCE_TYPE_VACCINES,
+                            MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                        ),
+                        true,
+                    )
                 )
                 .sortedByDescending { it.accessTime }
 
@@ -830,15 +818,15 @@ class RecentAccessViewModelTest {
                     instantTime = accessTime,
                     isToday = true,
                     dataTypesWritten = mutableSetOf(),
-                    dataTypesRead = mutableSetOf(),
+                    dataTypesRead = mutableSetOf(R.string.medical_permissions),
                 )
             )
         assertRecentAccessEquality(actual, expected)
     }
 
-    @DisableFlags(Flags.FLAG_MINDFULNESS)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
-    fun loadRecentAccessApps_mindfulness_withOtherDataTypes_flagDisabled() = runTest {
+    fun loadRecentAccessApps_healthRecords_upsert() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME
 
         val accessTime = Instant.ofEpochMilli(timeSource.currentTimeMillis()).minusSeconds(1)
@@ -846,34 +834,14 @@ class RecentAccessViewModelTest {
             listOf(
                     AccessLog(
                         packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
                         accessTime.toEpochMilli(),
                         Constants.UPSERT,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.UPSERT,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.READ,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.DELETE,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_NUTRITION),
-                        accessTime.toEpochMilli(),
-                        Constants.READ,
-                    ),
+                        setOf(
+                            MEDICAL_RESOURCE_TYPE_VACCINES,
+                            MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                        ),
+                        true,
+                    )
                 )
                 .sortedByDescending { it.accessTime }
 
@@ -890,8 +858,8 @@ class RecentAccessViewModelTest {
                     metadata = TEST_APP,
                     instantTime = accessTime,
                     isToday = true,
-                    dataTypesWritten = mutableSetOf(R.string.activity_category_uppercase),
-                    dataTypesRead = mutableSetOf(R.string.nutrition_category_uppercase),
+                    dataTypesWritten = mutableSetOf(R.string.medical_permissions),
+                    dataTypesRead = mutableSetOf(),
                 )
             )
         assertRecentAccessEquality(actual, expected)

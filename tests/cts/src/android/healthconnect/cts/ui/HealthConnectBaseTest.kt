@@ -16,20 +16,36 @@
 
 package android.healthconnect.cts.ui
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.healthconnect.cts.utils.AssumptionCheckerRule
+import android.healthconnect.cts.utils.TestUtils
 import androidx.test.core.app.ApplicationProvider
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
+import com.android.compatibility.common.util.SystemUtil.eventually
 import com.android.compatibility.common.util.SystemUtil.runShellCommandOrThrow
-import org.junit.Assume
+import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Before
+import org.junit.Rule
 
 open class HealthConnectBaseTest {
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
+
+    @get:Rule
+    var mSupportedHardwareRule =
+        AssumptionCheckerRule(
+            { TestUtils.isHealthConnectFullySupported() },
+            "Tests should run on supported hardware only.",
+        )
 
     protected val context: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun setUpClass() {
-        Assume.assumeTrue(isHardwareSupported())
         // Collapse notifications
         runShellCommandOrThrow("cmd statusbar collapse")
 
@@ -44,15 +60,24 @@ open class HealthConnectBaseTest {
             runShellCommandOrThrow("input keyevent 82")
         }
         runShellCommandOrThrow("wm dismiss-keyguard")
+
+        val keyguardManager = context.getSystemService(KeyguardManager::class.java)
+
+        eventually {
+            assertWithMessage("device is locked").that(keyguardManager.isDeviceLocked).isFalse()
+            assertWithMessage("keyguard is locked").that(keyguardManager.isKeyguardLocked).isFalse()
+        }
     }
 
-    private fun isHardwareSupported(): Boolean {
-        // These UI tests are not optimised for Watches, TVs, Auto;
-        // IoT devices do not have a UI to run these UI tests
-        val pm: PackageManager = context.packageManager
-        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+    fun assertPermissionGranted(permission: String, packageName: String) {
+        assertWithMessage("$permission for $packageName is not granted")
+            .that(context.packageManager.checkPermission(permission, packageName))
+            .isEqualTo(PackageManager.PERMISSION_GRANTED)
+    }
+
+    fun assertPermissionDenied(permission: String, packageName: String) {
+        assertWithMessage("$permission for $packageName is not denied")
+            .that(context.packageManager.checkPermission(permission, packageName))
+            .isEqualTo(PackageManager.PERMISSION_DENIED)
     }
 }

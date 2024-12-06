@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -15,45 +15,75 @@
  */
 package com.android.healthconnect.controller.selectabledeletion.api
 
-import android.health.connect.DeleteUsingFiltersRequest
-import android.health.connect.HealthConnectManager
-import android.health.connect.datatypes.DataOrigin
-import com.android.healthconnect.controller.selectabledeletion.DeletionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypesFromApp
 import com.android.healthconnect.controller.service.IoDispatcher
-import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 /**
- * Use case to delete all records from the given permission type (e.g. Steps) written by a given
- * app.
+ * Use case to delete all fitness and medical resources from the given permission types written by a
+ * given app.
  */
 @Singleton
 class DeletePermissionTypesFromAppUseCase
 @Inject
 constructor(
-    private val healthConnectManager: HealthConnectManager,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    private val deleteFitnessPermissionTypesFromAppUseCase:
+        DeleteFitnessPermissionTypesFromAppUseCase,
+    private val deleteMedicalPermissionTypesFromAppUseCase:
+        DeleteMedicalPermissionTypesFromAppUseCase,
+    private val deleteAppDataUseCase: DeleteAppDataUseCase,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
     suspend operator fun invoke(
-        deletePermissionTypesFromApp: DeletionType.DeletionTypeHealthPermissionTypesFromApp,
+        deletePermissionTypes: DeleteHealthPermissionTypesFromApp,
+        removePermissions: Boolean = false,
     ) {
-        val deleteRequest = DeleteUsingFiltersRequest.Builder()
-
-        deletePermissionTypesFromApp.fitnessPermissionTypes.map { permissionType ->
-            HealthPermissionToDatatypeMapper.getDataTypes(permissionType).map { recordType ->
-                deleteRequest.addRecordType(recordType)
-            }
+        if (
+            deletePermissionTypes.healthPermissionTypes.size ==
+                deletePermissionTypes.totalPermissionTypes
+        ) {
+            deleteAppDataUseCase.invoke(deletePermissionTypes.toDeleteAppData(), removePermissions)
+            return
         }
-
-        deleteRequest.addDataOrigin(
-            DataOrigin.Builder().setPackageName(deletePermissionTypesFromApp.packageName).build())
 
         withContext(dispatcher) {
-            healthConnectManager.deleteRecords(deleteRequest.build(), Runnable::run) {}
+            val deleteFitness = async { maybeDeleteFitnessData(deletePermissionTypes) }
+            val deleteMedical = async { maybeDeleteMedicalData(deletePermissionTypes) }
+            deleteFitness.await()
+            deleteMedical.await()
         }
+    }
+
+    private suspend fun maybeDeleteFitnessData(
+        deletionRequest: DeleteHealthPermissionTypesFromApp
+    ) {
+        val isFitnessDataEmpty =
+            deletionRequest.healthPermissionTypes
+                .filterIsInstance<FitnessPermissionType>()
+                .isEmpty()
+        if (isFitnessDataEmpty) {
+            return
+        }
+        deleteFitnessPermissionTypesFromAppUseCase.invoke(deletionRequest)
+    }
+
+    private suspend fun maybeDeleteMedicalData(
+        deletionRequest: DeleteHealthPermissionTypesFromApp
+    ) {
+        val isMedicalDataEmpty =
+            deletionRequest.healthPermissionTypes
+                .filterIsInstance<MedicalPermissionType>()
+                .isEmpty()
+        if (isMedicalDataEmpty) {
+            return
+        }
+        deleteMedicalPermissionTypesFromAppUseCase.invoke(deletionRequest)
     }
 }

@@ -25,6 +25,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.rawfhir.RawFhirUseCase
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
+import com.android.healthconnect.controller.tests.utils.TEST_DATASOURCE_ID
 import com.android.healthconnect.controller.tests.utils.TEST_FHIR_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -35,7 +36,7 @@ import java.time.LocalDate
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -57,7 +58,7 @@ class RawFhirUseCaseTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     var manager: HealthConnectManager = mock(HealthConnectManager::class.java)
 
@@ -77,7 +78,6 @@ class RawFhirUseCaseTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -95,7 +95,7 @@ class RawFhirUseCaseTest {
         assertThat((result as UseCaseResults.Failed).exception is IllegalStateException).isTrue()
         assertThat((result.exception as IllegalStateException).message)
             .isEqualTo(
-                "No FHIR resource found for given MedicalResourceId{dataSourceId=123,fhirResourceType=1,fhirResourceId=Immunization1}"
+                "No FHIR resource found for given MedicalResourceId{dataSourceId=$TEST_DATASOURCE_ID,fhirResourceType=1,fhirResourceId=Immunization1}"
             )
     }
 

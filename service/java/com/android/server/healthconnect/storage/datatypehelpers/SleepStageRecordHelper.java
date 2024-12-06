@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.isNullValue;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.internal.datatypes.SleepStageInternal;
@@ -93,7 +92,7 @@ public final class SleepStageRecordHelper {
     }
 
     @Nullable
-    static SleepStageInternal populateStageIfRecorded(@NonNull Cursor cursor) {
+    static SleepStageInternal populateStageIfRecorded(Cursor cursor) {
         if (isNullValue(cursor, SLEEP_STAGE_START_TIME)) {
             return null;
         }

@@ -15,10 +15,10 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.android.healthconnect.testapps.toolbox">
+    package="com.android.healthconnect.testapps.toolbox">
 
   <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
+  <uses-permission android:name="android.permission.health.READ_ACTIVITY_INTENSITY" />
   <uses-permission android:name="android.permission.health.READ_BASAL_BODY_TEMPERATURE" />
   <uses-permission android:name="android.permission.health.READ_BASAL_METABOLIC_RATE" />
   <uses-permission android:name="android.permission.health.READ_BLOOD_GLUCOSE" />
@@ -59,6 +59,7 @@
   <uses-permission android:name="android.permission.health.READ_WHEELCHAIR_PUSHES" />
   <uses-permission android:name="android.permission.health.READ_INTERMENSTRUAL_BLEEDING" />
   <uses-permission android:name="android.permission.health.WRITE_ACTIVE_CALORIES_BURNED" />
+  <uses-permission android:name="android.permission.health.WRITE_ACTIVITY_INTENSITY" />
   <uses-permission android:name="android.permission.health.WRITE_BASAL_BODY_TEMPERATURE" />
   <uses-permission android:name="android.permission.health.WRITE_BASAL_METABOLIC_RATE" />
   <uses-permission android:name="android.permission.health.WRITE_BLOOD_GLUCOSE" />
@@ -101,8 +102,18 @@
 
   <!--  Medical permissions -->
   <uses-permission android:name="android.permission.health.WRITE_MEDICAL_DATA"/>
-  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE"/>
-  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_CONDITIONS"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_MEDICATIONS"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_PRACTITIONER_DETAILS"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_PREGNANCY"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_PROCEDURES"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_VACCINES"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_VISITS"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS"/>
 
   <!--  Additional permissions -->
   <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>

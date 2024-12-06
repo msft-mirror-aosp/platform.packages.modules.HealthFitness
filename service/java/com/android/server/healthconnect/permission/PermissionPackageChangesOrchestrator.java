@@ -16,11 +16,12 @@
 
 package com.android.server.healthconnect.permission;
 
-import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.health.connect.Constants;
 import android.net.Uri;
 import android.os.UserHandle;
@@ -28,6 +29,7 @@ import android.os.UserManager;
 import android.util.Log;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.BackgroundThread;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -46,19 +48,6 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     private final HealthConnectPermissionHelper mPermissionHelper;
     private UserHandle mCurrentForegroundUser;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
-
-    public PermissionPackageChangesOrchestrator(
-            HealthPermissionIntentAppsTracker permissionIntentTracker,
-            FirstGrantTimeManager grantTimeManager,
-            HealthConnectPermissionHelper permissionHelper,
-            UserHandle userHandle) {
-        this(
-                permissionIntentTracker,
-                grantTimeManager,
-                permissionHelper,
-                userHandle,
-                HealthDataCategoryPriorityHelper.getInstance());
-    }
 
     public PermissionPackageChangesOrchestrator(
             HealthPermissionIntentAppsTracker permissionIntentTracker,
@@ -87,6 +76,10 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String packageName = getPackageName(intent);
         UserHandle userHandle = getUserHandle(intent);
+        if (packageName == null || userHandle == null) {
+            Log.w(TAG, "onReceive package change, can't extract info from the input intent");
+            return;
+        }
         if (Constants.DEBUG) {
             Slog.d(
                     TAG,
@@ -98,17 +91,29 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                             + intent.getAction());
         }
 
-        if (packageName == null || userHandle == null) {
-            Log.w(TAG, "can't extract info from the input intent");
-            return;
-        }
-
-        boolean isHealthIntentRemoved =
-                mPermissionIntentTracker.updateStateAndGetIfIntentWasRemoved(
-                        packageName, userHandle);
         boolean isPackageRemoved =
                 intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)
                         && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+        // This call also has a (unintended?) positive side-effect of removing the package from
+        // the intent tracker, if the package was removed. Keep calling this even if
+        // isPackageRemoved is true.
+        boolean removePermissions;
+        if (Flags.permissionTrackerFixMappingInit()) {
+            removePermissions =
+                    !mPermissionIntentTracker.updateAndGetSupportsPackageUsageIntent(
+                            packageName, userHandle);
+        } else {
+            removePermissions =
+                    mPermissionIntentTracker.updateStateAndGetIfIntentWasRemoved(
+                            packageName, userHandle);
+        }
+
+        // Wear Apps don't require the permissions intent. No need to revoke the permissions if it
+        // is missing.
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            Flags.replaceBodySensorPermissionEnabled()) {
+            removePermissions = false;
+        }
         // If the package was removed, we reset grant time. If the package is present but the health
         // intent support removed we revoke all health permissions and also reset grant time
         // (is done via onPermissionChanged callback)
@@ -126,7 +131,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                                         .maybeRemoveAppWithoutWritePermissionsFromPriorityList(
                                                 packageName));
             }
-        } else if (isHealthIntentRemoved) {
+        } else if (removePermissions) {
             // Revoke all health permissions as we don't grant health permissions if permissions
             // usage intent is not supported.
             if (Constants.DEBUG) {
@@ -153,7 +158,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     }
 
     /** Sets the current foreground user handle. */
-    public void setUserHandle(@NonNull UserHandle userHandle) {
+    public void setUserHandle(UserHandle userHandle) {
         mCurrentForegroundUser = userHandle;
     }
 
@@ -166,13 +171,13 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
         return filter;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     private String getPackageName(Intent intent) {
         Uri uri = intent.getData();
         return uri != null ? uri.getSchemeSpecificPart() : null;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     private UserHandle getUserHandle(Intent intent) {
         final int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
         if (uid >= 0) {

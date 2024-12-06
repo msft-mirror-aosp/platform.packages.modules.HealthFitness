@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.migration.MigrationConstants.HC_P
 import static com.android.server.healthconnect.migration.MigrationUtils.filterIntent;
 import static com.android.server.healthconnect.migration.MigrationUtils.filterPermissions;
 
-import android.annotation.NonNull;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -63,7 +62,7 @@ public class MigrationBroadcast {
      * @param context the service context.
      * @param user the user to send the broadcasts to.
      */
-    public MigrationBroadcast(@NonNull Context context, UserHandle user) {
+    public MigrationBroadcast(Context context, UserHandle user) {
         mContext = context;
         mUser = user;
     }

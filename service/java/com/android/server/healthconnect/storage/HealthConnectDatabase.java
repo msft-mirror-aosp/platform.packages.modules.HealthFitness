@@ -18,11 +18,11 @@ package com.android.server.healthconnect.storage;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
 
-import android.annotation.NonNull;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 
@@ -37,25 +37,25 @@ import java.io.File;
 public final class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
 
-    private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
-    private final Context mContext;
+    @VisibleForTesting public static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
+    private final StorageContext mContext;
 
-    public HealthConnectDatabase(@NonNull Context context) {
+    public HealthConnectDatabase(StorageContext context) {
         this(context, DEFAULT_DATABASE_NAME);
     }
 
-    public HealthConnectDatabase(@NonNull Context context, String databaseName) {
+    public HealthConnectDatabase(StorageContext context, String databaseName) {
         super(context, databaseName, null, getDbVersion());
         mContext = context;
     }
 
     @Override
-    public void onCreate(@NonNull SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db) {
         DatabaseUpgradeHelper.onUpgrade(db, 0, getDbVersion());
     }
 
     @Override
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         DatabaseUpgradeHelper.onUpgrade(db, oldVersion, newVersion);
     }
 
@@ -67,7 +67,7 @@ public final class HealthConnectDatabase extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onDowngrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(TAG, "onDowngrade oldVersion = " + oldVersion + " newVersion = " + newVersion);
     }
 

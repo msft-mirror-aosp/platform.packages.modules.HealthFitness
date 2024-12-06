@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.utils;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT_ALL;
 
-import android.annotation.NonNull;
 import android.annotation.StringDef;
 
 import java.lang.annotation.Retention;
@@ -36,7 +35,7 @@ public final class SqlJoin {
     public static final String SQL_JOIN_INNER = "INNER";
     public static final String SQL_JOIN_LEFT = "LEFT";
 
-    private static final String INNER_QUERY_ALIAS = "inner_query_result";
+    public static final String INNER_QUERY_ALIAS = "inner_query_result";
 
     /** @hide */
     @StringDef(
@@ -74,7 +73,7 @@ public final class SqlJoin {
      * Sets join type to the current joint, default value is inner join. Returns class with join
      * type set.
      */
-    public SqlJoin setJoinType(@NonNull @JoinType String joinType) {
+    public SqlJoin setJoinType(@JoinType String joinType) {
         Objects.requireNonNull(joinType);
         mJoinType = joinType;
         return this;
@@ -88,9 +87,7 @@ public final class SqlJoin {
      *     DISTINCT, etc.
      * @return Final query with JOIN condition
      */
-    @NonNull
-    public String getJoinWithQueryCommand(
-            @NonNull String selectStatement, @NonNull String innerQuery) {
+    public String getJoinWithQueryCommand(String selectStatement, String innerQuery) {
         if (innerQuery == null) {
             throw new IllegalArgumentException("Inner query cannot be null");
         }
@@ -109,7 +106,7 @@ public final class SqlJoin {
     }
 
     /** Attaches another join to this join. Returns this class with another join attached. */
-    public SqlJoin attachJoin(@NonNull SqlJoin join) {
+    public SqlJoin attachJoin(SqlJoin join) {
         Objects.requireNonNull(join);
 
         if (mAttachedJoins == null) {

@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.tests.deletion
 
 import android.health.connect.HealthDataCategory
+import android.health.connect.datatypes.StepsRecord
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
@@ -39,7 +40,6 @@ import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -52,6 +52,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 @Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
@@ -64,7 +65,7 @@ class DeletionFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        Mockito.`when`(viewModel.isInactiveApp).then { false }
+        whenever(viewModel.isInactiveApp).then { false }
         toggleAnimation(false)
     }
 
@@ -78,7 +79,7 @@ class DeletionFragmentTest {
     fun deleteAllData_timeRangeDialog_showsCorrectText() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(DeletionParameters(deletionType = deletionTypeAllData))
         }
 
@@ -86,7 +87,9 @@ class DeletionFragmentTest {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withText("Choose data to delete from Health Connect"))
@@ -95,7 +98,9 @@ class DeletionFragmentTest {
         onView(
                 withText(
                     "This permanently deletes all data added to Health\u00A0Connect in the chosen" +
-                        " time period"))
+                        " time period"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Delete last 24 hours"))
@@ -123,7 +128,7 @@ class DeletionFragmentTest {
         val deletionTypeCategory =
             DeletionType.DeletionTypeCategoryData(category = HealthDataCategory.ACTIVITY)
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(DeletionParameters(deletionType = deletionTypeCategory))
         }
 
@@ -131,7 +136,9 @@ class DeletionFragmentTest {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeCategory),
+                )
         }
 
         onView(withText("Choose data to delete from Health Connect"))
@@ -140,7 +147,9 @@ class DeletionFragmentTest {
         onView(
                 withText(
                     "This permanently deletes activity data added to Health\u00A0Connect in the chosen" +
-                        " time period"))
+                        " time period"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Delete last 24 hours"))
@@ -167,9 +176,10 @@ class DeletionFragmentTest {
     fun deletePermissionTypeData_timeRangeDialog_showsCorrectText() {
         val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE
+            )
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(DeletionParameters(deletionType = deletionTypeFitnessPermissionType))
         }
 
@@ -188,7 +198,9 @@ class DeletionFragmentTest {
         onView(
                 withText(
                     "This permanently deletes blood glucose data added to Health\u00A0Connect in the chosen" +
-                        " time period"))
+                        " time period"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Delete last 24 hours"))
@@ -215,9 +227,11 @@ class DeletionFragmentTest {
     fun deleteAppData_timeRangeDialog_showsCorrectText() {
         val deletionTypeAppData =
             DeletionType.DeletionTypeAppData(
-                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(DeletionParameters(deletionType = deletionTypeAppData))
         }
 
@@ -225,7 +239,9 @@ class DeletionFragmentTest {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAppData),
+                )
         }
 
         onView(withText("Choose data to delete from Health Connect"))
@@ -234,7 +250,9 @@ class DeletionFragmentTest {
         onView(
                 withText(
                     "This permanently deletes $TEST_APP_NAME data added to Health\u00A0Connect in the chosen" +
-                        " time period"))
+                        " time period"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Delete last 24 hours"))
@@ -265,7 +283,7 @@ class DeletionFragmentTest {
                 packageName = TEST_APP_PACKAGE_NAME,
                 appName = TEST_APP_NAME,
             )
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(DeletionParameters(deletionType = deletionTypePermissionTypeFromApp))
         }
 
@@ -284,7 +302,9 @@ class DeletionFragmentTest {
         onView(
                 withText(
                     "This permanently deletes steps data added by $TEST_APP_NAME to Health\u00A0Connect in the chosen" +
-                        " time period"))
+                        " time period"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Delete last 24 hours"))
@@ -311,19 +331,22 @@ class DeletionFragmentTest {
     fun deleteAllData_confirmationDialogForOneDay_showsCorrectText() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_one_day))
@@ -339,7 +362,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -348,19 +373,22 @@ class DeletionFragmentTest {
     fun deleteAllData_confirmationDialogForOneWeek_showsCorrectText() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_one_week))
@@ -376,7 +404,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -385,19 +415,22 @@ class DeletionFragmentTest {
     fun deleteAllData_confirmationDialogForOneMonth_showsCorrectText() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_one_month))
@@ -413,7 +446,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -422,19 +457,22 @@ class DeletionFragmentTest {
     fun deleteAllData_confirmationDialogForAllTime_showsCorrectText() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -450,7 +488,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -460,19 +500,22 @@ class DeletionFragmentTest {
         val deletionTypeCategory =
             DeletionType.DeletionTypeCategoryData(category = HealthDataCategory.ACTIVITY)
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeCategory),
+                )
         }
 
         onView(withId(R.id.radio_button_one_day))
@@ -488,7 +531,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -497,19 +542,22 @@ class DeletionFragmentTest {
     fun deleteCategoryData_confirmationDialogForOneWeek_showsCorrectText() {
         val deletionTypeCategory =
             DeletionType.DeletionTypeCategoryData(category = HealthDataCategory.ACTIVITY)
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeCategory),
+                )
         }
 
         onView(withId(R.id.radio_button_one_week))
@@ -525,7 +573,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -535,19 +585,22 @@ class DeletionFragmentTest {
         val deletionTypeCategory =
             DeletionType.DeletionTypeCategoryData(category = HealthDataCategory.ACTIVITY)
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeCategory),
+                )
         }
 
         onView(withId(R.id.radio_button_one_month))
@@ -563,7 +616,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -572,19 +627,22 @@ class DeletionFragmentTest {
     fun deleteCategoryData_confirmationDialogForAllTime_showsCorrectText() {
         val deletionTypeCategory =
             DeletionType.DeletionTypeCategoryData(category = HealthDataCategory.ACTIVITY)
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeCategory),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -600,7 +658,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -609,14 +669,16 @@ class DeletionFragmentTest {
     fun deletePermissionTypeData_confirmationDialogForOneDay_showsCorrectText() {
         val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE
+            )
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -641,7 +703,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -650,13 +714,15 @@ class DeletionFragmentTest {
     fun deletePermissionTypeData_confirmationDialogForOneWeek_showsCorrectText() {
         val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
-        Mockito.`when`(viewModel.deletionParameters).then {
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE
+            )
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -681,7 +747,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -690,14 +758,16 @@ class DeletionFragmentTest {
     fun deletePermissionTypeData_confirmationDialogForOneMonth_showsCorrectText() {
         val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE
+            )
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -722,7 +792,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -731,13 +803,15 @@ class DeletionFragmentTest {
     fun deletePermissionTypeData_confirmationDialogForAllTime_showsCorrectText() {
         val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
-        Mockito.`when`(viewModel.deletionParameters).then {
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE
+            )
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -762,7 +836,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -771,21 +847,26 @@ class DeletionFragmentTest {
     fun deleteAppData_confirmationDialogForOneDay_showsCorrectText() {
         val deletionTypeAppData =
             DeletionType.DeletionTypeAppData(
-                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAppData),
+                )
         }
 
         onView(withId(R.id.radio_button_one_day))
@@ -801,7 +882,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -810,20 +893,25 @@ class DeletionFragmentTest {
     fun deleteAppData_confirmationDialogForOneWeek_showsCorrectText() {
         val deletionTypeAppData =
             DeletionType.DeletionTypeAppData(
-                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
-        Mockito.`when`(viewModel.deletionParameters).then {
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAppData),
+                )
         }
 
         onView(withId(R.id.radio_button_one_week))
@@ -839,7 +927,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -848,21 +938,26 @@ class DeletionFragmentTest {
     fun deleteAppData_confirmationDialogForOneMonth_showsCorrectText() {
         val deletionTypeAppData =
             DeletionType.DeletionTypeAppData(
-                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAppData),
+                )
         }
 
         onView(withId(R.id.radio_button_one_month))
@@ -878,7 +973,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -887,20 +984,25 @@ class DeletionFragmentTest {
     fun deleteAppData_confirmationDialogForAllTime_showsCorrectText() {
         val deletionTypeAppData =
             DeletionType.DeletionTypeAppData(
-                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
-        Mockito.`when`(viewModel.deletionParameters).then {
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAppData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -916,7 +1018,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -929,12 +1033,13 @@ class DeletionFragmentTest {
                 packageName = TEST_APP_PACKAGE_NAME,
                 appName = TEST_APP_NAME,
             )
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypePermissionTypeFromApp,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -955,13 +1060,17 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete steps data added by $TEST_APP_NAME from the last 24 hours?"))
+                    "Permanently delete steps data added by $TEST_APP_NAME from the last 24 hours?"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -974,12 +1083,13 @@ class DeletionFragmentTest {
                 packageName = TEST_APP_PACKAGE_NAME,
                 appName = TEST_APP_NAME,
             )
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypePermissionTypeFromApp,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -1000,13 +1110,17 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete steps data added by $TEST_APP_NAME from the last 7 days?"))
+                    "Permanently delete steps data added by $TEST_APP_NAME from the last 7 days?"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -1019,12 +1133,13 @@ class DeletionFragmentTest {
                 packageName = TEST_APP_PACKAGE_NAME,
                 appName = TEST_APP_NAME,
             )
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypePermissionTypeFromApp,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -1045,13 +1160,17 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete steps data added by $TEST_APP_NAME from the last 30 days?"))
+                    "Permanently delete steps data added by $TEST_APP_NAME from the last 30 days?"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -1064,12 +1183,13 @@ class DeletionFragmentTest {
                 packageName = TEST_APP_PACKAGE_NAME,
                 appName = TEST_APP_NAME,
             )
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypePermissionTypeFromApp,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -1094,7 +1214,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -1103,15 +1225,18 @@ class DeletionFragmentTest {
     fun deleteInActiveAppData_confirmationDialog_showsCorrectText() {
         val deletionTypeAppData =
             DeletionType.DeletionTypeAppData(
-                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
-        Mockito.`when`(viewModel.deletionParameters).then {
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
-        Mockito.`when`(viewModel.isInactiveApp).then { true }
+        whenever(viewModel.isInactiveApp).then { true }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
@@ -1128,7 +1253,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -1141,21 +1268,24 @@ class DeletionFragmentTest {
     fun confirmationDialog_goBackButton_navigatesToTimeRangeDialog() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
-        Mockito.`when`(viewModel.showTimeRangeDialogFragment).then { true }
+        whenever(viewModel.showTimeRangeDialogFragment).then { true }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -1171,7 +1301,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -1183,7 +1315,9 @@ class DeletionFragmentTest {
         onView(
                 withText(
                     "This permanently deletes all data added to Health\u00A0Connect in the chosen" +
-                        " time period"))
+                        " time period"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Delete last 24 hours"))
@@ -1208,13 +1342,13 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAllData_confirmationDialogForEntry_showsCorrectText() {
-        val deletionEntry = DeletionType.DeleteDataEntry("test_id", DataType.STEPS, 0)
+        val deletionEntry = DeletionType.DeleteDataEntry("test_id", StepsRecord::class, 0)
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(DeletionParameters(deletionType = deletionEntry))
         }
 
-        Mockito.`when`(viewModel.showTimeRangeDialogFragment).then { false }
+        whenever(viewModel.showTimeRangeDialogFragment).then { false }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
@@ -1228,13 +1362,17 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -1246,21 +1384,24 @@ class DeletionFragmentTest {
     fun deleteAllData_confirmationDialog_cancelButton_exitsFlow() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
-        Mockito.`when`(viewModel.showTimeRangeDialogFragment).then { false }
+        whenever(viewModel.showTimeRangeDialogFragment).then { false }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -1276,7 +1417,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -1289,20 +1432,23 @@ class DeletionFragmentTest {
     fun deleteFragment_progressIndicatorStartedState_progressIndicatorShown() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionState = DeletionState.STATE_PROGRESS_INDICATOR_STARTED,
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -1318,7 +1464,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -1331,20 +1479,23 @@ class DeletionFragmentTest {
     fun deleteFragment_progressIndicatorCanEndState_progressIndicatorDisappears() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionState = DeletionState.STATE_PROGRESS_INDICATOR_CAN_END,
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -1360,7 +1511,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -1373,20 +1526,23 @@ class DeletionFragmentTest {
     fun deleteFragment_deletionSuccessfulState_successMessageShown() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionState = DeletionState.STATE_DELETION_SUCCESSFUL,
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -1402,7 +1558,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -1414,7 +1572,9 @@ class DeletionFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "If you want to completely delete the data from your connected apps, check each app where your data may be saved."))
+                    "If you want to completely delete the data from your connected apps, check each app where your data may be saved."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("See connected apps")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -1425,20 +1585,23 @@ class DeletionFragmentTest {
     fun deleteFragment_deletionFailedState_failureMessageShown() {
         val deletionTypeAllData = DeletionType.DeletionTypeAllData()
 
-        Mockito.`when`(viewModel.deletionParameters).then {
+        whenever(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
                     deletionState = DeletionState.STATE_DELETION_FAILED,
                     deletionType = deletionTypeAllData,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
-                ))
+                )
+            )
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
             (this as DeletionFragment)
                 .parentFragmentManager
                 .setFragmentResult(
-                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAllData),
+                )
         }
 
         onView(withId(R.id.radio_button_all))
@@ -1454,7 +1617,9 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 

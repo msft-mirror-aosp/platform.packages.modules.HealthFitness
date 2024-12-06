@@ -16,6 +16,7 @@
 
 package android.healthconnect.tests.backuprestore;
 
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PermissionHelper.getHealthDataHistoricalAccessStartDate;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
@@ -45,22 +46,34 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.InstantRecord;
 import android.health.connect.datatypes.IntervalRecord;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Energy;
+import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
 import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.ParcelFileDescriptor;
 import android.os.UserHandle;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsDisabled;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.provider.Settings;
-import android.test.InstrumentationTestCase;
 
 import androidx.annotation.NonNull;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.compatibility.common.util.BackupUtils;
+import com.android.healthfitness.flags.Flags;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.InputStream;
 import java.time.Instant;
@@ -69,8 +82,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 @AppModeFull
-public class BackupRestoreE2ETest extends InstrumentationTestCase {
+public class BackupRestoreE2ETest {
     /** Whether to print out logs in tests for debugging purposes. */
     private static final boolean IS_DEBUGGING_TEST = false;
 
@@ -95,23 +109,29 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
                 @Override
                 protected InputStream executeShellCommand(String command) {
                     final ParcelFileDescriptor pfd =
-                            getInstrumentation().getUiAutomation().executeShellCommand(command);
+                            InstrumentationRegistry.getInstrumentation()
+                                    .getUiAutomation()
+                                    .executeShellCommand(command);
                     return new ParcelFileDescriptor.AutoCloseInputStream(pfd);
                 }
             };
-    private final Context mContext = InstrumentationRegistry.getTargetContext();
+    private final Context mContext =
+            InstrumentationRegistry.getInstrumentation().getTargetContext();
+    private PhrCtsTestUtils mPhrTestUtil;
 
     private String mBackupRestoreApkPackageName;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        if (!TestUtils.isHardwareSupported()) {
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
+    @Before
+    public void setUp() throws Exception {
+        if (!TestUtils.isHealthConnectFullySupported()) {
             return;
         }
         mBackupRestoreApkPackageName = getBackupRestoreApkPackageName();
         // enable backup on the test device
-        mBackupUtils.enableBackup(true);
+        mBackupUtils.enableBackupForUser(true, UserHandle.myUserId());
         // switch backup transport to local
         mBackupUtils.setBackupTransportForUser(
                 mBackupUtils.getLocalTransportName(), UserHandle.myUserId());
@@ -124,11 +144,59 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
 
         deleteAllStagedRemoteData();
         verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
+        mPhrTestUtil = new PhrCtsTestUtils(TestUtils.getHealthConnectManager());
     }
 
+    @Test
+    @RequiresFlagsEnabled({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_D2D_AND_EXPORT_IMPORT
+    })
+    @RequiresFlagsDisabled(Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_D2D)
+    public void testBackupThenRestore_over5000MedicalResources_expectDataIsRestoredCorrectly()
+            throws Exception {
+        if (!TestUtils.isHealthConnectFullySupported()) {
+            return;
+        }
+
+        // Insert records.
+        int numOfRecords = 100;
+        List<Record> insertedRecords =
+                insertRecordsWithChunking(
+                        this::getCompleteActiveCaloriesBurnedRecord, numOfRecords);
+        assertThat(insertedRecords).hasSize(numOfRecords);
+        // Insert medical resources.
+        int numOfMedicalResources = 7000;
+        String dataSourceId =
+                mPhrTestUtil.createDataSource(getCreateMedicalDataSourceRequest("1")).getId();
+        List<MedicalResource> medicalResources =
+                mPhrTestUtil.upsertVaccineMedicalResources(dataSourceId, numOfMedicalResources);
+        assertThat(medicalResources).hasSize(numOfMedicalResources);
+
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
+
+        // Delete records.
+        verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
+        readAndAssertRecordsNotExistUsingIds(insertedRecords);
+        // Delete medical data source that would delete all of the medical resources
+        // with it.
+        mPhrTestUtil.deleteMedicalDataSourceWithData(dataSourceId);
+        readMedicalResourcesAndAssertEmpty(medicalResources);
+
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
+
+        assertWithTimeout(() -> readAndAssertMedicalResourcesExistUsingIds(medicalResources));
+        assertWithTimeout(() -> readAndAssertRecordsExistUsingIds(insertedRecords));
+        log("Data Restore state = " + getHealthConnectDataRestoreState());
+    }
+
+    @Test
     public void testBackupThenRestore_over2000Records_expectDataIsRestoredCorrectly()
             throws Exception {
-        if (!TestUtils.isHardwareSupported()) {
+        if (!TestUtils.isHealthConnectFullySupported()) {
             return;
         }
         int numOfRecords = 2050;
@@ -137,20 +205,23 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
                         this::getCompleteActiveCaloriesBurnedRecord, numOfRecords);
         assertThat(insertedRecords).hasSize(numOfRecords);
 
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
         readAndAssertRecordsNotExistUsingIds(insertedRecords);
 
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         assertWithTimeout(() -> readAndAssertRecordsExistUsingIds(insertedRecords));
         log("Data Restore state = " + getHealthConnectDataRestoreState());
     }
 
+    @Test
     public void testBackupThenRestore_trainingPlans_expectDataIsRestoredCorrectly()
             throws Exception {
-        if (!TestUtils.isHardwareSupported()) {
+        if (!TestUtils.isHealthConnectFullySupported()) {
             return;
         }
         DataOrigin dataOrigin = DataFactory.getDataOrigin(mContext.getPackageName());
@@ -189,14 +260,16 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
                 .isEqualTo(insertedExerciseSession.getMetadata().getId());
 
         // Proceed with backup.
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // Delete the now backed up records from the database.
         verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
         readAndAssertRecordsNotExistUsingIds(insertedTrainingPlans);
         readAndAssertRecordsNotExistUsingIds(insertedExercises);
 
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         assertWithTimeout(
                 () -> {
@@ -215,6 +288,7 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
         log("Data Restore state = " + getHealthConnectDataRestoreState());
     }
 
+    @Test
     public void testPermissionRestoredBeforeHCRestore_expectGrantTimeIsRestoredCorrectly()
             throws Exception {
         // revoke all permissions for both test apps to remove all stored grant time as setup step
@@ -234,7 +308,8 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
 
         // trigger backup, only test app 1 has grant time now, so the staged backup file should
         // contains only grant time for test app 1, not test app 2
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // grant permissions to simulate the case where permission controller module is restored
         // before HC module.
@@ -257,7 +332,8 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
         // trigger restore, now the staged backup file which contains grant time for test app 1
         // should override ONLY the newly created grant time of test app 1, but not the
         // test app 2's.
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // assert that test app 1's grant time is restored correctly
         assertWithTimeout(
@@ -271,6 +347,7 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
                                 .isEqualTo(historicAccessStartDate2));
     }
 
+    @Test
     public void testPermissionsRestoredAfterHCRestore_expectGrantTimeIsRestoredCorrectly()
             throws Exception {
         // revoke all permissions for the test app to remove all stored grant time as setup step
@@ -288,12 +365,14 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
                         });
 
         // trigger backup, the staged backup file should contains  grant time for test app 1.
-        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        mBackupUtils.backupNowAndAssertSuccessForUser(
+                mBackupRestoreApkPackageName, UserHandle.myUserId());
         Thread.sleep(1000); // add some delay so second grant time is definitely different
 
         // revoke all permissions and then restore the grant time file.
         revokeAllPermissions(TEST_APP_1_PACKAGE_NAME, "");
-        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+        mBackupUtils.restoreAndAssertSuccessForUser(
+                LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName, UserHandle.myUserId());
 
         // Since permissions haven't been restored, expect null access date.
         assertWithTimeout(
@@ -335,6 +414,21 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
                 .setStartZoneOffset(zoneOffset)
                 .setEndZoneOffset(zoneOffset)
                 .build();
+    }
+
+    private void readMedicalResourcesAndAssertEmpty(List<MedicalResource> medicalResources)
+            throws InterruptedException {
+        List<MedicalResource> result = mPhrTestUtil.readMedicalResources(medicalResources);
+
+        assertThat(result).isEmpty();
+    }
+
+    private void readAndAssertMedicalResourcesExistUsingIds(List<MedicalResource> medicalResources)
+            throws InterruptedException {
+        List<MedicalResource> result = mPhrTestUtil.readMedicalResources(medicalResources);
+
+        assertThat(result.size()).isEqualTo(medicalResources.size());
+        assertThat(result).containsExactlyElementsIn(medicalResources);
     }
 
     private static void readAndAssertRecordsExistUsingIds(List<Record> insertedRecords)

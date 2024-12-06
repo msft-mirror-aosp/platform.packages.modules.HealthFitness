@@ -15,7 +15,7 @@
 -->
 
 <resources>
-  <string name="app_label">Health Connect Toolbox</string>
+  <string name="app_label">HC Toolbox</string>
   <string name="not_implemented">Not implemented</string>
   <string name="insert_data">Insert Data</string>
   <string name="update_data">Update Data</string>
@@ -44,6 +44,11 @@
   <string name="request_additional_permissions">Request Additional Permissions</string>
   <string name="request_bg_read_permission">Request Background Read</string>
   <string name="request_history_read_permission">Request History Read</string>
+  <string name="request_medical_write">Request Medical Write</string>
+  <string name="request_medical_write_and_other_health_permissions">Request Medical Write + Other Health</string>
+  <string name="request_medical_read">Request Medical Read</string>
+  <string name="request_fitness_read">Request Fitness Read</string>
+  <string name="request_fitness_write">Request Fitness Write</string>
   <string name="toast_permission_filter_enabled">Intent Filter Enabled</string>
   <string name="toast_permission_filter_disabled">Intent Filter Disabled</string>
   <string name="toast_seed_data_success">Data inserted successfully</string>
@@ -60,6 +65,7 @@
   <!-- region Data Types -->
   <!-- region Activity data types -->
   <string name="active_calories_burned_label" description="Label used to show the user's active calories burned data [CHAR_LIMIT=50]">Active calories burned</string>
+  <string name="activity_intensity_label" description="Label used to show the user's activity intensity data [CHAR_LIMIT=50]">Activity intensity</string>
   <string name="distance_label" description="Label used to show the user's distance data [CHAR_LIMIT=50]">Distance</string>
   <string name="elevation_gained_label" description="Label used to show the user's elevation gained data [CHAR_LIMIT=50]">Elevation gained</string>
   <string name="floors_climbed_label" description="Label used to show the user's floors climbed data [CHAR_LIMIT=50]">Floors climbed</string>
@@ -140,18 +146,18 @@
   <!--endregion-->
 
   <!-- region Phr Options screen -->
-  <string name="phr_options_title">PHR Options</string>
+  <string name="phr_options_read_immunization">Read PHR data</string>
+  <string name="phr_options_ingest_title">Insert PHR data</string>
   <string name="phr_options_create_data_source">Create data source</string>
   <string name="phr_options_data_source_id_placeholder">Create data source to see the id</string>
-  <string name="phr_options_insert_immunization">Insert immunization</string>
-  <string name="phr_options_immunization_id_placeholder">Insert immunization to see the id</string>
-  <string name="phr_options_insert_allergy">Insert allergy</string>
-  <string name="phr_options_allergy_id_placeholder">Insert allergy to see the id</string>
-  <string name="phr_options_read_by_id">Read FHIR Resource For Id</string>
-  <string name="phr_options_seed_fhir_jsons">Seed FHIR JSONs</string>
+  <string name="phr_options_insert_immunization">Insert all vaccines</string>
+  <string name="phr_options_insert_allergy">Insert all allergies</string>
+  <string name="phr_options_read_by_id">Read all vaccines</string>
+  <string name="phr_options_seed_fhir_jsons">Seed all FHIR resources</string>
   <string name="phr_options_request_immunization">Request read immunization permission</string>
   <string name="phr_options_request_medical">Request all medical permissions</string>
   <string name="all_medical_permissions_success">All medical permissions were successfully granted</string>
   <string name="number_of_medical_permissions_not_granted">%1$d medical permissions still not granted</string>
+  <string name="spinner_default_message">SELECT FHIR RESOURCE TO INSERT</string>
   <!--endregion-->
 </resources>

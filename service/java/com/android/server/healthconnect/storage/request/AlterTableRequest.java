@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import android.annotation.NonNull;
 import android.database.SQLException;
 import android.util.Pair;
 import android.util.Slog;
@@ -51,7 +50,6 @@ public final class AlterTableRequest {
      * Adds a foreign key constraint between one column and another. Deletion behavior is to set
      * dangling references to null.
      */
-    @NonNull
     public AlterTableRequest addForeignKeyConstraint(
             String column, String referencedTable, String referencedColumn) {
         mForeignKeyConstraints.put(column, new Pair<>(referencedTable, referencedColumn));

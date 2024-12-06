@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.AggregationType;
@@ -51,7 +50,6 @@ public final class WheelchairPushesRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return WHEELCHAIR_PUSHES_RECORD_TABLE_NAME;
     }
@@ -72,20 +70,17 @@ public final class WheelchairPushesRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull WheelchairPushesRecordInternal wheelchairPushesRecord) {
+            Cursor cursor, WheelchairPushesRecordInternal wheelchairPushesRecord) {
         wheelchairPushesRecord.setCount(getCursorInt(cursor, COUNT_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull WheelchairPushesRecordInternal wheelchairPushesRecord) {
+            ContentValues contentValues, WheelchairPushesRecordInternal wheelchairPushesRecord) {
         contentValues.put(COUNT_COLUMN_NAME, wheelchairPushesRecord.getCount());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(COUNT_COLUMN_NAME, INTEGER));
     }

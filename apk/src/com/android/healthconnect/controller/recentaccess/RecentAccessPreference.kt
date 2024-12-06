@@ -26,23 +26,18 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.formatRecentAccessTime
 import com.android.healthconnect.controller.utils.logging.RecentAccessElement
-import java.time.Instant
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /** Custom preference for displaying Recent access apps, including dash lines for timeline views. */
-class RecentAccessPreference
-constructor(
+class RecentAccessPreference(
     context: Context,
     private val recentAccessEntry: RecentAccessEntry,
     private val timeSource: TimeSource,
-    private val showCategories: Boolean
+    private val showCategories: Boolean,
 ) : HealthPreference(context), ComparablePreference {
 
-    private val separator: String by lazy { context.getString(R.string.data_type_separator) }
+    private val separator: String by lazy { context.getString(R.string.separator) }
 
     init {
         layoutResource = R.layout.widget_recent_access_timeline
@@ -76,7 +71,8 @@ constructor(
         }
 
         val accessTime = holder.findViewById(R.id.time) as TextView
-        val formattedTime = formatTime(recentAccessEntry.instantTime)
+        val formattedTime =
+            formatRecentAccessTime(recentAccessEntry.instantTime, timeSource, context)
         accessTime.text = formattedTime
         accessTime.contentDescription =
             context.getString(R.string.recent_access_time_content_descritption, formattedTime)
@@ -92,33 +88,30 @@ constructor(
     }
 
     private fun getWrittenText(): String {
+        val sortedDataTypes = sortWithHealthRecordsFirst(recentAccessEntry.dataTypesWritten)
         return context.getString(
             R.string.write_data_access_label,
-            recentAccessEntry.dataTypesWritten
-                .map { context.getString(it) }
-                .sorted()
-                .joinToString(separator))
+            sortedDataTypes.joinToString(separator),
+        )
     }
 
     private fun getReadText(): String {
+        val sortedDataTypes = sortWithHealthRecordsFirst(recentAccessEntry.dataTypesRead)
         return context.getString(
             R.string.read_data_access_label,
-            recentAccessEntry.dataTypesRead
-                .map { context.getString(it) }
-                .sorted()
-                .joinToString(separator))
+            sortedDataTypes.joinToString(separator),
+        )
     }
 
-    private fun formatTime(instant: Instant): String {
-        val localTime: LocalTime = instant.atZone(ZoneId.systemDefault()).toLocalTime()
-        return if (timeSource.is24Hour(context)) {
-            localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-        } else {
-            if (Locale.getDefault() == Locale.KOREA || Locale.getDefault() == Locale.KOREAN) {
-                localTime.format(DateTimeFormatter.ofPattern("a h:mm"))
-            } else {
-                localTime.format(DateTimeFormatter.ofPattern("h:mm a"))
-            }
+    private fun sortWithHealthRecordsFirst(dataTypes: MutableSet<Int>): List<String> {
+        val sortedList = dataTypes.map { context.getString(it) }.sorted().toMutableList()
+
+        val healthRecordsString = context.getString(R.string.medical_permissions)
+        if (sortedList.contains(healthRecordsString)) {
+            sortedList.remove(healthRecordsString)
+            sortedList.add(0, healthRecordsString)
         }
+
+        return sortedList
     }
 }

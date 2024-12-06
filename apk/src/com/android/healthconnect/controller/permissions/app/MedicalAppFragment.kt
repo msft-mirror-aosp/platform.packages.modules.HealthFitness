@@ -32,10 +32,10 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_ALL_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.KEY_DELETE_DATA
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_ALL_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -44,7 +44,6 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
@@ -76,11 +75,9 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
     }
 
     init {
-        // TODO(b/342159144): Update visual elements.
-        this.setPageName(PageName.UNKNOWN_PAGE)
+        setPageName(PageName.MEDICAL_APP_ACCESS_PAGE)
     }
 
-    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
@@ -183,13 +180,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
     }
 
     private fun revokeAllPermissions(): Boolean {
-        // The manage app section includes the additional permissions button too. If this section is
-        // visible then all health permissions should be revoked (medical and additional). If the
-        // manage app section is not visible then medical permissions should be revoked only,
-        // because fitness and additional permissions are displayed on other screens.
-        return if (showManageAppSection)
-            appPermissionViewModel.revokeAllHealthPermissions(packageName)
-        else appPermissionViewModel.revokeAllMedicalPermissions(packageName)
+        return appPermissionViewModel.revokeAllMedicalAndMaybeAdditionalPermissions(packageName)
     }
 
     private fun setupHeader() {
@@ -209,22 +200,10 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
 
         manageDataCategory.isVisible = true
         manageDataCategory.removeAll()
-        manageDataCategory.addPreference(
-            HealthPreference(requireContext()).also {
-                it.title = getString(R.string.see_app_data)
-                it.setOnPreferenceClickListener {
-                    findNavController()
-                        .navigate(
-                            R.id.action_medicalApp_to_appData,
-                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
-                        )
-                    true
-                }
-            }
-        )
+
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            if (state.isValid() && shouldAddAdditionalAccessPref()) {
+            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
@@ -243,8 +222,22 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
                 manageDataCategory.addPreference(additionalAccessPref)
             }
             manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                state.isValid()
+                state.isAvailable()
         }
+
+        manageDataCategory.addPreference(
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.see_app_data)
+                it.setOnPreferenceClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_medicalApp_to_appData,
+                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
+                        )
+                    true
+                }
+            }
+        )
     }
 
     private fun shouldAddAdditionalAccessPref(): Boolean {
@@ -274,7 +267,12 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectDialogFragment(appName).show(childFragmentManager, DisconnectDialogFragment.TAG)
+        DisconnectHealthPermissionsDialogFragment(
+                appName,
+                enableDeleteData = true,
+                DisconnectHealthPermissionsDialogFragment.DisconnectType.MEDICAL,
+            )
+            .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
     private fun updatePermissions(permissions: List<MedicalPermission>) {
@@ -299,7 +297,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
 
                 val preference =
                     HealthSwitchPreference(requireContext()).also { it ->
-                        // TODO(b/342156345): Add icons.
+                        it.icon = permission.medicalPermissionType.icon(requireContext())
                         it.setTitle(
                             fromPermissionType(permission.medicalPermissionType).uppercaseLabel
                         )

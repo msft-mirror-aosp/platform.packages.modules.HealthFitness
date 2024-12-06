@@ -17,6 +17,7 @@ package android.health.connect.internal.datatypes;
 
 import android.annotation.NonNull;
 import android.health.connect.datatypes.IntervalRecord;
+import android.health.connect.proto.backuprestore.Record;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -74,6 +75,33 @@ public abstract class IntervalRecordInternal<T extends IntervalRecord> extends R
         populateIntervalRecordFrom(parcel);
     }
 
+    @Override
+    void populateToRecordProto(Record.Builder builder) {
+        android.health.connect.proto.backuprestore.IntervalRecord.Builder intervalRecord =
+                android.health.connect.proto.backuprestore.IntervalRecord.newBuilder()
+                        .setStartTime(mStartTime)
+                        .setStartZoneOffset(mStartZoneOffset)
+                        .setEndTime(mEndTime)
+                        .setEndZoneOffset(mEndZoneOffset);
+
+        populateToIntervalRecordProto(intervalRecord);
+
+        builder.setIntervalRecord(intervalRecord);
+    }
+
+    @Override
+    void populateFromRecordProto(Record recordProto) {
+        android.health.connect.proto.backuprestore.IntervalRecord intervalRecord =
+                recordProto.getIntervalRecord();
+
+        mStartTime = intervalRecord.getStartTime();
+        mStartZoneOffset = intervalRecord.getStartZoneOffset();
+        mEndTime = intervalRecord.getEndTime();
+        mEndZoneOffset = intervalRecord.getEndZoneOffset();
+
+        populateFromIntervalRecordProto(intervalRecord);
+    }
+
     Instant getStartTime() {
         return Instant.ofEpochMilli(mStartTime);
     }
@@ -123,6 +151,11 @@ public abstract class IntervalRecordInternal<T extends IntervalRecord> extends R
         return LocalDate.ofInstant(this.getStartTime(), this.getStartZoneOffset());
     }
 
+    @Override
+    public long getRecordTime() {
+        return getEndTimeInMillis();
+    }
+
     /**
      * Child class must implement this method and populates itself with the data present in {@param
      * bundle}. Reads should be in the same order as write
@@ -134,4 +167,10 @@ public abstract class IntervalRecordInternal<T extends IntervalRecord> extends R
      * transmissions
      */
     abstract void populateIntervalRecordTo(@NonNull Parcel parcel);
+
+    abstract void populateToIntervalRecordProto(
+            android.health.connect.proto.backuprestore.IntervalRecord.Builder intervalRecord);
+
+    abstract void populateFromIntervalRecordProto(
+            android.health.connect.proto.backuprestore.IntervalRecord intervalRecord);
 }

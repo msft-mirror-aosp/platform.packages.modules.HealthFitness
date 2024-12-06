@@ -29,29 +29,26 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.safetycenter.HealthConnectSafetySource
 import com.android.healthconnect.controller.safetycenter.HealthConnectSafetySource.Companion.HEALTH_CONNECT_SOURCE_ID
 import com.android.healthconnect.controller.safetycenter.SafetyCenterManagerWrapper
-import com.android.healthconnect.controller.utils.FeatureUtils
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.whenever
 
 class HealthConnectSafetySourceTest {
 
-    private val mockFeatureUtils = mock(FeatureUtils::class.java)
     private val mockSafetyCenterManagerWrapper = mock(SafetyCenterManagerWrapper::class.java)
     private lateinit var safetySource: HealthConnectSafetySource
     private lateinit var context: Context
 
     @Before
     fun setup() {
-        safetySource = HealthConnectSafetySource(mockFeatureUtils, mockSafetyCenterManagerWrapper)
+        safetySource = HealthConnectSafetySource(mockSafetyCenterManagerWrapper)
         context = InstrumentationRegistry.getInstrumentation().context
 
         whenever(mockSafetyCenterManagerWrapper.isEnabled(context)).thenReturn(true)
-        whenever(mockFeatureUtils.isEntryPointsEnabled()).thenReturn(true)
     }
 
     @Test
@@ -65,17 +62,6 @@ class HealthConnectSafetySourceTest {
     }
 
     @Test
-    fun setSafetySourceData_whenEntryPointsIsDisabled_setsNullData() {
-        whenever(mockFeatureUtils.isEntryPointsEnabled()).thenReturn(false)
-
-        safetySource.setSafetySourceData(context, EVENT_SOURCE_STATE_CHANGED)
-
-        verify(mockSafetyCenterManagerWrapper, times(1))
-            .setSafetySourceData(
-                context, HEALTH_CONNECT_SOURCE_ID, null, EVENT_SOURCE_STATE_CHANGED)
-    }
-
-    @Test
     fun setSafetySourceData_setsData() {
         safetySource.setSafetySourceData(context, EVENT_SOURCE_STATE_CHANGED)
 
@@ -85,19 +71,27 @@ class HealthConnectSafetySourceTest {
                     SafetySourceStatus.Builder(
                             HEALTH_CONNECT_TITLE,
                             HEALTH_CONNECT_SUMMARY,
-                            SafetySourceData.SEVERITY_LEVEL_UNSPECIFIED)
+                            SafetySourceData.SEVERITY_LEVEL_UNSPECIFIED,
+                        )
                         .setPendingIntent(
                             PendingIntent.getActivity(
                                 context,
                                 /* requestCode= */ 0,
                                 Intent(HEALTH_CONNECT_INTENT_ACTION),
-                                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE))
-                        .build())
+                                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+                            )
+                        )
+                        .build()
+                )
                 .build()
 
         verify(mockSafetyCenterManagerWrapper, times(1))
             .setSafetySourceData(
-                context, HEALTH_CONNECT_SOURCE_ID, expectedData, EVENT_SOURCE_STATE_CHANGED)
+                context,
+                HEALTH_CONNECT_SOURCE_ID,
+                expectedData,
+                EVENT_SOURCE_STATE_CHANGED,
+            )
     }
 
     private fun <T> any(): T {

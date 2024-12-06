@@ -14,8 +14,10 @@
 package com.android.healthconnect.controller.tests.permissions.data
 
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -39,7 +41,7 @@ class FitnessPermissionStringsTest {
 
     @Test
     fun allHealthPermissionTypesHaveStrings() {
-        for (type in FitnessPermissionType.values()) {
+        for (type in FitnessPermissionType.entries) {
             assertThat(FitnessPermissionStrings.fromPermissionType(type)).isNotNull()
         }
     }
@@ -48,8 +50,7 @@ class FitnessPermissionStringsTest {
     fun allFitnessPermissionsHaveStrings() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm) ||
-                    healthPermissionReader.isMedicalPermission(perm)
+                isAdditionalPermission(perm) || isMedicalPermission(perm)
             }
         for (permission in allPermissions) {
             val type = FitnessPermission.fromPermissionString(permission).fitnessPermissionType

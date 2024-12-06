@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.selectabledeletion.api
 
 import android.health.connect.HealthConnectManager
 import android.health.connect.RecordIdFilter
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeEntries
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteEntries
 import com.android.healthconnect.controller.service.IoDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,13 +30,14 @@ class DeleteEntriesUseCase
 @Inject
 constructor(
     private val healthConnectManager: HealthConnectManager,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend fun invoke(deleteEntries: DeletionTypeEntries) =
+    // TODO (b/369108829) Optimise deletion based on selected data and date ranges
+    suspend fun invoke(deleteEntries: DeleteEntries) =
         withContext(dispatcher) {
             val recordIdFilters =
-                deleteEntries.ids.map { id ->
-                    RecordIdFilter.fromId(deleteEntries.dataType.recordClass, id)
+                deleteEntries.idsToDataTypes.entries.map { (id, dataType) ->
+                    RecordIdFilter.fromId(dataType.java, id)
                 }
 
             healthConnectManager.deleteRecords(recordIdFilters, Runnable::run) {}

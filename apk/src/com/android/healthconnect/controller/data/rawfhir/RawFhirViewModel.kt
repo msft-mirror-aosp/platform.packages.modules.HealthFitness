@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,15 @@ import kotlinx.coroutines.launch
 
 /** View model for the [RawFhirFragment] . */
 @HiltViewModel
-class RawFhirViewModel @Inject constructor(private val rawFhirUseCase: RawFhirUseCase) :
+class RawFhirViewModel
+@Inject
+constructor(private val rawFhirUseCase: RawFhirUseCase, private val formatter: RawFhirFormatter) :
     ViewModel() {
 
     companion object {
         private const val TAG = "RawFhirViewModel"
     }
 
-    private val formatter = RawFhirFormatter()
     private val _rawFhir = MutableLiveData<RawFhirState>()
 
     /** Provides a [FhirResource]s to be displayed in [RawFhirFragment]. */
@@ -49,7 +50,11 @@ class RawFhirViewModel @Inject constructor(private val rawFhirUseCase: RawFhirUs
         viewModelScope.launch {
             when (val result = rawFhirUseCase.loadFhirResource(medicalResourceId)) {
                 is UseCaseResults.Success -> {
-                    val formattedFhir = FormattedFhir(formatter.format(result.data))
+                    val formattedFhir =
+                        FormattedFhir(
+                            formatter.format(result.data),
+                            formatter.fhirContentDescription(result.data),
+                        )
                     _rawFhir.postValue(RawFhirState.WithData(listOf(formattedFhir)))
                 }
                 is UseCaseResults.Failed -> {
@@ -67,5 +72,5 @@ class RawFhirViewModel @Inject constructor(private val rawFhirUseCase: RawFhirUs
         data class WithData(val fhirResource: List<FormattedFhir>) : RawFhirState()
     }
 
-    data class FormattedFhir(val fhir: String)
+    data class FormattedFhir(val fhir: String, val fhirContentDescription: String)
 }

@@ -33,6 +33,8 @@ import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdap
 import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RawFhirPageElement
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
@@ -53,16 +55,19 @@ class RawFhirFragment : Hilt_RawFhirFragment() {
     private lateinit var detailsAdapter: RecyclerViewAdapter
     private val rawFhirViewBinder by lazy { RawFhirViewBinder() }
 
-    // TODO(b/342159144): create page name atom.
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO(b/342159144): logger.setPageId(pageName)
+        setPageId()
     }
 
     override fun onResume() {
         super.onResume()
-        // TODO(b/342159144): logger.setPageId(pageName)
+        setPageId()
+        logger.logPageImpression()
+    }
+
+    private fun setPageId() {
+        logger.setPageId(PageName.RAW_FHIR_PAGE)
     }
 
     override fun onCreateView(
@@ -70,7 +75,6 @@ class RawFhirFragment : Hilt_RawFhirFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // TODO(b/342159144): logger.setPageId(pageName)
         val view = inflater.inflate(R.layout.fragment_data_entry_details, container, false)
         medicalResourceId =
             requireArguments().getParcelable(MEDICAL_RESOURCE_ID_KEY)
@@ -134,10 +138,8 @@ class RawFhirFragment : Hilt_RawFhirFragment() {
         override fun bind(view: View, data: FormattedFhir, index: Int) {
             val rawFhir = view.findViewById<TextView>(R.id.item_raw_fhir)
             rawFhir.text = data.fhir
-            // TODO(b/364239927): Finalize content description with UX.
-            rawFhir.contentDescription =
-                view.context.getString(R.string.raw_fhir_content_description)
-            // TODO(b/342159144): Log impression.
+            rawFhir.contentDescription = data.fhirContentDescription
+            logger.logImpression(RawFhirPageElement.RAW_FHIR_RESOURCE)
         }
     }
 }

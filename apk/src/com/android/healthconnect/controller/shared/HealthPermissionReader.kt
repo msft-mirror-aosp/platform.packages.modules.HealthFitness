@@ -15,17 +15,26 @@
  */
 package com.android.healthconnect.controller.shared
 
+import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.pm.PackageManager.PackageInfoFlags
 import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
+import android.os.Process
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
-import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.AconfigFlagHelper
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.android.healthfitness.flags.Flags
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -41,40 +50,59 @@ class HealthPermissionReader
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val featureUtils: FeatureUtils,
+    private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
 ) {
 
     companion object {
+        private const val HEALTH_PERMISSION_GROUP = "android.permission-group.HEALTH"
         private const val RESOLVE_INFO_FLAG: Long = PackageManager.MATCH_ALL.toLong()
         private const val PACKAGE_INFO_PERMISSIONS_FLAG: Long =
             PackageManager.GET_PERMISSIONS.toLong()
-        private val sessionTypePermissions =
-            listOf(
-                HealthPermissions.READ_EXERCISE,
-                HealthPermissions.WRITE_EXERCISE,
-                HealthPermissions.READ_SLEEP,
-                HealthPermissions.WRITE_SLEEP,
-            )
-
-        private val backgroundReadPermission =
-            listOf(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
-
-        private val historyReadPermission = listOf(HealthPermissions.READ_HEALTH_DATA_HISTORY)
-
-        /** Special health permissions that don't represent health data types. */
-        private val additionalPermissions =
-            setOf(
-                HealthPermissions.READ_EXERCISE_ROUTES,
-                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermissions.READ_HEALTH_DATA_HISTORY,
-            )
 
         private val medicalPermissions =
             setOf(
                 HealthPermissions.WRITE_MEDICAL_DATA,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
-                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
+                HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
+                HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
+                HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
+                HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS,
+                HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
+                HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
+                HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VACCINES,
+                HealthPermissions.READ_MEDICAL_DATA_VISITS,
+                HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
             )
+
+        /**
+         * Determines if an app's permission group is user-sensitive. If an app is not user
+         * sensitive, then it is considered a system app, and hidden in the UI by default.
+         *
+         * This logic is copied from PermissionController/AppPermGroupUiInfoLiveData because we want
+         * to achieve consistent numbers as showed in Settings->PermissionManager.
+         *
+         * @param permFlags the permission flags corresponding to the permissions requested by a
+         *   given app
+         * @param packageFlags flag of
+         *   [android.R.styleable#AndroidManifestUsesPermission&lt;uses-permission&gt;] tag included
+         *   under &lt;manifest&gt
+         * @return Whether or not this package requests a user sensitive permission
+         */
+        private fun isUserSensitive(permFlags: Int?, packageFlags: Int?): Boolean {
+            if (permFlags == null || packageFlags == null) {
+                return true
+            }
+            val granted =
+                packageFlags and PackageInfo.REQUESTED_PERMISSION_GRANTED != 0 &&
+                    permFlags and PackageManager.FLAG_PERMISSION_REVOKED_COMPAT == 0
+            return if (granted) {
+                permFlags and PackageManager.FLAG_PERMISSION_USER_SENSITIVE_WHEN_GRANTED != 0
+            } else {
+                permFlags and PackageManager.FLAG_PERMISSION_USER_SENSITIVE_WHEN_DENIED != 0
+            }
+        }
     }
 
     /**
@@ -82,11 +110,79 @@ constructor(
      * (additional or data type).
      */
     fun getAppsWithHealthPermissions(): List<String> {
+        if (
+            context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+                Flags.replaceBodySensorPermissionEnabled()
+        ) {
+            // On Wear, do not depend on intent filter, instead, query apps by requested permissions
+            // and filter out system apps.
+            return getPackagesRequestingSystemHealthPermissions()
+        }
         return try {
             appsWithDeclaredIntent().filter { getValidHealthPermissions(it).isNotEmpty() }
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    /**
+     * Identifies apps that have system health permissions requested.
+     *
+     * This function queries all apps and search for non-system apps that have requested at least
+     * one health permissions. This function does not rely on health rationale intent filter. The
+     * processing time of this function will be longer than the intent filter approach.
+     *
+     * @return a list of app package names that have requested at least one health permission and
+     *   that are not system apps
+     */
+    private fun getPackagesRequestingSystemHealthPermissions(): List<String> {
+        val packages =
+            context.packageManager.getInstalledPackagesAsUser(
+                PackageManager.GET_PERMISSIONS,
+                Process.myUserHandle().getIdentifier(),
+            )
+        val healthApps = mutableListOf<String>()
+        val systemHealthPermissions = getSystemHealthPermissions()
+
+        for (info in packages) {
+            val packageName = info.packageName
+            val requestedPermissions = info.requestedPermissions ?: continue
+
+            // Create a subset of requestedPermissions, where only system health permissions are
+            // included. This is because HealthConnect service enforceValidHealthPermissions before
+            // getPermissionFlags, and we're only interested in system health permissions in
+            // displaying wear UI.
+            val requestedSystemHealthPermissions =
+                requestedPermissions
+                    .withIndex()
+                    .filter { (_, permissionName) ->
+                        systemHealthPermissions.contains(permissionName)
+                    }
+                    .associate { (index, permissionName) -> index to permissionName }
+            if (requestedSystemHealthPermissions.isEmpty()) {
+                continue
+            }
+
+            // Only display non-system apps who are considered user-sensitive for health permission
+            // group. Use permission flags to determine whether an app is user-sensitive.
+            // This is a HealthConnect service call to get permission flags.
+            val allPermFlags =
+                getHealthPermissionsFlagsUseCase(
+                    packageName,
+                    requestedSystemHealthPermissions.values.toList(),
+                )
+            if (
+                requestedSystemHealthPermissions.any { (index, permissionName) ->
+                    isUserSensitive(
+                        allPermFlags[permissionName],
+                        info.requestedPermissionsFlags?.getOrNull(index),
+                    )
+                }
+            ) {
+                healthApps.add(packageName)
+            }
+        }
+        return healthApps
     }
 
     fun getAppsWithFitnessPermissions(): List<String> {
@@ -144,14 +240,61 @@ constructor(
         }
     }
 
-    /** Returns a list of health permissions declared by an app that can be rendered in our UI. */
+    /**
+     * Returns a list of health permissions declared by an app that can be rendered in our UI. This
+     * also filters out invalid additional permissions.
+     */
     fun getValidHealthPermissions(packageName: String): List<HealthPermission> {
         return try {
             val permissions = getDeclaredHealthPermissions(packageName)
-            permissions.mapNotNull { permission -> parsePermission(permission) }
+            val declaredPermissions =
+                permissions.mapNotNull { permission -> parsePermission(permission) }
+            if (isPersonalHealthRecordEnabled()) {
+                maybeFilterOutAdditionalIfNotValid(declaredPermissions)
+            } else {
+                declaredPermissions
+            }
         } catch (e: NameNotFoundException) {
             emptyList()
         }
+    }
+
+    /**
+     * Filers out invalid additional permissions. READ_HEALTH_DATA_HISTORY is valid if at least one
+     * FITNESS READ permission is declared. READ_HEALTH_DATA_IN_BACKGROUND is valid if at least one
+     * HEALTH READ permission is declared.
+     */
+    @VisibleForTesting
+    fun maybeFilterOutAdditionalIfNotValid(
+        declaredPermissions: List<HealthPermission>
+    ): List<HealthPermission> {
+        val historyReadDeclared =
+            declaredPermissions.filterIsInstance<AdditionalPermission>().any {
+                it == AdditionalPermission.READ_HEALTH_DATA_HISTORY
+            }
+        val backgroundReadDeclared =
+            declaredPermissions.filterIsInstance<AdditionalPermission>().any {
+                it == AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
+            }
+        val atLeastOneFitnessReadDeclared = declaredPermissions.any { isFitnessReadPermission(it) }
+        val atLeastOneMedicalReadDeclared = declaredPermissions.any { isMedicalReadPermission(it) }
+        val atLeastOneHealthReadDeclared =
+            atLeastOneFitnessReadDeclared || atLeastOneMedicalReadDeclared
+
+        var result = declaredPermissions.toMutableList()
+        if (historyReadDeclared && !atLeastOneFitnessReadDeclared) {
+            result =
+                result
+                    .filterNot { it == AdditionalPermission.READ_HEALTH_DATA_HISTORY }
+                    .toMutableList()
+        }
+        if (backgroundReadDeclared && !atLeastOneHealthReadDeclared) {
+            result =
+                result
+                    .filterNot { it == AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND }
+                    .toMutableList()
+        }
+        return result.toList()
     }
 
     /** Returns a list of health permissions that are declared by an app. */
@@ -189,9 +332,21 @@ constructor(
         }
     }
 
+    /**
+     * When PHR flag is on, returns valid additional permissions that we can display in our UI. An
+     * additional permission is valid if the correct read permissions are declared.
+     *
+     * When PHR flag is off, returns additional permissions that are declared.
+     */
     fun getAdditionalPermissions(packageName: String): List<String> {
-        return getDeclaredHealthPermissions(packageName).filter { perm ->
-            isAdditionalPermission(perm) && !shouldHidePermission(perm)
+        return if (isPersonalHealthRecordEnabled()) {
+            getValidHealthPermissions(packageName)
+                .map { it.toString() }
+                .filter { perm -> isAdditionalPermission(perm) && !shouldHidePermission(perm) }
+        } else {
+            getDeclaredHealthPermissions(packageName).filter { perm ->
+                isAdditionalPermission(perm) && !shouldHidePermission(perm)
+            }
         }
     }
 
@@ -228,69 +383,34 @@ constructor(
     @VisibleForTesting
     fun getHealthPermissions(): List<String> {
         val permissions =
-            context.packageManager
-                .queryPermissionsByGroup("android.permission-group.HEALTH", 0)
-                .map { permissionInfo -> permissionInfo.name }
+            context.packageManager.queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0).map {
+                permissionInfo ->
+                permissionInfo.name
+            }
         return permissions.filterNot { permission -> shouldHidePermission(permission) }
     }
 
-    fun isAdditionalPermission(permission: String): Boolean {
-        return additionalPermissions.contains(permission)
-    }
-
-    fun isMedicalPermission(permission: String): Boolean {
-        return medicalPermissions.contains(permission)
-    }
-
-    fun isFitnessPermission(permission: String): Boolean {
-        return !isAdditionalPermission(permission) && !isMedicalPermission(permission)
+    /** Returns a list of all system health permissions in the HEALTH permission group. */
+    fun getSystemHealthPermissions(): List<String> {
+        val permissions =
+            context.packageManager
+                .queryPermissionsByGroup(HEALTH_PERMISSION_GROUP, 0)
+                .map { permissionInfo -> permissionInfo.name }
+                .filter { permissionName ->
+                    val appOp = AppOpsManager.permissionToOp(permissionName)
+                    appOp != null && !appOp.equals(AppOpsManager.OPSTR_READ_WRITE_HEALTH_DATA)
+                }
+        return permissions
     }
 
     fun shouldHidePermission(permission: String): Boolean {
-        return shouldHideSessionTypes(permission) ||
-            shouldHideBackgroundReadPermission(permission) ||
-            shouldHideSkinTemperaturePermissions(permission) ||
-            shouldHidePlannedExercisePermissions(permission) ||
-            shouldHideMindfulnessSessionPermissions(permission) ||
-            shouldHideHistoryReadPermission(permission) ||
-            shouldHideMedicalPermission(permission)
-    }
-
-    private fun shouldHideSkinTemperaturePermissions(permission: String): Boolean {
-        return (permission == HealthPermissions.READ_SKIN_TEMPERATURE ||
-            permission == HealthPermissions.WRITE_SKIN_TEMPERATURE) &&
-            !featureUtils.isSkinTemperatureEnabled()
-    }
-
-    private fun shouldHidePlannedExercisePermissions(permission: String): Boolean {
-        return (permission == HealthPermissions.READ_PLANNED_EXERCISE ||
-            permission == HealthPermissions.WRITE_PLANNED_EXERCISE) &&
-            !featureUtils.isPlannedExerciseEnabled()
-    }
-
-    private fun shouldHideMindfulnessSessionPermissions(permission: String): Boolean {
-        if (Flags.mindfulness()) {
-            return false
+        return when (permission) {
+            in medicalPermissions -> !isPersonalHealthRecordEnabled()
+            HealthPermissions.READ_ACTIVITY_INTENSITY,
+            HealthPermissions.WRITE_ACTIVITY_INTENSITY ->
+                !AconfigFlagHelper.isActivityIntensityEnabled()
+            else -> false
         }
-
-        return permission == HealthPermissions.READ_MINDFULNESS ||
-            permission == HealthPermissions.WRITE_MINDFULNESS
-    }
-
-    private fun shouldHideSessionTypes(permission: String): Boolean {
-        return permission in sessionTypePermissions && !featureUtils.isSessionTypesEnabled()
-    }
-
-    private fun shouldHideBackgroundReadPermission(permission: String): Boolean {
-        return permission in backgroundReadPermission && !featureUtils.isBackgroundReadEnabled()
-    }
-
-    private fun shouldHideHistoryReadPermission(permission: String): Boolean {
-        return permission in historyReadPermission && !featureUtils.isHistoryReadEnabled()
-    }
-
-    private fun shouldHideMedicalPermission(permission: String): Boolean {
-        return permission in medicalPermissions && !featureUtils.isPersonalHealthRecordEnabled()
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

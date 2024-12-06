@@ -21,6 +21,7 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.SuppressLint;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Identifier;
@@ -37,6 +38,7 @@ import java.util.UUID;
 /**
  * Base class for all health connect datatype records.
  *
+ * @param <T> The record type.
  * @hide
  */
 public abstract class RecordInternal<T extends Record> {
@@ -110,6 +112,68 @@ public abstract class RecordInternal<T extends Record> {
         populateRecordTo(parcel);
     }
 
+    /** Converts the record to the B&R data format */
+    public final android.health.connect.proto.backuprestore.Record toProto() {
+        android.health.connect.proto.backuprestore.Record.Builder builder =
+                android.health.connect.proto.backuprestore.Record.newBuilder();
+
+        builder.setUuid(mUuid == null ? "" : mUuid.toString());
+        if (mPackageName != null) {
+            builder.setPackageName(mPackageName);
+        }
+        if (mAppName != null) {
+            builder.setAppName(mAppName);
+        }
+        builder.setLastModifiedTime(mLastModifiedTime);
+        if (mClientRecordId != null) {
+            builder.setClientRecordId(mClientRecordId);
+        }
+        builder.setClientRecordVersion(mClientRecordVersion);
+        if (mManufacturer != null) {
+            builder.setManufacturer(mManufacturer);
+        }
+        if (mModel != null) {
+            builder.setModel(mModel);
+        }
+        builder.setDeviceType(mDeviceType);
+        builder.setRecordingMethod(mRecordingMethod);
+
+        populateToRecordProto(builder);
+
+        return builder.build();
+    }
+
+    /** Populates the record from the B&R data format */
+    @SuppressLint("WrongConstant")
+    public final void fromRecordProto(
+            android.health.connect.proto.backuprestore.Record recordProto) {
+        String uuidString = recordProto.getUuid();
+        if (!uuidString.isEmpty()) {
+            mUuid = UUID.fromString(uuidString);
+        }
+        if (recordProto.hasPackageName()) {
+            mPackageName = recordProto.getPackageName();
+        }
+        if (recordProto.hasAppName()) {
+            mAppName = recordProto.getAppName();
+        }
+        mLastModifiedTime = recordProto.getLastModifiedTime();
+        if (recordProto.hasClientRecordId()) {
+            mClientRecordId = recordProto.getClientRecordId();
+        }
+        mClientRecordVersion = recordProto.getClientRecordVersion();
+        if (recordProto.hasManufacturer()) {
+            mManufacturer = recordProto.getManufacturer();
+        }
+        if (recordProto.hasModel()) {
+            mModel = recordProto.getModel();
+        }
+        mDeviceType = recordProto.getDeviceType();
+        mRecordingMethod = recordProto.getRecordingMethod();
+
+        populateFromRecordProto(recordProto);
+    }
+
     @Nullable
     public UUID getUuid() {
         return mUuid;
@@ -139,9 +203,8 @@ public abstract class RecordInternal<T extends Record> {
         return mPackageName;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
-    public RecordInternal<T> setPackageName(@Nullable String packageName) {
+    public RecordInternal<T> setPackageName(String packageName) {
         this.mPackageName = packageName;
         return this;
     }
@@ -303,6 +366,12 @@ public abstract class RecordInternal<T extends Record> {
     public abstract LocalDate getLocalDate();
 
     /**
+     * @return the time at which the record ended. This matches the end time for an InstantRecord
+     *     and time for IntervalRecord.
+     */
+    public abstract long getRecordTime();
+
+    /**
      * Populate {@code bundle} with the data required to un-bundle self. This is used suring IPC
      * transmissions
      */
@@ -313,4 +382,10 @@ public abstract class RecordInternal<T extends Record> {
      * bundle}
      */
     abstract void populateRecordFrom(@NonNull Parcel bundle);
+
+    abstract void populateToRecordProto(
+            android.health.connect.proto.backuprestore.Record.Builder builder);
+
+    abstract void populateFromRecordProto(
+            android.health.connect.proto.backuprestore.Record recordProto);
 }

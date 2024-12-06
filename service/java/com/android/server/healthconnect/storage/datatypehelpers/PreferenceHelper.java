@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.request.UpsertTableReques
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -47,33 +46,40 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 // TODO(b/303023796): Make this final.
 public class PreferenceHelper extends DatabaseHelper {
+    private static final String TAG = "PreferenceHelper";
     private static final String TABLE_NAME = "preference_table";
     private static final String KEY_COLUMN_NAME = "key";
     public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
             Collections.singletonList(new Pair<>(KEY_COLUMN_NAME, TYPE_STRING));
     private static final String VALUE_COLUMN_NAME = "value";
+    private final TransactionManager mTransactionManager;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile PreferenceHelper sPreferenceHelper;
+    /**
+     * Key to store timestamp of the last time any PHR <b>read medical resources</b> API is called.
+     */
+    private static final String PREFS_KEY_PHR_LAST_READ_MEDICAL_RESOURCES_API =
+            "phr_last_read_medical_resources_api";
 
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    protected PreferenceHelper() {}
+    public PreferenceHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
+        mTransactionManager = transactionManager;
+    }
 
     /** Note: Overrides existing preference (if it exists) with the new value */
     public synchronized void insertOrReplacePreference(String key, String value) {
-        TransactionManager.getInitialisedInstance()
-                .insertOrReplace(
-                        new UpsertTableRequest(
-                                TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
+        mTransactionManager.insertOrReplace(
+                new UpsertTableRequest(
+                        TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
         getPreferences().put(key, value);
     }
 
     /** Removes key entry from the table */
     public synchronized void removeKey(String id) {
-        TransactionManager.getInitialisedInstance()
-                .delete(new DeleteTableRequest(TABLE_NAME).setId(KEY_COLUMN_NAME, id));
+        mTransactionManager.delete(new DeleteTableRequest(TABLE_NAME).setId(KEY_COLUMN_NAME, id));
         getPreferences().remove(id);
     }
 
@@ -88,11 +94,10 @@ public class PreferenceHelper extends DatabaseHelper {
                                         TABLE_NAME,
                                         getContentValues(key, value),
                                         UNIQUE_COLUMN_INFO)));
-        TransactionManager.getInitialisedInstance().insertOrReplaceAll(requests);
+        mTransactionManager.insertOrReplaceAll(requests);
         getPreferences().putAll(keyValues);
     }
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
@@ -125,7 +130,6 @@ public class PreferenceHelper extends DatabaseHelper {
         return mPreferences;
     }
 
-    @NonNull
     private ContentValues getContentValues(String key, String value) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_COLUMN_NAME, key);
@@ -139,8 +143,7 @@ public class PreferenceHelper extends DatabaseHelper {
         }
 
         mPreferences = new ConcurrentHashMap<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 String key = StorageUtils.getCursorString(cursor, KEY_COLUMN_NAME);
                 String value = StorageUtils.getCursorString(cursor, VALUE_COLUMN_NAME);
@@ -149,20 +152,11 @@ public class PreferenceHelper extends DatabaseHelper {
         }
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(KEY_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));
         columnInfo.add(new Pair<>(VALUE_COLUMN_NAME, TEXT_NULL));
 
         return columnInfo;
-    }
-
-    public static synchronized PreferenceHelper getInstance() {
-        if (sPreferenceHelper == null) {
-            sPreferenceHelper = new PreferenceHelper();
-        }
-
-        return sPreferenceHelper;
     }
 }

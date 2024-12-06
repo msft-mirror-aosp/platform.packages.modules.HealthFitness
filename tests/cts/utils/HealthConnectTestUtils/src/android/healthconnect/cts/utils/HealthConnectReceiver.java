@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.utils;
 
+import android.app.UiAutomation;
 import android.health.connect.HealthConnectException;
 
 /**
@@ -24,5 +25,26 @@ import android.health.connect.HealthConnectException;
  *
  * @param <T> the type of object being received,
  */
-public final class HealthConnectReceiver<T>
-        extends TestOutcomeReceiver<T, HealthConnectException> {}
+public final class HealthConnectReceiver<T> extends TestOutcomeReceiver<T, HealthConnectException> {
+
+    /**
+     * Helper for calling an API method that returns its response via an {@link
+     * android.os.OutcomeReceiver}.
+     */
+    public static <R> R callAndGetResponse(CallableForOutcome<R, HealthConnectException> callable)
+            throws InterruptedException {
+        return callAndGetResponse(HealthConnectException.class, callable);
+    }
+
+    /**
+     * Helper for calling an API method that returns its response via an {@link
+     * android.os.OutcomeReceiver} while holding permissions via {@link
+     * UiAutomation#adoptShellPermissionIdentity(String...)}.
+     */
+    public static <R> R callAndGetResponseWithShellPermissionIdentity(
+            CallableForOutcome<R, HealthConnectException> callable, String... permissions)
+            throws InterruptedException {
+        return callAndGetResponseWithShellPermissionIdentity(
+                HealthConnectException.class, callable, permissions);
+    }
+}

@@ -21,6 +21,8 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.proto.backuprestore.IntervalRecord;
+import android.health.connect.proto.backuprestore.Steps;
 import android.os.Parcel;
 
 /**
@@ -59,5 +61,17 @@ public final class StepsRecordInternal extends IntervalRecordInternal<StepsRecor
     @Override
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
         parcel.writeInt(mCount);
+    }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {
+        intervalRecord.setSteps(Steps.newBuilder().setCount(mCount));
+    }
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {
+        Steps steps = intervalRecord.getSteps();
+
+        mCount = steps.getCount();
     }
 }

@@ -36,7 +36,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
@@ -66,7 +66,7 @@ import javax.inject.Inject
 class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
@@ -110,8 +110,10 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
-            requireArguments().getString(EXTRA_PACKAGE_NAME) != null) {
+        if (
+            requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
+                requireArguments().getString(EXTRA_PACKAGE_NAME) != null
+        ) {
             packageName = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
         }
         if (requireArguments().containsKey(Constants.SHOW_MANAGE_APP_SECTION)) {
@@ -134,7 +136,8 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
                 Toast.makeText(
                         requireContext(),
                         R.string.removed_additional_permissions_toast,
-                        Toast.LENGTH_LONG)
+                        Toast.LENGTH_LONG,
+                    )
                     .show()
                 viewModel.markLastReadShown()
             }
@@ -157,7 +160,8 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
                     maybeShowMigrationDialog(
                         migrationState.migrationRestoreState,
                         requireActivity(),
-                        viewModel.appInfo.value?.appName!!)
+                        viewModel.appInfo.value?.appName!!,
+                    )
                 }
                 else -> {
                     // do nothing
@@ -166,22 +170,27 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
         }
 
         childFragmentManager.setFragmentResultListener(
-            DisconnectDialogFragment.DISCONNECT_CANCELED_EVENT, this) { _, _ ->
-                allowAllPreference.isChecked = true
-            }
+            DisconnectHealthPermissionsDialogFragment.DISCONNECT_CANCELED_EVENT,
+            this,
+        ) { _, _ ->
+            allowAllPreference.isChecked = true
+        }
 
         childFragmentManager.setFragmentResultListener(
-            DisconnectDialogFragment.DISCONNECT_ALL_EVENT, this) { _, bundle ->
-                if (!viewModel.revokeAllHealthPermissions(packageName)) {
-                    Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                if (bundle.containsKey(DisconnectDialogFragment.KEY_DELETE_DATA) &&
-                    bundle.getBoolean(DisconnectDialogFragment.KEY_DELETE_DATA)) {
-                    viewModel.deleteAppData(packageName, appName)
-                }
+            DisconnectHealthPermissionsDialogFragment.DISCONNECT_ALL_EVENT,
+            this,
+        ) { _, bundle ->
+            if (!viewModel.revokeAllMedicalAndMaybeAdditionalPermissions(packageName)) {
+                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
+
+            if (
+                bundle.containsKey(DisconnectHealthPermissionsDialogFragment.KEY_DELETE_DATA) &&
+                    bundle.getBoolean(DisconnectHealthPermissionsDialogFragment.KEY_DELETE_DATA)
+            ) {
+                viewModel.deleteAppData(packageName, appName)
+            }
+        }
 
         setupHeader()
         setupManageAppCategory()
@@ -217,9 +226,9 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
             return
         }
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            manageAppCategory.isVisible = state.isValid()
+            manageAppCategory.isVisible = state.isAvailable()
             manageAppCategory.removeAll()
-            if (state.isValid()) {
+            if (state.isAvailable()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
@@ -230,7 +239,8 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
                             navigationUtils.navigate(
                                 fragment = this,
                                 action = R.id.action_settingsMedicalApp_to_additionalAccessFragment,
-                                bundle = extras)
+                                bundle = extras,
+                            )
                             true
                         }
                     }
@@ -249,8 +259,12 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectDialogFragment(appName = appName, enableDeleteData = false)
-            .show(childFragmentManager, DisconnectDialogFragment.TAG)
+        DisconnectHealthPermissionsDialogFragment(
+                appName = appName,
+                enableDeleteData = false,
+                DisconnectHealthPermissionsDialogFragment.DisconnectType.MEDICAL,
+            )
+            .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
     private fun updatePermissions(permissions: List<MedicalPermission>) {
@@ -266,17 +280,19 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
             }
             .forEach { permission ->
                 val category =
-                    if (permission.medicalPermissionType ==
-                        MedicalPermissionType.ALL_MEDICAL_DATA) {
+                    if (
+                        permission.medicalPermissionType == MedicalPermissionType.ALL_MEDICAL_DATA
+                    ) {
                         writePermissionCategory
                     } else {
                         readPermissionCategory
                     }
                 val switchPreference =
                     HealthSwitchPreference(requireContext()).also {
-                        // it.icon = healthCategory.icon(requireContext())
+                        it.icon = permission.medicalPermissionType.icon(requireContext())
                         it.setTitle(
-                            fromPermissionType(permission.medicalPermissionType).uppercaseLabel)
+                            fromPermissionType(permission.medicalPermissionType).uppercaseLabel
+                        )
                         it.logNameActive = PermissionsElement.PERMISSION_SWITCH
                         it.logNameInactive = PermissionsElement.PERMISSION_SWITCH
                         it.setOnPreferenceChangeListener { _, newValue ->
@@ -287,7 +303,8 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
                                 Toast.makeText(
                                         requireContext(),
                                         R.string.default_error,
-                                        Toast.LENGTH_SHORT)
+                                        Toast.LENGTH_SHORT,
+                                    )
                                     .show()
                             }
                             permissionUpdated

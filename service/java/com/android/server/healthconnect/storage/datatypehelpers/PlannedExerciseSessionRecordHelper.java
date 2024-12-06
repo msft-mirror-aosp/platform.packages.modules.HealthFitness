@@ -39,7 +39,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -76,7 +75,7 @@ import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TableColumnPair;
@@ -144,7 +143,6 @@ public final class PlannedExerciseSessionRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(NOTES_COLUMN_NAME, TEXT_NULL),
@@ -235,8 +233,7 @@ public final class PlannedExerciseSessionRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull PlannedExerciseSessionRecordInternal plannedExerciseSessionRecord) {
+            Cursor cursor, PlannedExerciseSessionRecordInternal plannedExerciseSessionRecord) {
         plannedExerciseSessionRecord.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
         plannedExerciseSessionRecord.setExerciseType(
                 getCursorInt(cursor, EXERCISE_TYPE_COLUMN_NAME));
@@ -251,7 +248,7 @@ public final class PlannedExerciseSessionRecordHelper
         plannedExerciseSessionRecord.setExerciseBlocks(extractBlocks(cursor));
     }
 
-    private List<PlannedExerciseBlockInternal> extractBlocks(@NonNull Cursor cursor) {
+    private List<PlannedExerciseBlockInternal> extractBlocks(Cursor cursor) {
         // In the case where there are *no* blocks in a planned session, the joined columns from the
         // blocks table will be null.
         if (cursor.isNull(cursor.getColumnIndex(BLOCK_REPETITIONS_COLUMN_NAME))) {
@@ -274,7 +271,7 @@ public final class PlannedExerciseSessionRecordHelper
         return result;
     }
 
-    private List<PlannedExerciseStepInternal> extractSteps(@NonNull Cursor cursor) {
+    private List<PlannedExerciseStepInternal> extractSteps(Cursor cursor) {
         // In the case where there are *no* steps in a block, the joined columns from the steps
         // table will be null.
         if (cursor.isNull(cursor.getColumnIndex(STEP_EXERCISE_TYPE_COLUMN_NAME))) {
@@ -306,7 +303,7 @@ public final class PlannedExerciseSessionRecordHelper
         return result;
     }
 
-    private ExerciseCompletionGoalInternal extractCompletionGoal(@NonNull Cursor cursor) {
+    private ExerciseCompletionGoalInternal extractCompletionGoal(Cursor cursor) {
         int goalTypeId = getCursorInt(cursor, GOAL_TYPE_ID_COLUMN_NAME);
         switch (goalTypeId) {
             case UnspecifiedGoalInternal.UNSPECIFIED_GOAL_TYPE_ID:
@@ -336,13 +333,13 @@ public final class PlannedExerciseSessionRecordHelper
             case DistanceWithVariableRestGoalInternal.DISTANCE_WITH_VARIABLE_REST_GOAL_TYPE_ID:
                 return extractDistanceWithVariableRestGoal(cursor);
             case ExerciseCompletionGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
-                // Fall through.
+            // Fall through.
             default:
                 return ExerciseCompletionGoalInternal.UnknownGoalInternal.INSTANCE;
         }
     }
 
-    private ExercisePerformanceGoalInternal extractPerformanceGoal(@NonNull Cursor cursor) {
+    private ExercisePerformanceGoalInternal extractPerformanceGoal(Cursor cursor) {
         int goalTypeId = getCursorInt(cursor, GOAL_TYPE_ID_COLUMN_NAME);
         switch (goalTypeId) {
             case PowerGoalInternal.POWER_GOAL_TYPE_ID:
@@ -375,7 +372,7 @@ public final class PlannedExerciseSessionRecordHelper
             case AmrapGoalInternal.AMRAP_GOAL_TYPE_ID:
                 return AmrapGoalInternal.INSTANCE;
             case ExercisePerformanceGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
-                // Fall through.
+            // Fall through.
             default:
                 return ExercisePerformanceGoalInternal.UnknownGoalInternal.INSTANCE;
         }
@@ -383,8 +380,8 @@ public final class PlannedExerciseSessionRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull PlannedExerciseSessionRecordInternal exerciseSessionRecord) {
+            ContentValues contentValues,
+            PlannedExerciseSessionRecordInternal exerciseSessionRecord) {
         contentValues.put(NOTES_COLUMN_NAME, exerciseSessionRecord.getNotes());
         contentValues.put(EXERCISE_TYPE_COLUMN_NAME, exerciseSessionRecord.getExerciseType());
         contentValues.put(TITLE_COLUMN_NAME, exerciseSessionRecord.getTitle());
@@ -402,7 +399,7 @@ public final class PlannedExerciseSessionRecordHelper
 
     @Override
     List<UpsertTableRequest> getChildTableUpsertRequests(
-            @NonNull PlannedExerciseSessionRecordInternal record) {
+            PlannedExerciseSessionRecordInternal record) {
         List<UpsertTableRequest> blockUpsertRequests = new ArrayList<>();
         for (PlannedExerciseBlockInternal exerciseBlock : record.getExerciseBlocks()) {
             blockUpsertRequests.add(getBlockUpsertRequest(exerciseBlock));
@@ -604,7 +601,8 @@ public final class PlannedExerciseSessionRecordHelper
                 StorageUtils.getHexString(deletedRecordUuid));
         affectedExerciseSessionsReadRequest.setWhereClause(whereStatement);
         affectedExerciseSessionsReadRequest.setRecordHelper(
-                RecordHelperProvider.getRecordHelper(RECORD_TYPE_EXERCISE_SESSION));
+                InternalHealthConnectMappings.getInstance()
+                        .getRecordHelper(RECORD_TYPE_EXERCISE_SESSION));
         return Collections.singletonList(affectedExerciseSessionsReadRequest);
     }
 }

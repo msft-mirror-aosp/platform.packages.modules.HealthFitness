@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.permission;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,6 +27,7 @@ import android.os.UserManager;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.GuardedBy;
 
 import java.util.HashMap;
@@ -39,6 +39,9 @@ import java.util.Set;
  * Tracks apps which support {@link android.content.Intent#ACTION_VIEW_PERMISSION_USAGE} with {@link
  * HealthConnectManager#CATEGORY_HEALTH_PERMISSIONS}.
  *
+ * <p>This class stores a mapping for all UserHandles on the device, since this can be called for
+ * the non-foreground users.
+ *
  * @hide
  */
 public class HealthPermissionIntentAppsTracker {
@@ -49,11 +52,23 @@ public class HealthPermissionIntentAppsTracker {
     private final Object mLock = new Object();
 
     @GuardedBy("mLock")
-    private Map<UserHandle, Set<String>> mUserToHealthPackageNamesMap;
+    private final Map<UserHandle, Set<String>> mUserToHealthPackageNamesMap;
 
-    public HealthPermissionIntentAppsTracker(@NonNull Context context) {
+    public HealthPermissionIntentAppsTracker(Context context) {
         mPackageManager = context.getPackageManager();
-        initPerUserMapping(context);
+        synchronized (mLock) {
+            mUserToHealthPackageNamesMap = new HashMap<>();
+        }
+        if (!Flags.permissionTrackerFixMappingInit()) {
+            initPerUserMapping(context);
+        }
+    }
+
+    /** Setup the for the new user. */
+    public void onUserUnlocked(UserHandle userHandle) {
+        if (Flags.permissionTrackerFixMappingInit()) {
+            initPackageSetForUser(userHandle);
+        }
     }
 
     /**
@@ -63,24 +78,53 @@ public class HealthPermissionIntentAppsTracker {
      * @param packageName: name of the package to check
      * @param userHandle: the user to query
      */
-    boolean supportsPermissionUsageIntent(
-            @NonNull String packageName, @NonNull UserHandle userHandle) {
-        // Consider readWrite lock if this is performance bottleneck.
+    boolean supportsPermissionUsageIntent(String packageName, UserHandle userHandle) {
         synchronized (mLock) {
             if (!mUserToHealthPackageNamesMap.containsKey(userHandle)) {
-                Log.w(
-                        TAG,
-                        "Requested user handle: "
-                                + userHandle.toString()
-                                + " is not present in the state.");
+                if (Flags.permissionTrackerFixMappingInit()) {
+                    mUserToHealthPackageNamesMap.put(userHandle, new ArraySet<>());
+                } else {
+                    Log.w(
+                            TAG,
+                            "Requested user handle: "
+                                    + userHandle.toString()
+                                    + " is not present in the state.");
+                    return false;
+                }
+            }
+
+            if (mUserToHealthPackageNamesMap.get(userHandle).contains(packageName)) {
+                return true;
+            }
+            return updateAndGetSupportsPackageUsageIntent(packageName, userHandle);
+        }
+    }
+
+    /**
+     * Updates package state if needed, returns whether activity for {@link
+     * android.content.Intent#ACTION_VIEW_PERMISSION_USAGE} with {@link
+     * HealthConnectManager#CATEGORY_HEALTH_PERMISSIONS} support is currently disabled.
+     */
+    boolean updateAndGetSupportsPackageUsageIntent(String packageName, UserHandle userHandle) {
+        synchronized (mLock) {
+            if (!mUserToHealthPackageNamesMap.containsKey(userHandle)) {
+                mUserToHealthPackageNamesMap.put(userHandle, new ArraySet<>());
+            }
+
+            Intent permissionPackageUsageIntent = getHealthPermissionsUsageIntent();
+            permissionPackageUsageIntent.setPackage(packageName);
+            if (mPackageManager
+                    .queryIntentActivitiesAsUser(
+                            permissionPackageUsageIntent,
+                            PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL),
+                            userHandle)
+                    .isEmpty()) {
+                mUserToHealthPackageNamesMap.get(userHandle).remove(packageName);
                 return false;
+            } else {
+                mUserToHealthPackageNamesMap.get(userHandle).add(packageName);
+                return true;
             }
-
-            if (!mUserToHealthPackageNamesMap.get(userHandle).contains(packageName)) {
-                updateStateAndGetIfIntentWasRemoved(packageName, userHandle);
-            }
-
-            return mUserToHealthPackageNamesMap.get(userHandle).contains(packageName);
         }
     }
 
@@ -89,8 +133,7 @@ public class HealthPermissionIntentAppsTracker {
      * android.content.Intent#ACTION_VIEW_PERMISSION_USAGE} with {@link
      * HealthConnectManager#CATEGORY_HEALTH_PERMISSIONS} support has been disabled/removed.
      */
-    boolean updateStateAndGetIfIntentWasRemoved(
-            @NonNull String packageNameToUpdate, @NonNull UserHandle userHandle) {
+    boolean updateStateAndGetIfIntentWasRemoved(String packageNameToUpdate, UserHandle userHandle) {
         synchronized (mLock) {
             if (!mUserToHealthPackageNamesMap.containsKey(userHandle)) {
                 mUserToHealthPackageNamesMap.put(userHandle, new ArraySet<>());
@@ -126,9 +169,6 @@ public class HealthPermissionIntentAppsTracker {
     }
 
     private void initPerUserMapping(Context context) {
-        synchronized (mLock) {
-            mUserToHealthPackageNamesMap = new HashMap<>();
-        }
         List<UserHandle> userHandles =
                 context.getSystemService(UserManager.class)
                         .getUserHandles(/* excludeDying= */ true);
@@ -138,7 +178,7 @@ public class HealthPermissionIntentAppsTracker {
     }
 
     /** Update list of health apps for given user. */
-    private void initPackageSetForUser(@NonNull UserHandle userHandle) {
+    private void initPackageSetForUser(UserHandle userHandle) {
         List<ResolveInfo> healthAppInfos = getHealthIntentSupportiveAppsForUser(userHandle);
         Set<String> healthApps = new ArraySet<String>(healthAppInfos.size());
         for (ResolveInfo info : healthAppInfos) {
@@ -153,7 +193,7 @@ public class HealthPermissionIntentAppsTracker {
         logStateIfDebugMode(userHandle);
     }
 
-    private List<ResolveInfo> getHealthIntentSupportiveAppsForUser(@NonNull UserHandle userHandle) {
+    private List<ResolveInfo> getHealthIntentSupportiveAppsForUser(UserHandle userHandle) {
         return mPackageManager.queryIntentActivitiesAsUser(
                 HEALTH_PERMISSIONS_USAGE_INTENT,
                 PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL),
@@ -171,7 +211,7 @@ public class HealthPermissionIntentAppsTracker {
         return info.activityInfo.applicationInfo.packageName;
     }
 
-    private void logStateIfDebugMode(@NonNull UserHandle userHandle) {
+    private void logStateIfDebugMode(UserHandle userHandle) {
         if (Constants.DEBUG) {
             Log.d(TAG, "State for user: " + userHandle.getIdentifier());
             synchronized (mLock) {
