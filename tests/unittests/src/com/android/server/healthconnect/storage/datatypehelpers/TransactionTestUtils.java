@@ -41,6 +41,7 @@ import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
+import android.util.ArrayMap;
 
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
@@ -54,7 +55,6 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 import com.google.common.collect.ImmutableList;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,7 +102,7 @@ public final class TransactionTestUtils {
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, List<RecordInternal<?>> records) {
         AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
-        return mTransactionManager.insertAll(
+        return mTransactionManager.insertAllRecords(
                 appInfoHelper,
                 mHealthConnectInjector.getAccessLogsHelper(),
                 UpsertTransactionRequest.createForInsert(
@@ -110,7 +110,7 @@ public final class TransactionTestUtils {
                         records,
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mHealthConnectInjector.getAppInfoHelper(),
-                        /* extraPermsStateMap= */ Collections.emptyMap()));
+                        /* extraPermsStateMap= */ new ArrayMap<>()));
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */
@@ -181,12 +181,30 @@ public final class TransactionTestUtils {
                 .setClientRecordId(clientId);
     }
 
+    public static RecordInternal<StepsRecord> createStepsRecord(
+            long appInfoId, long startTimeMillis, long endTimeMillis, int stepsCount) {
+        return new StepsRecordInternal()
+                .setCount(stepsCount)
+                .setStartTime(startTimeMillis)
+                .setEndTime(endTimeMillis)
+                .setAppInfoId(appInfoId);
+    }
+
     public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
             long timeMillis, double systolic, double diastolic) {
         return new BloodPressureRecordInternal()
                 .setSystolic(systolic)
                 .setDiastolic(diastolic)
                 .setTime(timeMillis);
+    }
+
+    public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
+            long appInfoId, long timeMillis, double systolic, double diastolic) {
+        return new BloodPressureRecordInternal()
+                .setSystolic(systolic)
+                .setDiastolic(diastolic)
+                .setTime(timeMillis)
+                .setAppInfoId(appInfoId);
     }
 
     /** Creates an exercise sessions with a route. */
@@ -238,13 +256,8 @@ public final class TransactionTestUtils {
     }
 
     /** Returns the number of rows in the specified table. */
-    public long getRowCount(String tableName) {
-        try (Cursor cursor =
-                mTransactionManager.rawQuery(
-                        "SELECT count(*) FROM " + tableName + ";", /* selectionArgs= */ null)) {
-            cursor.moveToNext();
-            return cursor.getInt(0);
-        }
+    public long queryNumEntries(String tableName) {
+        return mTransactionManager.queryNumEntries(tableName);
     }
 
     /** Returns a valid UUID string. */

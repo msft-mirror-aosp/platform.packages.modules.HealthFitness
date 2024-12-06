@@ -526,7 +526,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
                     List<String> uuids =
-                            mTransactionManager.insertAll(
+                            mTransactionManager.insertAllRecords(
                                     mAppInfoHelper, mAccessLogsHelper, insertRequest);
                     tryAndReturnResult(callback, uuids, logger);
 

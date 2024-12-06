@@ -651,7 +651,7 @@ public class ImportManagerTest {
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        assertThat(mTransactionTestUtils.getRowCount(ChangeLogsHelper.TABLE_NAME)).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries(ChangeLogsHelper.TABLE_NAME)).isEqualTo(1);
     }
 
     @Test
@@ -663,7 +663,7 @@ public class ImportManagerTest {
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        assertThat(mTransactionTestUtils.getRowCount(ChangeLogsHelper.TABLE_NAME)).isEqualTo(0);
+        assertThat(mTransactionTestUtils.queryNumEntries(ChangeLogsHelper.TABLE_NAME)).isEqualTo(0);
     }
 
     private File exportCurrentDb() throws Exception {
