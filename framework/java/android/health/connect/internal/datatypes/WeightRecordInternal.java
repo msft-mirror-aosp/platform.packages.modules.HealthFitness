@@ -20,7 +20,6 @@ import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Mass;
-import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -59,10 +58,4 @@ public final class WeightRecordInternal extends InstantRecordInternal<WeightReco
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mWeight);
     }
-
-    @Override
-    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
-
-    @Override
-    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }
