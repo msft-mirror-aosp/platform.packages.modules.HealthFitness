@@ -1228,7 +1228,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 attributionSource.getPackageName(), request, mAppInfoHelper)
                         .setHasManageHealthDataPermission(hasDataManagementPermission(uid, pid));
         int numberOfRecordsDeleted =
-                mTransactionManager.deleteAll(
+                mTransactionManager.deleteAllRecords(
                         deleteTransactionRequest, shouldRecordDeleteAccessLogs, mAccessLogsHelper);
         tryAndReturnResult(callback, logger);
         HealthConnectThreadScheduler.scheduleInternalTask(
@@ -2270,6 +2270,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 errorCallback,
                                 unsupportedException,
                                 unsupportedException.getErrorCode());
+                        return;
+                    }
+
+                    if (ids.size() > MAXIMUM_PAGE_SIZE) {
+                        HealthConnectException invalidSizeException =
+                                new HealthConnectException(
+                                        ERROR_INVALID_ARGUMENT,
+                                        "The number of requested IDs must be <= "
+                                                + MAXIMUM_PAGE_SIZE);
+                        tryAndThrowException(
+                                errorCallback,
+                                invalidSizeException,
+                                invalidSizeException.getErrorCode());
                         return;
                     }
                     List<UUID> dataSourceUuids =
