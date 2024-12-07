@@ -145,25 +145,28 @@ public class ReadMedicalResourcesByRequestCtsTest {
             throws InterruptedException {
         MedicalDataSource dataSource =
                 mUtil.createDataSource(PhrDataFactory.getCreateMedicalDataSourceRequest());
-        mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource =
+                mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         // Make the maximum number of calls allowed by quota
         int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mUtil.mLimitsAdjustmentForTesting;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                    new HealthConnectReceiver<>();
-            mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-        }
+        float remainingQuota =
+                mUtil.tryAcquireCallQuotaNTimesForRead(dataSource, List.of(resource), maximumCalls);
 
-        // Make 1 extra call and check quota is exceeded
+        // Exceed the quota by using up any remaining quota that accumulated during the previous
+        // calls and make one additional call.
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        int additionalCalls = (int) Math.ceil(remainingQuota) + 1;
+        for (int i = 0; i < additionalCalls; i++) {
+            mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        }
 
         HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
         assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
