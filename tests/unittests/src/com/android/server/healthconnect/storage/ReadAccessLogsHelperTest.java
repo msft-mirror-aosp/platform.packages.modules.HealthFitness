@@ -24,15 +24,20 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
 
-import android.content.Context;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.os.Environment;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -44,12 +49,18 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
+@EnableFlags({
+    Flags.FLAG_ECOSYSTEM_METRICS,
+    Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+})
 public class ReadAccessLogsHelperTest {
 
     private static final String TEST_APP_PACKAGE_READER = "test.app.package.reader";
@@ -57,25 +68,23 @@ public class ReadAccessLogsHelperTest {
     private long mWriterAppInfoId;
 
     @Rule(order = 1)
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
 
     private ReadAccessLogsHelper mReadAccessLogsHelper;
     private TransactionManager mTransactionManager;
 
     @Before
     public void setup() {
-        Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(context)
+                HealthConnectInjectorImpl.newBuilderForTest(
+                                ApplicationProvider.getApplicationContext())
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))

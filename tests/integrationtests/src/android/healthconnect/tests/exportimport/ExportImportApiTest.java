@@ -17,18 +17,19 @@
 package android.healthconnect.tests.exportimport;
 
 import static android.health.connect.HealthPermissions.WRITE_STEPS;
+import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readAllRecords;
+import static android.healthconnect.tests.exportimport.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
@@ -39,7 +40,6 @@ import android.health.connect.exportimport.ScheduledExportSettings;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
-import android.os.OutcomeReceiver;
 import android.platform.test.annotations.EnableFlags;
 import android.util.Slog;
 
@@ -61,8 +61,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 
 /** Integration test for the export/import functionality of HealthConnect service. */
 @RunWith(AndroidJUnit4.class)
@@ -127,7 +125,7 @@ public class ExportImportApiTest {
                                         .setUri(mRemoteExportFileUri)
                                         .setPeriodInDays(1)
                                         .build()),
-                "android.permission.MANAGE_HEALTH_DATA");
+                MANAGE_HEALTH_DATA);
         SystemUtil.eventually(
                 () ->
                         assertWithMessage("The job is still not scheduled after 10 secs")
@@ -142,26 +140,11 @@ public class ExportImportApiTest {
         List<StepsRecord> stepsRecordsAfterDeletion = readAllRecords(StepsRecord.class);
         assertThat(stepsRecordsAfterDeletion).isEmpty();
 
-        CountDownLatch latch = new CountDownLatch(1);
-        SystemUtil.runWithShellPermissionIdentity(
-                () ->
-                        mHealthConnectManager.runImport(
-                                mRemoteExportFileUri,
-                                Executors.newSingleThreadExecutor(),
-                                new OutcomeReceiver<Void, HealthConnectException>() {
-                                    @Override
-                                    public void onResult(Void result) {
-                                        latch.countDown();
-                                    }
+        callAndGetResponseWithShellPermissionIdentity(
+                (executor, receiver) ->
+                        mHealthConnectManager.runImport(mRemoteExportFileUri, executor, receiver),
+                MANAGE_HEALTH_DATA);
 
-                                    @Override
-                                    public void onError(HealthConnectException exception) {
-                                        latch.countDown();
-                                    }
-                                }),
-                "android.permission.MANAGE_HEALTH_DATA");
-
-        Thread.sleep(SLEEP_TIME_MS);
         List<StepsRecord> stepsRecordsAfterImport = readAllRecords(StepsRecord.class);
         assertThat(stepsRecordsAfterImport).isEqualTo(stepsRecords);
     }
@@ -176,7 +159,7 @@ public class ExportImportApiTest {
                                         .setUri(mRemoteExportFileUri)
                                         .setPeriodInDays(1)
                                         .build()),
-                "android.permission.MANAGE_HEALTH_DATA");
+                MANAGE_HEALTH_DATA);
         // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
         SystemUtil.eventually(
                 () ->
@@ -194,7 +177,7 @@ public class ExportImportApiTest {
                                     .setPeriodInDays(0)
                                     .build());
                 },
-                "android.permission.MANAGE_HEALTH_DATA");
+                MANAGE_HEALTH_DATA);
         // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
         SystemUtil.eventually(
                 () ->

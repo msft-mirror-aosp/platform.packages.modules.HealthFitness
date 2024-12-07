@@ -30,8 +30,8 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDia
 import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDialogFragment.Companion.OLD_AUTO_DELETE_RANGE_BUNDLE
 import com.android.healthconnect.controller.autodelete.AutoDeleteRangePickerPreference.Companion.AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
 import com.android.healthconnect.controller.autodelete.AutoDeleteRangePickerPreference.Companion.SET_TO_NEVER_EVENT
-import com.android.healthconnect.controller.shared.preference.HeaderPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.topIntroPreference
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -44,7 +44,6 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
 
     companion object {
         private const val AUTO_DELETE_SECTION = "auto_delete_section"
-        private const val HEADER = "header"
     }
 
     init {
@@ -59,8 +58,6 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
         preferenceScreen.findPreference(AUTO_DELETE_SECTION)
     }
 
-    private val mHeaderSection: PreferenceGroup? by lazy { preferenceScreen.findPreference(HEADER) }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.auto_delete_screen, rootKey)
@@ -68,6 +65,15 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        preferenceScreen.addPreference(
+            topIntroPreference(
+                context = requireContext(),
+                preferenceTitle = getString(R.string.auto_delete_header),
+                learnMoreText = getString(R.string.auto_delete_learn_more),
+                learnMoreAction = { DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity()) },
+            )
+        )
 
         viewModel.storedAutoDeleteRange.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -78,8 +84,11 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
                     Toast.makeText(activity, R.string.default_error, Toast.LENGTH_LONG).show()
                 }
                 is AutoDeleteViewModel.AutoDeleteState.WithData -> {
-                    if (mAutoDeleteSection?.findPreference<Preference>(
-                        AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY) == null) {
+                    if (
+                        mAutoDeleteSection?.findPreference<Preference>(
+                            AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
+                        ) == null
+                    ) {
                         val autoDeletePreference =
                             AutoDeleteRangePickerPreference(
                                 requireContext(),
@@ -91,23 +100,13 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
                     } else {
                         val autoDeletePreference =
                             mAutoDeleteSection?.findPreference<Preference>(
-                                AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY)
-                                as AutoDeleteRangePickerPreference
+                                AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
+                            ) as AutoDeleteRangePickerPreference
                         autoDeletePreference.updateAutoDeleteRange(state.autoDeleteRange)
                     }
                 }
             }
         }
-
-        mHeaderSection?.removeAll()
-        mHeaderSection?.addPreference(
-            HeaderPreference(requireContext()).also {
-                it.setHeaderText(getString(R.string.auto_delete_header))
-                it.setHeaderLinkText(getString(R.string.auto_delete_learn_more))
-                it.setHeaderLinkAction {
-                    DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity())
-                }
-            })
 
         childFragmentManager.setFragmentResultListener(SET_TO_NEVER_EVENT, this) { _, _ ->
             viewModel.updateAutoDeleteRange(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)
@@ -116,19 +115,20 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
         }
 
         childFragmentManager.setFragmentResultListener(
-            AUTO_DELETE_CONFIRMATION_DIALOG_EVENT, this) { _, bundle ->
-                bundle.getSerializable(NEW_AUTO_DELETE_RANGE_BUNDLE)?.let { newAutoDeleteRange ->
-                    bundle.getSerializable(OLD_AUTO_DELETE_RANGE_BUNDLE)?.let { oldAutoDeleteRange
-                        ->
-                        viewModel.updateAutoDeleteDialogArguments(
-                            newAutoDeleteRange as AutoDeleteRange,
-                            oldAutoDeleteRange as AutoDeleteRange,
-                        )
-                        AutoDeleteConfirmationDialogFragment()
-                            .show(childFragmentManager, AutoDeleteConfirmationDialogFragment.TAG)
-                    }
+            AUTO_DELETE_CONFIRMATION_DIALOG_EVENT,
+            this,
+        ) { _, bundle ->
+            bundle.getSerializable(NEW_AUTO_DELETE_RANGE_BUNDLE)?.let { newAutoDeleteRange ->
+                bundle.getSerializable(OLD_AUTO_DELETE_RANGE_BUNDLE)?.let { oldAutoDeleteRange ->
+                    viewModel.updateAutoDeleteDialogArguments(
+                        newAutoDeleteRange as AutoDeleteRange,
+                        oldAutoDeleteRange as AutoDeleteRange,
+                    )
+                    AutoDeleteConfirmationDialogFragment()
+                        .show(childFragmentManager, AutoDeleteConfirmationDialogFragment.TAG)
                 }
             }
+        }
 
         childFragmentManager.setFragmentResultListener(AUTO_DELETE_SAVED_EVENT, this) { _, bundle ->
             bundle.getSerializable(AUTO_DELETE_SAVED_EVENT)?.let {

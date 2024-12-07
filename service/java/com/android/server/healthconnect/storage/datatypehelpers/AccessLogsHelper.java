@@ -285,7 +285,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         ContentValues contentValues =
                 populateCommonColumns(appInfoId, recordTypeIds.stream().toList(), operationType);
         UpsertTableRequest request = new UpsertTableRequest(TABLE_NAME, contentValues);
-        mTransactionManager.insertRecord(db, request);
+        mTransactionManager.insert(db, request);
     }
 
     @VisibleForTesting
