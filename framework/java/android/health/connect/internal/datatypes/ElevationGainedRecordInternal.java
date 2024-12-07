@@ -20,7 +20,6 @@ import android.health.connect.datatypes.ElevationGainedRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Length;
-import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -65,10 +64,4 @@ public final class ElevationGainedRecordInternal
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mElevation);
     }
-
-    @Override
-    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
-
-    @Override
-    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 }

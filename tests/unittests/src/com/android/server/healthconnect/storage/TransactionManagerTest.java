@@ -376,7 +376,7 @@ public class TransactionManagerTest {
                 new DeleteUsingFiltersRequestParcel(
                         new RecordIdFiltersParcel(ids), TEST_PACKAGE_NAME);
         assertThat(parcel.usesIdFilters()).isTrue();
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -400,7 +400,7 @@ public class TransactionManagerTest {
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
         assertThat(parcel.usesIdFilters()).isFalse();
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -425,7 +425,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -447,7 +447,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ true,
                 mAccessLogsHelper);
@@ -473,7 +473,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -538,7 +538,7 @@ public class TransactionManagerTest {
                                         .setUuid(UUID.randomUUID())),
                         mDeviceInfoHelper,
                         mAppInfoHelper);
-        mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+        mTransactionManager.insertOrIgnoreOnConflict(upsertTransactionRequest.getUpsertRequests());
 
         assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
                 .isEqualTo(0);
