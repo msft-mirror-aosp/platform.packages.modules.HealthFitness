@@ -23,7 +23,6 @@ import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -226,12 +225,6 @@ public final class ExerciseSessionRecordInternal
         parcel.writeString(
                 mPlannedExerciseSessionId == null ? null : mPlannedExerciseSessionId.toString());
     }
-
-    @Override
-    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
-
-    @Override
-    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override

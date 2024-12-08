@@ -21,7 +21,6 @@ import android.annotation.Nullable;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsCadenceRecord;
-import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -97,12 +96,6 @@ public class StepsCadenceRecordInternal
             parcel.writeLong(stepsCadenceRecordSample.getEpochMillis());
         }
     }
-
-    @Override
-    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
-
-    @Override
-    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     /**
      * @see StepsCadenceRecord.StepsCadenceRecordSample

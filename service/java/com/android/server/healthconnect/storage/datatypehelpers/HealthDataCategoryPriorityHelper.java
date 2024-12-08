@@ -334,7 +334,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             @HealthDataCategory.Type int dataCategory,
             List<Long> newList) {
         try {
-            mTransactionManager.insertOrReplace(request);
+            mTransactionManager.insertOrReplaceOnConflict(request);
             getHealthDataCategoryToAppIdPriorityMap().put(dataCategory, newList);
         } catch (Exception e) {
             Slog.e(TAG, "Priority update failed", e);
