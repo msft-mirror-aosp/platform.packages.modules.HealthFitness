@@ -22,8 +22,6 @@ import android.health.connect.datatypes.BloodPressureRecord.BodyPosition.BodyPos
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.units.Pressure;
-import android.health.connect.proto.backuprestore.BloodPressure;
-import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -111,25 +109,5 @@ public final class BloodPressureRecordInternal extends InstantRecordInternal<Blo
         parcel.writeDouble(mSystolic);
         parcel.writeDouble(mDiastolic);
         parcel.writeInt(mBodyPosition);
-    }
-
-    @Override
-    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {
-        instantRecord.setBloodPressure(
-                BloodPressure.newBuilder()
-                        .setMeasurementLocation(mMeasurementLocation)
-                        .setSystolic(mSystolic)
-                        .setDiastolic(mDiastolic)
-                        .setBodyPosition(mBodyPosition));
-    }
-
-    @Override
-    void populateFromInstantRecordProto(InstantRecord instantRecord) {
-        BloodPressure bloodPressure = instantRecord.getBloodPressure();
-
-        mMeasurementLocation = bloodPressure.getMeasurementLocation();
-        mSystolic = bloodPressure.getSystolic();
-        mDiastolic = bloodPressure.getDiastolic();
-        mBodyPosition = bloodPressure.getBodyPosition();
     }
 }

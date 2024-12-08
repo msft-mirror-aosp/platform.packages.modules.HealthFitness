@@ -23,6 +23,7 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VACCINES;
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
@@ -49,6 +50,7 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedica
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getGetMedicalDataSourceRequest;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -129,6 +131,7 @@ import android.health.connect.restore.StageRemoteDataRequest;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.permission.PermissionManager;
@@ -144,6 +147,7 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -282,7 +286,6 @@ public class HealthConnectServiceImplTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(LocalManagerRegistry.class)
-                    .mockStatic(UserHandle.class)
                     .mockStatic(HealthFitnessStatsLog.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
@@ -320,6 +323,7 @@ public class HealthConnectServiceImplTest {
     private AttributionSource mAttributionSource;
     private HealthConnectServiceImpl mHealthConnectService;
     private UserHandle mUserHandle;
+    private BackupRestore mBackupRestore;
     private ThreadPoolExecutor mInternalTaskScheduler;
     private String mTestPackageName;
 
@@ -331,28 +335,28 @@ public class HealthConnectServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        when(UserHandle.of(anyInt())).thenCallRealMethod();
-        when(UserHandle.getUserHandleForUid(anyInt())).thenCallRealMethod();
-        mUserHandle = UserHandle.of(UserHandle.myUserId());
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        mUserHandle = mContext.getUser();
+
+        when(mPackageManager.getPackageUid(anyString(), anyInt())).thenReturn(Process.myUid());
         when(mServiceContext.getPackageManager()).thenReturn(mPackageManager);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
-        mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
-
-        mFakeTimeSource = new FakeTimeSource(NOW);
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        mAttributionSource = mContext.getAttributionSource();
-        mTestPackageName = mAttributionSource.getPackageName();
-        when(mServiceContext.createContextAsUser(mUserHandle, 0)).thenReturn(mContext);
+        when(mServiceContext.createContextAsUser(mUserHandle, 0)).thenReturn(mServiceContext);
         when(mServiceContext.getSystemService(ActivityManager.class))
                 .thenReturn(mContext.getSystemService(ActivityManager.class));
-        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
-                .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
+
+        mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
+        mFakeTimeSource = new FakeTimeSource(NOW);
+        mAttributionSource = mContext.getAttributionSource();
+        mTestPackageName = mAttributionSource.getPackageName();
+        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
+                .thenReturn(mAppOpsManagerLocal);
         setUpAllMedicalPermissionChecksHardDenied();
 
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                HealthConnectInjectorImpl.newBuilderForTest(mServiceContext)
                         .setPreferenceHelper(mPreferenceHelper)
                         .setPreferencesManager(mPreferencesManager)
                         .setTransactionManager(mTransactionManager)
@@ -364,6 +368,7 @@ public class HealthConnectServiceImplTest {
                         .setMedicalDataSourceHelper(mMedicalDataSourceHelper)
                         .setMedicalResourceHelper(mMedicalResourceHelper)
                         .setMigrationStateManager(mMigrationStateManager)
+                        .setMigrationUiStateManager(mMigrationUiStateManager)
                         .setAppInfoHelper(mAppInfoHelper)
                         .setAppInfoHelper(mAppInfoHelper)
                         .setTimeSource(mFakeTimeSource)
@@ -379,7 +384,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getFirstGrantTimeManager(),
                         healthConnectInjector.getMigrationEntityHelper(),
                         healthConnectInjector.getMigrationStateManager(),
-                        mMigrationUiStateManager,
+                        healthConnectInjector.getMigrationUiStateManager(),
                         healthConnectInjector.getMigrationCleaner(),
                         healthConnectInjector.getMedicalResourceHelper(),
                         healthConnectInjector.getMedicalDataSourceHelper(),
@@ -397,6 +402,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getPreferenceHelper(),
                         healthConnectInjector.getDatabaseHelpers(),
                         healthConnectInjector.getPreferencesManager());
+        mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 
     @After
@@ -433,7 +439,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000).times(1)).onResult();
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(2);
         assertThat(stagedFileNames.contains(testRestoreFile1.getName())).isTrue();
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
@@ -461,7 +467,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000).times(1)).onError(any());
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(1);
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
     }
@@ -493,7 +499,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000)).onResult();
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(2);
         assertThat(stagedFileNames.contains(testRestoreFile1.getName())).isTrue();
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
@@ -524,7 +530,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000)).onResult();
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(0);
     }
 
@@ -935,6 +941,24 @@ public class HealthConnectServiceImplTest {
                         anyBoolean(),
                         /* isCalledFromBgWithoutBgRead= */ eq(false),
                         eq(mAppInfoHelper));
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByIds_maxPageSizeExceeded_throws() throws RemoteException {
+        List<String> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(UUID.randomUUID().toString());
+        }
+
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getMessage()).contains("The number of requested IDs must be <= 5000");
     }
 
     @Test
@@ -1601,7 +1625,7 @@ public class HealthConnectServiceImplTest {
         verify(mReadMedicalResourcesResponseCallback, timeout(5000).times(1))
                 .onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+                .isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     @Test
@@ -2147,8 +2171,7 @@ public class HealthConnectServiceImplTest {
 
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
-        assertThat(exception.getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
         verifyNoMoreInteractions(callback);
     }
 
@@ -2207,8 +2230,7 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         verifyNoMoreInteractions(callback);
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
-        assertThat(exception.getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     @Test

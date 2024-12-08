@@ -71,7 +71,7 @@ public class PreferenceHelper extends DatabaseHelper {
 
     /** Note: Overrides existing preference (if it exists) with the new value */
     public synchronized void insertOrReplacePreference(String key, String value) {
-        mTransactionManager.insertOrReplace(
+        mTransactionManager.insertOrReplaceOnConflict(
                 new UpsertTableRequest(
                         TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
         getPreferences().put(key, value);
@@ -94,7 +94,7 @@ public class PreferenceHelper extends DatabaseHelper {
                                         TABLE_NAME,
                                         getContentValues(key, value),
                                         UNIQUE_COLUMN_INFO)));
-        mTransactionManager.insertOrReplaceAll(requests);
+        mTransactionManager.insertOrReplaceOnConflict(requests);
         getPreferences().putAll(keyValues);
     }
 

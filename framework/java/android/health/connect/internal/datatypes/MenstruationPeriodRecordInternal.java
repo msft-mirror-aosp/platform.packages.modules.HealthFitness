@@ -19,7 +19,6 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -44,10 +43,4 @@ public final class MenstruationPeriodRecordInternal
 
     @Override
     void populateIntervalRecordTo(@NonNull Parcel parcel) {}
-
-    @Override
-    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
-
-    @Override
-    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 }

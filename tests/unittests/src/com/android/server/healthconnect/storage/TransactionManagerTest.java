@@ -52,6 +52,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
+import android.util.ArrayMap;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -89,7 +90,6 @@ import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -376,7 +376,7 @@ public class TransactionManagerTest {
                 new DeleteUsingFiltersRequestParcel(
                         new RecordIdFiltersParcel(ids), TEST_PACKAGE_NAME);
         assertThat(parcel.usesIdFilters()).isTrue();
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -400,7 +400,7 @@ public class TransactionManagerTest {
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
         assertThat(parcel.usesIdFilters()).isFalse();
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -425,7 +425,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -447,7 +447,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ true,
                 mAccessLogsHelper);
@@ -473,7 +473,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -529,7 +529,7 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public void insertAll_noChangeLogs() {
+    public void insertAllRecords_noChangeLogs() {
         UpsertTransactionRequest upsertTransactionRequest =
                 UpsertTransactionRequest.createForRestore(
                         List.of(
@@ -538,14 +538,14 @@ public class TransactionManagerTest {
                                         .setUuid(UUID.randomUUID())),
                         mDeviceInfoHelper,
                         mAppInfoHelper);
-        mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+        mTransactionManager.insertOrIgnoreOnConflict(upsertTransactionRequest.getUpsertRequests());
 
         assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
                 .isEqualTo(0);
     }
 
     @Test
-    public void insertAllWithoutAccessLogs_addChangeLogs_withNoAccessLogs() {
+    public void insertAllRecordsForRestore_addChangeLogs_withNoAccessLogs() {
         UpsertTransactionRequest upsertTransactionRequest =
                 UpsertTransactionRequest.createForRestore(
                         List.of(
@@ -554,7 +554,7 @@ public class TransactionManagerTest {
                                         .setUuid(UUID.randomUUID())),
                         mDeviceInfoHelper,
                         mAppInfoHelper);
-        mTransactionManager.insertAllWithoutAccessLogs(mAppInfoHelper, upsertTransactionRequest);
+        mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertTransactionRequest);
 
         assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
                 .isEqualTo(1);
@@ -563,15 +563,16 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public void insertAll_addAccessLogs() {
+    public void insertAllRecords_addAccessLogs() {
         UpsertTransactionRequest upsertTransactionRequest =
                 UpsertTransactionRequest.createForInsert(
                         TEST_PACKAGE_NAME /* packageName */,
                         List.of(createStepsRecord(500, 750, 100).setPackageName(TEST_PACKAGE_NAME)),
                         mDeviceInfoHelper,
                         mAppInfoHelper,
-                        Collections.emptyMap());
-        mTransactionManager.insertAll(mAppInfoHelper, mAccessLogsHelper, upsertTransactionRequest);
+                        new ArrayMap<>());
+        mTransactionManager.insertAllRecords(
+                mAppInfoHelper, mAccessLogsHelper, upsertTransactionRequest);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).isNotEmpty();
