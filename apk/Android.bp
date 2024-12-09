@@ -169,6 +169,7 @@ android_library {
         "androidx.annotation_annotation",
         "androidx.lifecycle_lifecycle-extensions",
         "androidx.core_core-ktx",
+        "SettingsLibButtonPreference",
         "SettingsLibCollapsingToolbarBaseActivity",
         "SettingsLibFooterPreference",
         "SettingsLibHelpUtils",
