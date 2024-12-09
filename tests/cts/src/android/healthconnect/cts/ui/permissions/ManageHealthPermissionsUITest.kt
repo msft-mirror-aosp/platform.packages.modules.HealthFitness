@@ -16,7 +16,6 @@
 
 package android.healthconnect.cts.ui.permissions
 
-import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
@@ -27,7 +26,6 @@ import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.ui.HealthConnectBaseTest
-import com.google.common.truth.Truth
 import org.junit.After
 import org.junit.Test
 
@@ -100,10 +98,5 @@ class ManageHealthPermissionsUITest : HealthConnectBaseTest() {
         scrollDownToAndFindText("App permissions")
         clickOnTextAndWaitForNewWindow("App permissions")
         scrollDownToAndFindText("Allowed access")
-    }
-
-    private fun assertPermNotGrantedForApp(packageName: String, permName: String) {
-        Truth.assertThat(context.packageManager.checkPermission(permName, packageName))
-            .isEqualTo(PackageManager.PERMISSION_DENIED)
     }
 }

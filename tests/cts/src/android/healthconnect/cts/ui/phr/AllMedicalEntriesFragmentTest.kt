@@ -17,14 +17,14 @@ package android.healthconnect.cts.ui.phr
 
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.TestAppProxy
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObject
 import android.healthconnect.cts.lib.UiTestUtils.findText
-import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
-import android.healthconnect.cts.ui.HealthConnectBaseTest
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
 import android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest
+import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
@@ -44,8 +44,7 @@ import org.junit.Test
     FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
 )
 class AllMedicalEntriesFragmentTest : HealthConnectBaseTest() {
-    @get:Rule
-    val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     private val APP_A_WITH_READ_WRITE_PERMS: TestAppProxy =
         TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A")
@@ -67,16 +66,20 @@ class AllMedicalEntriesFragmentTest : HealthConnectBaseTest() {
         val dataSource =
             APP_A_WITH_READ_WRITE_PERMS.createMedicalDataSource(getCreateMedicalDataSourceRequest())
         APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, FHIR_DATA_IMMUNIZATION)
-        APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, DIFFERENT_FHIR_DATA_IMMUNIZATION)
+        APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(
+            dataSource.id,
+            DIFFERENT_FHIR_DATA_IMMUNIZATION,
+        )
     }
 
     @Test
     fun allMedicalEntriesFragment_showsAvailableEntries() {
         context.launchMainActivity {
-            scrollDownTo(By.text("Browse health records"))
-            findTextAndClick("Browse health records")
+            scrollDownToAndFindText("Browse health records")
+            clickOnTextAndWaitForNewWindow("Browse health records")
 
-            findTextAndClick("Vaccines")
+            scrollDownToAndFindText("Vaccines")
+            clickOnTextAndWaitForNewWindow("Vaccines")
 
             findText("Entries")
             findText("Access")
@@ -88,15 +91,15 @@ class AllMedicalEntriesFragmentTest : HealthConnectBaseTest() {
     @Test
     fun allMedicalEntriesFragment_navigatesToAccessScreen() {
         context.launchMainActivity {
-            scrollDownTo(By.text("Browse health records"))
-            findTextAndClick("Browse health records")
+            scrollDownToAndFindText("Browse health records")
+            clickOnTextAndWaitForNewWindow("Browse health records")
 
-            findTextAndClick("Vaccines")
+            scrollDownToAndFindText("Vaccines")
+            clickOnTextAndWaitForNewWindow("Vaccines")
 
             findText("Entries")
-            findTextAndClick("Access")
-            findText("Can write vaccines")
+            clickOnTextAndWaitForNewWindow("Access")
+            scrollDownToAndFindText("Can write vaccines")
         }
     }
-
 }
