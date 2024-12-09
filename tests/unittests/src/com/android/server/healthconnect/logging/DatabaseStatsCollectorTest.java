@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect.storage.datatypehelpers;
+package com.android.server.healthconnect.logging;
+
+import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
+import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createSpeedRecordInternal;
+import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -43,6 +47,11 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
+import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import org.junit.Before;
@@ -57,7 +66,7 @@ import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-public class TableSizeHelperTest {
+public class DatabaseStatsCollectorTest {
 
     @Rule(order = 1)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -73,11 +82,13 @@ public class TableSizeHelperTest {
     private static final String PACKAGE_NAME = "com.my.package";
     private static final Instant INSTANT_NOW = Instant.now();
 
+    private long mPackageAppInfoId;
+
     private TransactionTestUtils mTransactionTestUtils;
     private Context mContext;
     private HealthConnectInjector mHealthConnectInjector;
 
-    private TableSizeHelper mTableSizeHelper;
+    private DatabaseStatsCollector mDatabaseStatsCollector;
 
     @Before
     public void setup() {
@@ -91,31 +102,32 @@ public class TableSizeHelperTest {
                         .setTimeSource(mFakeTimeSource)
                         .build();
         mTransactionTestUtils = new TransactionTestUtils(mHealthConnectInjector);
+        mTransactionTestUtils.insertApp(PACKAGE_NAME);
+        mPackageAppInfoId = mHealthConnectInjector.getAppInfoHelper().getAppInfoId(PACKAGE_NAME);
 
-        mTableSizeHelper = new TableSizeHelper(mHealthConnectInjector.getTransactionManager());
+        mDatabaseStatsCollector = mHealthConnectInjector.getDatabaseStatsCollector();
     }
 
     @Test
     public void testGetFileBytes_noData_small() {
         assertThat(
-                        mTableSizeHelper.getFileBytes(
+                        mDatabaseStatsCollector.getFileBytes(
                                 List.of(MedicalDataSourceHelper.getMainTableName())))
                 .isLessThan(10_000L);
     }
 
     @Test
     public void testGetFileBytes_nonExistentTable_zero() {
-        assertThat(mTableSizeHelper.getFileBytes(List.of("foo"))).isEqualTo(0);
+        assertThat(mDatabaseStatsCollector.getFileBytes(List.of("foo"))).isEqualTo(0);
     }
 
     @Test
     public void testGetFileBytes_noTables_zero() {
-        assertThat(mTableSizeHelper.getFileBytes(List.of())).isEqualTo(0);
+        assertThat(mDatabaseStatsCollector.getFileBytes(List.of())).isEqualTo(0);
     }
 
     @Test
     public void testGetFileBytes_manyResources_plausibleSize() {
-        mTransactionTestUtils.insertApp(PACKAGE_NAME);
         // Insert a data source.
         MedicalDataSourceHelper dataSourceHelper =
                 mHealthConnectInjector.getMedicalDataSourceHelper();
@@ -148,7 +160,8 @@ public class TableSizeHelperTest {
         resourceHelper.upsertMedicalResources(PACKAGE_NAME, resourceRequests);
 
         long tableSizeBytes =
-                mTableSizeHelper.getFileBytes(List.of(MedicalResourceHelper.getMainTableName()));
+                mDatabaseStatsCollector.getFileBytes(
+                        List.of(MedicalResourceHelper.getMainTableName()));
         // We don't want to be too prescriptive about size, but the size should be of
         // the order of 1-200k for these resources.
         assertThat(tableSizeBytes).isGreaterThan(100_000);
@@ -158,15 +171,92 @@ public class TableSizeHelperTest {
     @Test
     public void testGetFileBytes_multipleTables_sumOfTables() {
         long dataSourceTableBytes =
-                mTableSizeHelper.getFileBytes(List.of(MedicalDataSourceHelper.getMainTableName()));
+                mDatabaseStatsCollector.getFileBytes(
+                        List.of(MedicalDataSourceHelper.getMainTableName()));
         long resourceTableBytes =
-                mTableSizeHelper.getFileBytes(List.of(MedicalResourceHelper.getMainTableName()));
+                mDatabaseStatsCollector.getFileBytes(
+                        List.of(MedicalResourceHelper.getMainTableName()));
 
         assertThat(
-                        mTableSizeHelper.getFileBytes(
+                        mDatabaseStatsCollector.getFileBytes(
                                 List.of(
                                         MedicalResourceHelper.getMainTableName(),
                                         MedicalDataSourceHelper.getMainTableName())))
                 .isEqualTo(dataSourceTableBytes + resourceTableBytes);
+    }
+
+    @Test
+    public void testChangeLogsTableDatabaseLogsStats() {
+        mTransactionTestUtils.insertRecords(
+                PACKAGE_NAME,
+                createStepsRecord(
+                        "client.id1",
+                        /* startTimeMillis= */ 4000,
+                        /* endTimeMillis= */ 4500,
+                        /* stepsCount= */ 1000));
+        mTransactionTestUtils.insertRecords(
+                PACKAGE_NAME,
+                createBloodPressureRecord(
+                        /* appInfoId= */ mPackageAppInfoId,
+                        /* timeMillis= */ 4000,
+                        /* systolic= */ 120,
+                        /* diastolic= */ 80));
+
+        assertThat(mDatabaseStatsCollector.getNumberOfChangeLogs()).isEqualTo(2L);
+    }
+
+    @Test
+    public void testIntervalRecordsTableDatabaseLogsStats() {
+        mTransactionTestUtils.insertRecords(
+                PACKAGE_NAME,
+                createStepsRecord(
+                        "client.id1",
+                        /* startTimeMillis= */ 4000,
+                        /* endTimeMillis= */ 4500,
+                        /* stepsCount= */ 1000),
+                createStepsRecord(
+                        "client.id2",
+                        /* startTimeMillis= */ 6000,
+                        /* endTimeMillis= */ 7000,
+                        /* stepsCount= */ 500));
+
+        assertThat(mDatabaseStatsCollector.getNumberOfIntervalRecordRows()).isEqualTo(2L);
+    }
+
+    @Test
+    public void testInstantRecordsTableDatabaseLogsStats() {
+        mTransactionTestUtils.insertRecords(
+                PACKAGE_NAME,
+                createBloodPressureRecord(
+                        /* appInfoId= */ mPackageAppInfoId,
+                        /* timeMillis= */ 4000,
+                        /* systolic= */ 120,
+                        /* diastolic= */ 80));
+
+        assertThat(mDatabaseStatsCollector.getNumberOfInstantRecordRows()).isEqualTo(1L);
+    }
+
+    @Test
+    public void testSeriesRecordsTableDatabaseLogsStats() {
+        mTransactionTestUtils.insertRecords(
+                PACKAGE_NAME, createSpeedRecordInternal(/* startTine= */ INSTANT_NOW));
+        mTransactionTestUtils.insertRecords(
+                PACKAGE_NAME,
+                createSpeedRecordInternal(/* startTine= */ Instant.now().minusSeconds(100)));
+
+        assertThat(mDatabaseStatsCollector.getNumberOfSeriesRecordRows()).isEqualTo(2L);
+    }
+
+    @Test
+    public void testGetDatabaseSizeDatabaseLogsStats() {
+        mTransactionTestUtils.insertRecords(
+                PACKAGE_NAME,
+                createStepsRecord(
+                        "client.id1",
+                        /* startTimeMillis= */ 4000,
+                        /* endTimeMillis= */ 4500,
+                        /* stepsCount= */ 1000));
+
+        assertThat(mDatabaseStatsCollector.getDatabaseSize()).isGreaterThan(0);
     }
 }
