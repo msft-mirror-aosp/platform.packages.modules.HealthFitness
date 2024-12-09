@@ -47,6 +47,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -469,6 +470,7 @@ public final class TransactionManager {
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
             DeviceInfoHelper deviceInfoHelper,
+            ReadAccessLogsHelper readAccessLogsHelper,
             boolean shouldRecordAccessLog)
             throws SQLiteException {
         // TODO(b/308158714): Make this build time check once we have different classes.
@@ -487,6 +489,13 @@ public final class TransactionManager {
             }
         }
 
+        if (Flags.ecosystemMetrics() && shouldRecordAccessLog && !request.isReadingSelfData()) {
+            readAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                    getWritableDb(),
+                    recordInternals,
+                    request.getPackageName(),
+                    /* readTimeStamp= */ Instant.now().toEpochMilli());
+        }
         if (Flags.addMissingAccessLogs()) {
             if (!request.isReadingSelfData() && shouldRecordAccessLog) {
                 accessLogsHelper.recordReadAccessLog(
@@ -513,6 +522,7 @@ public final class TransactionManager {
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
             DeviceInfoHelper deviceInfoHelper,
+            ReadAccessLogsHelper readAccessLogsHelper,
             boolean shouldRecordAccessLog)
             throws SQLiteException {
         // TODO(b/308158714): Make these build time checks once we have different classes.
@@ -540,6 +550,13 @@ public final class TransactionManager {
             recordInternalList = readResult.first;
             pageToken = readResult.second;
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
+            if (Flags.ecosystemMetrics() && shouldRecordAccessLog && !request.isReadingSelfData()) {
+                readAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                        getWritableDb(),
+                        recordInternalList,
+                        request.getPackageName(),
+                        /* readTimeStamp= */ Instant.now().toEpochMilli());
+            }
         }
 
         if (Flags.addMissingAccessLogs()) {

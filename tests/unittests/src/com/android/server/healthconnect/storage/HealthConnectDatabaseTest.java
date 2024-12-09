@@ -166,6 +166,7 @@ public class HealthConnectDatabaseTest {
                         injector.getAppInfoHelper(),
                         injector.getAccessLogsHelper(),
                         injector.getDeviceInfoHelper(),
+                        injector.getReadAccessLogsHelper(),
                         false);
         assertThat(recordInternals).hasSize(1);
         assertThat(recordInternals.get(0).toExternalRecord())
