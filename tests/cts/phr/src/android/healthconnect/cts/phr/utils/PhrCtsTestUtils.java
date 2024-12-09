@@ -73,8 +73,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.collect.Iterables;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -399,64 +397,5 @@ public class PhrCtsTestUtils {
                         .equals(MEDICAL_RESOURCE_TYPES_LIST));
 
         return insertedMedicalResources.stream().map(MedicalResource::getId).toList();
-    }
-
-    /**
-     * This method tries to use the specified quota by calling readMedicalResources and
-     * getMedicalResources APIs.
-     *
-     * @return the available quota that may have accumulated during the read.
-     */
-    public float tryAcquireCallQuotaNTimesForRead(
-            MedicalDataSource insertedMedicalDataSource,
-            List<MedicalResource> insertedMedicalResources,
-            int nTimes)
-            throws InterruptedException {
-        int readMedicalDataSourceCalls = nTimes / 2;
-        int readMedicalResourceCalls = nTimes - readMedicalDataSourceCalls;
-        List<MedicalResourceId> medicalResourceIds =
-                insertedMedicalResources.stream().map(MedicalResource::getId).toList();
-
-        Instant readStartTime = Instant.now();
-        for (int i = 0; i < readMedicalDataSourceCalls; i++) {
-            getMedicalDataSourcesByIds(List.of(insertedMedicalDataSource.getId()));
-        }
-        for (int i = 0; i < readMedicalResourceCalls; i++) {
-            readMedicalResourcesByIds(medicalResourceIds);
-        }
-        Instant readEndTime = Instant.now();
-
-        return getAvailableQuotaAccumulated(
-                readStartTime, readEndTime, Duration.ofMinutes(15), MAX_FOREGROUND_READ_CALL_15M);
-    }
-
-    /**
-     * This method tries to use the specified quota by calling the upsertMedicalResources API.
-     *
-     * @return the available quota that may have accumulated during the write.
-     */
-    public float tryAcquireCallQuotaNTimesForWrite(
-            MedicalDataSource insertedMedicalDataSource, int nTimes) throws InterruptedException {
-        String dataSourceId = insertedMedicalDataSource.getId();
-
-        Instant readStartTime = Instant.now();
-        for (int i = 0; i < nTimes; i++) {
-            upsertMedicalData(dataSourceId, FHIR_DATA_IMMUNIZATION);
-        }
-        Instant readEndTime = Instant.now();
-
-        return getAvailableQuotaAccumulated(
-                readStartTime, readEndTime, Duration.ofMinutes(15), MAX_FOREGROUND_WRITE_CALL_15M);
-    }
-
-    /**
-     * Returns the quota that would have accumulated between start and end time for the specified
-     * window and max quota. The calculation matches the calculation in
-     * RateLimiter#getAvailableQuota.
-     */
-    private float getAvailableQuotaAccumulated(
-            Instant startTime, Instant endTime, Duration window, int maxQuota) {
-        Duration timeSpent = Duration.between(startTime, endTime);
-        return timeSpent.toMillis() * ((float) maxQuota / (float) window.toMillis());
     }
 }

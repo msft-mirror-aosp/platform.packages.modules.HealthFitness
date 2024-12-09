@@ -19,13 +19,15 @@ import android.content.Context
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.convertTextViewIntoLink
 
-/** Custom preference for the headers containing a link on U and below. From V, TopIntroPreference supports link, see [topIntroPreference]. */
-internal class LegacyTopIntroPreference constructor(context: Context) : Preference(context) {
+/** Custom preference for the headers containing a link. */
+class HeaderPreference constructor(context: Context) :
+    Preference(context) {
 
     private lateinit var headerTitle: TextView
     private lateinit var headerLink: TextView
@@ -39,15 +41,15 @@ internal class LegacyTopIntroPreference constructor(context: Context) : Preferen
         isSelectable = false
     }
 
-    fun setTitle(headerText: String) {
+    fun setHeaderText(headerText: String) {
         this.headerText = headerText
     }
 
-    fun setLearnMoreText(headerLinkText: String) {
+    fun setHeaderLinkText(headerLinkText: String) {
         this.headerLinkText = headerLinkText
     }
 
-    fun setLearnMoreAction(onClickListener: OnClickListener) {
+    fun setHeaderLinkAction(onClickListener: OnClickListener) {
         this.linkAction = onClickListener
     }
 
@@ -60,13 +62,7 @@ internal class LegacyTopIntroPreference constructor(context: Context) : Preferen
         headerLink = holder.findViewById(R.id.header_link) as TextView
         if (headerLinkText != null) {
             headerLink.visibility = View.VISIBLE
-            convertTextViewIntoLink(
-                headerLink,
-                headerLinkText,
-                0,
-                headerLinkText!!.length,
-                linkAction,
-            )
+            convertTextViewIntoLink(headerLink, headerLinkText, 0, headerLinkText!!.length, linkAction)
         } else {
             headerLink.visibility = View.GONE
         }

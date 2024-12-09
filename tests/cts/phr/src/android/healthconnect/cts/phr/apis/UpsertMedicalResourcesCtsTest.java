@@ -156,22 +156,31 @@ public class UpsertMedicalResourcesCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_writeLimitExceeded_throws() throws Exception {
         MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+
         // Make the maximum number of calls allowed by quota. Minus 1 because of the above call.
         int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
-        float remainingQuota = mUtil.tryAcquireCallQuotaNTimesForWrite(dataSource, maximumCalls);
-
-        // Exceed the quota by using up any remaining quota that accumulated during the previous
-        // calls and make one additional call.
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(
-                                dataSource.getId(), FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
-                        .build();
-        int additionalCalls = (int) Math.ceil(remainingQuota) + 1;
-        for (int i = 0; i < additionalCalls; i++) {
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+            String resourceData = new ImmunizationBuilder().setId("Immunization" + i).toJson();
+            UpsertMedicalResourceRequest request =
+                    new UpsertMedicalResourceRequest.Builder(
+                                    dataSource.getId(), FHIR_VERSION_R4, resourceData)
+                            .build();
             mManager.upsertMedicalResources(
                     List.of(request), Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
         }
+
+        // Make 1 extra create call and check quota is exceeded.
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String resourceData =
+                new ImmunizationBuilder().setId("Immunization" + maximumCalls).toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, resourceData)
+                        .build();
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
 
         HealthConnectException exception = receiver.assertAndGetException();
         assertThat(exception.getErrorCode())

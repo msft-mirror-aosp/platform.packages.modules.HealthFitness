@@ -124,23 +124,23 @@ public class DeleteMedicalResourcesByIdsCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_writeLimitExceeded_throws() throws Exception {
-        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        // Insert a data source to ensure we have an appInfoId.
+        mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         // Make the maximum number of calls allowed by quota
         int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
-        float remainingQuota = mUtil.tryAcquireCallQuotaNTimesForWrite(dataSource, maximumCalls);
-
-        // Exceed the quota by using up any remaining quota that accumulated during the previous
-        // calls and make one additional call.
-        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
-        int additionalCalls = (int) Math.ceil(remainingQuota) + 1;
-        for (int i = 0; i < additionalCalls; i++) {
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
             mManager.deleteMedicalResources(
                     List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), callback);
+            callback.verifyNoExceptionOrThrow();
         }
 
+        // Make 1 extra call and check quota is exceeded
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(
+                List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), callback);
+
         HealthConnectException exception = callback.assertAndGetException();
-        assertThat(exception.getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
         assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 

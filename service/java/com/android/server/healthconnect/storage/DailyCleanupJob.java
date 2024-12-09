@@ -98,7 +98,7 @@ public class DailyCleanupJob {
                                 deleteTableRequests.add(request);
                             });
             try {
-                mTransactionManager.deleteAllRecords(
+                mTransactionManager.deleteAll(
                         new DeleteTransactionRequest(deleteTableRequests),
                         /* shouldRecordDeleteAccessLogs= */ false,
                         mAccessLogsHelper);

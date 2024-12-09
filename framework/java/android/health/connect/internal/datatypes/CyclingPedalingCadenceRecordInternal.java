@@ -21,6 +21,7 @@ import android.annotation.Nullable;
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -86,6 +87,12 @@ public class CyclingPedalingCadenceRecordInternal
             parcel.writeLong(cyclingPedalingCadenceRecordSample.getEpochMillis());
         }
     }
+
+    @Override
+    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
+
+    @Override
+    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 
     private List<CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample>
             getExternalSamples() {

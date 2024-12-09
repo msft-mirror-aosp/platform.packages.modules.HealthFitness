@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.android.server.healthconnect.proto.backuprestore;
+package android.health.connect.proto.backuprestore;
 
 option java_multiple_files = true;
 
@@ -74,7 +74,7 @@ message InstantRecord {
     HeartRateVariabilityRmssd heart_rate_variability_rmssd = 109;
     Height height = 110;
     IntermenstrualBleeding intermenstrual_bleeding = 111;
-    LeanBodyMass lean_body_mass = 112;
+    LeanBodyMass mass = 112;
     MenstruationFlow menstruation_flow = 113;
     OvulationTest ovulation_test = 114;
     OxygenSaturation oxygen_saturation = 115;
@@ -201,7 +201,7 @@ message HeartRate {
   repeated HeartRateSample sample = 1;
 
   message HeartRateSample {
-    int32 beats_per_minute = 1;
+    double beats_per_minute = 1;
     int64 epoch_millis = 2;
   }
 }

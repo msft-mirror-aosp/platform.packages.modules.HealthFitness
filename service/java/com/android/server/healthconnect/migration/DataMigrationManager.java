@@ -142,9 +142,9 @@ public final class DataMigrationManager {
 
     @GuardedBy("sLock")
     private void migrateRecord(SQLiteDatabase db, RecordMigrationPayload payload) {
-        long recordRowId = mTransactionManager.insertOrIgnoreOnConflict(db, parseRecord(payload));
+        long recordRowId = mTransactionManager.insertOrIgnore(db, parseRecord(payload));
         if (recordRowId != -1) {
-            mTransactionManager.insertOrIgnoreOnConflict(
+            mTransactionManager.insertOrIgnore(
                     db, ActivityDateHelper.getUpsertTableRequest(payload.getRecordInternal()));
         }
     }
@@ -241,7 +241,7 @@ public final class DataMigrationManager {
     @GuardedBy("sLock")
     private boolean insertEntityIdIfNotPresent(SQLiteDatabase db, String entityId) {
         final UpsertTableRequest request = mMigrationEntityHelper.getInsertRequest(entityId);
-        return mTransactionManager.insertOrIgnoreOnConflict(db, request) != -1;
+        return mTransactionManager.insertOrIgnore(db, request) != -1;
     }
 
     /** Indicates an error during entity migration. */

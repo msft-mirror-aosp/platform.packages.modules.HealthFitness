@@ -170,8 +170,7 @@ public class HealthDataCategoryPriorityHelperTest {
         mHealthDataCategoryPriorityHelper.appendToPriorityList(
                 APP_PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS, true);
 
-        verify(mTransactionManager, never())
-                .insertOrReplaceOnConflict(any(UpsertTableRequest.class));
+        verify(mTransactionManager, never()).insertOrReplace(any());
     }
 
     @Test
@@ -189,8 +188,7 @@ public class HealthDataCategoryPriorityHelperTest {
         List<Long> expectedPriorityOrder =
                 List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID, APP_PACKAGE_ID_2);
         verify(mTransactionManager)
-                .insertOrReplaceOnConflict(
-                        argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.BODY_MEASUREMENTS))
                 .isEqualTo(expectedPriorityOrder);
     }
@@ -210,8 +208,7 @@ public class HealthDataCategoryPriorityHelperTest {
         List<Long> expectedPriorityOrder =
                 List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_4);
         verify(mTransactionManager)
-                .insertOrReplaceOnConflict(
-                        argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.BODY_MEASUREMENTS))
                 .isEqualTo(expectedPriorityOrder);
     }
@@ -231,8 +228,7 @@ public class HealthDataCategoryPriorityHelperTest {
         List<Long> expectedPriorityOrder =
                 List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_4);
         verify(mTransactionManager)
-                .insertOrReplaceOnConflict(
-                        argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.BODY_MEASUREMENTS))
                 .isEqualTo(expectedPriorityOrder);
     }
@@ -249,8 +245,7 @@ public class HealthDataCategoryPriorityHelperTest {
         mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
                 APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
-        verify(mTransactionManager, never())
-                .insertOrReplaceOnConflict(any(UpsertTableRequest.class));
+        verify(mTransactionManager, never()).insertOrReplace(any());
     }
 
     @Test
@@ -268,8 +263,7 @@ public class HealthDataCategoryPriorityHelperTest {
                 .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         spy.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
-        verify(mTransactionManager, never())
-                .insertOrReplaceOnConflict(any(UpsertTableRequest.class));
+        verify(mTransactionManager, never()).insertOrReplace(any());
     }
 
     @Test
@@ -289,8 +283,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
         List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
         verify(mTransactionManager)
-                .insertOrReplaceOnConflict(
-                        argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
                 .isEqualTo(expectedPriorityOrder);
     }
@@ -325,8 +318,7 @@ public class HealthDataCategoryPriorityHelperTest {
                 .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         spy.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
 
-        verify(mTransactionManager, never())
-                .insertOrReplaceOnConflict(any(UpsertTableRequest.class));
+        verify(mTransactionManager, never()).insertOrReplace(any());
     }
 
     @Test
@@ -344,8 +336,7 @@ public class HealthDataCategoryPriorityHelperTest {
         spy.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
         List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
         verify(mTransactionManager)
-                .insertOrReplaceOnConflict(
-                        argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
                 .isEqualTo(expectedPriorityOrder);
     }
@@ -363,8 +354,7 @@ public class HealthDataCategoryPriorityHelperTest {
                 .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         spy.maybeRemoveAppWithoutWritePermissionsFromPriorityList(APP_PACKAGE_NAME);
 
-        verify(mTransactionManager, never())
-                .insertOrReplaceOnConflict(any(UpsertTableRequest.class));
+        verify(mTransactionManager, never()).insertOrReplace(any());
     }
 
     @Test
@@ -382,8 +372,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
         List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
         verify(mTransactionManager)
-                .insertOrReplaceOnConflict(
-                        argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
                 .isEqualTo(expectedPriorityOrder);
     }
@@ -953,8 +942,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
         mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         verify(mTransactionManager, never())
-                .insertOrReplaceOnConflict(
-                        argThat(new UpsertRequestMatcher(List.of(APP_PACKAGE_ID))));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(List.of(APP_PACKAGE_ID))));
         assertThat(
                         mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
                                 HealthDataCategory.ACTIVITY))
@@ -1054,8 +1042,7 @@ public class HealthDataCategoryPriorityHelperTest {
         mHealthDataCategoryPriorityHelper
                 .addInactiveAppsWhenFirstMigratingToNewAggregationControl();
         verify(mPreferenceHelper, never()).insertOrReplacePreference(any(), any());
-        verify(mTransactionManager, never())
-                .insertOrReplaceOnConflict(any(UpsertTableRequest.class));
+        verify(mTransactionManager, never()).insertOrReplace(any());
     }
 
     @Test
@@ -1299,7 +1286,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
     private void verifyPriorityUpdate(List<Long> priorityOrder, int dataCategory) {
         verify(mTransactionManager)
-                .insertOrReplaceOnConflict(argThat(new UpsertRequestMatcher(priorityOrder)));
+                .insertOrReplace(argThat(new UpsertRequestMatcher(priorityOrder)));
 
         assertThat(mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(dataCategory))
                 .isEqualTo(priorityOrder);

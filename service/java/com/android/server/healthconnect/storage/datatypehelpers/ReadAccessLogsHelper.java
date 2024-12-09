@@ -36,6 +36,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
@@ -185,7 +186,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
                                 /* readTimeStamp' */ readTimeStamp);
                 UpsertTableRequest upsertTableRequest =
                         new UpsertTableRequest(TABLE_NAME, contentValues);
-                mTransactionManager.insert(db, upsertTableRequest);
+                mTransactionManager.insertRecord(db, upsertTableRequest);
             }
         }
     }
@@ -222,7 +223,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
                                 /* readTimeStamp' */ readTimeStamp);
                 UpsertTableRequest upsertTableRequest =
                         new UpsertTableRequest(TABLE_NAME, contentValues);
-                mTransactionManager.insert(db, upsertTableRequest);
+                mTransactionManager.insertRecord(db, upsertTableRequest);
             }
         }
     }
