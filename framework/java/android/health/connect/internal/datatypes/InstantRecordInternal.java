@@ -18,7 +18,6 @@ package android.health.connect.internal.datatypes;
 
 import android.annotation.NonNull;
 import android.health.connect.datatypes.InstantRecord;
-import android.health.connect.proto.backuprestore.Record;
 import android.os.Parcel;
 
 import java.time.Instant;
@@ -61,34 +60,16 @@ public abstract class InstantRecordInternal<T extends InstantRecord> extends Rec
     }
 
     @Override
-    void populateToRecordProto(Record.Builder builder) {
-        android.health.connect.proto.backuprestore.InstantRecord.Builder instantRecord =
-                android.health.connect.proto.backuprestore.InstantRecord.newBuilder()
-                        .setTime(mTime)
-                        .setZoneOffset(mZoneOffset);
-
-        populateToInstantRecordProto(instantRecord);
-
-        builder.setInstantRecord(instantRecord);
-    }
-
-    @Override
-    void populateFromRecordProto(Record recordProto) {
-        android.health.connect.proto.backuprestore.InstantRecord instantRecord =
-                recordProto.getInstantRecord();
-
-        mTime = instantRecord.getTime();
-        mZoneOffset = instantRecord.getZoneOffset();
-
-        populateFromInstantRecordProto(instantRecord);
-    }
-
-    @Override
     void populateRecordTo(@NonNull Parcel parcel) {
         parcel.writeLong(mTime);
         parcel.writeInt(mZoneOffset);
 
         populateInstantRecordTo(parcel);
+    }
+
+    @Override
+    public long getRecordTime() {
+        return getTimeInMillis();
     }
 
     Instant getTime() {
@@ -130,10 +111,4 @@ public abstract class InstantRecordInternal<T extends InstantRecord> extends Rec
      * transmissions
      */
     abstract void populateInstantRecordTo(@NonNull Parcel parcel);
-
-    abstract void populateToInstantRecordProto(
-            android.health.connect.proto.backuprestore.InstantRecord.Builder instantRecord);
-
-    abstract void populateFromInstantRecordProto(
-            android.health.connect.proto.backuprestore.InstantRecord instantRecord);
 }

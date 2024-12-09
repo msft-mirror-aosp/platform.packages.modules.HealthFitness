@@ -19,7 +19,6 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.WheelchairPushesRecord;
-import android.health.connect.proto.backuprestore.IntervalRecord;
 import android.os.Parcel;
 
 /**
@@ -61,10 +60,4 @@ public final class WheelchairPushesRecordInternal
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
         parcel.writeInt(mCount);
     }
-
-    @Override
-    void populateToIntervalRecordProto(IntervalRecord.Builder intervalRecord) {}
-
-    @Override
-    void populateFromIntervalRecordProto(IntervalRecord intervalRecord) {}
 }
