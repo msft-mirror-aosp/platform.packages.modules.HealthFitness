@@ -35,6 +35,7 @@ import android.health.connect.HealthConnectManager;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.Flags;
@@ -43,10 +44,12 @@ import com.android.server.healthconnect.exportimport.ExportImportNotificationFac
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import java.util.Optional;
 
+@RunWith(AndroidJUnit4.class)
 public class ExportImportNotificationFactoryTest {
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();

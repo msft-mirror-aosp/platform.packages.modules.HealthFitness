@@ -56,6 +56,7 @@ import android.util.ArrayMap;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
@@ -85,6 +86,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
@@ -94,6 +96,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class TransactionManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
 

@@ -25,11 +25,15 @@ import android.app.job.JobScheduler;
 import android.content.Context;
 import android.os.UserHandle;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectDailyJobsTest {
     private static final String HEALTH_CONNECT_DAILY_JOB_NAMESPACE = "HEALTH_CONNECT_DAILY_JOB";
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";

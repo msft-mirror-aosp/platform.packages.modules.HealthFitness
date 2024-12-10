@@ -38,6 +38,7 @@ import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.StepsRecord;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
@@ -53,11 +54,13 @@ import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappi
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class DeleteTransactionRequestTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
 

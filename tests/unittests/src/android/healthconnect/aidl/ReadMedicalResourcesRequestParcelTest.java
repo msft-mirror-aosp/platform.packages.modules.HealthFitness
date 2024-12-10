@@ -32,10 +32,14 @@ import android.health.connect.ReadMedicalResourcesPageRequest;
 import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.os.Parcel;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
 public class ReadMedicalResourcesRequestParcelTest {
 
     @Test
