@@ -465,16 +465,17 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     }
 
     @Override
-    public UsageStatsCollector getUsageStatsCollector(Context context) {
+    public UsageStatsCollector getUsageStatsCollector(StorageContext storageContext) {
         return mBuilder.mUsageStatsCollector == null
                 ? new UsageStatsCollector(
-                        context,
-                        getPreferenceHelper(),
-                        getPreferencesManager(),
-                        getAccessLogsHelper(),
-                        getTimeSource(),
-                        getMedicalResourceHelper(),
-                        getMedicalDataSourceHelper())
+                        storageContext,
+                        mPreferenceHelper,
+                        mPreferencesManager,
+                        mAccessLogsHelper,
+                        mTimeSource,
+                        mMedicalResourceHelper,
+                        mMedicalDataSourceHelper,
+                        mPackageInfoUtils)
                 : mBuilder.mUsageStatsCollector;
     }
 
