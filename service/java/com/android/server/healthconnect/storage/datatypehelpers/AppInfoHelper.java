@@ -740,7 +740,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                         getContentValues(packageName, appInfoInternal),
                         UNIQUE_COLUMN_INFO);
 
-        mTransactionManager.updateTable(upsertTableRequest);
+        mTransactionManager.update(upsertTableRequest);
         getAppInfoMap().put(packageName, appInfoInternal);
     }
 
