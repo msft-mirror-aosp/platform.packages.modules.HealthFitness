@@ -148,7 +148,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
                     db.execSQL(deleteTableRequest.getDeleteCommand());
                     upsertTableRequests.forEach(
                             upsertTableRequest ->
-                                    mTransactionManager.insertOrIgnore(db, upsertTableRequest));
+                                    mTransactionManager.insertOrIgnoreOnConflict(
+                                            db, upsertTableRequest));
                 });
     }
 

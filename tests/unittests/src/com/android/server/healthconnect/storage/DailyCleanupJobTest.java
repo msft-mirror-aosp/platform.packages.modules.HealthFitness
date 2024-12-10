@@ -134,7 +134,7 @@ public class DailyCleanupJobTest {
                 .deleteWithoutChangeLogs(
                         Mockito.argThat(this::checkTableNames_getPreferenceReturnNonNull));
         verify(mTransactionManager)
-                .deleteAll(
+                .deleteAllRecords(
                         Mockito.argThat(
                                 request ->
                                         checkTableNames_getPreferenceReturnNonNull(

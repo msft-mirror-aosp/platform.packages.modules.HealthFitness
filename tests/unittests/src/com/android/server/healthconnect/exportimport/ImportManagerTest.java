@@ -21,7 +21,6 @@ import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE;
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_STARTED;
 
-import static com.android.server.healthconnect.TestUtils.assertTableSize;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
@@ -65,7 +64,6 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -138,8 +136,6 @@ public class ImportManagerTest {
     private DeviceInfoHelper mDeviceInfoHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    private StorageContext mStorageContext;
-
     @Mock private HealthConnectNotificationSender mNotificationSender;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -162,7 +158,6 @@ public class ImportManagerTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
-        mStorageContext = StorageContext.create(mContext, mContext.getUser());
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -650,14 +645,13 @@ public class ImportManagerTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
         File zipToImport = zipExportedDb(exportCurrentDb());
         mDatabaseHelpers.clearAllData(mTransactionManager);
-        HealthConnectDatabase originalDatabase = new HealthConnectDatabase(mStorageContext);
 
         // Insert a change log.
         mTransactionTestUtils.insertChangeLog();
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        assertTableSize(originalDatabase, ChangeLogsHelper.TABLE_NAME, 1);
+        assertThat(mTransactionTestUtils.queryNumEntries(ChangeLogsHelper.TABLE_NAME)).isEqualTo(1);
     }
 
     @Test
@@ -666,11 +660,10 @@ public class ImportManagerTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
         File zipToImport = zipExportedDb(exportCurrentDb());
         mDatabaseHelpers.clearAllData(mTransactionManager);
-        HealthConnectDatabase originalDatabase = new HealthConnectDatabase(mStorageContext);
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        assertTableSize(originalDatabase, ChangeLogsHelper.TABLE_NAME, 0);
+        assertThat(mTransactionTestUtils.queryNumEntries(ChangeLogsHelper.TABLE_NAME)).isEqualTo(0);
     }
 
     private File exportCurrentDb() throws Exception {

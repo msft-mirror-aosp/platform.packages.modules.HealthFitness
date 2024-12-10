@@ -16,13 +16,12 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:key="header">
-    </PreferenceCategory>
-    <PreferenceCategory
         android:key="auto_delete_section"
-        android:title="@string/auto_delete_section">
+        android:title="@string/auto_delete_section"
+        android:order="1">
     </PreferenceCategory>
     <com.android.settingslib.widget.FooterPreference
         android:key="auto_delete_footer"
-        android:title="@string/auto_delete_rationale"/>
+        android:title="@string/auto_delete_rationale"
+        android:order="2"/>
 </PreferenceScreen>

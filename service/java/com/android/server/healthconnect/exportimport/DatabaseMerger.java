@@ -461,13 +461,13 @@ public final class DatabaseMerger {
             // only read change logs if they have ever requested a change logs token.
             if (cloudBackupAndRestore()
                     && mTransactionManager.checkTableExists(ChangeLogsRequestHelper.TABLE_NAME)
-                    && mTransactionManager.getNumberOfEntriesInTheTable(
-                                    ChangeLogsRequestHelper.TABLE_NAME)
+                    && mTransactionManager.queryNumEntries(ChangeLogsRequestHelper.TABLE_NAME)
                             != 0) {
-                mTransactionManager.insertAllWithoutAccessLogs(
-                        mAppInfoHelper, upsertTransactionRequest);
+                mTransactionManager.insertAllRecords(
+                        mAppInfoHelper, /* accessLogsHelper */ null, upsertTransactionRequest);
             } else {
-                mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+                mTransactionManager.insertOrIgnoreOnConflict(
+                        upsertTransactionRequest.getUpsertRequests());
             }
             currentToken = token;
         } while (!currentToken.isEmpty());

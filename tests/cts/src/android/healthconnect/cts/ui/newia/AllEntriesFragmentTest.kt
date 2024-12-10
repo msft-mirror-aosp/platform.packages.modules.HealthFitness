@@ -18,10 +18,11 @@ package android.healthconnect.cts.ui.newia
 import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
@@ -67,7 +68,7 @@ class AllEntriesFragmentTest : HealthConnectBaseTest() {
     fun allEntries_dayView_showsDataOnlyFromDay() {
         context.launchDataActivity {
             findText("Activity")
-            findTextAndClick("Steps")
+            clickOnTextAndWaitForNewWindow("Steps")
             findText("Entries")
             findText("Access")
 
@@ -81,7 +82,7 @@ class AllEntriesFragmentTest : HealthConnectBaseTest() {
     fun allEntries_navigationView_showsDayWeekMonth() {
         context.launchDataActivity {
             findText("Activity")
-            findTextAndClick("Steps")
+            clickOnTextAndWaitForNewWindow("Steps")
             findText("Entries")
             findText("Access")
 
@@ -96,13 +97,12 @@ class AllEntriesFragmentTest : HealthConnectBaseTest() {
     fun allEntries_clickOnAccessTab_navigatesToAccessScreen() {
         context.launchDataActivity {
             findText("Activity")
-            findTextAndClick("Steps")
+            clickOnTextAndWaitForNewWindow("Steps")
             findText("Entries")
 
             findTextAndClick("Access")
             findText("Can read steps")
-            scrollDownTo(By.text("Can write steps"))
-            findText("Can write steps")
+            scrollDownToAndFindText("Can write steps")
         }
     }
 
@@ -110,7 +110,7 @@ class AllEntriesFragmentTest : HealthConnectBaseTest() {
     fun allEntries_deletesAllData() {
         context.launchDataActivity {
             findText("Activity")
-            findTextAndClick("Steps")
+            clickOnTextAndWaitForNewWindow("Steps")
             findText("Entries")
 
             verifyObjectNotFound(By.text("Select all"))

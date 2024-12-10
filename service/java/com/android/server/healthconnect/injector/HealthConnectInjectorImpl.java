@@ -54,6 +54,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
@@ -102,6 +103,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final MigrationEntityHelper mMigrationEntityHelper;
     private final BackupRestore mBackupRestore;
     private final PreferencesManager mPreferencesManager;
+    private final ReadAccessLogsHelper mReadAccessLogsHelper;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -287,6 +289,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mPreferencesManager == null
                         ? new PreferencesManager(mPreferenceHelper)
                         : builder.mPreferencesManager;
+        mReadAccessLogsHelper =
+                builder.mReadAccessLogsHelper == null
+                        ? new ReadAccessLogsHelper(
+                                mAppInfoHelper, mTransactionManager, mDatabaseHelpers)
+                        : builder.mReadAccessLogsHelper;
     }
 
     @Override
@@ -458,17 +465,23 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     }
 
     @Override
-    public UsageStatsCollector getUsageStatsCollector(Context context) {
+    public UsageStatsCollector getUsageStatsCollector(StorageContext storageContext) {
         return mBuilder.mUsageStatsCollector == null
                 ? new UsageStatsCollector(
-                        context,
-                        getPreferenceHelper(),
-                        getPreferencesManager(),
-                        getAccessLogsHelper(),
-                        getTimeSource(),
-                        getMedicalResourceHelper(),
-                        getMedicalDataSourceHelper())
+                        storageContext,
+                        mPreferenceHelper,
+                        mPreferencesManager,
+                        mAccessLogsHelper,
+                        mTimeSource,
+                        mMedicalResourceHelper,
+                        mMedicalDataSourceHelper,
+                        mPackageInfoUtils)
                 : mBuilder.mUsageStatsCollector;
+    }
+
+    @Override
+    public ReadAccessLogsHelper getReadAccessLogsHelper() {
+        return mReadAccessLogsHelper;
     }
 
     /**
@@ -523,6 +536,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private PreferencesManager mPreferencesManager;
         @Nullable private DatabaseStatsCollector mDatabaseStatsCollector;
         @Nullable private UsageStatsCollector mUsageStatsCollector;
+        @Nullable private ReadAccessLogsHelper mReadAccessLogsHelper;
 
         private Builder(Context context) {
             mContext = context;
@@ -735,6 +749,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setUsageStatsCollector(UsageStatsCollector usageStatsCollector) {
             Objects.requireNonNull(usageStatsCollector);
             mUsageStatsCollector = usageStatsCollector;
+            return this;
+        }
+
+        /** Set fake or custom {@link ReadAccessLogsHelper} */
+        public Builder setReadAccessLogsHelper(ReadAccessLogsHelper readAccessLogsHelper) {
+            Objects.requireNonNull(readAccessLogsHelper);
+            mReadAccessLogsHelper = readAccessLogsHelper;
             return this;
         }
 

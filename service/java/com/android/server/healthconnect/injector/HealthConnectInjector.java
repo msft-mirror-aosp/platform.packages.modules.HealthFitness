@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.injector;
 
-import android.content.Context;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import androidx.annotation.Nullable;
@@ -37,6 +36,7 @@ import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -51,6 +51,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
@@ -216,7 +217,12 @@ public abstract class HealthConnectInjector {
     /**
      * Getter for {@link UsageStatsCollector} instance initialised by the Health Connect Injector.
      */
-    public abstract UsageStatsCollector getUsageStatsCollector(Context context);
+    public abstract UsageStatsCollector getUsageStatsCollector(StorageContext storageContext);
+
+    /**
+     * Getter for {@link ReadAccessLogsHelper} instance initialised by the Health Connect Injector.
+     */
+    public abstract ReadAccessLogsHelper getReadAccessLogsHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

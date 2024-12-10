@@ -49,7 +49,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.DatabaseUtils;
@@ -63,6 +62,8 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.logging.DailyLoggingService;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
+import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BloodPressureRecordHelper;
@@ -115,7 +116,7 @@ public class DailyLoggingServiceTest {
                     .build();
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private Context mContext;
+    private StorageContext mStorageContext;
 
     @Mock private PackageInfo mPackageInfoConnectedApp;
     @Mock private PackageInfo mPackageInfoConnectedAppTwo;
@@ -155,15 +156,16 @@ public class DailyLoggingServiceTest {
     @Before
     public void mockStatsLog() {
         mFakeTimeSource = new FakeTimeSource(NOW);
+        when(mStorageContext.createContextAsUser(any(), anyInt())).thenReturn(mStorageContext);
         ExtendedMockito.doReturn(true)
-                .when(() -> HealthConnectManager.isHealthPermission(mContext, READ_STEPS));
+                .when(() -> HealthConnectManager.isHealthPermission(mStorageContext, READ_STEPS));
         ExtendedMockito.doReturn(false)
                 .when(
                         () ->
                                 HealthConnectManager.isHealthPermission(
-                                        mContext, NOT_HEALTH_PERMISSION));
+                                        mStorageContext, NOT_HEALTH_PERMISSION));
         ExtendedMockito.doReturn(Set.of(READ_STEPS, WRITE_STEPS, WRITE_EXERCISE))
-                .when(() -> HealthConnectManager.getHealthPermissions(mContext));
+                .when(() -> HealthConnectManager.getHealthPermissions(mStorageContext));
         mPackageInfoConnectedApp.requestedPermissions = new String[] {READ_STEPS, WRITE_STEPS};
         mPackageInfoConnectedApp.requestedPermissionsFlags =
                 new int[] {
@@ -201,20 +203,21 @@ public class DailyLoggingServiceTest {
         mDatabaseStatsCollector = Mockito.spy(new DatabaseStatsCollector(mTransactionManager));
         mUsageStatsCollector =
                 new UsageStatsCollector(
-                        mContext,
+                        mStorageContext,
                         mPreferenceHelper,
                         mPreferencesManager,
                         mAccessLogsHelper,
                         mFakeTimeSource,
                         mMedicalResourceHelper,
-                        mMedicalDataSourceHelper);
+                        mMedicalDataSourceHelper,
+                        new PackageInfoUtils());
     }
 
     @Test
     public void testDatabaseLogsStats() {
 
         when(mTransactionManager.getDatabaseSize()).thenReturn(1L);
-        when(mTransactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
+        when(mTransactionManager.queryNumEntries(any())).thenReturn(0L);
 
         for (String tableName :
                 new String[] {
@@ -227,7 +230,7 @@ public class DailyLoggingServiceTest {
                     SpeedRecordHelper.TABLE_NAME,
                     HeartRateRecordHelper.TABLE_NAME
                 }) {
-            when(mTransactionManager.getNumberOfEntriesInTheTable(tableName)).thenReturn(2L);
+            when(mTransactionManager.queryNumEntries(tableName)).thenReturn(2L);
         }
 
         DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
@@ -249,7 +252,7 @@ public class DailyLoggingServiceTest {
     @Test
     public void testDatabaseLogsStats_userDoesNotUseHealthConnect() {
         when(mTransactionManager.getDatabaseSize()).thenReturn(1L);
-        when(mTransactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
+        when(mTransactionManager.queryNumEntries(any())).thenReturn(0L);
 
         DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
 
@@ -270,7 +273,7 @@ public class DailyLoggingServiceTest {
 
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 0));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(List.of(mPackageInfoConnectedApp, mPackageInfoNotHoldingPermission));
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
@@ -291,7 +294,7 @@ public class DailyLoggingServiceTest {
 
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 0));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(List.of(mPackageInfoConnectedApp));
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
@@ -310,7 +313,7 @@ public class DailyLoggingServiceTest {
 
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 31));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(List.of(mPackageInfoNotConnectedApp, mPackageInfoNotConnectedAppTwo));
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
@@ -329,7 +332,7 @@ public class DailyLoggingServiceTest {
 
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 1));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(List.of(mPackageInfoNotHoldingPermission));
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
@@ -363,7 +366,7 @@ public class DailyLoggingServiceTest {
     public void testDailyUsageStatsLogs_healthConnectAccessed31DaysAgo_userNotMonthlyActive() {
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 31));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(List.of(mPackageInfoNotConnectedApp, mPackageInfoNotConnectedAppTwo));
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
@@ -433,7 +436,7 @@ public class DailyLoggingServiceTest {
     public void permissionMetricsEnabled_oneConnectedApp_testPermissionsStatsLogs() {
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 0));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(
                         List.of(
                                 mPackageInfoConnectedApp,
@@ -446,7 +449,6 @@ public class DailyLoggingServiceTest {
 
         ExtendedMockito.verify(
                 () ->
-
                         HealthFitnessStatsLog.write(
                                 eq(HEALTH_CONNECT_PERMISSION_STATS),
                                 eq(CONNECTED_APP_PACKAGE_NAME),
@@ -460,7 +462,7 @@ public class DailyLoggingServiceTest {
 
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 0));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(
                         List.of(
                                 mPackageInfoConnectedApp,
@@ -499,7 +501,7 @@ public class DailyLoggingServiceTest {
 
         when(mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp())
                 .thenReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 0));
-        when(mContext.getPackageManager().getInstalledPackages(any()))
+        when(mStorageContext.getPackageManager().getInstalledPackages(any()))
                 .thenReturn(
                         List.of(
                                 mPackageInfoConnectedApp,
@@ -664,7 +666,7 @@ public class DailyLoggingServiceTest {
                         packageNameToGrantedPermissionsMap.values().stream()
                                 .flatMap(List::stream)
                                 .collect(Collectors.toSet()))
-                .when(() -> HealthConnectManager.getHealthPermissions(mContext));
+                .when(() -> HealthConnectManager.getHealthPermissions(mStorageContext));
 
         List<PackageInfo> installedPackages =
                 packageNameToGrantedPermissionsMap.entrySet().stream()
@@ -686,7 +688,7 @@ public class DailyLoggingServiceTest {
                                     return packageInfo;
                                 })
                         .toList();
-        PackageManager packageManager = mContext.getPackageManager();
+        PackageManager packageManager = mStorageContext.getPackageManager();
         clearInvocations(packageManager);
         when(packageManager.getInstalledPackages(any())).thenReturn(installedPackages);
     }

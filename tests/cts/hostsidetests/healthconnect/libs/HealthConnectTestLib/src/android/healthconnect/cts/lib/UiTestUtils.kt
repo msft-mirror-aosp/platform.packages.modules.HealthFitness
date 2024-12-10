@@ -43,6 +43,7 @@ object UiTestUtils {
     private val WAIT_TIMEOUT = Duration.ofSeconds(5)
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
     private val FIND_OBJECT_TIMEOUT = Duration.ofMillis(500)
+    private val NEW_WINDOW_TIMEOUT_MILLIS = 3000L
 
     private val TAG = UiTestUtils::class.java.simpleName
 
@@ -113,6 +114,14 @@ object UiTestUtils {
         getUiDevice().waitForIdle()
     }
 
+    fun clickOnDescAndWaitForNewWindow(text: String) {
+        findDesc(text).clickAndWait(Until.newWindow(), NEW_WINDOW_TIMEOUT_MILLIS)
+    }
+
+    fun clickOnTextAndWaitForNewWindow(text: String) {
+        findText(text).clickAndWait(Until.newWindow(), NEW_WINDOW_TIMEOUT_MILLIS)
+    }
+
     /**
      * Returns an object with given text if it's visible on the screen or throws otherwise.
      *
@@ -120,6 +129,15 @@ object UiTestUtils {
      */
     fun findText(text: String): UiObject2 {
         return findObject(By.text(text))
+    }
+
+    /**
+     * Returns an object that contains given text if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the text label is expected to be visible on the screen without scrolling.
+     */
+    fun findTextContains(text: String): UiObject2 {
+        return findObject(By.textContains(text))
     }
 
     /**
@@ -199,10 +217,19 @@ object UiTestUtils {
         try {
             waitDisplayed(selector) { it.click() }
         } catch (e: Exception) {
-            getUiDevice()
-                .findObject(By.scrollable(true))
-                .scrollUntil(Direction.DOWN, Until.findObject(selector))
-                .click()
+            val scrollable = getUiDevice().findObject(By.scrollable(true))
+
+            if (scrollable == null) {
+                throw objectNotFoundExceptionWithDump(
+                    "Scrollable not found while trying to find $selector"
+                )
+            }
+
+            val obj = scrollable.scrollUntil(Direction.DOWN, Until.findObject(selector))
+
+            findObject(selector)
+
+            obj.click()
         }
         getUiDevice().waitForIdle()
     }
@@ -210,6 +237,11 @@ object UiTestUtils {
     fun scrollDownToAndFindText(text: String) {
         scrollDownTo(By.text(text))
         findText(text)
+    }
+
+    fun scrollDownToAndFindTextContains(text: String) {
+        scrollDownTo(By.textContains(text))
+        findTextContains(text)
     }
 
     fun skipOnboardingIfAppears() {

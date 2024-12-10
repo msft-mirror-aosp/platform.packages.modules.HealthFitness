@@ -19,17 +19,17 @@ import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions
 import android.healthconnect.cts.lib.ActivityLauncher.launchRequestPermissionActivity
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_2_PACKAGE_NAME
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
 import com.google.common.truth.Truth
@@ -40,7 +40,6 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
-    // TODO
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestMedicalWrite_allow_grantsPermission() {
@@ -53,10 +52,12 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
             packageName = TEST_APP_2_PACKAGE_NAME,
             permissions = listOf(HealthPermissions.WRITE_MEDICAL_DATA),
         ) {
-            findText("Allow Health Connect cts test app 2 to access your health records?")
-            findText("Data to share includes")
+            scrollDownToAndFindText(
+                "Allow Health Connect cts test app 2 to access your health records?"
+            )
+            scrollDownToAndFindText("Data to share includes")
 
-            findTextAndClick("Allow")
+            clickOnTextAndWaitForNewWindow("Allow")
             assertPermGrantedForApp(TEST_APP_2_PACKAGE_NAME, HealthPermissions.WRITE_MEDICAL_DATA)
         }
     }
@@ -73,10 +74,12 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
             packageName = TEST_APP_2_PACKAGE_NAME,
             permissions = listOf(HealthPermissions.WRITE_MEDICAL_DATA),
         ) {
-            findText("Allow Health Connect cts test app 2 to access your health records?")
-            findText("Data to share includes")
+            scrollDownToAndFindText(
+                "Allow Health Connect cts test app 2 to access your health records?"
+            )
+            scrollDownToAndFindText("Data to share includes")
 
-            findTextAndClick("Don't allow")
+            clickOnTextAndWaitForNewWindow("Don't allow")
             assertPermNotGrantedForApp(
                 TEST_APP_2_PACKAGE_NAME,
                 HealthPermissions.WRITE_MEDICAL_DATA,
@@ -111,15 +114,12 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
                     HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 ),
         ) {
-            findText("Allow Health Connect cts test app 2 to access your health records?")
-            scrollDownTo(By.text("Allergies"))
-            findText("Allergies")
-
-            scrollDownTo(By.text("Conditions"))
-            findText("Conditions")
-
-            scrollDownTo(By.text("All health records"))
-            findText("All health records")
+            scrollDownToAndFindText(
+                "Allow Health Connect cts test app 2 to access your health records?"
+            )
+            scrollDownToAndFindText("Allergies")
+            scrollDownToAndFindText("Conditions")
+            scrollDownToAndFindText("All health records")
         }
     }
 
@@ -150,14 +150,14 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
                     HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 ),
         ) {
-            findText("Allow Health Connect cts test app 2 to access your health records?")
-            scrollDownTo(By.text("Allergies"))
-            findText("Allergies")
+            scrollDownToAndFindText(
+                "Allow Health Connect cts test app 2 to access your health records?"
+            )
+            scrollDownToAndFindText("Allergies")
 
             verifyTextNotFound("Conditions")
 
-            scrollDownTo(By.text("All health records"))
-            findText("All health records")
+            scrollDownToAndFindText("All health records")
         }
     }
 
@@ -188,17 +188,18 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
                     HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
                 ),
         ) {
-            findText("Allow Health Connect cts test app 2 to access your health records?")
-            scrollDownTo(By.text("Allergies"))
+            scrollDownToAndFindText(
+                "Allow Health Connect cts test app 2 to access your health records?"
+            )
+            scrollDownToAndFindText("Allergies")
             findTextAndClick("Allergies")
 
-            scrollDownTo(By.text("Conditions"))
-            findText("Conditions")
+            scrollDownToAndFindText("Conditions")
 
-            scrollDownTo(By.text("All health records"))
+            scrollDownToAndFindText("All health records")
             findTextAndClick("All health records")
 
-            findTextAndClick("Allow")
+            clickOnTextAndWaitForNewWindow("Allow")
 
             assertPermGrantedForApp(TEST_APP_2_PACKAGE_NAME, HealthPermissions.WRITE_MEDICAL_DATA)
             assertPermGrantedForApp(
@@ -240,10 +241,10 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
                 ),
         ) {
             findText("Allow Health Connect cts test app 2 to access your health records?")
-            scrollDownTo(By.text("Allow all"))
+            scrollDownToAndFindText("Allow all")
             findTextAndClick("Allow all")
 
-            findTextAndClick("Allow")
+            clickOnTextAndWaitForNewWindow("Allow")
 
             assertPermGrantedForApp(TEST_APP_2_PACKAGE_NAME, HealthPermissions.WRITE_MEDICAL_DATA)
             assertPermGrantedForApp(
@@ -286,7 +287,7 @@ class MedicalPermissionsRequestUITest : HealthConnectBaseTest() {
         ) {
             findText("Allow Health Connect cts test app 2 to access your health records?")
 
-            findTextAndClick("Don't allow")
+            clickOnTextAndWaitForNewWindow("Don't allow")
 
             assertPermNotGrantedForApp(
                 TEST_APP_2_PACKAGE_NAME,

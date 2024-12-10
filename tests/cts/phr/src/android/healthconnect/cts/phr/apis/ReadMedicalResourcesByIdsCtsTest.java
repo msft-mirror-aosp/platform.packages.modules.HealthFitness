@@ -165,19 +165,21 @@ public class ReadMedicalResourcesByIdsCtsTest {
                 mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         // Make the maximum number of calls allowed by quota
         int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mUtil.mLimitsAdjustmentForTesting;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        float remainingQuota =
+                mUtil.tryAcquireCallQuotaNTimesForRead(dataSource, List.of(resource), maximumCalls);
+
+        // Exceed the quota by using up any remaining quota that accumulated during the previous
+        // calls and make one additional call.
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        int additionalCalls = (int) Math.ceil(remainingQuota) + 1;
+        for (int i = 0; i < additionalCalls; i++) {
             mManager.readMedicalResources(
                     List.of(resource.getId()), Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
         }
 
-        // Make 1 extra call and check quota is exceeded
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        mManager.readMedicalResources(
-                List.of(resource.getId()), Executors.newSingleThreadExecutor(), receiver);
-
         HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
         assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
