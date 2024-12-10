@@ -23,17 +23,22 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_COD
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_COMPLEX;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE_TIME;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DECIMAL;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ID;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INSTANT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INTEGER;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_POSITIVE_INT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STRING;
-import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_SYSTEM_STRING;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_TIME;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_UNSIGNED_INT;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.healthconnect.cts.phr.utils.EncountersBuilder;
 import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
+import android.healthconnect.cts.phr.utils.MedicationsBuilder;
 import android.healthconnect.cts.phr.utils.ObservationBuilder;
 import android.healthconnect.cts.phr.utils.PractitionerBuilder;
 import android.healthconnect.cts.phr.utils.ProcedureBuilder;
@@ -51,6 +56,8 @@ public class FhirPrimitiveTypeValidatorTest {
 
     private static final String BOOLEAN_TYPE_EXCEPTION_MESSAGE =
             "Invalid resource structure. Found non boolean object in field: ";
+    private static final String DECIMAL_TYPE_EXCEPTION_MESSAGE =
+            "Invalid resource structure. Found non decimal object in field: ";
     private static final String INTEGER_TYPE_EXCEPTION_MESSAGE =
             "Invalid resource structure. Found non integer object in field: ";
     private static final String STRING_TYPE_EXCEPTION_MESSAGE =
@@ -504,13 +511,107 @@ public class FhirPrimitiveTypeValidatorTest {
 
     @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
     @Test
+    public void testValidate_r4DecimalValid_decimal_succeeds() throws JSONException {
+        String decimalFieldName = "longitude";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.location().toJson())
+                        .getJSONObject("position")
+                        .put(decimalFieldName, -83.6945691);
+
+        validate(jsonObject.get(decimalFieldName), decimalFieldName, R4_FHIR_TYPE_DECIMAL);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4DecimalValid_zero_succeeds() throws JSONException {
+        String decimalFieldName = "longitude";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.location().toJson())
+                        .getJSONObject("position")
+                        .put(decimalFieldName, 0);
+
+        validate(jsonObject.get(decimalFieldName), decimalFieldName, R4_FHIR_TYPE_DECIMAL);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4DecimalValid_integer_succeeds() throws JSONException {
+        String decimalFieldName = "longitude";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.location().toJson())
+                        .getJSONObject("position")
+                        .put(decimalFieldName, -83);
+
+        validate(jsonObject.get(decimalFieldName), decimalFieldName, R4_FHIR_TYPE_DECIMAL);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4DecimalValid_long_succeeds() throws JSONException {
+        String decimalFieldName = "longitude";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.location().toJson())
+                        .getJSONObject("position")
+                        .put(decimalFieldName, 2147483648L);
+
+        validate(jsonObject.get(decimalFieldName), decimalFieldName, R4_FHIR_TYPE_DECIMAL);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4DecimalInvalid_asString_throws() throws JSONException {
+        String decimalFieldName = "longitude";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.location().toJson())
+                        .getJSONObject("position")
+                        .put(decimalFieldName, "-83.6945691");
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validate(
+                                        jsonObject.get(decimalFieldName),
+                                        decimalFieldName,
+                                        R4_FHIR_TYPE_DECIMAL));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains(DECIMAL_TYPE_EXCEPTION_MESSAGE + decimalFieldName);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4DecimalInvalid_objectIsJsonNull_throws() throws JSONException {
+        String decimalFieldName = "longitude";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.location().toJson())
+                        .getJSONObject("position")
+                        .put(decimalFieldName, JSONObject.NULL);
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validate(
+                                        jsonObject.get(decimalFieldName),
+                                        decimalFieldName,
+                                        R4_FHIR_TYPE_DECIMAL));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains(DECIMAL_TYPE_EXCEPTION_MESSAGE + decimalFieldName);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
     public void testValidate_r4IdValid_succeeds() throws JSONException {
         String idFieldName = "id";
         JSONObject jsonObject =
                 new JSONObject(
                         new ImmunizationBuilder().set(idFieldName, "immunization-1").toJson());
 
-        validate(jsonObject.get(idFieldName), idFieldName, R4_FHIR_TYPE_SYSTEM_STRING);
+        validate(jsonObject.get(idFieldName), idFieldName, R4_FHIR_TYPE_ID);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
@@ -522,11 +623,7 @@ public class FhirPrimitiveTypeValidatorTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () ->
-                        validate(
-                                jsonObject.get(idFieldName),
-                                idFieldName,
-                                R4_FHIR_TYPE_SYSTEM_STRING));
+                () -> validate(jsonObject.get(idFieldName), idFieldName, R4_FHIR_TYPE_ID));
     }
 
     @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
@@ -539,11 +636,7 @@ public class FhirPrimitiveTypeValidatorTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () ->
-                        validate(
-                                jsonObject.get(idFieldName),
-                                idFieldName,
-                                R4_FHIR_TYPE_SYSTEM_STRING));
+                () -> validate(jsonObject.get(idFieldName), idFieldName, R4_FHIR_TYPE_ID));
     }
 
     @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
@@ -795,6 +888,108 @@ public class FhirPrimitiveTypeValidatorTest {
 
     @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
     @Test
+    public void testValidate_r4PositiveIntValid_succeeds() throws JSONException {
+        String positiveIntFieldName = "rank";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.encounter().toJson())
+                        .getJSONArray("diagnosis")
+                        .getJSONObject(0)
+                        .put(positiveIntFieldName, 1);
+
+        validate(
+                jsonObject.get(positiveIntFieldName),
+                positiveIntFieldName,
+                R4_FHIR_TYPE_POSITIVE_INT);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4PositiveIntInvalid_greaterThanMax_throws() throws JSONException {
+        String positiveIntFieldName = "rank";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.encounter().toJson())
+                        .getJSONArray("diagnosis")
+                        .getJSONObject(0)
+                        .put(positiveIntFieldName, 2147483648L);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        validate(
+                                jsonObject.get(positiveIntFieldName),
+                                positiveIntFieldName,
+                                R4_FHIR_TYPE_POSITIVE_INT));
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4PositiveIntInvalid_lessThan1_throws() throws JSONException {
+        String positiveIntFieldName = "rank";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.encounter().toJson())
+                        .getJSONArray("diagnosis")
+                        .getJSONObject(0)
+                        .put(positiveIntFieldName, 0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        validate(
+                                jsonObject.get(positiveIntFieldName),
+                                positiveIntFieldName,
+                                R4_FHIR_TYPE_POSITIVE_INT));
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4PositiveIntInvalid_asString_throws() throws JSONException {
+        String positiveIntFieldName = "rank";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.encounter().toJson())
+                        .getJSONArray("diagnosis")
+                        .getJSONObject(0)
+                        .put(positiveIntFieldName, "1");
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validate(
+                                        jsonObject.get(positiveIntFieldName),
+                                        positiveIntFieldName,
+                                        R4_FHIR_TYPE_POSITIVE_INT));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains(INTEGER_TYPE_EXCEPTION_MESSAGE + positiveIntFieldName);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4PositiveIntInvalid_objectIsJsonNull_throws() throws JSONException {
+        String positiveIntFieldName = "rank";
+        JSONObject jsonObject =
+                new JSONObject(EncountersBuilder.encounter().toJson())
+                        .getJSONArray("diagnosis")
+                        .getJSONObject(0)
+                        .put(positiveIntFieldName, JSONObject.NULL);
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validate(
+                                        jsonObject.get(positiveIntFieldName),
+                                        positiveIntFieldName,
+                                        R4_FHIR_TYPE_POSITIVE_INT));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains(INTEGER_TYPE_EXCEPTION_MESSAGE + positiveIntFieldName);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
     public void testValidate_r4TimeValid_succeeds() throws JSONException {
         String timeFieldName = "valueTime";
         JSONObject jsonObject =
@@ -862,5 +1057,102 @@ public class FhirPrimitiveTypeValidatorTest {
         assertThat(exception)
                 .hasMessageThat()
                 .contains(STRING_TYPE_EXCEPTION_MESSAGE + timeFieldName);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4UnsignedIntValid_succeeds() throws JSONException {
+        String unsignedIntFieldName = "numberOfRepeatsAllowed";
+        JSONObject jsonObject =
+                new JSONObject(MedicationsBuilder.request().toJson())
+                        .getJSONObject("dispenseRequest")
+                        .put(unsignedIntFieldName, 0);
+
+        validate(
+                jsonObject.get(unsignedIntFieldName),
+                unsignedIntFieldName,
+                R4_FHIR_TYPE_UNSIGNED_INT);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4UnsignedIntInvalid_greaterThanMax_throws() throws JSONException {
+        String unsignedIntFieldName = "numberOfRepeatsAllowed";
+        JSONObject jsonObject =
+                new JSONObject(MedicationsBuilder.request().toJson())
+                        .getJSONObject("dispenseRequest")
+                        .put(unsignedIntFieldName, 2147483648L);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        validate(
+                                jsonObject.get(unsignedIntFieldName),
+                                unsignedIntFieldName,
+                                R4_FHIR_TYPE_UNSIGNED_INT));
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4UnsignedIntInvalid_lessThan0_throws() throws JSONException {
+        String unsignedIntFieldName = "numberOfRepeatsAllowed";
+        JSONObject jsonObject =
+                new JSONObject(MedicationsBuilder.request().toJson())
+                        .getJSONObject("dispenseRequest")
+                        .put(unsignedIntFieldName, -1);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        validate(
+                                jsonObject.get(unsignedIntFieldName),
+                                unsignedIntFieldName,
+                                R4_FHIR_TYPE_UNSIGNED_INT));
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4UnsignedIntInvalid_asString_throws() throws JSONException {
+        String unsignedIntFieldName = "numberOfRepeatsAllowed";
+        JSONObject jsonObject =
+                new JSONObject(MedicationsBuilder.request().toJson())
+                        .getJSONObject("dispenseRequest")
+                        .put(unsignedIntFieldName, "1");
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validate(
+                                        jsonObject.get(unsignedIntFieldName),
+                                        unsignedIntFieldName,
+                                        R4_FHIR_TYPE_UNSIGNED_INT));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains(INTEGER_TYPE_EXCEPTION_MESSAGE + unsignedIntFieldName);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4UnsignedIntInvalid_objectIsJsonNull_throws() throws JSONException {
+        String unsignedIntFieldName = "numberOfRepeatsAllowed";
+        JSONObject jsonObject =
+                new JSONObject(MedicationsBuilder.request().toJson())
+                        .getJSONObject("dispenseRequest")
+                        .put(unsignedIntFieldName, JSONObject.NULL);
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validate(
+                                        jsonObject.get(unsignedIntFieldName),
+                                        unsignedIntFieldName,
+                                        R4_FHIR_TYPE_UNSIGNED_INT));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains(INTEGER_TYPE_EXCEPTION_MESSAGE + unsignedIntFieldName);
     }
 }
