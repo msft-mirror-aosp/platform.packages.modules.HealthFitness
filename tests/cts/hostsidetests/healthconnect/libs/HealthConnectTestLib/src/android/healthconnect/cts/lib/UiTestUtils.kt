@@ -132,6 +132,15 @@ object UiTestUtils {
     }
 
     /**
+     * Returns an object that contains given text if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the text label is expected to be visible on the screen without scrolling.
+     */
+    fun findTextContains(text: String): UiObject2 {
+        return findObject(By.textContains(text))
+    }
+
+    /**
      * Clicks on a text label if it's visible on the screen or throws otherwise.
      *
      * Use this if the text label is expected to be visible on the screen without scrolling.
@@ -228,6 +237,11 @@ object UiTestUtils {
     fun scrollDownToAndFindText(text: String) {
         scrollDownTo(By.text(text))
         findText(text)
+    }
+
+    fun scrollDownToAndFindTextContains(text: String) {
+        scrollDownTo(By.textContains(text))
+        findTextContains(text)
     }
 
     fun skipOnboardingIfAppears() {

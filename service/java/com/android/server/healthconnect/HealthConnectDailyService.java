@@ -41,6 +41,7 @@ import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -87,7 +88,8 @@ public class HealthConnectDailyService extends JobService {
         MigrationStateManager migrationStateManager =
                 healthConnectInjector.getMigrationStateManager();
         UsageStatsCollector usageStatsCollector =
-                healthConnectInjector.getUsageStatsCollector(context);
+                healthConnectInjector.getUsageStatsCollector(
+                        StorageContext.create(context, sUserHandle));
         DatabaseStatsCollector databaseStatsCollector =
                 healthConnectInjector.getDatabaseStatsCollector();
 
