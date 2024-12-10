@@ -53,7 +53,7 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
@@ -121,7 +121,7 @@ public class UsageStatsCollectorTest {
         doReturn(context).when(context).createContextAsUser(eq(userHandle), anyInt());
         mUsageStatsCollector =
                 healthConnectInjector.getUsageStatsCollector(
-                        StorageContext.create(context, userHandle));
+                        HealthConnectContext.create(context, userHandle));
 
         doReturn(mPackageManager).when(context).getPackageManager();
         doReturn(

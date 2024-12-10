@@ -215,7 +215,8 @@ public class HealthConnectDatabaseTest {
     // hence this methods needs to be called in individual tests rather than in @Before method.
     private HealthConnectDatabase initializeEmptyHealthConnectDatabase() {
         HealthConnectDatabase healthConnectDatabase =
-                new HealthConnectDatabase(StorageContext.create(mContext, mContext.getUser()));
+                new HealthConnectDatabase(
+                        HealthConnectContext.create(mContext, mContext.getUser()));
 
         // Make sure there is nothing there already.
         File databasePath = healthConnectDatabase.getDatabasePath();

@@ -84,9 +84,9 @@ public final class TransactionManager {
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     public TransactionManager(
-            StorageContext storageContext,
+            HealthConnectContext hcContext,
             InternalHealthConnectMappings internalHealthConnectMappings) {
-        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
+        mHealthConnectDatabase = new HealthConnectDatabase(hcContext);
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
@@ -96,8 +96,8 @@ public final class TransactionManager {
     }
 
     /** Setup the transaction manager for the new user. */
-    public void onUserUnlocked(StorageContext storageContext) {
-        mHealthConnectDatabase = new HealthConnectDatabase(storageContext);
+    public void onUserUnlocked(HealthConnectContext hcContext) {
+        mHealthConnectDatabase = new HealthConnectDatabase(hcContext);
     }
 
     /**
