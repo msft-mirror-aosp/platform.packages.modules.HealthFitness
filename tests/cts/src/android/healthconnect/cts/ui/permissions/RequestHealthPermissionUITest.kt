@@ -20,14 +20,17 @@ import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions
 import android.healthconnect.cts.lib.ActivityLauncher.launchRequestPermissionActivity
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
-import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
+import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
-import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
-import android.healthconnect.cts.lib.UiTestUtils.waitNotDisplayed
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
+import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
 import com.google.common.truth.Truth
+import java.time.Duration.ofSeconds
 import org.junit.After
 import org.junit.Test
 
@@ -36,77 +39,114 @@ class RequestHealthPermissionUITest : HealthConnectBaseTest() {
     @Test
     fun showsAppName_showsRequestedPermissions() {
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.READ_HEIGHT,
+        )
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_BODY_FAT,
+        )
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT)) {
-                waitDisplayed(
-                    By.text("Allow Health Connect cts test app to access Health Connect?"))
-                waitDisplayed(By.text("Height"))
-                waitDisplayed(By.text("Body fat"))
-            }
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT),
+        ) {
+            findText("Allow Health Connect cts test app to access Health Connect?")
+            scrollDownToAndFindText("Height")
+            scrollDownToAndFindText("Body fat")
+        }
     }
 
     @Test
     fun requestGrantedPermissions_doesNotShowGrantedPermissions() {
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_BODY_FAT,
+        )
         grantPermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.READ_HEIGHT,
+        )
 
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT)) {
-                waitNotDisplayed(By.text("Height"))
-                waitDisplayed(By.text("Body fat"))
-            }
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT),
+        ) {
+            waitForObjectNotFound(By.text("Height"), timeout = ofSeconds(1))
+            scrollDownToAndFindText("Body fat")
+        }
     }
 
     @Test
     fun grantPermission_grantsOnlyRequestedPermission() {
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.READ_HEIGHT,
+        )
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_BODY_FAT,
+        )
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT)) {
-                clickOnText("Height")
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT),
+        ) {
+            scrollDownToAndFindText("Height")
+            findTextAndClick("Height")
+            clickOnTextAndWaitForNewWindow("Allow")
 
-                clickOnText("Allow")
-
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
-                assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
-            }
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
+        }
     }
 
     @Test
     fun grantAllPermissions_grantsAllPermissions() {
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.READ_HEIGHT,
+        )
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_HEIGHT,
+        )
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_HEIGHT)) {
-                clickOnText("Allow all")
-                clickOnText("Allow")
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_HEIGHT),
+        ) {
+            scrollDownToAndFindText("Allow all")
+            findTextAndClick("Allow all")
+            clickOnTextAndWaitForNewWindow("Allow")
 
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
-            }
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
+        }
     }
 
     @After
     fun tearDown() {
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.READ_HEIGHT,
+        )
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_HEIGHT,
+        )
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            HealthPermissions.WRITE_BODY_FAT,
+        )
     }
 
     @Throws(Exception::class)
