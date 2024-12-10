@@ -41,6 +41,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -574,11 +575,11 @@ public final class TransactionManager {
         }
 
         if (Flags.ecosystemMetrics() && shouldRecordAccessLog && !request.isReadingSelfData()) {
-            readAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+            readAccessLogsHelper.recordAccessLogForNonAggregationReads(
                     getWritableDb(),
-                    recordInternals,
                     request.getPackageName(),
-                    /* readTimeStamp= */ Instant.now().toEpochMilli());
+                    /* readTimeStamp= */ Instant.now().toEpochMilli(),
+                    recordInternals);
         }
         if (Flags.addMissingAccessLogs()) {
             if (!request.isReadingSelfData() && shouldRecordAccessLog) {
@@ -635,11 +636,11 @@ public final class TransactionManager {
             pageToken = readResult.second;
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
             if (Flags.ecosystemMetrics() && shouldRecordAccessLog && !request.isReadingSelfData()) {
-                readAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                readAccessLogsHelper.recordAccessLogForNonAggregationReads(
                         getWritableDb(),
-                        recordInternalList,
                         request.getPackageName(),
-                        /* readTimeStamp= */ Instant.now().toEpochMilli());
+                        /* readTimeStamp= */ Instant.now().toEpochMilli(),
+                        recordInternalList);
             }
         }
 
@@ -718,26 +719,35 @@ public final class TransactionManager {
         return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
     }
 
-    /**
-     * Handles the aggregation requests for {@code aggregateTableRequest}
-     *
-     * @param aggregateTableRequest an aggregate request.
-     */
     public void populateWithAggregation(
             AggregateTableRequest aggregateTableRequest,
-            String packageName,
+            String readerPackageName,
             Set<Integer> recordTypeIds,
             AccessLogsHelper accessLogsHelper,
+            ReadAccessLogsHelper readAccessLogsHelper,
+            long timeRangeForAggregationEndTime,
+            long readTime,
             boolean shouldRecordAccessLog) {
         final SQLiteDatabase db = getReadableDb();
         try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
                 Cursor metaDataCursor =
                         db.rawQuery(
                                 aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
-            aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
+            List<String> contributingPackages =
+                    aggregateTableRequest.processResultsAndReturnContributingPackages(
+                            cursor, metaDataCursor);
+            if (AconfigFlagHelper.isEcosystemMetricsEnabled() && shouldRecordAccessLog) {
+                readAccessLogsHelper.recordAccessLogForAggregationReads(
+                        db,
+                        readerPackageName,
+                        /* readTimeStamp= */ readTime,
+                        aggregateTableRequest.getRecordTypeId(),
+                        /* endTimeStamp= */ timeRangeForAggregationEndTime,
+                        contributingPackages);
+            }
         }
         if (Flags.addMissingAccessLogs() && shouldRecordAccessLog) {
-            accessLogsHelper.recordReadAccessLog(getWritableDb(), packageName, recordTypeIds);
+            accessLogsHelper.recordReadAccessLog(getWritableDb(), readerPackageName, recordTypeIds);
         }
     }
 

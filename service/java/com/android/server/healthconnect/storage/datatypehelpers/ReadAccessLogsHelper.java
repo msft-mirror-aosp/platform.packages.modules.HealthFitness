@@ -28,6 +28,7 @@ import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Pair;
 import android.util.Slog;
@@ -48,7 +49,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Table to maintain detailed read access logs.
@@ -157,15 +157,16 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
      * Stores read access logs for given package names. DO NOT INSERT ACCESS LOGS FOR SELF READ and
      * DO NOT CALL WITHOUT FLAGGING UNDER {@link AconfigFlagHelper.isEcosystemMetricsEnabled}.
      */
-    public void recordReadAccessLogForAggregationReads(
+    public void recordAccessLogForAggregationReads(
             SQLiteDatabase db,
-            List<String> writingPackageNames,
             String readerPackageName,
-            Set<Integer> recordTypeIds,
+            long readTimeStamp,
+            @RecordTypeIdentifier.RecordType int recordTypeId,
             long endTimeStamp,
-            long readTimeStamp) {
+            List<String> writingPackageNames) {
         long readerAppInfoId = mAppInfoHelper.getAppInfoId(readerPackageName);
         if (readerAppInfoId == DEFAULT_LONG) {
+            Slog.e(TAG, "invalid package name " + readerPackageName + " used for read access log");
             return;
         }
         for (String writingPackageName : writingPackageNames) {
@@ -173,18 +174,17 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             if (writerAppInfoId == DEFAULT_LONG || writerAppInfoId == readerAppInfoId) {
                 continue;
             }
-            for (Integer recordTypeId : recordTypeIds) {
-                ContentValues contentValues =
-                        populateCommonColumns(
-                                /* readerAppInfoId= */ readerAppInfoId,
-                                /* dataType= */ recordTypeId,
-                                /* writerAppInfoId= */ writerAppInfoId,
-                                /* writeTimeStamp= */ endTimeStamp,
-                                /* readTimeStamp' */ readTimeStamp);
-                UpsertTableRequest upsertTableRequest =
-                        new UpsertTableRequest(TABLE_NAME, contentValues);
-                mTransactionManager.insert(db, upsertTableRequest);
-            }
+
+            ContentValues contentValues =
+                    populateCommonColumns(
+                            /* readerAppInfoId= */ readerAppInfoId,
+                            /* dataType= */ recordTypeId,
+                            /* writerAppInfoId= */ writerAppInfoId,
+                            /* writeTimeStamp= */ endTimeStamp,
+                            /* readTimeStamp' */ readTimeStamp);
+            UpsertTableRequest upsertTableRequest =
+                    new UpsertTableRequest(TABLE_NAME, contentValues);
+            mTransactionManager.insert(db, upsertTableRequest);
         }
     }
 
@@ -192,16 +192,14 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
      * Stores read access logs for given records. DO NOT INSERT ACCESS LOGS FOR SELF READ and DO NOT
      * CALL WITHOUT FLAGGING UNDER {@link AconfigFlagHelper.isEcosystemMetricsEnabled}.
      */
-    public void recordReadAccessLogForNonAggregationReads(
+    public void recordAccessLogForNonAggregationReads(
             SQLiteDatabase db,
-            List<RecordInternal<?>> recordsRead,
             String readerPackageName,
-            long readTimeStamp) {
+            long readTimeStamp,
+            List<RecordInternal<?>> recordsRead) {
         long readerAppInfoId = mAppInfoHelper.getAppInfoId(readerPackageName);
         if (readerAppInfoId == DEFAULT_LONG) {
-            Slog.e(
-                    TAG,
-                    "invalid package name " + readerPackageName + " used for read access " + "log");
+            Slog.e(TAG, "invalid package name " + readerPackageName + " used for read access log");
             return;
         }
         Map<Integer, Map<Long, Long>> datatypeToLatestWritePerPackageName =

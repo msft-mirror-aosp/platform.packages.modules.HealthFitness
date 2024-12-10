@@ -646,6 +646,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             mHealthDataCategoryPriorityHelper,
                                             mInternalHealthConnectMappings,
                                             mTransactionManager,
+                                            mReadAccessLogsHelper,
                                             startDateAccess)
                                     .getAggregateDataResponseParcel(
                                             mAccessLogsHelper, shouldRecordAccessLog));
