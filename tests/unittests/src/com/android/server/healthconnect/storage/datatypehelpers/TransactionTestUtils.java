@@ -40,6 +40,7 @@ import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.health.connect.internal.datatypes.SpeedRecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.util.ArrayMap;
 
@@ -214,6 +215,17 @@ public final class TransactionTestUtils {
                 new ExerciseSessionRecordInternal()
                         .setExerciseType(EXERCISE_SESSION_TYPE_RUNNING)
                         .setRoute(createExerciseRoute(startTime))
+                        .setStartTime(startTime.toEpochMilli())
+                        .setEndTime(startTime.plus(ofMinutes(10)).toEpochMilli());
+    }
+
+    public static SpeedRecordInternal createSpeedRecordInternal(Instant startTime) {
+        return (SpeedRecordInternal)
+                new SpeedRecordInternal()
+                        .setSamples(
+                                Set.of(
+                                        new SpeedRecordInternal.SpeedRecordSample(
+                                                100, startTime.plus(ofMinutes(1)).toEpochMilli())))
                         .setStartTime(startTime.toEpochMilli())
                         .setEndTime(startTime.plus(ofMinutes(10)).toEpochMilli());
     }
