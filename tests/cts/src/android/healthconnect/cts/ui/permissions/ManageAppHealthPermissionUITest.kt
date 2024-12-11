@@ -27,6 +27,7 @@ import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.navigateBackToHomeScreen
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
@@ -57,7 +58,9 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
         context.launchMainActivity {
             navigateToManageAppPermissions()
 
+            scrollDownTo(By.text("Delete app data"))
             waitDisplayed(By.text("Delete app data"))
+            scrollDownTo(By.text("Additional access"))
             waitDisplayed(By.text("Additional access"))
             clickOnText("Additional access")
             waitDisplayed(By.text("Access past data"))
