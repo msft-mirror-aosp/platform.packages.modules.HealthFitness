@@ -39,8 +39,8 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_COD
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_COMPLEX;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE_TIME;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ID;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STRING;
-import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_SYSTEM_STRING;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_URI;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -110,8 +110,7 @@ public class FhirSpecProviderTest {
                 Map.ofEntries(
                         Map.entry(
                                 "id",
-                                createFhirFieldConfig(
-                                        false, R4_FHIR_TYPE_SYSTEM_STRING, KIND_PRIMITIVE_TYPE)),
+                                createFhirFieldConfig(false, R4_FHIR_TYPE_ID, KIND_PRIMITIVE_TYPE)),
                         Map.entry(
                                 "resourceType",
                                 createFhirFieldConfig(
@@ -292,9 +291,7 @@ public class FhirSpecProviderTest {
                                 .build());
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
                 Map.of(
-                        "id",
-                                createFhirFieldConfig(
-                                        false, R4_FHIR_TYPE_SYSTEM_STRING, KIND_PRIMITIVE_TYPE),
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_ID, KIND_PRIMITIVE_TYPE),
                         "resourceType",
                                 createFhirFieldConfig(
                                         false, R4_FHIR_TYPE_STRING, KIND_PRIMITIVE_TYPE),
@@ -395,9 +392,7 @@ public class FhirSpecProviderTest {
         List<String> expectedRequiredFields = List.of("subject");
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
                 Map.of(
-                        "id",
-                                createFhirFieldConfig(
-                                        false, R4_FHIR_TYPE_SYSTEM_STRING, KIND_PRIMITIVE_TYPE),
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_ID, KIND_PRIMITIVE_TYPE),
                         "resourceType",
                                 createFhirFieldConfig(
                                         false, R4_FHIR_TYPE_STRING, KIND_PRIMITIVE_TYPE),
@@ -426,9 +421,7 @@ public class FhirSpecProviderTest {
         List<String> expectedRequiredFields = List.of("status", "subject");
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
                 Map.of(
-                        "id",
-                                createFhirFieldConfig(
-                                        false, R4_FHIR_TYPE_SYSTEM_STRING, KIND_PRIMITIVE_TYPE),
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_ID, KIND_PRIMITIVE_TYPE),
                         "resourceType",
                                 createFhirFieldConfig(
                                         false, R4_FHIR_TYPE_STRING, KIND_PRIMITIVE_TYPE),
