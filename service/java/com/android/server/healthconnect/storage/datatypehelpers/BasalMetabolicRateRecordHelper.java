@@ -55,7 +55,7 @@ public final class BasalMetabolicRateRecordHelper
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getDerivedAggregateResult(
             Cursor results, AggregationType<?> aggregationType, double result) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case BMR_RECORD_BASAL_CALORIES_TOTAL:

@@ -53,7 +53,7 @@ public final class WeightRecordHelper extends InstantRecordHelper<WeightRecordIn
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;
         switch (aggregationType.getAggregationTypeIdentifier()) {
