@@ -116,8 +116,7 @@ public class DailyCleanupJobTest {
         mDailyCleanupJob.startDailyCleanup();
 
         verify(mTransactionManager, Mockito.times(2))
-                .deleteWithoutChangeLogs(
-                        Mockito.argThat(this::checkTableNames_getPreferenceReturnNull));
+                .deleteAll(Mockito.argThat(this::checkTableNames_getPreferenceReturnNull));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
         verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable();
         verify(mActivityDateHelper, times(1)).reSyncForAllRecords();
@@ -131,8 +130,7 @@ public class DailyCleanupJobTest {
         mDailyCleanupJob.startDailyCleanup();
 
         verify(mTransactionManager, Mockito.times(2))
-                .deleteWithoutChangeLogs(
-                        Mockito.argThat(this::checkTableNames_getPreferenceReturnNonNull));
+                .deleteAll(Mockito.argThat(this::checkTableNames_getPreferenceReturnNonNull));
         verify(mTransactionManager)
                 .deleteAllRecords(
                         Mockito.argThat(
