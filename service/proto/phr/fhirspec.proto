@@ -79,18 +79,28 @@ enum Kind {
 // The R4 Fhir type used to indicate the type of a field extracted from the fhir spec.
 // Note that all complex data types (non-primitive type) are combined under R4_FHIR_TYPE_COMPLEX
 // for now.
+// Next ID: 22
 enum R4FhirType {
     R4_FHIR_TYPE_UNSPECIFIED = 0;
     R4_FHIR_TYPE_COMPLEX = 1;
+    R4_FHIR_TYPE_BASE64_BINARY = 13;
     R4_FHIR_TYPE_BOOLEAN = 2;
+    R4_FHIR_TYPE_CANONICAL = 11;
     R4_FHIR_TYPE_CODE = 3;
+    R4_FHIR_TYPE_DATE = 10;
     R4_FHIR_TYPE_DATE_TIME = 4;
+    R4_FHIR_TYPE_DECIMAL = 14;
+    R4_FHIR_TYPE_SYSTEM_STRING = 8; // TODO(b/361775172): remove this, replaced by the ID one below.
+    R4_FHIR_TYPE_ID = 21;
     R4_FHIR_TYPE_INSTANT = 5;
     R4_FHIR_TYPE_INTEGER = 6;
+    R4_FHIR_TYPE_MARKDOWN = 15;
+    R4_FHIR_TYPE_OID = 16;
     R4_FHIR_TYPE_STRING = 7;
-    R4_FHIR_TYPE_SYSTEM_STRING = 8;
-    R4_FHIR_TYPE_URI = 9;
-    R4_FHIR_TYPE_DATE = 10;
-    R4_FHIR_TYPE_CANONICAL = 11;
+    R4_FHIR_TYPE_POSITIVE_INT = 17;
     R4_FHIR_TYPE_TIME = 12;
+    R4_FHIR_TYPE_UNSIGNED_INT = 18;
+    R4_FHIR_TYPE_URI = 9;
+    R4_FHIR_TYPE_URL = 19;
+    R4_FHIR_TYPE_UUID = 20;
 }
