@@ -83,6 +83,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
@@ -105,6 +106,7 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.time.Instant;
@@ -120,6 +122,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@RunWith(AndroidJUnit4.class)
 public class MedicalResourceHelperTest {
 
     @Rule(order = 1)

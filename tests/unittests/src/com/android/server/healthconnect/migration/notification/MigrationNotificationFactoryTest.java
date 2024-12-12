@@ -21,12 +21,15 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import android.content.Context;
 import android.graphics.drawable.Icon;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+@RunWith(AndroidJUnit4.class)
 public class MigrationNotificationFactoryTest {
 
     @Mock private Context mContext;

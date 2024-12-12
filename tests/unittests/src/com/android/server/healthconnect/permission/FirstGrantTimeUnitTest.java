@@ -40,6 +40,8 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Pair;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
@@ -51,6 +53,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -66,6 +69,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 // TODO(b/261432978): add test for sharedUser backup
+@RunWith(AndroidJUnit4.class)
 public class FirstGrantTimeUnitTest {
 
     @Rule

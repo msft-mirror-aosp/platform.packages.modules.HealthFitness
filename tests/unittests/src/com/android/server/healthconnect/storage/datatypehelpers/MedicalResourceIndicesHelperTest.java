@@ -31,13 +31,17 @@ import static com.google.common.truth.Truth.assertThat;
 import android.content.ContentValues;
 import android.util.Pair;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collections;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class MedicalResourceIndicesHelperTest {
     @Test
     public void getCreateTableRequest_correctResult() {

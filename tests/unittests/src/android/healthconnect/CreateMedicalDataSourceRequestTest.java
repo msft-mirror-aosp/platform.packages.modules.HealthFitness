@@ -25,8 +25,12 @@ import static com.google.common.truth.Truth.assertThat;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.os.Parcel;
 
-import org.junit.Test;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
 public class CreateMedicalDataSourceRequestTest {
 
     // This test tests the hidden getDataSize method. The rest of this class is tested in cts tests.

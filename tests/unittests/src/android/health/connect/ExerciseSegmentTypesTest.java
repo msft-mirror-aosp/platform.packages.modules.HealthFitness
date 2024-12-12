@@ -21,7 +21,10 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import android.health.connect.datatypes.ExerciseSegmentType;
 import android.util.ArraySet;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
 public class ExerciseSegmentTypesTest {
 
     @Test
