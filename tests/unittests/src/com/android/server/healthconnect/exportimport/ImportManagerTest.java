@@ -72,6 +72,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
@@ -134,6 +135,7 @@ public class ImportManagerTest {
     private AccessLogsHelper mAccessLogsHelper;
     private DatabaseHelpers mDatabaseHelpers;
     private DeviceInfoHelper mDeviceInfoHelper;
+    private ReadAccessLogsHelper mReadAccessLogsHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     @Mock private HealthConnectNotificationSender mNotificationSender;
@@ -158,6 +160,7 @@ public class ImportManagerTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
+        mReadAccessLogsHelper = healthConnectInjector.getReadAccessLogsHelper();
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -239,6 +242,7 @@ public class ImportManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
@@ -373,6 +377,7 @@ public class ImportManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(bloodPressureUuids.get(0));
@@ -631,6 +636,7 @@ public class ImportManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));

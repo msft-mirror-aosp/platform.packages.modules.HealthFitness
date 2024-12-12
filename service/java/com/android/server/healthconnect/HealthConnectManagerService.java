@@ -111,7 +111,8 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mPreferenceHelper,
                         mDatabaseHelpers,
-                        mHealthConnectInjector.getPreferencesManager());
+                        mHealthConnectInjector.getPreferencesManager(),
+                        mHealthConnectInjector.getReadAccessLogsHelper());
     }
 
     @Override
