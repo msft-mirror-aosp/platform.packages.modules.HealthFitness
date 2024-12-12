@@ -32,8 +32,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:layout_weight="1"
-        android:paddingTop="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_normal">
+        android:paddingTop="@dimen/spacing_large">
 
         <TextView
             android:id="@+id/item_data_entry_header"
@@ -57,20 +56,6 @@
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:ellipsize="marquee"/>
     </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/item_data_entry_divider"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="start|center_vertical"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_normal">
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="?android:attr/listDivider" />
-    </LinearLayout>
 
     <CheckBox
         android:id="@+id/item_checkbox_button"
