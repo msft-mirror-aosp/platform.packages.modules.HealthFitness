@@ -112,6 +112,7 @@ class ConnectedAppsFragmentTest {
         hiltRule.inject()
         whenever(viewModel.disconnectAllState).then { MutableLiveData(NotStarted) }
         whenever(viewModel.alertDialogActive).then { MutableLiveData(false) }
+        whenever(viewModel.alertDialogCheckBoxChecked).then { MutableLiveData(false) }
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
         toggleAnimation(false)
