@@ -25,7 +25,6 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.TIMEOUT_SECON
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteAllRecordsAddedByTestApp;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteRecords;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getBloodPressureRecord;
-import static android.healthconnect.cts.testhelper.TestHelperUtils.getDataOrigin;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getDefaultTimeRangeFilter;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeartRateRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeightRecord;
@@ -36,6 +35,8 @@ import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import static java.time.Instant.EPOCH;
 import static java.util.Objects.requireNonNull;
 
@@ -43,7 +44,6 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteMedicalResourcesRequest;
-import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -104,7 +104,7 @@ public class HealthConnectServiceLogsTests {
         // insert a record so the test app gets an app id in HC
         Record record =
                 new StepsRecord.Builder(getEmptyMetadata(), EPOCH, Instant.now(), 123).build();
-        insertRecords(List.of(record), mHealthConnectManager);
+        insertRecords(mHealthConnectManager, List.of(record));
 
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
         mPhrTestUtils.deleteAllMedicalData();
@@ -300,28 +300,33 @@ public class HealthConnectServiceLogsTests {
     @Test
     public void testHealthConnectInsertRecords() throws Exception {
         insertRecords(
-                List.of(getBloodPressureRecord(), getHeartRateRecord()), mHealthConnectManager);
+                mHealthConnectManager, List.of(getBloodPressureRecord(), getHeartRateRecord()));
     }
 
     @Test
     public void testHealthConnectInsertRecordsError() throws Exception {
         // No permission for Height so it should throw Security Exception
-        insertRecords(List.of(getBloodPressureRecord(), getHeightRecord()), mHealthConnectManager);
+        assertThrows(
+                HealthConnectException.class,
+                () ->
+                        insertRecords(
+                                mHealthConnectManager,
+                                List.of(getBloodPressureRecord(), getHeightRecord())));
     }
 
     @Test
     public void testHealthConnectUpdateRecords() throws Exception {
         List<Record> records =
                 insertRecords(
-                        List.of(getBloodPressureRecord(), getHeartRateRecord(), getStepsRecord()),
-                        mHealthConnectManager);
+                        mHealthConnectManager,
+                        List.of(getBloodPressureRecord(), getHeartRateRecord(), getStepsRecord()));
         updateRecords(records);
     }
 
     @Test
     public void testHealthConnectUpdateRecordsError() throws Exception {
         List<Record> insertRecords =
-                insertRecords(List.of(getBloodPressureRecord()), mHealthConnectManager);
+                insertRecords(mHealthConnectManager, List.of(getBloodPressureRecord()));
 
         updateRecords(
                 List.of(
@@ -334,35 +339,24 @@ public class HealthConnectServiceLogsTests {
 
     @Test
     public void testHealthConnectDeleteRecords() throws Exception {
-        insertRecords(List.of(getBloodPressureRecord(), getStepsRecord()), mHealthConnectManager);
-        DeleteUsingFiltersRequest deleteUsingFiltersRequest =
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BloodPressureRecord.class)
-                        .addRecordType(StepsRecord.class)
-                        .addDataOrigin(getDataOrigin())
-                        .build();
+        insertRecords(mHealthConnectManager, List.of(getBloodPressureRecord(), getStepsRecord()));
 
-        assertThat(mHealthConnectManager).isNotNull();
-        deleteRecords(deleteUsingFiltersRequest, mHealthConnectManager);
+        deleteRecords(mHealthConnectManager, List.of(BloodPressureRecord.class, StepsRecord.class));
     }
 
     @Test
     public void testHealthConnectDeleteRecordsError() throws Exception {
-        insertRecords(List.of(getBloodPressureRecord(), getStepsRecord()), mHealthConnectManager);
-        DeleteUsingFiltersRequest deleteUsingFiltersRequest =
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(HeightRecord.class)
-                        .addDataOrigin(getDataOrigin())
-                        .build();
+        insertRecords(mHealthConnectManager, List.of(getBloodPressureRecord(), getStepsRecord()));
 
-        assertThat(mHealthConnectManager).isNotNull();
-        deleteRecords(deleteUsingFiltersRequest, mHealthConnectManager);
+        assertThrows(
+                HealthConnectException.class,
+                () -> deleteRecords(mHealthConnectManager, List.of(HeightRecord.class)));
     }
 
     @Test
     public void testHealthConnectReadRecords() throws Exception {
+        insertRecords(mHealthConnectManager, List.of(getStepsRecord()));
 
-        insertRecords(List.of(getStepsRecord()), mHealthConnectManager);
         CountDownLatch latch = new CountDownLatch(1);
         assertThat(mHealthConnectManager).isNotNull();
         mHealthConnectManager.readRecords(
@@ -452,14 +446,9 @@ public class HealthConnectServiceLogsTests {
         String token = getChangeLogToken();
 
         insertRecords(
-                List.of(getBloodPressureRecord(), getHeartRateRecord()), mHealthConnectManager);
+                mHealthConnectManager, List.of(getBloodPressureRecord(), getHeartRateRecord()));
 
-        deleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BloodPressureRecord.class)
-                        .addDataOrigin(getDataOrigin())
-                        .build(),
-                mHealthConnectManager);
+        deleteRecords(mHealthConnectManager, List.of(BloodPressureRecord.class));
 
         CountDownLatch latch = new CountDownLatch(1);
         assertThat(mHealthConnectManager).isNotNull();
@@ -558,8 +547,8 @@ public class HealthConnectServiceLogsTests {
     @Test
     public void testHealthConnectDatabaseStats() throws Exception {
         insertRecords(
-                List.of(getStepsRecord(), getBloodPressureRecord(), getHeartRateRecord()),
-                mHealthConnectManager);
+                mHealthConnectManager,
+                List.of(getStepsRecord(), getBloodPressureRecord(), getHeartRateRecord()));
     }
 
     private String getChangeLogToken() throws Exception {
