@@ -43,6 +43,8 @@ import com.android.healthconnect.controller.service.HealthManagerModule
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.service.MainDispatcher
 import com.android.healthconnect.controller.tests.utils.CoroutineTestRule
+import com.android.healthconnect.controller.tests.utils.FakeParentFragment
+import com.android.healthconnect.controller.tests.utils.NESTED_FRAGMENT_TAG
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.assertCheckboxChecked
 import com.android.healthconnect.controller.tests.utils.assertCheckboxNotChecked
@@ -50,7 +52,7 @@ import com.android.healthconnect.controller.tests.utils.assertCheckboxNotShown
 import com.android.healthconnect.controller.tests.utils.forDataType
 import com.android.healthconnect.controller.tests.utils.getMetaDataWithUniqueIds
 import com.android.healthconnect.controller.tests.utils.getStepsRecordWithUniqueIds
-import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.launchNestedFragment
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,7 +69,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -98,7 +99,7 @@ class MockedAllEntriesFragmentTest {
     @Test
     fun fragmentDisplaysCorrectly() = runTest {
         mockData()
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
         advanceUntilIdle()
 
         onView(withText("10 steps")).check(matches(isDisplayed()))
@@ -119,10 +120,15 @@ class MockedAllEntriesFragmentTest {
     fun toggleDeletion_hidesAggregation_showsSelectAll_showsCheckboxes() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -142,10 +148,15 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_screenStateRemainsOnOrientationChange() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -179,10 +190,15 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenAllCheckboxesChecked_selectAllChecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -210,10 +226,15 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenOneCheckboxUnchecked_selectAllUnchecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -246,10 +267,15 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenSelectAllChecked_allCheckboxesChecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -276,10 +302,15 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenSelectAllUnchecked_allCheckboxesUnchecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )

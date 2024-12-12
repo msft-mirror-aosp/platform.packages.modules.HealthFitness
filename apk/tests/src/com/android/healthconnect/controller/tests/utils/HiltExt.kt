@@ -29,20 +29,23 @@ import com.android.healthconnect.controller.tests.TestActivity
 inline fun <reified T : Fragment> launchFragment(
     fragmentArgs: Bundle? = null,
     @StyleRes themeResId: Int = R.style.Theme_HealthConnect,
-    crossinline action: Fragment.() -> Unit = {}
+    crossinline action: Fragment.() -> Unit = {},
 ): ActivityScenario<TestActivity> {
     val startActivityIntent =
         Intent.makeMainActivity(
-                ComponentName(
-                    ApplicationProvider.getApplicationContext(), TestActivity::class.java))
+                ComponentName(ApplicationProvider.getApplicationContext(), TestActivity::class.java)
+            )
             .putExtra(
                 "androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY",
-                themeResId)
+                themeResId,
+            )
 
     return ActivityScenario.launch<TestActivity>(startActivityIntent).onActivity { activity ->
         val fragment: Fragment =
             activity.supportFragmentManager.fragmentFactory.instantiate(
-                T::class.java.classLoader, T::class.java.name)
+                T::class.java.classLoader,
+                T::class.java.name,
+            )
         fragment.arguments = fragmentArgs
         activity.supportFragmentManager
             .beginTransaction()
@@ -57,20 +60,23 @@ inline fun <reified T : DialogFragment> launchDialog(
     arguments: Bundle? = null,
     tag: String = "TEST_DIALOG_TAG",
     @StyleRes themeResId: Int = R.style.Theme_HealthConnect,
-    crossinline action: DialogFragment.() -> Unit = {}
+    crossinline action: DialogFragment.() -> Unit = {},
 ): ActivityScenario<TestActivity> {
     val startActivityIntent =
         Intent.makeMainActivity(
-                ComponentName(
-                    ApplicationProvider.getApplicationContext(), TestActivity::class.java))
+                ComponentName(ApplicationProvider.getApplicationContext(), TestActivity::class.java)
+            )
             .putExtra(
                 "androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY",
-                themeResId)
+                themeResId,
+            )
 
     return ActivityScenario.launch<TestActivity>(startActivityIntent).onActivity { activity ->
         val fragment: Fragment =
             activity.supportFragmentManager.fragmentFactory.instantiate(
-                T::class.java.classLoader, T::class.java.name)
+                T::class.java.classLoader,
+                T::class.java.name,
+            )
         fragment as DialogFragment
         fragment.arguments = arguments
         fragment.show(activity.supportFragmentManager, tag)
@@ -81,19 +87,36 @@ inline fun <reified T : DialogFragment> launchDialog(
 
 inline fun <reified T : Fragment> launchFragment(
     crossinline fragmentInstantiation: () -> T,
-    @StyleRes themeResId: Int = R.style.Theme_HealthConnect
+    @StyleRes themeResId: Int = R.style.Theme_HealthConnect,
 ): ActivityScenario<TestActivity> {
     val startActivityIntent =
         Intent.makeMainActivity(
-                ComponentName(
-                    ApplicationProvider.getApplicationContext(), TestActivity::class.java))
+                ComponentName(ApplicationProvider.getApplicationContext(), TestActivity::class.java)
+            )
             .putExtra(
                 "androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY",
-                themeResId)
+                themeResId,
+            )
     return ActivityScenario.launch<TestActivity>(startActivityIntent).onActivity { activity ->
         activity.supportFragmentManager
             .beginTransaction()
             .replace(android.R.id.content, fragmentInstantiation.invoke())
+            .commitNow()
+    }
+}
+
+const val NESTED_FRAGMENT_TAG = "NESTED_FRAGMENT_TAG"
+
+inline fun <reified T : Fragment> launchNestedFragment(
+    arguments: Bundle? = null,
+    tag: String = NESTED_FRAGMENT_TAG,
+): ActivityScenario<TestActivity> {
+    return launchFragment<FakeParentFragment>().onActivity { activity ->
+        val parentFragment =
+            activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+        parentFragment.childFragmentManager
+            .beginTransaction()
+            .add(R.id.empty_fragment, T::class.java, arguments, tag)
             .commitNow()
     }
 }

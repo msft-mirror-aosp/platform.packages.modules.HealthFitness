@@ -2623,6 +2623,7 @@ public class HealthConnectManager {
      * @param ids Identifiers for data sources to get.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if the size of {@code ids} is more than 5000.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void getMedicalDataSources(
@@ -2636,6 +2637,11 @@ public class HealthConnectManager {
         if (ids.isEmpty()) {
             returnResult(executor, List.of(), callback);
             return;
+        }
+
+        if (ids.size() > MAXIMUM_PAGE_SIZE) {
+            throw new IllegalArgumentException(
+                    "The number of requested IDs must be <= " + MAXIMUM_PAGE_SIZE);
         }
 
         try {

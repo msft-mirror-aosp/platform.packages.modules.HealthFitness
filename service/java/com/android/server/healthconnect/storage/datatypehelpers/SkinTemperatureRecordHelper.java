@@ -203,7 +203,7 @@ public final class SkinTemperatureRecordHelper
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case SKIN_TEMPERATURE_RECORD_DELTA_AVG:

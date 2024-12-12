@@ -493,7 +493,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"כל יום"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"כל שבוע"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"כל חודש"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"בחירת המיקום לשמירת הייצוא המתוזמן"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"איפה לשמור את הייצוא המתוזמן?"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"צריך לבחור אפליקציית אחסון בענן לייצוא הנתונים"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -535,8 +535,8 @@
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ביטול"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"סיום"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"אין אפליקציות זמינות. אפשר להתקין אפליקציות אחסון בענן כדי לראות אותן כאן"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"לאפשרויות נוספות, צריך להתקין אפליקציות אחסון בענן כדי לראות אותן כאן"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"מעבר לחנות Play"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"אם רוצים לראות כאן עוד אפשרויות, צריך להתקין במכשיר אפליקציות לאחסון בענן"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"לחנות Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"איך מתחילים להשתמש ב-Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"אפליקציית Health Connect מאחסנת את נתוני הבריאות והכושר שלך, ומאפשרת לך לסנכרן בקלות את האפליקציות השונות במכשיר"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"אפליקציית Health Connect מאחסנת ומסנכרנת את נתוני הבריאות והכושר שלך מאפליקציות שונות.\n\n"<b>"נתוני כושר ורווחה אישית,"</b>" כולל אימוני כושר, צעדים, תזונה, שינה ועוד\n\n"<b>"סיכומי מצב בריאותי,"</b>" כולל חיסונים, תוצאות של בדיקות מעבדה ועוד"</string>
