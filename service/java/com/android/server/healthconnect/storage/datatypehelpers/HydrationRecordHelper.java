@@ -50,7 +50,7 @@ public final class HydrationRecordHelper extends IntervalRecordHelper<HydrationR
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case HYDRATION_RECORD_VOLUME_TOTAL:
