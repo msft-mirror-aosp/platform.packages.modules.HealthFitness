@@ -538,7 +538,8 @@ public class TransactionManagerTest {
                                         .setUuid(UUID.randomUUID())),
                         mDeviceInfoHelper,
                         mAppInfoHelper);
-        mTransactionManager.insertOrIgnoreOnConflict(upsertTransactionRequest.getUpsertRequests());
+        mTransactionManager.insertOrIgnoreAllOnConflict(
+                upsertTransactionRequest.getUpsertRequests());
 
         assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
                 .isEqualTo(0);

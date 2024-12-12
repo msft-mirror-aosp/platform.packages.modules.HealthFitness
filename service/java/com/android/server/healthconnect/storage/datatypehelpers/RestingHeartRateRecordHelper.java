@@ -55,7 +55,7 @@ public final class RestingHeartRateRecordHelper
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         long aggregateValue;
         switch (aggregationType.getAggregationTypeIdentifier()) {

@@ -264,4 +264,23 @@ class EntriesViewModelTest {
         assertThat(viewModel.getEntriesList())
             .isEqualTo(mutableListOf(formattedAggregation("12 steps"), FORMATTED_STEPS))
     }
+
+    @Test
+    fun setPeriodToWeek_allEntriesAddedToDeleteSet_allEntriesSelectedValueSetToTrue() = runTest {
+        fakeLoadDataEntriesUseCase.updateList(listOf(FORMATTED_STEPS))
+        fakeLoadDataAggregationsUseCase.updateAggregation(formattedAggregation("12 steps"))
+        val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
+        viewModel.entries.observeForever(testObserver)
+        viewModel.loadEntries(
+            FitnessPermissionType.STEPS,
+            Instant.ofEpochMilli(timeSource.currentTimeMillis()),
+            DateNavigationPeriod.PERIOD_WEEK,
+        )
+
+        viewModel.addToDeleteMap(FORMATTED_STEPS.uuid, FORMATTED_STEPS.dataType)
+
+        advanceUntilIdle()
+
+        assertThat(viewModel.allEntriesSelected.value).isTrue()
+    }
 }

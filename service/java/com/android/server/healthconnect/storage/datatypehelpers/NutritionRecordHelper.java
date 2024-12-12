@@ -139,7 +139,7 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;
         switch (aggregationType.getAggregationTypeIdentifier()) {

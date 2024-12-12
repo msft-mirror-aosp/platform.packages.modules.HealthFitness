@@ -97,6 +97,8 @@ private constructor(
             entriesList.removeAt(0)
             updateData(entriesList)
         }
+        // to prevent Select all from being checked the next time we trigger deletion
+        this.isSelectAllChecked = false
     }
 
     fun removeAggregation() {
