@@ -39,7 +39,7 @@ import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -117,7 +117,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         // Any class that is using this user below are responsible for making sure that they
         // update any reference to user when it changes.
         UserHandle userHandle = builder.mUserHandle;
-        StorageContext storageContext = StorageContext.create(context, userHandle);
+        HealthConnectContext hcContext = HealthConnectContext.create(context, userHandle);
 
         mDatabaseHelpers = new DatabaseHelpers();
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
@@ -129,12 +129,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mMigrationEntityHelper;
         mTransactionManager =
                 builder.mTransactionManager == null
-                        ? new TransactionManager(storageContext, mInternalHealthConnectMappings)
+                        ? new TransactionManager(hcContext, mInternalHealthConnectMappings)
                         : builder.mTransactionManager;
         mAppInfoHelper =
                 builder.mAppInfoHelper == null
                         ? new AppInfoHelper(
-                                storageContext,
+                                hcContext,
                                 mTransactionManager,
                                 mHealthConnectMappings,
                                 mDatabaseHelpers)
@@ -150,7 +150,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? new HealthDataCategoryPriorityHelper(
-                                storageContext,
+                                hcContext,
                                 mAppInfoHelper,
                                 mTransactionManager,
                                 mPreferenceHelper,
@@ -465,10 +465,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     }
 
     @Override
-    public UsageStatsCollector getUsageStatsCollector(StorageContext storageContext) {
+    public UsageStatsCollector getUsageStatsCollector(HealthConnectContext hcContext) {
         return mBuilder.mUsageStatsCollector == null
                 ? new UsageStatsCollector(
-                        storageContext,
+                        hcContext,
                         mPreferenceHelper,
                         mPreferencesManager,
                         mAccessLogsHelper,

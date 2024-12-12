@@ -36,7 +36,7 @@ import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.migration.MigratorPackageChangesReceiver;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -175,8 +175,9 @@ public class HealthConnectManagerService extends SystemService {
 
     private void switchToSetupForUser(UserHandle user) {
         Slog.d(TAG, "switchToSetupForUser: " + user);
-        StorageContext storageContext = StorageContext.create(mContext, mCurrentForegroundUser);
-        mTransactionManager.onUserUnlocked(storageContext);
+        HealthConnectContext hcContext =
+                HealthConnectContext.create(mContext, mCurrentForegroundUser);
+        mTransactionManager.onUserUnlocked(hcContext);
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
@@ -186,8 +187,8 @@ public class HealthConnectManagerService extends SystemService {
                 .onUserUnlocked(mCurrentForegroundUser);
 
         mHealthConnectInjector.getBackupRestore().setupForUser(mCurrentForegroundUser);
-        mHealthConnectInjector.getAppInfoHelper().setupForUser(storageContext);
-        mHealthConnectInjector.getHealthDataCategoryPriorityHelper().setupForUser(storageContext);
+        mHealthConnectInjector.getAppInfoHelper().setupForUser(hcContext);
+        mHealthConnectInjector.getHealthDataCategoryPriorityHelper().setupForUser(hcContext);
 
         if (Flags.clearCachesAfterSwitchingUser()) {
             // Clear preferences cache again after the user switching is done as there's a race
