@@ -23,7 +23,6 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 
 import static com.android.internal.util.Preconditions.checkArgument;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
 
 import static java.util.Objects.requireNonNull;
@@ -63,10 +62,7 @@ import com.android.server.healthconnect.storage.utils.TableColumnPair;
 import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -545,29 +541,6 @@ public final class TransactionManager {
     }
 
     /**
-     * Handles the aggregation requests for {@code aggregateTableRequest}
-     *
-     * @param aggregateTableRequest an aggregate request.
-     */
-    public void populateWithAggregation(
-            AggregateTableRequest aggregateTableRequest,
-            String packageName,
-            Set<Integer> recordTypeIds,
-            AccessLogsHelper accessLogsHelper,
-            boolean shouldRecordAccessLog) {
-        final SQLiteDatabase db = getReadableDb();
-        try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
-                Cursor metaDataCursor =
-                        db.rawQuery(
-                                aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
-            aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
-        }
-        if (Flags.addMissingAccessLogs() && shouldRecordAccessLog) {
-            accessLogsHelper.recordReadAccessLog(getWritableDb(), packageName, recordTypeIds);
-        }
-    }
-
-    /**
      * Reads the records {@link RecordInternal} stored in the HealthConnect database.
      *
      * @param request a read request.
@@ -687,29 +660,16 @@ public final class TransactionManager {
         return getReadableDb().rawQuery(request.getReadCommand(), null);
     }
 
-    /** Returns the count of rows that would be returned by the given request. */
-    public int count(ReadTableRequest request) {
-        return count(request, getReadableDb());
-    }
-
     /**
-     * Returns the count of rows that would be returned by the given request.
+     * Reads the given {@link SQLiteDatabase} using the given {@link ReadTableRequest}.
      *
-     * <p>Use {@link #count(ReadTableRequest)} unless you already have the database from a
-     * transaction.
+     * <p>Note: It is the responsibility of the caller to close the returned cursor.
      */
-    public static int count(ReadTableRequest request, SQLiteDatabase db) {
-        String countSql = request.getCountCommand();
+    public Cursor read(SQLiteDatabase db, ReadTableRequest request) {
         if (Constants.DEBUG) {
-            Slog.d(TAG, "Count query: " + countSql);
+            Slog.d(TAG, "Read query: " + request.getReadCommand());
         }
-        try (Cursor cursor = db.rawQuery(countSql, null)) {
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(0);
-            } else {
-                throw new RuntimeException("Bad count SQL:" + countSql);
-            }
-        }
+        return db.rawQuery(request.getReadCommand(), null);
     }
 
     /**
@@ -723,81 +683,29 @@ public final class TransactionManager {
         return getReadableDb().rawQuery(sql, selectionArgs);
     }
 
+    /** Returns the count of rows that would be returned by the given request. */
+    public int count(ReadTableRequest request) {
+        return count(getReadableDb(), request);
+    }
+
     /**
-     * Reads the given {@link SQLiteDatabase} using the given {@link ReadTableRequest}.
+     * Returns the count of rows that would be returned by the given request.
      *
-     * <p>Note: It is the responsibility of the caller to close the returned cursor.
-     *
-     * @param db a {@link SQLiteDatabase}.
-     * @param request a {@link ReadTableRequest}.
+     * <p>Use {@link #count(ReadTableRequest)} unless you already have the database from a
+     * transaction.
      */
-    public Cursor read(SQLiteDatabase db, ReadTableRequest request) {
+    public static int count(SQLiteDatabase db, ReadTableRequest request) {
+        String countSql = request.getCountCommand();
         if (Constants.DEBUG) {
-            Slog.d(TAG, "Read query: " + request.getReadCommand());
+            Slog.d(TAG, "Count query: " + countSql);
         }
-        return db.rawQuery(request.getReadCommand(), null);
-    }
-
-    public long getLastRowIdFor(String tableName) {
-        final SQLiteDatabase db = getReadableDb();
-        try (Cursor cursor = db.rawQuery(StorageUtils.getMaxPrimaryKeyQuery(tableName), null)) {
-            cursor.moveToFirst();
-            return cursor.getLong(cursor.getColumnIndex(PRIMARY_COLUMN_NAME));
-        }
-    }
-
-    /**
-     * Get number of entries in the given table.
-     *
-     * @param tableName Name of table
-     * @return Number of entries in the given table
-     */
-    public long queryNumEntries(String tableName) {
-        requireNonNull(tableName);
-        return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
-    }
-
-    /**
-     * Size of Health Connect database in bytes.
-     *
-     * @return Size of the database
-     */
-    public long getDatabaseSize() {
-        return mHealthConnectDatabase.getDatabasePath().length();
-    }
-
-    /**
-     * @return list of distinct packageNames corresponding to the input table name after querying
-     *     the table.
-     */
-    public Map<Integer, Set<Long>> getDistinctPackageIdsForRecordsTable(Set<Integer> recordTypes)
-            throws SQLiteException {
-        final SQLiteDatabase db = getReadableDb();
-        HashMap<Integer, Set<Long>> recordTypeToPackageIdsMap = new HashMap<>();
-        for (Integer recordType : recordTypes) {
-            RecordHelper<?> recordHelper =
-                    mInternalHealthConnectMappings.getRecordHelper(recordType);
-            HashSet<Long> packageIds = new HashSet<>();
-            try (Cursor cursorForDistinctPackageNames =
-                    db.rawQuery(
-                            /* sql query */
-                            recordHelper
-                                    .getReadTableRequestWithDistinctAppInfoIds()
-                                    .getReadCommand(),
-                            /* selectionArgs */ null)) {
-                if (cursorForDistinctPackageNames.getCount() > 0) {
-                    while (cursorForDistinctPackageNames.moveToNext()) {
-                        packageIds.add(
-                                cursorForDistinctPackageNames.getLong(
-                                        cursorForDistinctPackageNames.getColumnIndex(
-                                                APP_INFO_ID_COLUMN_NAME)));
-                    }
-                }
+        try (Cursor cursor = db.rawQuery(countSql, null)) {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            } else {
+                throw new RuntimeException("Bad count SQL:" + countSql);
             }
-            recordTypeToPackageIdsMap.put(recordType, packageIds);
         }
-
-        return recordTypeToPackageIdsMap;
     }
 
     /** Check if a table exists. */
@@ -805,14 +713,54 @@ public final class TransactionManager {
         return StorageUtils.checkTableExists(getReadableDb(), tableName);
     }
 
+    /** Get number of entries in the given table. */
+    public long queryNumEntries(String tableName) {
+        return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
+    }
+
     /**
-     * Runs a {@link TransactionRunnable} task in a Transaction. Using the given request on the
-     * provided DB.
+     * Handles the aggregation requests for {@code aggregateTableRequest}
+     *
+     * @param aggregateTableRequest an aggregate request.
+     */
+    public void populateWithAggregation(
+            AggregateTableRequest aggregateTableRequest,
+            String packageName,
+            Set<Integer> recordTypeIds,
+            AccessLogsHelper accessLogsHelper,
+            boolean shouldRecordAccessLog) {
+        final SQLiteDatabase db = getReadableDb();
+        try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
+                Cursor metaDataCursor =
+                        db.rawQuery(
+                                aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
+            aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
+        }
+        if (Flags.addMissingAccessLogs() && shouldRecordAccessLog) {
+            accessLogsHelper.recordReadAccessLog(getWritableDb(), packageName, recordTypeIds);
+        }
+    }
+
+    /** Size of Health Connect database in bytes. */
+    public long getDatabaseSize() {
+        return mHealthConnectDatabase.getDatabasePath().length();
+    }
+
+    public File getDatabasePath() {
+        return mHealthConnectDatabase.getDatabasePath();
+    }
+
+    public int getDatabaseVersion() {
+        return getReadableDb().getVersion();
+    }
+
+    /**
+     * Runs a {@link Runnable} task in a Transaction. Using the given request on the provided DB.
      *
      * <p>Note that the provided DB can not be read-only.
      */
-    public static <E extends Throwable> void runAsTransaction(
-            SQLiteDatabase db, TransactionRunnable<E> task) throws E {
+    public static <E extends Throwable> void runAsTransaction(SQLiteDatabase db, Runnable<E> task)
+            throws E {
         checkArgument(!db.isReadOnly(), "db is read only");
         db.beginTransaction();
         try {
@@ -823,8 +771,8 @@ public final class TransactionManager {
         }
     }
 
-    /** Runs a {@link TransactionRunnable} task in a Transaction. */
-    public <E extends Throwable> void runAsTransaction(TransactionRunnable<E> task) throws E {
+    /** Runs a {@link Runnable} task in a Transaction. */
+    public <E extends Throwable> void runAsTransaction(Runnable<E> task) throws E {
         final SQLiteDatabase db = getWritableDb();
         db.beginTransaction();
         try {
@@ -835,15 +783,30 @@ public final class TransactionManager {
         }
     }
 
+    /** Runs a {@link Runnable} task without a transaction. */
+    public <E extends Throwable> void runWithoutTransaction(Runnable<E> task) throws E {
+        final SQLiteDatabase db = getWritableDb();
+        task.run(db);
+    }
+
     /**
-     * Runs a {@link TransactionRunnableWithReturn} task in a Transaction.
+     * Runnable interface where run method throws Throwable or its subclasses.
      *
-     * @param task is a {@link TransactionRunnableWithReturn}.
+     * @param <E> Throwable or its subclass.
+     */
+    public interface Runnable<E extends Throwable> {
+        /** Task to be executed that throws throwable of type E. */
+        void run(SQLiteDatabase db) throws E;
+    }
+
+    /**
+     * Runs a {@link RunnableWithReturn} task in a Transaction.
+     *
+     * @param task is a {@link RunnableWithReturn}.
      * @param <R> is the return type of the {@code task}.
      * @param <E> is the exception thrown by the {@code task}.
      */
-    public <R, E extends Throwable> R runAsTransaction(TransactionRunnableWithReturn<R, E> task)
-            throws E {
+    public <R, E extends Throwable> R runAsTransaction(RunnableWithReturn<R, E> task) throws E {
         final SQLiteDatabase db = getWritableDb();
         db.beginTransaction();
         try {
@@ -853,6 +816,31 @@ public final class TransactionManager {
         } finally {
             db.endTransaction();
         }
+    }
+
+    /**
+     * Runs a {@link RunnableWithReturn} task without a transaction.
+     *
+     * @param task is a {@link RunnableWithReturn}.
+     * @param <R> is the return type of the {@code task}.
+     * @param <E> is the exception thrown by the {@code task}.
+     */
+    public <R, E extends Throwable> R runWithoutTransaction(RunnableWithReturn<R, E> task)
+            throws E {
+        final SQLiteDatabase db = getWritableDb();
+        return task.run(db);
+    }
+
+    /**
+     * Runnable interface where run method throws Throwable or its subclasses and returns any data
+     * type R.
+     *
+     * @param <E> Throwable or its subclass.
+     * @param <R> any data type.
+     */
+    public interface RunnableWithReturn<R, E extends Throwable> {
+        /** Task to be executed that throws throwable of type E and returns type R. */
+        R run(SQLiteDatabase db) throws E;
     }
 
     /** Note: NEVER close this DB */
@@ -873,14 +861,6 @@ public final class TransactionManager {
             throw new InternalError("SQLite DB not found");
         }
         return sqLiteDatabase;
-    }
-
-    public File getDatabasePath() {
-        return mHealthConnectDatabase.getDatabasePath();
-    }
-
-    public int getDatabaseVersion() {
-        return getReadableDb().getVersion();
     }
 
     /**
@@ -973,21 +953,5 @@ public final class TransactionManager {
             }
             cursorAdditionalUuids.close();
         }
-    }
-
-    public interface TransactionRunnable<E extends Throwable> {
-        void run(SQLiteDatabase db) throws E;
-    }
-
-    /**
-     * Runnable interface where run method throws Throwable or its subclasses and returns any data
-     * type R.
-     *
-     * @param <E> Throwable or its subclass.
-     * @param <R> any data type.
-     */
-    public interface TransactionRunnableWithReturn<R, E extends Throwable> {
-        /** Task to be executed that throws throwable of type E and returns type R. */
-        R run(SQLiteDatabase db) throws E;
     }
 }
