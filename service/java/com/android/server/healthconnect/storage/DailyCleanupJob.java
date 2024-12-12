@@ -98,7 +98,7 @@ public class DailyCleanupJob {
                                 deleteTableRequests.add(request);
                             });
             try {
-                mTransactionManager.deleteAll(
+                mTransactionManager.deleteAllRecords(
                         new DeleteTransactionRequest(deleteTableRequests),
                         /* shouldRecordDeleteAccessLogs= */ false,
                         mAccessLogsHelper);
@@ -111,7 +111,7 @@ public class DailyCleanupJob {
 
     private void deleteStaleChangeLogEntries() {
         try {
-            mTransactionManager.deleteWithoutChangeLogs(
+            mTransactionManager.deleteAll(
                     List.of(
                             ChangeLogsHelper.getDeleteRequestForAutoDelete(),
                             ChangeLogsRequestHelper.getDeleteRequestForAutoDelete()));
@@ -123,7 +123,7 @@ public class DailyCleanupJob {
 
     private void deleteStaleAccessLogEntries() {
         try {
-            mTransactionManager.deleteWithoutChangeLogs(
+            mTransactionManager.deleteAll(
                     List.of(AccessLogsHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Access logs failed", exception);

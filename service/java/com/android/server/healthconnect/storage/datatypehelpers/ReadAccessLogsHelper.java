@@ -36,7 +36,6 @@ import androidx.annotation.VisibleForTesting;
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
@@ -186,7 +185,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
                                 /* readTimeStamp' */ readTimeStamp);
                 UpsertTableRequest upsertTableRequest =
                         new UpsertTableRequest(TABLE_NAME, contentValues);
-                mTransactionManager.insertRecord(db, upsertTableRequest);
+                mTransactionManager.insert(db, upsertTableRequest);
             }
         }
     }
@@ -208,7 +207,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             return;
         }
         Map<Integer, Map<Long, Long>> datatypeToLatestWritePerPackageName =
-                processRecordsIntoLogs(recordsRead);
+                processRecordsIntoLogs(recordsRead, readerAppInfoId);
 
         for (Map.Entry<Integer, Map<Long, Long>> datatypeToLatestWritePerPackageNameEntry :
                 datatypeToLatestWritePerPackageName.entrySet()) {
@@ -223,13 +222,13 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
                                 /* readTimeStamp' */ readTimeStamp);
                 UpsertTableRequest upsertTableRequest =
                         new UpsertTableRequest(TABLE_NAME, contentValues);
-                mTransactionManager.insertRecord(db, upsertTableRequest);
+                mTransactionManager.insert(db, upsertTableRequest);
             }
         }
     }
 
     private Map<Integer, Map<Long, Long>> processRecordsIntoLogs(
-            List<RecordInternal<?>> recordInternals) {
+            List<RecordInternal<?>> recordInternals, long readerAppInfoId) {
         // We only need to store latest entry for each package name and datatype pairing
         // datatype -> package name (app id) -> latest timestamp
         Map<Integer, Map<Long, Long>> datatypeToLatestWritePerPackageName = new HashMap<>();
@@ -238,7 +237,9 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             int dataType = recordInternal.getRecordType();
             long appInfoId = recordInternal.getAppInfoId();
             long recordTimeStamp = recordInternal.getRecordTime();
-            if (appInfoId == DEFAULT_LONG || recordTimeStamp == DEFAULT_LONG) {
+            if (appInfoId == DEFAULT_LONG
+                    || recordTimeStamp == DEFAULT_LONG
+                    || appInfoId == readerAppInfoId) {
                 continue;
             }
             datatypeToLatestWritePerPackageName.putIfAbsent(dataType, new HashMap<>());

@@ -55,6 +55,21 @@ public final class PackageInfoUtils {
         return healthAppsInfos;
     }
 
+    public List<PackageInfo> getPackagesCompatibleWithHealthConnect(
+            Context context, UserHandle user) {
+        List<PackageInfo> allInfos =
+                getPackageManagerAsUser(context, user)
+                        .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
+        List<PackageInfo> healthAppsInfos = new ArrayList<>();
+
+        for (PackageInfo info : allInfos) {
+            if (hasRequestedHealthPermission(context, info)) {
+                healthAppsInfos.add(info);
+            }
+        }
+        return healthAppsInfos;
+    }
+
     boolean hasGrantedHealthPermissions(String[] packageNames, UserHandle user, Context context) {
         for (String packageName : packageNames) {
             PackageInfo info = getPackageInfoWithPermissionsAsUser(packageName, user, context);
@@ -87,10 +102,11 @@ public final class PackageInfoUtils {
         if (packageInfo.requestedPermissions == null) {
             return false;
         }
+        Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(context);
 
         for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
             String currPerm = packageInfo.requestedPermissions[i];
-            if (HealthConnectManager.isHealthPermission(context, currPerm)
+            if (healthPermissions.contains(currPerm)
                     && ((packageInfo.requestedPermissionsFlags[i]
                                     & PackageInfo.REQUESTED_PERMISSION_GRANTED)
                             != 0)) {
@@ -206,5 +222,19 @@ public final class PackageInfoUtils {
 
     private static PackageManager getPackageManagerAsUser(Context context, UserHandle user) {
         return context.createContextAsUser(user, /* flags */ 0).getPackageManager();
+    }
+
+    private boolean hasRequestedHealthPermission(Context context, PackageInfo packageInfo) {
+        if (packageInfo == null || packageInfo.requestedPermissions == null) {
+            return false;
+        }
+
+        Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(context);
+        for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
+            if (healthPermissions.contains(packageInfo.requestedPermissions[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -38,6 +38,7 @@ import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.compatibility.common.util.FeatureUtil;
 import com.android.healthfitness.flags.Flags;
@@ -48,9 +49,11 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
+@RunWith(AndroidJUnit4.class)
 public class PermissionPackageChangesOrchestratorTest {
     private static final String SELF_PACKAGE_NAME = "com.android.healthconnect.unittests";
     private static final UserHandle CURRENT_USER = Process.myUserHandle();

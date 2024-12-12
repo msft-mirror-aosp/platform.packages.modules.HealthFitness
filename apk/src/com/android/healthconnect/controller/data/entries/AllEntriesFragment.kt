@@ -27,6 +27,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,7 +48,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
-import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.DataType
@@ -70,14 +70,16 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
     companion object {
         private const val DELETION_TAG = "DeletionTag"
-        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY = "START_DELETION_ENTRIES_AND_ACCESS_KEY"
+        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY =
+            "START_DELETION_ENTRIES_AND_ACCESS_KEY"
     }
 
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var timeSource: TimeSource
 
     private lateinit var permissionType: HealthPermissionType
-    private val entriesViewModel: EntriesViewModel by activityViewModels()
+    private val entriesViewModel: EntriesViewModel by
+        viewModels(ownerProducer = { requireParentFragment() })
     private val deletionViewModel: DeletionViewModel by activityViewModels()
     private lateinit var dateNavigationView: DateNavigationView
     private lateinit var entriesRecyclerView: RecyclerView

@@ -30,14 +30,18 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 
+@RunWith(AndroidJUnit4.class)
 public class AconfigFlagHelperTest {
     @ClassRule public static final SetFlagsRule.ClassRule mClassRule = new SetFlagsRule.ClassRule();
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();

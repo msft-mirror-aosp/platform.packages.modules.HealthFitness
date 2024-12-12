@@ -40,7 +40,7 @@ import androidx.annotation.Nullable;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -75,7 +75,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             "android:string/config_defaultHealthConnectApp";
     public static final String INACTIVE_APPS_ADDED = "inactive_apps_added";
 
-    private StorageContext mUserContext;
+    private HealthConnectContext mUserContext;
     private final AppInfoHelper mAppInfoHelper;
     private final PackageInfoUtils mPackageInfoUtils;
     private final TransactionManager mTransactionManager;
@@ -90,7 +90,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
     public HealthDataCategoryPriorityHelper(
-            StorageContext userContext,
+            HealthConnectContext userContext,
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
             PreferenceHelper preferenceHelper,
@@ -120,7 +120,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     }
 
     /** Setup HealthDataCategoryPriorityHelper for the given user. */
-    public synchronized void setupForUser(StorageContext userContext) {
+    public synchronized void setupForUser(HealthConnectContext userContext) {
         mUserContext = userContext;
         // While we already call clearCache() in HCManager.onUserSwitching(), calling this again
         // here in case any of the methods below was called in between that initialized the cache
@@ -334,7 +334,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             @HealthDataCategory.Type int dataCategory,
             List<Long> newList) {
         try {
-            mTransactionManager.insertOrReplace(request);
+            mTransactionManager.insertOrReplaceOnConflict(request);
             getHealthDataCategoryToAppIdPriorityMap().put(dataCategory, newList);
         } catch (Exception e) {
             Slog.e(TAG, "Priority update failed", e);

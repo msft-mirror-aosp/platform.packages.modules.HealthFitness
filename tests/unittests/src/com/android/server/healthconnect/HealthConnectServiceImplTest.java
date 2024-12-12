@@ -23,6 +23,7 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VACCINES;
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
@@ -49,6 +50,7 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedica
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getGetMedicalDataSourceRequest;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -399,7 +401,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getPreferenceHelper(),
                         healthConnectInjector.getDatabaseHelpers(),
-                        healthConnectInjector.getPreferencesManager());
+                        healthConnectInjector.getPreferencesManager(),
+                        healthConnectInjector.getReadAccessLogsHelper());
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 
@@ -939,6 +942,24 @@ public class HealthConnectServiceImplTest {
                         anyBoolean(),
                         /* isCalledFromBgWithoutBgRead= */ eq(false),
                         eq(mAppInfoHelper));
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByIds_maxPageSizeExceeded_throws() throws RemoteException {
+        List<String> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(UUID.randomUUID().toString());
+        }
+
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getMessage()).contains("The number of requested IDs must be <= 5000");
     }
 
     @Test
@@ -1605,7 +1626,7 @@ public class HealthConnectServiceImplTest {
         verify(mReadMedicalResourcesResponseCallback, timeout(5000).times(1))
                 .onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+                .isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     @Test
@@ -2151,8 +2172,7 @@ public class HealthConnectServiceImplTest {
 
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
-        assertThat(exception.getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
         verifyNoMoreInteractions(callback);
     }
 
@@ -2211,8 +2231,7 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         verifyNoMoreInteractions(callback);
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
-        assertThat(exception.getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     @Test
