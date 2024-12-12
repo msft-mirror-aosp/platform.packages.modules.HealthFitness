@@ -156,7 +156,8 @@ constructor(
             when (entriesResults) {
                 is UseCaseResults.Success -> {
                     list.addAll(entriesResults.data)
-                    numOfEntries = list.size
+                    numOfEntries =
+                        list.filterNot { it is FormattedEntry.EntryDateSectionHeader }.size
                     if (list.isEmpty()) {
                         _entries.postValue(EntriesFragmentState.Empty)
                     } else {
