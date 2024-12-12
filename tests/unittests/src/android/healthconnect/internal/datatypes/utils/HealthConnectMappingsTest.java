@@ -42,15 +42,19 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.healthfitness.flags.Flags;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RunWith(AndroidJUnit4.class)
 @EnableFlags({Flags.FLAG_HEALTH_CONNECT_MAPPINGS})
 public class HealthConnectMappingsTest {
 

@@ -36,7 +36,10 @@ import android.health.connect.datatypes.MindfulnessSessionRecord;
 import android.health.connect.internal.datatypes.MindfulnessSessionRecordInternal;
 import android.os.Parcel;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -44,6 +47,7 @@ import java.time.ZoneOffset;
 import java.util.TimeZone;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class MindfulSessionRecordInternalTest {
 
     @Test

@@ -25,7 +25,7 @@ import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 
 import org.junit.rules.ExternalResource;
 
@@ -55,7 +55,7 @@ import java.io.File;
  */
 @Deprecated
 public class HealthConnectDatabaseTestRule extends ExternalResource {
-    private StorageContext mStorageContext;
+    private HealthConnectContext mHcContext;
     private final String mDatabaseName;
 
     // Mock Environment using ExtendedMockitoRule in the test using this rule.
@@ -72,15 +72,15 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
         File mockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
-        mStorageContext = StorageContext.create(context, context.getUser());
+        mHcContext = HealthConnectContext.create(context, context.getUser());
     }
 
     @Override
     public void after() {
-        mStorageContext.deleteDatabase(mDatabaseName);
+        mHcContext.deleteDatabase(mDatabaseName);
     }
 
-    public StorageContext getDatabaseContext() {
-        return mStorageContext;
+    public HealthConnectContext getDatabaseContext() {
+        return mHcContext;
     }
 }

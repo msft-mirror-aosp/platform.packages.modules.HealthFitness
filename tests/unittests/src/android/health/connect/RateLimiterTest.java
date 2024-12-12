@@ -21,16 +21,20 @@ import static org.hamcrest.CoreMatchers.containsString;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.health.connect.ratelimiter.RateLimiter.QuotaCategory;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.time.Instant;
 
+@RunWith(AndroidJUnit4.class)
 public class RateLimiterTest {
     private static final int UID = 1;
     private static final boolean IS_IN_FOREGROUND_TRUE = true;

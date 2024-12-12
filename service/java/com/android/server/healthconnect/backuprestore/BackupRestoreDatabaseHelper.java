@@ -43,6 +43,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeToke
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -73,6 +74,7 @@ public class BackupRestoreDatabaseHelper {
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
+    private final ReadAccessLogsHelper mReadAccessLogsHelper;
 
     // TODO: b/377648858 - maybe also allow client passes its own page size.
     @VisibleForTesting static final int MAXIMUM_PAGE_SIZE = 5000;
@@ -86,7 +88,8 @@ public class BackupRestoreDatabaseHelper {
             HealthConnectMappings healthConnectMappings,
             InternalHealthConnectMappings internalHealthConnectMappings,
             ChangeLogsHelper changeLogsHelper,
-            ChangeLogsRequestHelper changeLogsRequestHelper) {
+            ChangeLogsRequestHelper changeLogsRequestHelper,
+            ReadAccessLogsHelper readAccessLogsHelper) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mAccessLogsHelper = accessLogsHelper;
@@ -95,6 +98,7 @@ public class BackupRestoreDatabaseHelper {
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mChangeLogsHelper = changeLogsHelper;
         mChangeLogsRequestHelper = changeLogsRequestHelper;
+        mReadAccessLogsHelper = readAccessLogsHelper;
     }
 
     /**
@@ -191,6 +195,7 @@ public class BackupRestoreDatabaseHelper {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
+                                mReadAccessLogsHelper,
                                 /* shouldRecordAccessLog= */ false);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
@@ -274,6 +279,7 @@ public class BackupRestoreDatabaseHelper {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
 
         List<BackupChange> backupChanges =
