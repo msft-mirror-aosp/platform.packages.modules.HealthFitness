@@ -448,3 +448,12 @@ flag {
     bug: "373629817"
     is_exported: true
 }
+
+flag {
+    name: "refactor_aggregations"
+    namespace: "health_fitness_aconfig"
+    description: "Make changes to the aggregation code to make it safer and more intuitive."
+    bug: "382661671"
+    is_fixed_read_only: true
+    is_exported: true
+}

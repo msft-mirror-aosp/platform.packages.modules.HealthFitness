@@ -292,20 +292,6 @@ open class AppDataFragment : Hilt_AppDataFragment() {
         }
     }
 
-    private fun onDeletionMethod(preference: DeletionPermissionTypesPreference): () -> Unit {
-        return {
-            if (
-                preference.getHealthPermissionType() !in
-                    viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()
-            ) {
-                viewModel.addToDeletionSet(preference.getHealthPermissionType())
-            } else {
-                viewModel.removeFromDeletionSet(preference.getHealthPermissionType())
-            }
-            updateMenu(screenState = DELETE)
-        }
-    }
-
     private fun deleteData() {
         deletionViewModel.setDeletionType(
             DeletionType.DeleteHealthPermissionTypesFromApp(

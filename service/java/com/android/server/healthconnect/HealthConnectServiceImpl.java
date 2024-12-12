@@ -912,7 +912,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mAppInfoHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
-                    mTransactionManager.updateAll(mAppInfoHelper, mAccessLogsHelper, request);
+                    mTransactionManager.updateAllRecords(
+                            mAppInfoHelper, mAccessLogsHelper, request);
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
                             recordInternals, attributionSource.getPackageName());

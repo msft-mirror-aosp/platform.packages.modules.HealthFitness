@@ -91,7 +91,7 @@ public final class BloodPressureRecordHelper
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;
         switch (aggregationType.getAggregationTypeIdentifier()) {
