@@ -57,6 +57,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
@@ -73,12 +74,14 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
 public class AccessLogsHelperTest {
 
     @Rule(order = 1)
@@ -135,7 +138,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedSingleMedicalResourceType_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
@@ -161,7 +164,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMultipleMedicalResourceTypes_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
@@ -192,7 +195,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMedicalDataSource_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,

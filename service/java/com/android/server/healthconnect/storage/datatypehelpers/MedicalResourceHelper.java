@@ -69,7 +69,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.TransactionManager.TransactionRunnableWithReturn;
+import com.android.server.healthconnect.storage.TransactionManager.RunnableWithReturn;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.CreateIndexRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
@@ -954,7 +954,7 @@ public final class MedicalResourceHelper {
                             + "(s).");
         }
         return mTransactionManager.runAsTransaction(
-                (TransactionRunnableWithReturn<List<MedicalResource>, RuntimeException>)
+                (RunnableWithReturn<List<MedicalResource>, RuntimeException>)
                         db ->
                                 readDataSourcesAndUpsertMedicalResources(
                                         db,
@@ -1115,12 +1115,12 @@ public final class MedicalResourceHelper {
         if (Flags.phrReadMedicalResourcesFixQueryLimit()) {
             Integer originalLimit = request.getFinalLimit();
             request.setFinalLimit(null);
-            totalRowCount = TransactionManager.count(request, db);
+            totalRowCount = TransactionManager.count(db, request);
             request.setFinalLimit(originalLimit);
         } else {
             Integer originalLimit = request.getLimit();
             request.setLimit(null);
-            totalRowCount = TransactionManager.count(request, db);
+            totalRowCount = TransactionManager.count(db, request);
             request.setLimit(originalLimit);
         }
         try (Cursor cursor = db.rawQuery(request.getReadCommand(), null)) {

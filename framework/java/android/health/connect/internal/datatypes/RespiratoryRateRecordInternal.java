@@ -19,7 +19,6 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.RespiratoryRateRecord;
-import android.health.connect.proto.backuprestore.InstantRecord;
 import android.os.Parcel;
 
 /**
@@ -59,10 +58,4 @@ public final class RespiratoryRateRecordInternal
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mRate);
     }
-
-    @Override
-    void populateToInstantRecordProto(InstantRecord.Builder instantRecord) {}
-
-    @Override
-    void populateFromInstantRecordProto(InstantRecord instantRecord) {}
 }

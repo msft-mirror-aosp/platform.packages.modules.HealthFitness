@@ -55,6 +55,7 @@ import android.util.Slog;
 
 import androidx.annotation.Nullable;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
@@ -198,35 +199,64 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /**
-     * Used to get the Aggregate result for aggregate types
+     * Used to get an {@link AggregateResult} for data types which don't support priority.
      *
-     * @return {@link AggregateResult} for {@link AggregationType} or null if that aggregation type
-     *     is not handled.
+     * @param cursor the result of the aggregation database query. Contains one row per aggregation
+     *     group. The query is constructed based on the return value of {@link
+     *     #getAggregateParams(AggregationType)}. The cursor points to the row representing the
+     *     group and must not be moved.
+     * @param aggregationType the aggregation type being calculated.
+     * @return {@link AggregateResult} for {@link AggregationType}.
      */
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor cursor, AggregationType<?> aggregationType) {
+        if (Flags.refactorAggregations()) {
+            throw new UnsupportedOperationException("Not implemented by the subclass");
+        }
+
         return null;
     }
 
     /**
-     * Used to get the Aggregate result for aggregate types where the priority of apps is to be
-     * considered for overlapping data for sleep and activity interval records
+     * Used to get an {@link AggregateResult} for derived types.
      *
+     * <p>Called once per aggregation group.
+     *
+     * @param results the result of the aggregation database query. Contains one row per aggregation
+     *     group. The query is constructed based on the return value of {@link
+     *     #getAggregateParams(AggregationType)}. The cursor points to the row representing the
+     *     first group.
+     * @param aggregationType the aggregation type being calculated.
+     * @param total the calculated derived value for this group returned by {@link
+     *     #deriveAggregate(Cursor, AggregateTableRequest, TransactionManager)}.
      * @return {@link AggregateResult} for {@link AggregationType}
      */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getDerivedAggregateResult(
             Cursor results, AggregationType<?> aggregationType, double total) {
+        if (Flags.refactorAggregations()) {
+            throw new UnsupportedOperationException("Not implemented by the subclass");
+        }
+
         return null;
     }
 
     /**
-     * Used to calculate and get aggregate results for data types that support derived aggregates
+     * Used to calculate and get aggregate results for data types that support derived aggregates.
+     *
+     * @param cursor the result of the aggregation database query. Contains one row per aggregation
+     *     group. The query is constructed based on the return value of {@link
+     *     #getAggregateParams(AggregationType)}.
+     * @return an array of aggregated values, one element per aggregation group.
      */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public double[] deriveAggregate(
             Cursor cursor, AggregateTableRequest request, TransactionManager transactionManager) {
+        if (Flags.refactorAggregations()) {
+            throw new UnsupportedOperationException("Not implemented by the subclass");
+        }
+
         return null;
     }
 
@@ -678,6 +708,10 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /** Returns the information required to perform aggregate operation. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
+        if (Flags.refactorAggregations()) {
+            throw new UnsupportedOperationException("Not implemented by the subclass");
+        }
+
         return null;
     }
 

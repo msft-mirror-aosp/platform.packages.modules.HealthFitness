@@ -69,9 +69,9 @@ import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.PhrTestUtils;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
@@ -119,7 +119,7 @@ public class ExportManagerTest {
     private Context mContext;
     private TransactionTestUtils mTransactionTestUtils;
     private ExportManager mExportManager;
-    private StorageContext mExportedDbContext;
+    private HealthConnectContext mExportedDbContext;
     private Instant mTimeStamp;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
     private PhrTestUtils mPhrTestUtils;
@@ -153,7 +153,7 @@ public class ExportManagerTest {
         mPhrTestUtils = new PhrTestUtils(mContext, healthConnectInjector);
 
         mExportedDbContext =
-                StorageContext.create(
+                HealthConnectContext.create(
                         mContext, mContext.getUser(), REMOTE_EXPORT_DATABASE_DIR_NAME);
         configureExportUri();
     }
@@ -279,11 +279,10 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
-        StorageContext storageContext =
-                StorageContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
-        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
-                .isFalse();
-        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
+        HealthConnectContext hcContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
+        assertThat(hcContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists()).isFalse();
+        assertThat(hcContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
     }
 
     @Test
@@ -334,16 +333,15 @@ public class ExportManagerTest {
 
     @Test
     public void deleteLocalExportFiles_deletesLocalCopies() {
-        StorageContext storageContext =
-                StorageContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
-        new File(storageContext.getDataDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
-        new File(storageContext.getDataDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
+        HealthConnectContext hcContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
+        new File(hcContext.getDataDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
+        new File(hcContext.getDataDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
 
         mExportManager.deleteLocalExportFiles(mContext.getUser());
 
-        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
-                .isFalse();
-        assertThat(storageContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
+        assertThat(hcContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists()).isFalse();
+        assertThat(hcContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
     }
 
     @Test

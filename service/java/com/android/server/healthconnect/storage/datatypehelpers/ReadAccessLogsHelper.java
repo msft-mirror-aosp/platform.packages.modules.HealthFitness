@@ -207,7 +207,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             return;
         }
         Map<Integer, Map<Long, Long>> datatypeToLatestWritePerPackageName =
-                processRecordsIntoLogs(recordsRead);
+                processRecordsIntoLogs(recordsRead, readerAppInfoId);
 
         for (Map.Entry<Integer, Map<Long, Long>> datatypeToLatestWritePerPackageNameEntry :
                 datatypeToLatestWritePerPackageName.entrySet()) {
@@ -228,7 +228,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
     }
 
     private Map<Integer, Map<Long, Long>> processRecordsIntoLogs(
-            List<RecordInternal<?>> recordInternals) {
+            List<RecordInternal<?>> recordInternals, long readerAppInfoId) {
         // We only need to store latest entry for each package name and datatype pairing
         // datatype -> package name (app id) -> latest timestamp
         Map<Integer, Map<Long, Long>> datatypeToLatestWritePerPackageName = new HashMap<>();
@@ -237,7 +237,9 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             int dataType = recordInternal.getRecordType();
             long appInfoId = recordInternal.getAppInfoId();
             long recordTimeStamp = recordInternal.getRecordTime();
-            if (appInfoId == DEFAULT_LONG || recordTimeStamp == DEFAULT_LONG) {
+            if (appInfoId == DEFAULT_LONG
+                    || recordTimeStamp == DEFAULT_LONG
+                    || appInfoId == readerAppInfoId) {
                 continue;
             }
             datatypeToLatestWritePerPackageName.putIfAbsent(dataType, new HashMap<>());

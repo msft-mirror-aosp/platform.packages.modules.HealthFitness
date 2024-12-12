@@ -94,7 +94,7 @@ public class PreferenceHelper extends DatabaseHelper {
                                         TABLE_NAME,
                                         getContentValues(key, value),
                                         UNIQUE_COLUMN_INFO)));
-        mTransactionManager.insertOrReplaceOnConflict(requests);
+        mTransactionManager.insertOrReplaceAllOnConflict(requests);
         getPreferences().putAll(keyValues);
     }
 

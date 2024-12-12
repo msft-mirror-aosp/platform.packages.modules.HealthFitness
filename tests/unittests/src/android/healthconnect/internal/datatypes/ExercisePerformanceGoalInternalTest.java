@@ -31,12 +31,16 @@ import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.WeightGoalInternal;
 import android.os.Parcel;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class ExercisePerformanceGoalInternalTest {
     @Test
     public void powerGoal_writeToParcelThenRestore_objectsAreIdentical() {
