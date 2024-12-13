@@ -641,7 +641,7 @@ public class TransactionManagerTest {
                 mReadAccessLogsHelper.queryReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
-        assertThat(readAccessLog.getWasReadRecordWrittenInPast30Days()).isEqualTo(true);
+        assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
         assertThat(readAccessLog.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(readAccessLog.getDataType()).isEqualTo(RecordTypeIdentifier.RECORD_TYPE_STEPS);
         assertThat(readAccessLog.getReaderPackage()).isEqualTo(readerPackage);
@@ -816,7 +816,7 @@ public class TransactionManagerTest {
                 mReadAccessLogsHelper.queryReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
-        assertThat(readAccessLog.getWasReadRecordWrittenInPast30Days()).isEqualTo(true);
+        assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
         assertThat(readAccessLog.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(readAccessLog.getDataType()).isEqualTo(RecordTypeIdentifier.RECORD_TYPE_STEPS);
         assertThat(readAccessLog.getReaderPackage()).isEqualTo(readerPackage);
