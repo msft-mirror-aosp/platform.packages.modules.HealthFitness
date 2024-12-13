@@ -130,8 +130,12 @@ public final class HealthConnectPermissionHelper {
         enforceValidPackage(packageName, checkedUser);
         final long token = Binder.clearCallingIdentity();
         try {
+            // checkPermission doesn't have a variant that accepts user, get the packageManager for
+            // the user.
             boolean isAlreadyDenied =
-                    mPackageManager.checkPermission(permissionName, packageName)
+                    mContext.createContextAsUser(checkedUser, /* flags */ 0)
+                                    .getPackageManager()
+                                    .checkPermission(permissionName, packageName)
                             == PackageManager.PERMISSION_DENIED;
             int permissionFlags =
                     mPackageManager.getPermissionFlags(permissionName, packageName, checkedUser);
