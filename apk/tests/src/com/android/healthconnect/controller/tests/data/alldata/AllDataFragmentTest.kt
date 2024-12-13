@@ -215,6 +215,7 @@ class AllDataFragmentTest {
                 )
             )
             .check(matches(isDisplayed()))
+        onView(withText("About health records")).check(matches(isDisplayed()))
     }
 
     @Test
