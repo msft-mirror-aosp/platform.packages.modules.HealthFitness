@@ -70,8 +70,8 @@ class MenstruationPeriodFormatterTest {
             .isEqualTo(
                 FormattedEntry.FormattedDataEntry(
                     uuid = record.metadata.id,
-                    header = TEST_APP_NAME,
-                    headerA11y = TEST_APP_NAME,
+                    header = "Oct 20 – 25 • $TEST_APP_NAME",
+                    headerA11y = "Oct 20 – 25 • $TEST_APP_NAME",
                     title = "Period day 1 of 6",
                     titleA11y = "Period day 1 of 6",
                     dataType = MenstruationPeriodRecord::class,
@@ -91,8 +91,8 @@ class MenstruationPeriodFormatterTest {
             .isEqualTo(
                 FormattedEntry.FormattedDataEntry(
                     uuid = record.metadata.id,
-                    header = TEST_APP_NAME,
-                    headerA11y = TEST_APP_NAME,
+                    header = "Oct 20 – 25 • $TEST_APP_NAME",
+                    headerA11y = "Oct 20 – 25 • $TEST_APP_NAME",
                     title = "Period day 6 of 6",
                     titleA11y = "Period day 6 of 6",
                     dataType = MenstruationPeriodRecord::class,
