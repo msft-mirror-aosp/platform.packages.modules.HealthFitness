@@ -203,6 +203,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
@@ -289,6 +290,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final TimeSource mTimeSource;
     private final DatabaseHelpers mDatabaseHelpers;
     private final PreferencesManager mPreferencesManager;
+    private final ReadAccessLogsHelper mReadAccessLogsHelper;
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
 
@@ -320,7 +322,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             DeviceInfoHelper deviceInfoHelper,
             PreferenceHelper preferenceHelper,
             DatabaseHelpers databaseHelpers,
-            PreferencesManager preferencesManager) {
+            PreferencesManager preferencesManager,
+            ReadAccessLogsHelper readAccessLogsHelper) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -357,6 +360,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mPreferenceHelper = preferenceHelper;
         mDatabaseHelpers = databaseHelpers;
         mPreferencesManager = preferencesManager;
+        mReadAccessLogsHelper = readAccessLogsHelper;
 
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
@@ -391,7 +395,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mChangeLogsRequestHelper,
                                 mHealthDataCategoryPriorityHelper,
                                 mPreferenceHelper,
-                                mExportImportSettingsStorage)
+                                mExportImportSettingsStorage,
+                                mReadAccessLogsHelper)
                         : null;
         mCloudRestoreManager = Flags.cloudBackupAndRestore() ? new CloudRestoreManager() : null;
     }
@@ -782,6 +787,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             mAppInfoHelper,
                                             mAccessLogsHelper,
                                             mDeviceInfoHelper,
+                                            mReadAccessLogsHelper,
                                             shouldRecordAccessLog);
                             pageToken = DEFAULT_LONG;
                         } else {
@@ -791,6 +797,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             mAppInfoHelper,
                                             mAccessLogsHelper,
                                             mDeviceInfoHelper,
+                                            mReadAccessLogsHelper,
                                             shouldRecordAccessLog);
                             records = readRecordsResponse.first;
                             pageToken = readRecordsResponse.second.encode();
@@ -912,7 +919,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mAppInfoHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
-                    mTransactionManager.updateAll(mAppInfoHelper, mAccessLogsHelper, request);
+                    mTransactionManager.updateAllRecords(
+                            mAppInfoHelper, mAccessLogsHelper, request);
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
                             recordInternals, attributionSource.getPackageName());
@@ -1068,6 +1076,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mAppInfoHelper,
                                     mAccessLogsHelper,
                                     mDeviceInfoHelper,
+                                    mReadAccessLogsHelper,
                                     /* shouldRecordAccessLog= */ true);
 
                     List<DeletedLog> deletedLogs =

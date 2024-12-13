@@ -115,7 +115,7 @@ public class CyclingPedalingCadenceRecordHelper
 
     @Override
     @Nullable
-    public final AggregateResult<?> getAggregateResult(
+    public final AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case CYCLING_PEDALING_CADENCE_RECORD_RPM_MIN:

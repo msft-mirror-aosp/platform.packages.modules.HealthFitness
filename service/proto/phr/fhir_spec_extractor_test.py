@@ -369,7 +369,7 @@ class FhirSpecExtractorTest(unittest.TestCase):
             ),
             "id": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SYSTEM_STRING,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID,
                 kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
             ),
             "status": fhirspec_pb2.FhirFieldConfig(
@@ -484,7 +484,7 @@ class FhirSpecExtractorTest(unittest.TestCase):
             ),
             "id": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SYSTEM_STRING,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID,
                 kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
             ),
             "status": fhirspec_pb2.FhirFieldConfig(

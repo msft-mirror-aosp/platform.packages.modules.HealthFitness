@@ -39,12 +39,12 @@ import org.junit.Test
  */
 @NonApiTest(exemptionReasons = [], justification = "METRIC")
 class HealthConnectUiTestHelper {
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val mHealthConnectManager: HealthConnectManager? =
         context.getSystemService<HealthConnectManager>(HealthConnectManager::class.java)
-    private val TEST_APP_PACKAGE_NAME = "android.healthconnect.cts.testhelper"
 
     @Before
     fun setUpClass() {
@@ -81,20 +81,20 @@ class HealthConnectUiTestHelper {
         // IoT devices do not have a UI to run these UI tests
         val pm: PackageManager = context.packageManager
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+                !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
     }
 
     @Test
     fun openHomeFragment() {
         TestHelperUtils.insertRecords(
+            mHealthConnectManager,
             listOf(
                 TestHelperUtils.getBloodPressureRecord(),
                 TestHelperUtils.getHeartRateRecord(),
                 TestHelperUtils.getStepsRecord(),
             ),
-            mHealthConnectManager,
         )
         context.launchMainActivity {
             UiTestUtils.skipOnboardingIfAppears()

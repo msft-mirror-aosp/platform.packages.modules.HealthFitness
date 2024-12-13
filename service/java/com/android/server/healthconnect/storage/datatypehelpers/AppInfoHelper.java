@@ -19,6 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.Constants.DEBUG;
 import static android.health.connect.Constants.DEFAULT_LONG;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
@@ -40,6 +41,7 @@ import android.content.pm.PackageManager.ApplicationInfoFlags;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -53,11 +55,12 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.io.ByteArrayOutputStream;
@@ -108,19 +111,21 @@ public final class AppInfoHelper extends DatabaseHelper {
      */
     @Nullable private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
-    private StorageContext mUserContext;
+    private HealthConnectContext mUserContext;
     private final TransactionManager mTransactionManager;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthConnectMappings mHealthConnectMappings;
 
     public AppInfoHelper(
-            StorageContext userContext,
+            HealthConnectContext userContext,
             TransactionManager transactionManager,
-            HealthConnectMappings healthConnectMappings,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             DatabaseHelpers databaseHelpers) {
         super(databaseHelpers);
         mUserContext = userContext;
         mTransactionManager = transactionManager;
-        mHealthConnectMappings = healthConnectMappings;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
+        mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
     }
 
     @Override
@@ -130,7 +135,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     /** Setup AppInfoHelper for the given user. */
-    public synchronized void setupForUser(StorageContext userContext) {
+    public synchronized void setupForUser(HealthConnectContext userContext) {
         mUserContext = userContext;
         // While we already call clearCache() in HCManager.onUserSwitching(), calling this again
         // here in case any of the methods below was called in between that initialized the cache
@@ -469,7 +474,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                                         .keySet());
 
         Map<Integer, Set<Long>> recordTypeToContributingPackageIdsMap =
-                mTransactionManager.getDistinctPackageIdsForRecordsTable(recordTypesToBeUpdated);
+                getDistinctPackageIdsForRecordsTable(recordTypesToBeUpdated);
 
         Map<Integer, Set<String>> recordTypeToContributingPackageNamesMap = new HashMap<>();
         recordTypeToContributingPackageIdsMap.forEach(
@@ -740,7 +745,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                         getContentValues(packageName, appInfoInternal),
                         UNIQUE_COLUMN_INFO);
 
-        mTransactionManager.updateTable(upsertTableRequest);
+        mTransactionManager.update(upsertTableRequest);
         getAppInfoMap().put(packageName, appInfoInternal);
     }
 
@@ -822,5 +827,40 @@ public final class AppInfoHelper extends DatabaseHelper {
             }
         }
         return packageNames;
+    }
+
+    /**
+     * @return map of distinct packageNames corresponding to the input table name after querying the
+     *     table.
+     */
+    private Map<Integer, Set<Long>> getDistinctPackageIdsForRecordsTable(Set<Integer> recordTypes)
+            throws SQLiteException {
+        return mTransactionManager.runWithoutTransaction(
+                db -> {
+                    HashMap<Integer, Set<Long>> recordTypeToPackageIdsMap = new HashMap<>();
+                    for (Integer recordType : recordTypes) {
+                        RecordHelper<?> recordHelper =
+                                mInternalHealthConnectMappings.getRecordHelper(recordType);
+                        HashSet<Long> packageIds = new HashSet<>();
+                        try (Cursor cursorForDistinctPackageNames =
+                                db.rawQuery(
+                                        /* sql query */
+                                        recordHelper
+                                                .getReadTableRequestWithDistinctAppInfoIds()
+                                                .getReadCommand(),
+                                        /* selectionArgs */ null)) {
+                            if (cursorForDistinctPackageNames.getCount() > 0) {
+                                while (cursorForDistinctPackageNames.moveToNext()) {
+                                    packageIds.add(
+                                            cursorForDistinctPackageNames.getLong(
+                                                    cursorForDistinctPackageNames.getColumnIndex(
+                                                            APP_INFO_ID_COLUMN_NAME)));
+                                }
+                            }
+                        }
+                        recordTypeToPackageIdsMap.put(recordType, packageIds);
+                    }
+                    return recordTypeToPackageIdsMap;
+                });
     }
 }

@@ -45,6 +45,7 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 
@@ -91,6 +92,7 @@ public class TransactionManagerExerciseRoutesTest {
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
+    private ReadAccessLogsHelper mReadAccessLogsHelper;
 
     @Before
     public void setup() {
@@ -104,6 +106,7 @@ public class TransactionManagerExerciseRoutesTest {
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+        mReadAccessLogsHelper = healthConnectInjector.getReadAccessLogsHelper();
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -140,6 +143,7 @@ public class TransactionManagerExerciseRoutesTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
@@ -180,6 +184,7 @@ public class TransactionManagerExerciseRoutesTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
@@ -213,6 +218,7 @@ public class TransactionManagerExerciseRoutesTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
@@ -246,6 +252,7 @@ public class TransactionManagerExerciseRoutesTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
@@ -289,6 +296,7 @@ public class TransactionManagerExerciseRoutesTest {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
+                                mReadAccessLogsHelper,
                                 /* shouldRecordAccessLog= */ false)
                         .first;
 
@@ -335,6 +343,7 @@ public class TransactionManagerExerciseRoutesTest {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
+                                mReadAccessLogsHelper,
                                 /* shouldRecordAccessLog= */ false)
                         .first;
 
@@ -373,6 +382,7 @@ public class TransactionManagerExerciseRoutesTest {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
+                                mReadAccessLogsHelper,
                                 /* shouldRecordAccessLog= */ false)
                         .first;
 
@@ -411,6 +421,7 @@ public class TransactionManagerExerciseRoutesTest {
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
                                 mDeviceInfoHelper,
+                                mReadAccessLogsHelper,
                                 /* shouldRecordAccessLog= */ false)
                         .first;
 

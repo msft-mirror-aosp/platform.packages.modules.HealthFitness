@@ -335,8 +335,7 @@ public class MedicalDataSourceHelper {
             // Get the appInfoId outside the transaction
             long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName);
             return mTransactionManager.runAsTransaction(
-                    (TransactionManager.TransactionRunnableWithReturn<
-                                    MedicalDataSource, RuntimeException>)
+                    (TransactionManager.RunnableWithReturn<MedicalDataSource, RuntimeException>)
                             db ->
                                     createMedicalDataSourceAndAppInfoAndCheckLimits(
                                             db,
@@ -444,8 +443,7 @@ public class MedicalDataSourceHelper {
                     "app has not written any data and does not have any read permission");
         }
         return mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnableWithReturn<
-                                List<MedicalDataSource>, RuntimeException>)
+                (TransactionManager.RunnableWithReturn<List<MedicalDataSource>, RuntimeException>)
                         db -> {
                             String query =
                                     getReadQueryBasedOnPermissionFilters(
@@ -663,8 +661,7 @@ public class MedicalDataSourceHelper {
                     "app doesn't have permission to read based on the given packages");
         }
         return mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnableWithReturn<
-                                List<MedicalDataSource>, RuntimeException>)
+                (TransactionManager.RunnableWithReturn<List<MedicalDataSource>, RuntimeException>)
                         db -> {
                             String readQuery =
                                     getReadQueryByPackagesWithPermissionChecks(
