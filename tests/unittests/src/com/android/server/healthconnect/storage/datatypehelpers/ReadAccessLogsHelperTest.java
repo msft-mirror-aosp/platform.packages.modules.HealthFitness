@@ -54,7 +54,6 @@ import org.mockito.quality.Strictness;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 @EnableFlags({
@@ -125,12 +124,12 @@ public class ReadAccessLogsHelperTest {
 
         mTransactionManager.runAsTransaction(
                 db -> {
-                    mReadAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                    mReadAccessLogsHelper.recordAccessLogForNonAggregationReads(
                             db,
-                            ImmutableList.of(
-                                    stepsRecordRecordInternal, bloodPressureRecordRecordInternal),
                             TEST_APP_PACKAGE_READER,
-                            /* readTimeStamp= */ readTimeStamp);
+                            /* readTimeStamp= */ readTimeStamp,
+                            ImmutableList.of(
+                                    stepsRecordRecordInternal, bloodPressureRecordRecordInternal));
                 });
         List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
 
@@ -165,15 +164,15 @@ public class ReadAccessLogsHelperTest {
 
         mTransactionManager.runAsTransaction(
                 db -> {
-                    mReadAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                    mReadAccessLogsHelper.recordAccessLogForNonAggregationReads(
                             db,
+                            TEST_APP_PACKAGE_READER,
+                            /* readTimeStamp= */ readTimeStamp,
                             ImmutableList.of(
                                     stepsRecordRecordInternalOne,
                                     bloodPressureRecordRecordInternalOne,
                                     stepsRecordRecordInternalTwo,
-                                    bloodPressureRecordRecordInternalTwo),
-                            TEST_APP_PACKAGE_READER,
-                            /* readTimeStamp= */ readTimeStamp);
+                                    bloodPressureRecordRecordInternalTwo));
                 });
         List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
 
@@ -191,25 +190,17 @@ public class ReadAccessLogsHelperTest {
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
                                 /* readTimeStamp= */ readTime,
-                                /* isRecordWithinPast30Days= */ true),
-                        new ReadAccessLog(
-                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
-                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
-                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                                /* readTimeStamp= */ readTime,
                                 /* isRecordWithinPast30Days= */ true));
 
         mTransactionManager.runAsTransaction(
                 db -> {
-                    mReadAccessLogsHelper.recordReadAccessLogForAggregationReads(
+                    mReadAccessLogsHelper.recordAccessLogForAggregationReads(
                             db,
-                            ImmutableList.of(TEST_APP_PACKAGE_WRITER),
                             TEST_APP_PACKAGE_READER,
-                            Set.of(
-                                    RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                                    RecordTypeIdentifier.RECORD_TYPE_DISTANCE),
+                            /* readTimeStamp= */ readTime,
+                            RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
                             /* endTimeStamp= */ endTime,
-                            /* readTimeStamp= */ readTime);
+                            ImmutableList.of(TEST_APP_PACKAGE_WRITER));
                 });
         List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
 
@@ -225,19 +216,19 @@ public class ReadAccessLogsHelperTest {
                         new ReadAccessLog(
                                 /* readerPackage= */ TEST_APP_PACKAGE_READER,
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
-                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
                                 /* readTimeStamp= */ readTime,
                                 /* isRecordWithinPast30Days= */ true));
 
         mTransactionManager.runAsTransaction(
                 db -> {
-                    mReadAccessLogsHelper.recordReadAccessLogForAggregationReads(
+                    mReadAccessLogsHelper.recordAccessLogForAggregationReads(
                             db,
-                            ImmutableList.of(TEST_APP_PACKAGE_WRITER, TEST_APP_PACKAGE_READER),
                             TEST_APP_PACKAGE_READER,
-                            Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS),
+                            /* readTimeStamp= */ readTime,
+                            RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
                             /* endTimeStamp= */ endTime,
-                            /* readTimeStamp= */ readTime);
+                            ImmutableList.of(TEST_APP_PACKAGE_WRITER, TEST_APP_PACKAGE_READER));
                 });
         List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
 
@@ -262,13 +253,13 @@ public class ReadAccessLogsHelperTest {
 
         mTransactionManager.runAsTransaction(
                 db -> {
-                    mReadAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                    mReadAccessLogsHelper.recordAccessLogForNonAggregationReads(
                             db,
+                            TEST_APP_PACKAGE_READER,
+                            /* readTimeStamp= */ readTimeStamp,
                             ImmutableList.of(
                                     stepsRecordRecordInternalOne,
-                                    bloodPressureRecordRecordInternalTwo),
-                            TEST_APP_PACKAGE_READER,
-                            /* readTimeStamp= */ readTimeStamp);
+                                    bloodPressureRecordRecordInternalTwo));
                 });
         List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
 
