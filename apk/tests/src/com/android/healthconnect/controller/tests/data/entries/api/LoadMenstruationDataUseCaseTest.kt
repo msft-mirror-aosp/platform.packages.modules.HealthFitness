@@ -170,8 +170,8 @@ class LoadMenstruationDataUseCaseTest {
                 listOf(
                     FormattedEntry.FormattedDataEntry(
                         uuid = "test_id",
-                        header = TEST_APP_NAME,
-                        headerA11y = TEST_APP_NAME,
+                        header = "Oct 20 – 25 • $TEST_APP_NAME",
+                        headerA11y = "Oct 20 – 25 • $TEST_APP_NAME",
                         title = "Period day 1 of 6",
                         titleA11y = "Period day 1 of 6",
                         dataType = MenstruationPeriodRecord::class,
@@ -180,8 +180,8 @@ class LoadMenstruationDataUseCaseTest {
                     ),
                     FormattedEntry.FormattedDataEntry(
                         uuid = "test_id",
-                        header = TEST_APP_NAME,
-                        headerA11y = TEST_APP_NAME,
+                        header = "Oct 19 – 22 • $TEST_APP_NAME",
+                        headerA11y = "Oct 19 – 22 • $TEST_APP_NAME",
                         title = "Period day 2 of 4",
                         titleA11y = "Period day 2 of 4",
                         dataType = MenstruationPeriodRecord::class,
