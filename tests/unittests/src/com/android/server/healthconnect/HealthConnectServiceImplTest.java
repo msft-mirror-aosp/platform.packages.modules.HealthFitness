@@ -2744,7 +2744,7 @@ public class HealthConnectServiceImplTest {
 
     @Test
     public void testUserSwitching() throws TimeoutException {
-        mHealthConnectService.onUserSwitching(mUserHandle);
+        mHealthConnectService.setupForUser(mUserHandle);
 
         waitForAllScheduledTasksToComplete();
     }
