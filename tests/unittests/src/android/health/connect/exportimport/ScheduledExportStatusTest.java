@@ -18,10 +18,9 @@ package android.health.connect.exportimport;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.HealthConnectManager;
 import android.os.Parcel;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +29,27 @@ import java.time.Instant;
 
 @RunWith(AndroidJUnit4.class)
 public class ScheduledExportStatusTest {
+
+    private static final String TEST_LAST_EXPORT_APP_NAME = "Dropbox";
+    private static final String TEST_LAST_EXPORT_FILE_NAME = "healthconnect.zip";
+    private static final String TEST_NEXT_EXPORT_APP_NAME = "Drive";
+    private static final String TEST_NEXT_EXPORT_FILE_NAME = "exportimport.zip";
+    private static final int TEST_NEXT_EXPORT_SEQUENTIAL_NUMBER = 42;
+
     @Test
     public void testDeserialize() {
         ScheduledExportStatus scheduledExportStatus =
-                new ScheduledExportStatus(
-                        Instant.ofEpochMilli(100),
-                        HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS,
-                        7);
+                new ScheduledExportStatus.Builder()
+                        .setLastSuccessfulExportTime(Instant.ofEpochMilli(100))
+                        .setLastFailedExportTime(Instant.ofEpochMilli(200))
+                        .setDataExportError(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS)
+                        .setPeriodInDays(7)
+                        .setLastExportFileName(TEST_LAST_EXPORT_FILE_NAME)
+                        .setLastExportAppName(TEST_LAST_EXPORT_APP_NAME)
+                        .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
+                        .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
+                        .setNextExportSequentialNumber(TEST_NEXT_EXPORT_SEQUENTIAL_NUMBER)
+                        .build();
 
         Parcel statusParcel = writeToParcel(scheduledExportStatus);
         statusParcel.setDataPosition(0);
@@ -45,16 +58,29 @@ public class ScheduledExportStatusTest {
 
         assertThat(deserializedStatus.getLastSuccessfulExportTime())
                 .isEqualTo(Instant.ofEpochMilli(100));
+        assertThat(deserializedStatus.getLastFailedExportTime())
+                .isEqualTo(Instant.ofEpochMilli(200));
         assertThat(deserializedStatus.getDataExportError())
-                .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                .isEqualTo(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS);
         assertThat(deserializedStatus.getPeriodInDays()).isEqualTo(7);
+        assertThat(deserializedStatus.getLastExportFileName())
+                .isEqualTo(TEST_LAST_EXPORT_FILE_NAME);
+        assertThat(deserializedStatus.getLastExportAppName()).isEqualTo(TEST_LAST_EXPORT_APP_NAME);
+        assertThat(deserializedStatus.getNextExportFileName())
+                .isEqualTo(TEST_NEXT_EXPORT_FILE_NAME);
+        assertThat(deserializedStatus.getNextExportAppName()).isEqualTo(TEST_NEXT_EXPORT_APP_NAME);
+        assertThat(deserializedStatus.getNextExportSequentialNumber())
+                .isEqualTo(TEST_NEXT_EXPORT_SEQUENTIAL_NUMBER);
     }
 
     @Test
     public void testDeserialize_noSuccessfulExport() {
         ScheduledExportStatus scheduledExportStatus =
-                new ScheduledExportStatus(
-                        null, HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, 7);
+                new ScheduledExportStatus.Builder()
+                        .setPeriodInDays(7)
+                        .setDataExportError(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS)
+                        .setNextExportSequentialNumber(8)
+                        .build();
 
         Parcel statusParcel = writeToParcel(scheduledExportStatus);
         statusParcel.setDataPosition(0);
@@ -62,9 +88,15 @@ public class ScheduledExportStatusTest {
                 statusParcel.readTypedObject(ScheduledExportStatus.CREATOR);
 
         assertThat(deserializedStatus.getLastSuccessfulExportTime()).isNull();
+        assertThat(deserializedStatus.getLastFailedExportTime()).isNull();
         assertThat(deserializedStatus.getDataExportError())
-                .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                .isEqualTo(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS);
         assertThat(deserializedStatus.getPeriodInDays()).isEqualTo(7);
+        assertThat(deserializedStatus.getLastExportAppName()).isNull();
+        assertThat(deserializedStatus.getLastExportFileName()).isNull();
+        assertThat(deserializedStatus.getNextExportAppName()).isNull();
+        assertThat(deserializedStatus.getNextExportFileName()).isNull();
+        assertThat(deserializedStatus.getNextExportSequentialNumber()).isEqualTo(8);
     }
 
     private static Parcel writeToParcel(ScheduledExportStatus scheduledExportStatus) {

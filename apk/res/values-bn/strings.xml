@@ -20,8 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"স্বাস্থ্য সম্পর্কিত ডেটাতে অ্যাপের অ্যাক্সেস ম্যানেজ করুন"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"অনুমতি ও ডেটা"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"আপনার ফোনে স্বাস্থ্য ও ফিটনেস সংক্রান্ত ডেটা ম্যানেজ করুন ও কোন কোন অ্যাপ এই ডেটা অ্যাক্সেস করতে পারবে তা নিয়ন্ত্রণ করুন"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"আপনার ডিভাইসে স্বাস্থ্য ও ফিটনেস সংক্রান্ত ডেটা ম্যানেজ করুন ও কোন কোন অ্যাপ এই ডেটা অ্যাক্সেস করতে পারবে তা নিয়ন্ত্রণ করুন"</string>
     <string name="data_title" msgid="4456619761533380816">"ডেটা ও অ্যাক্সেস"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"স্বাস্থ্য বিষয়ক রেকর্ড ব্রাউজ করুন"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"সব বিভাগ"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"সব বিভাগ দেখুন"</string>
     <string name="no_data" msgid="1906986019249068659">"কোনও ডেটা নেই"</string>
@@ -34,6 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{১টি অ্যাপের অ্যাক্সেস আছে}one{#টি অ্যাপের অ্যাক্সেস আছে}other{#টি অ্যাপের অ্যাক্সেস আছে}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"কোনওটিই নয়"</string>
     <string name="entry_details_title" msgid="590184849040247850">"এন্ট্রি সংক্রান্ত বিবরণ"</string>
+    <string name="browse_data_title" msgid="5232691805953326097">"ডেটা ব্রাউজ করুন"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"ডেটা এবং কোন অ্যাপ এটি অ্যাক্সেস করতে পারবে তা দেখুন"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"অটোমেটিক মুছে দেওয়া, ডেটা সোর্স, ব্যাক-আপ নেওয়া ও ফিরিয়ে আনা"</string>
     <string name="backup_title" msgid="211503191266235085">"ব্যাক-আপ নিন"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ডেটা সোর্স ও প্রায়োরিটি"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ইউনিট সেট করুন"</string>
@@ -63,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"সাইকেল ট্র্যাক করা"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"পুষ্টি সংক্রান্ত ডেটা"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"পুষ্টি সংক্রান্ত ডেটা"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"স্বাস্থ্য সচেতন"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"স্বাস্থ্য সচেতন"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"ডেটা ব্রাউজ করুন"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ডেটা ম্যানেজ করুন"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ডেটা এক্সপোর্ট করুন"</string>
@@ -75,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> দেখতে পারবে"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> এডিট করতে পারবে"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"বন্ধ থাকা অ্যাপ"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"এইসব অ্যাপ আর <xliff:g id="DATA_TYPE">%s</xliff:g> সংক্রান্ত ডেটা এডিট করবে না, কিন্তু ডেটা এখনও Health Connect-এ সেভ করা থাকবে"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"এইসব অ্যাপ আর <xliff:g id="DATA_TYPE">%s</xliff:g> পড়তে অথবা লিখতে পারবে না, তবে এখনও Health Connect-এ ডেটা স্টোর করে রাখতে পারবে"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"অ্যাপ আর <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> সংক্রান্ত ডেটা দেখতে বা এডিট করতে পারবে না এবং Health Connect-এ <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> সংক্রান্ত কোনও ডেটা সেভ করা নেই"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"কতক্ষণ ব্যায়াম করেছেন, ব্যায়ামের ধরন, ল্যাপের সংখ্যা, রিপিট হওয়া, সেশন বা সাঁতারের স্ট্রোকের মতো তথ্য এই ডেটায় অন্তর্ভুক্ত থাকে"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ঘুমের বিভিন্ন পর্যায় ও স্লিপ সেশনের মতো তথ্য এই ডেটায় অন্তর্ভুক্ত থাকে"</string>
@@ -261,12 +267,36 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"শরীরের তাপমাত্রার ডেটা"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"শরীরের তাপমাত্রার ডেটা দেখার অনুমতি"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"শরীরের তাপমাত্রার ডেটা এডিট করার অনুমতি"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"সব মেডিক্যাল ডেটা"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"সব মেডিক্যাল ডেটা"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"সব মেডিক্যাল ডেটা লিখুন"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"স্বাস্থ্য বিষয়ক সব রেকর্ড"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"স্বাস্থ্য বিষয়ক সব রেকর্ড"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"স্বাস্থ্য বিষয়ক সব রেকর্ড লিখুন"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"অ্যালার্জি"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"অ্যালার্জি"</string>
+    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"অ্যালার্জি সম্পর্কে পড়ুন"</string>
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"রোগ প্রতিরোধের টিকা"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"রোগ প্রতিরোধের টিকা"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"রোগ প্রতিরোধের টিকা সংক্রান্ত ডেটা পড়ুন"</string>
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"ল্যাবরেটরির ফলাফল"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"ল্যাবরেটরির ফলাফল"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"ল্যাবরেটরি ফলাফলের ডেটা দেখার অনুমতি দিন"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"ওষুধ"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"ওষুধ"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"ওষুধ সম্পর্কিত ডেটা পড়ুন"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"গর্ভাবস্থা"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"গর্ভাবস্থা"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"গর্ভাবস্থা সংক্রান্ত ডেটা দেখার অনুমতি দিন"</string>
+    <string name="problems_uppercase_label" msgid="4047882613795113715">"সমস্যা"</string>
+    <string name="problems_lowercase_label" msgid="6934298611508910866">"সমস্যা"</string>
+    <string name="problems_content_description" msgid="1549418294742668962">"সমস্যা সংক্রান্ত ডেটা দেখার অনুমতি দিন"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"পদ্ধতি"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"পদ্ধতি"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"বিভিন্ন পদ্ধতির ডেটা দেখার অনুমতি দিন"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"সোশ্যাল ইতিহাস"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"সোশ্যাল ইতিহাস"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"সোশ্যাল ইতিহাস সংক্রান্ত ডেটা দেখার অনুমতি দিন"</string>
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"ভাইটাল সাইন"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"ভাইটাল সাইন"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"ভাইটাল সাইন সংক্রান্ত ডেটা দেখার অনুমতি দিন"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"মনোযোগ সহকারে"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"মনোযোগ সহকারে"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"মনোযোগ সহকারে সম্পর্কিত ডেটা পড়ুন"</string>
@@ -290,10 +320,25 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> পুরনো ডেটা ছাড়াও Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nলোকেশন, ক্যামেরা বা মাইক্রোফোনের মতো এই অ্যাপের জন্য অন্য কোনও কিছুতে অনুমতি থাকলে তাতে কোনও প্রভাব পড়বে না।"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ব্যাকগ্রাউন্ড ও পুরনো ডেটা ছাড়াও Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nলোকেশন, ক্যামেরা বা মাইক্রোফোনের মতো এই অ্যাপের জন্য অন্য কোনও কিছুতে অনুমতি থাকলে তাতে কোনও প্রভাব পড়বে না।"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"এছাড়া, <xliff:g id="APP_NAME">%1$s</xliff:g>-এর ডেটাও Health Connect থেকে মুছে দিন"</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"সব অনুমতি সরাবেন?"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"স্বাস্থ্য বিষয়ক রেকর্ড সংক্রান্ত সব অনুমতি সরাবেন?"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"ফিটনেস ও সুস্থতা সংক্রান্ত সব অনুমতি সরিয়ে দিতে চান?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nএই অ্যাপের ক্ষেত্রে যদি অন্য কোনও অনুমতি দেওয়া থাকে, সেগুলির উপরে কোনও প্রভাব পড়বে না, যেমন ক্যামেরা, মাইক্রোফোন বা লোকেশন।"</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"ব্যাকগ্রাউন্ড ডেটা সহ <xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nএই অ্যাপের ক্ষেত্রে যদি অন্য কোনও অনুমতি দেওয়া থাকে, সেগুলির উপরে কোনও প্রভাব পড়বে না, যেমন ক্যামেরা, মাইক্রোফোন বা লোকেশন।"</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"অতীতের ডেটা সহ <xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nএই অ্যাপের ক্ষেত্রে যদি অন্য কোনও অনুমতি দেওয়া থাকে, সেগুলির উপরে কোনও প্রভাব পড়বে না, যেমন ক্যামেরা, মাইক্রোফোন বা লোকেশন।"</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"ব্যাকগ্রাউন্ড ও অতীতের ডেটা সহ <xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nএই অ্যাপের ক্ষেত্রে যদি অন্য কোনও অনুমতি দেওয়া থাকে, সেগুলির উপরে কোনও প্রভাব পড়বে না, যেমন ক্যামেরা, মাইক্রোফোন বা লোকেশন।"</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"এছাড়া, <xliff:g id="APP_NAME">%1$s</xliff:g> ও Health Connect-এর থেকে পাওয়া ফিটনেস ডেটা ও স্বাস্থ্য বিষয়ক রেকর্ড মুছে ফেলা হবে"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"এই অ্যাপের জন্য অনুমতি সরিয়ে দেওয়া হয়েছে"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"পরের দিন"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"দিন বেছে নেওয়া হয়েছে"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"আগের দিন"</string>
     <string name="default_error" msgid="7966868260616403475">"কিছু সমস্যা হয়েছে। আবার চেষ্টা করুন।"</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"অজানা রিসোর্স"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>শুরুর ব্র্যাকেট।"</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>শেষ ব্র্যাকেট।"</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> ফিল্ডের <xliff:g id="FIELD">%2$s</xliff:g> মান"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>।"</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"বিস্তারিত সোর্স কোড: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"এই অনুমতি পাওয়া অ্যাপ আপনার স্বাস্থ্য ও ফিটনেস সম্পর্কিত ডেটা পড়তে এবং লিখতে পারবে।"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect-এ সেভ করা ডেটা কোন কোন অ্যাপ অ্যাক্সেস করতে পারবে তা নিয়ন্ত্রণ করুন। কোন কোন ডেটা অ্যাপ দেখতে ও এডিট করতে পারবে তা পর্যালোচনা করতে এটির উপরে ট্যাপ করুন।"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"অ্যাক্সেসের অনুমতি আছে"</string>
@@ -310,6 +355,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"সবকটি সরান"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"অ্যাপ ম্যানেজ করা"</string>
     <string name="see_app_data" msgid="3951030076195119476">"অ্যাপ ডেটা দেখুন"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"এই অ্যাপের ক্ষেত্রে অ্যাক্সেস সরান"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"অ্যাপ ডেটা মুছে দিন"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"বন্ধ থাকা অ্যাপ"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"এইসব অ্যাপের আর অ্যাক্সেস না থাকলেও, এখনও এদের ডেটা Health Connect-এ সেভ করা আছে"</string>
@@ -323,6 +369,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"বর্তমানে আপনার কাছে মানানসই কোনও অ্যাপ ইনস্টল করা নেই"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"অতিরিক্ত অ্যাক্সেস"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"এই অ্যাপের জন্য অতিরিক্ত অনুমতি সরানো হয়েছে"</string>
+    <string name="permissions_header" msgid="6519976063360071569">"অনুমতি"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"ফিটনেস ও সুস্থতা"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"ব্যায়াম, ঘুম, পুষ্টি ও অন্যান্য"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"স্বাস্থ্য বিষয়ক রেকর্ড"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"স্বাস্থ্য বিষয়ক রেকর্ড"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"ল্যাবের ফলাফল, ওষুধ, টিকা ও অন্যান্য"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"অ্যাপকে দেওয়া অনুমতি সরানো হয়েছে"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g>-এর জন্য অনুমতি সরিয়ে দিয়েছে"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> ও <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>-এর জন্য অনুমতি সরিয়ে দিয়েছে"</string>
@@ -336,47 +388,84 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"ডেটা এক্সপোর্ট করা যায়নি"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> তারিখের জন্য এক্সপোর্ট করার ক্ষেত্রে কোনও সমস্যা হয়েছে। একটি নতুন শিডিউল করা এক্সপোর্ট সেট-আপ করে আবার চেষ্টা করুন।"</string>
     <string name="next_export_time" msgid="3138247220014510213">"পরবর্তী এক্সপোর্ট: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"পরের এক্সপোর্ট শীঘ্রই শুরু হবে"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ব্যাক-আপ নিন ও ফিরিয়ে আনুন"</string>
     <string name="last_export_time" msgid="9205875050823594041">"গতবারের এক্সপোর্ট: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"এক্সপোর্ট ও ইমপোর্ট করুন"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"শেষবার এক্সপোর্ট করা হয়েছে: এখনই"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{সর্বশেষ এক্সপোর্ট: ১ মিনিট আগে}one{সর্বশেষ এক্সপোর্ট: # মিনিট আগে}other{সর্বশেষ এক্সপোর্ট: # মিনিট আগে}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{সর্বশেষ এক্সপোর্ট: ১ ঘণ্টা আগে}one{সর্বশেষ এক্সপোর্ট: # ঘণ্টা আগে}other{সর্বশেষ এক্সপোর্ট: # ঘণ্টা আগে}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"লাস্ট এক্সপোর্ট: হয়নি"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"শিডিউল করা এক্সপোর্ট"</string>
     <string name="import_data" msgid="404502315533233094">"ডেটা ইম্পোর্ট করুন"</string>
     <string name="import_data_description" msgid="4040178599441724296">"আগে এক্সপোর্ট করা হয়েছে এমন ফাইল থেকে ডেটা ফিরিয়ে আনুন"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"ডেটা ফিরিয়ে আনা যায়নি"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"ফাইল বেছে নিন"</string>
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
-    <skip />
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"আপনার বেছে নেওয়া ফাইলটি, ফিরিয়ে আনার জন্য মানানসই নয়। সঠিক এক্সপোর্ট করা ফাইল বেছে নেওয়ার বিষয়টি নিশ্চিত করুন।"</string>
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"এখনই আপডেট করুন"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"আপনার সিস্টেম আপডেট করুন যাতে Health Connect আপনার ডেটা ফিরিয়ে আনতে পারে, তারপরে আবার চেষ্টা করুন।"</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"আবার চেষ্টা করুন"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"আপনার এক্সপোর্ট থেকে ডেটা ফিরিয়ে আনার ক্ষেত্রে কোনও সমস্যা হয়েছে।"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"এক্সপোর্ট ফিচার আপনাকে নিজের ডেটা সেভ করতে দেয়, যাতে আপনি তা নতুন ফোনে ট্রান্সফার করতে পারেন"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"আরও জানুন"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"ব্যাক-আপ নেওয়া ও ফিরিয়ে আনা সম্পর্কে"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"চালু আছে"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"বন্ধ আছে"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"ফ্রিকোয়েন্সি বেছে নিন"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"ফ্রিকোয়েন্সি বেছে নেওয়া হয়েছে"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"ডেটা সেভ করার বিকল্প একবার বেছে নিন অথবা পর্যায়ক্রমে অটোমেটিক সেভ করার সেটিং সেট করুন।"</string>
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"শিডিউল করা এক্সপোর্ট ব্যবহার করুন"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"ফ্রিকোয়েন্সি পরিবর্তন করুন"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"আপনি শিডিউল করা এক্সপোর্ট বন্ধ করলে, এটি এক্সপোর্ট করা ডেটা আগে যেখানে সেভ করা হয়েছিল, সেখান থেকে মুছতে পারবে না"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"শিডিউল করা এক্সপোর্ট সেট-আপ করুন"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"কত ঘনঘন নিজের ডেটা এক্সপোর্ট করবেন তা বেছে নিন"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"দৈনিক"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"সাপ্তাহিক"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"মাসিক"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"কোথায় এক্সপোর্ট করবেন তা বেছে নিন"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"আপনার ডেটা এক্সপোর্ট করার জন্য কোনও একটি স্টোরেজ অ্যাপ বেছে নিন"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"পাসওয়ার্ড লিখুন"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect ডেটা ইম্পোর্ট করতে আপনার এনক্রিপশন পাসওয়ার্ড প্রয়োজন"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"পাসওয়ার্ড ভুলে গেছেন?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"পাসওয়ার্ড"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"আপনার কাছে এখনও পুরনো ফোন থাকলে, নতুন পাসওয়ার্ডের মাধ্যমে আপনি নিজের ডেটা আবার এক্সপোর্ট করতে পারবেন"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"শিডিউল করা এক্সপোর্ট কোথায় সেভ করবেন তা বেছে নিন"</string>
+    <string name="export_invalid_storage" msgid="1459055934301871321">"আপনার ডেটা এক্সপোর্ট করার জন্য কোনও একটি ক্লাউড স্টোরেজ অ্যাপ বেছে নিন"</string>
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"এই ফাইল ইমপোর্ট করবেন?"</string>
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> Health Connect-এ ইমপোর্ট করা হবে"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"বাতিল করুন"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"ইমপোর্ট করুন"</string>
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect-এর ডেটা ফিরিয়ে আনার প্রসেস চলছে"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect ফিরিয়ে আনার প্রসেস সম্পূর্ণ হয়েছে"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"ফিরিয়ে আনার প্রসেস চলছে"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"ডেটা ফিরিয়ে আনার প্রসেস সম্পূর্ণ হয়েছে"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect ডেটা ফিরিয়ে আনতে পারবে না"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"আরও জায়গা প্রয়োজন"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"আপনার বেছে নেওয়া ফাইল, ফিরিয়ে আনার জন্য মানানসই নয়। সঠিক এক্সপোর্ট করা ফাইল বেছে নেওয়ার বিষয়টি নিশ্চিত করুন।"</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"আপনার ডেটা ফিরিয়ে আনা চালিয়ে যাওয়ার জন্য, আপনার ফোনে Health Connect-এর<xliff:g id="SPACE_NEEDED">%1$s</xliff:g> স্টোরেজের জায়গা প্রয়োজন।"</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"আপনার এক্সপোর্ট থেকে ডেটা ফিরিয়ে আনার ক্ষেত্রে কোনও সমস্যা হয়েছে।"</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"আপনার সিস্টেম আপডেট করুন যাতে, Health Connect আপনার ডেটা ফিরিয়ে আনতে পারে, তারপরে আবার চেষ্টা করুন।"</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"এখনই আপডেট করুন"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"আবার চেষ্টা করুন"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"খুলুন"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ফাইল বেছে নিন"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"জায়গা খালি করুন"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"এক্সপোর্ট করার শিডিউল চালু করা আছে"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect ডেটা এক্সপোর্ট হয়নি"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"আরও স্টোরেজ প্রয়োজন"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>-এর জন্য এক্সপোর্ট করার ক্ষেত্রে কোনও সমস্যা হয়েছে। একটি নতুন শিডিউল করা এক্সপোর্ট সেট-আপ করে আবার চেষ্টা করুন।"</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"শিডিউল করা এক্সপোর্ট চালিয়ে যেতে, আপনার ফোনে Health Connect অ্যাপের <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> স্টোরেজ প্রয়োজন।"</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"সেট-আপ করুন"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"স্টোরেজ খালি করুন"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ফিরে যান"</string>
     <string name="export_next_button" msgid="657930567137105172">"পরবর্তী"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"বাতিল করুন"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"বাতিল করুন"</string>
     <string name="import_next_button" msgid="5706322508691854289">"পরবর্তী"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"এখান থেকে ইম্পোর্ট করুন"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"আপনার ডেটা ইমপোর্ট করার জন্য কোনও একটি স্টোরেজ অ্যাপ বেছে নিন"</string>
+    <string name="import_invalid_storage" msgid="341798262315495399">"আপনার ডেটা ইমপোর্ট করার জন্য ক্লাউড স্টোরেজ অ্যাপ বেছে নিন"</string>
     <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"কোনও অ্যাকাউন্ট বেছে নিতে ট্যাপ করুন"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"কোনও অ্যাকাউন্ট বেছে নিন"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"বাতিল করুন"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"হয়ে গেছে"</string>
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"কোনও অ্যাপ উপলভ্য নেই। ক্লাউড স্টোরেজ অ্যাপ ইনস্টল করুন যাতে সেটি এখানে দেখা যায়"</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"আরও বিকল্পের জন্য, ক্লাউড স্টোরেজ অ্যাপ ইনস্টল করুন যাতে সেটি এখানে দেখা যায়"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store-এ যান"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ব্যবহার শুরু করুন"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, আপনার স্বাস্থ্য ও ফিটনেস সংক্রান্ত ডেটা সেভ করে, যার ফলে সহজেই বিভিন্ন অ্যাপ আপনার ফোনে সিঙ্ক করে নিতে পারেন"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect আপনার স্বাস্থ্য ও ফিটনেস সম্পর্কিত ডেটা সেভ করে, যার ফলে আপনি সহজেই বিভিন্ন অ্যাপ আপনার ডিভাইসে সিঙ্ক করে নিতে পারেন"</string>
     <string name="share_data" msgid="3481932156368883946">"অ্যাপের সাথে ডেটা শেয়ার করুন"</string>
     <string name="share_data_description" msgid="2919871301634375092">"প্রতিটি অ্যাপ, Health Connect-এর যেসব ডেটা দেখতে ও এডিট করতে পারবে সেগুলি বেছে নিন"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"আপনার সেটিংস ও গোপনীয়তা ম্যানেজ করুন"</string>
@@ -386,12 +475,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"ডেটা মুছে দিন"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"\'মুছে দিন\' স্ট্যাটাসে যান"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"\'মুছে দিন\' স্ট্যাটাস ছেড়ে বেরিয়ে আসুন"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"ডেটা মুছে দেওয়ার সময়সীমা বেছে নেওয়া"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Health Connect থেকে মুছে ফেলার জন্য ডেটা বেছে নিন"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"পরবর্তী"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"এর ফলে, বেছে নেওয়া সময় সীমার মধ্যে Health Connect-এর সাথে যোগ করা সব ডেটা স্থায়ীভাবে মুছে যায়"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"এর ফলে, বেছে নেওয়া সময় সীমার মধ্যে Health Connect-এর সাথে যোগ করা <xliff:g id="DATA_TYPE">%s</xliff:g> সংক্রান্ত ডেটা স্থায়ীভাবে মুছে যায়"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"এর ফলে, বেছে নেওয়া সময় সীমার মধ্যে Health Connect-এর সাথে যোগ করা <xliff:g id="CATEGORY">%s</xliff:g> বিভাগের ডেটা স্থায়ীভাবে মুছে যায়"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"এর ফলে, বেছে নেওয়া সময় সীমার মধ্যে Health Connect-এর সাথে যোগ করা <xliff:g id="APP_DATA">%s</xliff:g>-এর ডেটা স্থায়ীভাবে মুছে যায়"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"এর ফলে, বেছে নেওয়া সময় সীমার মধ্যে Health Connect অ্যাপে <xliff:g id="APP_DATA">%2$s</xliff:g>-এর যোগ করা <xliff:g id="DATA_TYPE">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে যায়"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"শেষ ২৪ ঘণ্টার ডেটা মুছে দিন"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"শেষ ৭ দিনের ডেটা মুছে দিন"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"শেষ ৩০ ঘণ্টার ডেটা মুছে দিন"</string>
@@ -412,17 +502,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"<xliff:g id="APP_DATA">%s</xliff:g>-এর শেষ ২৪ ঘণ্টার ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"<xliff:g id="APP_DATA">%s</xliff:g>-এর শেষ ৭ দিনের ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"<xliff:g id="APP_DATA">%s</xliff:g>-এর শেষ ৩০ দিনের ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"<xliff:g id="APP_DATA">%2$s</xliff:g> অ্যাপের এখনও পর্যন্ত যোগ করা <xliff:g id="DATA_TYPE">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে ফেলতে চান?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"<xliff:g id="APP_DATA">%2$s</xliff:g> অ্যাপের গত ২৪ ঘণ্টায় যোগ করা <xliff:g id="DATA_TYPE">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে ফেলতে চান?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"<xliff:g id="APP_DATA">%2$s</xliff:g> অ্যাপের গত ৭ দিনে যোগ করা <xliff:g id="DATA_TYPE">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে ফেলতে চান?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"<xliff:g id="APP_DATA">%2$s</xliff:g> অ্যাপের গত ৩০ দিনে যোগ করা <xliff:g id="DATA_TYPE">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে ফেলতে চান?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"এছাড়া, Health Connect থেকে সবকটি <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>-এর অনুমতি সরিয়ে দিন"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g>-এর যোগ করা <xliff:g id="DATA_TYPE">%1$s</xliff:g> সংক্রান্ত সব ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"এই এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Health Connect থেকে স্থায়ীভাবে এই এন্ট্রি মুছে ফেলতে চান?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"কানেক্ট করা অ্যাপ Health Connect থেকে এই ডেটা আর অ্যাক্সেস করতে পারবে না"</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"এটি <xliff:g id="START_DATE">%1$s</xliff:g> থেকে <xliff:g id="END_DATE">%2$s</xliff:g>-এর সব পিরিয়ড সংক্রান্ত ডেটার এন্ট্রি মুছে দেবে।"</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"এর ফলে <xliff:g id="START_DATE">%1$s</xliff:g> থেকে <xliff:g id="END_DATE">%2$s</xliff:g>-এর মধ্যে পিরিয়ড সংক্রান্ত যেসব ডেটা এন্ট্রি করা হয়েছে তা মুছে ফেলা হবে।"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"মুছে দিন"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"ফিরে যান"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"হয়ে গেছে"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"বন্ধ করুন"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"ডেটা মোছা হয়েছে"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"এই ডেটা Health Connect-এ আর সেভ করে রাখা হয় না।"</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Health Connect থেকে ডেটা মুছে ফেলা হয়েছে"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"আপনার কানেক্ট করা অ্যাপ থেকে ডেটা সম্পূর্ণ মুছে দিতে চাইলে, ডেটা সেভ থাকতে পারে এমন প্রতিটি অ্যাপ চেক করুন।"</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"হয়ে গেছে"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"কানেক্ট করা অ্যাপ দেখুন"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"আপনার ডেটা মুছে ফেলা হচ্ছে"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"ডেটা মোছা যায়নি"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"কিছু সমস্যা হয়েছে, তাই Health Connect আপনার ডেটা মুছতে পারেনি"</string>
@@ -600,6 +696,7 @@
     <string name="rest" msgid="5937058337671252210">"বিশ্রাম"</string>
     <string name="pause" msgid="5161459047750335691">"পজ করুন"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"অস্ট্রেলিয়ান ফুটবল"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"অজানা ধরন"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> ঘুমিয়েছেন"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"জেগে ছিলেন"</string>
@@ -610,6 +707,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"হাল্কা ঘুম"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"গভীর ঘুম"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"অজানা"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"নিঃশ্বাস নেওয়া"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"ধ্যান"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"নড়াচড়া"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"মিউজিক"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"অন্যান্য"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"গাইড ছাড়া"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> মিনিট"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ঘণ্টা <xliff:g id="MIN">%2$s</xliff:g> মিনিট"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ঘণ্টা"</string>
@@ -809,12 +912,14 @@
     <string name="range_off" msgid="8178520557618184215">"বন্ধ আছে"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"আপনি এইসব সেটিংস পরিবর্তন করলে, Health Connect আপনার নতুন পছন্দ প্রতিফলিত করতে আগে থেকে রয়েছে এমন ডেটা মুছে দেয়"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# মাস পরে ডেটা অটোমেটিক মুছে দিতে চান?}one{# মাস পরে ডেটা অটোমেটিক মুছে দিতে চান?}other{# মাস পরে ডেটা অটোমেটিক মুছে দিতে চান?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{# মাস পরে Health Connect নতুন ডেটা অটোমেটিক মুছে দেবে। এছাড়া, এটি সেট করা হলে বর্তমানে থাকা # মাসের চেয়ে পুরনো ডেটা অটোমেটিক মুছে যাবে।}one{# মাস পরে Health Connect নতুন ডেটা অটোমেটিক মুছে দেবে। এছাড়া, এটি সেট করা হলে বর্তমানে থাকা # মাসের চেয়ে পুরনো ডেটা অটোমেটিক মুছে যাবে।}other{# মাস পরে Health Connect নতুন ডেটা অটোমেটিক মুছে দেবে। এছাড়া, এটি সেট করা হলে বর্তমানে থাকা # মাসের চেয়ে পুরনো ডেটা অটোমেটিক মুছে যাবে।}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{এছাড়াও, Health Connect থেকে এটির জন্য # মাসের পুরনো ডেটা মুছে যায়।\n\nআপনার কানেক্ট করা অ্যাপ থেকে ডেটা সম্পূর্ণ মুছে দিতে চাইলে, ডেটা সেভ থাকতে পারে এমন প্রতিটি অ্যাপ চেক করুন।}one{এছাড়াও, Health Connect থেকে এটির জন্য # মাসের পুরনো ডেটা মুছে যায়।\n\nআপনার কানেক্ট করা অ্যাপ থেকে ডেটা সম্পূর্ণ মুছে দিতে চাইলে, ডেটা সেভ থাকতে পারে এমন প্রতিটি অ্যাপ চেক করুন।}other{এছাড়াও, Health Connect থেকে এটির জন্য # মাসের পুরনো ডেটা মুছে যায়।\n\nআপনার কানেক্ট করা অ্যাপ থেকে ডেটা সম্পূর্ণ মুছে দিতে চাইলে, ডেটা সেভ থাকতে পারে এমন প্রতিটি অ্যাপ চেক করুন।}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"অটোমেটিক মুছে দেওয়ার সেটিং সেট করুন"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"আগে থাকা ডেটা মুছে ফেলা হবে"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # মাসের বেশি পুরনো সব ডেটা মুছে দেবে। আপনার কানেক্ট করা অ্যাপে এইসব পরিবর্তন দেখতে পাওয়ার জন্য এক দিন সময় লাগতে পারে।}one{Health Connect # মাসের বেশি পুরনো সব ডেটা মুছে দেবে। আপনার কানেক্ট করা অ্যাপে এইসব পরিবর্তন দেখতে পাওয়ার জন্য এক দিন সময় লাগতে পারে।}other{Health Connect # মাসের বেশি পুরনো সব ডেটা মুছে দেবে। আপনার কানেক্ট করা অ্যাপে এইসব পরিবর্তন দেখতে পাওয়ার জন্য এক দিন সময় লাগতে পারে।}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"এইসব বিভাগ থেকে ডেটা মুছে ফেলা হবে"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"হয়ে গেছে"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{\'অটোমেটিক মুছে দিন\' ফিচার চালু আছে। # মাসের পুরনো ডেটা মুছে দেওয়া হবে}one{\'অটোমেটিক মুছে দিন\' ফিচার চালু আছে। # মাসের পুরনো ডেটা মুছে দেওয়া হবে}other{\'অটোমেটিক মুছে দিন\' ফিচার চালু আছে। # মাসের পুরনো ডেটা মুছে দেওয়া হবে}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"\'অটোমেটিক মুছে দিন\' ফিচার বন্ধ আছে"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"অ্যাপের প্রায়োরিটি সেট আপ করুন"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"একাধিক অ্যাপ <xliff:g id="DATA_TYPE">%s</xliff:g> ডেটা যোগ করলে, Health Connect অ্যাপটিকে তালিকায় সবার উপরে প্রায়োরিটি দেয়। অ্যাপগুলি আবার সাজাতে টেনে আনুন।"</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"সেভ করুন"</string>
@@ -945,9 +1050,33 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"এই অ্যাপে ব্যাকগ্রাউন্ড বা পুরনো ডেটা অ্যাক্সেস করার সুবিধা চালু করতে কমপক্ষে একটি রিড পার্মিশন চালু করুন"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"এই অ্যাপে ব্যাকগ্রাউন্ড অ্যাক্সেস করার সুবিধা চালু করতে কমপক্ষে একটি রিড পার্মিশন চালু করুন"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"এই অ্যাপে পুরনো ডেটা অ্যাক্সেস করার সুবিধা চালু করতে কমপক্ষে একটি রিড পার্মিশন চালু করুন"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect থেকে স্থায়ীভাবে ডেটা মুছবেন?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connect থেকে স্থায়ীভাবে বেছে নেওয়া ডেটা মুছে দেবেন?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"সব ডেটা মুছে দেওয়া হয়েছে"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ডেটা মুছে দেওয়া হয়েছে"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>টি আইটেম মুছে দেওয়া হয়েছে"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect ব্যবহার করা শুরু করুন"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"আপনার প্রথম অ্যাপগুলি সিঙ্ক করুন যাতে সেগুলির মধ্যে স্বাস্থ্য ও ফিটনেস ডেটা শেয়ার করা যায়"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"সেট-আপ করুন"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"আরও অ্যাপ কানেক্ট করুন"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> ও আপনার ফোনে যে স্বাস্থ্য সম্পর্কিত অ্যাপ রয়েছে তার মধ্যে ডেটা শেয়ার করা শুরু করুন"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"সেট-আপ করুন"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"মানানসই অ্যাপ দেখুন"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect-এর মাধ্যমে <xliff:g id="APP_NAME">%s</xliff:g>-এর সাথে কানেক্ট করার জন্য আরও অ্যাপ খুঁজুন"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"অ্যাপ স্টোরে দেখুন"</string>
+    <string name="select_all" msgid="837499881590001166">"সবকটি বেছে নিন"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"কানেক্ট করা অ্যাপ Health Connect থেকে এই ডেটা আর পড়তে পারবে না"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"সব ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"বেছে নেওয়া ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g> সম্পর্কিত সব ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"বেছে নেওয়া <xliff:g id="APP_NAME">%s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-এর সব এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> সপ্তাহের সব এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-এর সব এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-এর বেছে নেওয়া ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> সপ্তাহের বেছে নেওয়া এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-এর বেছে নেওয়া ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"এই এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-এর <xliff:g id="APP_NAME">%1$s</xliff:g> সম্পর্কিত সব এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> সপ্তাহের <xliff:g id="APP_NAME">%1$s</xliff:g> সম্পর্কিত সব এন্ট্রি স্থায়ীভাবে দিতে চান?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-এর <xliff:g id="APP_NAME">%1$s</xliff:g> সম্পর্কিত সব এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-এর বেছে নেওয়া <xliff:g id="APP_NAME">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> সপ্তাহের বেছে নেওয়া <xliff:g id="APP_NAME">%1$s</xliff:g> সম্পর্কিত এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-এর বেছে নেওয়া <xliff:g id="APP_NAME">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"এই <xliff:g id="APP_NAME">%s</xliff:g> সম্পর্কিত এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
 </resources>

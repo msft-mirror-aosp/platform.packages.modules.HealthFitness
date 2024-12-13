@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.IntermenstrualBleedingRecord;
@@ -42,22 +41,20 @@ public final class IntermenstrualBleedingRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return INTERMENSTRUAL_BLEEDING_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull IntermenstrualBleedingRecordInternal intermenstrualBleedingRecordInternal) {}
+            ContentValues contentValues,
+            IntermenstrualBleedingRecordInternal intermenstrualBleedingRecordInternal) {}
 
     @Override
     protected void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull IntermenstrualBleedingRecordInternal recordInternal) {}
+            Cursor cursor, IntermenstrualBleedingRecordInternal recordInternal) {}
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Collections.emptyList();
     }

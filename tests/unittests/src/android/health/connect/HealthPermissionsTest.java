@@ -18,7 +18,15 @@ package android.health.connect;
 
 import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -36,7 +44,7 @@ import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,6 +62,12 @@ public class HealthPermissionsTest {
             "Add new health permission to ALL_EXPECTED_HEALTH_PERMISSIONS and "
                     + " android.healthconnect.cts.HealthPermissionsPresenceTest.HEALTH_PERMISSIONS "
                     + "sets.";
+
+    private static final String PHR_FAIL_MESSAGE =
+            "Add new medical permissions to ALL_EXPECTED_HEALTH_PERMISSIONS and "
+                    + "apk/HealthPermissionsManifest.xml.";
+
+    private static final String MEDICAL_PERMISSION_IDENTIFIER = "MEDICAL_DATA";
 
     // Add new health permission to ALL_EXPECTED_HEALTH_PERMISSIONS and
     // {@link android.healthconnect.cts.HealthPermissionsPresenceTest.HEALTH_PERMISSIONS}
@@ -101,7 +115,15 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_RESTING_HEART_RATE,
                     HealthPermissions.READ_SKIN_TEMPERATURE,
                     HealthPermissions.READ_MINDFULNESS,
+                    HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
                     HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
+                    HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                    HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
+                    HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
+                    HealthPermissions.READ_MEDICAL_DATA_PROBLEMS,
+                    HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
+                    HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                    HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
                     HealthPermissions.WRITE_ELEVATION_GAINED,
@@ -164,8 +186,7 @@ public class HealthPermissionsTest {
     public void testHealthGroupPermissions_noUnexpectedPermissionsDefined() throws Exception {
         PermissionInfo[] permissionInfos = getHealthPermissionInfos();
         for (PermissionInfo permissionInfo : permissionInfos) {
-            if (permissionInfo.group != null
-                    && permissionInfo.group.equals(HEALTH_PERMISSION_GROUP)) {
+            if (isValidHealthPermission(permissionInfo)) {
                 assertWithMessage(FAIL_MESSAGE)
                         .that(ALL_EXPECTED_HEALTH_PERMISSIONS)
                         .contains(permissionInfo.name);
@@ -272,23 +293,38 @@ public class HealthPermissionsTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalReadPermission_givenCategory_returnsPermission() {
-        String readPermission =
-                HealthPermissions.getMedicalReadPermission(MedicalPermissionCategory.IMMUNIZATION);
-        assertThat(readPermission).isEqualTo(READ_MEDICAL_DATA_IMMUNIZATION);
-    }
-
-    @Test(expected = NullPointerException.class)
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalReadPermission_unknownCategory_throwsException() {
-        HealthPermissions.getMedicalReadPermission(MedicalPermissionCategory.UNKNOWN);
+    public void testGetMedicalPermissions_returnsValidPermissions() {
+        Set<String> permissions = HealthPermissions.getAllMedicalPermissions();
+        assertThat(permissions)
+                .containsAtLeast(
+                        WRITE_MEDICAL_DATA,
+                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
+                        READ_MEDICAL_DATA_IMMUNIZATION,
+                        READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                        READ_MEDICAL_DATA_MEDICATIONS,
+                        READ_MEDICAL_DATA_PREGNANCY,
+                        READ_MEDICAL_DATA_PROBLEMS,
+                        READ_MEDICAL_DATA_PROCEDURES,
+                        READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                        READ_MEDICAL_DATA_VITAL_SIGNS);
     }
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalPermissions_returnsValidPermissions() {
+    public void testGetMedicalPermissions_returnsAllMedicalPermissions() throws Exception {
         Set<String> permissions = HealthPermissions.getAllMedicalPermissions();
-        assertThat(permissions).containsAtLeast(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATION);
+
+        PermissionInfo[] permissionInfos = getHealthPermissionInfos();
+        for (PermissionInfo permissionInfo : permissionInfos) {
+            if (isValidHealthPermission(permissionInfo)
+                    && permissionInfo.name.contains(MEDICAL_PERMISSION_IDENTIFIER)) {
+                assertWithMessage(PHR_FAIL_MESSAGE).that(permissions).contains(permissionInfo.name);
+            }
+        }
+    }
+
+    private boolean isValidHealthPermission(PermissionInfo permissionInfo) {
+        return permissionInfo.group != null && permissionInfo.group.equals(HEALTH_PERMISSION_GROUP);
     }
 
     private PermissionInfo[] getHealthPermissionInfos() throws Exception {

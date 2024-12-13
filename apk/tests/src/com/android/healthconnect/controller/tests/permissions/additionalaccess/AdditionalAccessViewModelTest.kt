@@ -138,7 +138,6 @@ class AdditionalAccessViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-
         (featureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
         featureUtils.setIsBackgroundReadEnabled(false)
     }

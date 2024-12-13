@@ -40,8 +40,8 @@ import android.os.OutcomeReceiver;
 import android.provider.DocumentsContract;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Rule;
@@ -130,6 +130,27 @@ public final class QueryDocumentProvidersTest {
         assertThat(documentProviders).hasSize(1);
         assertThat(documentProviders.get(0).getTitle()).isEqualTo(TEST_TITLE);
         assertThat(documentProviders.get(0).getSummary()).isEqualTo(TEST_ACCOUNT_1_SUMMARY);
+        assertThat(documentProviders.get(0).getIconResource()).isEqualTo(0);
+        assertThat(documentProviders.get(0).getRootUri()).isEqualTo(Uri.parse(TEST_ROOT_URI));
+    }
+
+    @Test
+    public void queryDocumentProviders_singleRootWithNullSummary_returnsRoot() throws Exception {
+        DocumentProviderRoot root =
+                new DocumentProviderRoot()
+                        .setRootId(TEST_ROOT_ID)
+                        .setTitle(TEST_TITLE)
+                        .setSummary(null)
+                        .setFlags(DocumentsContract.Root.FLAG_SUPPORTS_CREATE)
+                        .setIconResourceId(0)
+                        .setMimeTypes(ZIP_MIME_TYPE);
+        launchTestDocumentProviderApp(addDocumentProviderRoot(root));
+
+        List<ExportImportDocumentProvider> documentProviders = queryDocumentProviders();
+
+        assertThat(documentProviders).hasSize(1);
+        assertThat(documentProviders.get(0).getTitle()).isEqualTo(TEST_TITLE);
+        assertThat(documentProviders.get(0).getSummary()).isEmpty();
         assertThat(documentProviders.get(0).getIconResource()).isEqualTo(0);
         assertThat(documentProviders.get(0).getRootUri()).isEqualTo(Uri.parse(TEST_ROOT_URI));
     }

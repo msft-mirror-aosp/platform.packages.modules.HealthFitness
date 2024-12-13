@@ -18,11 +18,18 @@ package com.android.healthconnect.testapps.toolbox.ui
 
 import android.content.Context
 import android.health.connect.CreateMedicalDataSourceRequest
+import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
-import android.health.connect.MedicalIdFilter
+import android.health.connect.ReadMedicalResourcesInitialRequest
+import android.health.connect.ReadMedicalResourcesResponse
+import android.health.connect.UpsertMedicalResourceRequest
+import android.health.connect.datatypes.FhirVersion
 import android.health.connect.datatypes.MedicalDataSource
 import android.health.connect.datatypes.MedicalResource
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.net.Uri
 import android.os.Bundle
+import android.os.OutcomeReceiver
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -74,15 +81,18 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             Toast.makeText(
                     this.requireContext(),
                     R.string.all_medical_permissions_success,
-                    Toast.LENGTH_SHORT)
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
         } else {
             Toast.makeText(
                     this.requireContext(),
                     getString(
                         R.string.number_of_medical_permissions_not_granted,
-                        numberOfPermissionsMissing),
-                    Toast.LENGTH_SHORT)
+                        numberOfPermissionsMissing,
+                    ),
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
         }
     }
@@ -92,24 +102,28 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
         view.requireViewById<Button>(R.id.phr_create_data_source_button).setOnClickListener {
             executeAndShowMessage {
-                createMedicalDataSource("Hospital X", "example.fhir.com/R4/123")
+                createMedicalDataSource(
+                    view,
+                    Uri.parse("example.fhir.com/R4/123"),
+                    "My Hospital " + (0..1000).random(),
+                )
             }
+        }
+
+        view.requireViewById<Button>(R.id.phr_read_by_id_button).setOnClickListener {
+            executeAndShowMessage { readreadImmunization(view) }
+        }
+
+        view.requireViewById<Button>(R.id.phr_seed_fhir_jsons_button).setOnClickListener {
+            executeAndShowMessage { insertAllFhirResources(view) }
         }
 
         view.requireViewById<Button>(R.id.phr_insert_immunization_button).setOnClickListener {
             executeAndShowMessage { insertImmunization(view) }
         }
 
-        view.requireViewById<Button>(R.id.phr_read_by_id_button).setOnClickListener {
-            executeAndShowMessage { readMedicalResourceForIdFromTextbox(view) }
-        }
-
-        view.requireViewById<Button>(R.id.phr_seed_fhir_jsons_button).setOnClickListener {
-            loadAllFhirJSONs()
-        }
-
-        view.requireViewById<Button>(R.id.phr_request_read_immunization_button).setOnClickListener {
-            requestReadImmunizationPermission()
+        view.requireViewById<Button>(R.id.phr_insert_allergy_button).setOnClickListener {
+            executeAndShowMessage { insertAllergy(view) }
         }
 
         view
@@ -131,64 +145,146 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     }
 
     private suspend fun insertImmunization(view: View): String {
-        val immunizationResource = loadJSONFromAsset(requireContext(), "immunization_1.json")
-        Log.d("INSERT_MEDICAL_RESOURCE", "Writing immunization ${immunizationResource}")
-        // TODO(b/343375877) Replace this with call to HC after insert API is implemented
-        val insertedResourceId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-        view.findViewById<EditText>(R.id.phr_immunization_id_text).setText(insertedResourceId)
-        return insertedResourceId
+        val immunizationResource =
+            loadJSONFromAsset(requireContext(), "immunization_1.json")
+                ?: return "No Immunization resource to insert"
+        Log.d("INSERT_IMMUNIZATION", "Writing immunization $immunizationResource")
+        val insertedDataSourceId =
+            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val insertedResources =
+            upsertMedicalResources(
+                listOf(
+                    UpsertMedicalResourceRequest.Builder(
+                            insertedDataSourceId,
+                            FhirVersion.parseFhirVersion("4.0.1"),
+                            immunizationResource,
+                        )
+                        .build()
+                )
+            )
+        val insertedResourceId = "$insertedDataSourceId,1,immunization_1"
+        return insertedResources.joinToString(
+            separator = "\n",
+            transform = MedicalResource::toString,
+        )
     }
 
-    private suspend fun createMedicalDataSource(displayName: String, fhirBaseUri: String): String {
+    private suspend fun insertAllergy(view: View): String {
+        val allergyResource =
+            loadJSONFromAsset(requireContext(), "allergyintolerance_1.json")
+                ?: return "No Allergy resource to insert"
+        Log.d("INSERT_ALLERGY", "Writing allergy $allergyResource")
+        val insertedDataSourceId =
+            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val insertedResources =
+            upsertMedicalResources(
+                listOf(
+                    UpsertMedicalResourceRequest.Builder(
+                            insertedDataSourceId,
+                            FhirVersion.parseFhirVersion("4.0.1"),
+                            allergyResource,
+                        )
+                        .build()
+                )
+            )
+        val insertedResourceId = "$insertedDataSourceId,1,allergyintolerance_1"
+        return insertedResources.joinToString(
+            separator = "\n",
+            transform = MedicalResource::toString,
+        )
+    }
+
+    private suspend fun insertAllFhirResources(view: View): String {
+        val allResources = loadAllFhirJSONs()
+        Log.d("INSERT_ALL", "Writing all FHIR resources")
+        val insertedDataSourceId =
+            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val insertedResources =
+            upsertMedicalResources(
+                allResources.map {
+                    UpsertMedicalResourceRequest.Builder(
+                            insertedDataSourceId,
+                            FhirVersion.parseFhirVersion("4.0.1"),
+                            it,
+                        )
+                        .build()
+                }
+            )
+        return "SUCCESSFUL DATA UPSERT \n\nUpserted data:\n" +
+            insertedResources.joinToString(separator = "\n", transform = MedicalResource::toString)
+    }
+
+    private suspend fun upsertMedicalResources(
+        requests: List<UpsertMedicalResourceRequest>
+    ): List<MedicalResource> {
+        Log.d("UPSERT_RESOURCES", "Writing ${requests.size} resources")
+        val resources =
+            suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
+                healthConnectManager.upsertMedicalResources(
+                    requests,
+                    Runnable::run,
+                    continuation.asOutcomeReceiver(),
+                )
+            }
+        Log.d("UPSERT_RESOURCES", "Wrote ${resources.size} resources")
+        return resources
+    }
+
+    private suspend fun createMedicalDataSource(
+        view: View,
+        fhirBaseUri: Uri,
+        displayName: String,
+    ): String {
         val dataSource =
             suspendCancellableCoroutine<MedicalDataSource> { continuation ->
                 healthConnectManager.createMedicalDataSource(
-                    CreateMedicalDataSourceRequest.Builder(displayName, fhirBaseUri).build(),
+                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName).build(),
                     Runnable::run,
-                    continuation.asOutcomeReceiver())
+                    continuation.asOutcomeReceiver(),
+                )
             }
-        Log.d("CREATE_MEDICAL_DATA_SOURCE", "Created source: ${dataSource.toString()}")
-        return dataSource.toString()
+        view.findViewById<EditText>(R.id.phr_data_source_id_text).setText(dataSource.id)
+        Log.d("CREATE_DATA_SOURCE", "Created source: $dataSource")
+        return "Created data source: $displayName"
     }
 
-    private suspend fun readMedicalResourceForIdFromTextbox(view: View): String {
-        val resourceId =
-            view.findViewById<EditText>(R.id.phr_immunization_id_text).getText().toString()
-        return readMedicalResourcesById(listOf(resourceId))
+    //
+    private suspend fun readreadImmunization(view: View): String {
+        return readImmunization()
             .joinToString(separator = "\n", transform = MedicalResource::toString)
     }
 
-    private suspend fun readMedicalResourcesById(ids: List<String>): List<MedicalResource> {
-        Log.d("READ_MEDICAL_RESOURCES", "Reading resource with ids ${ids.toString()}")
+    private suspend fun readImmunization(): List<MedicalResource> {
+
+        var receiver: OutcomeReceiver<ReadMedicalResourcesResponse, HealthConnectException>
+        val request: ReadMedicalResourcesInitialRequest =
+            ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build()
         val resources =
-            suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
-                healthConnectManager.readMedicalResources(
-                    ids.map(MedicalIdFilter::fromId),
-                    Runnable::run,
-                    continuation.asOutcomeReceiver())
-            }
+            suspendCancellableCoroutine<ReadMedicalResourcesResponse> { continuation ->
+                    receiver = continuation.asOutcomeReceiver()
+                    healthConnectManager.readMedicalResources(request, Runnable::run, receiver)
+                }
+                .medicalResources
+        // val resources = receiver.getResult().getMedicalResources()
         Log.d("READ_MEDICAL_RESOURCES", "Read ${resources.size} resources")
         return resources
     }
 
-    private fun loadAllFhirJSONs() {
+    private fun loadAllFhirJSONs(): List<String> {
         val jsonFiles = listFhirJSONFiles(requireContext())
         if (jsonFiles == null) {
             Log.e("loadAllFhirJSONs", "No JSON files were found.")
             Toast.makeText(context, "No JSON files were found.", Toast.LENGTH_SHORT).show()
-            return
+            return emptyList()
         }
 
-        for (jsonFile in jsonFiles) {
-            if (!jsonFile.endsWith(".json")) {
-                continue
+        return jsonFiles
+            .filter { it.endsWith(".json") }
+            .mapNotNull {
+                val jsonString = loadJSONFromAsset(requireContext(), it)
+                Log.i("loadAllFhirJSONs", "$it: $jsonString")
+                jsonString
             }
-            val jsonString = loadJSONFromAsset(requireContext(), jsonFile)
-            if (jsonString != null) {
-                Log.i("loadAllFhirJSONs", "$jsonFile: $jsonString")
-            }
-        }
-        showLoadJSONDataDialog()
     }
 
     private fun listFhirJSONFiles(context: Context, path: String = ""): List<String>? {
@@ -198,7 +294,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         } catch (e: IOException) {
             Log.e("listFhirJSONFiles", "Error listing assets in path $path: $e")
             Toast.makeText(
-                    context, "Error listing JSON files: ${e.localizedMessage}", Toast.LENGTH_SHORT)
+                    context,
+                    "Error listing JSON files: ${e.localizedMessage}",
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
             null
         }
@@ -214,7 +313,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         } catch (e: IOException) {
             Log.e("loadJSONFromAsset", "Error reading JSON file: $e")
             Toast.makeText(
-                    context, "Error reading JSON file: ${e.localizedMessage}", Toast.LENGTH_SHORT)
+                    context,
+                    "Error reading JSON file: ${e.localizedMessage}",
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
             null
         }

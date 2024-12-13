@@ -23,6 +23,7 @@ import java.time.Instant
 data class ConnectedAppMetadata(
     val appMetadata: AppMetadata,
     val status: ConnectedAppStatus,
+    val permissionsType: AppPermissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY,
     val healthUsageLastAccess: Instant? = null
 )
 

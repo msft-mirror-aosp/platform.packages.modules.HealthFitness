@@ -34,12 +34,16 @@ class ExportSettingsViewModel
 constructor(
     private val loadExportSettingsUseCase: ILoadExportSettingsUseCase,
     private val updateExportSettingsUseCase: IUpdateExportSettingsUseCase,
-    private val queryDocumentProvidersUseCase: IQueryDocumentProvidersUseCase
+    private val queryDocumentProvidersUseCase: IQueryDocumentProvidersUseCase,
 ) : ViewModel() {
     private val _storedExportSettings = MutableLiveData<ExportSettings>()
     private val _selectedExportFrequency = MutableLiveData<ExportFrequency>()
     private val _previousExportFrequency = MutableLiveData<ExportFrequency?>()
     private val _documentProviders = MutableLiveData<DocumentProviders>()
+    private val _selectedDocumentProvider = MutableLiveData<DocumentProviderInfo?>()
+    private val _selectedDocumentProviderRoot = MutableLiveData<DocumentProviderRoot?>()
+    private val _selectedRootsForDocumentProviders =
+        MutableLiveData<MutableMap<String, DocumentProviderRoot?>>()
 
     /** Holds the export settings that is stored in the Health Connect service. */
     val storedExportSettings: LiveData<ExportSettings>
@@ -57,10 +61,27 @@ constructor(
     val documentProviders: LiveData<DocumentProviders>
         get() = _documentProviders
 
+    /** Holds the user selected document provider. */
+    val selectedDocumentProvider: LiveData<DocumentProviderInfo?>
+        get() = _selectedDocumentProvider
+
+    /** Holds the user selected document provider. */
+    val selectedDocumentProviderRoot: LiveData<DocumentProviderRoot?>
+        get() = _selectedDocumentProviderRoot
+
+    /**
+     * Holds the user stored document providers.
+     *
+     * This is needed for remembering the user selected account when switching between providers.
+     */
+    val selectedRootsForDocumentProviders: LiveData<MutableMap<String, DocumentProviderRoot?>>
+        get() = _selectedRootsForDocumentProviders
+
     init {
         loadExportSettings()
         loadDocumentProviders()
         _selectedExportFrequency.value = ExportFrequency.EXPORT_FREQUENCY_NEVER
+        _selectedRootsForDocumentProviders.value = mutableMapOf()
     }
 
     /** Triggers a load of export settings. */
@@ -102,7 +123,7 @@ constructor(
 
     /** Updates the uri to write to in scheduled exports of Health Connect data. */
     fun updateExportUri(uri: Uri) {
-        val settings = ScheduledExportSettings.withUri(uri)
+        val settings = ScheduledExportSettings.Builder().setUri(uri).build()
         updateExportSettings(settings)
     }
 
@@ -112,22 +133,36 @@ constructor(
      */
     fun updateExportUriWithSelectedFrequency(uri: Uri) {
         val settings =
-            ScheduledExportSettings.withUriAndPeriodInDays(
-                uri,
-                _selectedExportFrequency.value?.periodInDays
-                    ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(
+                    _selectedExportFrequency.value?.periodInDays
+                        ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
+                )
+                .setUri(uri)
+                .build()
         updateExportSettings(settings)
     }
 
     /** Updates the frequency of scheduled exports of Health Connect data. */
     fun updateExportFrequency(frequency: ExportFrequency) {
-        val settings = ScheduledExportSettings.withPeriodInDays(frequency.periodInDays)
+        val settings =
+            ScheduledExportSettings.Builder().setPeriodInDays(frequency.periodInDays).build()
         updateExportSettings(settings)
     }
 
     /** Updates the stored frequency of scheduled exports of Health Connect data. */
     fun updateSelectedFrequency(frequency: ExportFrequency) {
         _selectedExportFrequency.value = frequency
+    }
+
+    /** Updates the selected document provider. */
+    fun updateSelectedDocumentProvider(
+        documentProvider: DocumentProviderInfo,
+        documentProviderRoot: DocumentProviderRoot,
+    ) {
+        _selectedDocumentProvider.value = documentProvider
+        _selectedDocumentProviderRoot.value = documentProviderRoot
+        _selectedRootsForDocumentProviders.value?.set(documentProvider.title, documentProviderRoot)
     }
 
     private fun updateExportSettings(settings: ScheduledExportSettings) {

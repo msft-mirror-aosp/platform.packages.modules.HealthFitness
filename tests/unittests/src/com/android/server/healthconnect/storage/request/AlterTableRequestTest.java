@@ -16,30 +16,61 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
+import android.database.SQLException;
 import android.util.Pair;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class AlterTableRequestTest {
     private static final String TABLE_NAME = "sample_table";
-    private static final String COLUMN_NAME = "sample_column";
+    private static final String COLUMN_NAME_1 = "sample_column_1";
+    private static final String COLUMN_NAME_2 = "sample_column_2";
     private static final String COLUMN_TYPE = StorageUtils.INTEGER;
 
     @Test
-    public void testAlterTable_getAlterTableAddColumnsCommand() {
-        List<Pair<String, String>> columnInfo = new ArrayList<>();
-        columnInfo.add(new Pair<>(COLUMN_NAME, COLUMN_TYPE));
+    public void testAlterTableRequest_getAlterTableAddColumnsCommand_addSingleColumn() {
+        List<Pair<String, String>> columnInfo = List.of(Pair.create(COLUMN_NAME_1, COLUMN_TYPE));
+
         AlterTableRequest alterTableRequest = new AlterTableRequest(TABLE_NAME, columnInfo);
-        assertThat(alterTableRequest.getAlterTableAddColumnsCommand()).isNotNull();
-        assertThat(alterTableRequest.getAlterTableAddColumnsCommand()).contains(TABLE_NAME);
-        assertThat(alterTableRequest.getAlterTableAddColumnsCommand()).contains(COLUMN_NAME);
-        assertThat(alterTableRequest.getAlterTableAddColumnsCommand()).contains(COLUMN_TYPE);
+
+        assertThat(alterTableRequest.getAlterTableAddColumnsCommands())
+                .containsExactly("ALTER TABLE sample_table ADD COLUMN sample_column_1 INTEGER;");
+    }
+
+    @Test
+    public void testAlterTableRequest_getAlterTableAddColumnsCommand_addMultipleColumns() {
+        List<Pair<String, String>> columnInfo =
+                List.of(
+                        Pair.create(COLUMN_NAME_1, COLUMN_TYPE),
+                        Pair.create(COLUMN_NAME_2, COLUMN_TYPE));
+
+        AlterTableRequest alterTableRequest = new AlterTableRequest(TABLE_NAME, columnInfo);
+
+        assertThat(alterTableRequest.getAlterTableAddColumnsCommands())
+                .containsExactly(
+                        "ALTER TABLE sample_table ADD COLUMN sample_column_1 INTEGER;",
+                        "ALTER TABLE sample_table ADD COLUMN sample_column_2 INTEGER;");
+    }
+
+    @Test
+    public void testAlterTableRequest_notNullColumnUsed_expectException() {
+        List<Pair<String, String>> columnInfo = List.of(Pair.create(COLUMN_NAME_1, TEXT_NOT_NULL));
+        AlterTableRequest alterTableRequest = new AlterTableRequest(TABLE_NAME, columnInfo);
+
+        assertThrows(SQLException.class, alterTableRequest::getAlterTableAddColumnsCommands);
     }
 }

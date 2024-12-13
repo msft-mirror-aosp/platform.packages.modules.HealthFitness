@@ -19,7 +19,6 @@ package com.android.server.healthconnect.storage.request;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.OR;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -30,6 +29,7 @@ import android.util.Pair;
 
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.TableColumnPair;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.lang.annotation.ElementType;
@@ -58,18 +58,17 @@ public class UpsertTableRequest {
     private RecordInternal<?> mRecordInternal;
     private RecordHelper<?> mRecordHelper;
     private List<String> mPostUpsertCommands = Collections.emptyList();
+    private List<TableColumnPair> mChildTableAndColumnPairsToDelete = Collections.emptyList();
 
     @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsStateMapping;
 
-    public UpsertTableRequest(@NonNull String table, @NonNull ContentValues contentValues) {
+    public UpsertTableRequest(String table, ContentValues contentValues) {
         this(table, contentValues, Collections.emptyList());
     }
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public UpsertTableRequest(
-            @NonNull String table,
-            @NonNull ContentValues contentValues,
-            @NonNull List<Pair<String, Integer>> uniqueColumns) {
+            String table, ContentValues contentValues, List<Pair<String, Integer>> uniqueColumns) {
         Objects.requireNonNull(table);
         Objects.requireNonNull(contentValues);
         Objects.requireNonNull(uniqueColumns);
@@ -83,7 +82,6 @@ public class UpsertTableRequest {
         return mUniqueColumns.size();
     }
 
-    @NonNull
     public UpsertTableRequest withParentKey(long rowId) {
         mRowId = rowId;
         return this;
@@ -94,26 +92,22 @@ public class UpsertTableRequest {
      * parentCol}
      */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @NonNull
     public UpsertTableRequest setParentColumnForChildTables(@Nullable String parentCol) {
         mParentCol = parentCol;
         return this;
     }
 
-    @NonNull
-    public UpsertTableRequest setRequiresUpdateClause(@NonNull IRequiresUpdate requiresUpdate) {
+    public UpsertTableRequest setRequiresUpdateClause(IRequiresUpdate requiresUpdate) {
         Objects.requireNonNull(requiresUpdate);
 
         mRequiresUpdate = requiresUpdate;
         return this;
     }
 
-    @NonNull
     public String getTable() {
         return mTable;
     }
 
-    @NonNull
     public ContentValues getContentValues() {
         // Set the parent column of the creator of this requested to do that
         if (!Objects.isNull(mParentCol) && mRowId != INVALID_ROW_ID) {
@@ -123,21 +117,17 @@ public class UpsertTableRequest {
         return mContentValues;
     }
 
-    @NonNull
     public List<UpsertTableRequest> getChildTableRequests() {
         return mChildTableRequests;
     }
 
-    @NonNull
-    public UpsertTableRequest setChildTableRequests(
-            @NonNull List<UpsertTableRequest> childTableRequests) {
+    public UpsertTableRequest setChildTableRequests(List<UpsertTableRequest> childTableRequests) {
         Objects.requireNonNull(childTableRequests);
 
         mChildTableRequests = childTableRequests;
         return this;
     }
 
-    @NonNull
     public WhereClauses getUpdateWhereClauses() {
         if (mWhereClausesForUpdate == null) {
             return getReadWhereClauses();
@@ -161,19 +151,22 @@ public class UpsertTableRequest {
         return new ReadTableRequest(getTable()).setWhereClause(getUpdateWhereClauses());
     }
 
-    @NonNull
     private WhereClauses getReadWhereClauses() {
         WhereClauses readWhereClause = new WhereClauses(OR);
 
         for (Pair<String, Integer> uniqueColumn : mUniqueColumns) {
             switch (uniqueColumn.second) {
-                 case TYPE_BLOB -> readWhereClause.addWhereEqualsClause(
-                        uniqueColumn.first, StorageUtils.getHexString(
-                                mContentValues.getAsByteArray(uniqueColumn.first)));
-                 case TYPE_STRING -> readWhereClause.addWhereEqualsClause(
-                         uniqueColumn.first, mContentValues.getAsString(uniqueColumn.first));
-                default -> throw new UnsupportedOperationException(
-                        "Unable to find type: " + uniqueColumn.second);
+                case TYPE_BLOB ->
+                        readWhereClause.addWhereEqualsClause(
+                                uniqueColumn.first,
+                                StorageUtils.getHexString(
+                                        mContentValues.getAsByteArray(uniqueColumn.first)));
+                case TYPE_STRING ->
+                        readWhereClause.addWhereEqualsClause(
+                                uniqueColumn.first, mContentValues.getAsString(uniqueColumn.first));
+                default ->
+                        throw new UnsupportedOperationException(
+                                "Unable to find type: " + uniqueColumn.second);
             }
         }
 
@@ -205,15 +198,29 @@ public class UpsertTableRequest {
         return this;
     }
 
-    @NonNull
-    public List<RecordHelper.TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate() {
-        return mRecordHelper == null
-                ? Collections.emptyList()
-                : mRecordHelper.getChildTablesWithRowsToBeDeletedDuringUpdate(
-                        mExtraWritePermissionsStateMapping);
+    /**
+     * Returns the {@link UpsertTableRequest} with the {@code childTableAndColumnPairsToDelete} set.
+     *
+     * @param childTableAndColumnPairsToDelete a list of {@link TableColumnPair}.
+     */
+    public UpsertTableRequest setChildTablesWithRowsToBeDeletedDuringUpdate(
+            List<TableColumnPair> childTableAndColumnPairsToDelete) {
+        mChildTableAndColumnPairsToDelete = childTableAndColumnPairsToDelete;
+        return this;
     }
 
-    @NonNull
+    /**
+     * Returns a list {@link TableColumnPair}s to be deleted when an update happens to the parent
+     * row.
+     */
+    public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate() {
+        if (mRecordHelper != null) {
+            return mRecordHelper.getChildTablesWithRowsToBeDeletedDuringUpdate(
+                    mExtraWritePermissionsStateMapping);
+        }
+        return mChildTableAndColumnPairsToDelete;
+    }
+
     public List<String> getAllChildTables() {
         return mRecordHelper == null ? Collections.emptyList() : mRecordHelper.getAllChildTables();
     }

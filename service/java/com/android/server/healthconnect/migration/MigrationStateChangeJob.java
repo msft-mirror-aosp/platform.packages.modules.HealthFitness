@@ -28,7 +28,6 @@ import static com.android.server.healthconnect.migration.MigrationConstants.MIGR
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_PAUSE_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_STATE_CHANGE_NAMESPACE;
 
-import android.annotation.NonNull;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -52,9 +51,9 @@ import java.util.Objects;
 public final class MigrationStateChangeJob {
     static final int MIN_JOB_ID = MigrationStateChangeJob.class.hashCode();
 
-    public static void scheduleMigrationCompletionJob(Context context, int userId) {
-        HealthConnectDeviceConfigManager deviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
+    /** Schedules a job to complete migration. */
+    public static void scheduleMigrationCompletionJob(
+            HealthConnectDeviceConfigManager deviceConfigManager, Context context, int userId) {
         if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
             return;
         }
@@ -74,9 +73,9 @@ public final class MigrationStateChangeJob {
                 builder.build());
     }
 
-    public static void scheduleMigrationPauseJob(Context context, int userId) {
-        HealthConnectDeviceConfigManager deviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
+    /** Schedules a job to pause migration. */
+    public static void scheduleMigrationPauseJob(
+            HealthConnectDeviceConfigManager deviceConfigManager, Context context, int userId) {
         if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
             return;
         }
@@ -96,17 +95,17 @@ public final class MigrationStateChangeJob {
     }
 
     /** Execute migration completion job */
-    public static void executeMigrationCompletionJob(@NonNull Context context) {
-        HealthConnectDeviceConfigManager deviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
+    public static void executeMigrationCompletionJob(
+            Context context,
+            PreferenceHelper preferenceHelper,
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            MigrationStateManager migrationStateManager) {
         if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
             return;
         }
-        if (MigrationStateManager.getInitialisedInstance().getMigrationState()
-                == MIGRATION_STATE_COMPLETE) {
+        if (migrationStateManager.getMigrationState() == MIGRATION_STATE_COMPLETE) {
             return;
         }
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
 
         String currentStateStartTime = preferenceHelper.getPreference(CURRENT_STATE_START_TIME_KEY);
 
@@ -119,20 +118,16 @@ public final class MigrationStateChangeJob {
         Instant executionTime =
                 Instant.parse(currentStateStartTime)
                         .plusMillis(
-                                MigrationStateManager.getInitialisedInstance().getMigrationState()
-                                                == MIGRATION_STATE_IDLE
+                                migrationStateManager.getMigrationState() == MIGRATION_STATE_IDLE
                                         ? deviceConfigManager.getIdleStateTimeoutPeriod().toMillis()
                                         : deviceConfigManager
                                                 .getNonIdleStateTimeoutPeriod()
                                                 .toMillis())
                         .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
 
-        if (MigrationStateManager.getInitialisedInstance().getMigrationState()
-                        == MIGRATION_STATE_ALLOWED
-                || MigrationStateManager.getInitialisedInstance().getMigrationState()
-                        == MIGRATION_STATE_IN_PROGRESS) {
-            String allowedStateTimeout =
-                    MigrationStateManager.getInitialisedInstance().getAllowedStateTimeout();
+        if (migrationStateManager.getMigrationState() == MIGRATION_STATE_ALLOWED
+                || migrationStateManager.getMigrationState() == MIGRATION_STATE_IN_PROGRESS) {
+            String allowedStateTimeout = migrationStateManager.getAllowedStateTimeout();
             if (!Objects.isNull(allowedStateTimeout)) {
                 Instant parsedAllowedStateTimeout =
                         Instant.parse(allowedStateTimeout)
@@ -146,23 +141,22 @@ public final class MigrationStateChangeJob {
 
         if (Instant.now().isAfter(executionTime)) {
             // TODO (b/278728774) fix race condition
-            MigrationStateManager.getInitialisedInstance()
-                    .updateMigrationState(context, MIGRATION_STATE_COMPLETE, true);
+            migrationStateManager.updateMigrationState(context, MIGRATION_STATE_COMPLETE, true);
         }
     }
 
     /** Execute migration pausing job. */
-    public static void executeMigrationPauseJob(@NonNull Context context) {
-        HealthConnectDeviceConfigManager deviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
+    public static void executeMigrationPauseJob(
+            Context context,
+            PreferenceHelper preferenceHelper,
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            MigrationStateManager migrationStateManager) {
         if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
             return;
         }
-        if (MigrationStateManager.getInitialisedInstance().getMigrationState()
-                != MIGRATION_STATE_IN_PROGRESS) {
+        if (migrationStateManager.getMigrationState() != MIGRATION_STATE_IN_PROGRESS) {
             return;
         }
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         String currentStateStartTime = preferenceHelper.getPreference(CURRENT_STATE_START_TIME_KEY);
         // This is a fallback but should never happen.
         if (Objects.isNull(currentStateStartTime)) {
@@ -179,13 +173,12 @@ public final class MigrationStateChangeJob {
 
         if (Instant.now().isAfter(executionTime)) {
             // If we move to ALLOWED from IN_PROGRESS, then we have reached the IN_PROGRESS_TIMEOUT
-            MigrationStateManager.getInitialisedInstance()
-                    .updateMigrationState(
-                            context, MIGRATION_STATE_ALLOWED, /* timeoutReached= */ true);
+            migrationStateManager.updateMigrationState(
+                    context, MIGRATION_STATE_ALLOWED, /* timeoutReached= */ true);
         }
     }
 
-    public static boolean existsAStateChangeJob(@NonNull Context context, @NonNull String jobName) {
+    public static boolean existsAStateChangeJob(Context context, String jobName) {
         JobScheduler jobScheduler =
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE);
@@ -198,7 +191,7 @@ public final class MigrationStateChangeJob {
         return false;
     }
 
-    public static void cancelAllJobs(@NonNull Context context) {
+    public static void cancelAllJobs(Context context) {
         JobScheduler jobScheduler =
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE);

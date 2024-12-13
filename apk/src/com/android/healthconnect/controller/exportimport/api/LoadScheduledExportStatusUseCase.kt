@@ -16,7 +16,6 @@
 
 package com.android.healthconnect.controller.exportimport.api
 
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportStatus
 import androidx.core.os.asOutcomeReceiver
 import javax.inject.Inject
@@ -31,7 +30,7 @@ class LoadScheduledExportStatusUseCase
 @Inject
 constructor(
     private val healthDataExportManager: HealthDataExportManager,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ILoadScheduledExportStatusUseCase {
 
     companion object {
@@ -42,15 +41,17 @@ constructor(
         val scheduledExportStatus: ScheduledExportStatus =
             suspendCancellableCoroutine { continuation ->
                 healthDataExportManager.getScheduledExportStatus(
-                    Runnable::run, continuation.asOutcomeReceiver())
+                    Runnable::run,
+                    continuation.asOutcomeReceiver(),
+                )
             }
         val dataExportError: ScheduledExportUiState.DataExportError =
             when (scheduledExportStatus.dataExportError) {
-                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN ->
+                ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN ->
                     ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE ->
+                ScheduledExportStatus.DATA_EXPORT_ERROR_NONE ->
                     ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE
-                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS ->
+                ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS ->
                     ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS
                 else -> {
                     ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN
@@ -59,7 +60,14 @@ constructor(
         return ScheduledExportUiState(
             scheduledExportStatus.lastSuccessfulExportTime,
             dataExportError,
-            scheduledExportStatus.periodInDays)
+            scheduledExportStatus.periodInDays,
+            scheduledExportStatus.lastExportFileName,
+            scheduledExportStatus.lastExportAppName,
+            scheduledExportStatus.nextExportFileName,
+            scheduledExportStatus.nextExportAppName,
+            scheduledExportStatus.lastFailedExportTime,
+            scheduledExportStatus.nextExportSequentialNumber,
+        )
     }
 
     override suspend operator fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState> =

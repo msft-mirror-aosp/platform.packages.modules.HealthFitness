@@ -22,6 +22,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
@@ -127,10 +128,13 @@ constructor(
                 val appsWithFitnessPermissions: List<String> =
                     healthPermissionReader.getAppsWithFitnessPermissions()
                 val fitnessPermissionsInCategory: List<String> =
-                    category.healthPermissionTypes().map { healthPermissionType ->
-                        FitnessPermission(healthPermissionType, PermissionsAccessType.WRITE)
-                            .toString()
-                    }
+                    category
+                        .healthPermissionTypes()
+                        .filterIsInstance<FitnessPermissionType>()
+                        .map { healthPermissionType ->
+                            FitnessPermission(healthPermissionType, PermissionsAccessType.WRITE)
+                                .toString()
+                        }
 
                 appsWithFitnessPermissions.forEach { packageName ->
                     val permissionsPerPackage: List<String> =

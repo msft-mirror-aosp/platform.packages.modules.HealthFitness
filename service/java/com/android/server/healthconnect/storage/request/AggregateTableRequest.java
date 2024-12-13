@@ -24,7 +24,6 @@ import static android.health.connect.datatypes.AggregationType.SUM;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
 import android.health.connect.Constants;
@@ -32,12 +31,14 @@ import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeRangeFilter;
 import android.health.connect.TimeRangeFilterHelper;
 import android.health.connect.datatypes.AggregationType;
+import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.aggregation.PriorityRecordsAggregator;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
@@ -85,6 +86,8 @@ public class AggregateTableRequest {
     private final List<String> mAdditionalColumnsToFetch;
     private final AggregateParams.PriorityAggregationExtraParams mPriorityParams;
     private final boolean mUseLocalTime;
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final AppInfoHelper mAppInfoHelper;
     private List<Long> mTimeSplits;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
@@ -93,6 +96,8 @@ public class AggregateTableRequest {
             AggregationType<?> aggregationType,
             RecordHelper<?> recordHelper,
             WhereClauses whereClauses,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            AppInfoHelper appInfoHelper,
             boolean useLocalTime) {
         mTableName = params.getTableName();
         mColumnNamesToAggregate = params.getColumnsToFetch();
@@ -110,6 +115,8 @@ public class AggregateTableRequest {
             mAdditionalColumnsToFetch.add(endTimeColumnName);
         }
         mUseLocalTime = useLocalTime;
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mAppInfoHelper = appInfoHelper;
     }
 
     /**
@@ -158,7 +165,6 @@ public class AggregateTableRequest {
     }
 
     /** Returns SQL statement to perform aggregation operation */
-    @NonNull
     public String getAggregationCommand() {
         final StringBuilder builder = new StringBuilder("SELECT ");
         String aggCommand;
@@ -243,9 +249,14 @@ public class AggregateTableRequest {
         updateResultWithDataOriginPackageNames(metaDataCursor);
     }
 
+    /** Returns list of app Ids of contributing apps for the record type in the priority order */
+    public List<Long> getAppIdPriorityList(int recordType) {
+        return mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
+                RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType));
+    }
+
     private void processPriorityRequest(Cursor cursor) {
-        List<Long> priorityList =
-                StorageUtils.getAppIdPriorityList(mRecordHelper.getRecordIdentifier());
+        List<Long> priorityList = getAppIdPriorityList(mRecordHelper.getRecordIdentifier());
         PriorityRecordsAggregator aggregator =
                 new PriorityRecordsAggregator(
                         mTimeSplits,
@@ -347,7 +358,7 @@ public class AggregateTableRequest {
         while (metaDataCursor.moveToNext()) {
             packageIds.add(StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME));
         }
-        List<String> packageNames = AppInfoHelper.getInstance().getPackageNames(packageIds);
+        List<String> packageNames = mAppInfoHelper.getPackageNames(packageIds);
 
         mAggregateResults.replaceAll(
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));

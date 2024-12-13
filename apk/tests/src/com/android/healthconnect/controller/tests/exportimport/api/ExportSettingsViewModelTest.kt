@@ -59,7 +59,8 @@ class ExportSettingsViewModelTest {
         private val TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY = "Account"
         private val TEST_DOCUMENT_PROVIDER_ROOT_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider.documents/root/account")
+                "content://android.healthconnect.tests.documentprovider.documents/root/account"
+            )
     }
 
     private val testDispatcher = StandardTestDispatcher()
@@ -80,7 +81,8 @@ class ExportSettingsViewModelTest {
             ExportSettingsViewModel(
                 loadExportSettingsUseCase,
                 updateExportSettingsUseCase,
-                queryDocumentProvidersUseCase)
+                queryDocumentProvidersUseCase,
+            )
     }
 
     @After
@@ -113,10 +115,16 @@ class ExportSettingsViewModelTest {
                     DocumentProviderInfo(
                         TEST_DOCUMENT_PROVIDER_TITLE,
                         TEST_DOCUMENT_PROVIDER_AUTHORITY,
-                        TEST_DOCUMENT_PROVIDER_ICON_RESOURCE),
+                        TEST_DOCUMENT_PROVIDER_ICON_RESOURCE,
+                    ),
                     listOf(
                         DocumentProviderRoot(
-                            TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY, TEST_DOCUMENT_PROVIDER_ROOT_URI))))
+                            TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY,
+                            TEST_DOCUMENT_PROVIDER_ROOT_URI,
+                        )
+                    ),
+                )
+            )
         queryDocumentProvidersUseCase.updateDocumentProviders(documentProviders)
 
         viewModel.loadDocumentProviders()
@@ -197,5 +205,63 @@ class ExportSettingsViewModelTest {
         assertThat(updateExportSettingsUseCase.mostRecentSettings.uri).isEqualTo(TEST_URI)
         assertThat(updateExportSettingsUseCase.mostRecentSettings.periodInDays)
             .isEqualTo(EXPORT_FREQUENCY_DAILY.periodInDays)
+    }
+
+    @Test
+    fun updateSelectedDocumentProvider_selectedDocumentProviderUpdated() {
+        val documentProviderInfo =
+            DocumentProviderInfo(
+                TEST_DOCUMENT_PROVIDER_TITLE,
+                TEST_DOCUMENT_PROVIDER_AUTHORITY,
+                TEST_DOCUMENT_PROVIDER_ICON_RESOURCE,
+            )
+        val documentProviderRoot =
+            DocumentProviderRoot(
+                TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY,
+                TEST_DOCUMENT_PROVIDER_ROOT_URI,
+            )
+        viewModel.updateSelectedDocumentProvider(documentProviderInfo, documentProviderRoot)
+
+        assertThat(viewModel.selectedDocumentProvider.value).isEqualTo(documentProviderInfo)
+    }
+
+    @Test
+    fun updateSelectedDocumentProvider_selectedDocumentProviderRootUpdated() {
+        val documentProviderInfo =
+            DocumentProviderInfo(
+                TEST_DOCUMENT_PROVIDER_TITLE,
+                TEST_DOCUMENT_PROVIDER_AUTHORITY,
+                TEST_DOCUMENT_PROVIDER_ICON_RESOURCE,
+            )
+        val documentProviderRoot =
+            DocumentProviderRoot(
+                TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY,
+                TEST_DOCUMENT_PROVIDER_ROOT_URI,
+            )
+        viewModel.updateSelectedDocumentProvider(documentProviderInfo, documentProviderRoot)
+
+        assertThat(viewModel.selectedDocumentProviderRoot.value).isEqualTo(documentProviderRoot)
+    }
+
+    @Test
+    fun updateSelectedDocumentProvider_updated() {
+        val documentProviderInfo =
+            DocumentProviderInfo(
+                TEST_DOCUMENT_PROVIDER_TITLE,
+                TEST_DOCUMENT_PROVIDER_AUTHORITY,
+                TEST_DOCUMENT_PROVIDER_ICON_RESOURCE,
+            )
+        val documentProviderRoot =
+            DocumentProviderRoot(
+                TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY,
+                TEST_DOCUMENT_PROVIDER_ROOT_URI,
+            )
+        viewModel.updateSelectedDocumentProvider(documentProviderInfo, documentProviderRoot)
+
+        assertThat(viewModel.selectedRootsForDocumentProviders.value?.entries?.size).isEqualTo(1)
+        assertThat(
+                viewModel.selectedRootsForDocumentProviders.value?.get(TEST_DOCUMENT_PROVIDER_TITLE)
+            )
+            .isEqualTo(documentProviderRoot)
     }
 }

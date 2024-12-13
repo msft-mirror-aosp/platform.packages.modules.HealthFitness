@@ -28,17 +28,20 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ExportStatusViewModel
 @Inject
-constructor(
-    private val loadScheduledExportStatusUseCase: ILoadScheduledExportStatusUseCase,
-) : ViewModel() {
+constructor(private val loadScheduledExportStatusUseCase: ILoadScheduledExportStatusUseCase) :
+    ViewModel() {
     private val _storedScheduledExportStatus = MutableLiveData<ScheduledExportUiStatus>()
+    private val _storedNextExportSequentialNumber = MutableLiveData<Int>()
 
     /** Holds the export status that is stored in the Health Connect service. */
     val storedScheduledExportStatus: LiveData<ScheduledExportUiStatus>
         get() = _storedScheduledExportStatus
 
-    init {
+    /** Holds the next export sequential number is stored in the Health Connect service. */
+    val storedNextExportSequentialNumber: LiveData<Int>
+        get() = _storedNextExportSequentialNumber
 
+    init {
         loadScheduledExportStatus()
     }
 
@@ -49,7 +52,9 @@ constructor(
             when (val result = loadScheduledExportStatusUseCase.invoke()) {
                 is ExportImportUseCaseResult.Success -> {
                     _storedScheduledExportStatus.postValue(
-                        ScheduledExportUiStatus.WithData(result.data))
+                        ScheduledExportUiStatus.WithData(result.data)
+                    )
+                    _storedNextExportSequentialNumber.value = result.data.nextExportSequentialNumber
                 }
                 is ExportImportUseCaseResult.Failed -> {
                     _storedScheduledExportStatus.postValue(ScheduledExportUiStatus.LoadingFailed)
