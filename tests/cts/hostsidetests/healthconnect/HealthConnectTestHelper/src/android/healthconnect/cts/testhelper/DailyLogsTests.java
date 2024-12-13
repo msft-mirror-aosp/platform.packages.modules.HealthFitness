@@ -36,7 +36,6 @@ import android.healthconnect.cts.utils.TestUtils;
 import androidx.test.InstrumentationRegistry;
 
 import com.android.compatibility.common.util.NonApiTest;
-import com.android.compatibility.common.util.SystemUtil;
 
 import org.junit.Test;
 
@@ -74,39 +73,27 @@ public class DailyLogsTests {
     public void testInsertRecordsSucceed() throws Exception {
         assertThat(
                         insertRecords(
+                                mHealthConnectManager,
                                 List.of(
                                         getStepsRecord(),
                                         getBloodPressureRecord(),
-                                        getHeartRateRecord()),
-                                mHealthConnectManager))
+                                        getHeartRateRecord())))
                 .hasSize(3);
     }
 
     @Test
     public void testHealthConnectAccessLogsEqualsZero() throws Exception {
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(0);
-                },
-                "android.permission.MANAGE_HEALTH_DATA");
+        assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(0);
     }
 
     @Test
     public void testHealthConnectAccessLogsEqualsOne() throws Exception {
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(1);
-                },
-                "android.permission.MANAGE_HEALTH_DATA");
+        assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(1);
     }
 
     @Test
     public void testHealthConnectAccessLogsEqualsTwo() throws Exception {
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(2);
-                },
-                "android.permission.MANAGE_HEALTH_DATA");
+        assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(2);
     }
 
     /**

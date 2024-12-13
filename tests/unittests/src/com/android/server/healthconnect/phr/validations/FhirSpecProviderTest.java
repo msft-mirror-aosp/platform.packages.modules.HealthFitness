@@ -50,6 +50,8 @@ import static org.junit.Assert.assertThrows;
 import android.health.connect.datatypes.FhirVersion;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.server.healthconnect.proto.FhirDataTypeConfig;
 import com.android.server.healthconnect.proto.FhirFieldConfig;
 import com.android.server.healthconnect.proto.Kind;
@@ -60,10 +62,12 @@ import com.google.common.truth.Correspondence;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.Map;
 
+@RunWith(AndroidJUnit4.class)
 public class FhirSpecProviderTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 

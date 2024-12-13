@@ -154,7 +154,8 @@ public class BackupRestoreDatabaseHelperTest {
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
-                        changeLogsRequestHelper);
+                        changeLogsRequestHelper,
+                        healthConnectInjector.getReadAccessLogsHelper());
     }
 
     @Test
