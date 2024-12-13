@@ -72,26 +72,6 @@ python_library_host {
     ],
 }
 
-python_test_host {
-    name: "fhir-spec-extractor-test",
-    main: "fhir_spec_extractor_test.py",
-    srcs: [
-        "fhir_spec_extractor_test.py",
-    ],
-    libs: [
-        "fhirspec-py-proto",
-        "fhir-spec-extractor",
-    ],
-    test_options: {
-        unit_test: true,
-    },
-    version: {
-        py3: {
-            embedded_launcher: true,
-        },
-    },
-}
-
 // Python script for generating a FhirResourceSpec proto message based on fhir spec json files
 python_binary_host {
     name: "generate-fhir-spec",
