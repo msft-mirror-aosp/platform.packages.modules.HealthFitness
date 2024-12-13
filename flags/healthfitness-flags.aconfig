@@ -457,3 +457,13 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+    name: "smoking"
+    namespace: "health_fitness_aconfig"
+    description: "Enables smoking data type."
+    bug: "383298243"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
