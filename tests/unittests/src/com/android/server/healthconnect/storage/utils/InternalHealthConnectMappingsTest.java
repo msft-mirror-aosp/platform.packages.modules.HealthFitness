@@ -32,16 +32,20 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collection;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 @EnableFlags({Flags.FLAG_HEALTH_CONNECT_MAPPINGS})
 public class InternalHealthConnectMappingsTest {
 
