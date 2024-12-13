@@ -136,7 +136,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? new AppInfoHelper(
                                 hcContext,
                                 mTransactionManager,
-                                mHealthConnectMappings,
+                                mInternalHealthConnectMappings,
                                 mDatabaseHelpers)
                         : builder.mAppInfoHelper;
         mPackageInfoUtils =

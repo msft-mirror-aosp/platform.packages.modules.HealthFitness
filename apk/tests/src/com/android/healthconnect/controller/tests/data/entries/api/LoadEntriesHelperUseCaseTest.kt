@@ -33,6 +33,7 @@ import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VA
 import android.health.connect.datatypes.OxygenSaturationRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.WeightRecord
@@ -59,6 +60,7 @@ import com.android.healthconnect.controller.tests.utils.INSTANT_DAY
 import com.android.healthconnect.controller.tests.utils.INSTANT_MONTH3
 import com.android.healthconnect.controller.tests.utils.INSTANT_WEEK
 import com.android.healthconnect.controller.tests.utils.INTERMENSTRUAL_BLEEDING_DAY
+import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.OXYGENSATURATION_DAY
 import com.android.healthconnect.controller.tests.utils.OXYGENSATURATION_DAY2
 import com.android.healthconnect.controller.tests.utils.SLEEP_DAY_0H20
@@ -78,8 +80,11 @@ import com.android.healthconnect.controller.tests.utils.WEIGHT_DAY_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_MONTH_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_STARTDATE_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_WEEK_100
+import com.android.healthconnect.controller.tests.utils.forDataType
 import com.android.healthconnect.controller.tests.utils.getMixedRecordsAcrossThreeDays
 import com.android.healthconnect.controller.tests.utils.getMixedRecordsAcrossTwoDays
+import com.android.healthconnect.controller.tests.utils.getStepsCadenceRecord
+import com.android.healthconnect.controller.tests.utils.getStepsRecord
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.verifyBodyWaterMassListsEqual
 import com.android.healthconnect.controller.tests.utils.verifyHydrationListsEqual
@@ -104,6 +109,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Captor
 import org.mockito.Mockito
@@ -241,6 +247,52 @@ class LoadEntriesHelperUseCaseTest {
                 SleepSessionRecord::class.java,
             )
             verifySleepSessionListsEqual(actual, expected)
+        }
+
+    @Test
+    fun loadStepsDataUseCase_withinDay_returnsListOfStepsAndCadenceRecords_sortedByDescendingStartTime() =
+        runTest {
+            val timePeriod = DateNavigationPeriod.PERIOD_DAY
+            val input =
+                LoadDataEntriesInput(
+                    displayedStartTime = NOW.atStartOfDay(),
+                    packageName = null,
+                    period = timePeriod,
+                    showDataOrigin = true,
+                    permissionType = FitnessPermissionType.STEPS,
+                )
+
+            val stepRecord1 = getStepsRecord(100, NOW.plusSeconds(10))
+            val stepRecord2 = getStepsRecord(50, NOW.plusSeconds(5))
+            val stepCadenceRecord1 = getStepsCadenceRecord(NOW.plusSeconds(8))
+            val stepCadenceRecord2 = getStepsCadenceRecord(NOW.plusSeconds(6))
+
+            Mockito.doAnswer(prepareStepsAnswer(listOf(stepRecord1, stepRecord2)))
+                .`when`(healthConnectManager)
+                .readRecords(
+                    ArgumentMatchers.argThat<ReadRecordsRequestUsingFilters<Record>> { request ->
+                        request.forDataType(dataType = StepsRecord::class.java)
+                    },
+                    any(),
+                    any(),
+                )
+
+            Mockito.doAnswer(
+                    prepareStepsCadenceAnswer(listOf(stepCadenceRecord1, stepCadenceRecord2))
+                )
+                .`when`(healthConnectManager)
+                .readRecords(
+                    ArgumentMatchers.argThat<ReadRecordsRequestUsingFilters<Record>> { request ->
+                        request.forDataType(dataType = StepsCadenceRecord::class.java)
+                    },
+                    any(),
+                    any(),
+                )
+
+            val actual = loadEntriesHelper.readRecords(input)
+            val expected = listOf(stepRecord1, stepCadenceRecord1, stepCadenceRecord2, stepRecord2)
+
+            assertThat(actual).containsExactlyElementsIn(expected)
         }
 
     @Test
@@ -660,6 +712,27 @@ class LoadEntriesHelperUseCaseTest {
         }
     }
 
+    private fun prepareStepsAnswer(
+        stepsList: List<StepsRecord>
+    ): (InvocationOnMock) -> ReadRecordsResponse<StepsRecord> {
+        return { args: InvocationOnMock ->
+            val receiver = args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<StepsRecord>, *>
+            receiver.onResult(ReadRecordsResponse(stepsList, -1))
+            ReadRecordsResponse(stepsList, -1)
+        }
+    }
+
+    private fun prepareStepsCadenceAnswer(
+        stepsCadenceList: List<StepsCadenceRecord>
+    ): (InvocationOnMock) -> ReadRecordsResponse<StepsCadenceRecord> {
+        return { args: InvocationOnMock ->
+            val receiver =
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<StepsCadenceRecord>, *>
+            receiver.onResult(ReadRecordsResponse(stepsCadenceList, -1))
+            ReadRecordsResponse(stepsCadenceList, -1)
+        }
+    }
+
     private fun prepareImmunizationAnswer(): (InvocationOnMock) -> ReadMedicalResourcesResponse {
         return { args: InvocationOnMock ->
             val receiver = args.arguments[2] as OutcomeReceiver<ReadMedicalResourcesResponse, *>
@@ -725,6 +798,28 @@ class LoadEntriesHelperUseCaseTest {
 
     private fun getBodyWaterMassRecords(): ReadRecordsResponse<BodyWaterMassRecord> {
         return ReadRecordsResponse<BodyWaterMassRecord>(listOf(BODYWATERMASS_WEEK), -1)
+    }
+
+    private fun getStepsRecords(time: Instant = NOW): ReadRecordsResponse<StepsRecord> {
+        return ReadRecordsResponse<StepsRecord>(
+            listOf(
+                getStepsRecord(100, time.plusSeconds(10)),
+                getStepsRecord(50, time.plusSeconds(5)),
+            ),
+            -1,
+        )
+    }
+
+    private fun getStepsCadenceRecords(
+        time: Instant = NOW
+    ): ReadRecordsResponse<StepsCadenceRecord> {
+        return ReadRecordsResponse<StepsCadenceRecord>(
+            listOf(
+                getStepsCadenceRecord(time.plusSeconds(8)),
+                getStepsCadenceRecord(time.plusSeconds(6)),
+            ),
+            -1,
+        )
     }
 
     private fun getMenstruationPeriodRecords(): ReadRecordsResponse<IntermenstrualBleedingRecord> {
@@ -796,7 +891,7 @@ class LoadEntriesHelperUseCaseTest {
         val timeRangeFilter =
             loadEntriesHelper.getTimeFilter(defaultStartTime.atStartOfDay(), timePeriod, true)
 
-        var mockitoStubber: Stubber =
+        val mockitoStubber: Stubber =
             when (permissionType) {
                 FitnessPermissionType.ACTIVE_CALORIES_BURNED ->
                     Mockito.doAnswer(prepareEmptyCaloriesAnswer())

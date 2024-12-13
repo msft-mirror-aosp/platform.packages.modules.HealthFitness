@@ -138,7 +138,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedSingleMedicalResourceType_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
@@ -164,7 +164,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMultipleMedicalResourceTypes_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
@@ -195,7 +195,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMedicalDataSource_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
