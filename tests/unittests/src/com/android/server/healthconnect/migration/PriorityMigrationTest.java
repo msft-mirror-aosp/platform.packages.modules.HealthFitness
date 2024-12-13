@@ -90,14 +90,13 @@ public class PriorityMigrationTest {
                         new Answer<Void>() {
                             @Override
                             public Void answer(InvocationOnMock invocation) throws Throwable {
-                                TransactionManager.TransactionRunnable runnable =
-                                        invocation.getArgument(0);
+                                TransactionManager.Runnable runnable = invocation.getArgument(0);
                                 runnable.run(mSQLiteDatabase);
                                 return null;
                             }
                         })
                 .when(mTransactionManager)
-                .runAsTransaction(any(TransactionManager.TransactionRunnable.class));
+                .runAsTransaction(any(TransactionManager.Runnable.class));
 
         mDataMigrationManager =
                 new DataMigrationManager(

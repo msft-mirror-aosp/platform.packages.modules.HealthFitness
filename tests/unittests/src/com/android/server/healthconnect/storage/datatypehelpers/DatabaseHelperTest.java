@@ -18,12 +18,16 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
 public class DatabaseHelperTest {
 
     private final Set<Class<?>> mNonSingletonClasses = Set.of(MigrationEntityHelper.class);

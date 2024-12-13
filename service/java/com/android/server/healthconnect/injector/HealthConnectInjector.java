@@ -36,7 +36,7 @@ import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -217,7 +217,7 @@ public abstract class HealthConnectInjector {
     /**
      * Getter for {@link UsageStatsCollector} instance initialised by the Health Connect Injector.
      */
-    public abstract UsageStatsCollector getUsageStatsCollector(StorageContext storageContext);
+    public abstract UsageStatsCollector getUsageStatsCollector(HealthConnectContext hcContext);
 
     /**
      * Getter for {@link ReadAccessLogsHelper} instance initialised by the Health Connect Injector.

@@ -29,25 +29,29 @@ import com.android.server.healthconnect.utils.FilesUtil;
 import java.io.File;
 
 /**
- * {@link Context} for accessing storage directory for Health Connect.
+ * {@link ContextWrapper} for HealthConnect.
  *
- * <p>It creates a different directory per user on the device, and provides data separation between
- * users.
+ * <p>Within HealthConnect codebase, we should not pass an object of this class to any method that
+ * accepts the base context class.
  *
- * <p>This is used to initialize {@link HealthConnectDatabase} to perform database operations.
+ * <p>The wrapper wraps around a context for the current active user. Most classes are initially
+ * initialised with the primary user on the device, and then get a new context when the user switch
+ * happens.
  *
- * <p>Use cases that require creating an additional database (e.g. D2D, export/import) can pass in a
- * sub-directory to create the database in that directory.
+ * <p>The wrapper provides the storage directory, per user, where all HealthConnect data should be
+ * stored. This is also used to initialize {@link HealthConnectDatabase} to ensure database is
+ * created in the same directory. Use cases that require creating an additional database (e.g. D2D,
+ * export/import) can pass in a sub-directory to create the database in that directory.
  *
  * @hide
  */
-public final class StorageContext extends ContextWrapper {
+public final class HealthConnectContext extends ContextWrapper {
 
     private static final String TAG = "HealthConnectDatabaseContext";
 
     private final File mDatabaseDir;
 
-    private StorageContext(
+    private HealthConnectContext(
             Context context, UserHandle userHandle, @Nullable String databaseDirName) {
         super(context.createContextAsUser(userHandle, 0));
 
@@ -94,13 +98,13 @@ public final class StorageContext extends ContextWrapper {
     }
 
     /** Factory method */
-    public static StorageContext create(Context context, UserHandle userHandle) {
+    public static HealthConnectContext create(Context context, UserHandle userHandle) {
         return create(context, userHandle, null);
     }
 
     /** Factory method */
-    public static StorageContext create(
+    public static HealthConnectContext create(
             Context context, UserHandle userHandle, @Nullable String databaseDirName) {
-        return new StorageContext(context, userHandle, databaseDirName);
+        return new HealthConnectContext(context, userHandle, databaseDirName);
     }
 }

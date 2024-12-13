@@ -66,6 +66,7 @@ public class ReadAccessLogsHelperTest {
     private static final String TEST_APP_PACKAGE_READER = "test.app.package.reader";
     private static final String TEST_APP_PACKAGE_WRITER = "test.app.package.writer";
     private long mWriterAppInfoId;
+    private long mReaderAppInfoId;
 
     @Rule(order = 1)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -97,6 +98,7 @@ public class ReadAccessLogsHelperTest {
         transactionTestUtils.insertApp(TEST_APP_PACKAGE_READER);
         transactionTestUtils.insertApp(TEST_APP_PACKAGE_WRITER);
         mWriterAppInfoId = appInfoHelper.getAppInfoId(TEST_APP_PACKAGE_WRITER);
+        mReaderAppInfoId = appInfoHelper.getAppInfoId(TEST_APP_PACKAGE_READER);
     }
 
     @Test
@@ -236,6 +238,37 @@ public class ReadAccessLogsHelperTest {
                             Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS),
                             /* endTimeStamp= */ endTime,
                             /* readTimeStamp= */ readTime);
+                });
+        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+
+        assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
+    }
+
+    @Test
+    public void testInsertReadAccessLogForDifferentReaderAndWriterPackage() {
+        RecordInternal<StepsRecord> stepsRecordRecordInternalOne =
+                createStepsRecord(mWriterAppInfoId, 123, Instant.now().toEpochMilli(), 100);
+        RecordInternal<BloodPressureRecord> bloodPressureRecordRecordInternalTwo =
+                createBloodPressureRecord(mReaderAppInfoId, Instant.now().toEpochMilli(), 120, 80);
+        long readTimeStamp = Instant.now().toEpochMilli();
+        List<ReadAccessLog> expectedReadAccessLogs =
+                List.of(
+                        new ReadAccessLog(
+                                /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                                /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                                /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                /* readTimeStamp= */ readTimeStamp,
+                                /* wasReadRecordWrittenInPast30Days= */ true));
+
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mReadAccessLogsHelper.recordReadAccessLogForNonAggregationReads(
+                            db,
+                            ImmutableList.of(
+                                    stepsRecordRecordInternalOne,
+                                    bloodPressureRecordRecordInternalTwo),
+                            TEST_APP_PACKAGE_READER,
+                            /* readTimeStamp= */ readTimeStamp);
                 });
         List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
 

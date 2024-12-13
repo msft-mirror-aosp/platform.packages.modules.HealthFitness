@@ -184,7 +184,10 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     }
 
     public long getLatestRowId() {
-        return mTransactionManager.getLastRowIdFor(TABLE_NAME);
+        return mTransactionManager.runWithoutTransaction(
+                db -> {
+                    return StorageUtils.getLastRowIdFor(db, TABLE_NAME);
+                });
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression

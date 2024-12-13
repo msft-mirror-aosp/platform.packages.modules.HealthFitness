@@ -27,6 +27,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
@@ -44,12 +45,14 @@ import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class NoMockDailyCleanupJobTest {
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
