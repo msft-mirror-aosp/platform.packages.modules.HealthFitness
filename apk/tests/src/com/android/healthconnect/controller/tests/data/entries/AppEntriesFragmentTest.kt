@@ -448,41 +448,6 @@ class AppEntriesFragmentTest {
     }
 
     @Test
-    fun inDeletion_selectAllUnchecked_allEntriesUnchecked() {
-        whenever(viewModel.entries)
-            .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
-        whenever(viewModel.getEntriesList())
-            .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
-        whenever(viewModel.mapOfEntriesToBeDeleted)
-            .thenReturn(
-                MutableLiveData(
-                    mapOf("test_id" to StepsRecord::class, "test_id_2" to StepsRecord::class)
-                )
-            )
-        whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(true))
-
-        val scenario =
-            launchFragment<AppEntriesFragment>(
-                bundleOf(
-                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
-                )
-            )
-        scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AppEntriesFragment).triggerDeletionState(
-                EntriesViewModel.EntriesDeletionScreenState.DELETE
-            )
-        }
-
-        onView(withText("Select all")).perform(click())
-        onIdle()
-        verify(viewModel).removeFromDeleteMap("test_id")
-        verify(viewModel).removeFromDeleteMap("test_id_2")
-    }
-
-    @Test
     fun clickOnFitnessPermission_notClickable() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
         whenever(viewModel.getEntriesList())

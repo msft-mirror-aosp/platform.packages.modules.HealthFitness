@@ -38,13 +38,13 @@ import android.os.RemoteException;
 
 import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -57,7 +57,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-@RunWith(JUnit4.class)
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectManagerTest {
 
     @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();

@@ -27,11 +27,15 @@ import static org.junit.Assert.assertThrows;
 
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
+import org.junit.runner.RunWith;
 
 import java.util.Base64;
 
+@RunWith(AndroidJUnit4.class)
 public class PhrPageTokenWrapperTest {
     private static final int LAST_ROW_ID = 20;
     private static final String INVALID_PAGE_TOKEN_NON_BASE_64 = "2|3aw";

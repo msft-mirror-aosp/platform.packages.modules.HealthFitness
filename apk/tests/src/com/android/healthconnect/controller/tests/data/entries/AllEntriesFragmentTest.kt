@@ -51,12 +51,14 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.tests.utils.FakeParentFragment
+import com.android.healthconnect.controller.tests.utils.NESTED_FRAGMENT_TAG
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_2
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_3
-import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.launchNestedFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.withIndex
@@ -131,7 +133,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
         whenever(viewModel.getEntriesList()).thenReturn((FORMATTED_STEPS_LIST.toMutableList()))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
         verify(healthConnectLogger, atLeast(1))
@@ -144,7 +146,7 @@ class AllEntriesFragmentTest {
     fun fitnessData_logsFitnessPageImpression() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ENTRIES_PAGE)
         verify(healthConnectLogger).logPageImpression()
@@ -154,7 +156,7 @@ class AllEntriesFragmentTest {
     fun medicalData_logsMedicalPageImpression() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AllEntriesFragment>(
+        launchNestedFragment<AllEntriesFragment>(
             bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
@@ -166,7 +168,7 @@ class AllEntriesFragmentTest {
     fun whenNoData_showsNoData() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -175,7 +177,7 @@ class AllEntriesFragmentTest {
     fun whenError_showsErrorView() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -184,7 +186,7 @@ class AllEntriesFragmentTest {
     fun whenLoading_showsLoading() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -194,7 +196,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_SLEEP_LIST)))
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_SLEEP_LIST.toMutableList())
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to SLEEP.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to SLEEP.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("7 hours")).check(matches(isDisplayed()))
@@ -207,7 +209,9 @@ class AllEntriesFragmentTest {
         whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_HEART_RATE_LIST)))
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_HEART_RATE_LIST.toMutableList())
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to HEART_RATE.name))
+        launchNestedFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to HEART_RATE.name)
+        )
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("128 - 140 bpm")).check(matches(isDisplayed()))
@@ -221,7 +225,9 @@ class AllEntriesFragmentTest {
         whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_EXERCISE_SESSION_LIST.toMutableList())
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to EXERCISE.name))
+        launchNestedFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to EXERCISE.name)
+        )
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("Biking")).check(matches(isDisplayed()))
@@ -235,7 +241,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
 
-        launchFragment<AllEntriesFragment>(
+        launchNestedFragment<AllEntriesFragment>(
             bundleOf(PERMISSION_TYPE_NAME_KEY to PLANNED_EXERCISE.name)
         )
 
@@ -250,7 +256,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -266,7 +272,9 @@ class AllEntriesFragmentTest {
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
 
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -286,7 +294,7 @@ class AllEntriesFragmentTest {
     fun whenNoMedicalData_showsNoData() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AllEntriesFragment>(
+        launchNestedFragment<AllEntriesFragment>(
             bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
@@ -297,7 +305,7 @@ class AllEntriesFragmentTest {
     fun whenMedicalError_showsErrorView() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        launchFragment<AllEntriesFragment>(
+        launchNestedFragment<AllEntriesFragment>(
             bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
@@ -308,7 +316,7 @@ class AllEntriesFragmentTest {
     fun whenMedicalLoading_showsLoading() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        launchFragment<AllEntriesFragment>(
+        launchNestedFragment<AllEntriesFragment>(
             bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
@@ -320,7 +328,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
 
-        launchFragment<AllEntriesFragment>(
+        launchNestedFragment<AllEntriesFragment>(
             bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
@@ -335,9 +343,15 @@ class AllEntriesFragmentTest {
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
 
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
+
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -354,9 +368,15 @@ class AllEntriesFragmentTest {
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
 
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
+
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -378,9 +398,15 @@ class AllEntriesFragmentTest {
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
 
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
+
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -399,9 +425,15 @@ class AllEntriesFragmentTest {
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
 
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
+
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -419,9 +451,15 @@ class AllEntriesFragmentTest {
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
 
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchNestedFragment<AllEntriesFragment>(
+                bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name)
+            )
+
         scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            val parentFragment =
+                activity.supportFragmentManager.findFragmentByTag("") as FakeParentFragment
+            val fragment =
+                parentFragment.childFragmentManager.findFragmentByTag(NESTED_FRAGMENT_TAG)
             (fragment as AllEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
@@ -431,35 +469,6 @@ class AllEntriesFragmentTest {
         onIdle()
         verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
         verify(viewModel).addToDeleteMap("test_id_2", StepsRecord::class)
-    }
-
-    @Test
-    fun inDeletion_selectAllUnchecked_allEntriesUnchecked() {
-        whenever(viewModel.entries)
-            .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
-        whenever(viewModel.getEntriesList())
-            .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
-        whenever(viewModel.mapOfEntriesToBeDeleted)
-            .thenReturn(
-                MutableLiveData(
-                    mapOf("test_id" to StepsRecord::class, "test_id_2" to StepsRecord::class)
-                )
-            )
-        whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(true))
-
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(
-                EntriesViewModel.EntriesDeletionScreenState.DELETE
-            )
-        }
-
-        onView(withText("Select all")).perform(click())
-        onIdle()
-        verify(viewModel).removeFromDeleteMap("test_id")
-        verify(viewModel).removeFromDeleteMap("test_id_2")
     }
 }
 

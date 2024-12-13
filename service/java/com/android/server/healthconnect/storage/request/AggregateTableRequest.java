@@ -302,7 +302,7 @@ public class AggregateTableRequest {
         while (cursor.moveToNext()) {
             mAggregateResults.put(
                     StorageUtils.getCursorInt(cursor, GROUP_BY_COLUMN_NAME),
-                    mRecordHelper.getAggregateResult(cursor, mAggregationType));
+                    mRecordHelper.getNoPriorityAggregateResult(cursor, mAggregationType));
         }
     }
 
@@ -444,7 +444,8 @@ public class AggregateTableRequest {
         cursor.moveToFirst();
         for (double aggregate : derivedAggregateArray) {
             mAggregateResults.put(
-                    index, mRecordHelper.getAggregateResult(cursor, mAggregationType, aggregate));
+                    index,
+                    mRecordHelper.getDerivedAggregateResult(cursor, mAggregationType, aggregate));
             index++;
         }
     }

@@ -53,7 +53,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -108,12 +108,12 @@ public final class AppInfoHelper extends DatabaseHelper {
      */
     @Nullable private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
-    private StorageContext mUserContext;
+    private HealthConnectContext mUserContext;
     private final TransactionManager mTransactionManager;
     private final HealthConnectMappings mHealthConnectMappings;
 
     public AppInfoHelper(
-            StorageContext userContext,
+            HealthConnectContext userContext,
             TransactionManager transactionManager,
             HealthConnectMappings healthConnectMappings,
             DatabaseHelpers databaseHelpers) {
@@ -130,7 +130,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     /** Setup AppInfoHelper for the given user. */
-    public synchronized void setupForUser(StorageContext userContext) {
+    public synchronized void setupForUser(HealthConnectContext userContext) {
         mUserContext = userContext;
         // While we already call clearCache() in HCManager.onUserSwitching(), calling this again
         // here in case any of the methods below was called in between that initialized the cache
@@ -740,7 +740,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                         getContentValues(packageName, appInfoInternal),
                         UNIQUE_COLUMN_INFO);
 
-        mTransactionManager.updateTable(upsertTableRequest);
+        mTransactionManager.update(upsertTableRequest);
         getAppInfoMap().put(packageName, appInfoInternal);
     }
 

@@ -42,9 +42,12 @@ import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -52,6 +55,7 @@ import java.time.ZoneOffset;
 import java.util.TimeZone;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 @RequiresFlagsEnabled({
     FLAG_ACTIVITY_INTENSITY,
     FLAG_ACTIVITY_INTENSITY_DB,

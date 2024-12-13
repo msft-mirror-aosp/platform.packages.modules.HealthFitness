@@ -90,7 +90,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
         recordInternals.forEach(
                 (recordInternal) -> upsertTableRequests.add(getUpsertTableRequest(recordInternal)));
 
-        mTransactionManager.insertOrIgnoreOnConflict(upsertTableRequests);
+        mTransactionManager.insertOrIgnoreAllOnConflict(upsertTableRequests);
     }
 
     /** Returns a list of all dates with database writes for the given record types */

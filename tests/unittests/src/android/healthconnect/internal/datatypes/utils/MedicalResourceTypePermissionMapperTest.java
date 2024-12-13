@@ -41,12 +41,16 @@ import android.health.connect.internal.datatypes.utils.MedicalResourceTypePermis
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RunWith(AndroidJUnit4.class)
 @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
 public class MedicalResourceTypePermissionMapperTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();

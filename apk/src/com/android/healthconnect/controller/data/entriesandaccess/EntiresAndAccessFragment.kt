@@ -23,8 +23,8 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.android.healthconnect.controller.R
@@ -50,7 +50,8 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
 
     companion object {
         private const val DELETION_TAG = "DeletionTag"
-        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY = "START_DELETION_ENTRIES_AND_ACCESS_KEY"
+        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY =
+            "START_DELETION_ENTRIES_AND_ACCESS_KEY"
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -59,7 +60,7 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var tabLayoutDisabled: TabLayout
-    private val entriesViewModel: EntriesViewModel by activityViewModels()
+    private val entriesViewModel: EntriesViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,7 +70,10 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
         // TODO(b/291249677): Add logging.
         // logger.setPageId(pageName)
 
-        childFragmentManager.setFragmentResultListener(START_DELETION_ENTRIES_AND_ACCESS_KEY, this) { _, _ ->
+        childFragmentManager.setFragmentResultListener(
+            START_DELETION_ENTRIES_AND_ACCESS_KEY,
+            this,
+        ) { _, _ ->
             childFragmentManager.setFragmentResult(START_DELETION_KEY, bundleOf())
         }
         if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
