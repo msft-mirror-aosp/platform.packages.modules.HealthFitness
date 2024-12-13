@@ -115,13 +115,13 @@ public class ReadAccessLogsHelperTest {
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 /* readTimeStamp= */ readTimeStamp,
-                                /* wasReadRecordWrittenInPast30Days= */ true),
+                                /* isRecordWithinPast30Days= */ true),
                         new ReadAccessLog(
                                 /* readerPackage= */ TEST_APP_PACKAGE_READER,
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 /* readTimeStamp= */ readTimeStamp,
-                                /* wasReadRecordWrittenInPast30Days= */ false));
+                                /* isRecordWithinPast30Days= */ false));
 
         mTransactionManager.runAsTransaction(
                 db -> {
@@ -155,13 +155,13 @@ public class ReadAccessLogsHelperTest {
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 /* readTimeStamp= */ readTimeStamp,
-                                /* wasReadRecordWrittenInPast30Days= */ true),
+                                /* isRecordWithinPast30Days= */ true),
                         new ReadAccessLog(
                                 /* readerPackage= */ TEST_APP_PACKAGE_READER,
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 /* readTimeStamp= */ readTimeStamp,
-                                /* wasReadRecordWrittenInPast30Days= */ false));
+                                /* isRecordWithinPast30Days= */ false));
 
         mTransactionManager.runAsTransaction(
                 db -> {
@@ -191,13 +191,13 @@ public class ReadAccessLogsHelperTest {
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
                                 /* readTimeStamp= */ readTime,
-                                /* wasReadRecordWrittenInPast30Days= */ true),
+                                /* isRecordWithinPast30Days= */ true),
                         new ReadAccessLog(
                                 /* readerPackage= */ TEST_APP_PACKAGE_READER,
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 /* readTimeStamp= */ readTime,
-                                /* wasReadRecordWrittenInPast30Days= */ true));
+                                /* isRecordWithinPast30Days= */ true));
 
         mTransactionManager.runAsTransaction(
                 db -> {
@@ -227,7 +227,7 @@ public class ReadAccessLogsHelperTest {
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 /* readTimeStamp= */ readTime,
-                                /* wasReadRecordWrittenInPast30Days= */ true));
+                                /* isRecordWithinPast30Days= */ true));
 
         mTransactionManager.runAsTransaction(
                 db -> {
@@ -258,7 +258,7 @@ public class ReadAccessLogsHelperTest {
                                 /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
                                 /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 /* readTimeStamp= */ readTimeStamp,
-                                /* wasReadRecordWrittenInPast30Days= */ true));
+                                /* isRecordWithinPast30Days= */ true));
 
         mTransactionManager.runAsTransaction(
                 db -> {

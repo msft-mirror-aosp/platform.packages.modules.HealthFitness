@@ -281,11 +281,15 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     /** Gets the package name corresponding to the {@code packageId}. */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public String getPackageName(long packageId) {
-        return getIdPackageNameMap().get(packageId);
+    public String getPackageName(long packageId) throws NameNotFoundException {
+        String packageName = getIdPackageNameMap().get(packageId);
+        if (packageName == null) {
+            throw new NameNotFoundException("No package name found for id " + packageId);
+        }
+        return packageName;
     }
 
+    // TODO(sameerj): Remove identical method convertPackageIdsToPackageName.
     public List<String> getPackageNames(List<Long> packageIds) {
         if (packageIds == null || packageIds.isEmpty()) {
             return Collections.emptyList();
@@ -294,10 +298,12 @@ public final class AppInfoHelper extends DatabaseHelper {
         List<String> packageNames = new ArrayList<>();
         packageIds.forEach(
                 (packageId) -> {
-                    String packageName = getPackageName(packageId);
-                    requireNonNull(packageName);
-
-                    packageNames.add(packageName);
+                    try {
+                        String packageName = getPackageName(packageId);
+                        packageNames.add(packageName);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        throw new NullPointerException("Package name was null for the given id");
+                    }
                 });
 
         return packageNames;
@@ -821,9 +827,13 @@ public final class AppInfoHelper extends DatabaseHelper {
     private Set<String> convertPackageIdsToPackageName(Set<Long> packageIds) {
         Set<String> packageNames = new HashSet<>();
         for (Long packageId : packageIds) {
-            String packageName = getPackageName(packageId);
-            if (packageName != null && !packageName.isEmpty()) {
-                packageNames.add(packageName);
+            try {
+                String packageName = getPackageName(packageId);
+                if (!packageName.isEmpty()) {
+                    packageNames.add(packageName);
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                Slog.e(TAG, "Package name not found for the given id", e);
             }
         }
         return packageNames;

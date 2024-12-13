@@ -25,6 +25,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -124,31 +125,28 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
         List<ReadAccessLog> readAccessLogList = new ArrayList<>();
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
-                String readerPackage =
-                        mAppInfoHelper.getPackageName(
-                                getCursorLong(cursor, READER_APP_ID_COLUMN_NAME));
+                try {
+                    String readerPackage =
+                            mAppInfoHelper.getPackageName(
+                                    getCursorLong(cursor, READER_APP_ID_COLUMN_NAME));
+                    String writerPackage =
+                            mAppInfoHelper.getPackageName(
+                                    getCursorLong(cursor, WRITER_APP_ID_COLUMN_NAME));
+                    long readTimeStamp = getCursorLong(cursor, READ_TIME);
+                    boolean isRecordWithinPast30Days =
+                            getCursorInt(cursor, WAS_READ_RECORD_WRITTEN_IN_PAST_30_DAYS) > 0;
+                    int dataType = getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME);
 
-                String writerPackage =
-                        mAppInfoHelper.getPackageName(
-                                getCursorLong(cursor, WRITER_APP_ID_COLUMN_NAME));
-
-                if (writerPackage == null || readerPackage == null) {
+                    readAccessLogList.add(
+                            new ReadAccessLog(
+                                    /* readerPackage= */ readerPackage,
+                                    /* writerPackage= */ writerPackage,
+                                    /* dataType= */ dataType,
+                                    /* readTimeStamp= */ readTimeStamp,
+                                    /* isRecordWithinPast30Days= */ isRecordWithinPast30Days));
+                } catch (PackageManager.NameNotFoundException e) {
                     Slog.e(TAG, "encounter null package name while query access logs");
-                    continue;
                 }
-                long readTimeStamp = getCursorLong(cursor, READ_TIME);
-                boolean wasReadRecordWrittenInPast30Days =
-                        getCursorInt(cursor, WAS_READ_RECORD_WRITTEN_IN_PAST_30_DAYS) > 0;
-                int dataType = getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME);
-
-                readAccessLogList.add(
-                        new ReadAccessLog(
-                                /* readerPackage= */ readerPackage,
-                                /* writerPackage= */ writerPackage,
-                                /* dataType= */ dataType,
-                                /* readTimeStamp= */ readTimeStamp,
-                                /* wasReadRecordWrittenInPast30Days= */
-                                wasReadRecordWrittenInPast30Days));
             }
         }
 
@@ -285,19 +283,19 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
         private final String mWriterPackage;
         private final int mDataType;
         private final long mReadTimeStamp;
-        private final boolean mWasReadRecordWrittenInPast30Days;
+        private final boolean mIsRecordWithinPast30Days;
 
         public ReadAccessLog(
                 String readerPackage,
                 String writerPackage,
                 int dataType,
                 long readTimeStamp,
-                boolean wasReadRecordWrittenInPast30Days) {
+                boolean isRecordWithinPast30Days) {
             this.mReaderPackage = readerPackage;
             this.mWriterPackage = writerPackage;
             this.mDataType = dataType;
             this.mReadTimeStamp = readTimeStamp;
-            this.mWasReadRecordWrittenInPast30Days = wasReadRecordWrittenInPast30Days;
+            this.mIsRecordWithinPast30Days = isRecordWithinPast30Days;
         }
 
         public String getReaderPackage() {
@@ -316,8 +314,8 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             return mReadTimeStamp;
         }
 
-        public boolean getWasReadRecordWrittenInPast30Days() {
-            return mWasReadRecordWrittenInPast30Days;
+        public boolean getRecordWithinPast30Days() {
+            return mIsRecordWithinPast30Days;
         }
 
         @Override
@@ -325,7 +323,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             if (!(o instanceof ReadAccessLog that)) return false;
             return mDataType == that.mDataType
                     && mReadTimeStamp == that.mReadTimeStamp
-                    && mWasReadRecordWrittenInPast30Days == that.mWasReadRecordWrittenInPast30Days
+                    && mIsRecordWithinPast30Days == that.mIsRecordWithinPast30Days
                     && Objects.equals(mReaderPackage, that.mReaderPackage)
                     && Objects.equals(mWriterPackage, that.mWriterPackage);
         }
@@ -337,7 +335,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
                     mWriterPackage,
                     mDataType,
                     mReadTimeStamp,
-                    mWasReadRecordWrittenInPast30Days);
+                    mIsRecordWithinPast30Days);
         }
     }
 }
