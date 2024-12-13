@@ -82,6 +82,8 @@ import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
@@ -103,6 +105,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
@@ -112,6 +115,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class MedicalDataSourceHelperTest {
 
     private static final long APP_INFO_ID = 123;

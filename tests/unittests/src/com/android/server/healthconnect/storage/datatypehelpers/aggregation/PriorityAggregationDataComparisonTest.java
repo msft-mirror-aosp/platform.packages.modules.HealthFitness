@@ -19,8 +19,12 @@ import static com.android.server.healthconnect.storage.datatypehelpers.aggregati
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Test;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
 public class PriorityAggregationDataComparisonTest {
     @Test
     public void testCompareTwoIntervals_orderByPriority() {

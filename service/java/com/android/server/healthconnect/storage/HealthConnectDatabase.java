@@ -38,13 +38,13 @@ public final class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
 
     @VisibleForTesting public static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
-    private final StorageContext mContext;
+    private final HealthConnectContext mContext;
 
-    public HealthConnectDatabase(StorageContext context) {
+    public HealthConnectDatabase(HealthConnectContext context) {
         this(context, DEFAULT_DATABASE_NAME);
     }
 
-    public HealthConnectDatabase(StorageContext context, String databaseName) {
+    public HealthConnectDatabase(HealthConnectContext context, String databaseName) {
         super(context, databaseName, null, getDbVersion());
         mContext = context;
     }

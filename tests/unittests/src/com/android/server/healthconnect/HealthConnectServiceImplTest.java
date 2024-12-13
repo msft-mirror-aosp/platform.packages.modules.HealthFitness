@@ -401,7 +401,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getPreferenceHelper(),
                         healthConnectInjector.getDatabaseHelpers(),
-                        healthConnectInjector.getPreferencesManager());
+                        healthConnectInjector.getPreferencesManager(),
+                        healthConnectInjector.getReadAccessLogsHelper());
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 

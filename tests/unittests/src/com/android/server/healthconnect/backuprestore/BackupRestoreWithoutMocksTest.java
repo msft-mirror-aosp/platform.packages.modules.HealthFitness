@@ -52,9 +52,9 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.PhrTestUtils;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -105,7 +105,7 @@ public class BackupRestoreWithoutMocksTest {
                     TestUtils::isHealthConnectFullySupported,
                     "Tests should run on supported hardware only.");
 
-    private StorageContext mContext;
+    private HealthConnectContext mContext;
     private TransactionTestUtils mTransactionTestUtils;
     private BackupRestore mBackupRestore;
     private PhrTestUtils mPhrTestUtils;
@@ -143,8 +143,8 @@ public class BackupRestoreWithoutMocksTest {
 
     @After
     public void tearDown() throws Exception {
-        StorageContext dbContext =
-                StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
         File stagedDir = dbContext.getDataDir();
         File[] allContents = stagedDir.listFiles();
         if (allContents != null) {
@@ -266,8 +266,8 @@ public class BackupRestoreWithoutMocksTest {
     })
     public void testMerge_withPhrMergeEnabled_over5000Resources_copiesAllPhrData()
             throws Exception {
-        StorageContext dbContext =
-                StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -322,8 +322,8 @@ public class BackupRestoreWithoutMocksTest {
         Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_D2D_AND_EXPORT_IMPORT
     })
     public void testMerge_withPhrMergeEnabled_copiesAllPhrData() throws Exception {
-        StorageContext dbContext =
-                StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -396,8 +396,8 @@ public class BackupRestoreWithoutMocksTest {
         assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
                 .isEqualTo(1);
         // Create the staged db file.
-        StorageContext dbContext =
-                StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -459,8 +459,8 @@ public class BackupRestoreWithoutMocksTest {
         assertThat(queryNumEntries(originalDatabase, "medical_resource_indices_table"))
                 .isEqualTo(1);
         // Create the staged db file.
-        StorageContext dbContext =
-                StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -506,8 +506,8 @@ public class BackupRestoreWithoutMocksTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_D2D_AND_EXPORT_IMPORT})
     public void testMerge_withPhrMergeDisabled_doesNotCopyPhrData() throws Exception {
-        StorageContext dbContext =
-                StorageContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);

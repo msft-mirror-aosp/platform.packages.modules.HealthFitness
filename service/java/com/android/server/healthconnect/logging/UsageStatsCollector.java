@@ -27,7 +27,7 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
@@ -59,8 +59,9 @@ public final class UsageStatsCollector {
      * API call within this number of days.
      */
     private static final long PHR_MONTHLY_ACTIVE_USER_DURATION = 30; // 30 days
+
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
-    private final StorageContext mStorageContext;
+    private final HealthConnectContext mHcContext;
     private final PreferenceHelper mPreferenceHelper;
     private final PreferencesManager mPreferencesManager;
     private final AccessLogsHelper mAccessLogsHelper;
@@ -72,7 +73,7 @@ public final class UsageStatsCollector {
     @Nullable private Map<String, PackageInfo> mPackageNameToPackageInfo;
 
     public UsageStatsCollector(
-            StorageContext storageContext,
+            HealthConnectContext hcContext,
             PreferenceHelper preferenceHelper,
             PreferencesManager preferencesManager,
             AccessLogsHelper accessLogsHelper,
@@ -80,7 +81,7 @@ public final class UsageStatsCollector {
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             PackageInfoUtils packageInfoUtils) {
-        mStorageContext = storageContext;
+        mHcContext = hcContext;
         mPreferenceHelper = preferenceHelper;
         mPreferencesManager = preferencesManager;
         mAccessLogsHelper = accessLogsHelper;
@@ -100,7 +101,7 @@ public final class UsageStatsCollector {
      */
     int getNumberOfAppsCompatibleWithHealthConnect() {
         return mPackageInfoUtils
-                .getPackagesCompatibleWithHealthConnect(mStorageContext, mStorageContext.getUser())
+                .getPackagesCompatibleWithHealthConnect(mHcContext, mHcContext.getUser())
                 .size();
     }
 
@@ -114,10 +115,10 @@ public final class UsageStatsCollector {
         Map<String, List<String>> packageNameToPermissionsGranted = new HashMap<>();
         List<PackageInfo> packagesConnectedToHealthConnect =
                 mPackageInfoUtils.getPackagesHoldingHealthPermissions(
-                        mStorageContext.getUser(), mStorageContext);
+                        mHcContext.getUser(), mHcContext);
         for (PackageInfo info : packagesConnectedToHealthConnect) {
             List<String> grantedHealthPermissions =
-                    PackageInfoUtils.getGrantedHealthPermissions(mStorageContext, info);
+                    PackageInfoUtils.getGrantedHealthPermissions(mHcContext, info);
             if (!grantedHealthPermissions.isEmpty()) {
                 packageNameToPermissionsGranted.put(info.packageName, grantedHealthPermissions);
             }

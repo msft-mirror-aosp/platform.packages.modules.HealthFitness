@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
@@ -28,9 +29,11 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectInjectorTest {
 
     @Mock private PackageInfoUtils mPackageInfoUtils;

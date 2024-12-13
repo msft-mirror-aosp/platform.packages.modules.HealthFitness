@@ -286,7 +286,7 @@ class FhirSpecExtractor:
         # "id" fields usually have a type containing the following type code and extension
         # https://hl7.org/fhir/extensions/StructureDefinition-structuredefinition-fhir-type.html
         if type_code == "http://hl7.org/fhirpath/System.String":
-            return (fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SYSTEM_STRING,
+            return (fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID,
                     fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE)
 
         data_type = fhirspec_pb2.R4FhirType.Value(

@@ -44,6 +44,7 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
@@ -63,6 +64,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestU
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
@@ -70,6 +72,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectDatabaseTest {
     private static final String TEST_PACKAGE_NAME = "package.test";
 
@@ -166,6 +169,7 @@ public class HealthConnectDatabaseTest {
                         injector.getAppInfoHelper(),
                         injector.getAccessLogsHelper(),
                         injector.getDeviceInfoHelper(),
+                        injector.getReadAccessLogsHelper(),
                         false);
         assertThat(recordInternals).hasSize(1);
         assertThat(recordInternals.get(0).toExternalRecord())
@@ -215,7 +219,8 @@ public class HealthConnectDatabaseTest {
     // hence this methods needs to be called in individual tests rather than in @Before method.
     private HealthConnectDatabase initializeEmptyHealthConnectDatabase() {
         HealthConnectDatabase healthConnectDatabase =
-                new HealthConnectDatabase(StorageContext.create(mContext, mContext.getUser()));
+                new HealthConnectDatabase(
+                        HealthConnectContext.create(mContext, mContext.getUser()));
 
         // Make sure there is nothing there already.
         File databasePath = healthConnectDatabase.getDatabasePath();

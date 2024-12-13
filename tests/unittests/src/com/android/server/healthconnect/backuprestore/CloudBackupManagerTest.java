@@ -140,7 +140,8 @@ public class CloudBackupManagerTest {
                         changeLogsRequestHelper,
                         priorityHelper,
                         preferenceHelper,
-                        exportImportSettingsStorage);
+                        exportImportSettingsStorage,
+                        healthConnectInjector.getReadAccessLogsHelper());
     }
 
     @Test
