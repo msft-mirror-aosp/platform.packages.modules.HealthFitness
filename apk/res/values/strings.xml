@@ -737,10 +737,8 @@
     <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device</string>
     <string name="onboarding_description_health_records" description="Content description of Health Connect app on the onboarding page that includes health records">Health&#160;Connect stores and syncs your health and fitness data from different apps.\n\n<b>Fitness and wellness data,</b> including exercise sessions, steps, nutrition, sleep and more\n\n<b>Health records,</b> including vaccines, lab results and more</string>
     <string name="onboarding_description_with_health_connect" description="Content description of Health Connect app on the onboarding page that explains what the user can do with this app">With Health&#160;Connect you can</string>
-    <string name="share_data" description="Label used to show how the user can share data with apps">Share data with your apps</string>
-    <string name="share_data_description" description="Content description for how the user can share data with apps">Choose the data each app can read or write to Health&#160;Connect</string>
-    <string name="manage_your_settings" description="Label used to show how the user can manage settings and privacy">Manage your settings and privacy</string>
-    <string name="manage_your_settings_description" description="Content description for how the user can change app permissions and manage data">Change app permissions and manage your data at any time</string>
+    <string name="share_data_text" description="Text explaining how the user can share data with apps"><b>Share data with your apps</b>\nChoose the data each app can read or write to Health&#160;Connect</string>
+    <string name="manage_your_settings_text" description="Text explaining how the user can change app permissions and manage data"><b>Manage your settings and privacy</b>\nChange app permissions and manage your data at any time</string>
     <string name="onboarding_go_back_button_text" description="Content description for button to exit from onboarding page">Go back</string>
     <string name="onboarding_get_started_button_text" description="Content description for button to get started with Health Connect app">Get started</string>
     <string name="previously_opened" description="Label used as key to track if user has opened Health Connect previously" translatable="false">Previously Opened</string>
