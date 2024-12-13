@@ -196,9 +196,6 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             body.findViewById<CheckBox>(R.id.dialog_checkbox).apply {
                 text = getString(R.string.disconnect_all_app_permissions_dialog_checkbox)
             }
-        checkBox.setOnCheckedChangeListener { _, _ ->
-            // TODO(b/372636258): add logging
-        }
 
         removeAllAppsDialog =
             AlertDialogBuilder(
@@ -212,6 +209,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON,
                 ) { _, _ ->
                     viewModel.setAlertDialogStatus(false)
+                    viewModel.setAlertDialogCheckBoxChecked(false)
                 }
                 .setPositiveButton(
                     R.string.permissions_disconnect_all_dialog_disconnect,
@@ -226,6 +224,19 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     }
                 }
                 .create()
+                .apply {
+                    setOnShowListener {
+                        checkBox.setOnCheckedChangeListener(null)
+                        checkBox.isChecked = viewModel.alertDialogCheckBoxChecked.value ?: false
+                        checkBox.setOnCheckedChangeListener { _, isChecked ->
+                            viewModel.setAlertDialogCheckBoxChecked(isChecked)
+                            logger.logInteraction(
+                                DisconnectAllAppsDialogElement
+                                    .DISCONNECT_ALL_APPS_DIALOG_DELETE_CHECKBOX
+                            )
+                        }
+                    }
+                }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

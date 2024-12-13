@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 
 import android.content.ContentValues;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
@@ -410,8 +411,12 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         for (Map.Entry<Integer, Set<Long>> entry :
                 dataCategoryToAppIdMapWithoutPermission.entrySet()) {
             for (Long appInfoId : entry.getValue()) {
-                removeAppFromPriorityListIfNoDataExists(
-                        entry.getKey(), mAppInfoHelper.getPackageName(appInfoId));
+                try {
+                    removeAppFromPriorityListIfNoDataExists(
+                            entry.getKey(), mAppInfoHelper.getPackageName(appInfoId));
+                } catch (PackageManager.NameNotFoundException e) {
+                    Slog.e(TAG, "Package name not found while syncing priority table", e);
+                }
             }
         }
         addContributingAppsIfCategoryListIsEmpty();
