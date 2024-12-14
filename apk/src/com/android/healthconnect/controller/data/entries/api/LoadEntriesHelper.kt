@@ -116,6 +116,13 @@ constructor(
         return dataTypes
             .map { dataType -> readDataType(dataType, timeFilterRange, input.packageName) }
             .flatten()
+            .sortedByDescending { record ->
+                when (record) {
+                    is InstantRecord -> record.time
+                    is IntervalRecord -> record.startTime
+                    else -> Instant.EPOCH
+                }
+            }
     }
 
     /** Returns a list containing the most recent record from the specified input. */

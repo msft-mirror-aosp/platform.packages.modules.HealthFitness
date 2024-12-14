@@ -20,6 +20,7 @@ import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.HEART_RATE_RECORD_BPM_AVG;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.STEPS_RECORD_COUNT_TOTAL;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
@@ -36,6 +37,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -543,6 +545,9 @@ public class TransactionManagerTest {
                 TEST_PACKAGE_NAME,
                 Set.of(RECORD_TYPE_HEART_RATE),
                 mAccessLogsHelper,
+                mReadAccessLogsHelper,
+                Instant.now().toEpochMilli(),
+                Instant.now().toEpochMilli(),
                 /* shouldRecordAccessLog= */ true);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
@@ -641,7 +646,7 @@ public class TransactionManagerTest {
                 mReadAccessLogsHelper.queryReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
-        assertThat(readAccessLog.getWasReadRecordWrittenInPast30Days()).isEqualTo(true);
+        assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
         assertThat(readAccessLog.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(readAccessLog.getDataType()).isEqualTo(RecordTypeIdentifier.RECORD_TYPE_STEPS);
         assertThat(readAccessLog.getReaderPackage()).isEqualTo(readerPackage);
@@ -657,16 +662,13 @@ public class TransactionManagerTest {
     public void flagsEnabled_readSelfData_readRecordsById_doNotAddReadAccessLog() {
         String readerPackage = "reader.package";
         mTransactionTestUtils.insertApp(readerPackage);
-        String uuid =
-                mTransactionTestUtils
-                        .insertRecords(
-                                TEST_PACKAGE_NAME,
-                                createStepsRecord(
-                                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
-                                        Instant.now().toEpochMilli(),
-                                        Instant.now().toEpochMilli(),
-                                        100))
-                        .get(0);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                        Instant.now().toEpochMilli(),
+                        Instant.now().toEpochMilli(),
+                        100));
         // TODO(b/366149374): Fix the read by uuid case and add is not reading self data test case
         // Read by id requests are always reading self data. Clients are not allowed to read other
         // apps' data by client id
@@ -686,10 +688,10 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForNonAggregationReads(any(), any(), any(), anyLong());
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForAggregationReads(
-                        any(), any(), any(), any(), anyLong(), anyLong());
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
     }
 
     @Test
@@ -727,10 +729,10 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ false);
 
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForNonAggregationReads(any(), any(), any(), anyLong());
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForAggregationReads(
-                        any(), any(), any(), any(), anyLong(), anyLong());
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
     }
 
     @Test
@@ -768,10 +770,10 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForNonAggregationReads(any(), any(), any(), anyLong());
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForAggregationReads(
-                        any(), any(), any(), any(), anyLong(), anyLong());
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
     }
 
     @Test
@@ -816,7 +818,7 @@ public class TransactionManagerTest {
                 mReadAccessLogsHelper.queryReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
-        assertThat(readAccessLog.getWasReadRecordWrittenInPast30Days()).isEqualTo(true);
+        assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
         assertThat(readAccessLog.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(readAccessLog.getDataType()).isEqualTo(RecordTypeIdentifier.RECORD_TYPE_STEPS);
         assertThat(readAccessLog.getReaderPackage()).isEqualTo(readerPackage);
@@ -861,10 +863,10 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ false);
 
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForNonAggregationReads(any(), any(), any(), anyLong());
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForAggregationReads(
-                        any(), any(), any(), any(), anyLong(), anyLong());
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
     }
 
     @Test
@@ -906,10 +908,10 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForNonAggregationReads(any(), any(), any(), anyLong());
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForAggregationReads(
-                        any(), any(), any(), any(), anyLong(), anyLong());
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
     }
 
     @Test
@@ -945,9 +947,187 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForNonAggregationReads(any(), any(), any(), anyLong());
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
         verify(mReadAccessLogsHelper, times(0))
-                .recordReadAccessLogForAggregationReads(
-                        any(), any(), any(), any(), anyLong(), anyLong());
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsEnabled_populateWithAggregation_readAccessLogRecorded() {
+        String readerPackage = "reader.package";
+        long endTime = Instant.now().toEpochMilli();
+        long readTime = Instant.now().toEpochMilli();
+        mTransactionTestUtils.insertApp(readerPackage);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME), 123, 345, 100));
+        RecordHelper<?> helper = mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_STEPS);
+        AggregationType<?> aggregationType =
+                AggregationTypeIdMapper.getInstance()
+                        .getAggregationTypeFor(STEPS_RECORD_COUNT_TOTAL);
+        AggregateTableRequest request =
+                helper.getAggregateTableRequest(
+                        aggregationType,
+                        TEST_PACKAGE_NAME,
+                        /* packageFilters= */ List.of(),
+                        mHealthDataCategoryPriorityHelper,
+                        mInternalHealthConnectMappings,
+                        mAppInfoHelper,
+                        mTransactionManager,
+                        /* startTime= */ 123,
+                        /* endTime= */ 456,
+                        /* startDateAccess= */ 0,
+                        /* useLocalTime= */ false);
+
+        // We have to set group by for single aggregation here because in the
+        // AggregateDataRequestParcel this is set and the implementation relies on it
+        request.setGroupBy(
+                TIME_COLUMN_NAME,
+                /* period= */ null,
+                Duration.ofMillis(456 - 123),
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.ofEpochMilli(123))
+                        .setEndTime(Instant.ofEpochMilli(456))
+                        .build());
+        mTransactionManager.populateWithAggregation(
+                request,
+                readerPackage,
+                Set.of(RECORD_TYPE_STEPS),
+                mAccessLogsHelper,
+                mReadAccessLogsHelper,
+                endTime,
+                readTime,
+                /* shouldRecordAccessLog= */ true);
+
+        List<ReadAccessLogsHelper.ReadAccessLog> result =
+                mReadAccessLogsHelper.queryReadAccessLogs();
+        ReadAccessLogsHelper.ReadAccessLog log = result.get(0);
+        assertThat(log.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
+        assertThat(log.getReaderPackage()).isEqualTo(readerPackage);
+        assertThat(log.getRecordWithinPast30Days()).isEqualTo(true);
+        assertThat(log.getDataType()).isEqualTo(RECORD_TYPE_STEPS);
+        assertThat(log.getReadTimeStamp()).isEqualTo(readTime);
+    }
+
+    @Test
+    @DisableFlags({FLAG_ECOSYSTEM_METRICS, FLAG_ECOSYSTEM_METRICS_DB_CHANGES})
+    public void flagsDisabled_populateWithAggregation_readAccessLogNotInvoked() {
+        String readerPackage = "reader.package";
+        long endTime = Instant.now().toEpochMilli();
+        long readTime = Instant.now().toEpochMilli();
+        mTransactionTestUtils.insertApp(readerPackage);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME), 123, 345, 100));
+        RecordHelper<?> helper = mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_STEPS);
+        AggregationType<?> aggregationType =
+                AggregationTypeIdMapper.getInstance()
+                        .getAggregationTypeFor(STEPS_RECORD_COUNT_TOTAL);
+        AggregateTableRequest request =
+                helper.getAggregateTableRequest(
+                        aggregationType,
+                        TEST_PACKAGE_NAME,
+                        /* packageFilters= */ List.of(),
+                        mHealthDataCategoryPriorityHelper,
+                        mInternalHealthConnectMappings,
+                        mAppInfoHelper,
+                        mTransactionManager,
+                        /* startTime= */ 123,
+                        /* endTime= */ 456,
+                        /* startDateAccess= */ 0,
+                        /* useLocalTime= */ false);
+
+        // We have to set group by for single aggregation here because in the
+        // AggregateDataRequestParcel this is set and the implementation relies on it
+        request.setGroupBy(
+                TIME_COLUMN_NAME,
+                /* period= */ null,
+                Duration.ofMillis(456 - 123),
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.ofEpochMilli(123))
+                        .setEndTime(Instant.ofEpochMilli(456))
+                        .build());
+        mTransactionManager.populateWithAggregation(
+                request,
+                readerPackage,
+                Set.of(RECORD_TYPE_STEPS),
+                mAccessLogsHelper,
+                mReadAccessLogsHelper,
+                endTime,
+                readTime,
+                /* shouldRecordAccessLog= */ true);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void doNotRecordAccessLog_populateWithAggregation_readAccessLogNotInvoked() {
+        String readerPackage = "reader.package";
+        long endTime = Instant.now().toEpochMilli();
+        long readTime = Instant.now().toEpochMilli();
+        mTransactionTestUtils.insertApp(readerPackage);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME), 123, 345, 100));
+        RecordHelper<?> helper = mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_STEPS);
+        AggregationType<?> aggregationType =
+                AggregationTypeIdMapper.getInstance()
+                        .getAggregationTypeFor(STEPS_RECORD_COUNT_TOTAL);
+        AggregateTableRequest request =
+                helper.getAggregateTableRequest(
+                        aggregationType,
+                        TEST_PACKAGE_NAME,
+                        /* packageFilters= */ List.of(),
+                        mHealthDataCategoryPriorityHelper,
+                        mInternalHealthConnectMappings,
+                        mAppInfoHelper,
+                        mTransactionManager,
+                        /* startTime= */ 123,
+                        /* endTime= */ 456,
+                        /* startDateAccess= */ 0,
+                        /* useLocalTime= */ false);
+
+        // We have to set group by for single aggregation here because in the
+        // AggregateDataRequestParcel this is set and the implementation relies on it
+        request.setGroupBy(
+                TIME_COLUMN_NAME,
+                /* period= */ null,
+                Duration.ofMillis(456 - 123),
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.ofEpochMilli(123))
+                        .setEndTime(Instant.ofEpochMilli(456))
+                        .build());
+        mTransactionManager.populateWithAggregation(
+                request,
+                readerPackage,
+                Set.of(RECORD_TYPE_STEPS),
+                mAccessLogsHelper,
+                mReadAccessLogsHelper,
+                endTime,
+                readTime,
+                /* shouldRecordAccessLog= */ false);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
     }
 }

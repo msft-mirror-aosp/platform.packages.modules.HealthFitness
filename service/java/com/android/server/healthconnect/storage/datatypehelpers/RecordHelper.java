@@ -39,6 +39,7 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.OR;
 
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.AggregateResult;
@@ -638,7 +639,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         } catch (InstantiationException
                 | IllegalAccessException
                 | NoSuchMethodException
-                | InvocationTargetException exception) {
+                | InvocationTargetException
+                | PackageManager.NameNotFoundException exception) {
             Slog.e("HealthConnectRecordHelper", "Failed to read", exception);
             throw new IllegalArgumentException(exception);
         }
