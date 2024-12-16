@@ -83,7 +83,7 @@ constructor(
         data: Class<out Record>,
         timeFilterRange: TimeInstantRangeFilter,
         packageName: String?,
-        ascending: Boolean = true,
+        ascending: Boolean = false,
         pageSize: Int = 1000,
     ): List<Record> {
         val filter =
