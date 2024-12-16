@@ -347,12 +347,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         deletionViewModel.appEntriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) {
                 entriesViewModel.setScreenState(VIEW)
-                entriesViewModel.loadEntries(
-                    permissionType,
-                    packageName,
-                    dateNavigationView.getDate(),
-                    dateNavigationView.getPeriod(),
-                )
+                reloadEntries()
                 deletionViewModel.resetAppEntriesReloadNeeded()
             }
         }
@@ -367,6 +362,12 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
+        reloadEntries()
+
+        // TODO(b/291249677): Log pagename.
+    }
+
+    private fun reloadEntries() {
         if (
             entriesViewModel.currentSelectedDate.value != null &&
                 entriesViewModel.period.value != null
@@ -384,8 +385,6 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                 dateNavigationView.getPeriod(),
             )
         }
-
-        // TODO(b/291249677): Log pagename.
     }
 
     private fun updateMenu(

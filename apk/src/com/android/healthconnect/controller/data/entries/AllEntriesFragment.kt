@@ -311,11 +311,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         deletionViewModel.entriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) {
                 entriesViewModel.setScreenState(VIEW)
-                entriesViewModel.loadEntries(
-                    permissionType,
-                    dateNavigationView.getDate(),
-                    dateNavigationView.getPeriod(),
-                )
+                reloadEntries()
                 deletionViewModel.resetEntriesReloadNeeded()
             }
         }
@@ -330,6 +326,12 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
+        reloadEntries()
+        setLoggerPageId()
+        logger.logPageImpression()
+    }
+
+    private fun reloadEntries() {
         if (
             entriesViewModel.currentSelectedDate.value != null &&
                 entriesViewModel.period.value != null
@@ -346,8 +348,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 dateNavigationView.getPeriod(),
             )
         }
-        setLoggerPageId()
-        logger.logPageImpression()
     }
 
     private fun setLoggerPageId() {
