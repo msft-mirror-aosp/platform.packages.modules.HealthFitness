@@ -59,6 +59,7 @@ import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
@@ -202,6 +203,11 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
             R.id.menu_enter_deletion_state -> {
                 // enter deletion state
                 triggerDeletionState(DELETE)
+                true
+            }
+            R.id.menu_open_units -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                findNavController().navigate(R.id.action_appEntriesFragment_to_setUnitsFragment)
                 true
             }
             else -> false

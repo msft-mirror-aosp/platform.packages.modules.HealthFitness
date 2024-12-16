@@ -43,17 +43,23 @@
         <action
             android:id="@+id/action_appEntriesFragment_to_rawFhirFragment"
             app:destination="@id/rawFhirFragment" />
+        <action
+            android:id="@+id/action_appEntriesFragment_to_setUnitsFragment"
+            app:destination="@id/setUnitsFragment"/>
     </fragment>
 
     <fragment
         android:id="@+id/dataEntryDetailsFragment" android:name="com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment"
-        android:label="@string/entry_details_title" >
-    </fragment>
+        android:label="@string/entry_details_title" />
 
     <fragment
         android:id="@+id/rawFhirFragment"
         android:name="com.android.healthconnect.controller.data.rawfhir.RawFhirFragment"
-        android:label="@string/raw_fhir_title" >
-    </fragment>
+        android:label="@string/raw_fhir_title" />
+
+    <fragment
+        android:id="@+id/setUnitsFragment"
+        android:name="com.android.healthconnect.controller.dataentries.units.UnitsFragment"
+        android:label="@string/set_units_title"/>
 
 </navigation>
