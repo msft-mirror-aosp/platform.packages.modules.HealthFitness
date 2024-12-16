@@ -37,6 +37,7 @@ import java.time.Duration
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -61,16 +62,24 @@ class DateNavigationViewTest {
     fun setup() {
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
-        context.setLocale(Locale.US)
+        setLocale(Locale.US)
+        (timeSource as TestTimeSource).setNow(NOW)
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+    }
 
+    @After
+    fun tearDown() {
+        setLocale(Locale.US)
+    }
+
+    private fun setLocale(locale: Locale) {
+        context.setLocale(locale)
         dateNavigationView =
             DateNavigationView(context = context, attrs = null, timeSource = timeSource)
         disabledSpinner = dateNavigationView.findViewById(R.id.disabled_spinner)
         datePickerSpinner = dateNavigationView.findViewById(R.id.date_picker_spinner) as Spinner
         previousDayButton = dateNavigationView.findViewById(R.id.navigation_previous_day)
         nextDayButton = dateNavigationView.findViewById(R.id.navigation_next_day)
-        (timeSource as TestTimeSource).setNow(NOW)
-        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
     @Test
@@ -109,7 +118,56 @@ class DateNavigationViewTest {
     }
 
     @Test
-    fun setPeriodToWeek_navigateToMonday_showsThisWeek() {
+    fun setPeriodToWeek_usLocale_navigateToSunday_showsThisWeek() {
+        dateNavigationView.setDate(NOW.minus(Duration.ofDays(4)))
+        dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
+
+        assertSpinnerView("This week")
+    }
+
+    @Test
+    fun setPeriodToWeek_usLocale_navigateToSaturday_showsLastWeek() {
+        dateNavigationView.setDate(NOW.minus(Duration.ofDays(5)))
+        dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
+
+        assertSpinnerView("Last week")
+    }
+
+    @Test
+    fun setPeriodToWeek_usLocale_twoWeeksAgo_showsTwoWeeksAgo() {
+        dateNavigationView.setDate(NOW.minus(Duration.ofDays(14)))
+        dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
+
+        assertSpinnerView("Oct 2 – 8")
+    }
+
+    @Test
+    fun setPeriodToWeek_usLocale_thisTimeLastYear_showsYear() {
+        dateNavigationView.setDate(NOW.minus(Duration.ofDays(365)))
+        dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
+
+        assertSpinnerView("Oct 17 – 23, 2021")
+    }
+
+    @Test
+    fun setPeriodToWeek_usLocale_lastYear_showsYear() {
+        dateNavigationView.setDate(NOW.minus(Duration.ofDays(379)))
+        dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
+
+        assertSpinnerView("Oct 3 – 9, 2021")
+    }
+
+    @Test
+    fun setPeriodToWeek_usLocale_spansAcrossMonths_showsBothMonths() {
+        dateNavigationView.setDate(NOW.minus(Duration.ofDays(21)))
+        dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
+
+        assertSpinnerView("Sep 25 – Oct 1")
+    }
+
+        @Test
+    fun setPeriodToWeek_ukLocale_navigateToMonday_showsThisWeek() {
+        setLocale(Locale.UK)
         dateNavigationView.setDate(NOW.minus(Duration.ofDays(3)))
         dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
 
@@ -117,7 +175,8 @@ class DateNavigationViewTest {
     }
 
     @Test
-    fun setPeriodToWeek_navigateToSunday_showsLastWeek() {
+    fun setPeriodToWeek_ukLocale_navigateToSunday_showsLastWeek() {
+        setLocale(Locale.UK)
         dateNavigationView.setDate(NOW.minus(Duration.ofDays(4)))
         dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
 
@@ -125,35 +184,39 @@ class DateNavigationViewTest {
     }
 
     @Test
-    fun setPeriodToWeek_twoWeeksAgo_showsTwoWeeksAgo() {
+    fun setPeriodToWeek_ukLocale_twoWeeksAgo_showsTwoWeeksAgo() {
+        setLocale(Locale.UK)
         dateNavigationView.setDate(NOW.minus(Duration.ofDays(14)))
         dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
 
-        assertSpinnerView("Oct 3 – 9")
+        assertSpinnerView("3–9 Oct")
     }
 
     @Test
-    fun setPeriodToWeek_thisTimeLastYear_showsYear() {
+    fun setPeriodToWeek_ukLocale_thisTimeLastYear_showsYear() {
+        setLocale(Locale.UK)
         dateNavigationView.setDate(NOW.minus(Duration.ofDays(365)))
         dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
 
-        assertSpinnerView("Oct 18 – 24, 2021")
+        assertSpinnerView("18–24 Oct 2021")
     }
 
     @Test
-    fun setPeriodToWeek_lastYear_showsYear() {
+    fun setPeriodToWeek_ukLocale_lastYear_showsYear() {
+        setLocale(Locale.UK)
         dateNavigationView.setDate(NOW.minus(Duration.ofDays(379)))
         dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
 
-        assertSpinnerView("Oct 4 – 10, 2021")
+        assertSpinnerView("4–10 Oct 2021")
     }
 
     @Test
-    fun setPeriodToWeek_spansAcrossMonths_showsBothMonths() {
+    fun setPeriodToWeek_ukLocale_spansAcrossMonths_showsBothMonths() {
+        setLocale(Locale.UK)
         dateNavigationView.setDate(NOW.minus(Duration.ofDays(21)))
         dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
 
-        assertSpinnerView("Sep 26 – Oct 2")
+        assertSpinnerView("26 Sept – 2 Oct")
     }
 
     @Test
@@ -251,7 +314,7 @@ class DateNavigationViewTest {
         dateNavigationView.setPeriod(DateNavigationPeriod.PERIOD_WEEK)
 
         // Expected date is the beginning of the week.
-        val expectedDate = MIDNIGHT.minus(Duration.ofDays(3))
+        val expectedDate = MIDNIGHT.minus(Duration.ofDays(4))
         Mockito.verify(dateChangedListener)
             .onDateChanged(expectedDate, DateNavigationPeriod.PERIOD_WEEK)
     }

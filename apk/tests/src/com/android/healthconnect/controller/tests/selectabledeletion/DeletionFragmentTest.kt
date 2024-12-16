@@ -594,10 +594,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekWithinYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -617,7 +617,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete selected entries for the week of Sep 19 – 25?"))
+        onView(withText("Permanently delete selected entries for the week of Sep 18 – 24?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -633,10 +633,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -656,7 +656,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete selected entries for the week of Sep 19 – 25?"))
+        onView(withText("Permanently delete selected entries for the week of Sep 18 – 24?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -672,10 +672,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekPastYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -695,7 +695,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete selected entries for the week of Sep 13 – 19, 2021?"))
+        onView(withText("Permanently delete selected entries for the week of Sep 12 – 18, 2021?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -711,10 +711,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekPastYear_1000Selected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -734,7 +734,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete selected entries for the week of Sep 13 – 19, 2021?"))
+        onView(withText("Permanently delete selected entries for the week of Sep 12 – 18, 2021?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -750,10 +750,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekWithinYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -773,7 +773,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete all entries for the week of Sep 19 – 25?"))
+        onView(withText("Permanently delete all entries for the week of Sep 18 – 24?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -789,10 +789,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekPastYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -812,7 +812,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete all entries for the week of Sep 13 – 19, 2021?"))
+        onView(withText("Permanently delete all entries for the week of Sep 12 – 18, 2021?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -1412,10 +1412,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekWithinYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this SUnday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -1439,7 +1439,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 19 – 25?"
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 18 – 24?"
                 )
             )
             .inRoot(isDialog())
@@ -1457,10 +1457,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -1484,7 +1484,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 19 – 25?"
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 18 – 24?"
                 )
             )
             .inRoot(isDialog())
@@ -1502,10 +1502,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekPastYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         // This needs to be start of period in the local time
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
@@ -1530,7 +1530,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 13 – 19, 2021?"
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 12 – 18, 2021?"
                 )
             )
             .inRoot(isDialog())
@@ -1548,10 +1548,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekPastYear_1000Selected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Satrday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         // This needs to be start of period in the local time
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
@@ -1576,7 +1576,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 13 – 19, 2021?"
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 12 – 18, 2021?"
                 )
             )
             .inRoot(isDialog())
@@ -1594,10 +1594,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekWithinYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -1621,7 +1621,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 19 – 25?"
+                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 18 – 24?"
                 )
             )
             .inRoot(isDialog())
@@ -1639,10 +1639,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekPastYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
@@ -1666,7 +1666,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 13 – 19, 2021?"
+                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 12 – 18, 2021?"
                 )
             )
             .inRoot(isDialog())

@@ -51,6 +51,8 @@ class TimeUtilsTest {
 
     @After
     fun tearDown() {
+        context.setLocale(Locale.US)
+        dateFormatter = LocalDateTimeFormatter(context)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
@@ -81,9 +83,69 @@ class TimeUtilsTest {
     }
 
     @Test
-    fun getPeriodStartDate_periodWeek_startTimeSameDateAsLocal() {
+    fun getPeriodStartDate_periodWeek_usLocale_SundayStartOfWeek() {
+        // US locale, start of week is Sunday
         (timeSource as TestTimeSource).setNow(NOW)
         (timeSource as TestTimeSource).setDeviceZoneOffset(ZoneId.of("UTC"))
+        val startTime = Instant.parse("2021-09-19T20:00:00.000Z")
+        val period = DateNavigationPeriod.PERIOD_WEEK
+
+        val expectedResult = Instant.parse("2021-09-19T00:00:00.000Z")
+        val actualResult = getPeriodStartDate(startTime, period)
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun getPeriodStartDate_periodWeek_usLocale_startTimeSameDateAsLocal() {
+        // US locale, start of week is Sunday
+        (timeSource as TestTimeSource).setNow(NOW)
+        (timeSource as TestTimeSource).setDeviceZoneOffset(ZoneId.of("UTC"))
+        val startTime = Instant.parse("2021-09-18T20:00:00.000Z")
+        val period = DateNavigationPeriod.PERIOD_WEEK
+
+        val expectedResult = Instant.parse("2021-09-12T00:00:00.000Z")
+        val actualResult = getPeriodStartDate(startTime, period)
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun getPeriodStartDate_periodWeek_usLocale_startTimeDiffDateToLocal() {
+        // US locale, start of week is Sunday
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Tokyo")))
+        (timeSource as TestTimeSource).setNow(NOW)
+        (timeSource as TestTimeSource).setDeviceZoneOffset(ZoneId.of("UTC"))
+        val startTime = Instant.parse("2021-09-18T20:00:00.000Z")
+        val period = DateNavigationPeriod.PERIOD_WEEK
+
+        val expectedResult = Instant.parse("2021-09-18T15:00:00.000Z")
+        val actualResult = getPeriodStartDate(startTime, period)
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun getPeriodStartDate_periodWeek_frenchLocale_mondayStartOfWeek() {
+        // FR locale, start of week is Monday
+        context.setLocale(Locale.FRENCH)
+        dateFormatter = LocalDateTimeFormatter(context)
+        (timeSource as TestTimeSource).setNow(NOW)
+        (timeSource as TestTimeSource).setDeviceZoneOffset(ZoneId.of("UTC"))
+
+        val startTime = Instant.parse("2021-09-20T20:00:00.000Z")
+        val period = DateNavigationPeriod.PERIOD_WEEK
+
+        val expectedResult = Instant.parse("2021-09-20T00:00:00.000Z")
+        val actualResult = getPeriodStartDate(startTime, period)
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun getPeriodStartDate_periodWeek_frenchLocale_startTimeSameDateAsLocal() {
+        // FR locale, start of week is Monday
+        context.setLocale(Locale.FRENCH)
+        dateFormatter = LocalDateTimeFormatter(context)
+        (timeSource as TestTimeSource).setNow(NOW)
+        (timeSource as TestTimeSource).setDeviceZoneOffset(ZoneId.of("UTC"))
+
         val startTime = Instant.parse("2021-09-19T20:00:00.000Z")
         val period = DateNavigationPeriod.PERIOD_WEEK
 
@@ -93,7 +155,10 @@ class TimeUtilsTest {
     }
 
     @Test
-    fun getPeriodStartDate_periodWeek_startTimeDiffDateToLocal() {
+    fun getPeriodStartDate_periodWeek_frenchLocale_startTimeDiffDateToLocal() {
+        // FR locale, start of week is Monday
+        context.setLocale(Locale.FRENCH)
+        dateFormatter = LocalDateTimeFormatter(context)
         // UTC + 9
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Tokyo")))
         (timeSource as TestTimeSource).setNow(NOW)
@@ -269,7 +334,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 19 – 25"
+        val expectedResult = "Sep 18 – 24"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
@@ -285,7 +350,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 19 – 25"
+        val expectedResult = "Sep 18 – 24"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
@@ -302,7 +367,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 19 – 25"
+        val expectedResult = "Sep 18 – 24"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
@@ -319,7 +384,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 19 – 25"
+        val expectedResult = "Sep 18 – 24"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
@@ -335,7 +400,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 14 – 20, 2020"
+        val expectedResult = "Sep 20 – 26, 2020"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
@@ -351,7 +416,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 21 – 27, 2020"
+        val expectedResult = "Sep 20 – 26, 2020"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
@@ -368,7 +433,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 14 – 20, 2020"
+        val expectedResult = "Sep 20 – 26, 2020"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
@@ -385,7 +450,7 @@ class TimeUtilsTest {
         val period = DateNavigationPeriod.PERIOD_WEEK
         val useWeekday = true
 
-        val expectedResult = "Sep 21 – 27, 2020"
+        val expectedResult = "Sep 20 – 26, 2020"
         val actualResult =
             formatDateTimeForTimePeriod(startTime, period, dateFormatter, timeSource, useWeekday)
 
