@@ -201,6 +201,11 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 triggerDeletionState(DELETE)
                 true
             }
+            R.id.menu_open_units -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                findNavController().navigate(R.id.action_entriesAndAccess_to_setUnitsFragment)
+                true
+            }
             else -> false
         }
     }
