@@ -52,15 +52,17 @@ import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
 import android.health.connect.datatypes.StepsRecord;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -72,13 +74,14 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
 public class AccessLogsHelperTest {
 
     @Rule(order = 1)
@@ -88,15 +91,10 @@ public class AccessLogsHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
-
-    private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
     private AccessLogsHelper mAccessLogsHelper;
 
@@ -107,8 +105,6 @@ public class AccessLogsHelperTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
@@ -117,9 +113,10 @@ public class AccessLogsHelperTest {
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        transactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }
 
     @Test
@@ -141,7 +138,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedSingleMedicalResourceType_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
@@ -167,7 +164,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMultipleMedicalResourceTypes_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
@@ -198,7 +195,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMedicalDataSource_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,

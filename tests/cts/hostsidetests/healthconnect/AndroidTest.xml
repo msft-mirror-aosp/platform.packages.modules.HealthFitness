@@ -26,4 +26,8 @@
     <test class="com.android.compatibility.common.tradefed.testtype.JarHostTest" >
         <option name="jar" value="CtsHealthConnectHostTestCases.jar" />
     </test>
+    <object type="module_controller"
+            class="com.android.tradefed.testtype.suite.module.MainlineTestModuleController">
+        <option name="mainline-module-package-name" value="com.google.android.healthfitness"/>
+    </object>
 </configuration>

@@ -23,6 +23,9 @@
         android:showAsAction="always|collapseActionView"
         android:title="@string/enter_deletion_button_content_description"/>
     <item
+        android:id="@+id/menu_open_units"
+        android:title="@string/set_units_title"/>
+    <item
         android:id="@+id/menu_send_feedback"
         android:title="@string/send_feedback" />
     <item

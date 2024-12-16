@@ -78,15 +78,17 @@ import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -104,6 +106,7 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.time.Instant;
@@ -119,6 +122,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@RunWith(AndroidJUnit4.class)
 public class MedicalResourceHelperTest {
 
     @Rule(order = 1)
@@ -128,13 +132,9 @@ public class MedicalResourceHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private static final long DATA_SOURCE_ROW_ID = 1234;
     private static final String INVALID_PAGE_TOKEN = "aw==";
@@ -142,7 +142,6 @@ public class MedicalResourceHelperTest {
 
     private MedicalResourceHelper mMedicalResourceHelper;
     private TransactionManager mTransactionManager;
-    private TransactionTestUtils mTransactionTestUtils;
     private AccessLogsHelper mAccessLogsHelper;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
@@ -159,12 +158,13 @@ public class MedicalResourceHelperTest {
                         .setTimeSource(mFakeTimeSource)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
         mUtil = new PhrTestUtils(context, healthConnectInjector);
+
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        transactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        transactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
     }
 
     @Test
@@ -336,6 +336,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT})
     public void getReadTableRequest_usingRequest_correctQuery() {
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
@@ -349,10 +350,11 @@ public class MedicalResourceHelperTest {
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_resource_table ORDER BY"
-                                + " medical_resource_row_id LIMIT "
-                                + (DEFAULT_PAGE_SIZE + 1)
-                                + " ) AS"
+                        "SELECT medical_resource_row_id,fhir_resource_type,fhir_resource_id,"
+                                + "fhir_data,fhir_version,medical_resource_type,"
+                                + "data_source_uuid,inner_query_result.last_modified_time"
+                                + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
+                                + " medical_resource_table ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
                                 + " medical_resource_indices_table WHERE medical_resource_type IN "
                                 + "("
@@ -362,11 +364,18 @@ public class MedicalResourceHelperTest {
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
-                                + " = medical_data_source_table.medical_data_source_row_id");
+                                + " = medical_data_source_table.medical_data_source_row_id"
+                                + " ORDER BY medical_resource_row_id"
+                                + " LIMIT "
+                                + (DEFAULT_PAGE_SIZE + 1));
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @EnableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT
+    })
     public void getReadTableRequest_usingRequestWithDataSourceIds_correctQuery() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
@@ -388,10 +397,11 @@ public class MedicalResourceHelperTest {
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_resource_table ORDER BY"
-                                + " medical_resource_row_id LIMIT "
-                                + (DEFAULT_PAGE_SIZE + 1)
-                                + " ) AS"
+                        "SELECT medical_resource_row_id,fhir_resource_type,fhir_resource_id,"
+                                + "fhir_data,fhir_version,medical_resource_type,data_source_uuid,"
+                                + "inner_query_result.last_modified_time"
+                                + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
+                                + " medical_resource_table ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
                                 + " medical_resource_indices_table WHERE medical_resource_type IN "
                                 + "("
@@ -404,7 +414,10 @@ public class MedicalResourceHelperTest {
                                 + String.join(", ", dataSourceIdHexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.medical_data_source_row_id");
+                                + " medical_data_source_table.medical_data_source_row_id"
+                                + " ORDER BY medical_resource_row_id"
+                                + " LIMIT "
+                                + (DEFAULT_PAGE_SIZE + 1));
     }
 
     @Test

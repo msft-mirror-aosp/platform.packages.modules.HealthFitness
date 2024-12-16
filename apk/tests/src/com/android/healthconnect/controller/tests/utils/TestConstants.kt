@@ -41,6 +41,7 @@ import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PlannedExerciseStep
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.WeightRecord
@@ -86,6 +87,19 @@ fun getHeartRateRecord(heartRateValues: List<Long>, startTime: Instant = NOW): H
 
 fun getStepsRecord(steps: Long, time: Instant = NOW): StepsRecord {
     return StepsRecord.Builder(getMetaData(), time, time.plusSeconds(2), steps).build()
+}
+
+fun getStepsCadenceRecord(time: Instant = NOW): StepsCadenceRecord {
+    return StepsCadenceRecord.Builder(
+            getMetaData(),
+            time,
+            time.plusSeconds(2),
+            listOf(
+                StepsCadenceRecord.StepsCadenceRecordSample(12.5, time),
+                StepsCadenceRecord.StepsCadenceRecordSample(12.3, time.plusSeconds(1)),
+            ),
+        )
+        .build()
 }
 
 fun getStepsRecordWithUniqueIds(steps: Long, time: Instant = NOW): StepsRecord {
@@ -218,8 +232,8 @@ fun getSamplePlannedExerciseSessionRecord(): PlannedExerciseSessionRecord {
 }
 
 fun getPlannedExerciseSessionRecord(
-    title: String,
-    note: String,
+    title: String?,
+    note: String?,
     exerciseBlocks: List<PlannedExerciseBlock>,
 ): PlannedExerciseSessionRecord {
     return basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
@@ -246,7 +260,7 @@ private fun basePlannedExerciseSession(exerciseType: Int): PlannedExerciseSessio
 
 fun getPlannedExerciseBlock(
     repetitions: Int,
-    description: String,
+    description: String?,
     exerciseSteps: List<PlannedExerciseStep>,
 ): PlannedExerciseBlock {
     return PlannedExerciseBlock.Builder(repetitions)
@@ -531,21 +545,21 @@ val TEST_FHIR_RESOURCE_IMMUNIZATION: FhirResource =
     FhirResource.Builder(
             FHIR_RESOURCE_TYPE_IMMUNIZATION,
             "Immunization1",
-        "{\"resourceType\":\"Immunization\",\"id\":\"immunization-1\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}"
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization-1\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}",
         )
         .build()
 val TEST_FHIR_RESOURCE_IMMUNIZATION_2: FhirResource =
     FhirResource.Builder(
             FHIR_RESOURCE_TYPE_IMMUNIZATION,
             "Immunization2",
-        "{\"resourceType\":\"Immunization\",\"id\":\"immunization-2\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}"
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization-2\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}",
         )
         .build()
 val TEST_FHIR_RESOURCE_IMMUNIZATION_3: FhirResource =
     FhirResource.Builder(
             FHIR_RESOURCE_TYPE_IMMUNIZATION,
             "Immunization3",
-              "{\"resourceType\":\"Immunization\",\"id\":\"immunization-3\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}"
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization-3\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}",
         )
         .build()
 val TEST_FHIR_RESOURCE_IMMUNIZATION_LONG: FhirResource =

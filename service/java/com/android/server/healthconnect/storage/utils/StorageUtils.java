@@ -70,7 +70,6 @@ public final class StorageUtils {
     public static final String TEXT_NULL = "TEXT";
     public static final String INTEGER = "INTEGER";
     public static final String INTEGER_UNIQUE = "INTEGER UNIQUE";
-    public static final String INTEGER_NOT_NULL_UNIQUE = "INTEGER NOT NULL UNIQUE";
     public static final String INTEGER_NOT_NULL = "INTEGER NOT NULL";
     public static final String REAL = "REAL";
     public static final String REAL_NOT_NULL = "REAL NOT NULL";
@@ -274,8 +273,7 @@ public final class StorageUtils {
                 .collect(Collectors.joining(DELIMITER));
     }
 
-    @Nullable
-    public static String getMaxPrimaryKeyQuery(String tableName) {
+    private static String getMaxPrimaryKeyQuery(String tableName) {
         return "SELECT MAX("
                 + PRIMARY_COLUMN_NAME
                 + ") as "
@@ -554,6 +552,15 @@ public final class StorageUtils {
                 Slog.d(TAG, "Table does not exist: " + tableName);
             }
             return cursor.getCount() > 0;
+        }
+    }
+
+    /** Gets the last id for {@code tableName} exists in the {@code database}. */
+    public static long getLastRowIdFor(SQLiteDatabase database, String tableName) {
+        try (Cursor cursor =
+                database.rawQuery(StorageUtils.getMaxPrimaryKeyQuery(tableName), null)) {
+            cursor.moveToFirst();
+            return cursor.getLong(cursor.getColumnIndex(PRIMARY_COLUMN_NAME));
         }
     }
 

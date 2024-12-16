@@ -36,7 +36,7 @@ import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.migration.MigratorPackageChangesReceiver;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -60,7 +60,6 @@ public class HealthConnectManagerService extends SystemService {
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final ExportManager mExportManager;
     private final PreferenceHelper mPreferenceHelper;
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
     private final DatabaseHelpers mDatabaseHelpers;
     private final HealthConnectInjector mHealthConnectInjector;
@@ -75,8 +74,6 @@ public class HealthConnectManagerService extends SystemService {
 
         HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
         mHealthConnectInjector = HealthConnectInjector.getInstance();
-        mHealthConnectDeviceConfigManager =
-                mHealthConnectInjector.getHealthConnectDeviceConfigManager();
         mTransactionManager = mHealthConnectInjector.getTransactionManager();
         mPreferenceHelper = mHealthConnectInjector.getPreferenceHelper();
         mMigrationStateManager = mHealthConnectInjector.getMigrationStateManager();
@@ -90,29 +87,32 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mContext,
+                        mHealthConnectInjector.getTimeSource(),
+                        mHealthConnectInjector.getInternalHealthConnectMappings(),
                         mTransactionManager,
                         mHealthConnectInjector.getHealthConnectPermissionHelper(),
-                        mHealthConnectInjector.getMigrationCleaner(),
                         mHealthConnectInjector.getFirstGrantTimeManager(),
+                        mHealthConnectInjector.getMigrationEntityHelper(),
                         mMigrationStateManager,
                         mMigrationUiStateManager,
+                        mHealthConnectInjector.getMigrationCleaner(),
                         mHealthConnectInjector.getMedicalResourceHelper(),
                         mHealthConnectInjector.getMedicalDataSourceHelper(),
                         mExportManager,
                         mExportImportSettingsStorage,
+                        mHealthConnectInjector.getBackupRestore(),
                         mHealthConnectInjector.getAccessLogsHelper(),
                         mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
                         mHealthConnectInjector.getActivityDateHelper(),
                         mHealthConnectInjector.getChangeLogsHelper(),
                         mHealthConnectInjector.getChangeLogsRequestHelper(),
-                        mHealthConnectInjector.getInternalHealthConnectMappings(),
                         mHealthConnectInjector.getPriorityMigrationHelper(),
                         mHealthConnectInjector.getAppInfoHelper(),
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mPreferenceHelper,
-                        mHealthConnectInjector.getTimeSource(),
                         mDatabaseHelpers,
-                        mHealthConnectInjector.getMigrationEntityHelper());
+                        mHealthConnectInjector.getPreferencesManager(),
+                        mHealthConnectInjector.getReadAccessLogsHelper());
     }
 
     @Override
@@ -121,7 +121,6 @@ public class HealthConnectManagerService extends SystemService {
         new MigratorPackageChangesReceiver(mMigrationStateManager)
                 .registerBroadcastReceiver(mContext);
         publishBinderService(Context.HEALTHCONNECT_SERVICE, mHealthConnectService);
-        mHealthConnectDeviceConfigManager.updateRateLimiterValues();
     }
 
     /**
@@ -142,7 +141,6 @@ public class HealthConnectManagerService extends SystemService {
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
         mMigrationStateManager.onUserSwitching(mContext, to.getUserHandle());
-
         mCurrentForegroundUser = to.getUserHandle();
 
         if (mUserManager.isUserUnlocked(to.getUserHandle())) {
@@ -176,10 +174,10 @@ public class HealthConnectManagerService extends SystemService {
     }
 
     private void switchToSetupForUser(UserHandle user) {
-        // Note: This is for test setup debugging, please don't surround with DEBUG flag
         Slog.d(TAG, "switchToSetupForUser: " + user);
-        StorageContext storageContext = StorageContext.create(mContext, mCurrentForegroundUser);
-        mTransactionManager.onUserUnlocked(storageContext);
+        HealthConnectContext hcContext =
+                HealthConnectContext.create(mContext, mCurrentForegroundUser);
+        mTransactionManager.onUserUnlocked(hcContext);
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser);
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
@@ -188,7 +186,9 @@ public class HealthConnectManagerService extends SystemService {
                 .getHealthPermissionIntentAppsTracker()
                 .onUserUnlocked(mCurrentForegroundUser);
 
-        mHealthConnectInjector.getAppInfoHelper().setupForUser(storageContext);
+        mHealthConnectInjector.getBackupRestore().setupForUser(mCurrentForegroundUser);
+        mHealthConnectInjector.getAppInfoHelper().setupForUser(hcContext);
+        mHealthConnectInjector.getHealthDataCategoryPriorityHelper().setupForUser(hcContext);
 
         if (Flags.clearCachesAfterSwitchingUser()) {
             // Clear preferences cache again after the user switching is done as there's a race

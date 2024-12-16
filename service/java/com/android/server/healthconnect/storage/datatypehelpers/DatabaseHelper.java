@@ -34,7 +34,7 @@ public abstract class DatabaseHelper {
     }
 
     /** Deletes all entries from the database and clears the cache for the helper class. */
-    public final synchronized void clearData(TransactionManager transactionManager) {
+    public synchronized void clearData(TransactionManager transactionManager) {
         transactionManager.delete(new DeleteTableRequest(getMainTableName()));
         clearCache();
     }

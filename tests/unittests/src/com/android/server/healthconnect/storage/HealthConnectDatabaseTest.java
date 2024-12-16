@@ -24,7 +24,6 @@ import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.NUM_OF_TABLES;
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.assertNumberOfTables;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
@@ -45,6 +44,7 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
@@ -64,6 +64,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestU
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
@@ -71,6 +72,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectDatabaseTest {
     private static final String TEST_PACKAGE_NAME = "package.test";
 
@@ -167,6 +169,7 @@ public class HealthConnectDatabaseTest {
                         injector.getAppInfoHelper(),
                         injector.getAccessLogsHelper(),
                         injector.getDeviceInfoHelper(),
+                        injector.getReadAccessLogsHelper(),
                         false);
         assertThat(recordInternals).hasSize(1);
         assertThat(recordInternals.get(0).toExternalRecord())
@@ -216,7 +219,8 @@ public class HealthConnectDatabaseTest {
     // hence this methods needs to be called in individual tests rather than in @Before method.
     private HealthConnectDatabase initializeEmptyHealthConnectDatabase() {
         HealthConnectDatabase healthConnectDatabase =
-                new HealthConnectDatabase(StorageContext.create(mContext, TEST_USER));
+                new HealthConnectDatabase(
+                        HealthConnectContext.create(mContext, mContext.getUser()));
 
         // Make sure there is nothing there already.
         File databasePath = healthConnectDatabase.getDatabasePath();

@@ -36,29 +36,26 @@ import static com.android.server.healthconnect.backuprestore.CloudBackupSettings
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import android.Manifest;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
-import android.os.Environment;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -84,20 +81,16 @@ public class BackupSettingsHelperTest {
     private PreferenceHelper mPreferenceHelper;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
     private BackupSettingsHelper mBackupSettingsHelper;
-    private ExportImportSettingsStorage mExportImportSettingsStorage;
 
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
-
+    @Mock private ExportImportSettingsStorage mExportImportSettingsStorage;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
@@ -105,15 +98,10 @@ public class BackupSettingsHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        InstrumentationRegistry.getInstrumentation()
-                .getUiAutomation()
-                .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-
         HealthConnectInjector.resetInstanceForTest();
 
         Context context = ApplicationProvider.getApplicationContext();
         mPreferenceHelper = new FakePreferenceHelper();
-        mExportImportSettingsStorage = mock(ExportImportSettingsStorage.class);
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
@@ -126,8 +114,8 @@ public class BackupSettingsHelperTest {
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
-        mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
 
+        mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
         mBackupSettingsHelper =
                 new BackupSettingsHelper(
                         mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
@@ -250,7 +238,7 @@ public class BackupSettingsHelperTest {
     }
 
     @Test
-    public void autoDeleteSettingsOff_setsExportSettingsCorrectly() {
+    public void autoDeleteSettingsOff_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY, AutoDeleteFrequency.AUTO_DELETE_RANGE_NEVER.toString());
 
@@ -261,7 +249,7 @@ public class BackupSettingsHelperTest {
     }
 
     @Test
-    public void autoDeleteSettingsThreeMonths_setsExportSettingsCorrectly() {
+    public void autoDeleteSettingsThreeMonths_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY,
                 AutoDeleteFrequency.AUTO_DELETE_RANGE_THREE_MONTHS.toString());
@@ -273,7 +261,7 @@ public class BackupSettingsHelperTest {
     }
 
     @Test
-    public void autoDeleteSettingsEighteenMonths_setsExportSettingsCorrectly() {
+    public void autoDeleteSettingsEighteenMonths_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY,
                 AutoDeleteFrequency.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.toString());

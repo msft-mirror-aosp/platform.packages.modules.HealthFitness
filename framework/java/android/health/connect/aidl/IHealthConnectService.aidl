@@ -29,6 +29,7 @@ import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
 import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceListParcelResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -38,6 +39,7 @@ import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
 import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
@@ -465,6 +467,19 @@ interface IHealthConnectService {
         in AttributionSource attributionSource,
         in List<UpsertMedicalResourceRequest> requests,
         in IMedicalResourcesResponseCallback callback);
+
+    /**
+     * Upserts {@link MedicalResource}s in HealthConnect based on a {@link
+     * UpsertMedicalResourceRequestsParcel}.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param requestsParcel Contains the list of upsert requests.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void upsertMedicalResourcesFromRequestsParcel(
+        in AttributionSource attributionSource,
+        in UpsertMedicalResourceRequestsParcel requestsParcel,
+        in IMedicalResourceListParcelResponseCallback callback);
 
     /**
      * Reads from the HealthConnect database.

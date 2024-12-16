@@ -69,8 +69,8 @@ import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -224,7 +224,6 @@ public final class BackupRestore {
         mDatabaseMerger =
                 new DatabaseMerger(
                         appInfoHelper,
-                        context,
                         deviceInfoHelper,
                         healthDataCategoryPriorityHelper,
                         transactionManager);
@@ -277,7 +276,8 @@ public final class BackupRestore {
             Map<String, HealthConnectException> exceptionsByFileName,
             UserHandle userHandle,
             IDataStagingFinishedCallback callback) {
-        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
         File stagedRemoteDataDir = dbContext.getDataDir();
         try {
             stagedRemoteDataDir.mkdirs();
@@ -374,7 +374,8 @@ public final class BackupRestore {
         // Set the default to the original database path, if the PERSONAL_HEALTH_RECORD_DISABLE_D2D
         // is enabled, it will be updated to be database copy path.
         File databasePath = mTransactionManager.getDatabasePath();
-        StorageContext dbContext = StorageContext.create(mContext, userHandle, BACKUP_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, userHandle, BACKUP_DIR);
         File backupDataDir = dbContext.getDataDir();
         if (Flags.personalHealthRecordDisableD2d()) {
             databasePath = new File(backupDataDir, DATABASE_BACKUP_FILE_NAME);
@@ -446,7 +447,7 @@ public final class BackupRestore {
         Slog.i(TAG, "Database copying completed: " + destination.toPath().toAbsolutePath());
     }
 
-    private void deletePhrTablesContent(StorageContext dbContext) {
+    private void deletePhrTablesContent(HealthConnectContext dbContext) {
         // Throwing a exception when calling this method implies that it was not possible to
         // create a HC database from the file and, therefore, most probably the database was
         // corrupted during the file copy.
@@ -475,7 +476,8 @@ public final class BackupRestore {
     /** Deletes all the staged data and resets all the states. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(UserHandle userHandle) {
-        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
 
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
@@ -530,7 +532,8 @@ public final class BackupRestore {
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
     public Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
-        StorageContext dbContext = StorageContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, userHandle, STAGED_DATABASE_DIR);
         File[] allFiles = dbContext.getDataDir().listFiles();
         if (allFiles == null) {
             return Collections.emptySet();
@@ -670,8 +673,8 @@ public final class BackupRestore {
         }
 
         int currentDbVersion = mTransactionManager.getDatabaseVersion();
-        StorageContext dbContext =
-                StorageContext.create(mContext, mCurrentForegroundUser, STAGED_DATABASE_DIR);
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(mContext, mCurrentForegroundUser, STAGED_DATABASE_DIR);
         File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
         if (stagedDbFile.exists()) {
             try (SQLiteDatabase stagedDb =
@@ -1035,7 +1038,7 @@ public final class BackupRestore {
         }
     }
 
-    private void mergeGrantTimes(StorageContext dbContext) {
+    private void mergeGrantTimes(HealthConnectContext dbContext) {
         File restoredGrantTimeFile = new File(dbContext.getDataDir(), GRANT_TIME_FILE_NAME);
         Slog.i(TAG, "Merging grant times.");
 
@@ -1050,7 +1053,7 @@ public final class BackupRestore {
         }
     }
 
-    private void mergeDatabase(StorageContext dbContext) {
+    private void mergeDatabase(HealthConnectContext dbContext) {
         synchronized (mMergingLock) {
             if (!dbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
                 Slog.i(TAG, "No staged db found.");

@@ -16,21 +16,23 @@
 
 package com.android.server.healthconnect.logging;
 
-import static android.content.pm.PackageManager.GET_PERMISSIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
-import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
-import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
 
 import java.time.Instant;
@@ -46,40 +48,47 @@ import java.util.Set;
  * @hide
  */
 public final class UsageStatsCollector {
+
+    @VisibleForTesting static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
+
+    @VisibleForTesting
+    static final String USER_MOST_RECENT_ACCESS_LOG_TIME = "USER_MOST_RECENT_ACCESS_LOG_TIME";
+
     /**
      * A client is considered as "monthly active" by PHR if it has made any read medical resources
      * API call within this number of days.
      */
     private static final long PHR_MONTHLY_ACTIVE_USER_DURATION = 30; // 30 days
 
-    private static final String USER_MOST_RECENT_ACCESS_LOG_TIME =
-            "USER_MOST_RECENT_ACCESS_LOG_TIME";
-    private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
-    private final Context mContext;
-    private final Map<String, PackageInfo> mPackageNameToPackageInfo = new HashMap<>();
-
+    private final HealthConnectContext mHcContext;
     private final PreferenceHelper mPreferenceHelper;
+    private final PreferencesManager mPreferencesManager;
     private final AccessLogsHelper mAccessLogsHelper;
+    private final MedicalDataSourceHelper mMedicalDataSourceHelper;
+    private final MedicalResourceHelper mMedicalResourceHelper;
+    private final PackageInfoUtils mPackageInfoUtils;
     private final TimeSource mTimeSource;
 
+    @Nullable private Map<String, PackageInfo> mPackageNameToPackageInfo;
+
     public UsageStatsCollector(
-            Context context,
-            UserHandle userHandle,
+            HealthConnectContext hcContext,
             PreferenceHelper preferenceHelper,
+            PreferencesManager preferencesManager,
             AccessLogsHelper accessLogsHelper,
-            TimeSource timeSource) {
-        mContext = context;
+            TimeSource timeSource,
+            MedicalResourceHelper medicalResourceHelper,
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            PackageInfoUtils packageInfoUtils) {
+        mHcContext = hcContext;
         mPreferenceHelper = preferenceHelper;
+        mPreferencesManager = preferencesManager;
         mAccessLogsHelper = accessLogsHelper;
         mTimeSource = timeSource;
-        List<PackageInfo> allPackagesInstalledForUser =
-                context.createContextAsUser(userHandle, /* flag= */ 0)
-                        .getPackageManager()
-                        .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
-        for (PackageInfo packageInfo : allPackagesInstalledForUser) {
-            mPackageNameToPackageInfo.put(packageInfo.packageName, packageInfo);
-        }
+        mMedicalDataSourceHelper = medicalDataSourceHelper;
+        mMedicalResourceHelper = medicalResourceHelper;
+        mPackageInfoUtils = packageInfoUtils;
     }
 
     /**
@@ -91,13 +100,9 @@ public final class UsageStatsCollector {
      * @return Number of apps that can be connected (not necessarily connected) to Health Connect
      */
     int getNumberOfAppsCompatibleWithHealthConnect() {
-        int numberOfAppsGrantedHealthPermissions = 0;
-        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
-            if (hasRequestedHealthPermission(info)) {
-                numberOfAppsGrantedHealthPermissions++;
-            }
-        }
-        return numberOfAppsGrantedHealthPermissions;
+        return mPackageInfoUtils
+                .getPackagesCompatibleWithHealthConnect(mHcContext, mHcContext.getUser())
+                .size();
     }
 
     /**
@@ -108,9 +113,12 @@ public final class UsageStatsCollector {
      */
     public Map<String, List<String>> getPackagesHoldingHealthPermissions() {
         Map<String, List<String>> packageNameToPermissionsGranted = new HashMap<>();
-        for (PackageInfo info : mPackageNameToPackageInfo.values()) {
+        List<PackageInfo> packagesConnectedToHealthConnect =
+                mPackageInfoUtils.getPackagesHoldingHealthPermissions(
+                        mHcContext.getUser(), mHcContext);
+        for (PackageInfo info : packagesConnectedToHealthConnect) {
             List<String> grantedHealthPermissions =
-                    PackageInfoUtils.getGrantedHealthPermissions(mContext, info);
+                    PackageInfoUtils.getGrantedHealthPermissions(mHcContext, info);
             if (!grantedHealthPermissions.isEmpty()) {
                 packageNameToPermissionsGranted.put(info.packageName, grantedHealthPermissions);
             }
@@ -121,7 +129,7 @@ public final class UsageStatsCollector {
     /** Returns whether the current user is considered as a PHR monthly active user. */
     public boolean isPhrMonthlyActiveUser() {
         Instant lastReadMedicalResourcesApiTimeStamp =
-                mPreferenceHelper.getPhrLastReadMedicalResourcesApiTimeStamp();
+                mPreferencesManager.getPhrLastReadMedicalResourcesApiTimeStamp();
         if (lastReadMedicalResourcesApiTimeStamp == null) {
             return false;
         }
@@ -208,17 +216,11 @@ public final class UsageStatsCollector {
         }
     }
 
-    private boolean hasRequestedHealthPermission(PackageInfo packageInfo) {
-        if (packageInfo == null || packageInfo.requestedPermissions == null) {
-            return false;
-        }
+    int getMedicalResourcesCount() {
+        return mMedicalResourceHelper.getMedicalResourcesCount();
+    }
 
-        for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
-            if (HealthConnectManager.isHealthPermission(
-                    mContext, packageInfo.requestedPermissions[i])) {
-                return true;
-            }
-        }
-        return false;
+    int getMedicalDataSourcesCount() {
+        return mMedicalDataSourceHelper.getMedicalDataSourcesCount();
     }
 }

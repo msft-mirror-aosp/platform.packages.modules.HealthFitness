@@ -188,6 +188,7 @@ class RawFhirFragmentTest {
     fun logPageImpression() {
         launchFragmentWithData()
 
+        onView(withText(fhirResource)).check(matches(isDisplayed()))
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.RAW_FHIR_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(RawFhirPageElement.RAW_FHIR_RESOURCE)

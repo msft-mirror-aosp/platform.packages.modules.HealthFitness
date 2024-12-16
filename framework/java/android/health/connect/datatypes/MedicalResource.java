@@ -120,6 +120,27 @@ public final class MedicalResource implements Parcelable {
     @NonNull private final FhirVersion mFhirVersion;
     @NonNull private final FhirResource mFhirResource;
 
+    /** @hide */
+    private long mLastModifiedTimestamp;
+
+    /**
+     * Creates a new instance of {@link MedicalResource} which takes in {@code
+     * lastModifiedTimestamp} as a parameter as well. The {@code lastModifiedTimestamp} is currently
+     * only used internally to ensure D2D merge process, copies over the exact timestamp of when the
+     * {@link MedicalResource} was modified.
+     *
+     * @hide
+     */
+    public MedicalResource(
+            @MedicalResourceType int type,
+            @NonNull String dataSourceId,
+            @NonNull FhirVersion fhirVersion,
+            @NonNull FhirResource fhirResource,
+            long lastModifiedTimestamp) {
+        this(type, dataSourceId, fhirVersion, fhirResource);
+        mLastModifiedTimestamp = lastModifiedTimestamp;
+    }
+
     /**
      * Creates a new instance of {@link MedicalResource}. Please see {@link MedicalResource.Builder}
      * for more detailed parameters information.
@@ -209,6 +230,15 @@ public final class MedicalResource implements Parcelable {
     @NonNull
     public FhirResource getFhirResource() {
         return mFhirResource;
+    }
+
+    /**
+     * Returns the last modified timestamp for this {@link MedicalResource}.
+     *
+     * @hide
+     */
+    public long getLastModifiedTimestamp() {
+        return mLastModifiedTimestamp;
     }
 
     @Override

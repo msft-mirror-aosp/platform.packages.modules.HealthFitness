@@ -242,7 +242,12 @@ public class AggregateTableRequest {
         }
     }
 
-    public void onResultsFetched(Cursor cursor, Cursor metaDataCursor) {
+    /**
+     * Fetches the result of the aggregation and returns the packages contributing to the given
+     * aggregation.
+     */
+    public List<String> processResultsAndReturnContributingPackages(
+            Cursor cursor, Cursor metaDataCursor) {
         if (mInternalHealthConnectMappings.isDerivedType(mRecordHelper.getRecordIdentifier())) {
             deriveAggregate(cursor);
         } else if (mInternalHealthConnectMappings.supportsPriority(
@@ -253,7 +258,7 @@ public class AggregateTableRequest {
             processNoPrioritiesRequest(cursor);
         }
 
-        updateResultWithDataOriginPackageNames(metaDataCursor);
+        return updateResultWithDataOriginPackageNames(metaDataCursor);
     }
 
     /** Returns list of app Ids of contributing apps for the record type in the priority order */
@@ -302,7 +307,7 @@ public class AggregateTableRequest {
         while (cursor.moveToNext()) {
             mAggregateResults.put(
                     StorageUtils.getCursorInt(cursor, GROUP_BY_COLUMN_NAME),
-                    mRecordHelper.getAggregateResult(cursor, mAggregationType));
+                    mRecordHelper.getNoPriorityAggregateResult(cursor, mAggregationType));
         }
     }
 
@@ -363,7 +368,7 @@ public class AggregateTableRequest {
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private void updateResultWithDataOriginPackageNames(Cursor metaDataCursor) {
+    private List<String> updateResultWithDataOriginPackageNames(Cursor metaDataCursor) {
         List<Long> packageIds = new ArrayList<>();
         while (metaDataCursor.moveToNext()) {
             packageIds.add(StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME));
@@ -372,6 +377,7 @@ public class AggregateTableRequest {
 
         mAggregateResults.replaceAll(
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));
+        return packageNames;
     }
 
     public List<Pair<Long, Long>> getGroupSplitIntervals() {
@@ -444,8 +450,13 @@ public class AggregateTableRequest {
         cursor.moveToFirst();
         for (double aggregate : derivedAggregateArray) {
             mAggregateResults.put(
-                    index, mRecordHelper.getAggregateResult(cursor, mAggregationType, aggregate));
+                    index,
+                    mRecordHelper.getDerivedAggregateResult(cursor, mAggregationType, aggregate));
             index++;
         }
+    }
+
+    public int getRecordTypeId() {
+        return mRecordHelper.getRecordIdentifier();
     }
 }

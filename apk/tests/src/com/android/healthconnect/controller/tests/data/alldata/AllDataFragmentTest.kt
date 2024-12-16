@@ -215,6 +215,7 @@ class AllDataFragmentTest {
                 )
             )
             .check(matches(isDisplayed()))
+        onView(withText("About health records")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -625,6 +626,56 @@ class AllDataFragmentTest {
         }
         assertCheckboxShown("Distance")
         assertCheckboxShown("Heart rate")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun inDeletionState_medicalData_checkboxesRemainOnOrientationChange() = runTest {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        val scenario = launchMedicalAllDataFragment()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
+        }
+
+        advanceUntilIdle()
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+
+        scenario.recreate()
+
+        onView(withText("Select all")).perform(scrollTo())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
+            val selectAllCheckboxPreference =
+                fragment.preferenceScreen.findPreference("key_select_all")
+                    as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isTrue()
+            fragment.preferenceScreen.children.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            assertThat(permissionTypePreference.getIsChecked()).isTrue()
+                        }
+                    }
+                }
+            }
+        }
+        assertCheckboxShown("Allergies")
+        assertCheckboxShown("Vaccines")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
     }
 
     private fun assertCheckboxShown(title: String, tag: String = "checkbox") {

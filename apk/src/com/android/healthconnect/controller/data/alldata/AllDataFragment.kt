@@ -49,6 +49,8 @@ import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.EmptyPreferenceCategory
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.NoDataPreference
+import com.android.healthconnect.controller.shared.preference.topIntroPreference
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.logging.AllDataElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -57,7 +59,6 @@ import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
-import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -77,6 +78,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
     /** Decides whether this screen is supposed to display Fitness data or Medical data. */
     private var showMedicalData = false
@@ -92,8 +94,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     private val permissionTypesListGroup: PreferenceCategory by pref(KEY_PERMISSION_TYPE)
 
     private val noDataPreference: NoDataPreference by pref(KEY_NO_DATA)
-
-    private val topIntroPreference: TopIntroPreference by pref(KEY_TOP_INTRO)
 
     private val footerPreference: FooterPreference by pref(KEY_FOOTER)
 
@@ -194,6 +194,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadAllData()
+        setTopIntroVisibility(false)
 
         viewModel.allData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -239,6 +240,29 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
     }
 
+    private fun setTopIntroVisibility(visible: Boolean) {
+        if (visible) {
+            if (findPreference<Preference>(KEY_TOP_INTRO) == null) {
+                preferenceScreen.addPreference(
+                    topIntroPreference(
+                        preferenceKey = KEY_TOP_INTRO,
+                        context = requireContext(),
+                        preferenceTitle = getString(R.string.browse_health_records_intro),
+                        learnMoreText = getString(R.string.medical_request_about_health_records),
+                        learnMoreAction = {
+                            deviceInfoUtils.openHCGetStartedLink(requireActivity())
+                        },
+                    )
+                )
+            }
+        } else {
+            val preference = findPreference<Preference>(KEY_TOP_INTRO)
+            if (preference != null) {
+                preferenceScreen.removePreference(preference)
+            }
+        }
+    }
+
     private fun updatePreferenceScreen(
         permissionTypesPerCategoryList: List<PermissionTypesPerCategory>
     ) {
@@ -259,7 +283,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         updateMenu(screenState = viewModel.getDeletionScreenStateValue())
         noDataPreference.isVisible = false
         footerPreference.isVisible = false
-        topIntroPreference.isVisible = showMedicalData
 
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
@@ -348,7 +371,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     private fun setupEmptyState() {
         noDataPreference.isVisible = true
         footerPreference.isVisible = true
-        topIntroPreference.isVisible = false
+        setTopIntroVisibility(false)
         updateMenu(screenState = VIEW, hasData = false)
     }
 
@@ -388,6 +411,10 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             viewModel.setOfPermissionTypesToBeDeleted.observe(viewLifecycleOwner) { deleteSet ->
                 setIsChecked(permissionType in deleteSet)
             }
+
+            entriesViewModel.setScreenState(EntriesViewModel.EntriesDeletionScreenState.VIEW)
+            entriesViewModel.setAllEntriesSelectedValue(false)
+            entriesViewModel.currentSelectedDate.value = null
         }
 
         return pref
@@ -399,10 +426,9 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun setupSelectAllPreference(screenState: DeletionScreenState) {
-        val isDeletionState = screenState == DELETE
-        selectAllCheckboxPreference.isVisible = isDeletionState
-        topIntroPreference.isVisible = !isDeletionState
-        if (isDeletionState) {
+        selectAllCheckboxPreference.isVisible = screenState == DELETE
+        setTopIntroVisibility(showMedicalData && screenState == VIEW)
+        if (screenState == DELETE) {
             viewModel.allPermissionTypesSelected.observe(viewLifecycleOwner) {
                 allPermissionTypesSelected ->
                 selectAllCheckboxPreference.removeOnPreferenceClickListener()

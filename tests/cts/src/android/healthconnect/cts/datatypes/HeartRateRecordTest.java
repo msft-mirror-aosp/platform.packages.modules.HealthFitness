@@ -24,6 +24,8 @@ import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENT
 import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
+import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
+import static android.healthconnect.cts.utils.TestUtils.getHealthConnectManager;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -37,6 +39,7 @@ import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthDataCategory;
+import android.health.connect.InsertRecordsResponse;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -53,6 +56,7 @@ import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
@@ -81,7 +85,6 @@ import java.util.UUID;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HeartRateRecordTest {
-    private static final String TAG = "HeartRateRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Rule
@@ -113,7 +116,10 @@ public class HeartRateRecordTest {
             hearRateRecords.addAll(
                     Arrays.asList(getBaseHeartRateRecord(10), getCompleteHeartRateRecord()));
         }
-        TestUtils.insertRecords(hearRateRecords);
+        // Use longer timeout for the large insert.
+        HealthConnectReceiver<InsertRecordsResponse> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager().insertRecords(hearRateRecords, outcomeExecutor(), receiver);
+        receiver.verifyNoExceptionOrThrow(/* timeoutSeconds= */ 10);
     }
 
     @Test

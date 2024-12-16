@@ -36,6 +36,8 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
@@ -47,6 +49,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -56,6 +59,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class ExportImportJobsTest {
 
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";

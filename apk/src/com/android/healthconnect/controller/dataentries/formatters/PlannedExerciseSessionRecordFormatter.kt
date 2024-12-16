@@ -60,7 +60,7 @@ constructor(
         return context.getString(
             R.string.planned_exercise_session_title,
             getExerciseType(context, record.exerciseType),
-            record.title,
+            record.title ?: context.getString(R.string.unknown_type),
         )
     }
 

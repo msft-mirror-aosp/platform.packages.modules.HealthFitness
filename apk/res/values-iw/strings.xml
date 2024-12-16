@@ -312,7 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"טמפרטורת העור"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"קריאה של טמפרטורת העור"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"כתיבה של טמפרטורת העור"</string>
-    <string name="browse_health_records_intro" msgid="1611488691642390523">"זה כולל את כל הסיכומים על המצב הבריאותי שסונכרנו עם Health Connect ונוספו לאפליקציה הזו. יכול להיות שזה לא התיק הרפואי המלא שלך, ולא כולל תיאור רפואי של הסיכומים על המצב הבריאותי."</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"זה כולל את כל הסיכומים על המצב הבריאותי שסונכרנו עם Health Connect ונוספו לאפליקציה הזו. המידע לא כולל את התיק הרפואי המלא שלך, וגם לא תיאורים רפואיים מסיכום המצב הבריאותי שלך."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"כל הסיכומים על המצב הבריאותי"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"כל הסיכומים על המצב הבריאותי"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"אישור לכתיבה של כל הסיכומים על המצב הבריאותי"</string>
@@ -493,7 +493,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"כל יום"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"כל שבוע"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"כל חודש"</string>
-    <string name="export_destination_title" msgid="8352929396306002479">"בחירת המיקום לשמירת הייצוא המתוזמן"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"איפה לשמור את הייצוא המתוזמן?"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"צריך לבחור אפליקציית אחסון בענן לייצוא הנתונים"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
@@ -535,8 +535,8 @@
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ביטול"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"סיום"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"אין אפליקציות זמינות. אפשר להתקין אפליקציות אחסון בענן כדי לראות אותן כאן"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"לאפשרויות נוספות, צריך להתקין אפליקציות אחסון בענן כדי לראות אותן כאן"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"מעבר לחנות Play"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"אם רוצים לראות כאן עוד אפשרויות, צריך להתקין במכשיר אפליקציות לאחסון בענן"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"לחנות Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"איך מתחילים להשתמש ב-Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"אפליקציית Health Connect מאחסנת את נתוני הבריאות והכושר שלך, ומאפשרת לך לסנכרן בקלות את האפליקציות השונות במכשיר"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"אפליקציית Health Connect מאחסנת ומסנכרנת את נתוני הבריאות והכושר שלך מאפליקציות שונות.\n\n"<b>"נתוני כושר ורווחה אישית,"</b>" כולל אימוני כושר, צעדים, תזונה, שינה ועוד\n\n"<b>"סיכומי מצב בריאותי,"</b>" כולל חיסונים, תוצאות של בדיקות מעבדה ועוד"</string>
@@ -790,10 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"מוזיקה"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"אחר"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ללא הדרכה"</string>
-    <!-- no translation found for activity_intensity_type_moderate (7974792315871109564) -->
-    <skip />
-    <!-- no translation found for activity_intensity_type_vigorous (5651020560923780330) -->
-    <skip />
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"מתונה"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"אינטנסיבית"</string>
     <string name="minute_duration" msgid="9035288227090160206">"דקה (<xliff:g id="MINUTE">%1$s</xliff:g>)"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> שע’ <xliff:g id="MIN">%2$s</xliff:g> דק’"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> שע‘"</string>

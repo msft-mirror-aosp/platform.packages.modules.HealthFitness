@@ -66,9 +66,11 @@ public class ReadTableRequest {
     private WhereClauses mWhereClauses = new WhereClauses(AND);
     private boolean mDistinct = false;
     private OrderByClause mOrderByClause = new OrderByClause();
+    private OrderByClause mFinalOrderByClause = new OrderByClause();
 
     // Null means no limit.
     @Nullable private Integer mLimit = null;
+    @Nullable private Integer mFinalLimit = null;
     @Nullable private List<ReadTableRequest> mExtraReadRequests;
     @Nullable private List<ReadTableRequest> mUnionReadRequests;
     private String mUnionType = UNION_ALL;
@@ -135,7 +137,14 @@ public class ReadTableRequest {
         return this;
     }
 
-    /** Returns SQL statement to perform read operation. */
+    /**
+     * Returns SQL statement to perform read operation.
+     *
+     * @throws IllegalArgumentException if the {@link ReadTableRequest} does not have a join clause
+     *     and has both a {@link #setOrderBy} and {@link #setFinalOrderBy}, or if it does not have a
+     *     join clause but has both a {@link #setLimit} and {@link #setFinalLimit} as this would
+     *     lead to an invalid query.
+     */
     public String getReadCommand() {
         return getReadCommand(/* asCount= */ false);
     }
@@ -146,6 +155,11 @@ public class ReadTableRequest {
      *
      * <p>The SQL result will have a single row, single column with the count of rows as the integer
      * value in that first row, first column.
+     *
+     * @throws IllegalArgumentException if the {@link ReadTableRequest} does not have a join clause
+     *     and has both a {@link #setOrderBy} and {@link #setFinalOrderBy}, or if it does not have a
+     *     join clause but has both a {@link #setLimit} and {@link #setFinalLimit} as this would
+     *     lead to an invalid query.
      */
     public String getCountCommand() {
         return getReadCommand(/* asCount= */ true);
@@ -194,8 +208,20 @@ public class ReadTableRequest {
             String innerQuery = buildReadQuery(SELECT_ALL);
             readQuery = mJoinClause.getJoinWithQueryCommand(selectStatement, innerQuery);
         } else {
+            if (!mOrderByClause.getOrderBy().isEmpty()
+                    && !mFinalOrderByClause.getOrderBy().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Without a join clause only one of orderByClause or finalOrderByClause may "
+                                + "be set");
+            }
+            if (mLimit != null && mFinalLimit != null) {
+                throw new IllegalArgumentException(
+                        "Without a join clause only one of the limit or finalLimit may be set");
+            }
             readQuery = buildReadQuery(selectStatement);
         }
+
+        readQuery = appendFinalOrderByAndLimit(readQuery);
 
         if (Constants.DEBUG) {
             Slog.d(TAG, "read query: " + readQuery);
@@ -240,6 +266,12 @@ public class ReadTableRequest {
                 + (mLimit == null ? "" : LIMIT_SIZE + mLimit);
     }
 
+    private String appendFinalOrderByAndLimit(String query) {
+        return query
+                + mFinalOrderByClause.getOrderBy()
+                + (mFinalLimit == null ? "" : LIMIT_SIZE + mFinalLimit);
+    }
+
     /** Get requests for populating extra data */
     @Nullable
     public List<ReadTableRequest> getExtraReadRequests() {
@@ -257,9 +289,27 @@ public class ReadTableRequest {
         return mTableName;
     }
 
-    /** Sets order by clause for the read query */
+    /**
+     * Sets order by clause for the read query
+     *
+     * <p>Note that if the query contains a join, the order by clause will be applied to the main
+     * table read sub query before joining. For setting the clause on the full query result use
+     * {@link #setFinalOrderBy}.
+     */
     public ReadTableRequest setOrderBy(OrderByClause orderBy) {
         mOrderByClause = orderBy;
+        return this;
+    }
+
+    /**
+     * Sets order by clause for the read query, applied to the final query result
+     *
+     * <p>This means that if the query contains a join, the order by will be applied to the full
+     * query result instead of the main table read before joining, as is the case with {@link
+     * #setOrderBy}.
+     */
+    public ReadTableRequest setFinalOrderBy(OrderByClause orderBy) {
+        mFinalOrderByClause = orderBy;
         return this;
     }
 
@@ -269,9 +319,34 @@ public class ReadTableRequest {
         return mLimit;
     }
 
-    /** Sets LIMIT size for the read query, or null for no limit. */
+    /**
+     * Sets LIMIT size for the read query, or null for no limit.
+     *
+     * <p>Note that if the query contains a join, the limit will be applied to the main table read
+     * before joining. For setting the limit on the full query result use {@link #setFinalLimit}.
+     *
+     * <p>If this ReadTableRequest has any unionReadRequests set, but no joinClause, the limit
+     * applies to the full query including the unionReadRequests.
+     */
     public ReadTableRequest setLimit(@Nullable Integer limit) {
         mLimit = limit;
+        return this;
+    }
+
+    /** Returns the current final LIMIT size for the query, or null for no LIMIT. */
+    @Nullable
+    public Integer getFinalLimit() {
+        return mFinalLimit;
+    }
+
+    /**
+     * Sets final LIMIT size, or null for the read query, which will be applied to the final query
+     *
+     * <p>This means that if the query contains a join, the limit will apply to the full query
+     * result instead of the main table read before joining, as is the case with {@link #setLimit}.
+     */
+    public ReadTableRequest setFinalLimit(@Nullable Integer limit) {
+        mFinalLimit = limit;
         return this;
     }
 
