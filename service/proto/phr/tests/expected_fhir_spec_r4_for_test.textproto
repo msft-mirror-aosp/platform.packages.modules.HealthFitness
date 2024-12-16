@@ -1,0 +1,3563 @@
+resource_type_to_config {
+  key: 1
+  value {
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "doseQuantity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "education"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "encounter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "expirationDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "fundingSource"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "isSubpotent"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "location"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "lotNumber"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "manufacturer"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "occurrenceDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "occurrenceString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "patient"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performer"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "primarySource"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "programEligibility"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "protocolApplied"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reaction"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonCode"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonReference"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "recorded"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reportOrigin"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "route"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "site"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "statusReason"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "subpotentReason"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "vaccineCode"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    required_fields: "patient"
+    required_fields: "status"
+    required_fields: "vaccineCode"
+    multi_type_fields {
+      name: "occurrence[x]"
+      typed_field_names: "occurrenceDateTime"
+      typed_field_names: "occurrenceString"
+      is_required: true
+    }
+  }
+}
+resource_type_to_config {
+  key: 2
+  value {
+    allowed_field_names_to_config {
+      key: "asserter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "category"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "clinicalStatus"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "criticality"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "encounter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "lastOccurrence"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetAge"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetPeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "patient"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reaction"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "recordedDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "recorder"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "verificationStatus"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    required_fields: "patient"
+    multi_type_fields {
+      name: "onset[x]"
+      typed_field_names: "onsetDateTime"
+      typed_field_names: "onsetAge"
+      typed_field_names: "onsetPeriod"
+      typed_field_names: "onsetRange"
+      typed_field_names: "onsetString"
+      is_required: false
+    }
+  }
+}
+resource_type_to_config {
+  key: 3
+  value {
+    allowed_field_names_to_config {
+      key: "basedOn"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "bodySite"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "category"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "component"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dataAbsentReason"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "derivedFrom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "device"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "effectiveDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "effectiveInstant"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_INSTANT
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "effectivePeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "effectiveTiming"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "encounter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "focus"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "hasMember"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "interpretation"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "issued"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_INSTANT
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "method"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "partOf"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performer"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "referenceRange"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "specimen"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "subject"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueBoolean"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueCodeableConcept"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueInteger"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_INTEGER
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valuePeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueQuantity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueRatio"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueSampledData"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    required_fields: "code"
+    required_fields: "status"
+    multi_type_fields {
+      name: "effective[x]"
+      typed_field_names: "effectiveDateTime"
+      typed_field_names: "effectivePeriod"
+      typed_field_names: "effectiveTiming"
+      typed_field_names: "effectiveInstant"
+      is_required: false
+    }
+    multi_type_fields {
+      name: "value[x]"
+      typed_field_names: "valueQuantity"
+      typed_field_names: "valueCodeableConcept"
+      typed_field_names: "valueString"
+      typed_field_names: "valueBoolean"
+      typed_field_names: "valueInteger"
+      typed_field_names: "valueRange"
+      typed_field_names: "valueRatio"
+      typed_field_names: "valueSampledData"
+      typed_field_names: "valueTime"
+      typed_field_names: "valueDateTime"
+      typed_field_names: "valuePeriod"
+      is_required: false
+    }
+  }
+}
+resource_type_to_config {
+  key: 4
+  value {
+    allowed_field_names_to_config {
+      key: "abatementAge"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "abatementDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "abatementPeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "abatementRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "abatementString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "asserter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "bodySite"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "category"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "clinicalStatus"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "encounter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "evidence"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetAge"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetPeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onsetString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "recordedDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "recorder"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "severity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "stage"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "subject"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "verificationStatus"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    required_fields: "subject"
+    multi_type_fields {
+      name: "onset[x]"
+      typed_field_names: "onsetDateTime"
+      typed_field_names: "onsetAge"
+      typed_field_names: "onsetPeriod"
+      typed_field_names: "onsetRange"
+      typed_field_names: "onsetString"
+      is_required: false
+    }
+    multi_type_fields {
+      name: "abatement[x]"
+      typed_field_names: "abatementDateTime"
+      typed_field_names: "abatementAge"
+      typed_field_names: "abatementPeriod"
+      typed_field_names: "abatementRange"
+      typed_field_names: "abatementString"
+      is_required: false
+    }
+  }
+}
+resource_type_to_config {
+  key: 5
+  value {
+    allowed_field_names_to_config {
+      key: "asserter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "basedOn"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "bodySite"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "category"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "complication"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "complicationDetail"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "encounter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "focalDevice"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "followUp"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "instantiatesCanonical"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CANONICAL
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "instantiatesUri"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "location"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "outcome"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "partOf"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performedAge"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performedDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performedPeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performedRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performedString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performer"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonCode"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonReference"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "recorder"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "report"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "statusReason"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "subject"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "usedCode"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "usedReference"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    required_fields: "status"
+    required_fields: "subject"
+    multi_type_fields {
+      name: "performed[x]"
+      typed_field_names: "performedDateTime"
+      typed_field_names: "performedPeriod"
+      typed_field_names: "performedString"
+      typed_field_names: "performedAge"
+      typed_field_names: "performedRange"
+      is_required: false
+    }
+  }
+}
+resource_type_to_config {
+  key: 6
+  value {
+    allowed_field_names_to_config {
+      key: "amount"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "batch"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "form"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "ingredient"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "manufacturer"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+  }
+}
+resource_type_to_config {
+  key: 7
+  value {
+    allowed_field_names_to_config {
+      key: "authoredOn"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "basedOn"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "category"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "courseOfTherapyType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "detectedIssue"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dispenseRequest"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "doNotPerform"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dosageInstruction"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "encounter"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "eventHistory"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "groupIdentifier"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "instantiatesCanonical"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CANONICAL
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "instantiatesUri"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "insurance"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "intent"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "medicationCodeableConcept"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "medicationReference"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performer"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performerType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "priorPrescription"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "priority"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonCode"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonReference"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "recorder"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reportedBoolean"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reportedReference"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "requester"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "statusReason"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "subject"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "substitution"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "supportingInformation"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    required_fields: "intent"
+    required_fields: "status"
+    required_fields: "subject"
+    multi_type_fields {
+      name: "reported[x]"
+      typed_field_names: "reportedBoolean"
+      typed_field_names: "reportedReference"
+      is_required: false
+    }
+    multi_type_fields {
+      name: "medication[x]"
+      typed_field_names: "medicationCodeableConcept"
+      typed_field_names: "medicationReference"
+      is_required: true
+    }
+  }
+}
+resource_type_to_config {
+  key: 8
+  value {
+    allowed_field_names_to_config {
+      key: "basedOn"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "category"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "context"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dateAsserted"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "derivedFrom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dosage"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "effectiveDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "effectivePeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "informationSource"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "medicationCodeableConcept"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "medicationReference"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "partOf"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonCode"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonReference"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "statusReason"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "subject"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    required_fields: "status"
+    required_fields: "subject"
+    multi_type_fields {
+      name: "medication[x]"
+      typed_field_names: "medicationCodeableConcept"
+      typed_field_names: "medicationReference"
+      is_required: true
+    }
+    multi_type_fields {
+      name: "effective[x]"
+      typed_field_names: "effectiveDateTime"
+      typed_field_names: "effectivePeriod"
+      is_required: false
+    }
+  }
+}
+resource_type_to_config {
+  key: 9
+  value {
+    allowed_field_names_to_config {
+      key: "active"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "address"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "birthDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "communication"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contact"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "deceasedBoolean"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "deceasedDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "gender"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "generalPractitioner"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "link"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "managingOrganization"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "maritalStatus"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "multipleBirthBoolean"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "multipleBirthInteger"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_INTEGER
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "name"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "photo"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "telecom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    multi_type_fields {
+      name: "deceased[x]"
+      typed_field_names: "deceasedBoolean"
+      typed_field_names: "deceasedDateTime"
+      is_required: false
+    }
+    multi_type_fields {
+      name: "multipleBirth[x]"
+      typed_field_names: "multipleBirthBoolean"
+      typed_field_names: "multipleBirthInteger"
+      is_required: false
+    }
+  }
+}
+resource_type_to_config {
+  key: 10
+  value {
+    allowed_field_names_to_config {
+      key: "active"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "address"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "birthDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "communication"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "gender"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "name"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "photo"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "qualification"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "telecom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+  }
+}
+resource_type_to_config {
+  key: 11
+  value {
+    allowed_field_names_to_config {
+      key: "active"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "availabilityExceptions"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "availableTime"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "endpoint"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "healthcareService"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "location"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "notAvailable"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "organization"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "practitioner"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "specialty"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "telecom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+  }
+}
+resource_type_to_config {
+  key: 12
+  value {
+    allowed_field_names_to_config {
+      key: "account"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "appointment"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "basedOn"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "class"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "classHistory"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "diagnosis"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "episodeOfCare"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "hospitalization"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "length"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "location"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "partOf"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "participant"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "priority"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonCode"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reasonReference"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "serviceProvider"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "serviceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "statusHistory"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "subject"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    required_fields: "class"
+    required_fields: "status"
+  }
+}
+resource_type_to_config {
+  key: 13
+  value {
+    allowed_field_names_to_config {
+      key: "address"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "alias"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "availabilityExceptions"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "description"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "endpoint"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "hoursOfOperation"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "managingOrganization"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "mode"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "name"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "operationalStatus"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "partOf"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "physicalType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "position"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "telecom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+  }
+}
+resource_type_to_config {
+  key: 14
+  value {
+    allowed_field_names_to_config {
+      key: "active"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "address"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "alias"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contact"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "contained"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "endpoint"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ID
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "implicitRules"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "meta"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "name"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "partOf"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "resourceType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+        kind: KIND_PRIMITIVE_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "telecom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_COMPLEX
+        kind: KIND_COMPLEX_TYPE
+      }
+    }
+  }
+}
