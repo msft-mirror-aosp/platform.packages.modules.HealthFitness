@@ -343,6 +343,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                 entriesViewModel.setScreenState(VIEW)
                 entriesViewModel.loadEntries(
                     permissionType,
+                    packageName,
                     dateNavigationView.getDate(),
                     dateNavigationView.getPeriod(),
                 )

@@ -53,6 +53,7 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -75,6 +76,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeastOnce
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -84,6 +89,8 @@ class AppEntriesFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
+    @BindValue
+    val deletionViewModel: DeletionViewModel = Mockito.mock(DeletionViewModel::class.java)
 
     private lateinit var context: Context
     private lateinit var navHostController: TestNavHostController
@@ -113,6 +120,9 @@ class AppEntriesFragmentTest {
             .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.VIEW))
         whenever(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
         whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(false))
+        whenever(deletionViewModel.appEntriesReloadNeeded).thenReturn(MutableLiveData(false))
+        whenever(deletionViewModel.deletionProgress)
+            .thenReturn(MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED))
     }
 
     @Test
@@ -311,6 +321,40 @@ class AppEntriesFragmentTest {
         onView(withText("12 steps")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("15 steps")).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun reloadsAppEntries_whenReloadNeeded() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("12 steps")).check(matches(isDisplayed()))
+        onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
+        onView(withText("15 steps")).check(matches(isDisplayed()))
+
+        whenever(deletionViewModel.appEntriesReloadNeeded).thenReturn(MutableLiveData(true))
+        scenario.recreate()
+
+        onIdle()
+        verify(viewModel, atLeastOnce())
+            .loadEntries(
+                eq(STEPS),
+                eq(TEST_APP_PACKAGE_NAME),
+                any(),
+                eq(DateNavigationPeriod.PERIOD_DAY),
+            )
+        verify(viewModel, never())
+            .loadEntries(eq(STEPS), any(), eq(DateNavigationPeriod.PERIOD_DAY))
     }
 
     @Test
