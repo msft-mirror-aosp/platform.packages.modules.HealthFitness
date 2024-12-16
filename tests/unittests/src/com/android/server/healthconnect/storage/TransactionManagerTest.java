@@ -19,9 +19,6 @@ package com.android.server.healthconnect.storage;
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
-import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.HEART_RATE_RECORD_BPM_AVG;
-import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.STEPS_RECORD_COUNT_TOTAL;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 
@@ -29,7 +26,6 @@ import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
-import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
@@ -54,13 +50,11 @@ import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
-import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -82,16 +76,12 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
-import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -103,10 +93,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
@@ -140,8 +128,6 @@ public class TransactionManagerTest {
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
-    private InternalHealthConnectMappings mInternalHealthConnectMappings;
-    private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private ReadAccessLogsHelper mReadAccessLogsHelper;
 
     @Before
@@ -156,9 +142,6 @@ public class TransactionManagerTest {
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
-        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
-        mHealthDataCategoryPriorityHelper =
-                healthConnectInjector.getHealthDataCategoryPriorityHelper();
         mReadAccessLogsHelper = spy(healthConnectInjector.getReadAccessLogsHelper());
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
@@ -506,55 +489,6 @@ public class TransactionManagerTest {
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).isEmpty();
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_ADD_MISSING_ACCESS_LOGS)
-    public void populateWithAggregation_accessLogRecorded() {
-        RecordHelper<?> helper =
-                mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_HEART_RATE);
-        AggregationType<?> aggregationType =
-                AggregationTypeIdMapper.getInstance()
-                        .getAggregationTypeFor(HEART_RATE_RECORD_BPM_AVG);
-        AggregateTableRequest request =
-                helper.getAggregateTableRequest(
-                        aggregationType,
-                        TEST_PACKAGE_NAME,
-                        /* packageFilters= */ List.of(),
-                        mHealthDataCategoryPriorityHelper,
-                        mInternalHealthConnectMappings,
-                        mAppInfoHelper,
-                        mTransactionManager,
-                        /* startTime= */ 123,
-                        /* endTime= */ 456,
-                        /* startDateAccess= */ 0,
-                        /* useLocalTime= */ false);
-
-        // We have to set group by for single aggregation here because in the
-        // AggregateDataRequestParcel this is set and the implementation relies on it
-        request.setGroupBy(
-                TIME_COLUMN_NAME,
-                /* period= */ null,
-                Duration.ofMillis(456 - 123),
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.ofEpochMilli(123))
-                        .setEndTime(Instant.ofEpochMilli(456))
-                        .build());
-        mTransactionManager.populateWithAggregation(
-                request,
-                TEST_PACKAGE_NAME,
-                Set.of(RECORD_TYPE_HEART_RATE),
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                Instant.now().toEpochMilli(),
-                Instant.now().toEpochMilli(),
-                /* shouldRecordAccessLog= */ true);
-
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
-        AccessLog log = result.get(0);
-        assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
-        assertThat(log.getRecordTypes()).containsExactly(HeartRateRecord.class);
-        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
     }
 
     @Test
@@ -945,184 +879,6 @@ public class TransactionManagerTest {
                 mDeviceInfoHelper,
                 mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ true);
-
-        verify(mReadAccessLogsHelper, times(0))
-                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
-        verify(mReadAccessLogsHelper, times(0))
-                .recordAccessLogForAggregationReads(
-                        any(), any(), anyLong(), anyInt(), anyLong(), any());
-    }
-
-    @Test
-    @EnableFlags({
-        FLAG_ECOSYSTEM_METRICS,
-        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
-        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_ACTIVITY_INTENSITY_DB
-    })
-    public void flagsEnabled_populateWithAggregation_readAccessLogRecorded() {
-        String readerPackage = "reader.package";
-        long endTime = Instant.now().toEpochMilli();
-        long readTime = Instant.now().toEpochMilli();
-        mTransactionTestUtils.insertApp(readerPackage);
-        mTransactionTestUtils.insertRecords(
-                TEST_PACKAGE_NAME,
-                createStepsRecord(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME), 123, 345, 100));
-        RecordHelper<?> helper = mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_STEPS);
-        AggregationType<?> aggregationType =
-                AggregationTypeIdMapper.getInstance()
-                        .getAggregationTypeFor(STEPS_RECORD_COUNT_TOTAL);
-        AggregateTableRequest request =
-                helper.getAggregateTableRequest(
-                        aggregationType,
-                        TEST_PACKAGE_NAME,
-                        /* packageFilters= */ List.of(),
-                        mHealthDataCategoryPriorityHelper,
-                        mInternalHealthConnectMappings,
-                        mAppInfoHelper,
-                        mTransactionManager,
-                        /* startTime= */ 123,
-                        /* endTime= */ 456,
-                        /* startDateAccess= */ 0,
-                        /* useLocalTime= */ false);
-
-        // We have to set group by for single aggregation here because in the
-        // AggregateDataRequestParcel this is set and the implementation relies on it
-        request.setGroupBy(
-                TIME_COLUMN_NAME,
-                /* period= */ null,
-                Duration.ofMillis(456 - 123),
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.ofEpochMilli(123))
-                        .setEndTime(Instant.ofEpochMilli(456))
-                        .build());
-        mTransactionManager.populateWithAggregation(
-                request,
-                readerPackage,
-                Set.of(RECORD_TYPE_STEPS),
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                endTime,
-                readTime,
-                /* shouldRecordAccessLog= */ true);
-
-        List<ReadAccessLogsHelper.ReadAccessLog> result =
-                mReadAccessLogsHelper.queryReadAccessLogs();
-        ReadAccessLogsHelper.ReadAccessLog log = result.get(0);
-        assertThat(log.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
-        assertThat(log.getReaderPackage()).isEqualTo(readerPackage);
-        assertThat(log.getRecordWithinPast30Days()).isEqualTo(true);
-        assertThat(log.getDataType()).isEqualTo(RECORD_TYPE_STEPS);
-        assertThat(log.getReadTimeStamp()).isEqualTo(readTime);
-    }
-
-    @Test
-    @DisableFlags({FLAG_ECOSYSTEM_METRICS, FLAG_ECOSYSTEM_METRICS_DB_CHANGES})
-    public void flagsDisabled_populateWithAggregation_readAccessLogNotInvoked() {
-        String readerPackage = "reader.package";
-        long endTime = Instant.now().toEpochMilli();
-        long readTime = Instant.now().toEpochMilli();
-        mTransactionTestUtils.insertApp(readerPackage);
-        mTransactionTestUtils.insertRecords(
-                TEST_PACKAGE_NAME,
-                createStepsRecord(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME), 123, 345, 100));
-        RecordHelper<?> helper = mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_STEPS);
-        AggregationType<?> aggregationType =
-                AggregationTypeIdMapper.getInstance()
-                        .getAggregationTypeFor(STEPS_RECORD_COUNT_TOTAL);
-        AggregateTableRequest request =
-                helper.getAggregateTableRequest(
-                        aggregationType,
-                        TEST_PACKAGE_NAME,
-                        /* packageFilters= */ List.of(),
-                        mHealthDataCategoryPriorityHelper,
-                        mInternalHealthConnectMappings,
-                        mAppInfoHelper,
-                        mTransactionManager,
-                        /* startTime= */ 123,
-                        /* endTime= */ 456,
-                        /* startDateAccess= */ 0,
-                        /* useLocalTime= */ false);
-
-        // We have to set group by for single aggregation here because in the
-        // AggregateDataRequestParcel this is set and the implementation relies on it
-        request.setGroupBy(
-                TIME_COLUMN_NAME,
-                /* period= */ null,
-                Duration.ofMillis(456 - 123),
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.ofEpochMilli(123))
-                        .setEndTime(Instant.ofEpochMilli(456))
-                        .build());
-        mTransactionManager.populateWithAggregation(
-                request,
-                readerPackage,
-                Set.of(RECORD_TYPE_STEPS),
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                endTime,
-                readTime,
-                /* shouldRecordAccessLog= */ true);
-
-        verify(mReadAccessLogsHelper, times(0))
-                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
-        verify(mReadAccessLogsHelper, times(0))
-                .recordAccessLogForAggregationReads(
-                        any(), any(), anyLong(), anyInt(), anyLong(), any());
-    }
-
-    @Test
-    @EnableFlags({
-        FLAG_ECOSYSTEM_METRICS,
-        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
-        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_ACTIVITY_INTENSITY_DB
-    })
-    public void doNotRecordAccessLog_populateWithAggregation_readAccessLogNotInvoked() {
-        String readerPackage = "reader.package";
-        long endTime = Instant.now().toEpochMilli();
-        long readTime = Instant.now().toEpochMilli();
-        mTransactionTestUtils.insertApp(readerPackage);
-        mTransactionTestUtils.insertRecords(
-                TEST_PACKAGE_NAME,
-                createStepsRecord(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME), 123, 345, 100));
-        RecordHelper<?> helper = mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_STEPS);
-        AggregationType<?> aggregationType =
-                AggregationTypeIdMapper.getInstance()
-                        .getAggregationTypeFor(STEPS_RECORD_COUNT_TOTAL);
-        AggregateTableRequest request =
-                helper.getAggregateTableRequest(
-                        aggregationType,
-                        TEST_PACKAGE_NAME,
-                        /* packageFilters= */ List.of(),
-                        mHealthDataCategoryPriorityHelper,
-                        mInternalHealthConnectMappings,
-                        mAppInfoHelper,
-                        mTransactionManager,
-                        /* startTime= */ 123,
-                        /* endTime= */ 456,
-                        /* startDateAccess= */ 0,
-                        /* useLocalTime= */ false);
-
-        // We have to set group by for single aggregation here because in the
-        // AggregateDataRequestParcel this is set and the implementation relies on it
-        request.setGroupBy(
-                TIME_COLUMN_NAME,
-                /* period= */ null,
-                Duration.ofMillis(456 - 123),
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.ofEpochMilli(123))
-                        .setEndTime(Instant.ofEpochMilli(456))
-                        .build());
-        mTransactionManager.populateWithAggregation(
-                request,
-                readerPackage,
-                Set.of(RECORD_TYPE_STEPS),
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                endTime,
-                readTime,
-                /* shouldRecordAccessLog= */ false);
 
         verify(mReadAccessLogsHelper, times(0))
                 .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
