@@ -1,6 +1,6 @@
 {
   "resourceType": "Condition",
-  "id": "condition-1",
+  "id": "condition-6",
   "clinicalStatus": {
     "coding": [
       {
@@ -34,20 +34,22 @@
     }
   ],
   "severity": {
-    "text": "Medium"
+    "text": "Mild"
   },
   "code": {
     "coding": [
       {
         "system": "http://hl7.org/fhir/sid/icd-10-cm",
-        "code": "G43.9"
+        "code": "E78.0",
+        "display": "Pure hypercholesterolemia"
       },
       {
         "system": "http://snomed.info/sct",
-        "code": "37796009"
+        "code": "13644009",
+        "display": "Hypercholesterolemia (disorder)"
       }
     ],
-    "text": "Migraine (disorder)"
+    "text": "Hypercholesterolemia"
   },
   "subject": {
     "reference": "Patient/patient-1",
@@ -59,10 +61,7 @@
     "display": "Dr Maria Hernandez"
   },
   "encounter": {
-    "reference": "Encounter/encounter-4"
+    "reference": "Encounter/encounter-unk"
   },
-  "onsetPeriod": {
-    "start": "2023-05-01"
-  },
-  "recordedDate": "2023-06-14"
+  "recordedDate": "2014-04-04"
 }
