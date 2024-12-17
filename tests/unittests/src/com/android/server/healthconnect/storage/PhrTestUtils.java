@@ -271,26 +271,37 @@ public class PhrTestUtils {
                 SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    private ReadMedicalResourcesInternalResponse readMedicalResources(
-            SQLiteDatabase stagedDatabase, PhrPageTokenWrapper pageTokenWrapper) {
+    private static ReadMedicalResourcesInternalResponse readMedicalResources(
+            SQLiteDatabase db, PhrPageTokenWrapper pageTokenWrapper) {
         ReadTableRequest readTableRequest =
                 MedicalResourceHelper.getReadTableRequestUsingRequestFilters(
                         pageTokenWrapper, MAXIMUM_PAGE_SIZE);
         return MedicalResourceHelper.getMedicalResources(
-                stagedDatabase, readTableRequest, pageTokenWrapper, MAXIMUM_PAGE_SIZE);
+                db, readTableRequest, pageTokenWrapper, MAXIMUM_PAGE_SIZE);
     }
 
     /**
      * Reads all the {@link MedicalResource}s and their associated last_modified_timestamp from the
-     * given {@link HealthConnectDatabase}..
+     * database.
      */
-    public List<Pair<MedicalResource, Long>> readAllMedicalResources(
+    public List<Pair<MedicalResource, Long>> readAllMedicalResources() {
+        return mTransactionManager.runWithoutTransaction(
+                (SQLiteDatabase db) -> readAllMedicalResources(db));
+    }
+
+    /**
+     * Reads all the {@link MedicalResource}s and their associated last_modified_timestamp from the
+     * given {@link HealthConnectDatabase}.
+     */
+    public static List<Pair<MedicalResource, Long>> readAllMedicalResources(
             HealthConnectDatabase stagedDatabase) {
-        SQLiteDatabase db = stagedDatabase.getReadableDatabase();
+        return readAllMedicalResources(stagedDatabase.getReadableDatabase());
+    }
+
+    private static List<Pair<MedicalResource, Long>> readAllMedicalResources(SQLiteDatabase db) {
         List<Pair<MedicalResource, Long>> result = new ArrayList<>();
         String nextPageToken = null;
         do {
-
             PhrPageTokenWrapper phrPageTokenWrapper =
                     PhrPageTokenWrapper.fromPageTokenAllowingNull(nextPageToken);
             ReadMedicalResourcesInternalResponse response =
@@ -315,7 +326,20 @@ public class PhrTestUtils {
      * as a list of {@link Pair}s with the first element of the pair being {@link MedicalDataSource}
      * and the second element last_modified_timestamp.
      */
-    public List<Pair<MedicalDataSource, Long>> readMedicalDataSources(
+    public List<Pair<MedicalDataSource, Long>> readMedicalDataSources() {
+        try (Cursor cursor =
+                mTransactionManager.rawQuery(
+                        MedicalDataSourceHelper.getReadQueryForDataSources(), null)) {
+            return MedicalDataSourceHelper.getMedicalDataSourcesWithTimestamps(cursor);
+        }
+    }
+
+    /**
+     * Reads {@link MedicalDataSource}s and their associated last_modified_timestamp and returns it
+     * as a list of {@link Pair}s with the first element of the pair being {@link MedicalDataSource}
+     * and the second element last_modified_timestamp.
+     */
+    public static List<Pair<MedicalDataSource, Long>> readMedicalDataSources(
             HealthConnectDatabase stagedDatabase) {
         try (Cursor cursor =
                 stagedDatabase
