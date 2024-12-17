@@ -56,4 +56,9 @@
 
     <!-- Title for the dialog button to allow a change from foreground to background permission grant. [CHAR LIMIT=25]  -->
     <string name="grant_dialog_button_allow_background">All the time</string>
+
+    <!-- region framework permissions -->
+    <!-- Health data permissions labels and descriptions -->
+    <string name="permgrouplab_health" description="Title of an application permission group, listed so the user can choose whether they want to allow the application to do this. [CHAR LIMIT=30]">Fitness and wellness</string>
+
 </resources>

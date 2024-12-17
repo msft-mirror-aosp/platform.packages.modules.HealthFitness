@@ -232,8 +232,8 @@ fun getSamplePlannedExerciseSessionRecord(): PlannedExerciseSessionRecord {
 }
 
 fun getPlannedExerciseSessionRecord(
-    title: String,
-    note: String,
+    title: String?,
+    note: String?,
     exerciseBlocks: List<PlannedExerciseBlock>,
 ): PlannedExerciseSessionRecord {
     return basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
@@ -260,7 +260,7 @@ private fun basePlannedExerciseSession(exerciseType: Int): PlannedExerciseSessio
 
 fun getPlannedExerciseBlock(
     repetitions: Int,
-    description: String,
+    description: String?,
     exerciseSteps: List<PlannedExerciseStep>,
 ): PlannedExerciseBlock {
     return PlannedExerciseBlock.Builder(repetitions)
