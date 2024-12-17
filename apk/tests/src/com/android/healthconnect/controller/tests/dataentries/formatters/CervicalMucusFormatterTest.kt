@@ -96,6 +96,13 @@ class CervicalMucusFormatterTest {
         assertThat(formatter.formatValue(record, preferences)).isEqualTo("Egg white")
     }
 
+    @Test
+    fun formatValue_unknownAppearanceAndSensation_unknownType() = runBlocking {
+        val record = getRecord()
+
+        assertThat(formatter.formatValue(record, preferences)).isEqualTo("Unknown type")
+    }
+
     private fun getRecord(
         @CervicalMucusSensations sensation: Int = SENSATION_UNKNOWN,
         @CervicalMucusAppearances appearance: Int = APPEARANCE_UNKNOWN
