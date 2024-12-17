@@ -863,6 +863,7 @@ class FitnessAppFragmentTest {
             )
         )
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.SEE_APP_DATA_BUTTON)
         onView(withText("Delete app data")).check(doesNotExist())
     }
 

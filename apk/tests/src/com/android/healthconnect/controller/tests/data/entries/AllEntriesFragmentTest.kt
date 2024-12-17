@@ -62,8 +62,8 @@ import com.android.healthconnect.controller.tests.utils.launchNestedFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.withIndex
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.EntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
@@ -136,8 +136,7 @@ class AllEntriesFragmentTest {
         launchNestedFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
-        verify(healthConnectLogger, atLeast(1))
-            .logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+        verify(healthConnectLogger, atLeast(1)).logImpression(EntriesElement.DATE_VIEW_SPINNER_DAY)
         verify(healthConnectLogger).logImpression(DataEntriesElement.PREVIOUS_DAY_BUTTON)
         verify(healthConnectLogger).logImpression(DataEntriesElement.NEXT_DAY_BUTTON)
     }
@@ -201,7 +200,7 @@ class AllEntriesFragmentTest {
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("7 hours")).check(matches(isDisplayed()))
 
-        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -215,7 +214,7 @@ class AllEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("128 - 140 bpm")).check(matches(isDisplayed()))
-        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -231,7 +230,7 @@ class AllEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("Biking")).check(matches(isDisplayed()))
-        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -247,7 +246,7 @@ class AllEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("Workout")).check(matches(isDisplayed()))
-        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -262,8 +261,7 @@ class AllEntriesFragmentTest {
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
-        verify(healthConnectLogger, times(2))
-            .logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+        verify(healthConnectLogger, times(2)).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -358,6 +356,9 @@ class AllEntriesFragmentTest {
         }
 
         onView(withIndex(withId(R.id.item_checkbox_button), 1)).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(EntriesElement.SELECT_ALL_BUTTON)
+        verify(healthConnectLogger, times(2))
+            .logImpression(EntriesElement.ENTRY_BUTTON_WITH_CHECKBOX)
     }
 
     @Test
@@ -415,6 +416,7 @@ class AllEntriesFragmentTest {
         onView(withText("12 steps")).perform(click())
         onIdle()
         verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
+        verify(healthConnectLogger).logInteraction(EntriesElement.ENTRY_BUTTON_WITH_CHECKBOX)
     }
 
     @Test
@@ -441,6 +443,9 @@ class AllEntriesFragmentTest {
 
         onIdle()
         onView(withIndex(withText("Select all"), 0)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2))
+            .logImpression(EntriesElement.ENTRY_BUTTON_WITH_CHECKBOX)
+        verify(healthConnectLogger).logImpression(EntriesElement.SELECT_ALL_BUTTON)
     }
 
     @Test
@@ -469,6 +474,7 @@ class AllEntriesFragmentTest {
         onIdle()
         verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
         verify(viewModel).addToDeleteMap("test_id_2", StepsRecord::class)
+        verify(healthConnectLogger).logImpression(EntriesElement.SELECT_ALL_BUTTON)
     }
 }
 

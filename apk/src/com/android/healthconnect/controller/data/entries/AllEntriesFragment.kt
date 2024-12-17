@@ -198,6 +198,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_enter_deletion_state -> {
                 // enter deletion state
+                logger.logInteraction(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
                 triggerDeletionState(DELETE)
                 true
             }
@@ -214,6 +215,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private val onEnterDeletionState: (MenuItem) -> Boolean = { menuItem ->
         when (menuItem.itemId) {
             R.id.delete -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_DELETE_BUTTON)
                 deleteData()
                 true
             }
@@ -226,6 +228,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_exit_deletion_state -> {
                 // exit deletion state
+                logger.logInteraction(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
                 triggerDeletionState(VIEW)
                 true
             }
@@ -374,11 +377,13 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         }
 
         if (screenState == VIEW) {
+            logger.logImpression(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
             setupMenu(R.menu.all_entries_menu, viewLifecycleOwner, logger, onMenuSetup)
             return
         }
 
         if (entriesViewModel.mapOfEntriesToBeDeleted.value.orEmpty().isEmpty()) {
+            logger.logImpression(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
             setupMenu(
                 R.menu.all_data_delete_menu,
                 viewLifecycleOwner,
@@ -388,6 +393,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             return
         }
 
+        logger.logImpression(ToolbarElement.TOOLBAR_DELETE_BUTTON)
         setupMenu(R.menu.deletion_state_menu, viewLifecycleOwner, logger, onEnterDeletionState)
     }
 
