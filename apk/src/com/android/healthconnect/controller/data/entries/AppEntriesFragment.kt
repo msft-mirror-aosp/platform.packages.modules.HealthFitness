@@ -59,6 +59,7 @@ import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
@@ -243,7 +244,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // TODO(b/291249677): Log pagename.
+        logger.setPageId(PageName.APP_ENTRIES_PAGE)
 
         if (
             requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
@@ -361,10 +362,10 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
 
     override fun onResume() {
         super.onResume()
+        logger.setPageId(PageName.APP_ENTRIES_PAGE)
+        logger.logPageImpression()
         setTitle(permissionType.upperCaseLabel())
         reloadEntries()
-
-        // TODO(b/291249677): Log pagename.
     }
 
     private fun reloadEntries() {
