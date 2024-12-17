@@ -87,7 +87,7 @@ public final class SkinTemperatureRecordInternal
 
     @NonNull
     @Override
-    public Set<? extends Sample> getSamples() {
+    public Set<SkinTemperatureDeltaSample> getSamples() {
         return mDeltaSamples;
     }
 
