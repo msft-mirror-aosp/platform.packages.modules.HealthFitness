@@ -21,7 +21,9 @@ import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.Constants.DELETE;
 import static android.health.connect.Constants.UPSERT;
 
+import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
 import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper.DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper.NEW_CHANGE_LOG_TIME_PERIOD_IN_DAYS;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
@@ -85,13 +87,15 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     }
 
     public static DeleteTableRequest getDeleteRequestForAutoDelete() {
+        int changeLogTimePeriod =
+                cloudBackupAndRestore()
+                        ? NEW_CHANGE_LOG_TIME_PERIOD_IN_DAYS
+                        : DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS;
         return new DeleteTableRequest(TABLE_NAME)
                 .setTimeFilter(
                         TIME_COLUMN_NAME,
                         Instant.EPOCH.toEpochMilli(),
-                        Instant.now()
-                                .minus(DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
-                                .toEpochMilli());
+                        Instant.now().minus(changeLogTimePeriod, ChronoUnit.DAYS).toEpochMilli());
     }
 
     public static CreateTableRequest getCreateTableRequest() {
