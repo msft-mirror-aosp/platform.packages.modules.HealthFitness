@@ -48,11 +48,11 @@
   ],
   "bodySite": {
     "coding": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "74262004",
-          "display": "Oral cavity"
-        }
+      {
+        "system": "http://snomed.info/sct",
+        "code": "74262004",
+        "display": "Oral cavity"
+      }
     ]
   },
   "method": {

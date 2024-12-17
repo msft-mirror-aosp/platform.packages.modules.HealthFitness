@@ -16,11 +16,11 @@
     "text": "Tdap"
   },
   "patient": {
-    "reference": "Patient/patient_1",
+    "reference": "Patient/patient-1",
     "display": "Example, Anne"
   },
   "encounter": {
-    "reference": "Encounter/encounter_unk",
+    "reference": "Encounter/encounter-unk",
     "display": "GP Visit"
   },
   "occurrenceDateTime": "2018-05-21",
@@ -66,7 +66,7 @@
         "text": "Administering Provider"
       },
       "actor": {
-        "reference": "Practitioner/practitioner_1",
+        "reference": "Practitioner/practitioner-1",
         "type": "Practitioner",
         "display": "Dr Maria Hernandez"
       }
