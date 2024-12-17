@@ -63,7 +63,12 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IM
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.withIndex
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -72,14 +77,18 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -91,6 +100,7 @@ class AppEntriesFragmentTest {
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
     @BindValue
     val deletionViewModel: DeletionViewModel = Mockito.mock(DeletionViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var context: Context
     private lateinit var navHostController: TestNavHostController
@@ -98,6 +108,7 @@ class AppEntriesFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
@@ -125,6 +136,12 @@ class AppEntriesFragmentTest {
             .thenReturn(MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED))
     }
 
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+        toggleAnimation(true)
+    }
+
     @Test
     fun showsDateNavigationPreference() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
@@ -138,6 +155,12 @@ class AppEntriesFragmentTest {
         )
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, atLeast(1))
+            .logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.PREVIOUS_DAY_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.NEXT_DAY_BUTTON)
     }
 
     @Test
