@@ -20,6 +20,22 @@
     <option name="config-descriptor:metadata" key="parameter" value="not_instant_app" />
     <option name="config-descriptor:metadata" key="parameter" value="not_multi_abi" />
     <option name="config-descriptor:metadata" key="parameter" value="secondary_user" />
+    <target_preparer class="com.android.tradefed.targetprep.RootTargetPreparer" />
+    <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
+        <!-- Reset display and font -->
+        <option name="run-command" value="settings put system font_scale 0.85" />
+        <option name="run-command" value="wm density reset" />
+        <option name="run-command" value="wm size reset" />
+        <!-- disable DeprecatedAbi warning -->
+        <option name="run-command" value="setprop debug.wm.disable_deprecated_abi_dialog 1" />
+        <option name="run-command"
+            value="settings put system system_locales en-US;setprop persist.sys.locale en-US;sleep 10;setprop ctl.restart zygote;sleep 80;"/>
+    </target_preparer>
+    <target_preparer class="com.android.compatibility.common.tradefed.targetprep.PropertyCheck">
+        <option name="property-name" value="ro.product.locale" />
+        <option name="expected-value" value="en-US"/> <!-- Device locale should be US English -->
+        <option name="throw-error" value="false"/> <!-- Only print warning if not en-US -->
+    </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.suite.SuiteApkInstaller">
         <option name="cleanup-apks" value="true" />
         <option name="test-file-name" value="CtsHealthConnectControllerTestCases.apk" />
@@ -28,15 +44,6 @@
         <option name="test-file-name" value="CtsHealthConnectTestAppAWithNormalReadWritePermission.apk"/>
         <option name="test-file-name" value="CtsHealthConnectTestAppBWithNormalReadWritePermission.apk"/>
     </target_preparer>
-    <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
-        <!-- Reset display and font -->
-        <option name="run-command" value="settings put system font_scale 0.85" />
-        <option name="run-command" value="wm density reset" />
-        <option name="run-command" value="wm size reset" />
-        <!-- disable DeprecatedAbi warning -->
-        <option name="run-command" value="setprop debug.wm.disable_deprecated_abi_dialog 1" />
-    </target_preparer>
-
     <option
         name="config-descriptor:metadata"
         key="mainline-param"
