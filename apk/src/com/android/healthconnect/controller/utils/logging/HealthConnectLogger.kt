@@ -1431,6 +1431,7 @@ enum class ImportConfirmationDialogElement(
     ),
 }
 
+/** Loggable elements in the AllData page */
 enum class AllDataElement(override val impressionId: Int, override val interactionId: Int) :
     ElementName {
     PERMISSION_TYPE_BUTTON_WITH_CHECKBOX(
@@ -1447,7 +1448,8 @@ enum class AllDataElement(override val impressionId: Int, override val interacti
     ),
 }
 
-enum class AllEntriesElement(override val impressionId: Int, override val interactionId: Int) :
+/** Loggable elements in the AllEntries and AppEntries page */
+enum class EntriesElement(override val impressionId: Int, override val interactionId: Int) :
     ElementName {
     ENTRY_BUTTON_WITH_CHECKBOX(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__ENTRY_BUTTON_WITH_CHECKBOX,
@@ -1468,6 +1470,27 @@ enum class AllEntriesElement(override val impressionId: Int, override val intera
     DATE_VIEW_SPINNER_MONTH(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__DATE_VIEW_SPINNER_YEAR,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__DATE_VIEW_SPINNER_YEAR,
+    ),
+    SELECT_ALL_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__SELECT_ALL_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__SELECT_ALL_BUTTON,
+    ),
+}
+
+/** Loggable elements in the AppData page */
+enum class AppDataElement(override val impressionId: Int, override val interactionId: Int) :
+    ElementName {
+    PERMISSION_TYPE_BUTTON_WITH_CHECKBOX(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__PERMISSION_TYPE_BUTTON_WITH_CHECKBOX,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__PERMISSION_TYPE_BUTTON_WITH_CHECKBOX,
+    ),
+    PERMISSION_TYPE_BUTTON_NO_CHECKBOX(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__PERMISSION_TYPE_BUTTON_NO_CHECKBOX,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__PERMISSION_TYPE_BUTTON_NO_CHECKBOX,
+    ),
+    SELECT_ALL_BUTTON(
+        HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__SELECT_ALL_BUTTON,
+        HEALTH_CONNECT_UI_INTERACTION__ELEMENT__SELECT_ALL_BUTTON,
     ),
 }
 

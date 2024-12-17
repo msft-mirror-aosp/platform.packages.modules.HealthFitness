@@ -67,9 +67,6 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // TODO(b/291249677): Add logging.
-        // logger.setPageId(pageName)
-
         childFragmentManager.setFragmentResultListener(
             START_DELETION_ENTRIES_AND_ACCESS_KEY,
             this,
