@@ -27,7 +27,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 class HealthDataImportManagerModule {
-
     @Provides
     fun providesHealthDataImportManager(
         healthConnectManager: HealthConnectManager

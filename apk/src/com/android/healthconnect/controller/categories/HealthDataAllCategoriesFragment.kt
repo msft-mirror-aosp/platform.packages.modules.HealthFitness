@@ -33,6 +33,7 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment for all health data categories. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
 

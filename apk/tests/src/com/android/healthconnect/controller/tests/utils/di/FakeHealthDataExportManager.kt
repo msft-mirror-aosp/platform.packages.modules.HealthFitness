@@ -17,24 +17,25 @@
 package com.android.healthconnect.controller.tests.utils.di
 
 import android.health.connect.HealthConnectException
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ExportImportDocumentProvider
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.health.connect.exportimport.ScheduledExportStatus
 import android.net.Uri
 import android.os.OutcomeReceiver
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import java.util.concurrent.Executor
 
 class FakeHealthDataExportManager : HealthDataExportManager {
 
     companion object {
-        private const val DEFAULT_EXPORT_PERIOD_IN_DAYS = 0
         private val DEFAULT_SCHEDULED_EXPORT_STATUS =
-            ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 1)
+            ScheduledExportStatus.Builder()
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
+                .build()
     }
 
-    private var scheduledExportPeriodInDays = DEFAULT_EXPORT_PERIOD_IN_DAYS
     private var exportUri: Uri? = null
     private var scheduledExportStatus: ScheduledExportStatus = DEFAULT_SCHEDULED_EXPORT_STATUS
     private var documentProviders = emptyList<ExportImportDocumentProvider>()
@@ -47,7 +48,7 @@ class FakeHealthDataExportManager : HealthDataExportManager {
     override fun getScheduledExportPeriodInDays(): Int {
         getScheduledExportPeriodInDaysException?.let { throw it }
             ?: run {
-                return scheduledExportPeriodInDays
+                return scheduledExportStatus.periodInDays
             }
     }
 
@@ -55,7 +56,19 @@ class FakeHealthDataExportManager : HealthDataExportManager {
         configureScheduledExportException?.let { throw it }
             ?: run {
                 if (settings.periodInDays >= 0) {
-                    scheduledExportPeriodInDays = settings.periodInDays
+                    scheduledExportStatus =
+                        ScheduledExportStatus.Builder()
+                            .setDataExportError(scheduledExportStatus.dataExportError)
+                            .setLastExportAppName(scheduledExportStatus.lastExportAppName)
+                            .setLastExportFileName(scheduledExportStatus.lastExportFileName)
+                            .setLastSuccessfulExportTime(
+                                scheduledExportStatus.lastSuccessfulExportTime
+                            )
+                            .setLastFailedExportTime(scheduledExportStatus.lastFailedExportTime)
+                            .setNextExportAppName(scheduledExportStatus.nextExportAppName)
+                            .setNextExportFileName(scheduledExportStatus.nextExportFileName)
+                            .setPeriodInDays(settings.periodInDays)
+                            .build()
                 }
                 if (settings.uri != null) {
                     exportUri = settings.uri
@@ -65,7 +78,7 @@ class FakeHealthDataExportManager : HealthDataExportManager {
 
     override fun getScheduledExportStatus(
         executor: Executor,
-        outcomeReceiver: OutcomeReceiver<ScheduledExportStatus, HealthConnectException>
+        outcomeReceiver: OutcomeReceiver<ScheduledExportStatus, HealthConnectException>,
     ) {
         scheduledExportStatusException?.let { outcomeReceiver.onError(it) }
             ?: run { outcomeReceiver.onResult(scheduledExportStatus) }
@@ -73,7 +86,7 @@ class FakeHealthDataExportManager : HealthDataExportManager {
 
     override fun queryDocumentProviders(
         executor: Executor,
-        outcomeReceiver: OutcomeReceiver<List<ExportImportDocumentProvider>, HealthConnectException>
+        outcomeReceiver: OutcomeReceiver<List<ExportImportDocumentProvider>, HealthConnectException>,
     ) {
         queryDocumentProvidersException?.let { outcomeReceiver.onError(it) }
             ?: run { outcomeReceiver.onResult(documentProviders) }
@@ -108,7 +121,6 @@ class FakeHealthDataExportManager : HealthDataExportManager {
     }
 
     fun reset() {
-        scheduledExportPeriodInDays = DEFAULT_EXPORT_PERIOD_IN_DAYS
         exportUri = null
         scheduledExportStatus = DEFAULT_SCHEDULED_EXPORT_STATUS
         documentProviders = emptyList()

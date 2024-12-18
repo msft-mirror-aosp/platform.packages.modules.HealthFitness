@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.util.Slog;
@@ -42,7 +41,7 @@ public final class HealthConnectThreadScheduler {
     private static final long KEEP_ALIVE_TIME_BACKGROUND = 60L;
     private static final int NUM_EXECUTOR_THREADS_FOREGROUND = 1;
     private static final long KEEP_ALIVE_TIME_SHARED = 60L;
-    private static final int NUM_EXECUTOR_THREADS_CONTROLLER = 1;
+    private static final int NUM_EXECUTOR_THREADS_CONTROLLER = 2;
     private static final long KEEP_ALIVE_TIME_CONTROLLER = 60L;
 
     // Scheduler to run the tasks in a RR fashion based on client package names.
@@ -146,7 +145,7 @@ public final class HealthConnectThreadScheduler {
     }
 
     /** Schedules the task on the best possible executor based on the parameters */
-    static void schedule(Context context, @NonNull Runnable task, int uid, boolean isController) {
+    static void schedule(Context context, Runnable task, int uid, boolean isController) {
         if (isController) {
             safeExecute(sControllerExecutor, getSafeRunnable(task));
             return;

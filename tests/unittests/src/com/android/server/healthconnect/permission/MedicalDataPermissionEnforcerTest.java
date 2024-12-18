@@ -16,7 +16,15 @@
 
 package com.android.server.healthconnect.permission;
 
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
@@ -28,6 +36,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import android.content.AttributionSource;
@@ -60,25 +69,25 @@ public class MedicalDataPermissionEnforcerTest {
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
     }
 
-    /** enforceWriteMedicalResourcePermission */
+    /** enforceWriteMedicalDataPermission */
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testEnforceWriteMedicalResourcePermission_permissionGranted_doesNotThrow() {
+    public void testEnforceWriteMedicalDataPermission_permissionGranted_doesNotThrow() {
         when(mPermissionManager.checkPermissionForDataDelivery(
                         WRITE_MEDICAL_DATA, mAttributionSource, null))
                 .thenReturn(PERMISSION_GRANTED);
 
-        mMedicalDataPermissionEnforcer.enforceWriteMedicalResourcePermission(mAttributionSource);
+        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(mAttributionSource);
     }
 
     @Test(expected = SecurityException.class)
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testEnforceWriteMedicalResourcePermission_permissionDenied_throwsException() {
+    public void testEnforceWriteMedicalDataPermission_permissionDenied_throwsException() {
         when(mPermissionManager.checkPermissionForDataDelivery(
                         WRITE_MEDICAL_DATA, mAttributionSource, null))
                 .thenReturn(PERMISSION_HARD_DENIED);
 
-        mMedicalDataPermissionEnforcer.enforceWriteMedicalResourcePermission(mAttributionSource);
+        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(mAttributionSource);
     }
 
     /** enforceMedicalReadAccessAndGetEnforceSelfRead */
@@ -116,28 +125,37 @@ public class MedicalDataPermissionEnforcerTest {
     /** getGrantedMedicalPermissions */
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetGrantedMedicalPermissions_permissionGranted_returnsPermissions() {
-        when(mPermissionManager.checkPermissionForPreflight(
-                        READ_MEDICAL_DATA_IMMUNIZATION, mAttributionSource))
-                .thenReturn(PERMISSION_GRANTED);
-        when(mPermissionManager.checkPermissionForPreflight(WRITE_MEDICAL_DATA, mAttributionSource))
+    public void testGetGrantedMedicalPermissions_allPermissionsGranted_returnsAllPermissions() {
+        when(mPermissionManager.checkPermissionForPreflight(anyString(), eq(mAttributionSource)))
                 .thenReturn(PERMISSION_GRANTED);
 
         Set<String> permissions =
                 mMedicalDataPermissionEnforcer.getGrantedMedicalPermissionsForPreflight(
                         mAttributionSource);
 
-        assertThat(permissions).containsExactly(READ_MEDICAL_DATA_IMMUNIZATION, WRITE_MEDICAL_DATA);
+        assertThat(permissions)
+                .containsExactly(
+                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
+                        READ_MEDICAL_DATA_IMMUNIZATION,
+                        READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                        READ_MEDICAL_DATA_MEDICATIONS,
+                        READ_MEDICAL_DATA_PREGNANCY,
+                        READ_MEDICAL_DATA_PROBLEMS,
+                        READ_MEDICAL_DATA_PROCEDURES,
+                        READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                        READ_MEDICAL_DATA_VITAL_SIGNS,
+                        WRITE_MEDICAL_DATA);
     }
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetGrantedMedicalPermissions_onePermissionDenied_returnsOnePermission() {
-        when(mPermissionManager.checkPermissionForPreflight(
-                        READ_MEDICAL_DATA_IMMUNIZATION, mAttributionSource))
-                .thenReturn(PERMISSION_GRANTED);
-        when(mPermissionManager.checkPermissionForPreflight(WRITE_MEDICAL_DATA, mAttributionSource))
+    public void testGetGrantedMedicalPermissions_onePermissionGranted_returnsOnePermission() {
+        // For all other permissions, deny.
+        when(mPermissionManager.checkPermissionForPreflight(anyString(), eq(mAttributionSource)))
                 .thenReturn(PERMISSION_HARD_DENIED);
+        when(mPermissionManager.checkPermissionForPreflight(
+                        eq(READ_MEDICAL_DATA_IMMUNIZATION), eq(mAttributionSource)))
+                .thenReturn(PERMISSION_GRANTED);
 
         Set<String> permissions =
                 mMedicalDataPermissionEnforcer.getGrantedMedicalPermissionsForPreflight(

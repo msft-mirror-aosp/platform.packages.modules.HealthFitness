@@ -21,7 +21,6 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKG
 
 import static java.util.stream.Collectors.toSet;
 
-import android.annotation.NonNull;
 import android.content.AttributionSource;
 import android.content.Context;
 import android.health.connect.HealthPermissions;
@@ -50,14 +49,16 @@ public class DataPermissionEnforcer {
     private final PermissionManager mPermissionManager;
     private final Context mContext;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
+    private final RecordMapper mRecordMapper;
 
     public DataPermissionEnforcer(
-            @NonNull PermissionManager permissionManager,
-            @NonNull Context context,
-            @NonNull HealthConnectDeviceConfigManager deviceConfigManager) {
+            PermissionManager permissionManager,
+            Context context,
+            HealthConnectDeviceConfigManager deviceConfigManager) {
         mPermissionManager = permissionManager;
         mContext = context;
         mDeviceConfigManager = deviceConfigManager;
+        mRecordMapper = RecordMapper.getInstance();
     }
 
     /** Enforces default write permissions for given recordTypeIds */
@@ -139,7 +140,6 @@ public class DataPermissionEnforcer {
                 recordTypeIdToExtraPerms.put(recordTypeId, new ArraySet<>());
             }
 
-            recordHelper.checkRecordOperationsAreEnabled(recordInternal);
             recordTypeIdToExtraPerms
                     .get(recordTypeId)
                     .addAll(recordHelper.getRequiredExtraWritePermissions(recordInternal));
@@ -162,7 +162,7 @@ public class DataPermissionEnforcer {
     }
 
     /** Enforces that caller has any of given permissions. */
-    public void enforceAnyOfPermissions(@NonNull String... permissions) {
+    public void enforceAnyOfPermissions(String... permissions) {
         for (var permission : permissions) {
             if (mContext.checkCallingPermission(permission) == PERMISSION_GRANTED) {
                 return;
@@ -178,7 +178,7 @@ public class DataPermissionEnforcer {
      * HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} permission if the flag is enabled,
      * otherwise throws {@link SecurityException}.
      */
-    public void enforceBackgroundReadRestrictions(int uid, int pid, @NonNull String errorMessage) {
+    public void enforceBackgroundReadRestrictions(int uid, int pid, String errorMessage) {
         if (mDeviceConfigManager.isBackgroundReadFeatureEnabled()) {
             mContext.enforcePermission(READ_HEALTH_DATA_IN_BACKGROUND, pid, uid, errorMessage);
         } else {
@@ -239,7 +239,7 @@ public class DataPermissionEnforcer {
                     "Caller doesn't have "
                             + permissionName
                             + prohibitedAction
-                            + RecordMapper.getInstance()
+                            + mRecordMapper
                                     .getRecordIdToExternalRecordClassMap()
                                     .get(recordTypeId));
         }

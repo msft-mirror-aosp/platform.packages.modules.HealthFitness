@@ -16,12 +16,14 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import android.annotation.NonNull;
+import android.database.SQLException;
 import android.util.Pair;
 import android.util.Slog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -31,6 +33,7 @@ import java.util.Map;
  */
 public final class AlterTableRequest {
     public static final String TAG = "HealthConnectAlter";
+    private static final String NOT_NULL = "NOT NULL";
     private static final String ALTER_TABLE_COMMAND = "ALTER TABLE ";
     private static final String ADD_COLUMN_COMMAND = " ADD COLUMN ";
     private final String mTableName;
@@ -47,36 +50,40 @@ public final class AlterTableRequest {
      * Adds a foreign key constraint between one column and another. Deletion behavior is to set
      * dangling references to null.
      */
-    @NonNull
     public AlterTableRequest addForeignKeyConstraint(
             String column, String referencedTable, String referencedColumn) {
         mForeignKeyConstraints.put(column, new Pair<>(referencedTable, referencedColumn));
         return this;
     }
 
-    /** Returns command for alter table request to add new columns */
-    public String getAlterTableAddColumnsCommand() {
-        final StringBuilder builder = new StringBuilder(ALTER_TABLE_COMMAND);
-        builder.append(mTableName);
+    /** Returns a list of alter table SQL statements to add new columns */
+    public List<String> getAlterTableAddColumnsCommands() {
+        List<String> statements = new ArrayList<>();
         for (int i = 0; i < mColumnInfo.size(); i++) {
+            StringBuilder statement = new StringBuilder(ALTER_TABLE_COMMAND);
+            statement.append(mTableName);
             String columnName = mColumnInfo.get(i).first;
             String columnType = mColumnInfo.get(i).second;
-            builder.append(ADD_COLUMN_COMMAND).append(columnName).append(" ").append(columnType);
+            statement.append(ADD_COLUMN_COMMAND).append(columnName).append(" ").append(columnType);
             if (mForeignKeyConstraints.containsKey(columnName)) {
-                builder.append(" ");
-                builder.append("REFERENCES ");
-                builder.append(mForeignKeyConstraints.get(columnName).first);
-                builder.append("(");
-                builder.append(mForeignKeyConstraints.get(columnName).second);
-                builder.append(")");
-                builder.append(" ON DELETE SET NULL");
+                statement.append(" ");
+                statement.append("REFERENCES ");
+                statement.append(mForeignKeyConstraints.get(columnName).first);
+                statement.append("(");
+                statement.append(mForeignKeyConstraints.get(columnName).second);
+                statement.append(")");
+                statement.append(" ON DELETE SET NULL");
             }
-            builder.append(", ");
+            statement.append(";");
+            statements.add(statement.toString());
         }
-        builder.setLength(builder.length() - 2); // Remove the last 2 char i.e. ", "
-        Slog.d(TAG, "Alter table: " + builder);
+        Slog.d(TAG, "Alter table: " + statements);
 
-        return builder.toString();
+        // Check on the final commands for now as it's more broad. Should this become a problem
+        // later, we can change/move the check to narrow scope such as only check on the
+        // `columnInfo` list passed to the constructor
+        checkNoNotNullColumns(statements);
+        return statements;
     }
 
     public static String getAlterTableCommandToAddGeneratedColumn(
@@ -94,5 +101,20 @@ public final class AlterTableRequest {
 
         Slog.d(TAG, "Alter table generated: " + request);
         return request;
+    }
+
+    private static void checkNoNotNullColumns(List<String> alterTableCommands) {
+        for (String command : alterTableCommands) {
+            if (command == null) {
+                continue;
+            }
+            String upperCased = command.toUpperCase(Locale.ROOT);
+            if (upperCased.contains(NOT_NULL)) {
+                throw new SQLException(
+                        String.format(
+                                "Alter table command \"%s\" must not contain \"%s\"",
+                                upperCased, NOT_NULL));
+            }
+        }
     }
 }

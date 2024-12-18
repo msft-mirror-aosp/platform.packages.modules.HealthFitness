@@ -18,11 +18,13 @@ package com.android.server.healthconnect.exportimport;
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.UserHandle;
+import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.utils.FilesUtil;
 
 import java.io.File;
@@ -34,13 +36,14 @@ import java.io.File;
  */
 public final class DatabaseContext extends ContextWrapper {
 
+    private static final String TAG = "HealthConnectDatabaseContext";
+
     private final String mDatabaseDirName;
 
     private File mDatabaseDir;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private DatabaseContext(
-            @NonNull Context context, String databaseDirName, UserHandle userHandle) {
+    private DatabaseContext(Context context, String databaseDirName, UserHandle userHandle) {
         super(context);
         requireNonNull(context);
         mDatabaseDirName = databaseDirName;
@@ -59,6 +62,21 @@ public final class DatabaseContext extends ContextWrapper {
         return mDatabaseDir;
     }
 
+    @Override
+    public boolean deleteDatabase(String name) {
+        if (Flags.d2dFileDeletionBugFix()) {
+            try {
+                File f = getDatabasePath(name);
+                return SQLiteDatabase.deleteDatabase(f);
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to delete database = " + getDatabasePath(name));
+            }
+            return false;
+        } else {
+            return super.deleteDatabase(name);
+        }
+    }
+
     /** Returns the file of the staged database with the given name */
     @Override
     public File getDatabasePath(String name) {
@@ -67,7 +85,7 @@ public final class DatabaseContext extends ContextWrapper {
 
     /** Factory method */
     public static DatabaseContext create(
-            @NonNull Context context, String databaseDirName, UserHandle userHandle) {
+            Context context, String databaseDirName, UserHandle userHandle) {
         return new DatabaseContext(context, databaseDirName, userHandle);
     }
 }

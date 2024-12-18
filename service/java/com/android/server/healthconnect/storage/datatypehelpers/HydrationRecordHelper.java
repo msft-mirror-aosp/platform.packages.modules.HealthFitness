@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -28,6 +27,8 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.HydrationRecordInternal;
 import android.util.Pair;
+
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
@@ -47,8 +48,8 @@ public final class HydrationRecordHelper extends IntervalRecordHelper<HydrationR
         super(RecordTypeIdentifier.RECORD_TYPE_HYDRATION);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
@@ -63,14 +64,12 @@ public final class HydrationRecordHelper extends IntervalRecordHelper<HydrationR
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return HYDRATION_RECORD_TABLE_NAME;
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull HydrationRecordInternal hydrationRecord) {
+    void populateSpecificRecordValue(Cursor cursor, HydrationRecordInternal hydrationRecord) {
         hydrationRecord.setVolume(getCursorDouble(cursor, VOLUME_COLUMN_NAME));
     }
 
@@ -88,13 +87,11 @@ public final class HydrationRecordHelper extends IntervalRecordHelper<HydrationR
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull HydrationRecordInternal hydrationRecord) {
+            ContentValues contentValues, HydrationRecordInternal hydrationRecord) {
         contentValues.put(VOLUME_COLUMN_NAME, hydrationRecord.getVolume());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(VOLUME_COLUMN_NAME, REAL));
     }

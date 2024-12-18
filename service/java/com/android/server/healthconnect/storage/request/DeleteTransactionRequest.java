@@ -26,12 +26,14 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,15 +43,25 @@ import java.util.UUID;
 /** @hide */
 public final class DeleteTransactionRequest {
     private static final String TAG = "HealthConnectDelete";
+
+    @VisibleForTesting
+    static final String HEALTH_CONNECT_PACKAGE_NAME = "com.android.google.healthfitness";
+
     private final List<DeleteTableRequest> mDeleteTableRequests;
     private final long mRequestingPackageNameId;
+    private final String mPackageName;
+    private final Set<Integer> mRecordTypeIds = new HashSet<>();
     private boolean mHasHealthDataManagementPermission;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public DeleteTransactionRequest(String packageName, DeleteUsingFiltersRequestParcel request) {
+    public DeleteTransactionRequest(
+            String packageName,
+            DeleteUsingFiltersRequestParcel request,
+            AppInfoHelper appInfoHelper) {
         Objects.requireNonNull(packageName);
+        mPackageName = packageName;
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
-        mRequestingPackageNameId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+        mRequestingPackageNameId = appInfoHelper.getAppInfoId(packageName);
         if (request.usesIdFilters()) {
             List<RecordIdFilter> recordIds =
                     request.getRecordIdFiltersParcel().getRecordIdFilters();
@@ -70,8 +82,10 @@ public final class DeleteTransactionRequest {
             }
 
             recordTypeToUuids.forEach(
-                    (recordHelper, uuids) ->
-                            mDeleteTableRequests.add(recordHelper.getDeleteTableRequest(uuids)));
+                    (recordHelper, uuids) -> {
+                        mDeleteTableRequests.add(recordHelper.getDeleteTableRequest(uuids));
+                        mRecordTypeIds.add(recordHelper.getRecordIdentifier());
+                    });
 
             // We currently only support either using filters or ids, so if we are deleting using
             // ids no need to proceed further.
@@ -98,13 +112,16 @@ public final class DeleteTransactionRequest {
                                     request.getPackageNameFilters(),
                                     request.getStartTime(),
                                     request.getEndTime(),
-                                    request.isLocalTimeFilter()));
+                                    request.isLocalTimeFilter(),
+                                    appInfoHelper));
+                    mRecordTypeIds.add(recordHelper.getRecordIdentifier());
                 });
     }
 
     // Used for auto delete only
     public DeleteTransactionRequest(List<DeleteTableRequest> deleteTableRequests) {
         mDeleteTableRequests = List.copyOf(deleteTableRequests);
+        mPackageName = HEALTH_CONNECT_PACKAGE_NAME;
         mHasHealthDataManagementPermission = true;
         mRequestingPackageNameId = DEFAULT_LONG;
     }
@@ -133,5 +150,13 @@ public final class DeleteTransactionRequest {
         mHasHealthDataManagementPermission = hasHealthDataManagementPermission;
 
         return this;
+    }
+
+    public String getPackageName() {
+        return mPackageName;
+    }
+
+    public Set<Integer> getRecordTypeIds() {
+        return mRecordTypeIds;
     }
 }

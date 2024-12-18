@@ -30,9 +30,11 @@ import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManag
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Rule
@@ -40,9 +42,7 @@ import org.junit.Test
 
 class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
 
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     @Test
     fun showDeclaredPermissions() {
@@ -54,6 +54,7 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun showsAdditionalPermissions() {
         context.launchMainActivity {
             navigateToManageAppPermissions()
@@ -123,7 +124,8 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             clickOnText("Allow all")
             waitDisplayed(By.text("Remove all permissions?"))
             waitDisplayed(
-                By.text("Also delete Health Connect cts test app data from Health Connect"))
+                By.text("Also delete Health Connect cts test app data from Health Connect")
+            )
         }
     }
 

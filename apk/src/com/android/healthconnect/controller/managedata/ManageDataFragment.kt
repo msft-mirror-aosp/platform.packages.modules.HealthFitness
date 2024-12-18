@@ -13,12 +13,10 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.exportImport
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class ManageDataFragment : Hilt_ManageDataFragment() {
@@ -35,7 +33,6 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
     }
 
     private val autoDeleteViewModel: AutoDeleteViewModel by activityViewModels()
-    @Inject lateinit var featureUtils: FeatureUtils
 
     private val mAutoDeletePreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(AUTO_DELETE_PREFERENCE_KEY)
@@ -55,7 +52,7 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
-        if (Flags.exportImport()) {
+        if (exportImport()) {
             setPreferencesFromResource(R.xml.new_manage_data_screen, rootKey)
         } else {
             setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
@@ -67,19 +64,14 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
             true
         }
 
-        if (featureUtils.isNewAppPriorityEnabled()) {
-            mDataSourcesPreference?.logName = ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON
-            mDataSourcesPreference?.setOnPreferenceClickListener {
-                findNavController()
-                    .navigate(
-                        R.id.action_manageData_to_dataSources,
-                        bundleOf(
-                            HealthDataCategoriesFragment.CATEGORY_KEY to
-                                HealthDataCategory.UNKNOWN))
-                true
-            }
-        } else {
-            preferenceScreen.removePreferenceRecursively(DATA_SOURCES_AND_PRIORITY_PREFERENCE_KEY)
+        mDataSourcesPreference?.logName = ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON
+        mDataSourcesPreference?.setOnPreferenceClickListener {
+            findNavController()
+                .navigate(
+                    R.id.action_manageData_to_dataSources,
+                    bundleOf(
+                        HealthDataCategoriesFragment.CATEGORY_KEY to HealthDataCategory.UNKNOWN))
+            true
         }
 
         mSetUnitsPreference?.logName = ManageDataElement.SET_UNITS_BUTTON
@@ -88,8 +80,8 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
             true
         }
 
-        if (Flags.exportImport()) {
-            // TODO: b/325917291 - Add proper log name for the backup and restore button.
+        if (exportImport()) {
+            backupAndRestorePreference?.logName = ManageDataElement.BACKUP_AND_RESTORE_BUTTON
             backupAndRestorePreference?.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
                 true

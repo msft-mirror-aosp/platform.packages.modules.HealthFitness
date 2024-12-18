@@ -43,7 +43,6 @@ constructor(
     }
 
     /** Triggers a load of import status. */
-    @VisibleForTesting
     fun loadImportStatus() {
         _storedImportStatus.postValue(ImportUiStatus.Loading)
         viewModelScope.launch {

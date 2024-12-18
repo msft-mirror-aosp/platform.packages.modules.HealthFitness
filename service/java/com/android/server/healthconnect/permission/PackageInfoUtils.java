@@ -20,7 +20,6 @@ import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -30,8 +29,6 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
-
-import com.android.internal.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +42,7 @@ import java.util.Set;
  * @hide
  */
 public final class PackageInfoUtils {
-    private static final String TAG = "HealthConnectPackageInfoUtils";
+    private static final String TAG = "HCPackageInfoUtils";
 
     @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
 
@@ -57,7 +54,7 @@ public final class PackageInfoUtils {
 
     private PackageInfoUtils() {}
 
-    @NonNull
+    /** Returns singleton instance of PackageInfoUtils */
     public static synchronized PackageInfoUtils getInstance() {
         if (sPackageInfoUtils == null) {
             sPackageInfoUtils = new PackageInfoUtils();
@@ -66,20 +63,8 @@ public final class PackageInfoUtils {
         return requireNonNull(sPackageInfoUtils);
     }
 
-    /** Reset singleton instance {@link PackageInfoUtils}. */
-    public static void clearInstance() {
-        sPackageInfoUtils = null;
-    }
-
-    /** Set an instance of {@link PackageInfoUtils} for testing purposes, such as a mock. */
-    @VisibleForTesting
-    static synchronized void setInstanceForTest(@NonNull PackageInfoUtils instance) {
-        sPackageInfoUtils = instance;
-    }
-
-    @NonNull
     Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
-            @NonNull List<PackageInfo> packageInfos, UserHandle user) {
+            List<PackageInfo> packageInfos, UserHandle user) {
         Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
         for (PackageInfo info : packageInfos) {
             if (info.sharedUserId != null) {
@@ -92,7 +77,6 @@ public final class PackageInfoUtils {
         return sharedUserNameToUids;
     }
 
-    @NonNull
     public List<PackageInfo> getPackagesHoldingHealthPermissions(UserHandle user, Context context) {
         // TODO(b/260707328): replace with getPackagesHoldingPermissions
         List<PackageInfo> allInfos =
@@ -110,8 +94,7 @@ public final class PackageInfoUtils {
 
     @SuppressWarnings("NullAway")
     // TODO(b/317029272): fix this suppression
-    boolean hasGrantedHealthPermissions(
-            @NonNull String[] packageNames, @NonNull UserHandle user, @NonNull Context context) {
+    boolean hasGrantedHealthPermissions(String[] packageNames, UserHandle user, Context context) {
         for (String packageName : packageNames) {
             PackageInfo info = getPackageInfoWithPermissionsAsUser(packageName, user, context);
             if (anyRequestedHealthPermissionGranted(context, info)) {
@@ -122,7 +105,7 @@ public final class PackageInfoUtils {
     }
 
     @Nullable
-    String[] getPackagesForUid(int packageUid, @NonNull UserHandle user, @NonNull Context context) {
+    String[] getPackagesForUid(int packageUid, UserHandle user, Context context) {
         return getPackageManagerAsUser(user, context).getPackagesForUid(packageUid);
     }
 
@@ -154,7 +137,7 @@ public final class PackageInfoUtils {
 
     @Nullable
     public PackageInfo getPackageInfoWithPermissionsAsUser(
-            @NonNull String packageName, @NonNull UserHandle user, @NonNull Context context) {
+            String packageName, UserHandle user, Context context) {
         try {
             return getPackageManagerAsUser(user, context)
                     .getPackageInfo(
@@ -206,8 +189,7 @@ public final class PackageInfoUtils {
     }
 
     @Nullable
-    Integer getPackageUid(
-            @NonNull String packageName, @NonNull UserHandle user, @NonNull Context context) {
+    Integer getPackageUid(String packageName, UserHandle user, Context context) {
         Integer uid = null;
         try {
             uid =
@@ -221,9 +203,7 @@ public final class PackageInfoUtils {
         return uid;
     }
 
-    @NonNull
-    private PackageManager getPackageManagerAsUser(
-            @NonNull UserHandle user, @NonNull Context context) {
+    private PackageManager getPackageManagerAsUser(UserHandle user, Context context) {
         PackageManager packageManager = mUsersPackageManager.get(user);
         if (packageManager == null) {
             packageManager = context.getPackageManager();

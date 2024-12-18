@@ -25,6 +25,7 @@ import com.android.healthconnect.controller.deletion.api.DeleteAllDataUseCase
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.deletion.api.DeleteCategoryUseCase
 import com.android.healthconnect.controller.deletion.api.DeleteEntryUseCase
+import com.android.healthconnect.controller.deletion.api.DeletePermissionTypeAppDataUseCase
 import com.android.healthconnect.controller.deletion.api.DeletePermissionTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
@@ -40,7 +41,8 @@ constructor(
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     private val deletePermissionTypeUseCase: DeletePermissionTypeUseCase,
     private val deleteEntryUseCase: DeleteEntryUseCase,
-    private val deleteAppDataUseCase: DeleteAppDataUseCase
+    private val deleteAppDataUseCase: DeleteAppDataUseCase,
+    private val deletePermissionTypeAppDataUseCase: DeletePermissionTypeAppDataUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -148,7 +150,11 @@ constructor(
                             }
                         }
                     }
-                    else -> {}
+                    is DeletionType.DeletionTypeHealthPermissionTypeFromApp -> {
+                        deletionParameters.value?.let {
+                            deletePermissionTypeAppDataUseCase.invoke(deletionType, timeRangeFilter)
+                        }
+                    }
                 }
                 setDeletionState(DeletionState.STATE_DELETION_SUCCESSFUL)
             } catch (error: Exception) {

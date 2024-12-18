@@ -25,9 +25,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.logging.ElementName
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import dagger.hilt.android.EntryPointAccessors
 
 /** Preference for displaying a banner with optional action and dismiss buttons. */
@@ -47,16 +47,16 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
     private var buttonPrimaryText: String? = null
     private var buttonPrimaryAction: OnClickListener? = null
     private var buttonPrimaryVisibility = View.VISIBLE
-    private var buttonPrimaryLogName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    private var buttonPrimaryLogName: ElementName = UnknownGenericElement.UNKNOWN_BANNER_BUTTON
 
     private var buttonSecondaryText: String? = null
     private var buttonSecondaryAction: OnClickListener? = null
-    private var buttonSecondaryVisibility = View.VISIBLE
-    private var buttonSecondaryLogName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    private var buttonSecondaryVisibility = View.GONE
+    private var buttonSecondaryLogName: ElementName = UnknownGenericElement.UNKNOWN_BANNER_BUTTON
 
     private var isDismissable = false
     private var dismissAction: OnClickListener? = null
-    private var dismissActionLogName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    private var dismissActionLogName: ElementName = UnknownGenericElement.UNKNOWN_BANNER_BUTTON
 
     init {
         layoutResource = R.layout.widget_banner_preference
@@ -74,8 +74,11 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
     }
 
     fun setPrimaryButtonOnClickListener(onClickListener: OnClickListener?) {
-        logger.logInteraction(buttonPrimaryLogName)
-        this.buttonPrimaryAction = onClickListener
+        val loggableClickListener = OnClickListener {
+            logger.logInteraction(buttonPrimaryLogName)
+            onClickListener?.onClick(it)
+        }
+        this.buttonPrimaryAction = loggableClickListener
     }
 
     fun setPrimaryButtonVisibility(visibility: Int) {
@@ -85,15 +88,15 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
     fun setSecondaryButton(buttonText: String, logName: ElementName) {
         this.buttonSecondaryText = buttonText
         this.buttonSecondaryLogName = logName
+        this.buttonSecondaryVisibility = View.VISIBLE
     }
 
     fun setSecondaryButtonOnClickListener(onClickListener: OnClickListener?) {
-        logger.logInteraction(buttonSecondaryLogName)
-        this.buttonSecondaryAction = onClickListener
-    }
-
-    fun setSecondaryButtonVisibility(visibility: Int) {
-        this.buttonSecondaryVisibility = visibility
+        val loggableClickListener = OnClickListener {
+            logger.logInteraction(buttonSecondaryLogName)
+            onClickListener?.onClick(it)
+        }
+        this.buttonSecondaryAction = loggableClickListener
     }
 
     fun setIsDismissable(isDismissable: Boolean) {
@@ -102,8 +105,11 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
 
     fun setDismissAction(logName: ElementName, onClickListener: OnClickListener?) {
         dismissActionLogName = logName
-        logger.logInteraction(dismissActionLogName)
-        this.dismissAction = onClickListener
+        val loggableClickListener = OnClickListener {
+            logger.logInteraction(dismissActionLogName)
+            onClickListener?.onClick(it)
+        }
+        this.dismissAction = loggableClickListener
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
@@ -140,6 +146,9 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
 
         if (buttonSecondaryVisibility == View.VISIBLE) {
             logger.logImpression(buttonSecondaryLogName)
+            bannerSecondaryButton.isClickable = true
+        } else {
+            bannerSecondaryButton.isClickable = false
         }
 
         if (isDismissable) {

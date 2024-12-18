@@ -55,11 +55,10 @@ import static android.health.connect.HealthPermissionCategory.TOTAL_CALORIES_BUR
 import static android.health.connect.HealthPermissionCategory.VO2_MAX;
 import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
-import static android.health.connect.MedicalPermissionCategory.IMMUNIZATION;
 
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
@@ -70,6 +69,8 @@ import android.content.pm.PackageInfo;
 import android.health.connect.datatypes.ExerciseRoute;
 import android.util.ArrayMap;
 import android.util.ArraySet;
+
+import com.android.healthfitness.flags.Flags;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -769,16 +770,88 @@ public final class HealthPermissions {
     @FlaggedApi(FLAG_MINDFULNESS)
     public static final String WRITE_MINDFULNESS = "android.permission.health.WRITE_MINDFULNESS";
 
-    /** Personal Health Record permissions */
+    /* Personal Health Record permissions */
 
     /**
-     * Allows an application to read the user's immunization data.
+     * Allows an application to read the user's data about allergies and intolerances.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_ALLERGY_INTOLERANCE =
+            "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
+
+    /**
+     * Allows an application to read the user's data about immunizations and vaccinations.
      *
      * <p>Protection level: dangerous.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public static final String READ_MEDICAL_DATA_IMMUNIZATION =
             "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
+
+    /**
+     * Allows an application to read the user's laboratory result data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_LABORATORY_RESULTS =
+            "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
+
+    /**
+     * Allows an application to read the user's medication data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_MEDICATIONS =
+            "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
+
+    /**
+     * Allows an application to read the user's pregnancy data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PREGNANCY =
+            "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
+
+    /**
+     * Allows an application to read the user's data about medical problems.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PROBLEMS =
+            "android.permission.health.READ_MEDICAL_DATA_PROBLEMS";
+
+    /**
+     * Allows an application to read the user's data about medical procedures.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PROCEDURES =
+            "android.permission.health.READ_MEDICAL_DATA_PROCEDURES";
+
+    /**
+     * Allows an application to read the user's social history data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_SOCIAL_HISTORY =
+            "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
+
+    /**
+     * Allows an application to read the user's vital signs data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_VITAL_SIGNS =
+            "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS";
 
     /**
      * Allows an application to write the user's medical data.
@@ -827,7 +900,8 @@ public final class HealthPermissions {
                             WRITE_RESPIRATORY_RATE,
                             WRITE_RESTING_HEART_RATE,
                             WRITE_SKIN_TEMPERATURE,
-                            WRITE_PLANNED_EXERCISE));
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_MINDFULNESS));
 
     private static final Map<String, Integer> sWriteHealthPermissionToHealthDataCategoryMap =
             new ArrayMap<>();
@@ -836,9 +910,6 @@ public final class HealthPermissions {
             new ArrayMap<>();
 
     private static final Map<Integer, String[]> sDataCategoryToWritePermissionsMap =
-            new ArrayMap<>();
-
-    private static final Map<Integer, String> sMedicalCategoryToReadPermissionMap =
             new ArrayMap<>();
 
     private HealthPermissions() {}
@@ -908,31 +979,27 @@ public final class HealthPermissions {
         return healthWritePermission;
     }
 
-    /** @hide */
-    public static String getMedicalReadPermission(
-            @MedicalPermissionCategory.Type int permissionCategory) {
-        populateReadMedicalPermissionsToMedicalPermissionCategoryMap();
-        String medicalReadPermission = sMedicalCategoryToReadPermissionMap.get(permissionCategory);
-        Objects.requireNonNull(
-                medicalReadPermission,
-                "Medical read permission not found for PermissionCategory: " + permissionCategory);
-
-        return medicalReadPermission;
-    }
-
     /**
      * Returns all medical permissions (read and write).
      *
      * @hide
      */
     public static Set<String> getAllMedicalPermissions() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException("getAllMedicalPermissions is not supported");
         }
 
-        populateReadMedicalPermissionsToMedicalPermissionCategoryMap();
-        Set<String> permissions = new HashSet<>(sMedicalCategoryToReadPermissionMap.values());
+        Set<String> permissions = new ArraySet<>();
         permissions.add(WRITE_MEDICAL_DATA);
+        permissions.add(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+        permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
+        permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
+        permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
+        permissions.add(READ_MEDICAL_DATA_PREGNANCY);
+        permissions.add(READ_MEDICAL_DATA_PROBLEMS);
+        permissions.add(READ_MEDICAL_DATA_PROCEDURES);
+        permissions.add(READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        permissions.add(READ_MEDICAL_DATA_VITAL_SIGNS);
         return permissions;
     }
 
@@ -1152,6 +1219,9 @@ public final class HealthPermissions {
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_RESTING_HEART_RATE, HealthDataCategory.VITALS);
 
+        sWriteHealthPermissionToHealthDataCategoryMap.put(
+                WRITE_MINDFULNESS, HealthDataCategory.WELLNESS);
+
         sDataCategoryToWritePermissionsMap.put(
                 HealthDataCategory.ACTIVITY,
                 new String[] {
@@ -1208,25 +1278,13 @@ public final class HealthPermissions {
                     WRITE_HEART_RATE_VARIABILITY,
                     WRITE_OXYGEN_SATURATION,
                     WRITE_RESPIRATORY_RATE,
-                    WRITE_RESTING_HEART_RATE
+                    WRITE_RESTING_HEART_RATE,
+                    WRITE_SKIN_TEMPERATURE
                 });
 
-        sDataCategoryToWritePermissionsMap.put(
-                HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
-    }
-
-    private static synchronized void
-            populateReadMedicalPermissionsToMedicalPermissionCategoryMap() {
-        if (!personalHealthRecord()) {
-            throw new UnsupportedOperationException(
-                    "populateReadMedicalPermissionsToMedicalPermissionCategoryMap is not"
-                            + " supported");
+        if (Flags.mindfulness()) {
+            sDataCategoryToWritePermissionsMap.put(
+                    HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
         }
-
-        if (!sMedicalCategoryToReadPermissionMap.isEmpty()) {
-            return;
-        }
-        // Populate permission category to read permission map
-        sMedicalCategoryToReadPermissionMap.put(IMMUNIZATION, READ_MEDICAL_DATA_IMMUNIZATION);
     }
 }

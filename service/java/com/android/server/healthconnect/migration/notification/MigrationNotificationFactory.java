@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.migration.notification.MigrationN
 import static com.android.server.healthconnect.migration.notification.MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_PAUSED;
 import static com.android.server.healthconnect.migration.notification.MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_RESUME;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -43,6 +42,7 @@ import androidx.annotation.VisibleForTesting;
  *
  * @hide
  */
+// TODO(b/352602201): Refactor to use new HealthConnectNotificationFactory
 public class MigrationNotificationFactory {
     private final Context mContext;
     private final HealthConnectResourcesContext mResContext;
@@ -103,7 +103,7 @@ public class MigrationNotificationFactory {
     @VisibleForTesting static final String APP_ICON_DRAWABLE_NAME = "health_connect_logo";
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public MigrationNotificationFactory(@NonNull Context context) {
+    public MigrationNotificationFactory(Context context) {
         mContext = context;
         mResContext = new HealthConnectResourcesContext(mContext);
     }
@@ -112,10 +112,9 @@ public class MigrationNotificationFactory {
      * Creates a notification based on the passed notificationType and assigns it the correct
      * channel ID.
      */
-    @NonNull
     public Notification createNotification(
             @MigrationNotificationSender.MigrationNotificationType int notificationType,
-            @NonNull String channelId)
+            String channelId)
             throws IllegalMigrationNotificationStateException {
         Notification notification;
 
@@ -154,19 +153,16 @@ public class MigrationNotificationFactory {
 
     /** Retrieves a string resource by name from the Health Connect resources. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @NonNull
-    public String getStringResource(@NonNull String name) {
+    public String getStringResource(String name) {
         return mResContext.getStringByName(name);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @NonNull
-    private String getStringResourceWithArgs(@NonNull String name, Object... formatArgs) {
+    private String getStringResourceWithArgs(String name, Object... formatArgs) {
         return mResContext.getStringByNameWithArgs(name, formatArgs);
     }
 
-    @NonNull
-    private Notification getMigrationInProgressNotification(@NonNull String channelId) {
+    private Notification getMigrationInProgressNotification(String channelId) {
         PendingIntent pendingIntent = getHealthHomeSettingsPendingIntent();
         String notificationTitle = getStringResource(MIGRATION_IN_PROGRESS_NOTIFICATION_TITLE);
 
@@ -183,8 +179,7 @@ public class MigrationNotificationFactory {
         return notification;
     }
 
-    @NonNull
-    private Notification getModuleUpdateNeededNotification(@NonNull String channelId) {
+    private Notification getModuleUpdateNeededNotification(String channelId) {
         PendingIntent pendingIntent = getSystemUpdatePendingIntent();
 
         String notificationTitle =
@@ -204,8 +199,7 @@ public class MigrationNotificationFactory {
         return notification;
     }
 
-    @NonNull
-    private Notification getAppUpdateNeededNotification(@NonNull String channelId) {
+    private Notification getAppUpdateNeededNotification(String channelId) {
         PendingIntent pendingIntent = getAppStorePendingIntent();
 
         String notificationTitle =
@@ -225,8 +219,7 @@ public class MigrationNotificationFactory {
         return notification;
     }
 
-    @NonNull
-    private Notification getMoreSpaceNeededNotification(@NonNull String channelId) {
+    private Notification getMoreSpaceNeededNotification(String channelId) {
         PendingIntent pendingIntent = getSystemStoragePendingIntent();
 
         String notificationTitle =
@@ -265,8 +258,7 @@ public class MigrationNotificationFactory {
         return notification;
     }
 
-    @NonNull
-    private Notification getResumeMigrationNotification(@NonNull String channelId) {
+    private Notification getResumeMigrationNotification(String channelId) {
         PendingIntent pendingIntent = getHealthHomeSettingsPendingIntent();
 
         String notificationTitle = getStringResource(RESUME_MIGRATION_NOTIFICATION_TITLE);
@@ -286,8 +278,7 @@ public class MigrationNotificationFactory {
         return notification;
     }
 
-    @NonNull
-    private Notification getMigrationCancelledNotification(@NonNull String channelId) {
+    private Notification getMigrationCancelledNotification(String channelId) {
         PendingIntent pendingIntent = getHealthHomeSettingsPendingIntent();
 
         String notificationTitle = getStringResource(MIGRATION_NOT_COMPLETE_NOTIFICATION_TITLE);
@@ -304,8 +295,7 @@ public class MigrationNotificationFactory {
         return notification;
     }
 
-    @NonNull
-    private Notification getMigrationCompleteNotification(@NonNull String channelId) {
+    private Notification getMigrationCompleteNotification(String channelId) {
         PendingIntent pendingIntent = getHealthHomeSettingsPendingIntent();
         String notificationTitle = getStringResource(MIGRATION_COMPLETE_NOTIFICATION_TITLE);
 
@@ -321,8 +311,7 @@ public class MigrationNotificationFactory {
         return notification;
     }
 
-    @NonNull
-    private Notification getMigrationPausedNotification(@NonNull String channelId) {
+    private Notification getMigrationPausedNotification(String channelId) {
         PendingIntent pendingIntent = getMigrationInfoPendingIntent();
         String notificationTitle = getStringResource(MIGRATION_PAUSED_NOTIFICATION_TITLE);
         String notificationContent = getStringResource(MIGRATION_PAUSED_NOTIFICATION_CONTENT);
@@ -339,7 +328,7 @@ public class MigrationNotificationFactory {
     }
 
     @Nullable
-    private PendingIntent getPendingIntent(@NonNull Intent intent) {
+    private PendingIntent getPendingIntent(Intent intent) {
         // This call requires Binder identity to be cleared for getIntentSender() to be allowed to
         // send as another package.
         final long callingId = Binder.clearCallingIdentity();
