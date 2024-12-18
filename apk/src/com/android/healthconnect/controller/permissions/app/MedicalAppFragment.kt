@@ -46,7 +46,6 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
@@ -100,9 +99,8 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.connected_app_screen, rootKey)
 
-        // TODO(b/342159144): Update visual elements.
-        allowAllPreference.logNameActive = ErrorPageElement.UNKNOWN_ELEMENT
-        allowAllPreference.logNameInactive = ErrorPageElement.UNKNOWN_ELEMENT
+        allowAllPreference.logNameActive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_ACTIVE
+        allowAllPreference.logNameInactive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
