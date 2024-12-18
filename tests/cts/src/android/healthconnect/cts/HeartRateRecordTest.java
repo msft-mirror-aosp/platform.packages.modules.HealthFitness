@@ -106,7 +106,8 @@ public class HeartRateRecordTest {
             hearRateRecords.addAll(
                     Arrays.asList(getBaseHeartRateRecord(10), getCompleteHeartRateRecord()));
         }
-        TestUtils.insertRecords(hearRateRecords);
+        // Use longer timeout for the large insert.
+        TestUtils.insertRecords(hearRateRecords, Duration.ofSeconds(10));
     }
 
     @Test
