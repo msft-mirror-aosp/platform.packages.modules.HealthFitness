@@ -13,6 +13,7 @@
  */
 package com.android.healthconnect.controller.entrydetails
 
+import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
@@ -60,7 +60,7 @@ import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdap
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
-import com.android.healthconnect.controller.utils.setupMenu
+import com.android.healthconnect.controller.utils.setupSharedMenu
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -75,12 +75,13 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
         fun createBundle(
             permissionType: FitnessPermissionType,
             entryId: String,
-            showDataOrigin: Boolean
+            showDataOrigin: Boolean,
         ): Bundle {
             return bundleOf(
                 PERMISSION_TYPE_KEY to permissionType,
                 ENTRY_ID_KEY to entryId,
-                SHOW_DATA_ORIGIN_KEY to showDataOrigin)
+                SHOW_DATA_ORIGIN_KEY to showDataOrigin,
+            )
         }
     }
 
@@ -103,7 +104,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 dataType: DataType,
                 index: Int,
                 startTime: Instant?,
-                endTime: Instant?
+                endTime: Instant?,
             ) {
                 deleteEntry(id, dataType, index, startTime, endTime)
             }
@@ -113,11 +114,15 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
         SleepSessionItemViewBinder(
             showSecondAction = false,
             onItemClickedListener = null,
-            onDeleteEntryListenerClicked = onDeleteEntryListener)
+            onDeleteEntryListenerClicked = onDeleteEntryListener,
+        )
     }
     private val plannedExerciseSessionViewBinder by lazy {
         PlannedExerciseSessionItemViewBinder(
-            showSecondAction = false, onItemClickedListener = null, onDeleteEntryClicked = null)
+            showSecondAction = false,
+            onItemClickedListener = null,
+            onDeleteEntryClicked = null,
+        )
     }
     private val plannedExerciseBlockViewBinder by lazy { PlannedExerciseBlockViewBinder() }
     private val plannedExerciseStepViewBinder by lazy { PlannedExerciseStepViewBinder() }
@@ -127,13 +132,15 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
         ExerciseSessionItemViewBinder(
             showSecondAction = false,
             onItemClickedListener = null,
-            onDeleteEntryClicked = onDeleteEntryListener)
+            onDeleteEntryClicked = onDeleteEntryListener,
+        )
     }
     private val heartRateItemViewBinder by lazy {
         SeriesDataItemViewBinder(
             showSecondAction = false,
             onItemClickedListener = null,
-            onDeleteEntryClicked = onDeleteEntryListener)
+            onDeleteEntryClicked = onDeleteEntryListener,
+        )
     }
     private val itemDataEntrySeparatorViewBinder by lazy { ItemDataEntrySeparatorViewBinder() }
     private val sessionDetailViewBinder by lazy { SessionDetailViewBinder() }
@@ -157,7 +164,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         logger.setPageId(pageName)
         val view = inflater.inflate(R.layout.fragment_data_entry_details, container, false)
@@ -185,14 +192,22 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 .setViewBinder(ReverseSessionDetail::class.java, reverseSessionDetailViewBinder)
                 .setViewBinder(FormattedSectionTitle::class.java, formattedSectionTitleViewBinder)
                 .setViewBinder(
-                    FormattedSectionContent::class.java, formattedSectionContentViewBinder)
+                    FormattedSectionContent::class.java,
+                    formattedSectionContentViewBinder,
+                )
                 .setViewBinder(
-                    PlannedExerciseSessionEntry::class.java, plannedExerciseSessionViewBinder)
+                    PlannedExerciseSessionEntry::class.java,
+                    plannedExerciseSessionViewBinder,
+                )
                 .setViewBinder(
-                    PlannedExerciseBlockEntry::class.java, plannedExerciseBlockViewBinder)
+                    PlannedExerciseBlockEntry::class.java,
+                    plannedExerciseBlockViewBinder,
+                )
                 .setViewBinder(PlannedExerciseStepEntry::class.java, plannedExerciseStepViewBinder)
                 .setViewBinder(
-                    ExercisePerformanceGoalEntry::class.java, exercisePerformanceGoalViewBinder)
+                    ExercisePerformanceGoalEntry::class.java,
+                    exercisePerformanceGoalViewBinder,
+                )
                 .setViewBinder(ItemDataEntrySeparator::class.java, itemDataEntrySeparatorViewBinder)
                 .setViewModel(entriesViewModel) // Added to adjust to the new RecyclerViewAdapter
                 .build()
@@ -202,18 +217,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 adapter = detailsAdapter
             }
         viewModel.loadEntryData(permissionType, entryId, showDataOrigin)
-        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
-            menuItem ->
-            when (menuItem.itemId) {
-                R.id.menu_open_units -> {
-                    logger.logInteraction(ToolbarElement.TOOLBAR_UNITS_BUTTON)
-                    findNavController()
-                        .navigate(R.id.action_dataEntryDetailsFragment_to_unitFragment)
-                    true
-                }
-                else -> false
-            }
-        }
+        setupSharedMenu(viewLifecycleOwner, logger)
         logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
         return view
     }
@@ -249,18 +253,24 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
         dataType: DataType,
         index: Int,
         startTime: Instant?,
-        endTime: Instant?
+        endTime: Instant?,
     ) {
         val deletionType = DeletionType.DeleteDataEntry(uuid, dataType, index)
 
-        if (deletionType.dataType == DataType.MENSTRUATION_PERIOD) {
+        if (deletionType.dataType == MenstruationPeriodRecord::class) {
             childFragmentManager.setFragmentResult(
                 START_DELETION_EVENT,
                 bundleOf(
-                    DELETION_TYPE to deletionType, START_TIME to startTime, END_TIME to endTime))
+                    DELETION_TYPE to deletionType,
+                    START_TIME to startTime,
+                    END_TIME to endTime,
+                ),
+            )
         } else {
             childFragmentManager.setFragmentResult(
-                START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                START_DELETION_EVENT,
+                bundleOf(DELETION_TYPE to deletionType),
+            )
         }
     }
 }

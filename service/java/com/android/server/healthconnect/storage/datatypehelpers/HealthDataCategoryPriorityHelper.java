@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.HealthPermissions.getDataCategoriesWithWritePermissionsForPackage;
 import static android.health.connect.HealthPermissions.getPackageHasWriteHealthPermissionsForCategory;
-import static android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType;
 
 import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
@@ -26,22 +25,23 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.HealthPermissions;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
 
+import androidx.annotation.Nullable;
+
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -76,38 +76,101 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             "android:string/config_defaultHealthConnectApp";
     public static final String INACTIVE_APPS_ADDED = "inactive_apps_added";
 
+    private HealthConnectContext mUserContext;
     private final AppInfoHelper mAppInfoHelper;
     private final PackageInfoUtils mPackageInfoUtils;
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final TransactionManager mTransactionManager;
     private final PreferenceHelper mPreferenceHelper;
-
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile HealthDataCategoryPriorityHelper sHealthDataCategoryPriorityHelper;
+    private final HealthConnectMappings mHealthConnectMappings;
 
     /**
      * map of {@link HealthDataCategory} to list of app ids from {@link AppInfoHelper}, in the order
      * of their priority
      */
+    @Nullable
     private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private HealthDataCategoryPriorityHelper() {
-        mAppInfoHelper = AppInfoHelper.getInstance();
-        mPackageInfoUtils = PackageInfoUtils.getInstance();
-        mHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
-        mTransactionManager = TransactionManager.getInitialisedInstance();
-        mPreferenceHelper = PreferenceHelper.getInstance();
+    public HealthDataCategoryPriorityHelper(
+            HealthConnectContext userContext,
+            AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
+            PreferenceHelper preferenceHelper,
+            PackageInfoUtils packageInfoUtils,
+            HealthConnectMappings healthConnectMappings,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
+        mUserContext = userContext;
+        mAppInfoHelper = appInfoHelper;
+        mPackageInfoUtils = packageInfoUtils;
+        mTransactionManager = transactionManager;
+        mPreferenceHelper = preferenceHelper;
+        mHealthConnectMappings = healthConnectMappings;
     }
 
     /**
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(PRIORITY_TABLE_NAME, getColumnInfo());
+    }
+
+    @Override
+    public synchronized void clearCache() {
+        mHealthDataCategoryToAppIdPriorityMap = null;
+    }
+
+    /** Setup HealthDataCategoryPriorityHelper for the given user. */
+    public synchronized void setupForUser(HealthConnectContext userContext) {
+        mUserContext = userContext;
+        // While we already call clearCache() in HCManager.onUserSwitching(), calling this again
+        // here in case any of the methods below was called in between that initialized the cache
+        // with the wrong context.
+        clearCache();
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    reSyncHealthDataPriorityTable();
+                    addInactiveAppsWhenFirstMigratingToNewAggregationControl();
+                });
+    }
+
+    @Override
+    protected String getMainTableName() {
+        return PRIORITY_TABLE_NAME;
+    }
+
+    /** See appendToPriorityList below */
+    public synchronized void appendToPriorityList(
+            String packageName, @HealthDataCategory.Type int dataCategory, UserHandle user) {
+        if (!mUserContext.getUser().equals(user)) {
+            // We are currently limited to be able to update the priority list for the foreground
+            // user only. User will need to manually add the app to the priority list later.
+            return;
+        }
+        appendToPriorityList(packageName, dataCategory, /* isInactiveApp */ false);
+    }
+
+    /** See maybeRemoveAppFromPriorityList below */
+    public synchronized void maybeRemoveAppFromPriorityList(
+            String packageName, @HealthDataCategory.Type int dataCategory, UserHandle user) {
+        if (!mUserContext.getUser().equals(user)) {
+            // We are currently limited to be able to update the priority list for the foreground
+            // user only. Apps will be removed from the priority list when the device switches to
+            // this user  if they no longer have permissions.
+            return;
+        }
+        maybeRemoveAppFromPriorityList(packageName, dataCategory);
+    }
+
+    /** See maybeRemoveAppFromPriorityList below */
+    public synchronized void maybeRemoveAppFromPriorityList(String packageName, UserHandle user) {
+        if (!mUserContext.getUser().equals(user)) {
+            // We are currently limited to be able to update the priority list for the foreground
+            // user only. Apps will be removed from the priority list when the device switches to
+            // this user  if they no longer have permissions.
+            return;
+        }
+        maybeRemoveAppFromPriorityList(packageName);
     }
 
     /**
@@ -117,22 +180,18 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * <p>Inactive apps are added at the bottom of the priority list even if they are the default
      * app.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public synchronized void appendToPriorityList(
-            @NonNull String packageName,
-            @HealthDataCategory.Type int dataCategory,
-            Context context,
-            boolean isInactiveApp) {
+            String packageName, @HealthDataCategory.Type int dataCategory, boolean isInactiveApp) {
         List<Long> newPriorityOrder;
         getHealthDataCategoryToAppIdPriorityMap().putIfAbsent(dataCategory, new ArrayList<>());
-        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName, context);
+        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName);
         if (getHealthDataCategoryToAppIdPriorityMap().get(dataCategory).contains(appInfoId)) {
             return;
         }
         newPriorityOrder =
                 new ArrayList<>(getHealthDataCategoryToAppIdPriorityMap().get(dataCategory));
 
-        if (isDefaultApp(packageName, context) && !isInactiveApp) {
+        if (isDefaultApp(packageName) && !isInactiveApp) {
             newPriorityOrder.add(0, appInfoId);
         } else {
             newPriorityOrder.add(appInfoId);
@@ -147,9 +206,10 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     }
 
     @VisibleForTesting
-    boolean isDefaultApp(@NonNull String packageName, @NonNull Context context) {
+    boolean isDefaultApp(String packageName) {
         String defaultApp =
-                context.getResources()
+                mUserContext
+                        .getResources()
                         .getString(
                                 Resources.getSystem()
                                         .getIdentifier(DEFAULT_APP_RESOURCE_NAME, null, null));
@@ -159,82 +219,55 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
     /**
      * Removes a packageName from the priority list of a particular category if the package name
-     * does not have any granted write permissions. In the new aggregation source control, the
-     * package name is not removed if it has data in this category.
+     * does not have any granted write permissions and has no data.
      */
     public synchronized void maybeRemoveAppFromPriorityList(
-            @NonNull String packageName,
-            @HealthDataCategory.Type int dataCategory,
-            HealthConnectPermissionHelper permissionHelper,
-            UserHandle userHandle) {
+            String packageName, @HealthDataCategory.Type int dataCategory) {
+        PackageInfo packageInfo =
+                mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(
+                        packageName, mUserContext.getUser(), mUserContext);
 
-        final List<String> grantedPermissions =
-                permissionHelper.getGrantedHealthPermissions(packageName, userHandle);
-        for (String permission : HealthPermissions.getWriteHealthPermissionsFor(dataCategory)) {
-            if (grantedPermissions.contains(permission)) {
-                return;
-            }
+        // If package is not found, assume no permissions are granted.
+        if (packageInfo == null
+                || !getPackageHasWriteHealthPermissionsForCategory(
+                        packageInfo, dataCategory, mUserContext)) {
+            removeAppFromPriorityListIfNoDataExists(dataCategory, packageName);
         }
-
-        maybeRemoveAppFromPriorityListInternal(dataCategory, packageName);
     }
 
     /**
-     * Removes apps from the priority list if they no longer hold write permissions to the category
-     * and have no data for that category.
-     *
-     * <p>If the new aggregation source control flag is off, apps that don't have write permissions
-     * are removed regardless of whether they hold data in that category.
+     * Removes a packageName from the priority list of all categories if the package name does not
+     * have any granted write permissions and has no data.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public synchronized void updateHealthDataPriority(
-            @NonNull String[] packageNames, @NonNull UserHandle user, @NonNull Context context) {
-        Objects.requireNonNull(packageNames);
-        Objects.requireNonNull(user);
-        Objects.requireNonNull(context);
-        for (String packageName : packageNames) {
-            PackageInfo packageInfo =
-                    mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(
-                            packageName, user, context);
-
-            Set<Integer> dataCategoriesWithWritePermission =
-                    getDataCategoriesWithWritePermissionsForPackage(packageInfo, context);
-
-            for (int category : getHealthDataCategoryToAppIdPriorityMap().keySet()) {
-                if (!dataCategoriesWithWritePermission.contains(category)) {
-                    maybeRemoveAppFromPriorityListInternal(category, packageInfo.packageName);
-                }
-            }
+    public synchronized void maybeRemoveAppFromPriorityList(String packageName) {
+        for (Integer dataCategory : getHealthDataCategoryToAppIdPriorityMap().keySet()) {
+            maybeRemoveAppFromPriorityList(packageName, dataCategory);
         }
     }
 
     /**
-     * Removes app from priorityList for all HealthData Categories if the package is uninstalled or
-     * if it has no health permissions. In the new aggregation source behaviour, the package name is
-     * not removed if it still has health data in a category.
+     * Removes a packageName from the priority list of a particular category if the package name has
+     * no data.
+     *
+     * <p>Assumes that the app has no write permission.
      */
     public synchronized void maybeRemoveAppWithoutWritePermissionsFromPriorityList(
-            @NonNull String packageName) {
-        Objects.requireNonNull(packageName);
+            String packageName) {
         for (Integer dataCategory : getHealthDataCategoryToAppIdPriorityMap().keySet()) {
-            maybeRemoveAppFromPriorityListInternal(dataCategory, packageName);
+            removeAppFromPriorityListIfNoDataExists(dataCategory, packageName);
         }
     }
 
-    /** Returns list of package names based on priority for the input {@link HealthDataCategory} */
-    @NonNull
-    public List<String> getPriorityOrder(
-            @HealthDataCategory.Type int type, @NonNull Context context) {
-        boolean newAggregationSourceControl =
-                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
-        if (newAggregationSourceControl) {
-            reSyncHealthDataPriorityTable(context);
-        }
+    /**
+     * Refreshes the priority list and returns the list of package names based on priority for the
+     * input {@link HealthDataCategory}
+     */
+    public List<String> syncAndGetPriorityOrder(@HealthDataCategory.Type int type) {
+        reSyncHealthDataPriorityTable();
         return mAppInfoHelper.getPackageNames(getAppIdPriorityOrder(type));
     }
 
     /** Returns list of App ids based on priority for the input {@link HealthDataCategory} */
-    @NonNull
     public List<Long> getAppIdPriorityOrder(@HealthDataCategory.Type int type) {
         List<Long> packageIds = getHealthDataCategoryToAppIdPriorityMap().get(type);
         if (packageIds == null) {
@@ -251,16 +284,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * <p>In the old behaviour it is not allowed to add or remove packages so the new priority order
      * needs to be sanitised before applying the operation.
      */
-    public void setPriorityOrder(int dataCategory, @NonNull List<String> packagePriorityOrder) {
-        boolean newAggregationSourceControl =
-                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
-
+    public void setPriorityOrder(int dataCategory, List<String> packagePriorityOrder) {
         List<Long> newPriorityOrder = mAppInfoHelper.getAppInfoIds(packagePriorityOrder);
-
-        if (!newAggregationSourceControl) {
-            newPriorityOrder = sanitizePriorityOder(dataCategory, newPriorityOrder);
-        }
-
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
                         PRIORITY_TABLE_NAME,
@@ -270,46 +295,12 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                 newPriorityOrder);
     }
 
-    /**
-     * Sanitizes the new priority order by ensuring it contains the same elements as the old
-     * priority order, for the old behaviour of aggregation source control.
-     */
-    private List<Long> sanitizePriorityOder(int dataCategory, List<Long> newPriorityOrder) {
-
-        List<Long> currentPriorityOrder =
-                getHealthDataCategoryToAppIdPriorityMap()
-                        .getOrDefault(dataCategory, Collections.emptyList());
-
-        // Remove appId from the priority order if it is not part of the current priority order,
-        // this is because in the time app tried to update the order an app permission might
-        // have been removed, and we only store priority order of apps with permission.
-        newPriorityOrder.removeIf(priorityOrder -> !currentPriorityOrder.contains(priorityOrder));
-
-        // Make sure we don't remove any new entries. So append old priority in new priority and
-        // remove duplicates
-        newPriorityOrder.addAll(currentPriorityOrder);
-        newPriorityOrder = newPriorityOrder.stream().distinct().collect(Collectors.toList());
-
-        return newPriorityOrder;
-    }
-
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @Override
-    public synchronized void clearCache() {
-        mHealthDataCategoryToAppIdPriorityMap = null;
-    }
-
-    @Override
-    protected String getMainTableName() {
-        return PRIORITY_TABLE_NAME;
-    }
-
     private Map<Integer, List<Long>> getHealthDataCategoryToAppIdPriorityMap() {
         if (mHealthDataCategoryToAppIdPriorityMap == null) {
             populateDataCategoryToAppIdPriorityMap();
         }
 
-        return mHealthDataCategoryToAppIdPriorityMap;
+        return Objects.requireNonNull(mHealthDataCategoryToAppIdPriorityMap);
     }
 
     /** Returns an immutable map of data categories along with their priority order. */
@@ -344,7 +335,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             @HealthDataCategory.Type int dataCategory,
             List<Long> newList) {
         try {
-            mTransactionManager.insertOrReplace(request);
+            mTransactionManager.insertOrReplaceOnConflict(request);
             getHealthDataCategoryToAppIdPriorityMap().put(dataCategory, newList);
         } catch (Exception e) {
             Slog.e(TAG, "Priority update failed", e);
@@ -381,7 +372,6 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
@@ -391,33 +381,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    @NonNull
-    public static synchronized HealthDataCategoryPriorityHelper getInstance() {
-        if (sHealthDataCategoryPriorityHelper == null) {
-            sHealthDataCategoryPriorityHelper = new HealthDataCategoryPriorityHelper();
-        }
-
-        return sHealthDataCategoryPriorityHelper;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        sHealthDataCategoryPriorityHelper = null;
-    }
-
     /** Syncs priority table with the permissions and data. */
-    public synchronized void reSyncHealthDataPriorityTable(@NonNull Context context) {
-        Objects.requireNonNull(context);
-        boolean newAggregationSourceControl =
-                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
-        // Candidates to be added to the priority list
-        Map<Integer, List<Long>> dataCategoryToAppIdMapHavingPermission =
-                getHealthDataCategoryToAppIdPriorityMap().entrySet().stream()
-                        .collect(
-                                Collectors.toMap(
-                                        Map.Entry::getKey, e -> new ArrayList<>(e.getValue())));
+    public synchronized void reSyncHealthDataPriorityTable() {
         // Candidates to be removed from the priority list
         Map<Integer, Set<Long>> dataCategoryToAppIdMapWithoutPermission =
                 getHealthDataCategoryToAppIdPriorityMap().entrySet().stream()
@@ -425,22 +390,13 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                                 Collectors.toMap(
                                         Map.Entry::getKey, e -> new HashSet<>(e.getValue())));
 
-        List<PackageInfo> validHealthApps = getValidHealthApps(context);
+        List<PackageInfo> validHealthApps = getValidHealthApps();
         for (PackageInfo packageInfo : validHealthApps) {
             Set<Integer> dataCategoriesWithWritePermissionsForThisPackage =
-                    getDataCategoriesWithWritePermissionsForPackage(packageInfo, context);
-            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageInfo.packageName, context);
+                    getDataCategoriesWithWritePermissionsForPackage(packageInfo, mUserContext);
+            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageInfo.packageName);
 
             for (int dataCategory : dataCategoriesWithWritePermissionsForThisPackage) {
-                List<Long> appIdsHavingPermission =
-                        dataCategoryToAppIdMapHavingPermission.getOrDefault(
-                                dataCategory, new ArrayList<>());
-                if (!appIdsHavingPermission.contains(appInfoId)
-                        && appIdsHavingPermission.add(appInfoId)) {
-                    dataCategoryToAppIdMapHavingPermission.put(
-                            dataCategory, appIdsHavingPermission);
-                }
-
                 Set<Long> appIdsWithoutPermission =
                         dataCategoryToAppIdMapWithoutPermission.getOrDefault(
                                 dataCategory, new HashSet<>());
@@ -451,33 +407,35 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             }
         }
 
-        // The new behaviour does not automatically add to the priority list if there is
-        // a write permission for a package name
-        if (!newAggregationSourceControl) {
-            updateTableWithNewPriorityList(dataCategoryToAppIdMapHavingPermission);
+        // Remove any apps without any permission for the category, if they have no data present.
+        for (Map.Entry<Integer, Set<Long>> entry :
+                dataCategoryToAppIdMapWithoutPermission.entrySet()) {
+            for (Long appInfoId : entry.getValue()) {
+                try {
+                    removeAppFromPriorityListIfNoDataExists(
+                            entry.getKey(), mAppInfoHelper.getPackageName(appInfoId));
+                } catch (PackageManager.NameNotFoundException e) {
+                    Slog.e(TAG, "Package name not found while syncing priority table", e);
+                }
+            }
         }
-        maybeRemoveAppsFromPriorityList(dataCategoryToAppIdMapWithoutPermission);
-        maybeAddContributingAppsIfEmpty(context);
+        addContributingAppsIfCategoryListIsEmpty();
     }
 
     /** Returns a list of PackageInfos holding health permissions for this user. */
-    private List<PackageInfo> getValidHealthApps(@NonNull Context context) {
-        UserHandle user = mTransactionManager.getCurrentUserHandle();
-        Context currentUserContext = context.createContextAsUser(user, /*flags*/ 0);
-        return mPackageInfoUtils.getPackagesHoldingHealthPermissions(user, currentUserContext);
+    private List<PackageInfo> getValidHealthApps() {
+        return mPackageInfoUtils.getPackagesHoldingHealthPermissions(
+                mUserContext.getUser(), mUserContext);
     }
 
     /**
-     * Removes a packageName from the priority list of a category. For the new aggregation source
-     * control, the package name is not removed if it has data in that category.
+     * Removes a packageName from the priority list of a category. The package name is not removed
+     * if it has data in that category.
      */
-    private synchronized void maybeRemoveAppFromPriorityListInternal(
-            @HealthDataCategory.Type int dataCategory, @NonNull String packageName) {
-        boolean newAggregationSourceControl =
-                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
+    private synchronized void removeAppFromPriorityListIfNoDataExists(
+            @HealthDataCategory.Type int dataCategory, String packageName) {
         boolean dataExistsForPackageName = appHasDataInCategory(packageName, dataCategory);
-        if (newAggregationSourceControl && dataExistsForPackageName) {
-            // Do not remove if data exists for packageName in the new aggregation
+        if (dataExistsForPackageName) {
             return;
         }
 
@@ -508,36 +466,14 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     }
 
     /**
-     * Removes apps without permissions for these categories from the priority list. In the new
-     * aggregation source control, the packages are not removed if they still have data in these
-     * categories.
-     */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private synchronized void maybeRemoveAppsFromPriorityList(
-            Map<Integer, Set<Long>> dataCategoryToAppIdsWithoutPermissions) {
-        for (int dataCategory : dataCategoryToAppIdsWithoutPermissions.keySet()) {
-            for (Long appInfoId : dataCategoryToAppIdsWithoutPermissions.get(dataCategory)) {
-                maybeRemoveAppFromPriorityListInternal(
-                        dataCategory, mAppInfoHelper.getPackageName(appInfoId));
-            }
-        }
-    }
-
-    /**
      * If the priority list is empty for a {@link HealthDataCategory}, add the contributing apps.
      *
      * <p>This is necessary because the priority list should never be empty if there are
      * contributing apps present.
      */
-    private synchronized void maybeAddContributingAppsIfEmpty(@NonNull Context context) {
-        List.of(
-                        HealthDataCategory.ACTIVITY,
-                        HealthDataCategory.BODY_MEASUREMENTS,
-                        HealthDataCategory.CYCLE_TRACKING,
-                        HealthDataCategory.NUTRITION,
-                        HealthDataCategory.SLEEP,
-                        HealthDataCategory.VITALS,
-                        HealthDataCategory.WELLNESS)
+    private synchronized void addContributingAppsIfCategoryListIsEmpty() {
+        mHealthConnectMappings
+                .getAllHealthDataCategories()
                 .forEach(
                         (category) ->
                                 getHealthDataCategoryToAppIdPriorityMap()
@@ -555,89 +491,47 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                                         appendToPriorityList(
                                                 contributingApp,
                                                 dataCategory,
-                                                context,
-                                                isInactiveApp(
-                                                        dataCategory, contributingApp, context)));
-            }
-        }
-    }
-
-    private synchronized void updateTableWithNewPriorityList(
-            Map<Integer, List<Long>> healthDataCategoryToAppIdPriorityMap) {
-        for (int dataCategory : healthDataCategoryToAppIdPriorityMap.keySet()) {
-            List<Long> appInfoIdList =
-                    List.copyOf(healthDataCategoryToAppIdPriorityMap.get(dataCategory));
-            if (!appInfoIdList.equals(
-                    getHealthDataCategoryToAppIdPriorityMap().get(dataCategory))) {
-                safelyUpdateDBAndUpdateCache(
-                        new UpsertTableRequest(
-                                PRIORITY_TABLE_NAME,
-                                getContentValuesFor(dataCategory, appInfoIdList),
-                                UNIQUE_COLUMN_INFO),
-                        dataCategory,
-                        appInfoIdList);
+                                                isInactiveApp(dataCategory, contributingApp)));
             }
         }
     }
 
     /**
-     * A one-time operation which adds contributing apps to the priority list if the new aggregation
-     * source controls are available.
+     * A one-time operation which adds contributing inactive apps to the priority list.
      *
      * <p>The contributing apps are added in ascending order of their package names.
-     *
-     * <p>Originally only inactive apps were added, extending this to all contributing apps is a
-     * workaround for the case when the device to device transfer empties the priority list.
      */
-    public void maybeAddContributingAppsToPriorityList(Context context) {
-        if (!shouldAddContributingApps()) {
+    public void addInactiveAppsWhenFirstMigratingToNewAggregationControl() {
+        if (!shouldAddInactiveApps()) {
             return;
         }
 
-        Map<Integer, Set<String>> contributingApps = getAllContributorApps();
+        Map<Integer, Set<String>> inactiveApps = getAllInactiveApps();
 
-        for (Map.Entry<Integer, Set<String>> entry : contributingApps.entrySet()) {
+        for (Map.Entry<Integer, Set<String>> entry : inactiveApps.entrySet()) {
             int category = entry.getKey();
             entry.getValue().stream()
                     .sorted()
                     .forEach(
                             packageName ->
                                     appendToPriorityList(
-                                            packageName,
-                                            category,
-                                            context,
-                                            isInactiveApp(category, packageName, context)));
+                                            packageName, category, /* isInactiveApp= */ true));
         }
 
         mPreferenceHelper.insertOrReplacePreference(INACTIVE_APPS_ADDED, String.valueOf(true));
     }
 
-    private boolean isInactiveApp(
-            @HealthDataCategory.Type int dataCategory,
-            @NonNull String packageName,
-            @NonNull Context context) {
-        Map<Integer, Set<String>> inactiveApps = getAllInactiveApps(context);
+    private boolean isInactiveApp(@HealthDataCategory.Type int dataCategory, String packageName) {
+        Map<Integer, Set<String>> inactiveApps = getAllInactiveApps();
         return inactiveApps.getOrDefault(dataCategory, new HashSet<>()).contains(packageName);
     }
 
-    private boolean shouldAddContributingApps() {
-        boolean newAggregationSourceControl =
-                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
-
-        if (!newAggregationSourceControl) {
-            return false;
-        }
-
+    private boolean shouldAddInactiveApps() {
         String haveInactiveAppsBeenAddedString =
                 mPreferenceHelper.getPreference(INACTIVE_APPS_ADDED);
 
-        // No-op if this operation has already been completed
-        if (haveInactiveAppsBeenAddedString != null
-                && Boolean.parseBoolean(haveInactiveAppsBeenAddedString)) {
-            return false;
-        }
-
-        return true;
+        return haveInactiveAppsBeenAddedString == null
+                || !Boolean.parseBoolean(haveInactiveAppsBeenAddedString);
     }
 
     @VisibleForTesting
@@ -654,7 +548,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         for (Map.Entry<Integer, Set<String>> entry : recordTypeToContributingPackages.entrySet()) {
             Integer recordType = entry.getKey();
             Set<String> contributingPackages = entry.getValue();
-            int recordCategory = getRecordCategoryForRecordType(recordType);
+            int recordCategory = mHealthConnectMappings.getRecordCategoryForRecordType(recordType);
             boolean isPackageNameContributor = contributingPackages.contains(packageName);
             if (isPackageNameContributor) {
                 dataCategoriesWithData.add(recordCategory);
@@ -675,7 +569,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         Map<Integer, Set<String>> allContributorApps = new HashMap<>();
 
         for (Map.Entry<Integer, Set<String>> entry : recordTypeToContributingPackages.entrySet()) {
-            int recordCategory = getRecordCategoryForRecordType(entry.getKey());
+            int recordCategory =
+                    mHealthConnectMappings.getRecordCategoryForRecordType(entry.getKey());
             Set<String> contributingPackages = entry.getValue();
 
             Set<String> currentPackages =
@@ -693,7 +588,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * <p>An inactive app is one that has data for the dataCategory but no write permissions.
      */
     @VisibleForTesting
-    Map<Integer, Set<String>> getAllInactiveApps(Context context) {
+    Map<Integer, Set<String>> getAllInactiveApps() {
         Map<Integer, Set<String>> allContributorApps = getAllContributorApps();
         Map<Integer, Set<String>> inactiveApps = new HashMap<>();
 
@@ -701,11 +596,16 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             int category = entry.getKey();
             Set<String> contributorApps = entry.getValue();
 
-            for (String app : contributorApps) {
-                if (!appHasWriteHealthPermissionsForCategory(app, category, context)) {
+            for (String packageName : contributorApps) {
+                PackageInfo packageInfo =
+                        mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(
+                                packageName, mUserContext.getUser(), mUserContext);
+                if (packageInfo == null
+                        || !getPackageHasWriteHealthPermissionsForCategory(
+                                packageInfo, category, mUserContext)) {
                     Set<String> currentPackages =
                             inactiveApps.getOrDefault(category, new HashSet<>());
-                    if (currentPackages.add(app)) {
+                    if (currentPackages.add(packageName)) {
                         inactiveApps.put(category, currentPackages);
                     }
                 }
@@ -713,29 +613,5 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         }
 
         return inactiveApps;
-    }
-
-    /**
-     * Returns true if this packageName has at least one granted WRITE permission for this
-     * dataCategory.
-     */
-    @VisibleForTesting
-    boolean appHasWriteHealthPermissionsForCategory(
-            @NonNull String packageName,
-            @HealthDataCategory.Type int dataCategory,
-            @NonNull Context context) {
-
-        List<PackageInfo> validHealthApps = getValidHealthApps(context);
-
-        for (PackageInfo validHealthApp : validHealthApps) {
-            if (Objects.equals(validHealthApp.packageName, packageName)) {
-                if (getPackageHasWriteHealthPermissionsForCategory(
-                        validHealthApp, dataCategory, context)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }

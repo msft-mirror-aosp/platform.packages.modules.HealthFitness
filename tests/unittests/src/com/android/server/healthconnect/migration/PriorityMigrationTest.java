@@ -39,6 +39,8 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,6 +77,8 @@ public class PriorityMigrationTest {
     @Mock HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     @Mock PriorityMigrationHelper mPriorityMigrationHelper;
     @Mock SQLiteDatabase mSQLiteDatabase;
+    @Mock PreferencesManager mPreferencesManager;
+    @Mock MigrationEntityHelper mMigrationEntityHelper;
 
     DataMigrationManager mDataMigrationManager;
 
@@ -86,14 +90,13 @@ public class PriorityMigrationTest {
                         new Answer<Void>() {
                             @Override
                             public Void answer(InvocationOnMock invocation) throws Throwable {
-                                TransactionManager.TransactionRunnable runnable =
-                                        invocation.getArgument(0);
+                                TransactionManager.Runnable runnable = invocation.getArgument(0);
                                 runnable.run(mSQLiteDatabase);
                                 return null;
                             }
                         })
                 .when(mTransactionManager)
-                .runAsTransaction(any(TransactionManager.TransactionRunnable.class));
+                .runAsTransaction(any(TransactionManager.Runnable.class));
 
         mDataMigrationManager =
                 new DataMigrationManager(
@@ -104,7 +107,9 @@ public class PriorityMigrationTest {
                         mDeviceInfoHelper,
                         mAppInfoHelper,
                         mHealthDataCategoryPriorityHelper,
-                        mPriorityMigrationHelper);
+                        mPriorityMigrationHelper,
+                        mMigrationEntityHelper,
+                        mPreferencesManager);
     }
 
     @Test

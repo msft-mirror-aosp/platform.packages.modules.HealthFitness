@@ -16,10 +16,14 @@
 
 package android.healthconnect.cts.testhelper;
 
-import static com.google.common.truth.Truth.assertThat;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponse;
+import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 
+import static java.time.Instant.EPOCH;
+
+import android.annotation.SuppressLint;
 import android.health.connect.DeleteUsingFiltersRequest;
-import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.TimeInstantRangeFilter;
@@ -42,12 +46,8 @@ import androidx.test.InstrumentationRegistry;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.Executor;
 
 public class TestHelperUtils {
     public static final String MY_PACKAGE_NAME =
@@ -112,106 +112,56 @@ public class TestHelperUtils {
     }
 
     public static List<Record> insertRecords(
-            List<Record> records, HealthConnectManager healthConnectManager)
+            HealthConnectManager healthConnectManager, List<Record> records)
             throws InterruptedException {
-        AtomicReference<List<Record>> response = new AtomicReference<>(new ArrayList<>());
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(healthConnectManager).isNotNull();
-
-        healthConnectManager.insertRecords(
-                records,
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(InsertRecordsResponse result) {
-                        response.set(result.getRecords());
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        latch.countDown();
-                    }
-                });
-
-        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
-        return response.get();
+        InsertRecordsResponse response =
+                callAndGetResponse(
+                        (executor, receiver) ->
+                                healthConnectManager.insertRecords(records, executor, receiver));
+        return response.getRecords();
     }
 
     public static void deleteRecords(
-            DeleteUsingFiltersRequest deleteUsingFiltersRequest,
-            HealthConnectManager healthConnectManager)
+            HealthConnectManager healthConnectManager, List<Class<? extends Record>> recordTypes)
             throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(healthConnectManager).isNotNull();
-
-        for (Class<? extends Record> recordType : deleteUsingFiltersRequest.getRecordTypes()) {
-            TimeRangeFilter timeRangeFilter = deleteUsingFiltersRequest.getTimeRangeFilter();
-            if (timeRangeFilter == null) {
-                timeRangeFilter =
-                        new TimeInstantRangeFilter.Builder()
-                                .setStartTime(Instant.EPOCH)
-                                .setEndTime(Instant.now().plus(1200, ChronoUnit.SECONDS))
-                                .build();
-            }
-            healthConnectManager.deleteRecords(
-                    recordType,
-                    timeRangeFilter,
-                    Executors.newSingleThreadExecutor(),
-                    new OutcomeReceiver<>() {
-
-                        @Override
-                        public void onError(HealthConnectException exception) {
-                            latch.countDown();
-                        }
-
-                        @Override
-                        public void onResult(Void result) {
-                            latch.countDown();
-                        }
-                    });
-            assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+        for (Class<? extends Record> recordType : recordTypes) {
+            deleteRecords(healthConnectManager, recordType);
         }
+    }
+
+    /**
+     * Deletes all records of the specified types written by the test app.
+     *
+     * @see HealthConnectManager#deleteRecords(Class, TimeRangeFilter, Executor, OutcomeReceiver)
+     */
+    public static void deleteRecords(
+            HealthConnectManager healthConnectManager, Class<? extends Record> recordType)
+            throws InterruptedException {
+        TimeRangeFilter allTime = new TimeInstantRangeFilter.Builder().setStartTime(EPOCH).build();
+        Void unused =
+                callAndGetResponse(
+                        (executor, receiver) ->
+                                healthConnectManager.deleteRecords(
+                                        recordType, allTime, executor, receiver));
     }
 
     /** Query access logs */
     public static List<AccessLog> queryAccessLogs(HealthConnectManager healthConnectManager)
             throws InterruptedException {
-        AtomicReference<List<AccessLog>> response = new AtomicReference<>(new ArrayList<>());
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(healthConnectManager).isNotNull();
-
-        healthConnectManager.queryAccessLogs(
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(List<AccessLog> accessLogs) {
-                        response.set(accessLogs);
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        latch.countDown();
-                    }
-                });
-
-        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
-        return response.get();
+        return callAndGetResponseWithShellPermissionIdentity(
+                healthConnectManager::queryAccessLogs, MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     /** Deletes the records added by the test app. */
     public static void deleteAllRecordsAddedByTestApp(HealthConnectManager healthConnectManager)
             throws InterruptedException {
-        assertThat(healthConnectManager).isNotNull();
-
-        DeleteUsingFiltersRequest deleteUsingFiltersRequest =
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BloodPressureRecord.class)
-                        .addRecordType(HeartRateRecord.class)
-                        .addRecordType(StepsRecord.class)
-                        .addDataOrigin(getDataOrigin())
-                        .build();
-        deleteRecords(deleteUsingFiltersRequest, healthConnectManager);
+        DeleteUsingFiltersRequest request =
+                new DeleteUsingFiltersRequest.Builder().addDataOrigin(getDataOrigin()).build();
+        @SuppressLint("MissingPermission")
+        Void unused =
+                callAndGetResponseWithShellPermissionIdentity(
+                        (executor, receiver) ->
+                                healthConnectManager.deleteRecords(request, executor, receiver),
+                        MANAGE_HEALTH_DATA_PERMISSION);
     }
 }

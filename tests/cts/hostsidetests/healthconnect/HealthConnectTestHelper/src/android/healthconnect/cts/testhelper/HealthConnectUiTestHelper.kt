@@ -23,11 +23,13 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.NonApiTest
 import com.android.compatibility.common.util.SystemUtil
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -37,11 +39,12 @@ import org.junit.Test
  */
 @NonApiTest(exemptionReasons = [], justification = "METRIC")
 class HealthConnectUiTestHelper {
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val mHealthConnectManager: HealthConnectManager? =
         context.getSystemService<HealthConnectManager>(HealthConnectManager::class.java)
-    private val TEST_APP_PACKAGE_NAME = "android.healthconnect.cts.testhelper"
 
     @Before
     fun setUpClass() {
@@ -54,6 +57,7 @@ class HealthConnectUiTestHelper {
 
     @Before
     fun before() {
+        // TODO inert app here
         TestHelperUtils.deleteAllRecordsAddedByTestApp(mHealthConnectManager)
     }
 
@@ -77,29 +81,27 @@ class HealthConnectUiTestHelper {
         // IoT devices do not have a UI to run these UI tests
         val pm: PackageManager = context.packageManager
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+                !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
     }
 
     @Test
     fun openHomeFragment() {
         TestHelperUtils.insertRecords(
+            mHealthConnectManager,
             listOf(
                 TestHelperUtils.getBloodPressureRecord(),
                 TestHelperUtils.getHeartRateRecord(),
-                TestHelperUtils.getStepsRecord()),
-            mHealthConnectManager)
+                TestHelperUtils.getStepsRecord(),
+            ),
+        )
         context.launchMainActivity {
             UiTestUtils.skipOnboardingIfAppears()
-            UiTestUtils.waitDisplayed(By.text("Data and access"))
+            UiTestUtils.waitDisplayed(By.text("App permissions"))
             UiTestUtils.scrollDownTo(By.text("Manage data"))
-            UiTestUtils.clickOnText("Data and access")
-
-            UiTestUtils.waitDisplayed(By.text("Browse data"))
-            UiTestUtils.waitDisplayed(By.text("Manage data"))
-
-            UiTestUtils.waitDisplayed(By.text("Delete all data"))
+            UiTestUtils.clickOnText("Manage data")
+            UiTestUtils.waitDisplayed(By.text("Auto-delete"))
         }
     }
 }

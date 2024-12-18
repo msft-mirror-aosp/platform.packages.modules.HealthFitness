@@ -17,18 +17,21 @@ package com.android.healthconnect.controller.tests.data.entries.api
 
 import android.content.Context
 import android.health.connect.HealthConnectManager
-import android.health.connect.MedicalResourceTypeInfo
-import android.health.connect.datatypes.MedicalResource
+import android.health.connect.ReadMedicalResourcesInitialRequest
+import android.health.connect.ReadMedicalResourcesResponse
 import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesUseCase
+import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
+import com.android.healthconnect.controller.dataentries.formatters.medical.MedicalEntryFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -42,7 +45,7 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.invocation.InvocationOnMock
@@ -57,8 +60,11 @@ class LoadMedicalEntriesUseCaseTest {
     private lateinit var context: Context
     private lateinit var loadMedicalEntriesUseCase: LoadMedicalEntriesUseCase
     private lateinit var loadEntriesHelper: LoadEntriesHelper
+    private lateinit var medicalEntryFormatter: MedicalEntryFormatter
 
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var menstruationPeriodFormatter: MenstruationPeriodFormatter
+    @Inject lateinit var dataSourceReader: MedicalDataSourceReader
 
     private val healthConnectManager: HealthConnectManager =
         Mockito.mock(HealthConnectManager::class.java)
@@ -70,28 +76,34 @@ class LoadMedicalEntriesUseCaseTest {
         context.setLocale(Locale.US)
         hiltRule.inject()
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager)
-        loadMedicalEntriesUseCase = LoadMedicalEntriesUseCase(Dispatchers.Main, loadEntriesHelper)
+            LoadEntriesHelper(
+                context,
+                healthDataEntryFormatter,
+                menstruationPeriodFormatter,
+                healthConnectManager,
+                dataSourceReader,
+            )
+        loadMedicalEntriesUseCase =
+            LoadMedicalEntriesUseCase(Dispatchers.Main, medicalEntryFormatter, loadEntriesHelper)
     }
 
     @Test
-    fun invoke_returnsFormattedData() = runTest {
+    fun invoke_noData_returnsEmptyList() = runTest {
         val input =
             LoadMedicalEntriesInput(
-                permissionType = MedicalPermissionType.IMMUNIZATION,
+                medicalPermissionType = MedicalPermissionType.VACCINES,
                 packageName = null,
                 showDataOrigin = true,
             )
-        val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
-            listOf(
-                MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                    setOf(TEST_MEDICAL_DATA_SOURCE),
-                )
-            )
-        Mockito.doAnswer(prepareAnswer(medicalResourceTypeResources))
+        val readMedicalResourcesResponse =
+            ReadMedicalResourcesResponse(emptyList(), "nextPageToken", 1)
+        Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
             .`when`(healthConnectManager)
-            .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
+            .readMedicalResources(
+                ArgumentMatchers.any(ReadMedicalResourcesInitialRequest::class.java),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+            )
 
         val result = loadMedicalEntriesUseCase.invoke(input)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -99,14 +111,51 @@ class LoadMedicalEntriesUseCaseTest {
             .containsExactlyElementsIn(listOf<FormattedEntry.FormattedMedicalDataEntry>())
     }
 
+    @Test
+    fun invoke_returnsFormattedData() = runTest {
+        val input =
+            LoadMedicalEntriesInput(
+                medicalPermissionType = MedicalPermissionType.VACCINES,
+                packageName = null,
+                showDataOrigin = true,
+            )
+        val readMedicalResourcesResponse =
+            ReadMedicalResourcesResponse(
+                listOf(TEST_MEDICAL_RESOURCE_IMMUNIZATION),
+                "nextPageToken",
+                2,
+            )
+        Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
+            .`when`(healthConnectManager)
+            .readMedicalResources(
+                ArgumentMatchers.any(ReadMedicalResourcesInitialRequest::class.java),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+            )
+
+        val result = loadMedicalEntriesUseCase.invoke(input)
+        assertThat(result is UseCaseResults.Success).isTrue()
+        assertThat((result as UseCaseResults.Success).data)
+            .containsExactlyElementsIn(
+                listOf(
+                    FormattedEntry.FormattedMedicalDataEntry(
+                        header = "02 May 2023 • Health Connect Toolbox",
+                        headerA11y = "02 May 2023 • Health Connect Toolbox",
+                        title = "Covid vaccine",
+                        titleA11y = "important vaccination",
+                        medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION.id,
+                    )
+                )
+            )
+    }
+
     private fun prepareAnswer(
-        MedicalResourceTypeInfo: List<MedicalResourceTypeInfo>
-    ): (InvocationOnMock) -> List<MedicalResourceTypeInfo> {
-        val answer = { args: InvocationOnMock ->
-            val receiver = args.arguments[1] as OutcomeReceiver<Any?, *>
-            receiver.onResult(MedicalResourceTypeInfo)
-            MedicalResourceTypeInfo
+        readMedicalResourcesResponse: ReadMedicalResourcesResponse
+    ): (InvocationOnMock) -> ReadMedicalResourcesResponse {
+        return { args: InvocationOnMock ->
+            val receiver = args.arguments[2] as OutcomeReceiver<ReadMedicalResourcesResponse, *>
+            receiver.onResult(readMedicalResourcesResponse)
+            readMedicalResourcesResponse
         }
-        return answer
     }
 }

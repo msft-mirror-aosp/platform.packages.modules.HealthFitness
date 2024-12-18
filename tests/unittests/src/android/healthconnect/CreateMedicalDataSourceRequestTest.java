@@ -16,16 +16,21 @@
 
 package android.healthconnect;
 
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.os.Parcel;
 
-import org.junit.Test;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
 public class CreateMedicalDataSourceRequestTest {
 
     // This test tests the hidden getDataSize method. The rest of this class is tested in cts tests.
@@ -33,7 +38,9 @@ public class CreateMedicalDataSourceRequestTest {
     public void testCreateMedicalDataSourceRequest_getDataSize() {
         CreateMedicalDataSourceRequest original =
                 new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
 
         Parcel parcel = Parcel.obtain();

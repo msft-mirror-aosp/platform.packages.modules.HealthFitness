@@ -27,10 +27,14 @@ import android.health.connect.internal.datatypes.ExerciseSegmentInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.os.Parcel;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class ExerciseSessionInternalTest {
     @Test
     public void testSessionConvertToExternal_convertToExternal_fieldsIsEqual() {
@@ -66,9 +70,8 @@ public class ExerciseSessionInternalTest {
     }
 
     @Test
-    public void testSessionHashCode_getHashCode_noExceptionsAndNotNull() {
-        assertThat(TestUtils.buildExerciseSessionInternal().toExternalRecord().hashCode())
-                .isNotNull();
+    public void testSessionHashCode_getHashCode_noExceptions() {
+        int unused = TestUtils.buildExerciseSessionInternal().toExternalRecord().hashCode();
     }
 
     private ExerciseSessionRecordInternal writeAndRestoreFromParcel(

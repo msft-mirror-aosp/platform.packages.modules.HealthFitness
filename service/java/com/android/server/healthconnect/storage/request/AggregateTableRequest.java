@@ -24,7 +24,6 @@ import static android.health.connect.datatypes.AggregationType.SUM;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
 import android.health.connect.Constants;
@@ -32,7 +31,6 @@ import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeRangeFilter;
 import android.health.connect.TimeRangeFilterHelper;
 import android.health.connect.datatypes.AggregationType;
-import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
@@ -42,6 +40,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.aggregation.PriorityRecordsAggregator;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -88,6 +87,9 @@ public class AggregateTableRequest {
     private final AggregateParams.PriorityAggregationExtraParams mPriorityParams;
     private final boolean mUseLocalTime;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
+    private final AppInfoHelper mAppInfoHelper;
+    private final TransactionManager mTransactionManager;
     private List<Long> mTimeSplits;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
@@ -97,6 +99,9 @@ public class AggregateTableRequest {
             RecordHelper<?> recordHelper,
             WhereClauses whereClauses,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
             boolean useLocalTime) {
         mTableName = params.getTableName();
         mColumnNamesToAggregate = params.getColumnsToFetch();
@@ -115,6 +120,9 @@ public class AggregateTableRequest {
         }
         mUseLocalTime = useLocalTime;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
+        mAppInfoHelper = appInfoHelper;
+        mTransactionManager = transactionManager;
     }
 
     /**
@@ -163,15 +171,15 @@ public class AggregateTableRequest {
     }
 
     /** Returns SQL statement to perform aggregation operation */
-    @NonNull
     public String getAggregationCommand() {
         final StringBuilder builder = new StringBuilder("SELECT ");
         String aggCommand;
         boolean usingPriority =
-                StorageUtils.supportsPriority(
+                mInternalHealthConnectMappings.supportsPriority(
                                 mRecordHelper.getRecordIdentifier(),
                                 mAggregationType.getAggregateOperationType())
-                        || StorageUtils.isDerivedType(mRecordHelper.getRecordIdentifier());
+                        || mInternalHealthConnectMappings.isDerivedType(
+                                mRecordHelper.getRecordIdentifier());
         if (usingPriority) {
             for (String columnName : mColumnNamesToAggregate) {
                 builder.append(columnName).append(", ");
@@ -234,10 +242,15 @@ public class AggregateTableRequest {
         }
     }
 
-    public void onResultsFetched(Cursor cursor, Cursor metaDataCursor) {
-        if (StorageUtils.isDerivedType(mRecordHelper.getRecordIdentifier())) {
+    /**
+     * Fetches the result of the aggregation and returns the packages contributing to the given
+     * aggregation.
+     */
+    public List<String> processResultsAndReturnContributingPackages(
+            Cursor cursor, Cursor metaDataCursor) {
+        if (mInternalHealthConnectMappings.isDerivedType(mRecordHelper.getRecordIdentifier())) {
             deriveAggregate(cursor);
-        } else if (StorageUtils.supportsPriority(
+        } else if (mInternalHealthConnectMappings.supportsPriority(
                 mRecordHelper.getRecordIdentifier(),
                 mAggregationType.getAggregateOperationType())) {
             processPriorityRequest(cursor);
@@ -245,13 +258,15 @@ public class AggregateTableRequest {
             processNoPrioritiesRequest(cursor);
         }
 
-        updateResultWithDataOriginPackageNames(metaDataCursor);
+        return updateResultWithDataOriginPackageNames(metaDataCursor);
     }
 
     /** Returns list of app Ids of contributing apps for the record type in the priority order */
     public List<Long> getAppIdPriorityList(int recordType) {
         return mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType));
+                mInternalHealthConnectMappings
+                        .getExternalMappings()
+                        .getRecordCategoryForRecordType(recordType));
     }
 
     private void processPriorityRequest(Cursor cursor) {
@@ -270,7 +285,8 @@ public class AggregateTableRequest {
                 continue;
             }
 
-            if (mAggregationType.getAggregateResultClass() == Long.class) {
+            if (mAggregationType.getAggregateResultClass() == Long.class
+                    || mAggregationType.getAggregateResultClass() == Duration.class) {
                 result =
                         new AggregateResult<>(
                                 aggregator.getResultForGroup(groupNumber).longValue());
@@ -291,7 +307,7 @@ public class AggregateTableRequest {
         while (cursor.moveToNext()) {
             mAggregateResults.put(
                     StorageUtils.getCursorInt(cursor, GROUP_BY_COLUMN_NAME),
-                    mRecordHelper.getAggregateResult(cursor, mAggregationType));
+                    mRecordHelper.getNoPriorityAggregateResult(cursor, mAggregationType));
         }
     }
 
@@ -352,15 +368,16 @@ public class AggregateTableRequest {
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private void updateResultWithDataOriginPackageNames(Cursor metaDataCursor) {
+    private List<String> updateResultWithDataOriginPackageNames(Cursor metaDataCursor) {
         List<Long> packageIds = new ArrayList<>();
         while (metaDataCursor.moveToNext()) {
             packageIds.add(StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME));
         }
-        List<String> packageNames = AppInfoHelper.getInstance().getPackageNames(packageIds);
+        List<String> packageNames = mAppInfoHelper.getPackageNames(packageIds);
 
         mAggregateResults.replaceAll(
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));
+        return packageNames;
     }
 
     public List<Pair<Long, Long>> getGroupSplitIntervals() {
@@ -427,13 +444,19 @@ public class AggregateTableRequest {
     }
 
     private void deriveAggregate(Cursor cursor) {
-        double[] derivedAggregateArray = mRecordHelper.deriveAggregate(cursor, this);
+        double[] derivedAggregateArray =
+                mRecordHelper.deriveAggregate(cursor, this, mTransactionManager);
         int index = 0;
         cursor.moveToFirst();
         for (double aggregate : derivedAggregateArray) {
             mAggregateResults.put(
-                    index, mRecordHelper.getAggregateResult(cursor, mAggregationType, aggregate));
+                    index,
+                    mRecordHelper.getDerivedAggregateResult(cursor, mAggregationType, aggregate));
             index++;
         }
+    }
+
+    public int getRecordTypeId() {
+        return mRecordHelper.getRecordIdentifier();
     }
 }

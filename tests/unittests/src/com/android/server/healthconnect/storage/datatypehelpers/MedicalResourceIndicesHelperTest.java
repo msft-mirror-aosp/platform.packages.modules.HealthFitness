@@ -16,11 +16,10 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getChildTableUpsertRequests;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
@@ -32,14 +31,17 @@ import static com.google.common.truth.Truth.assertThat;
 import android.content.ContentValues;
 import android.util.Pair;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collections;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class MedicalResourceIndicesHelperTest {
     @Test
     public void getCreateTableRequest_correctResult() {
@@ -60,14 +62,15 @@ public class MedicalResourceIndicesHelperTest {
     }
 
     @Test
-    public void getUpsertTableRequest_correctResult() {
-        UpsertTableRequest upsertRequest =
-                getChildTableUpsertRequests(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-        ContentValues contentValues = upsertRequest.getContentValues();
+    public void getContentValues_correctResult() {
+        long rowId = 1L;
+        ContentValues contentValues =
+                MedicalResourceIndicesHelper.getContentValues(
+                        rowId, MEDICAL_RESOURCE_TYPE_VACCINES);
 
-        assertThat(upsertRequest.getTable()).isEqualTo(getTableName());
-        assertThat(contentValues.size()).isEqualTo(1);
         assertThat(contentValues.get(getMedicalResourceTypeColumnName()))
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
+        assertThat(contentValues.get(MedicalResourceIndicesHelper.getParentColumnReference()))
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
     }
 }

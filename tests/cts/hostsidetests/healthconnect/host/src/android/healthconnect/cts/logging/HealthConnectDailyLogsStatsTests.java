@@ -18,6 +18,10 @@ package android.healthconnect.cts.logging;
 
 import static android.healthconnect.cts.HostSideTestUtil.isHardwareSupported;
 
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.cts.statsdatom.lib.AtomTestUtils;
@@ -25,9 +29,13 @@ import android.cts.statsdatom.lib.ConfigUtils;
 import android.cts.statsdatom.lib.DeviceUtils;
 import android.cts.statsdatom.lib.ReportUtils;
 import android.healthconnect.cts.HostSideTestUtil;
+import android.platform.test.annotations.RequiresFlagsEnabled;
 
 import com.android.os.StatsLog;
 import com.android.os.healthfitness.api.ApiExtensionAtoms;
+import com.android.os.healthfitness.api.HealthConnectPermissionStats;
+import com.android.os.healthfitness.api.HealthConnectPhrStorageStats;
+import com.android.os.healthfitness.api.HealthConnectPhrUsageStats;
 import com.android.os.healthfitness.api.HealthConnectStorageStats;
 import com.android.os.healthfitness.api.HealthConnectUsageStats;
 import com.android.tradefed.build.IBuildInfo;
@@ -137,6 +145,62 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
         assertThat(atom.getIntervalDataCount()).isEqualTo(1);
         assertThat(atom.getSeriesDataCount()).isEqualTo(1);
         assertThat(atom.getChangelogCount()).isGreaterThan(2);
+    }
+
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrUsageStats() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        ConfigUtils.uploadConfigForPushedAtoms(
+                getDevice(),
+                TEST_APP_PKG_NAME,
+                new int[] {ApiExtensionAtoms.HEALTH_CONNECT_PHR_USAGE_STATS_FIELD_NUMBER});
+
+        List<StatsLog.EventMetricData> data =
+                getEventMetricDataList(
+                        "testUpsertMedicalResourcesThenReadSuccess", NUMBER_OF_RETRIES);
+
+        assertThat(data.size()).isAtLeast(1);
+        HealthConnectPhrUsageStats atom =
+                data.get(data.size() - 1)
+                        .getAtom()
+                        .getExtension(ApiExtensionAtoms.healthConnectPhrUsageStats);
+
+        assertThat(atom.getMedicalResourceCount()).isEqualTo(1);
+        assertThat(atom.getConnectedMedicalDatasourceCount()).isEqualTo(1);
+        assertThat(atom.getIsMonthlyActivePhrUser()).isTrue();
+        assertThat(atom.getGrantedPhrAppsCount()).isEqualTo(1);
+    }
+
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrStorageStats() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        ConfigUtils.uploadConfigForPushedAtoms(
+                getDevice(),
+                TEST_APP_PKG_NAME,
+                new int[] {ApiExtensionAtoms.HEALTH_CONNECT_PHR_STORAGE_STATS_FIELD_NUMBER});
+
+        List<StatsLog.EventMetricData> data =
+                getEventMetricDataList(
+                        "testUpsertMedicalResourcesThenReadSuccess", NUMBER_OF_RETRIES);
+
+        assertThat(data.size()).isAtLeast(1);
+        HealthConnectPhrStorageStats atom =
+                data.get(data.size() - 1)
+                        .getAtom()
+                        .getExtension(ApiExtensionAtoms.healthConnectPhrStorageStats);
+        assertThat(atom.getPhrDataSize()).isGreaterThan(0);
     }
 
     public void testIsUserActive_insertRecord_userMonthlyActiveNextDay() throws Exception {
@@ -283,6 +347,72 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
         assertThat(atom.getIsMonthlyActiveUser()).isFalse();
     }
 
+    public void testIsUserActive_deleteRecord_userNotMonthlyActive() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+
+        ConfigUtils.uploadConfigForPushedAtoms(
+                getDevice(),
+                TEST_APP_PKG_NAME,
+                new int[] {ApiExtensionAtoms.HEALTH_CONNECT_USAGE_STATS_FIELD_NUMBER});
+        triggerTestInTestApp(
+                HEALTH_CONNECT_SERVICE_LOG_TESTS_ACTIVITY, "testHealthConnectDeleteRecords");
+        increaseDeviceTimeByDays(/* numberOfDays= */ 35);
+
+        List<StatsLog.EventMetricData> data =
+                getEventMetricDataList(/* testName= */ null, NUMBER_OF_RETRIES);
+        assertThat(data.size()).isAtLeast(1);
+        HealthConnectUsageStats atom =
+                data.get(data.size() - 1)
+                        .getAtom()
+                        .getExtension(ApiExtensionAtoms.healthConnectUsageStats);
+
+        assertThat(atom.getIsMonthlyActiveUser()).isFalse();
+    }
+
+    public void testPermissionStats() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+
+        List<String> testAppPermissions =
+                List.of(
+                        "WRITE_BLOOD_PRESSURE",
+                        "WRITE_HEART_RATE",
+                        "WRITE_STEPS",
+                        "READ_BLOOD_PRESSURE",
+                        "READ_HEART_RATE",
+                        "WRITE_MEDICAL_DATA",
+                        "READ_MEDICAL_DATA_VACCINES",
+                        "READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES",
+                        "READ_MEDICAL_DATA_CONDITIONS",
+                        "READ_MEDICAL_DATA_LABORATORY_RESULTS",
+                        "READ_MEDICAL_DATA_MEDICATIONS",
+                        "READ_MEDICAL_DATA_PERSONAL_DETAILS",
+                        "READ_MEDICAL_DATA_PRACTITIONER_DETAILS",
+                        "READ_MEDICAL_DATA_PREGNANCY",
+                        "READ_MEDICAL_DATA_PROCEDURES",
+                        "READ_MEDICAL_DATA_SOCIAL_HISTORY",
+                        "READ_MEDICAL_DATA_VISITS",
+                        "READ_MEDICAL_DATA_VITAL_SIGNS");
+
+        ConfigUtils.uploadConfigForPushedAtoms(
+                getDevice(),
+                TEST_APP_PKG_NAME,
+                new int[] {ApiExtensionAtoms.HEALTH_CONNECT_PERMISSION_STATS_FIELD_NUMBER});
+        List<StatsLog.EventMetricData> data =
+                getEventMetricDataList(/* testName= */ null, NUMBER_OF_RETRIES);
+        assertThat(data.size()).isAtLeast(1);
+        HealthConnectPermissionStats atom =
+                data.get(data.size() - 1)
+                        .getAtom()
+                        .getExtension(ApiExtensionAtoms.healthConnectPermissionStats);
+
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
+        assertThat(atom.getPermissionNameList()).isEqualTo(testAppPermissions);
+    }
+
     private List<StatsLog.EventMetricData> getEventMetricDataList(String testName, int retryCount)
             throws Exception {
         if (retryCount == 0) {
@@ -302,7 +432,7 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
     }
 
     private void clearData() throws Exception {
-        triggerTestInTestApp(DAILY_LOG_TESTS_ACTIVITY, "deleteAllRecordsAddedForTest");
+        triggerTestInTestApp(DAILY_LOG_TESTS_ACTIVITY, "deleteAllStagedRemoteData");
         // Next two lines will delete newly added Access Logs as all access logs over 7 days are
         // deleted by the AutoDeleteService which is run by the daily job.
         increaseDeviceTimeByDays(10);

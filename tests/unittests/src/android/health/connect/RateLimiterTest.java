@@ -18,29 +18,23 @@ package android.health.connect;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
-import android.Manifest;
-import android.app.UiAutomation;
-import android.content.Context;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.health.connect.ratelimiter.RateLimiter.QuotaCategory;
 
-import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.TestUtils;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Mock;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.time.Instant;
 
+@RunWith(AndroidJUnit4.class)
 public class RateLimiterTest {
     private static final int UID = 1;
     private static final boolean IS_IN_FOREGROUND_TRUE = true;
@@ -50,39 +44,11 @@ public class RateLimiterTest {
     private static final Duration WINDOW_15M = Duration.ofMinutes(15);
     private static final int MEMORY_COST = 20000;
 
-    private static final UiAutomation UI_AUTOMATION =
-            InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
     @Rule public ExpectedException exception = ExpectedException.none();
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).setStrictness(Strictness.LENIENT).build();
-
-    @Mock Context mContext;
-
-    @Before
-    public void setUp() {
-        TestUtils.runWithShellPermissionIdentity(
-                () -> {
-                    HealthConnectDeviceConfigManager.initializeInstance(mContext);
-                    HealthConnectDeviceConfigManager.getInitialisedInstance()
-                            .updateRateLimiterValues();
-                },
-                Manifest.permission.READ_DEVICE_CONFIG);
-        RateLimiter.updateEnableRateLimiterFlag(true);
-    }
-
-    @After
-    public void tearDown() {
-        TestUtils.runWithShellPermissionIdentity(
-                () -> {
-                    HealthConnectDeviceConfigManager.initializeInstance(mContext);
-                    HealthConnectDeviceConfigManager.getInitialisedInstance()
-                            .updateRateLimiterValues();
-                },
-                Manifest.permission.READ_DEVICE_CONFIG);
-    }
 
     @Test
     public void testTryAcquireApiCallQuota_invalidQuotaCategory() {

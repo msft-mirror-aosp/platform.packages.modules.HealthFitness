@@ -24,6 +24,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -35,18 +36,16 @@ import android.health.connect.HealthDataCategory;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.quality.Strictness;
+import org.mockito.MockitoAnnotations;
 import org.mockito.verification.VerificationMode;
 
 import java.util.ArrayList;
@@ -56,14 +55,6 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class PriorityMigrationHelperTest {
-
-    @Rule
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(TransactionManager.class)
-                    .mockStatic(HealthDataCategoryPriorityHelper.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
 
     private static final long APP_PACKAGE_ID = 1;
     private static final long APP_PACKAGE_ID_2 = 2;
@@ -79,16 +70,13 @@ public class PriorityMigrationHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        PriorityMigrationHelper.clearInstanceForTest();
-        mPriorityMigrationHelper = PriorityMigrationHelper.getInstance();
-    }
+        MockitoAnnotations.initMocks(this);
 
-    @After
-    public void tearDown() throws Exception {
-        mPriorityMigrationHelper.clearData(mTransactionManager);
+        mPriorityMigrationHelper =
+                new PriorityMigrationHelper(
+                        mHealthDataCategoryPriorityHelper,
+                        mTransactionManager,
+                        new DatabaseHelpers());
     }
 
     @Test
@@ -100,10 +88,10 @@ public class PriorityMigrationHelperTest {
                 HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
         preMigrationPriority.put(HealthDataCategory.SLEEP, new ArrayList<>());
 
-        when(mHealthDataCategoryPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable())
-                .thenReturn(preMigrationPriority);
-        when(mTransactionManager.getNumberOfEntriesInTheTable(eq(PRE_MIGRATION_TABLE_NAME)))
-                .thenReturn(0L);
+        doReturn(preMigrationPriority)
+                .when(mHealthDataCategoryPriorityHelper)
+                .getHealthDataCategoryToAppIdPriorityMapImmutable();
+        when(mTransactionManager.queryNumEntries(eq(PRE_MIGRATION_TABLE_NAME))).thenReturn(0L);
 
         mPriorityMigrationHelper.populatePreMigrationPriority();
 
@@ -128,8 +116,7 @@ public class PriorityMigrationHelperTest {
 
         when(mHealthDataCategoryPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable())
                 .thenReturn(preMigrationPriority);
-        when(mTransactionManager.getNumberOfEntriesInTheTable(eq(PRE_MIGRATION_TABLE_NAME)))
-                .thenReturn(1L);
+        when(mTransactionManager.queryNumEntries(eq(PRE_MIGRATION_TABLE_NAME))).thenReturn(1L);
         mPriorityMigrationHelper.populatePreMigrationPriority();
 
         verify(mTransactionManager, never()).insert(any());
@@ -142,8 +129,7 @@ public class PriorityMigrationHelperTest {
 
         when(mHealthDataCategoryPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable())
                 .thenReturn(preMigrationPriority);
-        when(mTransactionManager.getNumberOfEntriesInTheTable(eq(PRE_MIGRATION_TABLE_NAME)))
-                .thenReturn(0L);
+        when(mTransactionManager.queryNumEntries(eq(PRE_MIGRATION_TABLE_NAME))).thenReturn(0L);
 
         mPriorityMigrationHelper.populatePreMigrationPriority();
 

@@ -41,8 +41,8 @@ java_sdk_library {
     libs: [
         "framework-healthfitness.impl",
         "androidx.annotation_annotation",
-        "framework-sdkextensions",
-        "framework-configinfrastructure",
+        "framework-sdkextensions.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
         "keepanno-annotations",
         "modules-utils-preconditions",
         // Keeping aconfig lib deps in "libs" instead of "static_libs" because we already have them
@@ -53,6 +53,8 @@ java_sdk_library {
     ],
     static_libs: [
         "modules-utils-backgroundthread",
+        "fhirspec-java-proto-lite",
+        "backup-data-proto",
     ],
     jarjar_rules: "jarjar-rules.txt",
     installable: true,
@@ -75,4 +77,8 @@ java_sdk_library {
             "-XepOpt:NullAway:AnnotatedPackages=com.android.server.healthconnect",
         ],
     },
+    java_resources: select(release_flag("RELEASE_HC_PHR_FHIR_STRUCTURAL_VALIDATION"), {
+        true: [":generate-fhir-spec-r4-binarypb"],
+        default: [],
+    }),
 }

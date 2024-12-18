@@ -15,179 +15,59 @@
  */
 package com.android.healthconnect.controller.selectabledeletion
 
-import android.os.Parcel
-import android.os.Parcelable
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.DataType
+import java.time.Instant
 
 /** Represents the types of deletion that the user can perform. */
-sealed class DeletionType : Parcelable {
-    data class DeletionTypeHealthPermissionTypes(
-        val fitnessPermissionTypes: List<FitnessPermissionType>
-    ) : DeletionType() {
-        constructor(
-            parcel: Parcel
-        ) : this(
-            (parcel.createStringArray()
-                    ?: arrayOf(FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()))
-                .map { string -> FitnessPermissionType.valueOf(string) }
-                .toList()) {}
+sealed class DeletionType {
+    data class DeleteHealthPermissionTypes(
+        val healthPermissionTypes: Set<HealthPermissionType>,
+        val totalPermissionTypes: Int,
+    ) : DeletionType()
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeStringArray(
-                fitnessPermissionTypes
-                    .map { permissionType -> permissionType.toString() }
-                    .toTypedArray())
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<DeletionTypeHealthPermissionTypes> {
-            override fun createFromParcel(parcel: Parcel): DeletionTypeHealthPermissionTypes {
-                return DeletionTypeHealthPermissionTypes(parcel)
-            }
-
-            override fun newArray(size: Int): Array<DeletionTypeHealthPermissionTypes?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    data class DeletionTypeHealthPermissionTypesFromApp(
-        val fitnessPermissionTypes: List<FitnessPermissionType>,
+    data class DeleteHealthPermissionTypesFromApp(
+        val healthPermissionTypes: Set<HealthPermissionType>,
+        val totalPermissionTypes: Int,
         val packageName: String,
-        val appName: String
+        val appName: String,
     ) : DeletionType() {
-        constructor(
-            parcel: Parcel
-        ) : this(
-            (parcel.createStringArray()
-                    ?: arrayOf(FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()))
-                .toList()
-                .map { string -> FitnessPermissionType.valueOf(string) },
-            parcel.readString() ?: "",
-            parcel.readString() ?: "") {}
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeStringArray(
-                fitnessPermissionTypes
-                    .map { permissionType -> permissionType.toString() }
-                    .toTypedArray())
-            parcel.writeString(packageName)
-            parcel.writeString(appName)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<DeletionTypeHealthPermissionTypesFromApp> {
-            override fun createFromParcel(
-                parcel: Parcel
-            ): DeletionTypeHealthPermissionTypesFromApp {
-                return DeletionTypeHealthPermissionTypesFromApp(parcel)
-            }
-
-            override fun newArray(size: Int): Array<DeletionTypeHealthPermissionTypesFromApp?> {
-                return arrayOfNulls(size)
-            }
-        }
+        fun toDeleteAppData(): DeleteAppData = DeleteAppData(packageName, appName)
     }
 
-    data class DeletionTypeEntries(val ids: List<String>, val dataType: DataType) : DeletionType() {
-        constructor(
-            parcel: Parcel
-        ) : this(
-            (parcel.createStringArray() ?: arrayOf<String>()).toList(),
-            DataType.valueOf(parcel.readString().orEmpty()))
+    data class DeleteEntries(
+        val idsToDataTypes: Map<String, DataType>,
+        val totalEntries: Int,
+        val period: DateNavigationPeriod,
+        val startTime: Instant,
+    ) : DeletionType()
 
-        override fun describeContents(): Int = 0
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeStringArray(ids.toTypedArray())
-            parcel.writeString(dataType.name)
-        }
-
-        companion object CREATOR : Parcelable.Creator<DeletionTypeEntries> {
-            override fun createFromParcel(parcel: Parcel): DeletionTypeEntries {
-                return DeletionTypeEntries(parcel)
-            }
-
-            override fun newArray(size: Int): Array<DeletionTypeEntries?> {
-                return arrayOfNulls(size)
-            }
-        }
+    data class DeleteEntriesFromApp(
+        val idsToDataTypes: Map<String, DataType>,
+        val packageName: String,
+        val appName: String,
+        val totalEntries: Int,
+        val period: DateNavigationPeriod,
+        val startTime: Instant,
+    ) : DeletionType() {
+        fun toDeleteEntries(): DeleteEntries =
+            DeleteEntries(idsToDataTypes, totalEntries, period, startTime)
     }
 
-    data class DeletionTypeAppData(val packageName: String, val appName: String) : DeletionType() {
-        constructor(parcel: Parcel) : this(parcel.readString() ?: "", parcel.readString() ?: "") {}
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(packageName)
-            parcel.writeString(appName)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<DeletionTypeAppData> {
-            override fun createFromParcel(parcel: Parcel): DeletionTypeAppData {
-                return DeletionTypeAppData(parcel)
-            }
-
-            override fun newArray(size: Int): Array<DeletionTypeAppData?> {
-                return arrayOfNulls(size)
-            }
-        }
+    data class DeleteInactiveAppData(
+        val packageName: String,
+        val appName: String,
+        val healthPermissionType: HealthPermissionType,
+    ) : DeletionType() {
+        fun toDeleteHealthPermissionTypesFromApp(): DeleteHealthPermissionTypesFromApp =
+            DeleteHealthPermissionTypesFromApp(
+                healthPermissionTypes = setOf(healthPermissionType),
+                totalPermissionTypes = 1,
+                packageName = packageName,
+                appName = appName,
+            )
     }
 
-    class DeletionTypeAllData() : DeletionType() {
-
-        @Suppress(
-            "UNUSED_PARAMETER") // the class has no data to write but inherits from a Parcelable
-        constructor(parcel: Parcel) : this() {}
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {}
-
-        override fun describeContents(): Int = 0
-
-        companion object CREATOR : Parcelable.Creator<DeletionTypeAllData> {
-            override fun createFromParcel(parcel: Parcel): DeletionTypeAllData {
-                return DeletionTypeAllData(parcel)
-            }
-
-            override fun newArray(size: Int): Array<DeletionTypeAllData?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    val hasPermissionTypes: Boolean
-        get() {
-            return when (this) {
-                is DeletionTypeHealthPermissionTypes,
-                is DeletionTypeHealthPermissionTypesFromApp -> true
-                else -> false
-            }
-        }
-
-    val hasEntryIds: Boolean
-        get() {
-            return when (this) {
-                is DeletionTypeEntries -> true
-                else -> false
-            }
-        }
-
-    val hasAppData: Boolean
-        get() {
-            return when (this) {
-                is DeletionTypeHealthPermissionTypesFromApp -> true
-                is DeletionTypeAppData -> true
-                else -> false
-            }
-        }
+    data class DeleteAppData(val packageName: String, val appName: String) : DeletionType()
 }

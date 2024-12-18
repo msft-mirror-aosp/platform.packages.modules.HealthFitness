@@ -68,7 +68,8 @@ public class FloorsClimbedRecordTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {
@@ -270,8 +271,6 @@ public class FloorsClimbedRecordTest {
                         recordNew);
         double newFloorsTotal = newResponse.get(FLOORS_CLIMBED_TOTAL);
         double oldFloorsTotal = oldResponse.get(FLOORS_CLIMBED_TOTAL);
-        assertThat(newFloorsTotal).isNotNull();
-        assertThat(oldFloorsTotal).isNotNull();
         assertThat(newFloorsTotal - oldFloorsTotal).isEqualTo(20);
         Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(FLOORS_CLIMBED_TOTAL);
         for (DataOrigin itr : newDataOrigin) {

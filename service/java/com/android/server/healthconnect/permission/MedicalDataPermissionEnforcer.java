@@ -20,7 +20,6 @@ import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionMapper.getMedicalReadPermission;
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
 
-import android.annotation.NonNull;
 import android.content.AttributionSource;
 import android.health.connect.HealthPermissions;
 import android.health.connect.datatypes.MedicalResource;
@@ -37,7 +36,7 @@ import java.util.Set;
 public class MedicalDataPermissionEnforcer {
     private final PermissionManager mPermissionManager;
 
-    public MedicalDataPermissionEnforcer(@NonNull PermissionManager permissionManager) {
+    public MedicalDataPermissionEnforcer(PermissionManager permissionManager) {
         mPermissionManager = permissionManager;
     }
 

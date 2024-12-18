@@ -15,7 +15,6 @@
  */
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -40,23 +39,20 @@ public final class MenstruationPeriodRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return MENSTRUATION_PERIOD_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull MenstruationPeriodRecordInternal menstruationPeriodRecord) {}
+            Cursor cursor, MenstruationPeriodRecordInternal menstruationPeriodRecord) {}
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull MenstruationPeriodRecordInternal menstruationPeriodRecord) {}
+            ContentValues contentValues,
+            MenstruationPeriodRecordInternal menstruationPeriodRecord) {}
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.emptyList();
     }

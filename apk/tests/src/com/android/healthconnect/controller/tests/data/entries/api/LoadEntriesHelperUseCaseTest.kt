@@ -15,7 +15,7 @@ package com.android.healthconnect.controller.tests.data.entries.api
 
 import android.content.Context
 import android.health.connect.HealthConnectManager
-import android.health.connect.ReadMedicalResourcesRequest
+import android.health.connect.ReadMedicalResourcesInitialRequest
 import android.health.connect.ReadMedicalResourcesResponse
 import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.ReadRecordsResponse
@@ -28,10 +28,12 @@ import android.health.connect.datatypes.DistanceRecord
 import android.health.connect.datatypes.FloorsClimbedRecord
 import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalDataSource
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.health.connect.datatypes.OxygenSaturationRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.WeightRecord
@@ -43,9 +45,11 @@ import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInpu
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.tests.utils.BODYTEMPERATURE_MONTH
 import com.android.healthconnect.controller.tests.utils.BODYWATERMASS_WEEK
 import com.android.healthconnect.controller.tests.utils.DISTANCE_STARTDATE_1500
@@ -56,6 +60,7 @@ import com.android.healthconnect.controller.tests.utils.INSTANT_DAY
 import com.android.healthconnect.controller.tests.utils.INSTANT_MONTH3
 import com.android.healthconnect.controller.tests.utils.INSTANT_WEEK
 import com.android.healthconnect.controller.tests.utils.INTERMENSTRUAL_BLEEDING_DAY
+import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.OXYGENSATURATION_DAY
 import com.android.healthconnect.controller.tests.utils.OXYGENSATURATION_DAY2
 import com.android.healthconnect.controller.tests.utils.SLEEP_DAY_0H20
@@ -65,14 +70,21 @@ import com.android.healthconnect.controller.tests.utils.SLEEP_MONTH_81H15
 import com.android.healthconnect.controller.tests.utils.SLEEP_WEEK_33H15
 import com.android.healthconnect.controller.tests.utils.SLEEP_WEEK_9H15
 import com.android.healthconnect.controller.tests.utils.START_TIME
+import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_DATASOURCE_ID
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE_2
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.WEIGHT_DAY_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_MONTH_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_STARTDATE_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_WEEK_100
+import com.android.healthconnect.controller.tests.utils.forDataType
 import com.android.healthconnect.controller.tests.utils.getMixedRecordsAcrossThreeDays
 import com.android.healthconnect.controller.tests.utils.getMixedRecordsAcrossTwoDays
+import com.android.healthconnect.controller.tests.utils.getStepsCadenceRecord
+import com.android.healthconnect.controller.tests.utils.getStepsRecord
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.verifyBodyWaterMassListsEqual
 import com.android.healthconnect.controller.tests.utils.verifyHydrationListsEqual
@@ -98,6 +110,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Captor
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -117,6 +130,8 @@ class LoadEntriesHelperUseCaseTest {
         Mockito.mock(HealthConnectManager::class.java)
 
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var menstruationPeriodFormatter: MenstruationPeriodFormatter
+    @Inject lateinit var dataSourceReader: MedicalDataSourceReader
 
     private lateinit var context: Context
     private lateinit var loadEntriesHelper: LoadEntriesHelper
@@ -143,7 +158,7 @@ class LoadEntriesHelperUseCaseTest {
     @Captor
     lateinit var bodyWaterMassRequestCaptor:
         ArgumentCaptor<ReadRecordsRequestUsingFilters<BodyWaterMassRecord>>
-    @Captor lateinit var immunizationCaptor: ArgumentCaptor<ReadMedicalResourcesRequest>
+    @Captor lateinit var immunizationCaptor: ArgumentCaptor<ReadMedicalResourcesInitialRequest>
 
     @Before
     fun setup() {
@@ -152,7 +167,14 @@ class LoadEntriesHelperUseCaseTest {
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.US)
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager, timeSource)
+            LoadEntriesHelper(
+                context,
+                healthDataEntryFormatter,
+                menstruationPeriodFormatter,
+                healthConnectManager,
+                dataSourceReader,
+                timeSource,
+            )
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
@@ -225,6 +247,52 @@ class LoadEntriesHelperUseCaseTest {
                 SleepSessionRecord::class.java,
             )
             verifySleepSessionListsEqual(actual, expected)
+        }
+
+    @Test
+    fun loadStepsDataUseCase_withinDay_returnsListOfStepsAndCadenceRecords_sortedByDescendingStartTime() =
+        runTest {
+            val timePeriod = DateNavigationPeriod.PERIOD_DAY
+            val input =
+                LoadDataEntriesInput(
+                    displayedStartTime = NOW.atStartOfDay(),
+                    packageName = null,
+                    period = timePeriod,
+                    showDataOrigin = true,
+                    permissionType = FitnessPermissionType.STEPS,
+                )
+
+            val stepRecord1 = getStepsRecord(100, NOW.plusSeconds(10))
+            val stepRecord2 = getStepsRecord(50, NOW.plusSeconds(5))
+            val stepCadenceRecord1 = getStepsCadenceRecord(NOW.plusSeconds(8))
+            val stepCadenceRecord2 = getStepsCadenceRecord(NOW.plusSeconds(6))
+
+            Mockito.doAnswer(prepareStepsAnswer(listOf(stepRecord1, stepRecord2)))
+                .`when`(healthConnectManager)
+                .readRecords(
+                    ArgumentMatchers.argThat<ReadRecordsRequestUsingFilters<Record>> { request ->
+                        request.forDataType(dataType = StepsRecord::class.java)
+                    },
+                    any(),
+                    any(),
+                )
+
+            Mockito.doAnswer(
+                    prepareStepsCadenceAnswer(listOf(stepCadenceRecord1, stepCadenceRecord2))
+                )
+                .`when`(healthConnectManager)
+                .readRecords(
+                    ArgumentMatchers.argThat<ReadRecordsRequestUsingFilters<Record>> { request ->
+                        request.forDataType(dataType = StepsCadenceRecord::class.java)
+                    },
+                    any(),
+                    any(),
+                )
+
+            val actual = loadEntriesHelper.readRecords(input)
+            val expected = listOf(stepRecord1, stepCadenceRecord1, stepCadenceRecord2, stepRecord2)
+
+            assertThat(actual).containsExactlyElementsIn(expected)
         }
 
     @Test
@@ -488,13 +556,41 @@ class LoadEntriesHelperUseCaseTest {
     }
 
     @Test
-    fun readMedicalResources_immunization() = runTest {
-        val input = setupReadMedicalResourceTest(MedicalPermissionType.IMMUNIZATION)
+    fun readMedicalResources_allImmunization() = runTest {
+        val input = setupReadMedicalResourceTest(MedicalPermissionType.VACCINES)
         val actual = loadEntriesHelper.readMedicalRecords(input)
 
         assertArgumentRequestCaptorValidity(immunizationCaptor)
         assertThat(actual.size).isEqualTo(1)
-        assertThat(actual[0].dataSourceId).isEqualTo("123")
+        assertThat(actual[0].dataSourceId).isEqualTo(TEST_DATASOURCE_ID)
+    }
+
+    @Test
+    fun readMedicalResources_immunizationFromApp() = runTest {
+        Mockito.doAnswer(
+                prepareDataSourceAnswer(
+                    listOf(TEST_MEDICAL_DATA_SOURCE, TEST_MEDICAL_DATA_SOURCE_2)
+                )
+            )
+            .`when`(healthConnectManager)
+            .getMedicalDataSources(any<List<String>>(), any(), any())
+
+        val input =
+            setupReadMedicalResourceTest(MedicalPermissionType.VACCINES, TEST_APP_PACKAGE_NAME)
+        val actual = loadEntriesHelper.readMedicalRecords(input)
+
+        assertArgumentRequestCaptorValidity(immunizationCaptor)
+        assertThat(actual.size).isEqualTo(1)
+        assertThat(actual[0].dataSourceId).isEqualTo(TEST_DATASOURCE_ID)
+    }
+
+    private fun prepareDataSourceAnswer(
+        medicalDataSourcesResponse: List<MedicalDataSource>
+    ): (InvocationOnMock) -> Unit {
+        return { args: InvocationOnMock ->
+            val receiver = args.arguments[2] as OutcomeReceiver<List<MedicalDataSource>, *>
+            receiver.onResult(medicalDataSourcesResponse)
+        }
     }
 
     private fun prepareDistanceAnswer(): (InvocationOnMock) -> ReadRecordsResponse<DistanceRecord> {
@@ -616,6 +712,27 @@ class LoadEntriesHelperUseCaseTest {
         }
     }
 
+    private fun prepareStepsAnswer(
+        stepsList: List<StepsRecord>
+    ): (InvocationOnMock) -> ReadRecordsResponse<StepsRecord> {
+        return { args: InvocationOnMock ->
+            val receiver = args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<StepsRecord>, *>
+            receiver.onResult(ReadRecordsResponse(stepsList, -1))
+            ReadRecordsResponse(stepsList, -1)
+        }
+    }
+
+    private fun prepareStepsCadenceAnswer(
+        stepsCadenceList: List<StepsCadenceRecord>
+    ): (InvocationOnMock) -> ReadRecordsResponse<StepsCadenceRecord> {
+        return { args: InvocationOnMock ->
+            val receiver =
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<StepsCadenceRecord>, *>
+            receiver.onResult(ReadRecordsResponse(stepsCadenceList, -1))
+            ReadRecordsResponse(stepsCadenceList, -1)
+        }
+    }
+
     private fun prepareImmunizationAnswer(): (InvocationOnMock) -> ReadMedicalResourcesResponse {
         return { args: InvocationOnMock ->
             val receiver = args.arguments[2] as OutcomeReceiver<ReadMedicalResourcesResponse, *>
@@ -683,6 +800,28 @@ class LoadEntriesHelperUseCaseTest {
         return ReadRecordsResponse<BodyWaterMassRecord>(listOf(BODYWATERMASS_WEEK), -1)
     }
 
+    private fun getStepsRecords(time: Instant = NOW): ReadRecordsResponse<StepsRecord> {
+        return ReadRecordsResponse<StepsRecord>(
+            listOf(
+                getStepsRecord(100, time.plusSeconds(10)),
+                getStepsRecord(50, time.plusSeconds(5)),
+            ),
+            -1,
+        )
+    }
+
+    private fun getStepsCadenceRecords(
+        time: Instant = NOW
+    ): ReadRecordsResponse<StepsCadenceRecord> {
+        return ReadRecordsResponse<StepsCadenceRecord>(
+            listOf(
+                getStepsCadenceRecord(time.plusSeconds(8)),
+                getStepsCadenceRecord(time.plusSeconds(6)),
+            ),
+            -1,
+        )
+    }
+
     private fun getMenstruationPeriodRecords(): ReadRecordsResponse<IntermenstrualBleedingRecord> {
         return ReadRecordsResponse<IntermenstrualBleedingRecord>(
             listOf(INTERMENSTRUAL_BLEEDING_DAY),
@@ -729,11 +868,12 @@ class LoadEntriesHelperUseCaseTest {
         return ReadMedicalResourcesResponse(
             listOf(TEST_MEDICAL_RESOURCE_IMMUNIZATION),
             "nextPageToken",
+            1,
         )
     }
 
     private fun getEmptyMedicalResource(): ReadMedicalResourcesResponse {
-        return ReadMedicalResourcesResponse(listOf(), "nextPageToken")
+        return ReadMedicalResourcesResponse(listOf(), "nextPageToken", 1)
     }
 
     private fun setupReadRecordTest(
@@ -751,7 +891,7 @@ class LoadEntriesHelperUseCaseTest {
         val timeRangeFilter =
             loadEntriesHelper.getTimeFilter(defaultStartTime.atStartOfDay(), timePeriod, true)
 
-        var mockitoStubber: Stubber =
+        val mockitoStubber: Stubber =
             when (permissionType) {
                 FitnessPermissionType.ACTIVE_CALORIES_BURNED ->
                     Mockito.doAnswer(prepareEmptyCaloriesAnswer())
@@ -777,11 +917,7 @@ class LoadEntriesHelperUseCaseTest {
 
         mockitoStubber
             .`when`(healthConnectManager)
-            .readRecords(
-                ArgumentMatchers.any(ReadRecordsRequestUsingFilters::class.java),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-            )
+            .readRecords(any(ReadRecordsRequestUsingFilters::class.java), any(), any())
 
         return Pair(input, timeRangeFilter)
     }
@@ -793,7 +929,7 @@ class LoadEntriesHelperUseCaseTest {
         wantedInvocationCount: Int = 1,
     ) {
         Mockito.verify(healthConnectManager, Mockito.times(wantedInvocationCount))
-            .readRecords(requestCaptor.capture(), ArgumentMatchers.any(), ArgumentMatchers.any())
+            .readRecords(requestCaptor.capture(), any(), any())
         assertThat(requestCaptor.value.recordType).isEqualTo(recordType)
         assertThat((requestCaptor.value.timeRangeFilter as TimeInstantRangeFilter).startTime)
             .isEqualTo(timeRangeFilter.startTime)
@@ -804,18 +940,19 @@ class LoadEntriesHelperUseCaseTest {
     }
 
     private fun setupReadMedicalResourceTest(
-        permissionType: MedicalPermissionType
+        permissionType: MedicalPermissionType,
+        packageName: String? = null,
     ): LoadMedicalEntriesInput {
         val input =
             LoadMedicalEntriesInput(
-                packageName = null,
+                packageName = packageName,
                 showDataOrigin = true,
-                permissionType = permissionType,
+                medicalPermissionType = permissionType,
             )
 
         val mockitoStubber: Stubber =
             when (permissionType) {
-                MedicalPermissionType.IMMUNIZATION -> Mockito.doAnswer(prepareImmunizationAnswer())
+                MedicalPermissionType.VACCINES -> Mockito.doAnswer(prepareImmunizationAnswer())
                 MedicalPermissionType.ALL_MEDICAL_DATA ->
                     Mockito.doAnswer(prepareEmptyMedicalAnswer())
                 else ->
@@ -826,26 +963,18 @@ class LoadEntriesHelperUseCaseTest {
 
         mockitoStubber
             .`when`(healthConnectManager)
-            .readMedicalResources(
-                ArgumentMatchers.any(ReadMedicalResourcesRequest::class.java),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-            )
+            .readMedicalResources(any(ReadMedicalResourcesInitialRequest::class.java), any(), any())
 
         return input
     }
 
     private fun assertArgumentRequestCaptorValidity(
-        requestCaptor: ArgumentCaptor<out ReadMedicalResourcesRequest>,
+        requestCaptor: ArgumentCaptor<out ReadMedicalResourcesInitialRequest>,
         wantedInvocationCount: Int = 1,
     ) {
         Mockito.verify(healthConnectManager, Mockito.times(wantedInvocationCount))
-            .readMedicalResources(
-                requestCaptor.capture(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-            )
+            .readMedicalResources(requestCaptor.capture(), any(), any())
         assertThat(requestCaptor.value.medicalResourceType)
-            .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+            .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES)
     }
 }

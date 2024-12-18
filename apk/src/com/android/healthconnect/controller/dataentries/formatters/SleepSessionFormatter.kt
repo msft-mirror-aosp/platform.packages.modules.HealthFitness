@@ -50,7 +50,7 @@ class SleepSessionFormatter @Inject constructor(@ApplicationContext private val 
         record: SleepSessionRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.SleepSessionEntry(
             uuid = record.metadata.id,
@@ -58,8 +58,9 @@ class SleepSessionFormatter @Inject constructor(@ApplicationContext private val 
             headerA11y = headerA11y,
             title = formatValue(record),
             titleA11y = formatA11yValue(record),
-            dataType = getDataType(record),
-            notes = getNotes(record))
+            dataType = record::class,
+            notes = getNotes(record),
+        )
     }
 
     @VisibleForTesting
@@ -86,7 +87,7 @@ class SleepSessionFormatter @Inject constructor(@ApplicationContext private val 
 
     private fun formatSleepSession(
         record: SleepSessionRecord,
-        formatDuration: (duration: Duration) -> String
+        formatDuration: (duration: Duration) -> String,
     ): String {
         return if (!record.title.isNullOrBlank()) {
             context.getString(R.string.sleep_session_with_one_field, record.title)
@@ -107,14 +108,13 @@ class SleepSessionFormatter @Inject constructor(@ApplicationContext private val 
             header = timeFormatter.formatTimeRange(stage.startTime, stage.endTime),
             headerA11y = timeFormatter.formatTimeRangeA11y(stage.startTime, stage.endTime),
             title = formatStageType(stage) { duration -> formatDurationShort(context, duration) },
-            titleA11y =
-                formatStageType(stage) { duration -> formatDurationLong(context, duration) },
+            titleA11y = formatStageType(stage) { duration -> formatDurationLong(context, duration) },
         )
     }
 
     private fun formatStageType(
         stage: SleepSessionRecord.Stage,
-        formatDuration: (duration: Duration) -> String
+        formatDuration: (duration: Duration) -> String,
     ): String {
         val stageStringRes =
             when (stage.type) {
@@ -133,6 +133,9 @@ class SleepSessionFormatter @Inject constructor(@ApplicationContext private val 
         val stageString = context.getString(stageStringRes)
         val duration = Duration.between(stage.startTime, stage.endTime)
         return context.getString(
-            R.string.sleep_stage_default, formatDuration(duration), stageString)
+            R.string.sleep_stage_default,
+            formatDuration(duration),
+            stageString,
+        )
     }
 }

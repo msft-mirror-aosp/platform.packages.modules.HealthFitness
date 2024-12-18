@@ -16,16 +16,20 @@
 
 package com.android.server.healthconnect.phr;
 
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResource;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalResource;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class ReadMedicalResourcesInternalResponseTest {
 
     @Test
@@ -34,10 +38,11 @@ public class ReadMedicalResourcesInternalResponseTest {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
 
         ReadMedicalResourcesInternalResponse response =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken);
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken, 1);
 
         assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
         assertThat(response.getPageToken()).isEqualTo(pageToken);
+        assertThat(response.getRemainingCount()).isEqualTo(1);
     }
 
     @Test
@@ -45,10 +50,11 @@ public class ReadMedicalResourcesInternalResponseTest {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
 
         ReadMedicalResourcesInternalResponse response =
-                new ReadMedicalResourcesInternalResponse(medicalResources, null);
+                new ReadMedicalResourcesInternalResponse(medicalResources, null, 0);
 
         assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
         assertThat(response.getPageToken()).isEqualTo(null);
+        assertThat(response.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -57,7 +63,7 @@ public class ReadMedicalResourcesInternalResponseTest {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
 
         ReadMedicalResourcesInternalResponse response =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken);
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken, 1);
 
         assertThat(response.equals(response)).isTrue();
     }
@@ -69,9 +75,9 @@ public class ReadMedicalResourcesInternalResponseTest {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
 
         ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken1);
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken1, 2);
         ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken2);
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken2, 2);
 
         assertThat(response1.equals(response2)).isFalse();
     }
@@ -84,97 +90,66 @@ public class ReadMedicalResourcesInternalResponseTest {
         List<MedicalResource> medicalResources2 = List.of();
 
         ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken);
+                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken, 2);
         ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken);
+                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken, 2);
 
         assertThat(response1.equals(response2)).isFalse();
     }
 
     @Test
-    public void testReadMedicalResourcesInternalResponse_equals_bothFieldsDifferent_success() {
+    public void testReadMedicalResourcesInternalResponse_equals_differentTotalSize() {
+        String pageToken = "aw==";
+        List<MedicalResource> medicalResources = List.of(getMedicalResource());
+
+        ReadMedicalResourcesInternalResponse response1 =
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken, 2);
+        ReadMedicalResourcesInternalResponse response2 =
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken, 3);
+
+        assertThat(response1.equals(response2)).isFalse();
+    }
+
+    @Test
+    public void testReadMedicalResourcesInternalResponse_equals_twoFieldsDifferent_success() {
         String pageToken1 = "aw==";
         String pageToken2 = "ba==";
         List<MedicalResource> medicalResources1 = List.of(getMedicalResource());
         List<MedicalResource> medicalResources2 = List.of();
 
         ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken1);
+                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken1, 10);
         ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken2);
+                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken2, 10);
 
         assertThat(response1.equals(response2)).isFalse();
     }
 
     @Test
-    public void testReadMedicalResourcesInternalResponse_equals_bothFieldsTheSame_success() {
+    public void testReadMedicalResourcesInternalResponse_equals_allFieldsTheSame_success() {
         String pageToken1 = "aw==";
         String pageToken2 = "aw==";
         List<MedicalResource> medicalResources1 = List.of(getMedicalResource());
         List<MedicalResource> medicalResources2 = List.of(getMedicalResource());
 
         ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken1);
+                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken1, 10);
         ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken2);
+                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken2, 10);
 
         assertThat(response1.equals(response2)).isTrue();
     }
 
     @Test
-    public void testReadMedicalResourcesInternalResponse_hashCode_bothFieldsTheSame_success() {
+    public void testReadMedicalResourcesInternalResponse_hashCode_allFieldsTheSame_success() {
         String pageToken = "aw==";
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
-
+        int totalSize = 10;
         ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken);
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken, totalSize);
         ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken);
+                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken, totalSize);
 
         assertThat(response1.hashCode()).isEqualTo(response2.hashCode());
-    }
-
-    @Test
-    public void testReadMedicalResourcesInternalResponse_hashCode_differentPageToken_success() {
-        String pageToken1 = "aw==";
-        String pageToken2 = "ab==";
-        List<MedicalResource> medicalResources = List.of(getMedicalResource());
-
-        ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken1);
-        ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources, pageToken2);
-
-        assertThat(response1.hashCode()).isNotEqualTo(response2.hashCode());
-    }
-
-    @Test
-    public void
-            testReadMedicalResourcesInternalResponse_hashCode_differentMedicalResources_success() {
-        String pageToken = "aw==";
-        List<MedicalResource> medicalResources1 = List.of(getMedicalResource());
-        List<MedicalResource> medicalResources2 = List.of();
-
-        ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken);
-        ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken);
-
-        assertThat(response1.hashCode()).isNotEqualTo(response2.hashCode());
-    }
-
-    @Test
-    public void testReadMedicalResourcesInternalResponse_hashCode_bothFieldsDifferent_success() {
-        String pageToken1 = "aw==";
-        String pageToken2 = "ab==";
-        List<MedicalResource> medicalResources1 = List.of(getMedicalResource());
-        List<MedicalResource> medicalResources2 = List.of();
-
-        ReadMedicalResourcesInternalResponse response1 =
-                new ReadMedicalResourcesInternalResponse(medicalResources1, pageToken1);
-        ReadMedicalResourcesInternalResponse response2 =
-                new ReadMedicalResourcesInternalResponse(medicalResources2, pageToken2);
-
-        assertThat(response1.hashCode()).isNotEqualTo(response2.hashCode());
     }
 }

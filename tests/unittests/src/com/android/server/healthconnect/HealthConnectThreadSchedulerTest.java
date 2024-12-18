@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import static org.mockito.Mockito.when;
 
 import android.app.ActivityManager;
@@ -25,8 +27,6 @@ import android.os.Process;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.google.common.truth.Truth;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @RunWith(AndroidJUnit4.class)
@@ -130,10 +131,10 @@ public class HealthConnectThreadSchedulerTest {
 
     @Test
     public void testHealthConnectSchedulerClear() {
-        Truth.assertThat(mInternalTaskSchedulerCompletedJobs).isEqualTo(0);
-        Truth.assertThat(mControllerTaskSchedulerCompletedJobs).isEqualTo(0);
-        Truth.assertThat(mForegroundTaskSchedulerCompletedJobs).isEqualTo(0);
-        Truth.assertThat(mBackgroundTaskSchedulerCompletedJobs).isEqualTo(0);
+        assertThat(mInternalTaskSchedulerCompletedJobs).isEqualTo(0);
+        assertThat(mControllerTaskSchedulerCompletedJobs).isEqualTo(0);
+        assertThat(mForegroundTaskSchedulerCompletedJobs).isEqualTo(0);
+        assertThat(mBackgroundTaskSchedulerCompletedJobs).isEqualTo(0);
     }
 
     @Test
@@ -144,5 +145,32 @@ public class HealthConnectThreadSchedulerTest {
         HealthConnectThreadScheduler.schedule(mContext, () -> {}, Process.myUid(), true);
         HealthConnectThreadScheduler.scheduleInternalTask(() -> {});
         HealthConnectThreadScheduler.scheduleControllerTask(() -> {});
+    }
+
+    @Test
+    public void testInternalSchedulerThreadName() throws Exception {
+        Future<String> name = mInternalTaskScheduler.submit(() -> Thread.currentThread().getName());
+        assertThat(name.get()).isEqualTo("hc-int-bg-0");
+    }
+
+    @Test
+    public void testControllerSchedulerThreadName() throws Exception {
+        Future<String> name =
+                mControllerTaskScheduler.submit(() -> Thread.currentThread().getName());
+        assertThat(name.get()).startsWith("hc-ctrl-");
+    }
+
+    @Test
+    public void testForegroundSchedulerThreadName() throws Exception {
+        Future<String> name =
+                mForegroundTaskScheduler.submit(() -> Thread.currentThread().getName());
+        assertThat(name.get()).startsWith("hc-fg-0");
+    }
+
+    @Test
+    public void testBackgroundSchedulerThreadName() throws Exception {
+        Future<String> name =
+                mBackgroundTaskScheduler.submit(() -> Thread.currentThread().getName());
+        assertThat(name.get()).isEqualTo("hc-bg-0");
     }
 }

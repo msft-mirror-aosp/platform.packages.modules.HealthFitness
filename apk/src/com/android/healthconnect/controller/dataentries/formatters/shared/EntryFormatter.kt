@@ -28,7 +28,7 @@ abstract class EntryFormatter<T : Record>(context: Context) : BaseFormatter<T>(c
         record: T,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedDataEntry(
             uuid = record.metadata.id,
@@ -36,7 +36,8 @@ abstract class EntryFormatter<T : Record>(context: Context) : BaseFormatter<T>(c
             headerA11y = headerA11y,
             title = formatValue(record, unitPreferences),
             titleA11y = formatA11yValue(record, unitPreferences),
-            dataType = getDataType(record))
+            dataType = record::class,
+        )
     }
 
     abstract suspend fun formatValue(record: T, unitPreferences: UnitPreferences): String

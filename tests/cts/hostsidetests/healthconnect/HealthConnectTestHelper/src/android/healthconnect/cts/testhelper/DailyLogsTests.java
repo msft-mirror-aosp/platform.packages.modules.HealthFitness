@@ -16,6 +16,8 @@
 
 package android.healthconnect.cts.testhelper;
 
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteAllRecordsAddedByTestApp;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getBloodPressureRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeartRateRecord;
@@ -26,11 +28,14 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.queryAccessLo
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.InstrumentationRegistry;
 
 import com.android.compatibility.common.util.NonApiTest;
-import com.android.compatibility.common.util.SystemUtil;
 
 import org.junit.Test;
 
@@ -48,54 +53,59 @@ public class DailyLogsTests {
 
     private final HealthConnectManager mHealthConnectManager =
             InstrumentationRegistry.getContext().getSystemService(HealthConnectManager.class);
+    private final PhrCtsTestUtils mPhrTestUtils = new PhrCtsTestUtils(mHealthConnectManager);
+
+    @Test
+    public void testUpsertMedicalResourcesThenReadSuccess() throws InterruptedException {
+        // clean up before the test to make the test more realistic
+        mPhrTestUtils.deleteAllMedicalData();
+
+        MedicalDataSource medicalDataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource medicalResource =
+                mPhrTestUtils.upsertMedicalData(medicalDataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        // make a read to emulate monthly active user
+        mPhrTestUtils.readMedicalResourcesByIds(List.of(medicalResource.getId()));
+    }
 
     @Test
     public void testInsertRecordsSucceed() throws Exception {
         assertThat(
                         insertRecords(
+                                mHealthConnectManager,
                                 List.of(
                                         getStepsRecord(),
                                         getBloodPressureRecord(),
-                                        getHeartRateRecord()),
-                                mHealthConnectManager))
+                                        getHeartRateRecord())))
                 .hasSize(3);
     }
 
     @Test
     public void testHealthConnectAccessLogsEqualsZero() throws Exception {
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(0);
-                },
-                "android.permission.MANAGE_HEALTH_DATA");
+        assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(0);
     }
 
     @Test
     public void testHealthConnectAccessLogsEqualsOne() throws Exception {
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(1);
-                },
-                "android.permission.MANAGE_HEALTH_DATA");
+        assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(1);
     }
 
     @Test
     public void testHealthConnectAccessLogsEqualsTwo() throws Exception {
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(2);
-                },
-                "android.permission.MANAGE_HEALTH_DATA");
+        assertThat(queryAccessLogs(mHealthConnectManager)).hasSize(2);
     }
 
     /**
-     * Deletes the records added by the test app.
+     * Deletes the records added by the test app as well as the staged remote data.
      *
      * <p>Triggered in the teardown of HealthConnectDailyLogsStatsTests after database stats are
      * collected and verified.
      */
     @Test
-    public void deleteAllRecordsAddedForTest() throws InterruptedException {
+    public void deleteAllStagedRemoteData() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
+        mPhrTestUtils.deleteAllMedicalData();
     }
 }

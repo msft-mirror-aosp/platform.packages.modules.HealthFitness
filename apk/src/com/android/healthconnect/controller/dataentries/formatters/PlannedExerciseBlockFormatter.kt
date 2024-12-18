@@ -30,37 +30,42 @@ class PlannedExerciseBlockFormatter
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val plannedExerciseStepFormatter: PlannedExerciseStepFormatter
+    private val plannedExerciseStepFormatter: PlannedExerciseStepFormatter,
 ) {
 
-    fun formatBlock(
-        block: PlannedExerciseBlock,
-    ): FormattedEntry {
+    fun formatBlock(block: PlannedExerciseBlock): FormattedEntry {
         return PlannedExerciseBlockEntry(
-            block = block, title = formatBlockTitle(block), titleA11y = formatBlockTitleA11y(block))
+            block = block,
+            title = formatBlockTitle(block),
+            titleA11y = formatBlockTitleA11y(block),
+        )
     }
 
     private fun formatBlockTitle(block: PlannedExerciseBlock): String {
         return context.getString(
             R.string.planned_exercise_block_title,
-            block.description,
+            block.description ?: context.getString(R.string.unknown_type),
             MessageFormat.format(
                 context.getString(R.string.planned_exercise_block_repetitions),
-                mapOf("count" to block.repetitions)))
+                mapOf("count" to block.repetitions),
+            ),
+        )
     }
 
     private fun formatBlockTitleA11y(block: PlannedExerciseBlock): String {
         return context.getString(
             R.string.planned_exercise_block_a11y_title,
-            block.description,
+            block.description ?: context.getString(R.string.unknown_type),
             MessageFormat.format(
                 context.getString(R.string.planned_exercise_block_repetitions),
-                mapOf("count" to block.repetitions)))
+                mapOf("count" to block.repetitions),
+            ),
+        )
     }
 
     fun formatBlockDetails(
         block: PlannedExerciseBlock,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): List<FormattedEntry> {
         val exerciseSteps = block.steps
         return buildList {
@@ -68,7 +73,10 @@ constructor(
                 add(plannedExerciseStepFormatter.formatStep(plannedExerciseStep, unitPreferences))
                 addAll(
                     plannedExerciseStepFormatter.formatStepDetails(
-                        plannedExerciseStep, unitPreferences))
+                        plannedExerciseStep,
+                        unitPreferences,
+                    )
+                )
             }
         }
     }

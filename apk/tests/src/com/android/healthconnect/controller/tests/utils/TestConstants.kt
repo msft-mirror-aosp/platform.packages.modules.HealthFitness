@@ -41,6 +41,7 @@ import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PlannedExerciseStep
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.WeightRecord
@@ -52,7 +53,7 @@ import android.health.connect.datatypes.units.Power
 import android.health.connect.datatypes.units.Temperature
 import android.health.connect.datatypes.units.Velocity
 import android.health.connect.datatypes.units.Volume
-import android.net.Uri;
+import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter
@@ -67,6 +68,7 @@ import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.util.UUID
 import kotlin.random.Random
 import org.mockito.Mockito
 
@@ -85,6 +87,23 @@ fun getHeartRateRecord(heartRateValues: List<Long>, startTime: Instant = NOW): H
 
 fun getStepsRecord(steps: Long, time: Instant = NOW): StepsRecord {
     return StepsRecord.Builder(getMetaData(), time, time.plusSeconds(2), steps).build()
+}
+
+fun getStepsCadenceRecord(time: Instant = NOW): StepsCadenceRecord {
+    return StepsCadenceRecord.Builder(
+            getMetaData(),
+            time,
+            time.plusSeconds(2),
+            listOf(
+                StepsCadenceRecord.StepsCadenceRecordSample(12.5, time),
+                StepsCadenceRecord.StepsCadenceRecordSample(12.3, time.plusSeconds(1)),
+            ),
+        )
+        .build()
+}
+
+fun getStepsRecordWithUniqueIds(steps: Long, time: Instant = NOW): StepsRecord {
+    return StepsRecord.Builder(getMetaDataWithUniqueIds(), time, time.plusSeconds(2), steps).build()
 }
 
 fun getBasalMetabolicRateRecord(calories: Long): BasalMetabolicRateRecord {
@@ -213,8 +232,8 @@ fun getSamplePlannedExerciseSessionRecord(): PlannedExerciseSessionRecord {
 }
 
 fun getPlannedExerciseSessionRecord(
-    title: String,
-    note: String,
+    title: String?,
+    note: String?,
     exerciseBlocks: List<PlannedExerciseBlock>,
 ): PlannedExerciseSessionRecord {
     return basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
@@ -241,7 +260,7 @@ private fun basePlannedExerciseSession(exerciseType: Int): PlannedExerciseSessio
 
 fun getPlannedExerciseBlock(
     repetitions: Int,
-    description: String,
+    description: String?,
     exerciseSteps: List<PlannedExerciseStep>,
 ): PlannedExerciseBlock {
     return PlannedExerciseBlock.Builder(repetitions)
@@ -268,6 +287,10 @@ fun getMetaData(): Metadata {
     return getMetaData(TEST_APP_PACKAGE_NAME)
 }
 
+fun getMetaDataWithUniqueIds(): Metadata {
+    return getMetaDataWithUniqueIds(TEST_APP_PACKAGE_NAME)
+}
+
 fun getMetaData(packageName: String): Metadata {
     val device: Device =
         Device.Builder().setManufacturer("google").setModel("Pixel4a").setType(2).build()
@@ -278,6 +301,22 @@ fun getMetaData(packageName: String): Metadata {
         .setDataOrigin(dataOrigin)
         .setClientRecordId("BMR" + Math.random().toString())
         .build()
+}
+
+fun getMetaDataWithUniqueIds(packageName: String): Metadata {
+    val device: Device =
+        Device.Builder().setManufacturer("google").setModel("Pixel4a").setType(2).build()
+    val dataOrigin = DataOrigin.Builder().setPackageName(packageName).build()
+    return Metadata.Builder()
+        .setId(getUniqueId())
+        .setDevice(device)
+        .setDataOrigin(dataOrigin)
+        .setClientRecordId("BMR" + Math.random().toString())
+        .build()
+}
+
+fun getUniqueId(): String {
+    return UUID.randomUUID().toString()
 }
 
 fun getDataOrigin(packageName: String): DataOrigin =
@@ -477,6 +516,8 @@ const val TEST_APP_PACKAGE_NAME_3 = "package.name.3"
 const val UNSUPPORTED_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app3"
 const val OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app4"
 const val MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app5"
+const val WEAR_LEGACY_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app6"
+const val WEAR_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app7"
 const val TEST_APP_NAME = "Health Connect test app"
 const val TEST_APP_NAME_2 = "Health Connect test app 2"
 const val TEST_APP_NAME_3 = "Health Connect test app 3"
@@ -498,45 +539,108 @@ val OLD_TEST_APP =
 // endregion
 
 // PHR
-const val TEST_DATASOURCE_ID = "123"
+val TEST_DATASOURCE_ID = getUniqueId()
 val TEST_FHIR_VERSION: FhirVersion = FhirVersion.parseFhirVersion("4.0.1")
 val TEST_FHIR_RESOURCE_IMMUNIZATION: FhirResource =
     FhirResource.Builder(
             FHIR_RESOURCE_TYPE_IMMUNIZATION,
             "Immunization1",
-            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}",
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization-1\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_IMMUNIZATION_2: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "Immunization2",
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization-2\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_IMMUNIZATION_3: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "Immunization3",
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization-3\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"occurrenceDateTime\":\"2018-05-21\"}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_IMMUNIZATION_LONG: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "Immunization11",
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization-1\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"encounter\":{\"reference\":\"Encounter/encounter_unk\",\"display\":\"GP Visit\"},\"occurrenceDateTime\":\"2018-05-21\",\"primarySource\":true,\"manufacturer\":{\"display\":\"Sanofi Pasteur\"},\"lotNumber\":\"1\",\"site\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActSite\",\"code\":\"LA\",\"display\":\"Left Arm\"}],\"text\":\"Left Arm\"},\"route\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration\",\"code\":\"IM\",\"display\":\"Injection, intramuscular\"}],\"text\":\"Injection, intramuscular\"},\"doseQuantity\":{\"value\":0.5,\"unit\":\"mL\"},\"performer\":[{\"function\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0443\",\"code\":\"AP\",\"display\":\"Administering Provider\"}],\"text\":\"Administering Provider\"},\"actor\":{\"reference\":\"Practitioner/practitioner_1\",\"type\":\"Practitioner\",\"display\":\"Dr Maria Hernandez\"}}]}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_INVALID_JSON: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "invalid_json",
+            "{\"resourceType\" : \"Immunization\", {{{\"id\"\" : \"Immunization-3\"}",
         )
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
     MedicalResource.Builder(
-            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION,
         )
         .build()
+val TEST_MEDICAL_RESOURCE_IMMUNIZATION_2: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_IMMUNIZATION_2,
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_IMMUNIZATION_3: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_IMMUNIZATION_3,
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_IMMUNIZATION_LONG: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_IMMUNIZATION_LONG,
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_INVALID_JSON: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_INVALID_JSON,
+        )
+        .build()
 val TEST_MEDICAL_DATA_SOURCE: MedicalDataSource =
     MedicalDataSource.Builder(
-            /* id= */ "123",
+            /* id= */ TEST_DATASOURCE_ID,
             TEST_APP_PACKAGE_NAME,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source",
+            /* fhirVersion= */ TEST_FHIR_VERSION,
         )
         .build()
 val TEST_MEDICAL_DATA_SOURCE_2: MedicalDataSource =
     MedicalDataSource.Builder(
-            /* id= */ "234",
+            /* id= */ getUniqueId(),
             TEST_APP_PACKAGE_NAME,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source 2",
+            /* fhirVersion= */ TEST_FHIR_VERSION,
         )
         .build()
 val TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP: MedicalDataSource =
     MedicalDataSource.Builder(
-            /* id= */ "456",
+            /* id= */ getUniqueId(),
             TEST_APP_PACKAGE_NAME_2,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App B Data Source",
+            /* fhirVersion= */ TEST_FHIR_VERSION,
         )
         .build()
 // endregion

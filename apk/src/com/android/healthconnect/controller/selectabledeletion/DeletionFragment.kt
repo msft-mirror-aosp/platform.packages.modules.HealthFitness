@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.deletion.FailedDialogFragment
-import com.android.healthconnect.controller.deletion.SuccessDialogFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.CONFIRMATION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.TRY_AGAIN_EVENT
@@ -51,14 +50,13 @@ class DeletionFragment : Hilt_DeletionFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_deletion, container, false)
+        return inflater.inflate(R.layout.fragment_empty, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.deletionProgress.observe(viewLifecycleOwner) { deletion ->
             when (deletion) {
                 DeletionViewModel.DeletionProgress.NOT_STARTED -> {
@@ -104,8 +102,8 @@ class DeletionFragment : Hilt_DeletionFragment() {
     }
 
     private fun showConfirmationDialog() {
-        NewDeletionConfirmationDialogFragment()
-            .show(childFragmentManager, NewDeletionConfirmationDialogFragment.TAG)
+        DeletionConfirmationDialogFragment()
+            .show(childFragmentManager, DeletionConfirmationDialogFragment.TAG)
     }
 
     private fun showSuccessDialog() {

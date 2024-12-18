@@ -73,6 +73,7 @@
         <TextView
             android:id="@+id/disabled_spinner"
             style="?attr/disabledSpinner"
+            android:importantForAccessibility="no"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
@@ -82,7 +83,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingStart="32dp"
+            android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="40dp"
             android:textAlignment="center" />
     </androidx.constraintlayout.widget.ConstraintLayout>

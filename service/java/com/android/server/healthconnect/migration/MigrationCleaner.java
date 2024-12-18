@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.migration;
 
-import android.annotation.NonNull;
 import android.health.connect.HealthConnectDataState;
 import android.util.Slog;
 
@@ -37,15 +36,16 @@ public final class MigrationCleaner {
     private final PriorityMigrationHelper mPriorityMigrationHelper;
 
     public MigrationCleaner(
-            @NonNull TransactionManager transactionManager,
-            @NonNull PriorityMigrationHelper priorityMigrationHelper) {
-        mMigrationEntityHelper = new MigrationEntityHelper();
+            TransactionManager transactionManager,
+            PriorityMigrationHelper priorityMigrationHelper,
+            MigrationEntityHelper migrationEntityHelper) {
+        mMigrationEntityHelper = migrationEntityHelper;
         mTransactionManager = transactionManager;
         mPriorityMigrationHelper = priorityMigrationHelper;
     }
 
     /** Attaches this migration cleaner to the provided {@link MigrationStateManager}. */
-    public void attachTo(@NonNull MigrationStateManager migrationStateManager) {
+    public void attachTo(MigrationStateManager migrationStateManager) {
         migrationStateManager.addStateChangedListener(this::onMigrationStateChanged);
     }
 

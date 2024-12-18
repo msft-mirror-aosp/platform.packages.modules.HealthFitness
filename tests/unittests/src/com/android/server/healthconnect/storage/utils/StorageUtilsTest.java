@@ -17,9 +17,9 @@
 package healthconnect.storage.utils;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceId;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.UUID_BYTE_SIZE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.bytesToUuids;
@@ -28,13 +28,17 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getSin
 
 import static com.google.common.truth.Truth.assertThat;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.json.JSONException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class StorageUtilsTest {
     @Test
     public void uuidToBytesAndBack_emptyList() {

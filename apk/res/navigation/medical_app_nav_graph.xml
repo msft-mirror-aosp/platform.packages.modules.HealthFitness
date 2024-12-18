@@ -18,6 +18,8 @@
     android:id="@+id/medical_app_nav_graph"
     app:startDestination="@id/medicalAppFragment">
 
+    <include app:graph="@navigation/app_data_nav_graph"/>
+
     <fragment
         android:id="@+id/medicalAppFragment"
         android:label="@string/app_access_title"
@@ -27,39 +29,10 @@
             app:argType="string" />
         <action
             android:id="@+id/action_medicalApp_to_appData"
-            app:destination="@id/appDataFragment" />
+            app:destination="@id/app_data_nav_graph" />
         <action
             android:id="@+id/action_medicalAppFragment_to_additionalAccessFragment"
             app:destination="@id/additionalAccessFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/appDataFragment"
-        android:label="@string/app_data_title"
-        android:name="com.android.healthconnect.controller.data.appdata.AppDataFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_appData_to_appEntries"
-            app:destination="@id/appEntriesFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/appEntriesFragment"
-        android:label="App entries"
-        android:name="com.android.healthconnect.controller.data.entries.AppEntriesFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_appEntriesFragment_to_dataEntryDetailsFragment"
-            app:destination="@id/dataEntryDetailsFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/dataEntryDetailsFragment" android:name="com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment"
-        android:label="@string/entry_details_title" >
     </fragment>
 
     <fragment

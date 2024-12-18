@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -48,14 +47,12 @@ public final class BloodGlucoseRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return BLOOD_GLUCOSE_RECORD_TABLE_NAME;
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull BloodGlucoseRecordInternal bloodGlucoseRecord) {
+    void populateSpecificRecordValue(Cursor cursor, BloodGlucoseRecordInternal bloodGlucoseRecord) {
         bloodGlucoseRecord.setSpecimenSource(getCursorInt(cursor, SPECIMEN_SOURCE_COLUMN_NAME));
         bloodGlucoseRecord.setLevel(getCursorDouble(cursor, LEVEL_COLUMN_NAME));
         bloodGlucoseRecord.setRelationToMeal(getCursorInt(cursor, RELATION_TO_MEAL_COLUMN_NAME));
@@ -64,8 +61,7 @@ public final class BloodGlucoseRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull BloodGlucoseRecordInternal bloodGlucoseRecord) {
+            ContentValues contentValues, BloodGlucoseRecordInternal bloodGlucoseRecord) {
         contentValues.put(SPECIMEN_SOURCE_COLUMN_NAME, bloodGlucoseRecord.getSpecimenSource());
         contentValues.put(LEVEL_COLUMN_NAME, bloodGlucoseRecord.getLevel());
         contentValues.put(RELATION_TO_MEAL_COLUMN_NAME, bloodGlucoseRecord.getRelationToMeal());
@@ -73,7 +69,6 @@ public final class BloodGlucoseRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(SPECIMEN_SOURCE_COLUMN_NAME, TEXT_NOT_NULL),

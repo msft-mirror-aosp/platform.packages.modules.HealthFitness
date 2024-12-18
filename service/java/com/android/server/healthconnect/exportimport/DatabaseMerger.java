@@ -22,41 +22,55 @@ import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
+import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
 import static com.android.healthfitness.flags.Flags.exportImport;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.APP_ID_PRIORITY_ORDER_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.PRIORITY_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadQueryForDataSourcesUsingUniqueIds;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.checkTableExists;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
-import android.content.Context;
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
+import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
+import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,11 +87,12 @@ public final class DatabaseMerger {
 
     private static final String TAG = "HealthConnectDatabaseMerger";
 
-    private final Context mContext;
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
-    private final RecordMapper mRecordMapper;
+    private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final DeviceInfoHelper mDeviceInfoHelper;
 
     /*
      * Record types in this list will always be migrated such that the ordering here is respected.
@@ -92,13 +107,23 @@ public final class DatabaseMerger {
                     // exist so that the foreign key constraints are not violated.
                     List.of(RECORD_TYPE_PLANNED_EXERCISE_SESSION, RECORD_TYPE_EXERCISE_SESSION));
 
-    public DatabaseMerger(@NonNull Context context) {
-        requireNonNull(context);
-        mContext = context;
-        mTransactionManager = TransactionManager.getInitialisedInstance();
-        mAppInfoHelper = AppInfoHelper.getInstance();
-        mRecordMapper = RecordMapper.getInstance();
-        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+    private static final List<String> PHR_TABLES_TO_MERGE =
+            List.of(
+                    MedicalDataSourceHelper.getMainTableName(),
+                    MedicalResourceHelper.getMainTableName(),
+                    MedicalResourceIndicesHelper.getTableName());
+
+    public DatabaseMerger(
+            AppInfoHelper appInfoHelper,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+        mAppInfoHelper = appInfoHelper;
+        mHealthConnectMappings = HealthConnectMappings.getInstance();
+        mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mDeviceInfoHelper = deviceInfoHelper;
     }
 
     /** Merge data */
@@ -117,8 +142,21 @@ public final class DatabaseMerger {
                 // If this package is not installed on the target device and is not present in the
                 // health db, then fill the health db with the info from source db. According to the
                 // security review b/341253579, we should not parse the imported icon.
-                mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
-                        mContext, packageName, appName, false /* onlyReplace */);
+                mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(packageName, appName);
+            }
+        }
+
+        // Similar to current HC behaviour, we honour what is on the target device. This means
+        // that if a MedicalResource or MedicalDataSource of the same unique ids as the
+        // stagedDatabase exists on the targetDatabase, we ignore the one in stagedDatabase.
+        // TODO(b/376645901): Verify that there's no timeout with large datasets on actual
+        // devices.
+        if (Flags.personalHealthRecordEnableD2dAndExportImport()) {
+            Slog.i(TAG, "Merging PHR data");
+            try {
+                mergePhrContent(stagedDatabase.getReadableDatabase());
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to transfer PHR data from staged database", e);
             }
         }
 
@@ -130,7 +168,7 @@ public final class DatabaseMerger {
         List<Integer> recordTypesWithOrderingOverrides =
                 RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream().flatMap(List::stream).toList();
         List<Integer> recordTypesWithoutOrderingOverrides =
-                mRecordMapper.getRecordIdToExternalRecordClassMap().keySet().stream()
+                mHealthConnectMappings.getRecordIdToExternalRecordClassMap().keySet().stream()
                         .filter(it -> !recordTypesWithOrderingOverrides.contains(it))
                         .toList();
 
@@ -141,7 +179,7 @@ public final class DatabaseMerger {
                         stagedDatabase,
                         stagedPackageNamesByAppIds,
                         recordTypeToMigrate,
-                        mRecordMapper
+                        mHealthConnectMappings
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -152,7 +190,7 @@ public final class DatabaseMerger {
                 deleteRecordsOfType(
                         stagedDatabase,
                         recordTypeToMigrate,
-                        mRecordMapper
+                        mHealthConnectMappings
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -160,9 +198,13 @@ public final class DatabaseMerger {
         // Migrate remaining record types in no particular order.
         for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
             Class<? extends Record> recordClass =
-                    mRecordMapper.getRecordIdToExternalRecordClassMap().get(recordTypeToMigrate);
+                    mHealthConnectMappings
+                            .getRecordIdToExternalRecordClassMap()
+                            .get(recordTypeToMigrate);
+
             mergeRecordsOfType(
                     stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate, recordClass);
+
             deleteRecordsOfType(stagedDatabase, recordTypeToMigrate, recordClass);
         }
 
@@ -171,13 +213,161 @@ public final class DatabaseMerger {
 
         if (exportImport()) {
             Slog.i(TAG, "Merging priority list");
-            mergePriorityList(stagedDatabase);
+            mergePriorityList(stagedDatabase, stagedPackageNamesByAppIds);
         }
 
         Slog.i(TAG, "Merging done");
     }
 
-    private void mergePriorityList(HealthConnectDatabase stagedDatabase) {
+    private void mergePhrContent(SQLiteDatabase stagedDatabase) {
+        if (!checkPhrTablesExist(stagedDatabase)) {
+            return;
+        }
+        // We have made the decision to not transfer partial PHR data to the target device.
+        // Hence why we wrap it in a transaction to ensure either all or none of the PHR
+        // data is transferred to the target device.
+        mTransactionManager.runAsTransaction(
+                targetDatabase -> {
+                    Map<String, Long> dataSourceUuidToRowId =
+                            mergeMedicalDataSourceTable(stagedDatabase, targetDatabase);
+                    mergeMedicalResourceAndIndices(
+                            stagedDatabase, targetDatabase, dataSourceUuidToRowId);
+                });
+    }
+
+    private boolean checkPhrTablesExist(SQLiteDatabase stagedDatabase) {
+        for (String table : PHR_TABLES_TO_MERGE) {
+            if (!checkTableExists(stagedDatabase, table)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Map<String, Long> mergeMedicalDataSourceTable(
+            SQLiteDatabase stagedDatabase, SQLiteDatabase targetDatabase) {
+        // Read the dataSources from the staged database along with their lastModifiedTimestamp.
+        // We don't want to update the lastModifiedTimestamp, as this currently holds a different
+        // meaning in PHR. We use the lastModifiedTimestamp columns in MedicalResource and
+        // MedicalDataSource to understand when an app has updated the MedicalResource/DataSource.
+        // Since the merge process is not the source app writing the data, we write the
+        // lastModifiedTimestamp using what is in the stagedDatabase rather than based on the
+        // current merge time.
+        List<Pair<MedicalDataSource, Long>> dataSourceTimestampPairs =
+                readMedicalDataSources(stagedDatabase);
+        // To map dataSource uuid string to its rowId in the targetDatabase.
+        Map<String, Long> uuidToRowId = new ArrayMap<>();
+        for (Pair<MedicalDataSource, Long> dataSourceAndTimestamp : dataSourceTimestampPairs) {
+            MedicalDataSource dataSource = dataSourceAndTimestamp.first;
+            long lastModifiedTime = dataSourceAndTimestamp.second;
+            // Get the appId from the target database.
+            long appInfoId = mAppInfoHelper.getAppInfoId(dataSource.getPackageName());
+            if (appInfoId == DEFAULT_LONG) {
+                throw new IllegalStateException("App id does not exist.");
+            }
+
+            long insertedRowId =
+                    targetDatabase.insertWithOnConflict(
+                            MedicalDataSourceHelper.getMainTableName(),
+                            /* nullColumnHack= */ null,
+                            MedicalDataSourceHelper.getContentValues(
+                                    dataSource, appInfoId, lastModifiedTime),
+                            SQLiteDatabase.CONFLICT_IGNORE);
+
+            // If insertedRowId is -1, there probably was a conflict. In this case, we need to do
+            // a read on the targetDatabase, to find out the rowId of the existing dataSource
+            // with the same unique ids as the one we were trying to insert.
+            if (insertedRowId == DEFAULT_LONG) {
+                insertedRowId =
+                        readMedicalDataSourcesUsingDisplayNameAndAppId(
+                                targetDatabase, dataSource.getDisplayName(), appInfoId);
+            }
+
+            uuidToRowId.put(dataSource.getId(), insertedRowId);
+        }
+
+        return uuidToRowId;
+    }
+
+    private void mergeMedicalResourceAndIndices(
+            SQLiteDatabase stagedDatabase,
+            SQLiteDatabase targetDatabase,
+            Map<String, Long> uuidToRowId) {
+        String nextPageToken = null;
+        do {
+            // Read MedicalResources from staged database.
+            ReadMedicalResourcesInternalResponse response =
+                    readMedicalResources(
+                            stagedDatabase,
+                            PhrPageTokenWrapper.fromPageTokenAllowingNull(nextPageToken));
+
+            // Write MedicalResources to the target database.
+            for (MedicalResource medicalResource : response.getMedicalResources()) {
+                String dataSourceUuid = medicalResource.getDataSourceId();
+                Long dataSourceRowId = uuidToRowId.get(dataSourceUuid);
+                if (dataSourceRowId == null) {
+                    throw new IllegalStateException("DataSource UUID was not found");
+                }
+
+                ContentValues contentValues =
+                        MedicalResourceHelper.getContentValues(
+                                dataSourceRowId,
+                                medicalResource.getLastModifiedTimestamp(),
+                                medicalResource);
+                long medicalResourceRowId =
+                        targetDatabase.insertWithOnConflict(
+                                MedicalResourceHelper.getMainTableName(),
+                                /* nullColumnHack= */ null,
+                                contentValues,
+                                SQLiteDatabase.CONFLICT_IGNORE);
+
+                // With CONFLICT_IGNORE, if there already exists a row with the same unique ids
+                // the insertion would be ignored and -1 is returned. In this case, we would
+                // want to continue with copying the rest of the data.
+                if (medicalResourceRowId != DEFAULT_LONG) {
+                    targetDatabase.insertWithOnConflict(
+                            MedicalResourceIndicesHelper.getTableName(),
+                            /* nullColumnHack= */ null,
+                            MedicalResourceIndicesHelper.getContentValues(
+                                    medicalResourceRowId, medicalResource.getType()),
+                            SQLiteDatabase.CONFLICT_IGNORE);
+                }
+            }
+
+            nextPageToken = response.getPageToken();
+
+        } while (nextPageToken != null);
+    }
+
+    private List<Pair<MedicalDataSource, Long>> readMedicalDataSources(
+            SQLiteDatabase stagedDatabase) {
+        try (Cursor cursor =
+                read(stagedDatabase, MedicalDataSourceHelper.getReadQueryForDataSources())) {
+            return MedicalDataSourceHelper.getMedicalDataSourcesWithTimestamps(cursor);
+        }
+    }
+
+    private long readMedicalDataSourcesUsingDisplayNameAndAppId(
+            SQLiteDatabase targetDatabase, String displayName, long appId) {
+        try (Cursor cursor =
+                mTransactionManager.read(
+                        targetDatabase,
+                        getReadQueryForDataSourcesUsingUniqueIds(displayName, appId))) {
+            return MedicalDataSourceHelper.readDisplayNameAndAppIdFromCursor(cursor);
+        }
+    }
+
+    private ReadMedicalResourcesInternalResponse readMedicalResources(
+            SQLiteDatabase stagedDatabase, PhrPageTokenWrapper pageTokenWrapper) {
+        ReadTableRequest readTableRequest =
+                MedicalResourceHelper.getReadTableRequestUsingRequestFilters(
+                        pageTokenWrapper, MAXIMUM_PAGE_SIZE);
+        return MedicalResourceHelper.getMedicalResources(
+                stagedDatabase, readTableRequest, pageTokenWrapper, MAXIMUM_PAGE_SIZE);
+    }
+
+    private void mergePriorityList(
+            HealthConnectDatabase stagedDatabase, Map<Long, String> importedAppInfo) {
         Map<Integer, List<String>> importPriorityMap = new HashMap<>();
         try (Cursor cursor = read(stagedDatabase, new ReadTableRequest(PRIORITY_TABLE_NAME))) {
             while (cursor.moveToNext()) {
@@ -187,8 +377,9 @@ public final class DatabaseMerger {
                 List<Long> appIdsInOrder =
                         StorageUtils.getCursorLongList(
                                 cursor, APP_ID_PRIORITY_ORDER_COLUMN_NAME, DELIMITER);
+                Slog.i(TAG, "Priority count for " + dataCategory + ": " + appIdsInOrder.size());
                 importPriorityMap.put(
-                        dataCategory, AppInfoHelper.getInstance().getPackageNames(appIdsInOrder));
+                        dataCategory, getPackageNamesFromImport(appIdsInOrder, importedAppInfo));
             }
         }
 
@@ -199,7 +390,7 @@ public final class DatabaseMerger {
                     }
 
                     List<String> currentPriorityList =
-                            mHealthDataCategoryPriorityHelper.getPriorityOrder(category, mContext);
+                            mHealthDataCategoryPriorityHelper.syncAndGetPriorityOrder(category);
                     List<String> newPriorityList =
                             Stream.concat(currentPriorityList.stream(), importPriorityList.stream())
                                     .distinct()
@@ -219,8 +410,9 @@ public final class DatabaseMerger {
             Map<Long, String> stagedPackageNamesByAppIds,
             int recordType,
             Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
-        if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
+        RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
+        if (!checkTableExists(
+                stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
             return;
         }
 
@@ -258,23 +450,34 @@ public final class DatabaseMerger {
             // 2. we don't want to update the package name in the records as they already have the
             //    correct package name.
             UpsertTransactionRequest upsertTransactionRequest =
-                    new UpsertTransactionRequest(
-                            null /* packageName */,
-                            records,
-                            mContext,
-                            true /* isInsertRequest */,
-                            true /* useProvidedUuid */,
-                            true /* skipPackageNameAndLogs */);
-            mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
+                    UpsertTransactionRequest.createForRestore(
+                            records, mDeviceInfoHelper, mAppInfoHelper);
 
+            // Both methods use ON CONFLICT IGNORE strategy, which means that if the source data
+            // being inserted into target db already exists, the source data will be ignored. We
+            // won't apply updates to the target data.
+            //
+            // Only generate change logs when any change logs token are present. Client apps can
+            // only read change logs if they have ever requested a change logs token.
+            if (cloudBackupAndRestore()
+                    && mTransactionManager.checkTableExists(ChangeLogsRequestHelper.TABLE_NAME)
+                    && mTransactionManager.queryNumEntries(ChangeLogsRequestHelper.TABLE_NAME)
+                            != 0) {
+                mTransactionManager.insertAllRecords(
+                        mAppInfoHelper, /* accessLogsHelper */ null, upsertTransactionRequest);
+            } else {
+                mTransactionManager.insertOrIgnoreAllOnConflict(
+                        upsertTransactionRequest.getUpsertRequests());
+            }
             currentToken = token;
         } while (!currentToken.isEmpty());
     }
 
     private <T extends Record> void deleteRecordsOfType(
             HealthConnectDatabase stagedDatabase, int recordType, Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
-        if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
+        RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
+        if (!checkTableExists(
+                stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
             return;
         }
 
@@ -287,7 +490,8 @@ public final class DatabaseMerger {
                         null /* packageFilters */,
                         DEFAULT_LONG /* startTime */,
                         DEFAULT_LONG /* endTime */,
-                        false /* useLocalTimeFilter */);
+                        false /* useLocalTimeFilter */,
+                        mAppInfoHelper);
 
         stagedDatabase.getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
     }
@@ -312,6 +516,7 @@ public final class DatabaseMerger {
         @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         ReadTransactionRequest readTransactionRequest =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         null,
                         readRecordsRequest.toReadRecordsRequestParcel(),
                         // Avoid time based filtering.
@@ -327,21 +532,21 @@ public final class DatabaseMerger {
         try (Cursor cursor = read(stagedDatabase, readTableRequest)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
+                            mDeviceInfoHelper,
                             cursor,
                             readTransactionRequest.getPageSize().orElse(MAXIMUM_PAGE_SIZE),
                             requireNonNull(readTransactionRequest.getPageToken()),
-                            stagedPackageNamesByAppIds);
+                            stagedPackageNamesByAppIds,
+                            mAppInfoHelper);
             recordInternalList = readResult.first;
             token = readResult.second;
             if (readTableRequest.getExtraReadRequests() != null) {
+                RecordHelper<?> mainRecordHelper =
+                        requireNonNull(readTableRequest.getRecordHelper());
                 for (ReadTableRequest extraDataRequest : readTableRequest.getExtraReadRequests()) {
                     Cursor cursorExtraData = read(stagedDatabase, extraDataRequest);
-                    readTableRequest
-                            .getRecordHelper()
-                            .updateInternalRecordsWithExtraFields(
-                                    recordInternalList,
-                                    cursorExtraData,
-                                    extraDataRequest.getTableName());
+                    mainRecordHelper.updateInternalRecordsWithExtraFields(
+                            recordInternalList, cursorExtraData, extraDataRequest.getTableName());
                 }
             }
         }
@@ -350,10 +555,36 @@ public final class DatabaseMerger {
 
     private synchronized Cursor read(
             HealthConnectDatabase stagedDatabase, ReadTableRequest request) {
-        Slog.d(TAG, "Running command: " + request.getReadCommand());
-        Cursor cursor =
-                stagedDatabase.getReadableDatabase().rawQuery(request.getReadCommand(), null);
+        return read(stagedDatabase.getReadableDatabase(), request.getReadCommand());
+    }
+
+    private synchronized Cursor read(SQLiteDatabase stagedDatabase, ReadTableRequest request) {
+        return read(stagedDatabase, request.getReadCommand());
+    }
+
+    private synchronized Cursor read(SQLiteDatabase stagedDatabase, String query) {
+        Slog.d(TAG, "Running command: " + query);
+        Cursor cursor = stagedDatabase.rawQuery(query, null);
         Slog.d(TAG, "Cursor count: " + cursor.getCount());
         return cursor;
+    }
+
+    /**
+     * Returns a list of package names, mapped from the passed-in {@code packageIds} list using the
+     * mapping from the import file.
+     */
+    private static List<String> getPackageNamesFromImport(
+            List<Long> packageIds, Map<Long, String> importedPackageNameMapping) {
+        List<String> packageNames = new ArrayList<>();
+        if (packageIds == null || packageIds.isEmpty() || importedPackageNameMapping.isEmpty()) {
+            return packageNames;
+        }
+        packageIds.forEach(
+                (packageId) -> {
+                    String packageName = importedPackageNameMapping.get(packageId);
+                    requireNonNull(packageName);
+                    packageNames.add(packageName);
+                });
+        return packageNames;
     }
 }

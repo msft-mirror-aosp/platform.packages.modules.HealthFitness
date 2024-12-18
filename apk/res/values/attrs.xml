@@ -93,6 +93,23 @@
     <attr name="warningIcon" format="reference"/>
     <attr name="infoIcon" format="reference"/>
 
+    <!-- Medical data -->
+    <attr name="allergiesIcon" format="reference"/>
+    <attr name="conditionsIcon" format="reference" />
+    <attr name="immunizationIcon" format="reference"/>
+    <attr name="labResultsIcon" format="reference" />
+    <attr name="medicalServicesIcon" format="reference"/>
+    <attr name="medicationsIcon" format="reference" />
+    <attr name="pastVisitsIcon" format="reference" />
+    <attr name="patientInfoIcon" format="reference" />
+    <attr name="pregnancyIcon" format="reference" />
+    <attr name="practitionerDetailsIcon" format="reference"/>
+    <attr name="proceduresIcon" format="reference"/>
+    <attr name="vitalsIcon" format="reference"/>
+    <attr name="socialHistoryIcon" format="reference"/>
+
+    <!-- Lock screen banner -->
+    <attr name="lockIcon" format="reference" />
     <!-- END REGION -->
 
     <!-- REGION DIALOG GRAVITY -->

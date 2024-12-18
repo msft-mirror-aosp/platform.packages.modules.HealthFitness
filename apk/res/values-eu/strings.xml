@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Kudeatu osasunari eta fitnessari buruz gailuan gordeta dauzkazun datuak, eta kontrolatu zein aplikaziok atzi ditzaketen datu horiek"</string>
     <string name="data_title" msgid="4456619761533380816">"Datuak eta sarbidea"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Arakatu historia klinikoak"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Ikusi historia klinikoak eta zein aplikaziok erabil ditzaketen"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Kategoria guztiak"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Ikusi kategoria guztiak"</string>
     <string name="no_data" msgid="1906986019249068659">"Ez dago daturik"</string>
@@ -52,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Atzo"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Irakurtzeko baimena: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Idazteko baimena: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Kudeatu baimenak"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Ordua: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Jarduerak"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"atzitu osasunari buruzko datuak"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Irakurri erretako kaloriak"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Erretako kaloriak irakurtzeko baimena ematen dio aplikazioari"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Erabili datuak atzeko planoan"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Atzeko planoan datuak erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Atzeko planoan datuak erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Baimena ematen badiozu, aplikazioa erabiltzen ari ez zarenean ere fitnessari eta ongizateari buruzko datuak eta historia klinikoa erabili ahalko ditu aplikazioak."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Baimena ematen badiozu, aplikazioa erabiltzen ari ez zarenean ere historia klinikoa erabili ahalko du aplikazioak."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Baimena ematen badiozu, aplikazioa erabiltzen ari ez zarenean ere fitnessari eta ongizateari buruzko datuak erabili ahalko ditu aplikazioak."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Baimena ematen badiozu, aplikazioa erabiltzen ari ez zarenean ere Health Connect-eko datuak erabili ahalko ditu aplikazioak."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Iraganeko datuak erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Baimena ematen badiozu, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako fitnessari eta ongizateari buruzko datuak erabili ahalko ditu aplikazioak."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Baimena ematen badiozu, fitnessari eta ongizateari buruzko iraganeko datu guztiak erabili ahalko ditu aplikazioak."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Baimena ematen badiozu, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako Health Connect-eko datuak erabili ahalko ditu aplikazioak."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Baimena ematen badiozu, iraganeko Health Connect-eko datu guztiak erabili ahalko ditu aplikazioak."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Baimen gehigarriak eman nahi dizkiozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"Halaber, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak Health Connect-en ezarpen hauek erabili behar ditu"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Atzeko planoan datu guztiak erabili"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Atzeko planoan historia klinikoa erabili"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Atzeko planoan fitnessari eta ongizateari buruzko datuak erabili"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Eman fitnessari eta ongizateari buruzko datuak eta historia klinikoa erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Eman datu horiek erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Eman datu horiek erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"Datuak atzeko planoan erabili"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Eman Health Connect-eko datuak erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Fitnessari eta ongizateari buruzko iraganeko datuak erabili"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Eman <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako datuak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Eman iraganeko datu guztiak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Iraganeko datuak erabili"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Eman <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako Health Connect-eko datuak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Eman Health Connect-eko iraganeko datu guztiak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak jada erabil ditzake zure historia klinikoaren iraganeko datuak"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Irakurri baimenei buruzko informazio gehiago"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Atzeko planoan datu guztiak erabili"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Atzeko planoan historia klinikoa erabili"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Atzeko planoan fitnessari eta ongizateari buruzko datuak erabili"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Eman fitnessari eta ongizateari buruzko datuak eta historia klinikoa erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Eman datu horiek erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Eman datu horiek erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Datuak atzeko planoan erabili"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Eman Health Connect-eko datuak erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Fitnessari eta ongizateari buruzko iraganeko datuak erabili"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Eman <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako datuak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Eman iraganeko datu guztiak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"Iraganeko datuak erabili"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Eman <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako Health Connect-eko datuak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Eman Health Connect-eko iraganeko datu guztiak erabiltzeko baimena aplikazioari"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Une honetan ez da fitnessari buruzko daturik irakurtzen, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ez duelako irakurtzeko baimenik"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak jada erabil ditzake zure historia klinikoaren iraganeko datuak. Aukera hori aldatzeko, kendu historia klinikoa erabiltzeko baimena aplikazio horri."</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Kudeatu historia klinikoari buruzko baimenak"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Aplikazio honetan atzeko planoa edo iraganeko datuak atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Aplikazio honetan atzeko planoa atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Aplikazio honetan iraganeko datuak atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Eman Health Connect-eko iraganeko datu guztiak erabiltzeko baimena aplikazioari"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Eman Health Connect-eko datuak erabiltzeko baimena aplikazioari, hura erabiltzen ari ez zarenean ere"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Baimena ematen baduzu, aplikazioa erabiltzen ari ez zarenean ere Health Connect-eko datuak erabili ahalko ditu aplikazioak."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Erabili iraganeko datuak"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Iraganeko datuak erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Eman <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako Health Connect-eko datuak erabiltzeko baimena aplikazioari"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Eman Health Connect-eko iraganeko datu guztiak erabiltzeko baimena aplikazioari"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Baimena ematen baduzu, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> baino lehen gehitutako Health Connect-eko datuak erabili ahalko ditu aplikazioak."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Baimena ematen baduzu, iraganeko Health Connect-eko datu guztiak erabili ahalko ditu aplikazioak."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktibo egonda erretako kaloriak"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktibo egonda erretako kaloriak"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Irakurri aktibo egonda erretako kaloriei buruzko datuak"</string>
@@ -155,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"Gurpil-aulkiaren bultzadak"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Irakurri gurpil-aulkiaren bultzadei buruzko datuak"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Idatzi gurpil-aulkiaren bultzadei buruzko datuak"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Jardueren intentsitatea"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"jardueren intentsitatea"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Irakurri jardueren intentsitatea"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Idatzi jardueren intentsitatea"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Metabolismo basala"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"metabolismo basala"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Irakurri metabolismo basalari buruzko datuak"</string>
@@ -265,36 +310,73 @@
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Idatzi atsedeneko bihotz-maiztasunari buruzko datuak"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Azalaren tenperatura"</string>
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"azalaren tenperatura"</string>
-    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Azalaren tenperatura irakurri"</string>
-    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Azalaren tenperatura idatzi"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Osasun-datu guztiak"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"osasun-datu guztiak"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Idatzi osasun-datu guztiak"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunizazio-datuak"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunizazio-datuak"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Irakurri immunizazio-datuak"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Irakurri azalaren tenperatura"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Idatzi azalaren tenperatura"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Horrek barnean hartzen ditu Health Connect-ekin sinkronizatutako eta bertan gehitutako historia klinikoak. Baliteke ez izatea historia kliniko osoa, eta ez du barnean hartzen zure historia klinikoaren azalpen medikorik."</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Historia kliniko osoa"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"historia kliniko osoa"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Idatzi historia kliniko osoa"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Alergiak"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"alergiak"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Irakurri alergiak"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Gaixotasunak"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"gaixotasunak"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Irakurri gaixotasunak"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Txertoak"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"txertoak"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Irakurri txertoak"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laborategiko emaitzak"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laborategiko emaitzak"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Irakurri laborategiko emaitzak"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Sendagaiak"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"sendagaiak"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"Irakurri sendagaiak"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Informazio pertsonala"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"informazio pertsonala"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Irakurri informazio pertsonala"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Medikuen xehetasunak"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"medikuen xehetasunak"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Irakurri medikuen xehetasunak"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Haurdunaldia"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"haurdunaldia"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Irakurri haurdunaldiari buruzko datuak"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Prozedurak"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"prozedurak"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Irakurri prozeduren datuak"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Bizimodua"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"interakzio sozialen historia"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Irakurri interakzio sozialen historiari buruzko datuak"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Bisitak"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"bisitak"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Irakurri bisitak"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Bizi-konstanteak"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"bizi-konstanteak"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"Irakurri bizi-konstanteei buruzko datuak"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness-a"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness-a"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Mindfulness-ari buruzko datuak irakurri"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Mindfulness-ari buruzko datuak idatzi"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Irakurri mindfulness-ari buruzko datuak"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Idatzi mindfulness-ari buruzko datuak"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Eman irakurtzeko baimena <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Eman idazteko baimena <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Utzi"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Eman baimena"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Eman baimen guztiak"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ez eman baimenik"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Aukeratu aplikazio honek Health Connect-en irakurri edo idatz ditzakeen datuak"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Aukeratu aplikazio honek Health Connect-en irakurri edo idatz ditzakeen datuak"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Aukeratu aplikazio honek Health Connect-en irakur ditzakeen datuak"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Aukeratu aplikazio honek Health Connect-en idatz ditzakeen datuak"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Datuak irakurtzeko baimena ematen badiozu, datu berriak eta azken 30 egunetako datuak irakurri ahal izango ditu aplikazioak"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Datuak irakurtzeko baimena ematen badiozu, datu berriak eta iraganekoak irakurri ahal izango ditu aplikazioak"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Health Connect erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak zuri buruzko datuak nola kudeatzen dituen jakiteko, ikusi garatzailearen <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Fitnessari eta ongizateari buruzko datu guztiak erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak zuri buruzko datuak nola kudeatzen dituen jakiteko, ikusi haren <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pribatutasun-gidalerroak"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Historia klinikoa erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Sarbidea emanez gero, aplikazioak zenbait datu irakurri eta idatzi ahalko ditu; adibidez, alergiak, laborategiko emaitzak, txertoak eta abar\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Sarbidea emanez gero, aplikazioak zenbait datu irakurri ahalko ditu; adibidez, alergiak, laborategiko emaitzak, txertoak eta abar\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Historia klinikoari buruz"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Besteak beste, datu hauek partekatzen dira"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Baimena ematen badiozu, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak historia klinikoa Health Connect-ekin partekatu ahalko du."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Sinkronizatu beste aplikazio eta iturburu batzuetako historia klinikoa, dena toki berean izateko"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Baimen guztiak kendu nahi dituzu?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Kendu guztiak"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
@@ -302,10 +384,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kokapena, kamera edo mikrofonoa erabiltzeari buruzkoei)."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, atzeko planoko eta iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kokapena, kamera edo mikrofonoa erabiltzeari buruzkoei)."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Halaber, ezabatu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioko datuak Health Connect-etik"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Fitnessari eta ongizateari buruzko baimen guztiak kendu?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Gainera, ezabatu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioko fitnessari buruzko datuak Health Connect-etik"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Historia klinikoari buruzko baimen guztiak kendu nahi dituzu?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Gainera, ezabatu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioko historia klinikoa Health Connect-etik"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo ditu irakurri edo idatzi Health Connect-eko datu horiek.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo ditu irakurri edo idatzi Health Connect-eko datu horiek, atzeko planoko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo ditu irakurri edo idatzi Health Connect-eko datu horiek, iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo ditu irakurri edo idatzi Health Connect-eko datu horiek, atzeko planoko eta iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Baimen guztiak kendu nahi dituzu?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, atzeko planoko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, atzeko planoko eta iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Gainera, ezabatu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioko fitnessari buruzko datuak eta historia klinikoa Health Connect-etik"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Kendu zaizkio baimenak aplikazioari"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Ezabatu Health Connect-eko datu guztiak ere"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Hurrengo eguna"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Hautatutako eguna"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Aurreko eguna"</string>
     <string name="default_error" msgid="7966868260616403475">"Arazoren bat izan da. Saiatu berriro."</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"Baliabide ezezaguna"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Iturburuko datuak"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Ezkerreko giltza."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Eskuineko giltza."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> <xliff:g id="FIELD">%2$s</xliff:g> eremuaren balioa"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Iturburu-kode xehatua: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Baimen hau duten aplikazioek zure osasunari eta fitnessari buruzko datuak irakurri eta idatz ditzakete."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolatu zein aplikaziok atzi ditzaketen Health Connect-eko datuak. Sakatu aplikazio bat zein datu irakurri edo idatz ditzakeen berrikusteko."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Erabiltzeko baimena dutenak"</string>
@@ -322,25 +427,27 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Kendu guztiak"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Kudeatu aplikazioa"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Ikusi aplikazioko datuak"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Kendu baimenak aplikazioari"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Ezabatu aplikazioko datuak"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Aplikazio inaktiboak"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Aplikazio hauek ez dute jada sarbiderik, baina oraindik datuak gordeta dauzkate Health Connect-en"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> ezkero gehitutako datuak irakur ditzake <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Aplikazioak atzi ditzakeen beste baimen batzuk kudeatzeko, joan Ezarpenak &gt; Aplikazioak atalera"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren pribatutasun-gidalerroak aplikatuko zaizkie harekin partekatzen dituzun datuei"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Garatzailearen pribatutasun-gidalerroetan, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak zuri buruzko datuak nola kudeatzen dituen ikusiko duzu"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Aplikazioak atzi ditzakeen Android-eko beste baimen batzuk kudeatzeko, joan Ezarpenak &gt; Aplikazioak atalera"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Irakurri pribatutasun-gidalerroak"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Azken 24 orduetan atzitu dira"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Aplikazioak duen sarbidea"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Une honetan ez daukazu aplikazio bateragarririk instalatuta"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Sarbide gehigarria"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Iraganeko eta atzeko planoko datuak"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Kendu dira aplikazio honen baimen gehigarriak"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Baimenak"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitnessa eta ongizatea"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Ariketa fisikoa, loa, elikadura eta abar"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Historia klinikoak"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"historia klinikoak"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Laborategiko emaitzak, sendagaiak, immunizazio-datuak eta abar"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Laborategiko emaitzak, sendagaiak, txertoak eta abar"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Kendutako aplikazio-baimenak"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> aplikazioaren baimenak kendu ditu Health Connect-ek"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g> eta <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> aplikazioen baimenak kendu ditu Health Connect-ek"</string>
@@ -372,7 +479,7 @@
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Eguneratu sistema Health Connect-ek datuak leheneratu ahal izan ditzan eta saiatu berriro."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"Saiatu berriro"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Arazo bat izan da esportatutako datuak leheneratzean."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportatzeak datuak gordetzeko aukera ematen dizu, beste telefono batera transferitu ahal izateko"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportazioak datuak gordetzeko aukera ematen dizu, beste telefono batera transferitu ahal izateko"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Babeskopiei eta leheneratzeari buruz"</string>
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aktibatuta"</string>
@@ -389,6 +496,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"Aukeratu non gorde esportazio programatua"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Aukeratu datuak esportatzeko erabili nahi duzun hodeian biltegiratzeko aplikazioa"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Fitxategia inportatu nahi duzu?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> Health Connect-era inportatuko da"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Utzi"</string>
@@ -408,6 +516,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Ireki"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Aukeratu fitxategia"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Egin tokia"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Esportazio programatua aktibatuta dago"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect-ek ezin izan ditu esportatu datuak"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Toki gehiago behar da"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Arazo bat izan da <xliff:g id="DATE">%1$s</xliff:g> datarako programatutako esportazioarekin. Konfiguratu beste esportazio programatu bat eta saiatu berriro."</string>
@@ -430,6 +539,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Joan Play Store-ra"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Hasi Health Connect erabiltzen"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect-ek osasunari eta fitnessari buruzko datuak gordetzen ditu eta gailuko aplikazioak erraz sinkronizatzeko aukera eskaintzen du"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect-ek osasunari eta fitnessari buruzko datuak gordetzen eta sinkronizatzen ditu zenbait aplikaziotatik.\n\n"<b>"fitnessari eta ongizateari buruzko datuak"</b>" (adibidez, ariketa-saioak, pausoak, elikadura, loa eta abar)\n\n"<b>"historia klinikoa"</b>" (adibidez, txertoak, laborategiko emaitzak eta abar)"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect-ekin hauek egin ditzakezu:"</string>
     <string name="share_data" msgid="3481932156368883946">"Partekatu datuak zure aplikazioekin"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Aukeratu aplikazio bakoitzak Health Connect-en irakurri edo idatz ditzakeen datuak"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Kudeatu ezarpenak eta pribatutasuna"</string>
@@ -474,7 +585,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Betiko ezabatu nahi dituzu <xliff:g id="APP_DATA">%2$s</xliff:g> aplikazioak gehitutako \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\" kategoriako datu guztiak?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Betiko ezabatu nahi duzu Health Connect-eko sarrera hau?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Aurrerantzean, konektatutako aplikazioek ezingo dituzte atzitu Health Connect-eko datu horiek."</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"<xliff:g id="START_DATE">%1$s</xliff:g> eta <xliff:g id="END_DATE">%2$s</xliff:g> arteko hilekoari buruzko datu guztiak ezabatuko dira."</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"<xliff:g id="START_DATE">%1$s</xliff:g> eta <xliff:g id="END_DATE">%2$s</xliff:g> arteko hilekoei buruzko datu guztiak ezabatuko dira."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Ezabatu"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Egin atzera"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Eginda"</string>
@@ -530,7 +641,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Odol-jario urria"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Odol-jario ertaina"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Odol-jario ugaria"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Odol-jario ezezaguna"</string>
     <string name="period_day" msgid="3821944462093965882">"Hilekoaren eguna: <xliff:g id="DAY">%1$d</xliff:g>/<xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Hilekoa (egun bat)}other{Hilekoa (# egun)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positiboa"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatiboa"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Handia"</string>
@@ -677,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Musika"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Beste bat"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Gidatu gabea"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Tartekoa"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Bizia"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -929,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrazio-prozesua abian da"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect Android sisteman integratzen ari da.\n\nAgian tarte bat beharko da datuak eta baimenak transferitzeko."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Ez itxi aplikazioa prozesu-amaierako jakinarazpena jaso arte."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect integratzen ari da"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Eguneratu egin behar da"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect Android sisteman integratzen ari da, ezarpenetatik zuzenean erabili ahal izan dezazun."</string>
     <string name="update_button" msgid="4544529019832009496">"Eguneratu"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Hasi eguneratzen, Health Connect-ek zure sistemaren ezarpenekin integratzen jarrai dezan"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Eguneratu"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Sistema eguneratu egin behar da"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Aurrera egin aurretik, eguneratu telefonoak darabilen sistema."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Telefonoak darabilen sistema dagoeneko eguneratu baduzu, berrabiarazi telefonoa integrazio-prozesuari berrekiteko"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect eguneratu egin behar da"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Aurrera eginez gero, azken bertsiora eguneratuko da Health Connect aplikazioa."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Toki gehiago behar da"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Integratzen jarraitzeko, Health Connect-ek <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> behar ditu telefonoaren biltegian.\n\nEgin tokia telefonoan eta saiatu berriro."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Saiatu berriro"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Egin tokia"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Toki gehiago behar da"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Integratzen jarraitzeko, Health Connect-ek <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> behar ditu telefonoaren biltegian."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Pausatu egin da integrazio-prozesua"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Health Connect aplikazioa itxi egin da Android sisteman integratzen ari zen bitartean.\n\nAplikazioa berriro irekitzeko eta datuak eta baimenak transferitzen jarraitzeko, sakatu Berrekin."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Health Connect-eko datuak gorde nahi badituzu, amaitu prozesua <xliff:g id="TIME_NEEDED">%1$s</xliff:g> igaro baino lehen"</string>
@@ -956,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Health Connect Android sistemarekin integratzen jarraitzeko, sakatu hau. Datuak gorde nahi badituzu, amaitu prozesua <xliff:g id="TIME_NEEDED">%1$s</xliff:g> igaro baino lehen."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Health Connect Android sistemarekin integratzen jarraitzeko, sakatu hau."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Egin aurrera"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Berrekin Health Connect integratzeko prozesuari"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Datuak gorde nahi badituzu, amaitu prozesua <xliff:g id="TIME_NEEDED">%1$s</xliff:g> igaro baino lehen"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Aplikazioa eguneratu egin behar da"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> eguneratu egin behar da datuak Health Connect-ekin sinkronizatzen jarrai dezan"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Aplikazio batzuk eguneratu egin behar dira datuak Health Connect-ekin sinkronizatzen jarrai dezaten"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> eguneratu egin behar da datuak Health Connect-ekin sinkronizatzen jarrai dezan. Baliteke aplikazio batzuek eguneratzerik erabilgarri ez izatea."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Aplikazio batzuk eguneratu egin behar dira datuak Health Connect-ekin sinkronizatzen jarrai dezaten. Baliteke aplikazio batzuek eguneratzerik erabilgarri ez izatea."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Bilatu eguneratzeak"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Lortu informazio gehiago"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-en integrazioa"</string>
@@ -975,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Ez da amaitu Health Connect-en integrazio-prozesua"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Jakinarazpen bat jasoko duzu erabilgarri dagoenean."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Ados"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Ez da amaitu Health Connect-en integrazio-prozesua"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Irakurri informazio gehiago"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Integratu da Health Connect"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Ireki"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Berritasunak"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Orain, ezarpenetatik zuzenean erabil dezakezu Health Connect. Edonoiz desinstala dezakezu Health Connect aplikazioa biltegiratzeko tokia egiteko."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Ados"</string>
@@ -999,7 +1103,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Editatu aplikazioen iturburuak"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Gailuko aplikazio lehenetsia"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Aplikazioko datuak"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Health Connect erabil dezaketen aplikazioetako datuak agertuko dira hemen"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioko datuak hemen agertuko dira"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect erabiltzeko baimena duten aplikazioetako datuak agertuko dira hemen"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Egunekoak"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Astekoak"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Hilabetekoak"</string>
@@ -1009,17 +1114,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Joan den hilabetekoak"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Sarrerak"</string>
     <string name="tab_access" msgid="7818197975407243701">"Erabiltzeko baimena dutenak"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Baimen gehigarriak eman nahi dizkiozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Halaber, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak Health Connect-en ezarpen hauek erabili behar ditu"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Aplikazio honetan atzeko planoa edo iraganeko datuak atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Aplikazio honetan atzeko planoa atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Aplikazio honetan iraganeko datuak atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Betiko ezabatu nahi dituzu Health Connect-eko datu guztiak?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Betiko ezabatu nahi dituzu Health Connect-eko hautatutako datuak?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Ezabatu dira datu guztiak"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Ezabatu dira honi buruzko datuak: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elementu ezabatu dira"</string>
-    <string name="select_all" msgid="837499881590001166">"Hautatu guztiak"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Hasi Health Connect erabiltzen"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinkronizatu lehen aplikazioak, haien artean osasunari eta fitnessari buruzko datuak partekatzeko"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Konfiguratu"</string>
@@ -1029,4 +1123,70 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Ikusi aplikazio bateragarriak"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Bilatu Health Connect bidez <xliff:g id="APP_NAME">%s</xliff:g> aplikazioarekin sinkroniza daitezkeen aplikazio gehiago"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Ikusi aplikazio-dendan"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ezarri pantailaren blokeoa"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Osasunari buruzko datuen segurtasuna areagotzeko, ezarri PIN, eredu edo pasahitz bat gailuan"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Ezarri pantailaren blokeoa"</string>
+    <string name="select_all" msgid="837499881590001166">"Hautatu guztiak"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Aurrerantzean, konektatutako aplikazioek ezingo dituzte irakurri Health Connect-eko datu horiek"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"Markatuta"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Markatu gabe"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Ariketaren mapako ibilbidea erabilgarri dago"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Hurrengo eguna"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Hurrengo astea"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Hurrengo hilabetea"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Aurreko eguna"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Aurreko astea"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Aurreko hilabetea"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Datu guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Hautatutako datuak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g> aplikazioko datu guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"<xliff:g id="APP_NAME">%s</xliff:g> aplikazioaren hautatutako datuak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> datako sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> asteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> hilabeteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> datako hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> asteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> hilabeteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Betiko ezabatu nahi duzu sarrera?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> datako sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> asteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> hilabeteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> datako hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> asteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> hilabeteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"<xliff:g id="APP_NAME">%s</xliff:g> aplikazioaren sarrera hau betiko ezabatu nahi duzu?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> aplikazioak honi buruz dituen datuak (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) ezabatu nahi dituzu?"</string>
+    <string name="on" msgid="8266542510798355807">"Aktibatuta"</string>
+    <string name="off" msgid="6996623844428550649">"Desaktibatuta"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Atzitze-data: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Atzo atzitu zen (<xliff:g id="TIME_DATE">%1$s</xliff:g>)"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Atzitze-data: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> (<xliff:g id="TIME_DATE_1">%2$s</xliff:g>)"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Eman baimena beti"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Eman hautatutakoak"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Aplikazioa erabili bitartean"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Ukatu guztiak"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Fitnessari eta ongizateari buruzko datu guztiak erabiltzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_TYPES">%2$s</xliff:g> erabiltzeko baimena eskatzen ari da.\n\nEman baimen guztiak edo kontrola itzazu banaka."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="DATA_TYPE">%2$s</xliff:g> atzitzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnessa eta ongizatea"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"beti"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"erabili bitartean"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Beti"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Erabili bitartean"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak <xliff:g id="ALLOW_MODE">%2$s</xliff:g> atzi ditzake zure fitness- eta ongizate-datu guztiak"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Atzitzeko baimena"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Irakurtzeko baimena"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Baimen hauek gailuaren sentsoreetako datuak atzitzeko baimena ematen diote <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplikaziok dute baimena"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Ez dago baimena eskatzen ari den aplikaziorik"</string>
+    <string name="allowed" msgid="4158456017482263737">"Baimena dauka"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Ez dauka baimenik"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Baimen hau duten aplikazioek <xliff:g id="DATA_TYPE">%s</xliff:g> motako datuak atzi ditzakete gailuaren sentsoreetatik."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Erlojuko aplikazio guztiei <xliff:g id="DATA_TYPE">%s</xliff:g> motako datuak atzitzeko baimena kendu nahi diezu?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Hautamarka"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Gurutzea"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Une honetan, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak fitnessari eta ongizateari buruzko datuak atzi ditzake <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Fitnessari eta ongizateari buruzko datuak edonoiz atzitzeko baimena eman nahi diozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak datu mota hauek atzi ditzake: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Kudeatu fitnessarekin eta ongizatearekin lotutako baimenak"</string>
 </resources>

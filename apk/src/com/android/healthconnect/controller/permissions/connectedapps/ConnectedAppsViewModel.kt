@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.searchapps.SearchHealthPermissionApps
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteAllDataUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.utils.postValueIfUpdated
@@ -37,7 +38,8 @@ constructor(
     private val loadHealthPermissionApps: ILoadHealthPermissionApps,
     private val searchHealthPermissionApps: SearchHealthPermissionApps,
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase,
-    @IoDispatcher val ioDispatcher: CoroutineDispatcher
+    private val deleteAllDataUseCase: DeleteAllDataUseCase,
+    @IoDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     companion object {
@@ -57,12 +59,20 @@ constructor(
     val alertDialogActive: LiveData<Boolean>
         get() = _alertDialogActive
 
+    private val _alertDialogCheckBoxChecked = MutableLiveData(false)
+    val alertDialogCheckBoxChecked: LiveData<Boolean>
+        get() = _alertDialogCheckBoxChecked
+
     init {
         loadConnectedApps()
     }
 
     fun setAlertDialogStatus(isActive: Boolean) {
         _alertDialogActive.postValue(isActive)
+    }
+
+    fun setAlertDialogCheckBoxChecked(isChecked: Boolean) {
+        _alertDialogCheckBoxChecked.postValue(isChecked)
     }
 
     fun loadConnectedApps() {
@@ -74,7 +84,8 @@ constructor(
     fun searchConnectedApps(searchValue: String) {
         viewModelScope.launch {
             _connectedApps.postValueIfUpdated(
-                searchHealthPermissionApps.search(loadHealthPermissionApps.invoke(), searchValue))
+                searchHealthPermissionApps.search(loadHealthPermissionApps.invoke(), searchValue)
+            )
         }
     }
 
@@ -95,6 +106,10 @@ constructor(
         }
         _alertDialogActive.postValue(false)
         return false
+    }
+
+    fun deleteAllData() {
+        viewModelScope.launch { deleteAllDataUseCase.invoke() }
     }
 
     sealed class DisconnectAllState {

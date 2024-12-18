@@ -20,15 +20,16 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
+import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.ActiveCaloriesBurnedRecordInternal;
 import android.util.Pair;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.time.ZoneOffset;
@@ -52,10 +53,19 @@ public final class ActiveCaloriesBurnedRecordHelper
         super(RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED);
     }
 
+    /**
+     * @deprecated Not used. Was added by mistake as {@link ActiveCaloriesBurnedRecord} is not a
+     *     derived type.
+     */
+    @Deprecated
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getDerivedAggregateResult(
             Cursor results, AggregationType<?> aggregationType, double aggregation) {
+        if (Flags.refactorAggregations()) {
+            throw new UnsupportedOperationException("Not a derived data type.");
+        }
+
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case ACTIVE_CALORIES_BURNED_RECORD_ACTIVE_CALORIES_TOTAL:
                 results.moveToFirst();
@@ -67,7 +77,6 @@ public final class ActiveCaloriesBurnedRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return ACTIVE_CALORIES_BURNED_RECORD_TABLE_NAME;
     }
@@ -88,20 +97,18 @@ public final class ActiveCaloriesBurnedRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
+            Cursor cursor, ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
         activeCaloriesBurnedRecord.setEnergy(getCursorDouble(cursor, ENERGY_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
+            ContentValues contentValues,
+            ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecord) {
         contentValues.put(ENERGY_COLUMN_NAME, activeCaloriesBurnedRecord.getEnergy());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(ENERGY_COLUMN_NAME, REAL));
     }

@@ -76,7 +76,8 @@ public class CyclingPedalingCadenceRecordTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {
@@ -100,8 +101,6 @@ public class CyclingPedalingCadenceRecordTest {
                 getBaseCyclingPedalingCadenceRecord();
 
         assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getTime()).isNotNull();
-        assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getRevolutionsPerMinute())
-                .isNotNull();
         TestUtils.insertRecords(
                 Arrays.asList(
                         baseCyclingPedalingCadenceRecord,

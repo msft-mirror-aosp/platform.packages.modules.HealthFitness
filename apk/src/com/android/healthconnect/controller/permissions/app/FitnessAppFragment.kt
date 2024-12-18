@@ -40,10 +40,10 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_ALL_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.KEY_DELETE_DATA
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_ALL_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
@@ -54,7 +54,6 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
@@ -62,6 +61,7 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
+import com.android.healthfitness.flags.Flags
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,12 +90,13 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         this.setPageName(PageName.APP_ACCESS_PAGE)
     }
 
-    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     private var packageName: String = ""
     private var appName: String = ""
+    // TODO (b/367626030) rename as proxy for whether app also has medical/additional permissions
+    // Or use viewModel
     private var showManageAppSection: Boolean = true
 
     private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
@@ -118,6 +119,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
 
         allowAllPreference.logNameActive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_ACTIVE
         allowAllPreference.logNameInactive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE
+        allowAllPreference.isChecked = false
 
         if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
@@ -210,13 +212,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
     }
 
     private fun revokeAllPermissions(): Boolean {
-        // The manage app section includes the additional permissions button too. If this section is
-        // visible then all health permissions should be revoked (fitness and additional). If the
-        // manage app section is not visible then fitness permissions should be revoked only,
-        // because medical and additional permissions are displayed on other screens.
-        return if (showManageAppSection)
-            appPermissionViewModel.revokeAllHealthPermissions(packageName)
-        else appPermissionViewModel.revokeAllFitnessPermissions(packageName)
+        return appPermissionViewModel.revokeAllFitnessAndMaybeAdditionalPermissions(packageName)
     }
 
     private fun setupHeader() {
@@ -235,9 +231,35 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
         manageDataCategory.isVisible = true
         manageDataCategory.removeAll()
-        if (featureUtils.isNewInformationArchitectureEnabled()) {
+
+        additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
+        additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
+            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
+                val additionalAccessPref =
+                    HealthPreference(requireContext()).also {
+                        it.key = KEY_ADDITIONAL_ACCESS
+                        it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
+                        it.setTitle(R.string.additional_access_label)
+                        it.setOnPreferenceClickListener { _ ->
+                            val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
+                            findNavController()
+                                .navigate(
+                                    R.id.action_fitnessAppFragment_to_additionalAccessFragment,
+                                    extras,
+                                )
+                            true
+                        }
+                    }
+                manageDataCategory.addPreference(additionalAccessPref)
+            }
+            manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
+                state.isAvailable()
+        }
+
+        if (Flags.newInformationArchitecture()) {
             manageDataCategory.addPreference(
                 HealthPreference(requireContext()).also {
+                    it.logName = AppAccessElement.SEE_APP_DATA_BUTTON
                     it.title = getString(R.string.see_app_data)
                     it.setOnPreferenceClickListener {
                         findNavController()
@@ -268,29 +290,6 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                 }
             )
         }
-        additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
-        additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            if (state.isValid() && shouldAddAdditionalAccessPref()) {
-                val additionalAccessPref =
-                    HealthPreference(requireContext()).also {
-                        it.key = KEY_ADDITIONAL_ACCESS
-                        it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
-                        it.setTitle(R.string.additional_access_label)
-                        it.setOnPreferenceClickListener { _ ->
-                            val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
-                            findNavController()
-                                .navigate(
-                                    R.id.action_fitnessAppFragment_to_additionalAccessFragment,
-                                    extras,
-                                )
-                            true
-                        }
-                    }
-                manageDataCategory.addPreference(additionalAccessPref)
-            }
-            manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                state.isValid()
-        }
     }
 
     private fun shouldAddAdditionalAccessPref(): Boolean {
@@ -305,7 +304,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
         } else {
-            showRevokeAllPermissions()
+            showRevokeAllFitnessPermissions()
         }
     }
 
@@ -319,8 +318,13 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
     }
 
-    private fun showRevokeAllPermissions() {
-        DisconnectDialogFragment(appName).show(childFragmentManager, DisconnectDialogFragment.TAG)
+    private fun showRevokeAllFitnessPermissions() {
+        DisconnectHealthPermissionsDialogFragment(
+                appName,
+                enableDeleteData = true,
+                disconnectType = DisconnectHealthPermissionsDialogFragment.DisconnectType.FITNESS,
+            )
+            .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
     private fun updatePermissions(permissions: List<FitnessPermission>) {

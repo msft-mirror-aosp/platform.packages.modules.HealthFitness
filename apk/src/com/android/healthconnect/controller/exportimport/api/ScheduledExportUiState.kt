@@ -30,10 +30,11 @@ data class ScheduledExportUiState(
     val nextExportFileName: String? = null,
     val nextExportAppName: String? = null,
     val lastFailedExportTime: Instant? = null,
+    val nextExportSequentialNumber: Int? = null,
 ) {
     enum class DataExportError {
         DATA_EXPORT_ERROR_UNKNOWN,
         DATA_EXPORT_ERROR_NONE,
-        DATA_EXPORT_LOST_FILE_ACCESS
+        DATA_EXPORT_LOST_FILE_ACCESS,
     }
 }

@@ -32,7 +32,6 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 
 import static java.lang.Integer.min;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.accesslog.AccessLog.OperationType;
@@ -55,9 +54,11 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -68,12 +69,20 @@ import java.util.stream.Collectors;
  */
 public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
-    private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
+    @VisibleForTesting public static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     @VisibleForTesting public static final String APP_ID_COLUMN_NAME = "app_id";
     @VisibleForTesting public static final String UUIDS_COLUMN_NAME = "uuids";
     @VisibleForTesting public static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
-    private static final String TIME_COLUMN_NAME = "time";
+    @VisibleForTesting public static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
+
+    private final TransactionManager mTransactionManager;
+
+    public ChangeLogsHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
+        mTransactionManager = transactionManager;
+    }
 
     public static DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
@@ -85,11 +94,36 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
                 .createIndexOn(RECORD_TYPE_COLUMN_NAME)
                 .createIndexOn(APP_ID_COLUMN_NAME);
+    }
+
+    /** Returns datatypes being written/updates in past 30 days. */
+    public Set<Integer> getRecordTypesWrittenInPast30Days() {
+        Set<Integer> recordTypesWrittenInPast30Days = new HashSet<>();
+        WhereClauses whereClauses =
+                new WhereClauses(AND)
+                        .addWhereEqualsClause(
+                                OPERATION_TYPE_COLUMN_NAME,
+                                String.valueOf(OperationType.OPERATION_TYPE_UPSERT))
+                        .addWhereGreaterThanOrEqualClause(
+                                TIME_COLUMN_NAME,
+                                Instant.now().minus(30, ChronoUnit.DAYS).toEpochMilli());
+
+        final ReadTableRequest readTableRequest =
+                new ReadTableRequest(TABLE_NAME)
+                        .setColumnNames(List.of(RECORD_TYPE_COLUMN_NAME))
+                        .setWhereClause(whereClauses)
+                        .setDistinctClause(true);
+
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            while (cursor.moveToNext()) {
+                recordTypesWrittenInPast30Days.add(getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME));
+            }
+        }
+        return recordTypesWrittenInPast30Days;
     }
 
     @Override
@@ -98,9 +132,11 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     }
 
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
-    public static ChangeLogsResponse getChangeLogs(
+    public ChangeLogsResponse getChangeLogs(
+            AppInfoHelper appInfoHelper,
             ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest,
-            ChangeLogsRequest changeLogsRequest) {
+            ChangeLogsRequest changeLogsRequest,
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
         WhereClauses whereClause =
                 new WhereClauses(AND)
@@ -113,8 +149,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         if (!changeLogTokenRequest.getPackageNamesToFilter().isEmpty()) {
             whereClause.addWhereInLongsClause(
                     APP_ID_COLUMN_NAME,
-                    AppInfoHelper.getInstance()
-                            .getAppInfoIds(changeLogTokenRequest.getPackageNamesToFilter()));
+                    appInfoHelper.getAppInfoIds(changeLogTokenRequest.getPackageNamesToFilter()));
         }
 
         // We set limit size to requested pageSize plus extra 1 record so that if number of records
@@ -125,10 +160,9 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                 new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize + 1);
 
         Map<Integer, ChangeLogs> operationToChangeLogMap = new ArrayMap<>();
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         long nextChangesToken = DEFAULT_LONG;
         boolean hasMoreRecords = false;
-        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             int count = 0;
             while (cursor.moveToNext()) {
                 if (count >= pageSize) {
@@ -142,15 +176,18 @@ public final class ChangeLogsHelper extends DatabaseHelper {
 
         String nextToken =
                 nextChangesToken != DEFAULT_LONG
-                        ? ChangeLogsRequestHelper.getNextPageToken(
+                        ? changeLogsRequestHelper.getNextPageToken(
                                 changeLogTokenRequest, nextChangesToken)
                         : changeLogsRequest.getToken();
 
         return new ChangeLogsResponse(operationToChangeLogMap, nextToken, hasMoreRecords);
     }
 
-    public static long getLatestRowId() {
-        return TransactionManager.getInitialisedInstance().getLastRowIdFor(TABLE_NAME);
+    public long getLatestRowId() {
+        return mTransactionManager.runWithoutTransaction(
+                db -> {
+                    return StorageUtils.getLastRowIdFor(db, TABLE_NAME);
+                });
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -168,7 +205,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         return uuidList.size();
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
@@ -181,7 +217,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    @NonNull
     public static List<DeletedLog> getDeletedLogs(Map<Integer, ChangeLogs> operationToChangeLogs) {
         ChangeLogs logs = operationToChangeLogs.get(DELETE);
 
@@ -198,7 +233,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         return new ArrayList<>();
     }
 
-    @NonNull
     public static Map<Integer, List<UUID>> getRecordTypeToInsertedUuids(
             Map<Integer, ChangeLogs> operationToChangeLogs) {
         ChangeLogs logs = operationToChangeLogs.getOrDefault(UPSERT, null);
@@ -256,9 +290,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         /** Function to add an uuid corresponding to given pair of @recordType and @appId */
         @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         public void addUUID(
-                @RecordTypeIdentifier.RecordType int recordType,
-                @NonNull long appId,
-                @NonNull UUID uuid) {
+                @RecordTypeIdentifier.RecordType int recordType, long appId, UUID uuid) {
             Objects.requireNonNull(uuid);
 
             RecordTypeAndAppIdPair recordTypeAndAppIdPair =
@@ -299,18 +331,12 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         /** Adds {@code uuids} to {@link ChangeLogs}. */
         @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         public ChangeLogs addUUIDs(
-                @RecordTypeIdentifier.RecordType int recordType,
-                @NonNull long appId,
-                @NonNull List<UUID> uuids) {
+                @RecordTypeIdentifier.RecordType int recordType, long appId, List<UUID> uuids) {
             RecordTypeAndAppIdPair recordTypeAndAppIdPair =
                     new RecordTypeAndAppIdPair(recordType, appId);
             mRecordTypeAndAppIdToUUIDMap.putIfAbsent(recordTypeAndAppIdPair, new ArrayList<>());
             mRecordTypeAndAppIdToUUIDMap.get(recordTypeAndAppIdPair).addAll(uuids);
             return this;
-        }
-
-        public void clear() {
-            mRecordTypeAndAppIdToUUIDMap.clear();
         }
 
         /** A helper class to create a pair of recordType and appId */
@@ -352,8 +378,8 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         private final boolean mHasMorePages;
 
         public ChangeLogsResponse(
-                @NonNull Map<Integer, ChangeLogsHelper.ChangeLogs> changeLogsMap,
-                @NonNull String nextPageToken,
+                Map<Integer, ChangeLogsHelper.ChangeLogs> changeLogsMap,
+                String nextPageToken,
                 boolean hasMorePages) {
             mChangeLogsMap = changeLogsMap;
             mNextPageToken = nextPageToken;
@@ -361,13 +387,11 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         }
 
         /** Returns map of operation type to change logs */
-        @NonNull
         public Map<Integer, ChangeLogs> getChangeLogsMap() {
             return mChangeLogsMap;
         }
 
         /** Returns the next page token for the change logs */
-        @NonNull
         public String getNextPageToken() {
             return mNextPageToken;
         }

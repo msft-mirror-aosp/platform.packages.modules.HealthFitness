@@ -15,7 +15,10 @@
  */
 package com.android.healthconnect.controller.data.entries.api
 
+import android.health.connect.datatypes.MedicalResource
+import android.util.Log
 import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.dataentries.formatters.medical.MedicalEntryFormatter
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.usecase.BaseUseCase
@@ -30,27 +33,36 @@ class LoadMedicalEntriesUseCase
 @Inject
 constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val medicalEntryFormatter: MedicalEntryFormatter,
     private val loadEntriesHelper: LoadEntriesHelper,
 ) :
     BaseUseCase<LoadMedicalEntriesInput, List<FormattedEntry>>(dispatcher),
     ILoadMedicalEntriesUseCase {
 
+    companion object {
+        private const val TAG = "LoadMedicalEntriesUseCase"
+    }
+
     override suspend fun execute(input: LoadMedicalEntriesInput): List<FormattedEntry> {
         val medicalResources = loadEntriesHelper.readMedicalRecords(input)
-        return medicalResources.map {
-            // TODO(b/362941220): Show the relevant display name instead.
-            FormattedEntry.FormattedMedicalDataEntry(
-                title = it.dataSourceId,
-                titleA11y = it.dataSourceId,
-                header = it.id.toString(),
-                headerA11y = it.id.toString(),
-            )
+        return medicalResources.mapNotNull { getFormatterResource(it, input.showDataOrigin) }
+    }
+
+    private suspend fun getFormatterResource(
+        resource: MedicalResource,
+        showDataOrigin: Boolean,
+    ): FormattedEntry.FormattedMedicalDataEntry? {
+        return try {
+            medicalEntryFormatter.formatResource(resource, showDataOrigin)
+        } catch (ex: Exception) {
+            Log.i(TAG, "Failed to format medical resource!")
+            null
         }
     }
 }
 
 data class LoadMedicalEntriesInput(
-    val permissionType: MedicalPermissionType,
+    val medicalPermissionType: MedicalPermissionType,
     val packageName: String?,
     val showDataOrigin: Boolean,
 )

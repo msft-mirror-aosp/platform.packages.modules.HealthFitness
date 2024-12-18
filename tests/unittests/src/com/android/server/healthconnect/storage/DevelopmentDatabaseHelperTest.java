@@ -21,13 +21,7 @@ import static com.android.server.healthconnect.storage.DatabaseTestUtils.createE
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
@@ -36,23 +30,19 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.request.ReadTableRequest;
+import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 
 import com.google.common.base.Preconditions;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.quality.Strictness;
 
 import java.io.File;
-import java.util.List;
-import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class DevelopmentDatabaseHelperTest {
@@ -61,27 +51,23 @@ public class DevelopmentDatabaseHelperTest {
             new SQLiteDatabase.OpenParams.Builder()
                     .setOpenFlags(SQLiteDatabase.OPEN_READONLY)
                     .build();
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
-    @Mock Context mContext;
+    private HealthConnectContext mHcContext;
 
-    private File mDatabasePath;
+    @Rule(order = 0)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mDatabasePath = getMockDatabasePath();
-        DatabaseTestUtils.clearDatabase(mDatabasePath);
-        when(mContext.getDatabasePath(anyString())).thenReturn(mDatabasePath);
-    }
-
-    @After
-    public void clearDatabase() {
-        DatabaseTestUtils.clearDatabase(getMockDatabasePath());
-    }
-
-    private static File getMockDatabasePath() {
-        return InstrumentationRegistry.getInstrumentation().getContext().getDatabasePath("mock");
+    public void setup() {
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        mHcContext = HealthConnectContext.create(context, context.getUser());
     }
 
     @Test
@@ -91,7 +77,7 @@ public class DevelopmentDatabaseHelperTest {
         // database that can't be fixed after switching the flag on or off.
         // Test this is true by running onOpen twice, dropping the version in between.
 
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mHcContext)) {
             // make sure a database file exists
             SQLiteDatabase db = helper.getWritableDatabase();
             // Drop the settings table to make sure the update code is run completely a second time.
@@ -105,17 +91,19 @@ public class DevelopmentDatabaseHelperTest {
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_readOnlyDatabase_successful() {
         // GIVEN we have a guaranteed read only database.
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        File databaseFile;
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mHcContext)) {
             // make sure a database file exists
             helper.getWritableDatabase();
+            databaseFile = helper.getDatabasePath();
         }
         // Change it to read only
-        Preconditions.checkState(mDatabasePath.setReadOnly());
+        Preconditions.checkState(databaseFile.setReadOnly());
         // Check the above code works
-        Preconditions.checkState(mDatabasePath.canRead());
-        Preconditions.checkState(!mDatabasePath.canWrite());
+        Preconditions.checkState(databaseFile.canRead());
+        Preconditions.checkState(!databaseFile.canWrite());
         try (SQLiteDatabase readOnlyDatabase =
-                SQLiteDatabase.openDatabase(mDatabasePath, READ_ONLY)) {
+                SQLiteDatabase.openDatabase(databaseFile, READ_ONLY)) {
             Preconditions.checkState(readOnlyDatabase.isReadOnly());
 
             // WHEN we call onOpen on the read only database THEN there are no errors.
@@ -149,7 +137,7 @@ public class DevelopmentDatabaseHelperTest {
     @Test
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testDropAndCreateDevelopmentSettings_existent_overwrites() {
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mHcContext)) {
             // getWriteableDatabase() triggers onOpen(), so the dev database with
             // version CURRENT_VERSION should be created.
             SQLiteDatabase db = helper.getWritableDatabase();
@@ -164,9 +152,9 @@ public class DevelopmentDatabaseHelperTest {
     @Test
     @DisableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_notDevelopment_deletesDevelopmentTables() {
-        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mHcContext)) {
             // Calling getWritableDatabase() triggers onOpen(). With the flag off,
-            // should delete the development database, and not create the PHR one.
+            // should delete the development database.
             SQLiteDatabase db = helper.getWritableDatabase();
             // Now the development database should not be present.
             // Create a table that looks like some old development settings.
@@ -186,8 +174,6 @@ public class DevelopmentDatabaseHelperTest {
     @Test
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_isDevelopmentHasDevelopmentTables_noChange() {
-        // Make the bad condition that the development settings version looks good, but the PHR
-        // database has not been created.
         // GIVEN we have some current development database settings, and the flags are enabled
         try (SQLiteDatabase db = createEmptyDatabase()) {
             DevelopmentDatabaseHelper.dropAndCreateDevelopmentSettingsTable(
@@ -196,15 +182,9 @@ public class DevelopmentDatabaseHelperTest {
             // WHEN onOpen is called
             DevelopmentDatabaseHelper.onOpen(db);
 
-            // THEN the settings table should be left, and nothing changed (ie PHR not created)
+            // THEN the settings table should be left, and nothing changed
             assertThat(DevelopmentDatabaseHelper.getOldVersionIfExists(db))
                     .isEqualTo(DevelopmentDatabaseHelper.CURRENT_VERSION);
-            // Check PHR not created
-            assertThrows(
-                    SQLException.class,
-                    () -> {
-                        usePhrDataSourceTable(db);
-                    });
         }
     }
 
@@ -214,45 +194,11 @@ public class DevelopmentDatabaseHelperTest {
         try (SQLiteDatabase db = createEmptyDatabase()) {
             DevelopmentDatabaseHelper.dropAndCreateDevelopmentSettingsTable(
                     db, DevelopmentDatabaseHelper.CURRENT_VERSION - 1);
-            // We need to create access_logs_table, since we are altering the table
-            // in onOpen.
-            HealthConnectDatabase.createTable(db, AccessLogsHelper.getCreateTableRequest());
 
             DevelopmentDatabaseHelper.onOpen(db);
 
             assertThat(DevelopmentDatabaseHelper.getOldVersionIfExists(db))
                     .isEqualTo(DevelopmentDatabaseHelper.CURRENT_VERSION);
-            // Check PHR is created
-            usePhrDataSourceTable(db);
-            usePhrAccessLogsColumns(db);
-        }
-    }
-
-    /**
-     * Check that the PHR tables were created on a database by attempting to read a random UUID
-     * datasource. If the table doesn't exist we expect an SQLException, if the table does exist
-     * nothing should happen.
-     */
-    private static void usePhrDataSourceTable(SQLiteDatabase db) {
-        UUID uuid = UUID.randomUUID();
-        ReadTableRequest request = MedicalDataSourceHelper.getReadTableRequest(List.of(uuid));
-        try (Cursor cursor = db.rawQuery(request.getReadCommand(), new String[] {})) {
-            assertThat(cursor.getCount()).isEqualTo(0);
-        }
-    }
-
-    /**
-     * Check that the PHR columns for access logs were added to the {@link
-     * AccessLogsHelper#TABLE_NAME}. If the columns don't exist we expect an SQLException, if the
-     * columns do exist nothing should happen.
-     */
-    private static void usePhrAccessLogsColumns(SQLiteDatabase db) {
-        try (Cursor cursor =
-                db.rawQuery(
-                        "SELECT medical_resource_type, medical_data_source_accessed FROM"
-                                + " access_logs_table",
-                        new String[] {})) {
-            assertThat(cursor.getCount()).isEqualTo(0);
         }
     }
 }

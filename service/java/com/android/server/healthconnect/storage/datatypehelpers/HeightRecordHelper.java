@@ -22,7 +22,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -55,7 +54,7 @@ public final class HeightRecordHelper extends InstantRecordHelper<HeightRecordIn
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;
         switch (aggregationType.getAggregationTypeIdentifier()) {
@@ -71,7 +70,6 @@ public final class HeightRecordHelper extends InstantRecordHelper<HeightRecordIn
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return HEIGHT_RECORD_TABLE_NAME;
     }
@@ -93,19 +91,17 @@ public final class HeightRecordHelper extends InstantRecordHelper<HeightRecordIn
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull HeightRecordInternal heightRecord) {
+    void populateSpecificRecordValue(Cursor cursor, HeightRecordInternal heightRecord) {
         heightRecord.setHeight(getCursorDouble(cursor, HEIGHT_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull HeightRecordInternal heightRecord) {
+            ContentValues contentValues, HeightRecordInternal heightRecord) {
         contentValues.put(HEIGHT_COLUMN_NAME, heightRecord.getHeight());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(new Pair<>(HEIGHT_COLUMN_NAME, REAL));
     }

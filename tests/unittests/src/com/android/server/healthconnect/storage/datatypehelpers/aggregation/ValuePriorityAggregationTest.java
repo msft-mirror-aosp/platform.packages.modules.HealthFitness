@@ -25,36 +25,28 @@ import static org.mockito.Mockito.when;
 
 import android.database.Cursor;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.quality.Strictness;
 
 import java.util.Collections;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class ValuePriorityAggregationTest {
     @Mock Cursor mCursor;
-    @Mock HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
     PriorityRecordsAggregator mOneGroupAggregator;
     PriorityRecordsAggregator mMultiGroupAggregator;
     AggregateParams.PriorityAggregationExtraParams mParams =
             new AggregateParams.PriorityAggregationExtraParams("start", "end");
-
-    @Rule
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
 
     @Before
     public void setUp() {
@@ -72,10 +64,6 @@ public class ValuePriorityAggregationTest {
                                 0,
                                 mParams,
                                 false));
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
     }
 
     @Test

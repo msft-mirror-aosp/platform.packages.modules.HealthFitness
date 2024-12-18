@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.migration.notification;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -27,8 +26,6 @@ import android.content.Context;
 import android.os.Binder;
 import android.os.UserHandle;
 import android.util.Log;
-
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -55,21 +52,15 @@ public final class MigrationNotificationSender {
 
     private final Context mContext;
     private final MigrationNotificationFactory mNotificationFactory;
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
-    public MigrationNotificationSender(@NonNull Context context) {
+    public MigrationNotificationSender(Context context) {
         mContext = context;
         mNotificationFactory = new MigrationNotificationFactory(mContext);
-        mHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
     }
 
     /** Sends a notification to the current user based on the notification type. */
     public void sendNotification(
-            @MigrationNotificationType int notificationType, @NonNull UserHandle userHandle) {
-        if (!mHealthConnectDeviceConfigManager.areMigrationNotificationsEnabled()) {
-            return;
-        }
+            @MigrationNotificationType int notificationType, UserHandle userHandle) {
         createNotificationChannel(userHandle);
         try {
             Notification notification =
@@ -84,21 +75,21 @@ public final class MigrationNotificationSender {
     }
 
     /** Cancels all Health Connect notifications. */
-    public void clearNotifications(@NonNull UserHandle userHandle) {
+    public void clearNotifications(UserHandle userHandle) {
         NotificationManager notificationManager = getNotificationManagerForUser(userHandle);
         cancelFromSystem(notificationManager);
     }
 
     /** Returns a {@link NotificationManager} which will send notifications to the given user. */
     @Nullable
-    private NotificationManager getNotificationManagerForUser(@NonNull UserHandle userHandle) {
+    private NotificationManager getNotificationManagerForUser(UserHandle userHandle) {
         Context contextAsUser = mContext.createContextAsUser(userHandle, 0);
         return contextAsUser.getSystemService(NotificationManager.class);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void notifyFromSystem(
-            @Nullable NotificationManager notificationManager, @NonNull Notification notification) {
+            @Nullable NotificationManager notificationManager, Notification notification) {
         // This call is needed to send a notification from the system and this also grants the
         // necessary POST_NOTIFICATIONS permission.
         final long callingId = Binder.clearCallingIdentity();
@@ -126,7 +117,7 @@ public final class MigrationNotificationSender {
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private void createNotificationChannel(@NonNull UserHandle userHandle) {
+    private void createNotificationChannel(UserHandle userHandle) {
 
         final String channelGroupName =
                 mNotificationFactory.getStringResource(CHANNEL_NAME_RESOURCE);
@@ -158,27 +149,15 @@ public final class MigrationNotificationSender {
     }
 
     /** Constants used to identify migration notification types. */
-    public static final int NOTIFICATION_TYPE_MIGRATION_IN_PROGRESS = 0;
-
-    public static final int NOTIFICATION_TYPE_MIGRATION_COMPLETE = 1;
-    public static final int NOTIFICATION_TYPE_MIGRATION_APP_UPDATE_NEEDED = 2;
     public static final int NOTIFICATION_TYPE_MIGRATION_MODULE_UPDATE_NEEDED = 3;
-    public static final int NOTIFICATION_TYPE_MIGRATION_MORE_SPACE_NEEDED = 4;
+
     public static final int NOTIFICATION_TYPE_MIGRATION_PAUSED = 5;
-    public static final int NOTIFICATION_TYPE_MIGRATION_RESUME = 6;
-    public static final int NOTIFICATION_TYPE_MIGRATION_CANCELLED = 7;
 
     /** @hide */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-        NOTIFICATION_TYPE_MIGRATION_IN_PROGRESS,
-        NOTIFICATION_TYPE_MIGRATION_COMPLETE,
-        NOTIFICATION_TYPE_MIGRATION_APP_UPDATE_NEEDED,
         NOTIFICATION_TYPE_MIGRATION_MODULE_UPDATE_NEEDED,
-        NOTIFICATION_TYPE_MIGRATION_MORE_SPACE_NEEDED,
         NOTIFICATION_TYPE_MIGRATION_PAUSED,
-        NOTIFICATION_TYPE_MIGRATION_RESUME,
-        NOTIFICATION_TYPE_MIGRATION_CANCELLED,
     })
     public @interface MigrationNotificationType {}
 }

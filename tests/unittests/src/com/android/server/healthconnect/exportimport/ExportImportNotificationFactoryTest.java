@@ -31,9 +31,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
+import android.health.connect.HealthConnectManager;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.Flags;
@@ -42,10 +44,12 @@ import com.android.server.healthconnect.exportimport.ExportImportNotificationFac
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import java.util.Optional;
 
+@RunWith(AndroidJUnit4.class)
 public class ExportImportNotificationFactoryTest {
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -54,8 +58,6 @@ public class ExportImportNotificationFactoryTest {
 
     private static final String NOTIFICATION_CHANNEL_ID = "healthconnect-channel";
 
-    private static final String HEALTH_CONNECT_HOME_ACTION =
-            "android.health.connect.action.HEALTH_HOME_SETTINGS";
     private static final String HEALTH_CONNECT_RESTART_IMPORT_ACTION =
             "android.health.connect.action.START_IMPORT_FLOW";
     private static final String HEALTH_CONNECT_RESTART_EXPORT_SETUP =
@@ -91,7 +93,7 @@ public class ExportImportNotificationFactoryTest {
     @Test
     public void importCompletesSuccessfully_notificationDisplayedCorrectly() {
         Notification result = mFactory.createNotification(NOTIFICATION_TYPE_IMPORT_COMPLETE);
-        Intent expectedIntent = new Intent(HEALTH_CONNECT_HOME_ACTION);
+        Intent expectedIntent = new Intent(HealthConnectManager.ACTION_MANAGE_HEALTH_DATA);
         PendingIntent expectedPendingIntent =
                 PendingIntent.getActivity(
                         mContext, 0, expectedIntent, PendingIntent.FLAG_IMMUTABLE);

@@ -16,45 +16,99 @@
 
 package com.android.server.healthconnect.phr;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
-import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesInitialRequest;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
+import org.junit.runner.RunWith;
 
 import java.util.Base64;
 
+@RunWith(AndroidJUnit4.class)
 public class PhrPageTokenWrapperTest {
     private static final int LAST_ROW_ID = 20;
     private static final String INVALID_PAGE_TOKEN_NON_BASE_64 = "2|3aw";
-    private static final String INVALID_PAGE_TOKEN_WRONG_NUMBER_OF_TOKENS = "1,2,3";
-    private static final String INVALID_PAGE_TOKEN_WITH_NON_INT_TOKENS = "a,2";
+    private static final String INVALID_PAGE_TOKEN_WRONG_NUMBER_OF_TOKENS = "1,2,3,4";
+    private static final String INVALID_PAGE_TOKEN_WITH_NON_INT_TOKENS = "a,1,2";
+    private static final String INVALID_PAGE_TOKEN_WITH_NEGATIVE_LAST_ROW_ID =
+            "-1,1," + DATA_SOURCE_ID;
+    private static final String INVALID_PAGE_TOKEN_WITH_UNSUPPORTED_MEDICAL_RESOURCE_TYPE =
+            "1,100," + DATA_SOURCE_ID;
+    private static final String INVALID_PAGE_TOKEN_WITH_INVALID_DATA_SOURCE_ID = "1,2,dataSource1";
 
     @Test
-    public void phrPageTokenWrapper_createUsingRequestAndLastRowId_success() {
-        ReadMedicalResourcesRequest request =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+    public void phrPageTokenWrapper_createUsingInitialRequest_success() {
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .build();
 
-        PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.of(request, LAST_ROW_ID);
+        PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request.toParcel());
 
         assertThat(pageTokenWrapper.getRequest()).isEqualTo(request);
-        assertThat(pageTokenWrapper.getLastRowId()).isEqualTo(LAST_ROW_ID);
+        assertThat(pageTokenWrapper.getLastRowId()).isEqualTo(DEFAULT_LONG);
     }
 
     @Test
-    public void phrPageTokenWrapper_encodeAndDecode_success() {
-        ReadMedicalResourcesRequest request =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        PhrPageTokenWrapper expected = PhrPageTokenWrapper.of(request, LAST_ROW_ID);
+    public void phrPageTokenWrapper_encodeAndDecodeWithoutDataSources_success() {
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build();
+        PhrPageTokenWrapper expected =
+                PhrPageTokenWrapper.from(request.toParcel()).cloneWithNewLastRowId(LAST_ROW_ID);
 
         String pageToken = expected.encode();
         PhrPageTokenWrapper result = PhrPageTokenWrapper.from(pageToken);
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void phrPageTokenWrapper_encodeAndDecodeWithAllFilters_success() {
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .build();
+        PhrPageTokenWrapper expected =
+                PhrPageTokenWrapper.from(request.toParcel()).cloneWithNewLastRowId(LAST_ROW_ID);
+
+        String pageToken = expected.encode();
+        PhrPageTokenWrapper result = PhrPageTokenWrapper.from(pageToken);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void phrPageTokenWrapper_encodeAndDecodeWithoutFilters_success() {
+        PhrPageTokenWrapper expected = PhrPageTokenWrapper.from(LAST_ROW_ID);
+
+        String pageToken = expected.encode();
+        PhrPageTokenWrapper result = PhrPageTokenWrapper.from(pageToken);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void phrPageTokenWrapper_encodeWithNegativeLastRowId_throws() {
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build();
+        assertThrows(
+                IllegalStateException.class,
+                () -> PhrPageTokenWrapper.from(request.toParcel()).encode());
     }
 
     @Test
@@ -66,11 +120,14 @@ public class PhrPageTokenWrapperTest {
 
     @Test
     public void phrPageTokenWrapper_pageTokenWithWrongNumberOfTokens_throws() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        PhrPageTokenWrapper.from(
-                                encodePageToken(INVALID_PAGE_TOKEN_WRONG_NUMBER_OF_TOKENS)));
+        IllegalArgumentException exp =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                PhrPageTokenWrapper.from(
+                                        encodePageToken(
+                                                INVALID_PAGE_TOKEN_WRONG_NUMBER_OF_TOKENS)));
+        assertThat(exp.getMessage()).isEqualTo("Invalid pageToken");
     }
 
     @Test
@@ -83,22 +140,65 @@ public class PhrPageTokenWrapperTest {
     }
 
     @Test
-    public void phrPageTokenWrapper_pageTokenNull_throws() {
-        assertThrows(IllegalArgumentException.class, () -> PhrPageTokenWrapper.from(null));
+    public void phrPageTokenWrapper_pageTokenWithNegativeLastRowId_throws() {
+        IllegalArgumentException exp =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                PhrPageTokenWrapper.from(
+                                        encodePageToken(
+                                                INVALID_PAGE_TOKEN_WITH_NEGATIVE_LAST_ROW_ID)));
+        assertThat(exp.getMessage()).isEqualTo("Invalid pageToken");
     }
 
     @Test
-    public void phrPageTokenWrapper_pageTokenEmpty_throws() {
-        assertThrows(IllegalArgumentException.class, () -> PhrPageTokenWrapper.from(""));
+    public void phrPageTokenWrapper_pageTokenWithUnsupportedMedicalResourceType_throws() {
+        ThrowingRunnable runnable =
+                () ->
+                        PhrPageTokenWrapper.from(
+                                encodePageToken(
+                                        INVALID_PAGE_TOKEN_WITH_UNSUPPORTED_MEDICAL_RESOURCE_TYPE));
+
+        IllegalArgumentException exp = assertThrows(IllegalArgumentException.class, runnable);
+        assertThat(exp.getMessage()).isEqualTo("Invalid pageToken");
+    }
+
+    @Test
+    public void phrPageTokenWrapper_pageTokenWithInvalidDataSourceId_throws() {
+        IllegalArgumentException exp =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                PhrPageTokenWrapper.from(
+                                        encodePageToken(
+                                                INVALID_PAGE_TOKEN_WITH_INVALID_DATA_SOURCE_ID)));
+        assertThat(exp.getMessage()).isEqualTo("Invalid pageToken");
+    }
+
+    @Test
+    public void phrPageTokenWrapper_pageTokenNull_returnsEmptyPageToken() {
+        String pageTokenNull = null;
+
+        assertThat(PhrPageTokenWrapper.fromPageTokenAllowingNull(pageTokenNull))
+                .isEqualTo(PhrPageTokenWrapper.EMPTY_PAGE_TOKEN);
+    }
+
+    @Test
+    public void phrPageTokenWrapper_pageTokenEmpty_returnsEmptyPageToken() {
+        assertThat(PhrPageTokenWrapper.fromPageTokenAllowingNull(""))
+                .isEqualTo(PhrPageTokenWrapper.EMPTY_PAGE_TOKEN);
     }
 
     @Test
     public void phrPageTokenWrapper_fromInvalidRowId_throws() {
-        ReadMedicalResourcesRequest request =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build();
         assertThrows(
-                IllegalArgumentException.class,
-                () -> PhrPageTokenWrapper.of(request, /* lastRowId= */ -1));
+                IllegalStateException.class,
+                () ->
+                        PhrPageTokenWrapper.from(request.toParcel())
+                                .cloneWithNewLastRowId(/* lastRowId= */ -1));
     }
 
     private String encodePageToken(String nonEncodedPageToken) {

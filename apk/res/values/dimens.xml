@@ -49,5 +49,6 @@
     <dimen name="recent_access_fab_bottom_padding">90dp</dimen>
 
     <dimen name="tab_corner_radius">12dp</dimen>
+    <dimen name="tab_width">110dp</dimen>
 
 </resources>

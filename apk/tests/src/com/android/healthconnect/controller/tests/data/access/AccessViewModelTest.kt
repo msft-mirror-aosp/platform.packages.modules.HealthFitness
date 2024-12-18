@@ -35,7 +35,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -55,7 +55,7 @@ class AccessViewModelTest {
 
     private lateinit var viewModel: AccessViewModel
     private val fakeLoadAccessUseCase = FakeLoadAccessUseCase()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Inject lateinit var appInfoReader: AppInfoReader
 
@@ -70,7 +70,6 @@ class AccessViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -102,7 +101,7 @@ class AccessViewModelTest {
 
         val testObserver = TestObserver<AccessViewModel.AccessScreenState>()
         viewModel.appMetadataMap.observeForever(testObserver)
-        viewModel.loadAppMetaDataMap(MedicalPermissionType.IMMUNIZATION)
+        viewModel.loadAppMetaDataMap(MedicalPermissionType.VACCINES)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue())

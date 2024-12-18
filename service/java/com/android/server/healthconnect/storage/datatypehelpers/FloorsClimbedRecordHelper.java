@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.AggregationType;
@@ -50,7 +49,6 @@ public final class FloorsClimbedRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return FLOORS_CLIMBED_RECORD_TABLE_NAME;
     }
@@ -71,19 +69,17 @@ public final class FloorsClimbedRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull FloorsClimbedRecordInternal floorsClimbedRecord) {
+            Cursor cursor, FloorsClimbedRecordInternal floorsClimbedRecord) {
         floorsClimbedRecord.setFloors(getCursorDouble(cursor, FLOORS_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull FloorsClimbedRecordInternal floorsClimbedRecord) {
+            ContentValues contentValues, FloorsClimbedRecordInternal floorsClimbedRecord) {
         contentValues.put(FLOORS_COLUMN_NAME, floorsClimbedRecord.getFloors());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(FLOORS_COLUMN_NAME, REAL));
     }

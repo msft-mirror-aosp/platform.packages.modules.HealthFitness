@@ -20,8 +20,9 @@ package com.android.healthconnect.controller.data.appdata
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -36,8 +37,8 @@ class AppDataViewModel
 @Inject
 constructor(
     private val appInfoReader: AppInfoReader,
-    private val loadAppDataUseCase: AppDataUseCase,
-) : ViewModel() {
+    private val loadAllDataUseCase: AllDataUseCase,
+) : DeletionDataViewModel() {
 
     companion object {
         private const val TAG = "AppDataViewModel"
@@ -76,10 +77,10 @@ constructor(
     fun loadAppData(packageName: String) {
         _appFitnessData.postValue(AppDataState.Loading)
         _appMedicalData.postValue(AppDataState.Loading)
-
+        numOfPermissionTypes = 0
         viewModelScope.launch {
-            val fitnessData = async { loadAppDataUseCase.loadFitnessAppData(packageName) }
-            val medicalData = async { loadAppDataUseCase.loadMedicalAppData(packageName) }
+            val fitnessData = async { loadAllDataUseCase.loadFitnessAppData(packageName) }
+            val medicalData = async { loadAllDataUseCase.loadMedicalAppData(packageName) }
 
             handleResult(fitnessData.await(), _appFitnessData)
             handleResult(medicalData.await(), _appMedicalData)
@@ -91,7 +92,10 @@ constructor(
         liveData: MutableLiveData<AppDataState>,
     ) {
         when (result) {
-            is UseCaseResults.Success -> liveData.postValue(AppDataState.WithData(result.data))
+            is UseCaseResults.Success -> {
+                liveData.postValue(AppDataState.WithData(result.data))
+                numOfPermissionTypes += result.data.sumOf { it.data.size }
+            }
             is UseCaseResults.Failed -> liveData.postValue(AppDataState.Error)
         }
     }
@@ -119,9 +123,9 @@ constructor(
     }
 
     sealed class AppDataState {
-        object Loading : AppDataState()
+        data object Loading : AppDataState()
 
-        object Error : AppDataState()
+        data object Error : AppDataState()
 
         data class WithData(val dataMap: List<PermissionTypesPerCategory>) : AppDataState()
     }

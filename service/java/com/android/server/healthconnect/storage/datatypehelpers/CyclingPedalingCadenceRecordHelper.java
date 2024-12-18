@@ -34,7 +34,6 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.CyclingPedalingCadenceRecordInternal;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
@@ -86,7 +85,7 @@ public class CyclingPedalingCadenceRecordHelper
     /** Populates the {@code record} with values specific to datatype */
     @Override
     void populateSpecificValues(
-            @NonNull Cursor seriesTableCursor, CyclingPedalingCadenceRecordInternal record) {
+            Cursor seriesTableCursor, CyclingPedalingCadenceRecordInternal record) {
         HashSet<CyclingPedalingCadenceRecordInternal.CyclingPedalingCadenceRecordSample>
                 cyclingPedalingCadenceRecordSampleSet = new HashSet<>();
         UUID uuid = getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME);
@@ -116,7 +115,7 @@ public class CyclingPedalingCadenceRecordHelper
 
     @Override
     @Nullable
-    public final AggregateResult<?> getAggregateResult(
+    public final AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case CYCLING_PEDALING_CADENCE_RECORD_RPM_MIN:

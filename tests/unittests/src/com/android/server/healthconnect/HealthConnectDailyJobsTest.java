@@ -23,13 +23,17 @@ import static org.mockito.Mockito.when;
 
 import android.app.job.JobScheduler;
 import android.content.Context;
+import android.os.UserHandle;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectDailyJobsTest {
     private static final String HEALTH_CONNECT_DAILY_JOB_NAMESPACE = "HEALTH_CONNECT_DAILY_JOB";
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";
@@ -48,9 +52,9 @@ public class HealthConnectDailyJobsTest {
 
     @Test
     public void testJobSchedule() {
-        HealthConnectDailyJobs.schedule(mContext, 0);
+        HealthConnectDailyJobs.schedule(mContext, UserHandle.getUserHandleForUid(0));
         verify(mJobScheduler, times(1)).schedule(any());
-        HealthConnectDailyJobs.schedule(mContext, 1);
+        HealthConnectDailyJobs.schedule(mContext, UserHandle.getUserHandleForUid(1));
         verify(mJobScheduler, times(2)).schedule(any());
         HealthConnectDailyJobs.cancelAllJobs(mContext);
         verify(mJobScheduler, times(1)).cancelAll();
