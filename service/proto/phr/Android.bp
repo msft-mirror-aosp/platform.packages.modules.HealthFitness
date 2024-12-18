@@ -63,12 +63,20 @@ python_library_host {
 }
 
 python_library_host {
+    name: "fhir-spec-utils",
+    srcs: [
+        "fhir_spec_utils.py",
+    ],
+}
+
+python_library_host {
     name: "fhir-spec-extractor",
     srcs: [
         "fhir_spec_extractor.py",
     ],
     libs: [
         "fhirspec-py-proto",
+        "fhir-spec-utils",
     ],
 }
 

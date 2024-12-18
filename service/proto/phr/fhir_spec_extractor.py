@@ -1,28 +1,8 @@
 import fhirspec_pb2
+from fhir_spec_utils import *
 from typing import Collection, Mapping
 
-# LINT.IfChange(fhir_resource_type_mapping)
-RESOURCE_TYPE_STRING_TO_HC_INT_MAPPING = {
-    "Immunization": 1,
-    "AllergyIntolerance": 2,
-    "Observation": 3,
-    "Condition": 4,
-    "Procedure": 5,
-    "Medication": 6,
-    "MedicationRequest": 7,
-    "MedicationStatement": 8,
-    "Patient": 9,
-    "Practitioner": 10,
-    "PractitionerRole": 11,
-    "Encounter": 12,
-    "Location": 13,
-    "Organization": 14,
-}
-# LINT.ThenChange(/framework/java/android/health/connect/datatypes/FhirResource.java)
-
-HC_SUPPORTED_RESOURCE_SET = set(RESOURCE_TYPE_STRING_TO_HC_INT_MAPPING.keys())
-
-FHIR_VERSION_R4 = "4.0.1"
+R4_FHIR_TYPE_PREFIX = "R4_FHIR_TYPE_"
 
 
 class FhirSpecExtractor:
@@ -83,33 +63,14 @@ class FhirSpecExtractor:
     def _extract_element_definitions_by_resource_from_spec(
             self, profile_resources_json: Mapping, resource_names: set[str]) -> Mapping:
         resource_to_element_definitions = {}
-        # For each StructureDefinition that matches a resource in resource_names, we extract
-        # the list of ElementDefinitions. Each ElementDefinition contains the spec for a path /
-        # field of the resource.
-        for entry in profile_resources_json["entry"]:
-            fullUrl = entry["fullUrl"]
-            if not (fullUrl.startswith("http://hl7.org/fhir/StructureDefinition/") and
-                    fullUrl.split("/")[-1] in resource_names):
-                continue
 
-            resource_name = fullUrl.split("/")[-1]
-            resource_structure_definition = entry["resource"]
-
-            # Do some assertions on expected values
-            if resource_structure_definition["fhirVersion"] != FHIR_VERSION_R4:
-                raise ValueError("Unexpected fhir version found")
-            if resource_structure_definition["kind"] != "resource":
-                raise ValueError("Unexpected kind field in structure definition")
-            if resource_structure_definition["type"] != resource_name:
-                raise ValueError("Unexpected resource type in structure definition")
-
-            # We select the list of elements in "snapshot" (as opposed to "differential"), as we
-            # want the full definition of fields, including fields from any base definitions.
-            resource_to_element_definitions[resource_name] = (
-                resource_structure_definition)["snapshot"]["element"]
-
-        if set(resource_to_element_definitions.keys()) != resource_names:
-            raise ValueError("Did not find resource definitions for all requested resources.")
+        for resource, structure_definition in extract_type_to_structure_definitions_from_spec(
+                profile_resources_json, resource_names).items():
+            if structure_definition["kind"] != "resource":
+                raise ValueError(
+                    "Unexpected kind field in structure definition. Expected resource.")
+            resource_to_element_definitions[resource] = (
+                extract_element_definitions_from_structure_def(structure_definition))
 
         return resource_to_element_definitions
 
@@ -145,12 +106,12 @@ class FhirSpecExtractor:
                 field_name = field_parts[1]
                 field_configs_to_add, multi_type_config = (
                     self._generate_field_configs_and_multi_type_config_from_field_element(
-                    element, field_name))
+                        element, field_name))
                 for name in field_configs_to_add:
                     if name in field_configs_by_name: raise ValueError("Field name already exists")
 
                 field_configs_by_name.update(field_configs_to_add)
-                if self.field_name_is_multi_type_field(field_name):
+                if self._field_name_is_multi_type_field(field_name):
                     multi_type_configs.append(multi_type_config)
                 elif self._field_is_required(element):
                     required_fields.add(field_name)
@@ -192,7 +153,7 @@ class FhirSpecExtractor:
         # is the field Immunization.occurrence, which has types "string" and "dateTime" and
         # therefore means the fields "occurrenceString" and "occurrenceDateTime" are allowed. We
         # therefore expand the field name with each defined type.
-        if self.field_name_is_multi_type_field(field_name):
+        if self._field_name_is_multi_type_field(field_name):
             if field_is_array:
                 raise ValueError(
                     "Unexpected cardinality for type choice field. Did not expect array.")
@@ -227,7 +188,7 @@ class FhirSpecExtractor:
 
         return field_configs_by_name, multi_type_config
 
-    def field_name_is_multi_type_field(self, field_name) -> bool:
+    def _field_name_is_multi_type_field(self, field_name) -> bool:
         """Returns true if the field is a oneof / type choice field, which can be contains several
         data types.
 
@@ -305,10 +266,7 @@ class FhirSpecExtractor:
         if not self._is_primitive_type(type_string):
             return "R4_FHIR_TYPE_COMPLEX"
 
-        snake_case_type_string = type_string[0].upper() + "".join(
-            [c if c.islower() else "_" + c for c in type_string[1:]])
-
-        return "R4_FHIR_TYPE_" + snake_case_type_string.upper()
+        return R4_FHIR_TYPE_PREFIX + to_upper_snake_case(type_string)
 
     def _is_primitive_type(self, type_string: str) -> bool:
         # See https://hl7.org/fhir/R4/datatypes.html for possible types.
