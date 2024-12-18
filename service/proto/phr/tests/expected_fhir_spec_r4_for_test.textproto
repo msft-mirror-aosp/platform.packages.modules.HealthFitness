@@ -5,7 +5,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -13,7 +13,7 @@ resource_type_to_config {
       key: "doseQuantity"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_QUANTITY
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -21,7 +21,7 @@ resource_type_to_config {
       key: "education"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -29,7 +29,7 @@ resource_type_to_config {
       key: "encounter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -45,7 +45,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -53,7 +53,7 @@ resource_type_to_config {
       key: "fundingSource"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -69,7 +69,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -101,7 +101,7 @@ resource_type_to_config {
       key: "location"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -117,7 +117,7 @@ resource_type_to_config {
       key: "manufacturer"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -125,7 +125,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -133,7 +133,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -141,7 +141,7 @@ resource_type_to_config {
       key: "note"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ANNOTATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -165,7 +165,7 @@ resource_type_to_config {
       key: "patient"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -173,7 +173,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -189,7 +189,7 @@ resource_type_to_config {
       key: "programEligibility"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -197,7 +197,7 @@ resource_type_to_config {
       key: "protocolApplied"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -205,7 +205,7 @@ resource_type_to_config {
       key: "reaction"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -213,7 +213,7 @@ resource_type_to_config {
       key: "reasonCode"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -221,7 +221,7 @@ resource_type_to_config {
       key: "reasonReference"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -237,7 +237,7 @@ resource_type_to_config {
       key: "reportOrigin"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -253,7 +253,7 @@ resource_type_to_config {
       key: "route"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -261,7 +261,7 @@ resource_type_to_config {
       key: "site"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -277,7 +277,7 @@ resource_type_to_config {
       key: "statusReason"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -285,7 +285,7 @@ resource_type_to_config {
       key: "subpotentReason"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -293,7 +293,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -301,7 +301,7 @@ resource_type_to_config {
       key: "vaccineCode"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -323,7 +323,7 @@ resource_type_to_config {
       key: "asserter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -339,7 +339,7 @@ resource_type_to_config {
       key: "clinicalStatus"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -347,7 +347,7 @@ resource_type_to_config {
       key: "code"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -355,7 +355,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -371,7 +371,7 @@ resource_type_to_config {
       key: "encounter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -379,7 +379,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -395,7 +395,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -427,7 +427,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -435,7 +435,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -443,7 +443,7 @@ resource_type_to_config {
       key: "note"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ANNOTATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -451,7 +451,7 @@ resource_type_to_config {
       key: "onsetAge"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_AGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -467,7 +467,7 @@ resource_type_to_config {
       key: "onsetPeriod"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -475,7 +475,7 @@ resource_type_to_config {
       key: "onsetRange"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RANGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -491,7 +491,7 @@ resource_type_to_config {
       key: "patient"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -499,7 +499,7 @@ resource_type_to_config {
       key: "reaction"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -515,7 +515,7 @@ resource_type_to_config {
       key: "recorder"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -531,7 +531,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -547,7 +547,7 @@ resource_type_to_config {
       key: "verificationStatus"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -570,7 +570,7 @@ resource_type_to_config {
       key: "basedOn"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -578,7 +578,7 @@ resource_type_to_config {
       key: "bodySite"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -586,7 +586,7 @@ resource_type_to_config {
       key: "category"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -594,7 +594,7 @@ resource_type_to_config {
       key: "code"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -602,7 +602,7 @@ resource_type_to_config {
       key: "component"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -610,7 +610,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -618,7 +618,7 @@ resource_type_to_config {
       key: "dataAbsentReason"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -626,7 +626,7 @@ resource_type_to_config {
       key: "derivedFrom"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -634,7 +634,7 @@ resource_type_to_config {
       key: "device"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -658,7 +658,7 @@ resource_type_to_config {
       key: "effectivePeriod"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -666,7 +666,7 @@ resource_type_to_config {
       key: "effectiveTiming"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_TIMING
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -674,7 +674,7 @@ resource_type_to_config {
       key: "encounter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -682,7 +682,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -690,7 +690,7 @@ resource_type_to_config {
       key: "focus"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -698,7 +698,7 @@ resource_type_to_config {
       key: "hasMember"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -714,7 +714,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -730,7 +730,7 @@ resource_type_to_config {
       key: "interpretation"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -754,7 +754,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -762,7 +762,7 @@ resource_type_to_config {
       key: "method"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -770,7 +770,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -778,7 +778,7 @@ resource_type_to_config {
       key: "note"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ANNOTATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -786,7 +786,7 @@ resource_type_to_config {
       key: "partOf"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -794,7 +794,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -802,7 +802,7 @@ resource_type_to_config {
       key: "referenceRange"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -818,7 +818,7 @@ resource_type_to_config {
       key: "specimen"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -834,7 +834,7 @@ resource_type_to_config {
       key: "subject"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -842,7 +842,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -858,7 +858,7 @@ resource_type_to_config {
       key: "valueCodeableConcept"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -882,7 +882,7 @@ resource_type_to_config {
       key: "valuePeriod"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -890,7 +890,7 @@ resource_type_to_config {
       key: "valueQuantity"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_QUANTITY
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -898,7 +898,7 @@ resource_type_to_config {
       key: "valueRange"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RANGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -906,7 +906,7 @@ resource_type_to_config {
       key: "valueRatio"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RATIO
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -914,7 +914,7 @@ resource_type_to_config {
       key: "valueSampledData"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_SAMPLED_DATA
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -968,7 +968,7 @@ resource_type_to_config {
       key: "abatementAge"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_AGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -984,7 +984,7 @@ resource_type_to_config {
       key: "abatementPeriod"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -992,7 +992,7 @@ resource_type_to_config {
       key: "abatementRange"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RANGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1008,7 +1008,7 @@ resource_type_to_config {
       key: "asserter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1016,7 +1016,7 @@ resource_type_to_config {
       key: "bodySite"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1024,7 +1024,7 @@ resource_type_to_config {
       key: "category"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1032,7 +1032,7 @@ resource_type_to_config {
       key: "clinicalStatus"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1040,7 +1040,7 @@ resource_type_to_config {
       key: "code"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1048,7 +1048,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1056,7 +1056,7 @@ resource_type_to_config {
       key: "encounter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1064,7 +1064,7 @@ resource_type_to_config {
       key: "evidence"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1072,7 +1072,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1088,7 +1088,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1112,7 +1112,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1120,7 +1120,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1128,7 +1128,7 @@ resource_type_to_config {
       key: "note"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ANNOTATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1136,7 +1136,7 @@ resource_type_to_config {
       key: "onsetAge"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_AGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1152,7 +1152,7 @@ resource_type_to_config {
       key: "onsetPeriod"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1160,7 +1160,7 @@ resource_type_to_config {
       key: "onsetRange"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RANGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1184,7 +1184,7 @@ resource_type_to_config {
       key: "recorder"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1200,7 +1200,7 @@ resource_type_to_config {
       key: "severity"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1208,7 +1208,7 @@ resource_type_to_config {
       key: "stage"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1216,7 +1216,7 @@ resource_type_to_config {
       key: "subject"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1224,7 +1224,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1232,7 +1232,7 @@ resource_type_to_config {
       key: "verificationStatus"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1264,7 +1264,7 @@ resource_type_to_config {
       key: "asserter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1272,7 +1272,7 @@ resource_type_to_config {
       key: "basedOn"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1280,7 +1280,7 @@ resource_type_to_config {
       key: "bodySite"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1288,7 +1288,7 @@ resource_type_to_config {
       key: "category"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1296,7 +1296,7 @@ resource_type_to_config {
       key: "code"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1304,7 +1304,7 @@ resource_type_to_config {
       key: "complication"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1312,7 +1312,7 @@ resource_type_to_config {
       key: "complicationDetail"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1320,7 +1320,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1328,7 +1328,7 @@ resource_type_to_config {
       key: "encounter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1336,7 +1336,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1344,7 +1344,7 @@ resource_type_to_config {
       key: "focalDevice"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1352,7 +1352,7 @@ resource_type_to_config {
       key: "followUp"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1368,7 +1368,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1408,7 +1408,7 @@ resource_type_to_config {
       key: "location"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1416,7 +1416,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1424,7 +1424,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1432,7 +1432,7 @@ resource_type_to_config {
       key: "note"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ANNOTATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1440,7 +1440,7 @@ resource_type_to_config {
       key: "outcome"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1448,7 +1448,7 @@ resource_type_to_config {
       key: "partOf"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1456,7 +1456,7 @@ resource_type_to_config {
       key: "performedAge"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_AGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1472,7 +1472,7 @@ resource_type_to_config {
       key: "performedPeriod"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1480,7 +1480,7 @@ resource_type_to_config {
       key: "performedRange"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RANGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1496,7 +1496,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1504,7 +1504,7 @@ resource_type_to_config {
       key: "reasonCode"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1512,7 +1512,7 @@ resource_type_to_config {
       key: "reasonReference"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1520,7 +1520,7 @@ resource_type_to_config {
       key: "recorder"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1528,7 +1528,7 @@ resource_type_to_config {
       key: "report"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1552,7 +1552,7 @@ resource_type_to_config {
       key: "statusReason"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1560,7 +1560,7 @@ resource_type_to_config {
       key: "subject"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1568,7 +1568,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1576,7 +1576,7 @@ resource_type_to_config {
       key: "usedCode"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1584,7 +1584,7 @@ resource_type_to_config {
       key: "usedReference"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1608,7 +1608,7 @@ resource_type_to_config {
       key: "amount"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RATIO
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1616,7 +1616,7 @@ resource_type_to_config {
       key: "batch"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1624,7 +1624,7 @@ resource_type_to_config {
       key: "code"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1632,7 +1632,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1640,7 +1640,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1648,7 +1648,7 @@ resource_type_to_config {
       key: "form"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1664,7 +1664,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1680,7 +1680,7 @@ resource_type_to_config {
       key: "ingredient"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1696,7 +1696,7 @@ resource_type_to_config {
       key: "manufacturer"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1704,7 +1704,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1712,7 +1712,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1736,7 +1736,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1757,7 +1757,7 @@ resource_type_to_config {
       key: "basedOn"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1765,7 +1765,7 @@ resource_type_to_config {
       key: "category"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1773,7 +1773,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1781,7 +1781,7 @@ resource_type_to_config {
       key: "courseOfTherapyType"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1789,7 +1789,7 @@ resource_type_to_config {
       key: "detectedIssue"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1797,7 +1797,7 @@ resource_type_to_config {
       key: "dispenseRequest"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1813,7 +1813,7 @@ resource_type_to_config {
       key: "dosageInstruction"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_DOSAGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1821,7 +1821,7 @@ resource_type_to_config {
       key: "encounter"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1829,7 +1829,7 @@ resource_type_to_config {
       key: "eventHistory"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1837,7 +1837,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1845,7 +1845,7 @@ resource_type_to_config {
       key: "groupIdentifier"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1861,7 +1861,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1893,7 +1893,7 @@ resource_type_to_config {
       key: "insurance"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1917,7 +1917,7 @@ resource_type_to_config {
       key: "medicationCodeableConcept"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1925,7 +1925,7 @@ resource_type_to_config {
       key: "medicationReference"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1933,7 +1933,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1941,7 +1941,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1949,7 +1949,7 @@ resource_type_to_config {
       key: "note"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ANNOTATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1957,7 +1957,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1965,7 +1965,7 @@ resource_type_to_config {
       key: "performerType"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1973,7 +1973,7 @@ resource_type_to_config {
       key: "priorPrescription"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1989,7 +1989,7 @@ resource_type_to_config {
       key: "reasonCode"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -1997,7 +1997,7 @@ resource_type_to_config {
       key: "reasonReference"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2005,7 +2005,7 @@ resource_type_to_config {
       key: "recorder"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2021,7 +2021,7 @@ resource_type_to_config {
       key: "reportedReference"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2029,7 +2029,7 @@ resource_type_to_config {
       key: "requester"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2053,7 +2053,7 @@ resource_type_to_config {
       key: "statusReason"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2061,7 +2061,7 @@ resource_type_to_config {
       key: "subject"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2069,7 +2069,7 @@ resource_type_to_config {
       key: "substitution"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2077,7 +2077,7 @@ resource_type_to_config {
       key: "supportingInformation"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2085,7 +2085,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2113,7 +2113,7 @@ resource_type_to_config {
       key: "basedOn"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2121,7 +2121,7 @@ resource_type_to_config {
       key: "category"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2129,7 +2129,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2137,7 +2137,7 @@ resource_type_to_config {
       key: "context"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2153,7 +2153,7 @@ resource_type_to_config {
       key: "derivedFrom"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2161,7 +2161,7 @@ resource_type_to_config {
       key: "dosage"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_DOSAGE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2177,7 +2177,7 @@ resource_type_to_config {
       key: "effectivePeriod"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2185,7 +2185,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2201,7 +2201,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2217,7 +2217,7 @@ resource_type_to_config {
       key: "informationSource"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2233,7 +2233,7 @@ resource_type_to_config {
       key: "medicationCodeableConcept"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2241,7 +2241,7 @@ resource_type_to_config {
       key: "medicationReference"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2249,7 +2249,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2257,7 +2257,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2265,7 +2265,7 @@ resource_type_to_config {
       key: "note"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ANNOTATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2273,7 +2273,7 @@ resource_type_to_config {
       key: "partOf"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2281,7 +2281,7 @@ resource_type_to_config {
       key: "reasonCode"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2289,7 +2289,7 @@ resource_type_to_config {
       key: "reasonReference"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2313,7 +2313,7 @@ resource_type_to_config {
       key: "statusReason"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2321,7 +2321,7 @@ resource_type_to_config {
       key: "subject"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2329,7 +2329,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2364,7 +2364,7 @@ resource_type_to_config {
       key: "address"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ADDRESS
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2380,7 +2380,7 @@ resource_type_to_config {
       key: "communication"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2388,7 +2388,7 @@ resource_type_to_config {
       key: "contact"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2396,7 +2396,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2420,7 +2420,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2436,7 +2436,7 @@ resource_type_to_config {
       key: "generalPractitioner"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2452,7 +2452,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2476,7 +2476,7 @@ resource_type_to_config {
       key: "link"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2484,7 +2484,7 @@ resource_type_to_config {
       key: "managingOrganization"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2492,7 +2492,7 @@ resource_type_to_config {
       key: "maritalStatus"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2500,7 +2500,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2508,7 +2508,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2532,7 +2532,7 @@ resource_type_to_config {
       key: "name"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_HUMAN_NAME
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2540,7 +2540,7 @@ resource_type_to_config {
       key: "photo"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ATTACHMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2556,7 +2556,7 @@ resource_type_to_config {
       key: "telecom"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CONTACT_POINT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2564,7 +2564,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2597,7 +2597,7 @@ resource_type_to_config {
       key: "address"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ADDRESS
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2613,7 +2613,7 @@ resource_type_to_config {
       key: "communication"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2621,7 +2621,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2629,7 +2629,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2653,7 +2653,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2677,7 +2677,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2685,7 +2685,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2693,7 +2693,7 @@ resource_type_to_config {
       key: "name"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_HUMAN_NAME
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2701,7 +2701,7 @@ resource_type_to_config {
       key: "photo"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ATTACHMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2709,7 +2709,7 @@ resource_type_to_config {
       key: "qualification"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2725,7 +2725,7 @@ resource_type_to_config {
       key: "telecom"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CONTACT_POINT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2733,7 +2733,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2762,7 +2762,7 @@ resource_type_to_config {
       key: "availableTime"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2770,7 +2770,7 @@ resource_type_to_config {
       key: "code"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2778,7 +2778,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2786,7 +2786,7 @@ resource_type_to_config {
       key: "endpoint"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2794,7 +2794,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2802,7 +2802,7 @@ resource_type_to_config {
       key: "healthcareService"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2818,7 +2818,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2842,7 +2842,7 @@ resource_type_to_config {
       key: "location"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2850,7 +2850,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2858,7 +2858,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2866,7 +2866,7 @@ resource_type_to_config {
       key: "notAvailable"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2874,7 +2874,7 @@ resource_type_to_config {
       key: "organization"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2882,7 +2882,7 @@ resource_type_to_config {
       key: "period"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2890,7 +2890,7 @@ resource_type_to_config {
       key: "practitioner"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2906,7 +2906,7 @@ resource_type_to_config {
       key: "specialty"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2914,7 +2914,7 @@ resource_type_to_config {
       key: "telecom"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CONTACT_POINT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2922,7 +2922,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2935,7 +2935,7 @@ resource_type_to_config {
       key: "account"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2943,7 +2943,7 @@ resource_type_to_config {
       key: "appointment"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2951,7 +2951,7 @@ resource_type_to_config {
       key: "basedOn"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2959,7 +2959,7 @@ resource_type_to_config {
       key: "class"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODING
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2967,7 +2967,7 @@ resource_type_to_config {
       key: "classHistory"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2975,7 +2975,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2983,7 +2983,7 @@ resource_type_to_config {
       key: "diagnosis"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2991,7 +2991,7 @@ resource_type_to_config {
       key: "episodeOfCare"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -2999,7 +2999,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3007,7 +3007,7 @@ resource_type_to_config {
       key: "hospitalization"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3023,7 +3023,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3047,7 +3047,7 @@ resource_type_to_config {
       key: "length"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_DURATION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3055,7 +3055,7 @@ resource_type_to_config {
       key: "location"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3063,7 +3063,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3071,7 +3071,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3079,7 +3079,7 @@ resource_type_to_config {
       key: "partOf"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3087,7 +3087,7 @@ resource_type_to_config {
       key: "participant"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3095,7 +3095,7 @@ resource_type_to_config {
       key: "period"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_PERIOD
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3103,7 +3103,7 @@ resource_type_to_config {
       key: "priority"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3111,7 +3111,7 @@ resource_type_to_config {
       key: "reasonCode"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3119,7 +3119,7 @@ resource_type_to_config {
       key: "reasonReference"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3135,7 +3135,7 @@ resource_type_to_config {
       key: "serviceProvider"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3143,7 +3143,7 @@ resource_type_to_config {
       key: "serviceType"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3159,7 +3159,7 @@ resource_type_to_config {
       key: "statusHistory"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3167,7 +3167,7 @@ resource_type_to_config {
       key: "subject"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3175,7 +3175,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3183,7 +3183,7 @@ resource_type_to_config {
       key: "type"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3198,7 +3198,7 @@ resource_type_to_config {
       key: "address"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ADDRESS
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3222,7 +3222,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3238,7 +3238,7 @@ resource_type_to_config {
       key: "endpoint"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3246,7 +3246,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3254,7 +3254,7 @@ resource_type_to_config {
       key: "hoursOfOperation"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3270,7 +3270,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3294,7 +3294,7 @@ resource_type_to_config {
       key: "managingOrganization"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3302,7 +3302,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3318,7 +3318,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3334,7 +3334,7 @@ resource_type_to_config {
       key: "operationalStatus"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODING
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3342,7 +3342,7 @@ resource_type_to_config {
       key: "partOf"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3350,7 +3350,7 @@ resource_type_to_config {
       key: "physicalType"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3358,7 +3358,7 @@ resource_type_to_config {
       key: "position"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3382,7 +3382,7 @@ resource_type_to_config {
       key: "telecom"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CONTACT_POINT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3390,7 +3390,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3398,7 +3398,7 @@ resource_type_to_config {
       key: "type"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3419,7 +3419,7 @@ resource_type_to_config {
       key: "address"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_ADDRESS
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3435,7 +3435,7 @@ resource_type_to_config {
       key: "contact"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3443,7 +3443,7 @@ resource_type_to_config {
       key: "contained"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_RESOURCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3451,7 +3451,7 @@ resource_type_to_config {
       key: "endpoint"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3459,7 +3459,7 @@ resource_type_to_config {
       key: "extension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3475,7 +3475,7 @@ resource_type_to_config {
       key: "identifier"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3499,7 +3499,7 @@ resource_type_to_config {
       key: "meta"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_META
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3507,7 +3507,7 @@ resource_type_to_config {
       key: "modifierExtension"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_EXTENSION
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3523,7 +3523,7 @@ resource_type_to_config {
       key: "partOf"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_REFERENCE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3539,7 +3539,7 @@ resource_type_to_config {
       key: "telecom"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CONTACT_POINT
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3547,7 +3547,7 @@ resource_type_to_config {
       key: "text"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_NARRATIVE
         kind: KIND_COMPLEX_TYPE
       }
     }
@@ -3555,7 +3555,7 @@ resource_type_to_config {
       key: "type"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_COMPLEX
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
         kind: KIND_COMPLEX_TYPE
       }
     }

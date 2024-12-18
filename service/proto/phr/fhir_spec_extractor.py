@@ -161,7 +161,7 @@ class FhirSpecExtractor:
             multi_type_fields = []
             for data_type in element_definition["type"]:
                 field_with_type = self._get_multi_type_name_for_type(field_name, data_type["code"])
-                type_enum, kind_enum = self._get_type_and_kind_enum_from_type(data_type["code"])
+                type_enum, kind_enum = self._get_type_and_kind_enum_from_type(data_type)
                 field_configs_by_name[field_with_type] = fhirspec_pb2.FhirFieldConfig(
                     is_array=False,
                     r4_type=type_enum,
@@ -178,8 +178,8 @@ class FhirSpecExtractor:
         else:
             if len(element_definition["type"]) != 1:
                 raise ValueError("Expected exactly one type")
-            type_code = element_definition["type"][0]["code"]
-            type_enum, kind_enum = self._get_type_and_kind_enum_from_type(type_code)
+            fhir_type = element_definition["type"][0]
+            type_enum, kind_enum = self._get_type_and_kind_enum_from_type(fhir_type)
             field_configs_by_name[field_name] = fhirspec_pb2.FhirFieldConfig(
                 is_array=field_is_array,
                 r4_type=type_enum,
@@ -243,7 +243,18 @@ class FhirSpecExtractor:
         else:
             raise ValueError("Unexpected max cardinality value: " + max)
 
-    def _get_type_and_kind_enum_from_type(self, type_code: str):
+    def _get_type_and_kind_enum_from_type(self, fhir_type: Mapping):
+        type_code = fhir_type["code"]
+
+        # Many fields of type Quantity have a profile SimpleQuantity specified. This adds one fhir
+        # constraint, which we don't validate, so we can ignore it.
+        if "profile" in fhir_type and fhir_type["profile"] \
+                != ["http://hl7.org/fhir/StructureDefinition/SimpleQuantity"]:
+            raise ValueError(f"Unexpected profile {type['profile']} for type {type_code}")
+        # TODO:b/385115510 - Consider validating targetProfile on "Reference" and "canonical" types.
+        #  A Reference field definition for example usually specifies which type of resource can be
+        #  referenced (e.g. reference to Encounter).
+
         # "id" fields usually have a type containing the following type code and extension
         # https://hl7.org/fhir/extensions/StructureDefinition-structuredefinition-fhir-type.html
         if type_code == "http://hl7.org/fhirpath/System.String":
@@ -260,11 +271,6 @@ class FhirSpecExtractor:
     def _convert_type_string_to_enum_string(self, type_string: str) -> str:
         if not type_string.isalpha():
             raise ValueError("Unexpected characters found in type_string: " + type_string)
-
-        # TODO: b/361775175 - Extract all fhir types individually instead of combining non-primitive
-        #  types to COMPLEX enum value.
-        if not self._is_primitive_type(type_string):
-            return "R4_FHIR_TYPE_COMPLEX"
 
         return R4_FHIR_TYPE_PREFIX + to_upper_snake_case(type_string)
 
