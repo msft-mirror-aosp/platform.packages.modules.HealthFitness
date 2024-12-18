@@ -34,6 +34,8 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <!-- Used to disable non system apps from showing overlays -->
     <uses-permission android:name="android.permission.HIDE_OVERLAY_WINDOWS" />
+    <!-- Used to adopt gaui -->
+    <uses-permission android:name="android.permission.READ_SYSTEM_GRAMMATICAL_GENDER" />
 
     <application
         android:name=".HealthConnectApplication"
@@ -144,9 +146,26 @@
             android:theme="@style/Theme.HealthConnect" />
 
         <activity
-            android:name=".export.ExportFrequencyActivity"
+            android:name=".exportimport.ExportSetupActivity"
             android:exported="false"
-            android:theme="@style/Theme.HealthConnect" />
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.HealthConnect">
+            <intent-filter android:priority="1">
+                <action android:name="android.health.connect.action.START_EXPORT_SETUP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+    </activity>
+
+        <activity
+            android:name=".exportimport.ImportFlowActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.HealthConnect">
+            <intent-filter android:priority="1">
+                <action android:name="android.health.connect.action.START_IMPORT_FLOW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <provider
             android:name=".searchindexables.HealthConnectSearchIndexablesProvider"

@@ -40,7 +40,7 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -496,9 +496,7 @@ public class OxygenSaturationRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> insertedRecords =
-                TestUtils.insertRecords(
-                        Collections.singletonList(getCompleteOxygenSaturationRecord()));
+        List<Record> insertedRecords = TestUtils.insertRecords(getCompleteOxygenSaturationRecord());
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -518,7 +516,16 @@ public class OxygenSaturationRecordTest {
                         .addRecordType(OxygenSaturationRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(insertedRecords.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        insertedRecords.stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList());
     }
 
     OxygenSaturationRecord getOxygenSaturationRecord_update(

@@ -64,7 +64,7 @@ class OnboardingScreenTest {
         onView(withText("Get started with Health\u00A0Connect")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health\u00A0Connect stores your health and fitness data, giving you a simple way to sync the different apps on your phone"))
+                    "Health\u00A0Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device"))
             .check(matches(isDisplayed()))
         onView(withId(R.id.onboarding_image)).check(matches(isDisplayed()))
         onView(withId(R.id.share_icon)).perform(scrollTo()).check(matches(isDisplayed()))

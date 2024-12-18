@@ -36,7 +36,7 @@ constructor(
 ) {
     suspend operator fun invoke(packageName: String): List<HealthPermissionStatus> =
         withContext(dispatcher) {
-            val permissions = healthPermissionReader.getDeclaredHealthPermissions(packageName)
+            val permissions = healthPermissionReader.getValidHealthPermissions(packageName)
             val grantedPermissions = loadGrantedHealthPermissionsUseCase(packageName)
             permissions.map { permission ->
                 HealthPermissionStatus(

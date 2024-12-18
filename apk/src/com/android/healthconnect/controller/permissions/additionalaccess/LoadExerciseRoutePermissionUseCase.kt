@@ -21,10 +21,11 @@ package com.android.healthconnect.controller.permissions.additionalaccess
 import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
-import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
+import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.usecase.BaseUseCase
+import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
@@ -35,9 +36,9 @@ class LoadExerciseRoutePermissionUseCase
 constructor(
     private val loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase,
     private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
-    private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
+    private val getGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : BaseUseCase<String, ExerciseRouteState>(dispatcher) {
+) : BaseUseCase<String, ExerciseRouteState>(dispatcher), ILoadExerciseRoutePermissionUseCase {
 
     override suspend fun execute(input: String): ExerciseRouteState {
         val grantedPermissions = getGrantedHealthPermissionsUseCase(input)
@@ -87,4 +88,10 @@ enum class PermissionUiState {
     ASK_EVERY_TIME,
     ALWAYS_ALLOW,
     NEVER_ALLOW
+}
+
+interface ILoadExerciseRoutePermissionUseCase {
+    suspend operator fun invoke(input: String): UseCaseResults<ExerciseRouteState>
+
+    suspend fun execute(input: String): ExerciseRouteState
 }

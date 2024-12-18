@@ -40,9 +40,11 @@ import android.health.connect.datatypes.IntermenstrualBleedingRecord;
 import android.health.connect.datatypes.LeanBodyMassRecord;
 import android.health.connect.datatypes.MenstruationFlowRecord;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
+import android.health.connect.datatypes.MindfulnessSessionRecord;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.OvulationTestRecord;
 import android.health.connect.datatypes.OxygenSaturationRecord;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -81,9 +83,11 @@ import android.health.connect.internal.datatypes.IntermenstrualBleedingRecordInt
 import android.health.connect.internal.datatypes.LeanBodyMassRecordInternal;
 import android.health.connect.internal.datatypes.MenstruationFlowRecordInternal;
 import android.health.connect.internal.datatypes.MenstruationPeriodRecordInternal;
+import android.health.connect.internal.datatypes.MindfulnessSessionRecordInternal;
 import android.health.connect.internal.datatypes.NutritionRecordInternal;
 import android.health.connect.internal.datatypes.OvulationTestRecordInternal;
 import android.health.connect.internal.datatypes.OxygenSaturationRecordInternal;
+import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.PowerRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.RespiratoryRateRecordInternal;
@@ -213,10 +217,16 @@ public final class RecordMapper {
                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
                 ExerciseSessionRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                PlannedExerciseSessionRecordInternal.class);
+        mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, SleepSessionRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE,
                 SkinTemperatureRecordInternal.class);
+        mRecordIdToInternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION,
+                MindfulnessSessionRecordInternal.class);
 
         mRecordIdToExternalRecordClassMap = new ArrayMap<>(NUM_ENTRIES);
         mRecordIdToExternalRecordClassMap.put(
@@ -309,6 +319,12 @@ public final class RecordMapper {
                 IntermenstrualBleedingRecord.class);
         mRecordIdToExternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, ExerciseSessionRecord.class);
+        mRecordIdToExternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                PlannedExerciseSessionRecord.class);
+        mRecordIdToExternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION,
+                MindfulnessSessionRecord.class);
 
         mExternalRecordClassToRecordIdMap =
                 new ArrayMap<>(mRecordIdToExternalRecordClassMap.size());
@@ -339,5 +355,10 @@ public final class RecordMapper {
     @RecordTypeIdentifier.RecordType
     public int getRecordType(Class<? extends Record> recordClass) {
         return mExternalRecordClassToRecordIdMap.get(recordClass);
+    }
+
+    /** Checks whether the given {@code recordClass} can be mapped. */
+    public boolean hasRecordType(Class<? extends Record> recordClass) {
+        return mExternalRecordClassToRecordIdMap.containsKey(recordClass);
     }
 }

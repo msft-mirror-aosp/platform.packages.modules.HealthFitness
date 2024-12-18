@@ -38,11 +38,11 @@ import com.android.healthconnect.controller.dataentries.formatters.DistanceForma
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.TotalCaloriesBurnedFormatter
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SLEEP
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.TOTAL_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.TOTAL_CALORIES_BURNED
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.usecase.BaseUseCase
@@ -55,6 +55,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @Singleton
 class LoadDataAggregationsUseCase
 @Inject
@@ -104,7 +105,7 @@ constructor(
     private suspend fun <T> readAggregations(
         timeFilterRange: TimeInstantRangeFilter,
         aggregationType: AggregationType<T>,
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): FormattedAggregation {
         val request =
             AggregateRecordsRequest.Builder<T>(timeFilterRange)
@@ -118,16 +119,16 @@ constructor(
             }
         val aggregationResult: T = requireNotNull(response.get(aggregationType))
         val apps = response.getDataOrigins(aggregationType)
-        return formatAggregation(aggregationResult, apps, healthPermissionType)
+        return formatAggregation(aggregationResult, apps, fitnessPermissionType)
     }
 
     private suspend fun <T> formatAggregation(
         aggregationResult: T,
         apps: Set<DataOrigin>,
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): FormattedAggregation {
         val contributingApps = getContributingApps(apps)
-        return when (healthPermissionType) {
+        return when (fitnessPermissionType) {
             STEPS ->
                 FormattedAggregation(
                     aggregation = stepsFormatter.formatUnit(aggregationResult as Long),
@@ -166,7 +167,7 @@ constructor(
     }
 
     private suspend fun getContributingApps(apps: Set<DataOrigin>): String {
-        val separator : String = context.getString(R.string.data_type_separator)
+        val separator: String = context.getString(R.string.data_type_separator)
         return apps
             .map { origin -> appInfoReader.getAppMetadata(origin.packageName) }
             .joinToString(separator) { it.appName }
@@ -185,6 +186,6 @@ constructor(
 }
 
 data class LoadAggregationInput(
-    val permissionType: HealthPermissionType,
+    val permissionType: FitnessPermissionType,
     val selectedDate: Instant
 )

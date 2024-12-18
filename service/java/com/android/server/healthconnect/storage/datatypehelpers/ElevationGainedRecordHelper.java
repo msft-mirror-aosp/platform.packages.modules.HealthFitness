@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.AggregationType;
@@ -51,7 +50,6 @@ public final class ElevationGainedRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return ELEVATION_GAINED_RECORD_TABLE_NAME;
     }
@@ -72,19 +70,17 @@ public final class ElevationGainedRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull ElevationGainedRecordInternal elevationGainedRecord) {
+            Cursor cursor, ElevationGainedRecordInternal elevationGainedRecord) {
         elevationGainedRecord.setElevation(getCursorDouble(cursor, ELEVATION_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull ElevationGainedRecordInternal elevationGainedRecord) {
+            ContentValues contentValues, ElevationGainedRecordInternal elevationGainedRecord) {
         contentValues.put(ELEVATION_COLUMN_NAME, elevationGainedRecord.getElevation());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(ELEVATION_COLUMN_NAME, REAL));
     }

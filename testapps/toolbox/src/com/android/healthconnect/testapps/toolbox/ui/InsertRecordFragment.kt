@@ -30,9 +30,12 @@ import android.health.connect.datatypes.InstantRecord
 import android.health.connect.datatypes.IntervalRecord
 import android.health.connect.datatypes.MealType
 import android.health.connect.datatypes.MenstruationFlowRecord
+import android.health.connect.datatypes.MindfulnessSessionRecord
 import android.health.connect.datatypes.OvulationTestRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.Vo2MaxRecord
 import android.health.connect.datatypes.units.BloodGlucose
 import android.health.connect.datatypes.units.Energy
@@ -42,6 +45,7 @@ import android.health.connect.datatypes.units.Percentage
 import android.health.connect.datatypes.units.Power
 import android.health.connect.datatypes.units.Pressure
 import android.health.connect.datatypes.units.Temperature
+import android.health.connect.datatypes.units.TemperatureDelta
 import android.health.connect.datatypes.units.Volume
 import android.os.Bundle
 import android.util.Log
@@ -103,7 +107,8 @@ class InsertRecordFragment : Fragment() {
                     Toast.makeText(
                             context,
                             "Unable to insert record(s)! ${state.errorMessage}",
-                            Toast.LENGTH_SHORT)
+                            Toast.LENGTH_SHORT,
+                        )
                         .show()
                 }
             }
@@ -114,7 +119,8 @@ class InsertRecordFragment : Fragment() {
                 Toast.makeText(
                         context,
                         "Unable to update record(s)! ${state.errorMessage}",
-                        Toast.LENGTH_SHORT)
+                        Toast.LENGTH_SHORT,
+                    )
                     .show()
             } else {
                 Toast.makeText(context, "Successfully updated record(s)!", Toast.LENGTH_SHORT)
@@ -170,8 +176,8 @@ class InsertRecordFragment : Fragment() {
         setupUpdateDataButton(view)
     }
 
-    private fun setupTimeField(title: String, key: String, setPreviousDay: Boolean = false) {
-        val timeField = DateTimePicker(this.requireContext(), title, setPreviousDay)
+    private fun setupTimeField(title: String, key: String, setPreviousHour: Boolean = false) {
+        val timeField = DateTimePicker(this.requireContext(), title, setPreviousHour)
         mLinearLayout.addView(timeField)
 
         mFieldNameToFieldInput[key] = timeField
@@ -193,7 +199,7 @@ class InsertRecordFragment : Fragment() {
                 ExerciseRoute::class.java, // Edge case
                 Int::class.java, // Most of int fields are enums and are handled separately
                 List::class
-                    .java, // Handled later so that list fields are always added towards the end
+                    .java // Handled later so that list fields are always added towards the end
                 -> {
                     continue
                 }
@@ -206,10 +212,21 @@ class InsertRecordFragment : Fragment() {
                 Mass::class.java,
                 Length::class.java,
                 Energy::class.java,
-                Power::class.java, -> {
+                Power::class.java -> {
                     field =
                         EditableTextView(
-                            this.requireContext(), mRecordsField.name, INPUT_TYPE_DOUBLE)
+                            this.requireContext(),
+                            mRecordsField.name,
+                            INPUT_TYPE_DOUBLE,
+                        )
+                }
+                TemperatureDelta::class.java -> {
+                    field =
+                        EditableTextView(
+                            this.requireContext(),
+                            mRecordsField.name,
+                            INPUT_TYPE_DOUBLE,
+                        )
                 }
                 CharSequence::class.java -> {
                     field =
@@ -271,8 +288,20 @@ class InsertRecordFragment : Fragment() {
                 enumFieldNameToClass["mMeasurementLocation"] =
                     BodyTemperatureMeasurementLocation::class as KClass<*>
             }
+            SkinTemperatureRecord::class -> {
+                enumFieldNameToClass["mMeasurementLocation"] =
+                    SkinTemperatureRecord::class as KClass<*>
+            }
             ExerciseSessionRecord::class -> {
                 enumFieldNameToClass["mExerciseType"] = ExerciseSessionType::class as KClass<*>
+            }
+            PlannedExerciseSessionRecord::class -> {
+                enumFieldNameToClass["mPlannedExerciseType"] =
+                    ExerciseSessionType::class as KClass<*>
+            }
+            MindfulnessSessionRecord::class -> {
+                enumFieldNameToClass["mMindfulnessSessionType"] =
+                    MindfulnessSessionRecord::class as KClass<*>
             }
         }
         if (enumFieldNameToClass.size > 0) {
@@ -297,7 +326,8 @@ class InsertRecordFragment : Fragment() {
                         ListInputField(
                             this.requireContext(),
                             mRecordsField.name,
-                            mRecordsField.genericType as ParameterizedType)
+                            mRecordsField.genericType as ParameterizedType,
+                        )
                 }
                 else -> {
                     continue
@@ -323,7 +353,8 @@ class InsertRecordFragment : Fragment() {
                     EnumDropDown(
                         this.requireContext(),
                         fieldName,
-                        EnumFieldsWithValues(routeDataMap as Map<String, Any>))
+                        EnumFieldsWithValues(routeDataMap as Map<String, Any>),
+                    )
             }
         }
         if (field != null && fieldName != null) {
@@ -340,13 +371,16 @@ class InsertRecordFragment : Fragment() {
                 val record =
                     createRecordObject(mRecordClass, mFieldNameToFieldInput, requireContext())
                 mInsertOrUpdateViewModel.insertRecordsViaViewModel(
-                    listOf(record), mHealthConnectManager)
+                    listOf(record),
+                    mHealthConnectManager,
+                )
             } catch (ex: Exception) {
                 Log.d("InsertOrUpdateRecordsViewModel", ex.localizedMessage!!)
                 Toast.makeText(
                         context,
                         "Unable to insert record: ${ex.localizedMessage}",
-                        Toast.LENGTH_SHORT)
+                        Toast.LENGTH_SHORT,
+                    )
                     .show()
             }
         }
@@ -367,12 +401,18 @@ class InsertRecordFragment : Fragment() {
                         mRecordClass,
                         mFieldNameToFieldInput,
                         requireContext(),
-                        mUpdateRecordUuid.getFieldValue().toString())
+                        mUpdateRecordUuid.getFieldValue().toString(),
+                    )
                 mInsertOrUpdateViewModel.updateRecordsViaViewModel(
-                    listOf(record), mHealthConnectManager)
+                    listOf(record),
+                    mHealthConnectManager,
+                )
             } catch (ex: Exception) {
                 Toast.makeText(
-                        context, "Unable to update: ${ex.localizedMessage}", Toast.LENGTH_SHORT)
+                        context,
+                        "Unable to update: ${ex.localizedMessage}",
+                        Toast.LENGTH_SHORT,
+                    )
                     .show()
             }
         }

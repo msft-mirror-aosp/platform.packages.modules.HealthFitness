@@ -40,14 +40,17 @@ import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.LeanBodyMassRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
+import android.health.connect.datatypes.MindfulnessSessionRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -79,13 +82,16 @@ import com.android.healthconnect.controller.dataentries.formatters.HydrationForm
 import com.android.healthconnect.controller.dataentries.formatters.IntermenstrualBleedingFormatter
 import com.android.healthconnect.controller.dataentries.formatters.LeanBodyMassFormatter
 import com.android.healthconnect.controller.dataentries.formatters.MenstruationFlowFormatter
+import com.android.healthconnect.controller.dataentries.formatters.MindfulnessSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.NutritionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.OvulationTestFormatter
 import com.android.healthconnect.controller.dataentries.formatters.OxygenSaturationFormatter
+import com.android.healthconnect.controller.dataentries.formatters.PlannedExerciseSessionRecordFormatter
 import com.android.healthconnect.controller.dataentries.formatters.PowerFormatter
 import com.android.healthconnect.controller.dataentries.formatters.RespiratoryRateFormatter
 import com.android.healthconnect.controller.dataentries.formatters.RestingHeartRateFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SexualActivityFormatter
+import com.android.healthconnect.controller.dataentries.formatters.SkinTemperatureFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SpeedFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsCadenceFormatter
@@ -140,6 +146,9 @@ constructor(
     private val bodyWaterMassFormatter: BodyWaterMassFormatter,
     private val intermenstrualBleedingFormatter: IntermenstrualBleedingFormatter,
     private val heartRateVariabilityRmssdFormatter: HeartRateVariabilityRmssdFormatter,
+    private val skinTemperatureFormatter: SkinTemperatureFormatter,
+    private val plannedExerciseSessionRecordFormatter: PlannedExerciseSessionRecordFormatter,
+    private val mindfulnessSessionFormatter: MindfulnessSessionFormatter,
 ) {
 
     suspend fun format(record: Record, showDataOrigin: Boolean = true): FormattedEntry {
@@ -185,6 +194,10 @@ constructor(
                 intermenstrualBleedingFormatter.format(record, appName)
             is HeartRateVariabilityRmssdRecord ->
                 heartRateVariabilityRmssdFormatter.format(record, appName)
+            is SkinTemperatureRecord -> skinTemperatureFormatter.format(record, appName)
+            is PlannedExerciseSessionRecord ->
+                plannedExerciseSessionRecordFormatter.format(record, appName)
+            is MindfulnessSessionRecord -> mindfulnessSessionFormatter.format(record, appName)
             else -> throw IllegalArgumentException("${record::class.java} Not supported!")
         }
     }

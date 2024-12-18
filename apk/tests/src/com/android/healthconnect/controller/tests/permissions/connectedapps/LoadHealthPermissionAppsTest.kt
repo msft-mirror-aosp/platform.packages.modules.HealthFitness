@@ -16,15 +16,23 @@
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.content.Context
+import android.health.connect.RecordTypeInfoResponse
+import android.health.connect.datatypes.Record
+import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.connectedapps.LoadHealthPermissionApps
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.FITNESS_PERMISSIONS_ONLY
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
+import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_3
 import com.android.healthconnect.controller.tests.utils.di.FakeGetContributorAppInfoUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeQueryRecentAccessLogsUseCase
@@ -32,6 +40,7 @@ import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.mockito.kotlin.any
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,6 +50,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.doAnswer
+import org.mockito.invocation.InvocationOnMock
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -97,6 +108,10 @@ class LoadHealthPermissionAppsTest {
         // old permission apps
         whenever(healthPermissionReader.getAppsWithOldHealthPermissions()).thenReturn(listOf())
 
+        // appPermissionsType
+        whenever(healthPermissionReader.getAppPermissionsType(any()))
+            .thenReturn(FITNESS_PERMISSIONS_ONLY)
+
         val connectedAppsList = loadHealthPermissionApps.invoke()
         val testAppMetadata = appInfoReader.getAppMetadata(TEST_APP_PACKAGE_NAME)
         val testApp2Metadata = appInfoReader.getAppMetadata(TEST_APP_PACKAGE_NAME_2)
@@ -104,9 +119,9 @@ class LoadHealthPermissionAppsTest {
             .containsExactlyElementsIn(
                 listOf(
                     ConnectedAppMetadata(
-                        testAppMetadata, status = ConnectedAppStatus.ALLOWED, null),
+                        testAppMetadata, status = ConnectedAppStatus.ALLOWED, healthUsageLastAccess = null),
                     ConnectedAppMetadata(
-                        testApp2Metadata, status = ConnectedAppStatus.DENIED, null)))
+                        testApp2Metadata, status = ConnectedAppStatus.DENIED, healthUsageLastAccess = null)))
     }
 
     @Test
@@ -128,14 +143,18 @@ class LoadHealthPermissionAppsTest {
         // old permission apps
         whenever(healthPermissionReader.getAppsWithOldHealthPermissions()).thenReturn(listOf())
 
+        // appPermissionsType
+        whenever(healthPermissionReader.getAppPermissionsType(any()))
+            .thenReturn(FITNESS_PERMISSIONS_ONLY)
+
         val connectedAppsList = loadHealthPermissionApps.invoke()
         assertThat(connectedAppsList)
             .containsExactlyElementsIn(
                 listOf(
                     ConnectedAppMetadata(
-                        testAppMetadata, status = ConnectedAppStatus.ALLOWED, null),
+                        testAppMetadata, status = ConnectedAppStatus.ALLOWED, healthUsageLastAccess =  null),
                     ConnectedAppMetadata(
-                        testApp2Metadata, status = ConnectedAppStatus.INACTIVE, null)))
+                        testApp2Metadata, status = ConnectedAppStatus.INACTIVE, healthUsageLastAccess = null)))
     }
 
     @Test
@@ -159,14 +178,18 @@ class LoadHealthPermissionAppsTest {
             whenever(healthPermissionReader.getAppsWithOldHealthPermissions())
                 .thenReturn(listOf(OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME))
 
+            // appPermissionsType
+            whenever(healthPermissionReader.getAppPermissionsType(any()))
+                .thenReturn(FITNESS_PERMISSIONS_ONLY)
+
             val connectedAppsList = loadHealthPermissionApps.invoke()
             assertThat(connectedAppsList)
                 .containsExactlyElementsIn(
                     listOf(
                         ConnectedAppMetadata(
-                            testAppMetadata, status = ConnectedAppStatus.DENIED, null),
+                            testAppMetadata, status = ConnectedAppStatus.DENIED, healthUsageLastAccess = null),
                         ConnectedAppMetadata(
-                            oldTestAppMetadata, status = ConnectedAppStatus.NEEDS_UPDATE, null)))
+                            oldTestAppMetadata, status = ConnectedAppStatus.NEEDS_UPDATE, healthUsageLastAccess = null)))
         }
 
     @Test
@@ -190,13 +213,59 @@ class LoadHealthPermissionAppsTest {
         whenever(healthPermissionReader.getAppsWithOldHealthPermissions())
             .thenReturn(listOf(OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME))
 
+        // appPermissionsType
+        whenever(healthPermissionReader.getAppPermissionsType(any()))
+            .thenReturn(FITNESS_PERMISSIONS_ONLY)
+
         val connectedAppsList = loadHealthPermissionApps.invoke()
         assertThat(connectedAppsList)
             .containsExactlyElementsIn(
                 listOf(
                     ConnectedAppMetadata(
-                        testAppMetadata, status = ConnectedAppStatus.ALLOWED, null),
+                        testAppMetadata, status = ConnectedAppStatus.ALLOWED, healthUsageLastAccess = null),
                     ConnectedAppMetadata(
-                        oldTestAppMetadata, status = ConnectedAppStatus.ALLOWED, null)))
+                        oldTestAppMetadata, status = ConnectedAppStatus.ALLOWED, healthUsageLastAccess = null)))
+    }
+
+    @Test
+    fun appsWithMedicalPermissions_correctlyReturnsAppPermissionsTypes() = runTest {
+        // appsWithHealthPermissions
+        whenever(healthPermissionReader.getAppsWithHealthPermissions())
+            .thenReturn(listOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, TEST_APP_PACKAGE_NAME_3))
+        loadGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME, listOf("PERM_1", "PERM_2"))
+        loadGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME_2, listOf())
+        loadGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME_3, listOf())
+
+        // appsWithData
+        getContributorAppInfoUseCase.setAppInfo(emptyMap())
+
+        // recentAccess
+        queryRecentAccessLogsUseCase.recentAccessMap(emptyMap())
+
+        // old permission apps
+        whenever(healthPermissionReader.getAppsWithOldHealthPermissions()).thenReturn(listOf())
+
+        // appPermissionsType
+        whenever(healthPermissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME))
+            .thenReturn(FITNESS_PERMISSIONS_ONLY)
+        whenever(healthPermissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME_2))
+            .thenReturn(MEDICAL_PERMISSIONS_ONLY)
+        whenever(healthPermissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME_3))
+            .thenReturn(COMBINED_PERMISSIONS)
+
+        val connectedAppsList = loadHealthPermissionApps.invoke()
+        val testAppMetadata = appInfoReader.getAppMetadata(TEST_APP_PACKAGE_NAME)
+        val testApp2Metadata = appInfoReader.getAppMetadata(TEST_APP_PACKAGE_NAME_2)
+        val testApp3Metadata = appInfoReader.getAppMetadata(TEST_APP_PACKAGE_NAME_3)
+        assertThat(connectedAppsList)
+            .containsExactlyElementsIn(
+                listOf(
+                    ConnectedAppMetadata(
+                        testAppMetadata, status = ConnectedAppStatus.ALLOWED, permissionsType = FITNESS_PERMISSIONS_ONLY, healthUsageLastAccess = null),
+                    ConnectedAppMetadata(
+                        testApp2Metadata, status = ConnectedAppStatus.DENIED, permissionsType = MEDICAL_PERMISSIONS_ONLY, healthUsageLastAccess = null),
+                    ConnectedAppMetadata(
+                        testApp3Metadata, status = ConnectedAppStatus.DENIED, permissionsType = COMBINED_PERMISSIONS, healthUsageLastAccess = null)))
     }
 }

@@ -16,21 +16,27 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
+
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
+import android.os.Environment;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -39,6 +45,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,12 +53,26 @@ import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class ReadTransactionRequestTest {
-    @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
+    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new HealthConnectDatabaseTestRule();
+
+    private TransactionTestUtils mTransactionTestUtils;
+    private TransactionManager mTransactionManager;
 
     @Before
     public void setup() {
-        HealthConnectUserContext context = testRule.getUserContext();
-        TransactionManager.getInstance(context);
+        HealthConnectUserContext context = mHealthConnectDatabaseTestRule.getUserContext();
+        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
+        mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
     }
 
     @Test
@@ -103,15 +124,111 @@ public class ReadTransactionRequestTest {
 
     @Test
     public void createReadByIdRequest_multipleType_noPaginationInfo() {
-        List<UUID> ramdonUuids = ImmutableList.of(UUID.randomUUID());
+        List<UUID> randomUuids = ImmutableList.of(UUID.randomUUID());
         ReadTransactionRequest request =
                 getReadTransactionRequest(
                         ImmutableMap.of(
-                                RecordTypeIdentifier.RECORD_TYPE_STEPS, ramdonUuids,
-                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE, ramdonUuids));
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS, randomUuids,
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE, randomUuids));
 
         assertThat(request.getReadRequests()).hasSize(2);
         assertThat(request.getPageToken()).isNull();
         assertThat(request.getPageSize()).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void getPackageName_readByRequestConstructor_returnsCorrectValue() {
+        ReadRecordsRequestUsingIds<StepsRecord> readByIdRequest =
+                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
+                        .addClientRecordId("id")
+                        .build();
+        ReadTransactionRequest readByIdTransactionRequest =
+                getReadTransactionRequest(
+                        "read.by.id.package", readByIdRequest.toReadRecordsRequestParcel());
+        assertThat(readByIdTransactionRequest.getPackageName()).isEqualTo("read.by.id.package");
+
+        ReadRecordsRequestUsingFilters<StepsRecord> readByFilterRequest =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build();
+        ReadTransactionRequest readTransactionRequest =
+                getReadTransactionRequest(
+                        "read.by.filter.package", readByFilterRequest.toReadRecordsRequestParcel());
+        assertThat(readTransactionRequest.getPackageName()).isEqualTo("read.by.filter.package");
+    }
+
+    @Test
+    public void getPackageName_readByTypeToIdMapConstructor_returnsCorrectValue() {
+        List<UUID> randomUuids = ImmutableList.of(UUID.randomUUID());
+        ReadTransactionRequest request =
+                getReadTransactionRequest(
+                        "test.package.name",
+                        ImmutableMap.of(RecordTypeIdentifier.RECORD_TYPE_STEPS, randomUuids));
+        assertThat(request.getPackageName()).isEqualTo("test.package.name");
+    }
+
+    @Test
+    public void isReadingSelfData_readByIdRequest_returnsTrue() {
+        ReadRecordsRequestUsingIds<StepsRecord> readByIdRequest =
+                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
+                        .addClientRecordId("id")
+                        .build();
+        ReadTransactionRequest request =
+                getReadTransactionRequest(readByIdRequest.toReadRecordsRequestParcel());
+
+        // TODO(b/366149374): Consider the case of read by id from other apps
+        assertThat(request.isReadingSelfData()).isTrue();
+    }
+
+    @Test
+    public void isReadingSelfData_readByFilterRequest_filterSelfPackage_returnsTrue() {
+        String testPackageName = "package.name";
+        mTransactionTestUtils.insertApp(testPackageName);
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .addDataOrigins(getDataOrigin(testPackageName))
+                        .build();
+        ReadTransactionRequest readTransactionRequest =
+                getReadTransactionRequest(testPackageName, request.toReadRecordsRequestParcel());
+        assertThat(readTransactionRequest.isReadingSelfData()).isTrue();
+    }
+
+    @Test
+    public void isReadingSelfData_readByFilterRequest_notFilterSelfPackage_returnsFalse() {
+        String testPackageName = "my.package";
+        mTransactionTestUtils.insertApp(testPackageName);
+        ReadRecordsRequestUsingFilters<StepsRecord> requestWithDataOriginFilter =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .addDataOrigins(getDataOrigin(testPackageName))
+                        .addDataOrigins(getDataOrigin("some.other.package"))
+                        .build();
+        ReadTransactionRequest readTransactionRequest =
+                getReadTransactionRequest(
+                        testPackageName, requestWithDataOriginFilter.toReadRecordsRequestParcel());
+        assertThat(readTransactionRequest.isReadingSelfData()).isFalse();
+
+        ReadRecordsRequestUsingFilters<StepsRecord> requestWithoutDataOriginFilter =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build();
+        ReadTransactionRequest readTransactionRequest2 =
+                getReadTransactionRequest(
+                        testPackageName,
+                        requestWithoutDataOriginFilter.toReadRecordsRequestParcel());
+        assertThat(readTransactionRequest2.isReadingSelfData()).isFalse();
+    }
+
+    @Test
+    public void isReadingSelfData_readByTypeToIdMapConstructor_returnsCorrectValue() {
+        List<UUID> randomUuids = ImmutableList.of(UUID.randomUUID());
+        ReadTransactionRequest requestNotReadingSelfData =
+                getReadTransactionRequest(
+                        "package.name",
+                        ImmutableMap.of(RecordTypeIdentifier.RECORD_TYPE_STEPS, randomUuids),
+                        /* isReadingSelfData= */ false);
+        assertThat(requestNotReadingSelfData.isReadingSelfData()).isFalse();
+
+        ReadTransactionRequest requestReadingSelfData =
+                getReadTransactionRequest(
+                        "package.name",
+                        ImmutableMap.of(RecordTypeIdentifier.RECORD_TYPE_STEPS, randomUuids),
+                        /* isReadingSelfData= */ true);
+        assertThat(requestReadingSelfData.isReadingSelfData()).isTrue();
     }
 }

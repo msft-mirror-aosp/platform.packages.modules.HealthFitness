@@ -42,6 +42,7 @@ import com.google.common.collect.Sets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -51,8 +52,6 @@ public final class PermissionHelper {
     public static final String READ_EXERCISE_ROUTE_PERMISSION =
             "android.permission.health.READ_EXERCISE_ROUTE";
 
-    public static final String READ_HEALTH_DATA_IN_BACKGROUND =
-            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
     public static final String READ_EXERCISE_ROUTES =
             "android.permission.health.READ_EXERCISE_ROUTES";
     private static final String MANAGE_HEALTH_PERMISSIONS =
@@ -114,6 +113,13 @@ public final class PermissionHelper {
                                 .getMethod("grantHealthPermission", String.class, String.class)
                                 .invoke(service, pkgName, permission),
                 MANAGE_HEALTH_PERMISSIONS);
+    }
+
+    /** Grants {@code permissions} to the app with {@code pkgName}. */
+    public static void grantPermissions(String pkgName, Collection<String> permissions) {
+        for (String permission : permissions) {
+            grantPermission(pkgName, permission);
+        }
     }
 
     public static void revokePermission(String pkgName, String permission) {

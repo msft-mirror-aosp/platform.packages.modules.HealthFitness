@@ -16,36 +16,59 @@
 
 package com.android.server.healthconnect.storage;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
+import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
+import static com.android.healthfitness.flags.Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES;
+import static com.android.server.healthconnect.storage.DatabaseTestUtils.assertNumberOfTables;
+import static com.android.server.healthconnect.storage.DatabaseTestUtils.clearDatabase;
+import static com.android.server.healthconnect.storage.DatabaseTestUtils.createEmptyDatabase;
+import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.onUpgrade;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.FlagsParameterization;
+import android.platform.test.flag.junit.SetFlagsRule;
 
-import androidx.test.platform.app.InstrumentationRegistry;
+import java.util.List;
 
-import com.google.common.truth.Truth;
-
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.runner.RunWith;
 
+import platform.test.runner.parameterized.ParameterizedAndroidJunit4;
+import platform.test.runner.parameterized.Parameters;
+
+@RunWith(ParameterizedAndroidJunit4.class)
 public class DatabaseUpgradeHelperTest {
-    @Mock Context mContext;
-    private HealthConnectDatabase mHealthConnectDatabase;
+    @Rule public final SetFlagsRule mSetFlagsRule;
+
+    @Parameters(name = "{0}")
+    public static List<FlagsParameterization> getParams() {
+        return FlagsParameterization.allCombinationsOf(FLAG_INFRA_TO_GUARD_DB_CHANGES);
+    }
+
+    public DatabaseUpgradeHelperTest(FlagsParameterization flags) {
+        mSetFlagsRule = new SetFlagsRule(flags);
+    }
+
+    private static final int NUM_OF_TABLES_AT_MIN_SUPPORTED_VERSION = 57;
+    private static final int NUM_OF_TABLES_AT_MINDFULNESS_VERSION = 64;
+    private static final int NUM_OF_TABLES_IN_STAGING = 64;
+    private static final int LATEST_DB_VERSION_IN_STAGING = DB_VERSION_MINDFULNESS_SESSION;
+
     private SQLiteDatabase mSQLiteDatabase;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        when(mContext.getDatabasePath(anyString()))
-                .thenReturn(
-                        InstrumentationRegistry.getInstrumentation()
-                                .getContext()
-                                .getDatabasePath("mock"));
-        mHealthConnectDatabase = new HealthConnectDatabase(mContext);
-        mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
+        mSQLiteDatabase = createEmptyDatabase();
+        assertNumberOfTables(mSQLiteDatabase, 0);
+    }
+
+    @After
+    public void tearDown() {
+        clearDatabase();
     }
 
     /*
@@ -54,23 +77,42 @@ public class DatabaseUpgradeHelperTest {
      * specifying e.g. 'IF NOT EXISTS'.
      */
     @Test
-    public void migrationsAppliedMultipleTimes_eachOneIsIdempotent() {
-        Truth.assertThat(mHealthConnectDatabase).isNotNull();
-        Truth.assertThat(mSQLiteDatabase).isNotNull();
+    public void onUpgrade_calledMultipleTimes_eachOneIsIdempotent() {
+        onUpgrade(mSQLiteDatabase, 0, LATEST_DB_VERSION_IN_STAGING);
 
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, mHealthConnectDatabase, 0);
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, mHealthConnectDatabase, 0);
+        // We do idempotent upgrades above MIN_SUPPORTED_DB_VERSION
+        onUpgrade(mSQLiteDatabase, MIN_SUPPORTED_DB_VERSION, LATEST_DB_VERSION_IN_STAGING);
+        // TODO(b/338031465): Improve testing, check that schema indeed match.
+        assertDbSchemaUpToDate();
+    }
 
-        // The DB_VERSION_UUID_BLOB upgrade is a special case, as it triggers full schema
-        // recreation, and the remaining upgrades are not needed. It then returns immediately from
-        // the upgrade code. Due to this, we separately test upgrading from *after* this upgrade.
-        DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase,
-                mHealthConnectDatabase,
-                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
-        DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase,
-                mHealthConnectDatabase,
-                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
+    // For historical reasons, we don't have schema tests before mindfulness session, so we opt for
+    // testing the easiest: number of table.
+    @Test
+    @EnableFlags(FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    public void onUpgrade_upToMindfulnessSession_numOfTablesMatches() {
+        onUpgrade(mSQLiteDatabase, 0, DB_VERSION_MINDFULNESS_SESSION);
+        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES_AT_MINDFULNESS_VERSION);
+    }
+
+    @Test
+    public void onUpgrade_newVersionGreaterThanMaxSupportedVersion_upgradeToMaxSupportedVersion() {
+        onUpgrade(mSQLiteDatabase, 0, Integer.MAX_VALUE);
+        assertDbSchemaUpToDate();
+    }
+
+    @Test
+    @EnableFlags(FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    public void onUpgrade_newVersionSpecified_upgradeUntilNewVersionReached() {
+        onUpgrade(mSQLiteDatabase, 0, MIN_SUPPORTED_DB_VERSION);
+        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES_AT_MIN_SUPPORTED_VERSION);
+    }
+
+    /**
+     * Asserts that the db schema of {@link #LATEST_DB_VERSION_IN_STAGING} matches the desired
+     * schema.
+     */
+    private void assertDbSchemaUpToDate() {
+        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES_IN_STAGING);
     }
 }

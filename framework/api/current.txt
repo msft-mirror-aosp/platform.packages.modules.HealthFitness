@@ -36,6 +36,54 @@ package android.health.connect {
     method @Nullable public java.time.ZoneOffset getZoneOffset(@NonNull android.health.connect.datatypes.AggregationType<T>);
   }
 
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class CreateMedicalDataSourceRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getDisplayName();
+    method @NonNull public android.net.Uri getFhirBaseUri();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.CreateMedicalDataSourceRequest> CREATOR;
+  }
+
+  public static final class CreateMedicalDataSourceRequest.Builder {
+    ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.net.Uri, @NonNull String);
+    ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.health.connect.CreateMedicalDataSourceRequest.Builder);
+    ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.health.connect.CreateMedicalDataSourceRequest);
+    method @NonNull public android.health.connect.CreateMedicalDataSourceRequest build();
+    method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setDisplayName(@NonNull String);
+    method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setFhirBaseUri(@NonNull android.net.Uri);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class DeleteMedicalResourcesRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public java.util.Set<java.lang.String> getDataSourceIds();
+    method @NonNull public java.util.Set<java.lang.Integer> getMedicalResourceTypes();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.DeleteMedicalResourcesRequest> CREATOR;
+  }
+
+  public static final class DeleteMedicalResourcesRequest.Builder {
+    ctor public DeleteMedicalResourcesRequest.Builder();
+    ctor public DeleteMedicalResourcesRequest.Builder(@NonNull android.health.connect.DeleteMedicalResourcesRequest.Builder);
+    method @NonNull public android.health.connect.DeleteMedicalResourcesRequest.Builder addDataSourceId(@NonNull String);
+    method @NonNull public android.health.connect.DeleteMedicalResourcesRequest.Builder addMedicalResourceType(int);
+    method @NonNull public android.health.connect.DeleteMedicalResourcesRequest build();
+    method @NonNull public android.health.connect.DeleteMedicalResourcesRequest.Builder clearDataSourceIds();
+    method @NonNull public android.health.connect.DeleteMedicalResourcesRequest.Builder clearMedicalResourceTypes();
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class GetMedicalDataSourcesRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public java.util.Set<java.lang.String> getPackageNames();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.GetMedicalDataSourcesRequest> CREATOR;
+  }
+
+  public static final class GetMedicalDataSourcesRequest.Builder {
+    ctor public GetMedicalDataSourcesRequest.Builder();
+    method @NonNull public android.health.connect.GetMedicalDataSourcesRequest.Builder addPackageName(@NonNull String);
+    method @NonNull public android.health.connect.GetMedicalDataSourcesRequest build();
+  }
+
   public class HealthConnectException extends java.lang.RuntimeException {
     method public int getErrorCode();
     field public static final int ERROR_DATA_SYNC_IN_PROGRESS = 8; // 0x8
@@ -50,16 +98,25 @@ package android.health.connect {
   }
 
   public class HealthConnectManager {
-    method @NonNull public <T> void aggregate(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.AggregateRecordsResponse<T>,android.health.connect.HealthConnectException>);
+    method public <T> void aggregate(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.AggregateRecordsResponse<T>,android.health.connect.HealthConnectException>);
     method public <T> void aggregateGroupByDuration(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.time.Duration, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.AggregateRecordsGroupedByDurationResponse<T>>,android.health.connect.HealthConnectException>);
     method public <T> void aggregateGroupByPeriod(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.time.Period, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.AggregateRecordsGroupedByPeriodResponse<T>>,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @RequiresPermission(android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA) public void createMedicalDataSource(@NonNull android.health.connect.CreateMedicalDataSourceRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.datatypes.MedicalDataSource,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @RequiresPermission(anyOf={android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA, "android.permission.MANAGE_HEALTH_DATA"}) public void deleteMedicalDataSourceWithData(@NonNull String, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @RequiresPermission(anyOf={android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA, "android.permission.MANAGE_HEALTH_DATA"}) public void deleteMedicalResources(@NonNull android.health.connect.DeleteMedicalResourcesRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @RequiresPermission(anyOf={android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA, "android.permission.MANAGE_HEALTH_DATA"}) public void deleteMedicalResources(@NonNull java.util.List<android.health.connect.MedicalResourceId>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
     method public void deleteRecords(@NonNull java.util.List<android.health.connect.RecordIdFilter>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
     method public void deleteRecords(@NonNull Class<? extends android.health.connect.datatypes.Record>, @NonNull android.health.connect.TimeRangeFilter, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
     method public void getChangeLogToken(@NonNull android.health.connect.changelog.ChangeLogTokenRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.changelog.ChangeLogTokenResponse,android.health.connect.HealthConnectException>);
     method public void getChangeLogs(@NonNull android.health.connect.changelog.ChangeLogsRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.changelog.ChangeLogsResponse,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void getMedicalDataSources(@NonNull java.util.List<java.lang.String>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalDataSource>,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void getMedicalDataSources(@NonNull android.health.connect.GetMedicalDataSourcesRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalDataSource>,android.health.connect.HealthConnectException>);
     method public void insertRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.InsertRecordsResponse,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull java.util.List<android.health.connect.MedicalResourceId>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalResource>,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull android.health.connect.ReadMedicalResourcesRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.ReadMedicalResourcesResponse,android.health.connect.HealthConnectException>);
     method public <T extends android.health.connect.datatypes.Record> void readRecords(@NonNull android.health.connect.ReadRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.ReadRecordsResponse<T>,android.health.connect.HealthConnectException>);
     method public void updateRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @RequiresPermission(android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA) public void upsertMedicalResources(@NonNull java.util.List<android.health.connect.UpsertMedicalResourceRequest>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalResource>,android.health.connect.HealthConnectException>);
     field public static final String ACTION_MANAGE_HEALTH_PERMISSIONS = "android.health.connect.action.MANAGE_HEALTH_PERMISSIONS";
     field public static final String ACTION_REQUEST_EXERCISE_ROUTE = "android.health.connect.action.REQUEST_EXERCISE_ROUTE";
     field public static final String CATEGORY_HEALTH_PERMISSIONS = "android.intent.category.HEALTH_PERMISSIONS";
@@ -83,13 +140,25 @@ package android.health.connect {
     field public static final String READ_EXERCISE = "android.permission.health.READ_EXERCISE";
     field @FlaggedApi("com.android.healthconnect.flags.read_exercise_routes_all_enabled") public static final String READ_EXERCISE_ROUTES = "android.permission.health.READ_EXERCISE_ROUTES";
     field public static final String READ_FLOORS_CLIMBED = "android.permission.health.READ_FLOORS_CLIMBED";
+    field @FlaggedApi("com.android.healthconnect.flags.history_read") public static final String READ_HEALTH_DATA_HISTORY = "android.permission.health.READ_HEALTH_DATA_HISTORY";
+    field @FlaggedApi("com.android.healthconnect.flags.background_read") public static final String READ_HEALTH_DATA_IN_BACKGROUND = "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
     field public static final String READ_HEART_RATE = "android.permission.health.READ_HEART_RATE";
     field public static final String READ_HEART_RATE_VARIABILITY = "android.permission.health.READ_HEART_RATE_VARIABILITY";
     field public static final String READ_HEIGHT = "android.permission.health.READ_HEIGHT";
     field public static final String READ_HYDRATION = "android.permission.health.READ_HYDRATION";
     field public static final String READ_INTERMENSTRUAL_BLEEDING = "android.permission.health.READ_INTERMENSTRUAL_BLEEDING";
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_ALLERGY_INTOLERANCE = "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_LABORATORY_RESULTS = "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_MEDICATIONS = "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PREGNANCY = "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PROBLEMS = "android.permission.health.READ_MEDICAL_DATA_PROBLEMS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PROCEDURES = "android.permission.health.READ_MEDICAL_DATA_PROCEDURES";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_SOCIAL_HISTORY = "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_VITAL_SIGNS = "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS = "android.permission.health.READ_MINDFULNESS";
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
     field public static final String READ_OXYGEN_SATURATION = "android.permission.health.READ_OXYGEN_SATURATION";
@@ -127,7 +196,9 @@ package android.health.connect {
     field public static final String WRITE_HYDRATION = "android.permission.health.WRITE_HYDRATION";
     field public static final String WRITE_INTERMENSTRUAL_BLEEDING = "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING";
     field public static final String WRITE_LEAN_BODY_MASS = "android.permission.health.WRITE_LEAN_BODY_MASS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA";
     field public static final String WRITE_MENSTRUATION = "android.permission.health.WRITE_MENSTRUATION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String WRITE_MINDFULNESS = "android.permission.health.WRITE_MINDFULNESS";
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
     field public static final String WRITE_OXYGEN_SATURATION = "android.permission.health.WRITE_OXYGEN_SATURATION";
@@ -161,6 +232,60 @@ package android.health.connect {
     method @NonNull public android.health.connect.LocalTimeRangeFilter build();
     method @NonNull public android.health.connect.LocalTimeRangeFilter.Builder setEndTime(@Nullable java.time.LocalDateTime);
     method @NonNull public android.health.connect.LocalTimeRangeFilter.Builder setStartTime(@Nullable java.time.LocalDateTime);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceId implements android.os.Parcelable {
+    ctor public MedicalResourceId(@NonNull String, int, @NonNull String);
+    method public int describeContents();
+    method @NonNull public static android.health.connect.MedicalResourceId fromFhirReference(@NonNull String, @NonNull String);
+    method @NonNull public String getDataSourceId();
+    method @NonNull public String getFhirResourceId();
+    method public int getFhirResourceType();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceId> CREATOR;
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesInitialRequest extends android.health.connect.ReadMedicalResourcesRequest {
+    method @NonNull public java.util.Set<java.lang.String> getDataSourceIds();
+    method public int getMedicalResourceType();
+  }
+
+  public static final class ReadMedicalResourcesInitialRequest.Builder {
+    ctor public ReadMedicalResourcesInitialRequest.Builder(int);
+    ctor public ReadMedicalResourcesInitialRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesInitialRequest.Builder);
+    ctor public ReadMedicalResourcesInitialRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesInitialRequest);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder addDataSourceId(@NonNull String);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder addDataSourceIds(@NonNull java.util.Set<java.lang.String>);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest build();
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder clearDataSourceIds();
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder setMedicalResourceType(int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesPageRequest extends android.health.connect.ReadMedicalResourcesRequest {
+    method @NonNull public String getPageToken();
+  }
+
+  public static final class ReadMedicalResourcesPageRequest.Builder {
+    ctor public ReadMedicalResourcesPageRequest.Builder(@NonNull String);
+    ctor public ReadMedicalResourcesPageRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesPageRequest.Builder);
+    ctor public ReadMedicalResourcesPageRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesPageRequest);
+    method @NonNull public android.health.connect.ReadMedicalResourcesPageRequest build();
+    method @NonNull public android.health.connect.ReadMedicalResourcesPageRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesPageRequest.Builder setPageToken(@NonNull String);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public abstract class ReadMedicalResourcesRequest {
+    method @IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) public int getPageSize();
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesResponse implements android.os.Parcelable {
+    ctor public ReadMedicalResourcesResponse(@NonNull java.util.List<android.health.connect.datatypes.MedicalResource>, @Nullable String);
+    method public int describeContents();
+    method @NonNull public java.util.List<android.health.connect.datatypes.MedicalResource> getMedicalResources();
+    method @Nullable public String getNextPageToken();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesResponse> CREATOR;
   }
 
   public abstract class ReadRecordsRequest<T extends android.health.connect.datatypes.Record> {
@@ -223,6 +348,25 @@ package android.health.connect {
   }
 
   public interface TimeRangeFilter {
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class UpsertMedicalResourceRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getData();
+    method @NonNull public String getDataSourceId();
+    method @NonNull public android.health.connect.datatypes.FhirVersion getFhirVersion();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.UpsertMedicalResourceRequest> CREATOR;
+  }
+
+  public static final class UpsertMedicalResourceRequest.Builder {
+    ctor public UpsertMedicalResourceRequest.Builder(@NonNull String, @NonNull android.health.connect.datatypes.FhirVersion, @NonNull String);
+    ctor public UpsertMedicalResourceRequest.Builder(@NonNull android.health.connect.UpsertMedicalResourceRequest.Builder);
+    ctor public UpsertMedicalResourceRequest.Builder(@NonNull android.health.connect.UpsertMedicalResourceRequest);
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest build();
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest.Builder setData(@NonNull String);
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest.Builder setDataSourceId(@NonNull String);
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest.Builder setFhirVersion(@NonNull android.health.connect.datatypes.FhirVersion);
   }
 
 }
@@ -584,6 +728,12 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.units.Length getDistance();
   }
 
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.DistanceWithVariableRestGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.DistanceWithVariableRestGoal(@NonNull android.health.connect.datatypes.units.Length, @NonNull java.time.Duration);
+    method @NonNull public android.health.connect.datatypes.units.Length getDistance();
+    method @NonNull public java.time.Duration getDuration();
+  }
+
   @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.DurationGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
     ctor public ExerciseCompletionGoal.DurationGoal(@NonNull java.time.Duration);
     method @NonNull public java.time.Duration getDuration();
@@ -625,6 +775,10 @@ package android.health.connect.datatypes {
   }
 
   @FlaggedApi("com.android.healthconnect.flags.training_plans") public abstract class ExercisePerformanceGoal {
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.AmrapGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    field @NonNull public static final android.health.connect.datatypes.ExercisePerformanceGoal.AmrapGoal INSTANCE;
   }
 
   @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.CadenceGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
@@ -781,6 +935,7 @@ package android.health.connect.datatypes {
     method public int getExerciseType();
     method @NonNull public java.util.List<android.health.connect.datatypes.ExerciseLap> getLaps();
     method @Nullable public CharSequence getNotes();
+    method @FlaggedApi("com.android.healthconnect.flags.training_plans") @Nullable public String getPlannedExerciseSessionId();
     method @Nullable public android.health.connect.datatypes.ExerciseRoute getRoute();
     method @NonNull public java.util.List<android.health.connect.datatypes.ExerciseSegment> getSegments();
     method @Nullable public CharSequence getTitle();
@@ -796,6 +951,7 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setLaps(@NonNull java.util.List<android.health.connect.datatypes.ExerciseLap>);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setNotes(@Nullable CharSequence);
+    method @FlaggedApi("com.android.healthconnect.flags.training_plans") @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setPlannedExerciseSessionId(@Nullable String);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setRoute(@Nullable android.health.connect.datatypes.ExerciseRoute);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setSegments(@NonNull java.util.List<android.health.connect.datatypes.ExerciseSegment>);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
@@ -865,6 +1021,44 @@ package android.health.connect.datatypes {
     field public static final int EXERCISE_SESSION_TYPE_WEIGHTLIFTING = 55; // 0x37
     field public static final int EXERCISE_SESSION_TYPE_WHEELCHAIR = 56; // 0x38
     field public static final int EXERCISE_SESSION_TYPE_YOGA = 57; // 0x39
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class FhirResource implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getData();
+    method @NonNull public String getId();
+    method public int getType();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.FhirResource> CREATOR;
+    field public static final int FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2; // 0x2
+    field public static final int FHIR_RESOURCE_TYPE_CONDITION = 4; // 0x4
+    field public static final int FHIR_RESOURCE_TYPE_IMMUNIZATION = 1; // 0x1
+    field public static final int FHIR_RESOURCE_TYPE_MEDICATION = 6; // 0x6
+    field public static final int FHIR_RESOURCE_TYPE_MEDICATION_REQUEST = 7; // 0x7
+    field public static final int FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT = 8; // 0x8
+    field public static final int FHIR_RESOURCE_TYPE_OBSERVATION = 3; // 0x3
+    field public static final int FHIR_RESOURCE_TYPE_PROCEDURE = 5; // 0x5
+    field public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
+  }
+
+  public static final class FhirResource.Builder {
+    ctor public FhirResource.Builder(int, @NonNull String, @NonNull String);
+    ctor public FhirResource.Builder(@NonNull android.health.connect.datatypes.FhirResource.Builder);
+    ctor public FhirResource.Builder(@NonNull android.health.connect.datatypes.FhirResource);
+    method @NonNull public android.health.connect.datatypes.FhirResource build();
+    method @NonNull public android.health.connect.datatypes.FhirResource.Builder setData(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.FhirResource.Builder setId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.FhirResource.Builder setType(int);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class FhirVersion implements android.os.Parcelable {
+    method public int describeContents();
+    method public int getMajor();
+    method public int getMinor();
+    method public int getPatch();
+    method @NonNull public static android.health.connect.datatypes.FhirVersion parseFhirVersion(@NonNull String);
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.FhirVersion> CREATOR;
   }
 
   public final class FloorsClimbedRecord extends android.health.connect.datatypes.IntervalRecord {
@@ -984,6 +1178,61 @@ package android.health.connect.datatypes {
     field public static final int MEAL_TYPE_UNKNOWN = 0; // 0x0
   }
 
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalDataSource implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getDisplayName();
+    method @NonNull public android.net.Uri getFhirBaseUri();
+    method @NonNull public String getId();
+    method @Nullable public java.time.Instant getLastDataUpdateTime();
+    method @NonNull public String getPackageName();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalDataSource> CREATOR;
+  }
+
+  public static final class MedicalDataSource.Builder {
+    ctor public MedicalDataSource.Builder(@NonNull String, @NonNull String, @NonNull android.net.Uri, @NonNull String);
+    ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource.Builder);
+    ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource build();
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setDisplayName(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirBaseUri(@NonNull android.net.Uri);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setLastDataUpdateTime(@Nullable java.time.Instant);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setPackageName(@NonNull String);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResource implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getDataSourceId();
+    method @NonNull public android.health.connect.datatypes.FhirResource getFhirResource();
+    method @NonNull public android.health.connect.datatypes.FhirVersion getFhirVersion();
+    method @NonNull public android.health.connect.MedicalResourceId getId();
+    method public int getType();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;
+    field public static final int MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2; // 0x2
+    field public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1; // 0x1
+    field public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6; // 0x6
+    field public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9; // 0x9
+    field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
+    field public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7; // 0x7
+    field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8
+    field public static final int MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY = 4; // 0x4
+    field public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
+    field public static final int MEDICAL_RESOURCE_TYPE_VITAL_SIGNS = 5; // 0x5
+  }
+
+  public static final class MedicalResource.Builder {
+    ctor public MedicalResource.Builder(int, @NonNull String, @NonNull android.health.connect.datatypes.FhirVersion, @NonNull android.health.connect.datatypes.FhirResource);
+    ctor public MedicalResource.Builder(@NonNull android.health.connect.datatypes.MedicalResource.Builder);
+    ctor public MedicalResource.Builder(@NonNull android.health.connect.datatypes.MedicalResource);
+    method @NonNull public android.health.connect.datatypes.MedicalResource build();
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setDataSourceId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setFhirResource(@NonNull android.health.connect.datatypes.FhirResource);
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setFhirVersion(@NonNull android.health.connect.datatypes.FhirVersion);
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setType(int);
+  }
+
   public final class MenstruationFlowRecord extends android.health.connect.datatypes.InstantRecord {
     method public int getFlow();
   }
@@ -1038,6 +1287,29 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setId(@NonNull String);
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setLastModifiedTime(@NonNull java.time.Instant);
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setRecordingMethod(int);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.mindfulness") public final class MindfulnessSessionRecord extends android.health.connect.datatypes.IntervalRecord {
+    method public int getMindfulnessSessionType();
+    method @Nullable public CharSequence getNotes();
+    method @Nullable public CharSequence getTitle();
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.lang.Long> MINDFULNESS_DURATION_TOTAL;
+    field public static final int MINDFULNESS_SESSION_TYPE_BREATHING = 3; // 0x3
+    field public static final int MINDFULNESS_SESSION_TYPE_MEDITATION = 1; // 0x1
+    field public static final int MINDFULNESS_SESSION_TYPE_MOVEMENT = 5; // 0x5
+    field public static final int MINDFULNESS_SESSION_TYPE_MUSIC = 4; // 0x4
+    field public static final int MINDFULNESS_SESSION_TYPE_OTHER = 2; // 0x2
+    field public static final int MINDFULNESS_SESSION_TYPE_UNGUIDED = 6; // 0x6
+    field public static final int MINDFULNESS_SESSION_TYPE_UNKNOWN = 0; // 0x0
+  }
+
+  public static final class MindfulnessSessionRecord.Builder {
+    ctor public MindfulnessSessionRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, @NonNull java.time.Instant, @NonNull java.time.Instant, int);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord build();
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setNotes(@Nullable CharSequence);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setTitle(@Nullable CharSequence);
   }
 
   public final class NutritionRecord extends android.health.connect.datatypes.IntervalRecord {

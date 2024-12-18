@@ -37,14 +37,14 @@ android_test {
     ],
     libs: [
         "kotlin-annotations",
-        "android.test.base",
+        "android.test.base.stubs.system",
         "android.test.mock.stubs",
-        "framework-healthfitness.impl"
+        "framework-healthfitness.impl",
     ],
     kotlincflags: ["-Xjvm-default=all"],
     test_suites: [
-      "general-tests",
+        "general-tests",
     ],
     resource_dirs: ["res"],
-    test_mainline_modules: ["com.google.android.healthfitness.apex"]
+    test_mainline_modules: ["com.google.android.healthfitness.apex"],
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * ```
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * ```
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.android.healthconnect.controller.tests.data.entries.api
 
 import android.content.Context
@@ -18,7 +33,7 @@ import com.android.healthconnect.controller.dataentries.formatters.DistanceForma
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.TotalCaloriesBurnedFormatter
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -88,7 +103,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.PeriodAggregation(
-                    HealthPermissionType.STEPS,
+                    FitnessPermissionType.STEPS,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     DateNavigationPeriod.PERIOD_DAY,
@@ -111,7 +126,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.PeriodAggregation(
-                    HealthPermissionType.DISTANCE,
+                    FitnessPermissionType.DISTANCE,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     DateNavigationPeriod.PERIOD_DAY,
@@ -133,7 +148,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.PeriodAggregation(
-                    HealthPermissionType.TOTAL_CALORIES_BURNED,
+                    FitnessPermissionType.TOTAL_CALORIES_BURNED,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     DateNavigationPeriod.PERIOD_DAY,
@@ -156,7 +171,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.CustomAggregation(
-                    HealthPermissionType.SLEEP,
+                    FitnessPermissionType.SLEEP,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     Instant.now(),

@@ -22,17 +22,13 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.HealthConnectException;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.SleepSessionRecordInternal;
 import android.util.Pair;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
@@ -65,7 +61,7 @@ public final class SleepSessionRecordHelper
 
     /** Returns the table name to be created corresponding to this helper */
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return SLEEP_SESSION_RECORD_TABLE_NAME;
     }
 
@@ -90,8 +86,7 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull SleepSessionRecordInternal sleepSessionRecord) {
+    void populateSpecificRecordValue(Cursor cursor, SleepSessionRecordInternal sleepSessionRecord) {
         UUID uuid = getCursorUUID(cursor, UUID_COLUMN_NAME);
         sleepSessionRecord.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
         sleepSessionRecord.setTitle(getCursorString(cursor, TITLE_COLUMN_NAME));
@@ -108,8 +103,7 @@ public final class SleepSessionRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull SleepSessionRecordInternal sleepSessionRecord) {
+            ContentValues contentValues, SleepSessionRecordInternal sleepSessionRecord) {
         contentValues.put(NOTES_COLUMN_NAME, sleepSessionRecord.getNotes());
         contentValues.put(TITLE_COLUMN_NAME, sleepSessionRecord.getTitle());
     }
@@ -121,14 +115,7 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    public boolean isRecordOperationsEnabled() {
-        return HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .isSessionDatatypeFeatureEnabled();
-    }
-
-    @Override
-    List<UpsertTableRequest> getChildTableUpsertRequests(
-            @NonNull SleepSessionRecordInternal record) {
+    List<UpsertTableRequest> getChildTableUpsertRequests(SleepSessionRecordInternal record) {
         if (record.getSleepStages() != null) {
             return SleepStageRecordHelper.getStagesUpsertRequests(record.getSleepStages());
         }
@@ -137,7 +124,6 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(NOTES_COLUMN_NAME, TEXT_NULL), new Pair<>(TITLE_COLUMN_NAME, TEXT_NULL));
@@ -146,15 +132,5 @@ public final class SleepSessionRecordHelper
     @Override
     SqlJoin getJoinForReadRequest() {
         return SleepStageRecordHelper.getJoinReadRequest(getMainTableName());
-    }
-
-    @Override
-    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {
-        super.checkRecordOperationsAreEnabled(recordInternal);
-        if (!isRecordOperationsEnabled()) {
-            throw new HealthConnectException(
-                    HealthConnectException.ERROR_UNSUPPORTED_OPERATION,
-                    "Writing sleep sessions is not supported.");
-        }
     }
 }

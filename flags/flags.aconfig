@@ -15,9 +15,24 @@ flag {
     description: "Flag for adding the new data type skin temperature."
     bug: "319602927"
 }
+
 flag {
     name: "training_plans"
     namespace: "healthconnect"
     description: "Flag for adding the new data type planned exercise sessions."
     bug: "319604661"
+}
+
+flag {
+    name: "background_read"
+    namespace: "healthconnect"
+    description: "Permission to enable reading health data in the background."
+    bug: "294558364"
+}
+
+flag {
+    name: "history_read"
+    namespace: "healthconnect"
+    description: "Permission to enable reading past health data."
+    bug: "325430290"
 }

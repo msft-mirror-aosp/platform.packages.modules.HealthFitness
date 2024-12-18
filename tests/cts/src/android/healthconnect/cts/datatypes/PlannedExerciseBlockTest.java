@@ -26,7 +26,7 @@ import android.health.connect.datatypes.units.Length;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -109,5 +109,27 @@ public class PlannedExerciseBlockTest {
         builder.setDescription("Some description");
 
         assertThat(builder.setDescription(null).build().getDescription()).isNull();
+    }
+
+    @Test
+    public void addStep() {
+        PlannedExerciseBlock.Builder builder = new PlannedExerciseBlock.Builder(1);
+
+        PlannedExerciseStep step =
+                new PlannedExerciseStep.Builder(
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                                PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                                new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)))
+                        .build();
+        builder.addStep(step);
+
+        assertThat(builder.build().getSteps()).containsExactly(step);
+    }
+
+    @Test
+    public void getRepetitions() {
+        PlannedExerciseBlock.Builder builder = new PlannedExerciseBlock.Builder(8);
+
+        assertThat(builder.build().getRepetitions()).isEqualTo(8);
     }
 }

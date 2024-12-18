@@ -29,17 +29,16 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NOT_DECLARED
-import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -52,18 +51,22 @@ class LoadExerciseRoutePermissionUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    @BindValue val loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase = mock()
-    @BindValue val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase = mock()
-    @BindValue val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase = mock()
+    private val loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase = mock()
+    private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase = mock()
+    private val getGrantedHealthPermissionsUseCase = FakeGetGrantedHealthPermissionsUseCase()
 
-    @Inject lateinit var useCase: LoadExerciseRoutePermissionUseCase
+    private lateinit var useCase: LoadExerciseRoutePermissionUseCase
 
     @Before
     fun setup() {
         hiltRule.inject()
-        whenever(getGrantedHealthPermissionsUseCase.invoke(safeEq(TEST_APP_PACKAGE_NAME))).then {
-            emptyList<String>()
-        }
+        useCase =
+            LoadExerciseRoutePermissionUseCase(
+                loadDeclaredHealthPermissionUseCase,
+                getHealthPermissionsFlagsUseCase,
+                getGrantedHealthPermissionsUseCase,
+                Dispatchers.Main)
+        getGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, emptyList())
         whenever(loadDeclaredHealthPermissionUseCase.invoke(safeEq(TEST_APP_PACKAGE_NAME))).then {
             listOf(READ_EXERCISE_ROUTES, READ_EXERCISE)
         }
@@ -76,9 +79,8 @@ class LoadExerciseRoutePermissionUseCaseTest {
 
     @Test
     fun execute_exerciseRoutePermissionGranted_returnGrantedState() = runTest {
-        whenever(getGrantedHealthPermissionsUseCase.invoke(safeEq(TEST_APP_PACKAGE_NAME))).then {
-            listOf(READ_EXERCISE_ROUTES)
-        }
+        getGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE_ROUTES))
 
         val state = useCase.invoke(TEST_APP_PACKAGE_NAME)
 

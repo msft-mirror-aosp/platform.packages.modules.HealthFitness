@@ -17,12 +17,15 @@ package com.android.healthconnect.controller.tests.dataentries.formatters
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.shared.DataType
+import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.getBasalMetabolicRateRecord
 import com.android.healthconnect.controller.tests.utils.getHeartRateRecord
+import com.android.healthconnect.controller.tests.utils.getSamplePlannedExerciseSessionRecord
 import com.android.healthconnect.controller.tests.utils.getStepsRecord
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth.assertThat
@@ -41,6 +44,7 @@ import org.junit.Test
 class HealthDataEntryFormatterTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
 
     @Inject lateinit var formatter: HealthDataEntryFormatter
 
@@ -100,5 +104,22 @@ class HealthDataEntryFormatterTest {
                     title = "1,548 cal",
                     titleA11y = "1,548 calories",
                     dataType = DataType.BASAL_METABOLIC_RATE))
+    }
+
+    @Test
+    fun format_formatsPlannedExerciseSessionRecord() {
+        val plannedExerciseSessionRecord = getSamplePlannedExerciseSessionRecord()
+        runBlocking {
+            assertThat(formatter.format(plannedExerciseSessionRecord))
+                .isEqualTo(
+                    FormattedEntry.PlannedExerciseSessionEntry(
+                        uuid = "test_id",
+                        header = "07:06 - 08:06 • Health Connect test app",
+                        headerA11y = "from 07:06 to 08:06 • Health Connect test app",
+                        title = "Running • Morning Run",
+                        titleA11y = "Running • Morning Run",
+                        dataType = DataType.PLANNED_EXERCISE,
+                        notes = "Morning quick run by the park"))
+        }
     }
 }

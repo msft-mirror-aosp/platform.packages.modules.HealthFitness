@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * ```
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * ```
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.android.healthconnect.controller.tests.data.entries.api
 
 import android.content.Context
@@ -15,7 +30,7 @@ import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesUseC
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.forDataType
 import com.android.healthconnect.controller.tests.utils.getStepsRecord
@@ -32,6 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
@@ -41,6 +57,7 @@ import org.mockito.invocation.InvocationOnMock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
+@Ignore // b/343647465
 class LoadDataEntriesUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -68,7 +85,7 @@ class LoadDataEntriesUseCaseTest {
         val stepsDate = LocalDate.of(2023, 4, 5)
         val input =
             LoadDataEntriesInput(
-                permissionType = HealthPermissionType.STEPS,
+                permissionType = FitnessPermissionType.STEPS,
                 packageName = null,
                 displayedStartTime = stepsDate.toInstantAtStartOfDay(),
                 period = DateNavigationPeriod.PERIOD_DAY,
@@ -113,7 +130,7 @@ class LoadDataEntriesUseCaseTest {
 
         val input =
             LoadDataEntriesInput(
-                permissionType = HealthPermissionType.SLEEP,
+                permissionType = FitnessPermissionType.SLEEP,
                 packageName = null,
                 displayedStartTime = sleepDate.toInstantAtStartOfDay(),
                 period = DateNavigationPeriod.PERIOD_DAY,

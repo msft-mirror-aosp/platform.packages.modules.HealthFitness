@@ -18,21 +18,26 @@ package com.android.healthconnect.controller.service
 import android.content.Context
 import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
-import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.ILoadFitnessTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.ILoadMedicalTypeContributorAppsUseCase
 import com.android.healthconnect.controller.data.access.LoadAccessUseCase
-import com.android.healthconnect.controller.data.access.LoadPermissionTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.LoadFitnessTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.LoadMedicalTypeContributorAppsUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadDataAggregationsUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadDataEntriesUseCase
+import com.android.healthconnect.controller.data.entries.api.ILoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadMenstruationDataUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadDataAggregationsUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
+import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataUseCase
 import com.android.healthconnect.controller.dataentries.formatters.DistanceFormatter
 import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.TotalCaloriesBurnedFormatter
+import com.android.healthconnect.controller.dataentries.formatters.medical.MedicalEntryFormatter
 import com.android.healthconnect.controller.datasources.api.ILoadLastDateWithPriorityDataUseCase
 import com.android.healthconnect.controller.datasources.api.ILoadMostRecentAggregationsUseCase
 import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriorityListUseCase
@@ -45,7 +50,25 @@ import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorit
 import com.android.healthconnect.controller.datasources.api.LoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.SleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.UpdatePriorityListUseCase
+import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
+import com.android.healthconnect.controller.exportimport.api.HealthDataImportManager
+import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.ILoadImportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.ITriggerImportUseCase
+import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.LoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.LoadImportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.LoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.QueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.TriggerImportUseCase
+import com.android.healthconnect.controller.exportimport.api.UpdateExportSettingsUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
@@ -75,7 +98,7 @@ class UseCaseModule {
     fun providesLoadRecentAccessUseCase(
         manager: HealthConnectManager,
         @IoDispatcher dispatcher: CoroutineDispatcher,
-        timeSource: TimeSource
+        timeSource: TimeSource,
     ): ILoadRecentAccessUseCase {
         return LoadRecentAccessUseCase(manager, dispatcher, timeSource)
     }
@@ -87,7 +110,7 @@ class UseCaseModule {
         getContributorAppInfoUseCase: GetContributorAppInfoUseCase,
         queryRecentAccessUseCase: QueryRecentAccessLogsUseCase,
         appInfoReader: AppInfoReader,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadHealthPermissionApps {
         return LoadHealthPermissionApps(
             healthPermissionReader,
@@ -95,15 +118,40 @@ class UseCaseModule {
             getContributorAppInfoUseCase,
             queryRecentAccessUseCase,
             appInfoReader,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesLoadDataEntriesUseCase(
         @IoDispatcher dispatcher: CoroutineDispatcher,
-        loadEntriesHelper: LoadEntriesHelper
+        loadEntriesHelper: LoadEntriesHelper,
     ): ILoadDataEntriesUseCase {
         return LoadDataEntriesUseCase(dispatcher, loadEntriesHelper)
+    }
+
+    @Provides
+    fun providesLoadMedicalEntriesUseCase(
+        @IoDispatcher dispatcher: CoroutineDispatcher,
+        loadEntriesHelper: LoadEntriesHelper,
+        medicalEntryFormatter: MedicalEntryFormatter,
+    ): ILoadMedicalEntriesUseCase {
+        return LoadMedicalEntriesUseCase(dispatcher, medicalEntryFormatter, loadEntriesHelper)
+    }
+
+    @Provides
+    fun providesExerciseRoutePermissionUseCase(
+        loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase,
+        getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
+        getGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
+        @IoDispatcher dispatcher: CoroutineDispatcher,
+    ): ILoadExerciseRoutePermissionUseCase {
+        return LoadExerciseRoutePermissionUseCase(
+            loadDeclaredHealthPermissionUseCase,
+            getHealthPermissionsFlagsUseCase,
+            getGrantedHealthPermissionsUseCase,
+            dispatcher,
+        )
     }
 
     @Provides
@@ -115,7 +163,7 @@ class UseCaseModule {
         sleepSessionFormatter: SleepSessionFormatter,
         healthConnectManager: HealthConnectManager,
         appInfoReader: AppInfoReader,
-        loadEntriesHelper: LoadEntriesHelper
+        loadEntriesHelper: LoadEntriesHelper,
     ): ILoadDataAggregationsUseCase {
         return LoadDataAggregationsUseCase(
             loadEntriesHelper,
@@ -125,17 +173,21 @@ class UseCaseModule {
             sleepSessionFormatter,
             healthConnectManager,
             appInfoReader,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesLoadMenstruationDataUseCase(
         @IoDispatcher dispatcher: CoroutineDispatcher,
         menstruationPeriodFormatter: MenstruationPeriodFormatter,
-        loadEntriesHelper: LoadEntriesHelper
+        loadEntriesHelper: LoadEntriesHelper,
     ): ILoadMenstruationDataUseCase {
         return LoadMenstruationDataUseCase(
-            loadEntriesHelper, menstruationPeriodFormatter, dispatcher)
+            loadEntriesHelper,
+            menstruationPeriodFormatter,
+            dispatcher,
+        )
     }
 
     @Provides
@@ -143,19 +195,20 @@ class UseCaseModule {
         loadDataAggregationsUseCase: LoadDataAggregationsUseCase,
         loadLastDateWithPriorityDataUseCase: LoadLastDateWithPriorityDataUseCase,
         sleepSessionHelper: SleepSessionHelper,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadMostRecentAggregationsUseCase {
         return LoadMostRecentAggregationsUseCase(
             loadDataAggregationsUseCase,
             loadLastDateWithPriorityDataUseCase,
             sleepSessionHelper,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesSleepSessionHelper(
         loadPriorityEntriesUseCase: LoadPriorityEntriesUseCase,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ISleepSessionHelper {
         return SleepSessionHelper(loadPriorityEntriesUseCase, dispatcher)
     }
@@ -164,7 +217,7 @@ class UseCaseModule {
     fun providesLoadPriorityEntriesUseCase(
         loadEntriesHelper: LoadEntriesHelper,
         loadPriorityListUseCase: LoadPriorityListUseCase,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadPriorityEntriesUseCase {
         return LoadPriorityEntriesUseCase(loadEntriesHelper, loadPriorityListUseCase, dispatcher)
     }
@@ -176,7 +229,7 @@ class UseCaseModule {
         healthPermissionReader: HealthPermissionReader,
         loadGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
         loadPriorityListUseCase: LoadPriorityListUseCase,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadPotentialPriorityListUseCase {
         return LoadPotentialPriorityListUseCase(
             appInfoReader,
@@ -184,7 +237,8 @@ class UseCaseModule {
             healthPermissionReader,
             loadGrantedHealthPermissionsUseCase,
             loadPriorityListUseCase,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
@@ -193,21 +247,22 @@ class UseCaseModule {
         loadEntriesHelper: LoadEntriesHelper,
         loadPriorityListUseCase: LoadPriorityListUseCase,
         timeSource: TimeSource,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadLastDateWithPriorityDataUseCase {
         return LoadLastDateWithPriorityDataUseCase(
             healthConnectManager,
             loadEntriesHelper,
             loadPriorityListUseCase,
             timeSource,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesPriorityListUseCase(
         appInfoReader: AppInfoReader,
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadPriorityListUseCase {
         return LoadPriorityListUseCase(healthConnectManager, appInfoReader, dispatcher)
     }
@@ -215,35 +270,54 @@ class UseCaseModule {
     @Provides
     fun updatePriorityListUseCase(
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): IUpdatePriorityListUseCase {
         return UpdatePriorityListUseCase(healthConnectManager, dispatcher)
     }
 
     @Provides
-    fun providesLoadAccessUseCase(
-        loadPermissionTypeContributorAppsUseCase: ILoadPermissionTypeContributorAppsUseCase,
+    fun providesLoadFitnessAccessUseCase(
+        loadFitnessTypeContributorAppsUseCase: ILoadFitnessTypeContributorAppsUseCase,
+        loadMedicalTypeContributorAppsUseCase: ILoadMedicalTypeContributorAppsUseCase,
         loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
         healthPermissionReader: HealthPermissionReader,
         appInfoReader: AppInfoReader,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadAccessUseCase {
         return LoadAccessUseCase(
-            loadPermissionTypeContributorAppsUseCase,
+            loadFitnessTypeContributorAppsUseCase,
+            loadMedicalTypeContributorAppsUseCase,
             loadGrantedHealthPermissionsUseCase,
             healthPermissionReader,
             appInfoReader,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
-    fun providesLoadPermissionTypeContributorAppsUseCase(
+    fun providesLoadFitnessTypeContributorAppsUseCase(
         appInfoReader: AppInfoReader,
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
-    ): ILoadPermissionTypeContributorAppsUseCase {
-        return LoadPermissionTypeContributorAppsUseCase(
-            appInfoReader, healthConnectManager, dispatcher)
+        @IoDispatcher dispatcher: CoroutineDispatcher,
+    ): ILoadFitnessTypeContributorAppsUseCase {
+        return LoadFitnessTypeContributorAppsUseCase(
+            appInfoReader,
+            healthConnectManager,
+            dispatcher,
+        )
+    }
+
+    @Provides
+    fun providesLoadMedicalTypeContributorAppsUseCase(
+        appInfoReader: AppInfoReader,
+        healthConnectManager: HealthConnectManager,
+        @IoDispatcher dispatcher: CoroutineDispatcher,
+    ): ILoadMedicalTypeContributorAppsUseCase {
+        return LoadMedicalTypeContributorAppsUseCase(
+            appInfoReader,
+            healthConnectManager,
+            dispatcher,
+        )
     }
 
     @Provides
@@ -256,7 +330,7 @@ class UseCaseModule {
     @Provides
     fun providesQueryRecentAccessLogsUseCase(
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): IQueryRecentAccessLogsUseCase {
         return QueryRecentAccessLogsUseCase(healthConnectManager, dispatcher)
     }
@@ -265,8 +339,50 @@ class UseCaseModule {
     fun providesGetContributorAppInfoUseCase(
         healthConnectManager: HealthConnectManager,
         @ApplicationContext context: Context,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): IGetContributorAppInfoUseCase {
         return GetContributorAppInfoUseCase(healthConnectManager, context, dispatcher)
+    }
+
+    @Provides
+    fun providesLoadExportSettingsUseCase(
+        healthDataExportManager: HealthDataExportManager
+    ): ILoadExportSettingsUseCase {
+        return LoadExportSettingsUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesUpdateExportSettingsUseCase(
+        healthDataExportManager: HealthDataExportManager
+    ): IUpdateExportSettingsUseCase {
+        return UpdateExportSettingsUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesLoadScheduledExportStatusUseCase(
+        healthDataExportManager: HealthDataExportManager
+    ): ILoadScheduledExportStatusUseCase {
+        return LoadScheduledExportStatusUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesQueryDocumentProvidersUseCase(
+        healthDataExportManager: HealthDataExportManager
+    ): IQueryDocumentProvidersUseCase {
+        return QueryDocumentProvidersUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesTriggerImportUseCase(
+        healthDataImportManager: HealthDataImportManager
+    ): ITriggerImportUseCase {
+        return TriggerImportUseCase(healthDataImportManager)
+    }
+
+    @Provides
+    fun providesLoadImportStatusUseCase(
+        healthDataImportManager: HealthDataImportManager
+    ): ILoadImportStatusUseCase {
+        return LoadImportStatusUseCase(healthDataImportManager)
     }
 }

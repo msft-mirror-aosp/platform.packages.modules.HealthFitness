@@ -165,7 +165,14 @@ public final class DistanceRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull Length distance,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(distance);
         if (!skipValidation) {
             ValidationUtils.requireInRange(

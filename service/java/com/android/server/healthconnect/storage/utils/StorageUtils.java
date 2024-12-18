@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.utils;
 
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.SLEEP;
+import static android.health.connect.HealthDataCategory.WELLNESS;
 import static android.health.connect.datatypes.AggregationType.SUM;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HYDRATION;
@@ -25,6 +26,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_TOTAL_CALORIES_BURNED;
 import static android.text.TextUtils.isEmpty;
 
+import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.CLIENT_RECORD_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
@@ -32,7 +34,6 @@ import static com.android.server.healthconnect.storage.utils.RecordTypeForUuidMa
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -45,16 +46,19 @@ import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.Slog;
 
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An util class for HC storage
@@ -76,9 +80,13 @@ public final class StorageUtils {
     public static final String DELIMITER = ",";
     public static final String BLOB = "BLOB";
     public static final String BLOB_UNIQUE_NULL = "BLOB UNIQUE";
+    public static final String BLOB_NULL = "BLOB NULL";
     public static final String BLOB_UNIQUE_NON_NULL = "BLOB NOT NULL UNIQUE";
     public static final String BLOB_NON_NULL = "BLOB NOT NULL";
     public static final String SELECT_ALL = "SELECT * FROM ";
+    public static final String SELECT = "SELECT ";
+    public static final String FROM = " FROM ";
+    public static final String DISTINCT = "DISTINCT ";
     public static final String LIMIT_SIZE = " LIMIT ";
     public static final int BOOLEAN_FALSE_VALUE = 0;
     public static final int BOOLEAN_TRUE_VALUE = 1;
@@ -105,12 +113,31 @@ public final class StorageUtils {
     }
 
     /**
+     * Returns a UUID for the given triple {@code resourceId}, {@code resourceType} and {@code
+     * dataSourceId}.
+     */
+    public static UUID generateMedicalResourceUUID(
+            String resourceId, int resourceType, String dataSourceId) {
+        final byte[] resourceIdBytes = resourceId.getBytes();
+        final byte[] dataSourceIdBytes = dataSourceId.getBytes();
+
+        byte[] bytes =
+                ByteBuffer.allocate(
+                                resourceIdBytes.length + Integer.BYTES + dataSourceIdBytes.length)
+                        .put(resourceIdBytes)
+                        .putInt(resourceType)
+                        .put(dataSourceIdBytes)
+                        .array();
+        return UUID.nameUUIDFromBytes(bytes);
+    }
+
+    /**
      * Sets UUID for the given record. If {@link RecordInternal#getClientRecordId()} is null or
      * empty, then the UUID is randomly generated. Otherwise, the UUID is generated as a combination
      * of {@link RecordInternal#getPackageName()}, {@link RecordInternal#getClientRecordId()} and
      * {@link RecordInternal#getRecordType()}.
      */
-    public static void addNameBasedUUIDTo(@NonNull RecordInternal<?> recordInternal) {
+    public static void addNameBasedUUIDTo(RecordInternal<?> recordInternal) {
         final String clientRecordId = recordInternal.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             recordInternal.setUuid(UUID.randomUUID());
@@ -126,7 +153,7 @@ public final class StorageUtils {
     }
 
     /** Updates the uuid using the clientRecordID if the clientRecordId is present. */
-    public static void updateNameBasedUUIDIfRequired(@NonNull RecordInternal<?> recordInternal) {
+    public static void updateNameBasedUUIDIfRequired(RecordInternal<?> recordInternal) {
         final String clientRecordId = recordInternal.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             // If clientRecordID is absent, use the uuid already set in the input record and
@@ -148,8 +175,7 @@ public final class StorageUtils {
      * RecordIdFilter#getId()}. Otherwise, the UUID is generated as a combination of the package
      * name, {@link RecordIdFilter#getClientRecordId()} and {@link RecordIdFilter#getRecordType()}.
      */
-    public static UUID getUUIDFor(
-            @NonNull RecordIdFilter recordIdFilter, @NonNull String packageName) {
+    public static UUID getUUIDFor(RecordIdFilter recordIdFilter, String packageName) {
         final String clientRecordId = recordIdFilter.getClientRecordId();
         if (isEmpty(clientRecordId)) {
             return UUID.fromString(recordIdFilter.getId());
@@ -161,8 +187,7 @@ public final class StorageUtils {
                 RecordMapper.getInstance().getRecordType(recordIdFilter.getRecordType()));
     }
 
-    public static void addPackageNameTo(
-            @NonNull RecordInternal<?> recordInternal, @NonNull String packageName) {
+    public static void addPackageNameTo(RecordInternal<?> recordInternal, String packageName) {
         recordInternal.setPackageName(packageName);
     }
 
@@ -251,7 +276,7 @@ public final class StorageUtils {
     }
 
     @Nullable
-    public static String getMaxPrimaryKeyQuery(@NonNull String tableName) {
+    public static String getMaxPrimaryKeyQuery(String tableName) {
         return "SELECT MAX("
                 + PRIMARY_COLUMN_NAME
                 + ") as "
@@ -277,7 +302,7 @@ public final class StorageUtils {
 
     /** Encodes record properties participating in deduplication into a byte array. */
     @Nullable
-    public static byte[] getDedupeByteBuffer(@NonNull RecordInternal<?> record) {
+    public static byte[] getDedupeByteBuffer(RecordInternal<?> record) {
         if (!isEmpty(record.getClientRecordId())) {
             return null; // If dedupe by clientRecordId then don't dedupe by hash
         }
@@ -293,8 +318,7 @@ public final class StorageUtils {
         throw new IllegalArgumentException("Unexpected record type: " + record);
     }
 
-    @NonNull
-    private static byte[] getDedupeByteBuffer(@NonNull InstantRecordInternal<?> record) {
+    private static byte[] getDedupeByteBuffer(InstantRecordInternal<?> record) {
         return ByteBuffer.allocate(Long.BYTES * 3)
                 .putLong(record.getAppInfoId())
                 .putLong(record.getDeviceInfoId())
@@ -303,7 +327,7 @@ public final class StorageUtils {
     }
 
     @Nullable
-    private static byte[] getDedupeByteBuffer(@NonNull IntervalRecordInternal<?> record) {
+    private static byte[] getDedupeByteBuffer(IntervalRecordInternal<?> record) {
         final int type = record.getRecordType();
         if ((type == RECORD_TYPE_HYDRATION) || (type == RECORD_TYPE_NUTRITION)) {
             return null; // Some records are exempt from deduplication
@@ -318,8 +342,7 @@ public final class StorageUtils {
     }
 
     /** Returns a UUID for the given package name, client record id and record type id. */
-    private static UUID getUUID(
-            @NonNull String packageName, @NonNull String clientRecordId, int recordTypeId) {
+    private static UUID getUUID(String packageName, String clientRecordId, int recordTypeId) {
         final byte[] packageNameBytes = packageName.getBytes();
         final byte[] clientRecordIdBytes = clientRecordId.getBytes();
 
@@ -337,7 +360,7 @@ public final class StorageUtils {
 
     /**
      * Returns if priority of apps needs to be considered to compute the aggregate request for the
-     * record type. Priority to be considered only for sleep and Activity categories.
+     * record type.
      */
     public static boolean supportsPriority(int recordType, int operationType) {
         if (operationType != SUM) {
@@ -347,14 +370,7 @@ public final class StorageUtils {
         @HealthDataCategory.Type
         int recordCategory =
                 RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType);
-        return recordCategory == ACTIVITY || recordCategory == SLEEP;
-    }
-
-    /** Returns list of app Ids of contributing apps for the record type in the priority order */
-    public static List<Long> getAppIdPriorityList(int recordType) {
-        return HealthDataCategoryPriorityHelper.getInstance()
-                .getAppIdPriorityOrder(
-                        RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType));
+        return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
     /** Returns if derivation needs to be done to calculate aggregate */
@@ -377,6 +393,68 @@ public final class StorageUtils {
         return byteBuffer.array();
     }
 
+    /** Convert a double value to bytes. */
+    public static byte[] convertDoubleToBytes(double value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[8]);
+        byteBuffer.putDouble(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert bytes to a double. */
+    public static double convertBytesToDouble(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getDouble();
+    }
+
+    /** Convert an integer value to bytes. */
+    public static byte[] convertIntToBytes(int value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
+        byteBuffer.putInt(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert bytes to an integer. */
+    public static int convertBytesToInt(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getInt();
+    }
+
+    /** Convert bytes to a long. */
+    public static byte[] convertLongToBytes(long value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[8]);
+        byteBuffer.putLong(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert a long value to bytes. */
+    public static long convertBytesToLong(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getLong();
+    }
+
+    /**
+     * Creates a list of UUIDs from a collection of the string representation of the UUIDs. Any ids
+     * which cannot be parsed as UUIDs are ignores. It is the responsibility of the caller to handle
+     * the case where a non-empty list becomes empty.
+     *
+     * @param ids the ids to parse
+     * @return a possibly empty list of UUIDs
+     */
+    public static List<UUID> toUuids(Collection<String> ids) {
+        return ids.stream()
+                .flatMap(
+                        id -> {
+                            try {
+                                return Stream.of(UUID.fromString(id));
+                            } catch (IllegalArgumentException ex) {
+                                return Stream.of();
+                            }
+                        })
+                .toList();
+    }
+
+    /** Converts a list of {@link UUID} strings to a list of hex strings. */
+    public static List<String> convertUuidStringsToHexStrings(List<String> ids) {
+        return StorageUtils.getListOfHexStrings(toUuids(ids));
+    }
+
     public static String getHexString(byte[] value) {
         if (value == null) {
             return "";
@@ -395,7 +473,8 @@ public final class StorageUtils {
         return getHexString(convertUUIDToBytes(uuid));
     }
 
-    public static List<String> getListOfHexString(List<UUID> uuids) {
+    /** Creates a list of Hex strings for a given list of {@code UUID}s. */
+    public static List<String> getListOfHexStrings(List<UUID> uuids) {
         List<String> hexStrings = new ArrayList<>();
         for (UUID uuid : uuids) {
             hexStrings.add(getHexString(convertUUIDToBytes(uuid)));
@@ -404,6 +483,10 @@ public final class StorageUtils {
         return hexStrings;
     }
 
+    /**
+     * Returns a byte array containing sublist of the given uuids list, from position {@code
+     * start}(inclusive) to {@code end}(exclusive).
+     */
     public static byte[] getSingleByteArray(List<UUID> uuids) {
         byte[] allByteArray = new byte[UUID_BYTE_SIZE * uuids.size()];
 
@@ -417,6 +500,12 @@ public final class StorageUtils {
 
     public static List<UUID> getCursorUUIDList(Cursor cursor, String columnName) {
         byte[] bytes = cursor.getBlob(cursor.getColumnIndex(columnName));
+        return bytesToUuids(bytes);
+    }
+
+    /** Turns a byte array to a UUID list. */
+    @VisibleForTesting(visibility = PRIVATE)
+    public static List<UUID> bytesToUuids(byte[] bytes) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
 
         List<UUID> uuidList = new ArrayList<>();
@@ -425,7 +514,6 @@ public final class StorageUtils {
             long low = byteBuffer.getLong();
             uuidList.add(new UUID(high, low));
         }
-
         return uuidList;
     }
 
@@ -445,6 +533,19 @@ public final class StorageUtils {
         }
 
         return id;
+    }
+
+    public static boolean checkTableExists(HealthConnectDatabase database, String tableName) {
+        try (Cursor cursor =
+                database.getReadableDatabase()
+                        .rawQuery(
+                                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                                new String[] {tableName})) {
+            if (cursor.getCount() == 0) {
+                Slog.d(TAG, "Table does not exist: " + tableName);
+            }
+            return cursor.getCount() > 0;
+        }
     }
 
     /** Extracts and holds data from {@link ContentValues}. */

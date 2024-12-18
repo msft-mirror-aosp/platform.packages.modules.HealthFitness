@@ -25,15 +25,16 @@ import android.health.connect.HealthDataCategory.NUTRITION
 import android.health.connect.HealthDataCategory.SLEEP
 import android.health.connect.HealthDataCategory.VITALS
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.shared.HEALTH_DATA_CATEGORIES
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
+import com.android.healthconnect.controller.shared.FITNESS_DATA_CATEGORIES
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.healthPermissionTypes
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.lowercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthPermissionReader
-import com.android.healthconnect.controller.tests.permissions.HealthPermissionConstants
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -56,23 +57,34 @@ class HealthDataCategoryExtensionsTest {
     }
 
     @Test
-    fun allHealthPermission_haveParentCategory() {
-        val allPermissions =
+    fun allFitnessPermissions_haveParentCategory() {
+        val allFitnessPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm)
+                healthPermissionReader.isAdditionalPermission(perm) ||
+                    healthPermissionReader.isMedicalPermission(perm)
             }
-        for (permissionString in allPermissions) {
-            if (permissionString == HealthPermissionConstants.READ_HEALTH_DATA_HISTORY) {
-                // TODO(b/325434006): Remove this exception case when we have strings properly
-                //  defined for the Background Read permission
-                continue
-            }
-
-            val healthPermission = HealthPermission.fromPermissionString(permissionString)
+        for (permissionString in allFitnessPermissions) {
+            val fitnessPermission = FitnessPermission.fromPermissionString(permissionString)
             assertThat(
-                    HEALTH_DATA_CATEGORIES.any {
-                        it.healthPermissionTypes().contains(healthPermission.healthPermissionType)
+                    FITNESS_DATA_CATEGORIES.any {
+                        it.healthPermissionTypes().contains(fitnessPermission.fitnessPermissionType)
                     })
+                .isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun allMedicalPermissions_haveParentCategory() {
+        val allMedicalsPermissions =
+            healthPermissionReader.getHealthPermissions().filterNot { perm ->
+                healthPermissionReader.isAdditionalPermission(perm) ||
+                    healthPermissionReader.isFitnessPermission(perm)
+            }
+        for (permissionString in allMedicalsPermissions) {
+            val medicalPermission = MedicalPermission.fromPermissionString(permissionString)
+            assertThat(
+                    MEDICAL.healthPermissionTypes()
+                        .contains(medicalPermission.medicalPermissionType))
                 .isEqualTo(true)
         }
     }
@@ -87,6 +99,7 @@ class HealthDataCategoryExtensionsTest {
         assertThat(NUTRITION.uppercaseTitle()).isEqualTo(R.string.nutrition_category_uppercase)
         assertThat(SLEEP.uppercaseTitle()).isEqualTo(R.string.sleep_category_uppercase)
         assertThat(VITALS.uppercaseTitle()).isEqualTo(R.string.vitals_category_uppercase)
+        assertThat(MEDICAL.uppercaseTitle()).isEqualTo(R.string.medical_permissions)
     }
 
     @Test
@@ -106,6 +119,7 @@ class HealthDataCategoryExtensionsTest {
         assertThat(NUTRITION.lowercaseTitle()).isEqualTo(R.string.nutrition_category_lowercase)
         assertThat(SLEEP.lowercaseTitle()).isEqualTo(R.string.sleep_category_lowercase)
         assertThat(VITALS.lowercaseTitle()).isEqualTo(R.string.vitals_category_lowercase)
+        assertThat(MEDICAL.lowercaseTitle()).isEqualTo(R.string.medical_permissions_lowercase)
     }
 
     @Test
@@ -116,9 +130,11 @@ class HealthDataCategoryExtensionsTest {
     }
 
     @Test
-    fun fromHealthPermissionType() {
-        assertThat(fromHealthPermissionType(HealthPermissionType.HEART_RATE)).isEqualTo(VITALS)
-        assertThat(fromHealthPermissionType(HealthPermissionType.EXERCISE_ROUTE))
+    fun fromFitnessPermissionType() {
+        assertThat(fromFitnessPermissionType(FitnessPermissionType.HEART_RATE)).isEqualTo(VITALS)
+        assertThat(fromFitnessPermissionType(FitnessPermissionType.PLANNED_EXERCISE))
+            .isEqualTo(ACTIVITY)
+        assertThat(fromFitnessPermissionType(FitnessPermissionType.EXERCISE_ROUTE))
             .isEqualTo(ACTIVITY)
     }
 }

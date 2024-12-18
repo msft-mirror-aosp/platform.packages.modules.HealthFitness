@@ -18,9 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static com.android.server.healthconnect.TestUtils.TEST_USER;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
-
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -28,64 +25,64 @@ import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.rules.ExternalResource;
-import org.mockito.MockitoSession;
-import org.mockito.quality.Strictness;
 
 import java.io.File;
-import java.util.Arrays;
 
-/** A test rule that deals with ground work of setting up a mock Health Connect database. */
+/**
+ * A test rule that deals with ground work of setting up a mock Health Connect database. To use, add
+ * the following to your test class:
+ *
+ * <p><code>
+ * {@literal @} Rule (order = 1)
+ * public final ExtendedMockitoRule mExtendedMockitoRule = new ExtendedMockitoRule.Builder(this)
+ *     .mockStatic(HealthConnectManager.class)
+ *     .mockStatic(Environment.class)
+ *     .setStrictness(Strictness.LENIENT)
+ *     .build();
+ *
+ * {@literal @} Rule (order = 2)
+ * public final HealthConnectDatabaseTestRule mDatabaseTestRule =
+ *     new HealthConnectDatabaseTestRule();
+ * </code>
+ *
+ * <p>Mocking is done in the test class rather than here to avoid interferences for Mockito session
+ * handling when multiple test rules are used. It avoids starting multiple sessions in parallel.
+ */
 public class HealthConnectDatabaseTestRule extends ExternalResource {
-    private MockitoSession mStaticMockSession;
-    private File mMockDataDirectory;
     private HealthConnectUserContext mContext;
+    private TransactionManager mTransactionManager;
+
+    // Mock Environment using ExtendedMockitoRule in the test using this rule.
+    public HealthConnectDatabaseTestRule() {}
 
     @Override
     public void before() {
-        mStaticMockSession =
-                ExtendedMockito.mockitoSession()
-                        .mockStatic(Environment.class)
-                        .strictness(Strictness.LENIENT)
-                        .startMocking();
-
         mContext =
                 new HealthConnectUserContext(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
+        File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
+        when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
+        TransactionManager.cleanUpForTest();
+        mTransactionManager = TransactionManager.initializeInstance(mContext);
+        HealthConnectDeviceConfigManager.initializeInstance(mContext);
     }
 
     @Override
     public void after() {
-        deleteDir(mMockDataDirectory);
-        mStaticMockSession.finishMocking();
+        DatabaseHelper.clearAllData(mTransactionManager);
+        TransactionManager.cleanUpForTest();
     }
 
     public HealthConnectUserContext getUserContext() {
         return mContext;
     }
 
-    private static void deleteDir(File dir) {
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (var file : files) {
-                if (file.isDirectory()) {
-                    deleteDir(file);
-                } else {
-                    assertThat(file.delete()).isTrue();
-                }
-            }
-        }
-        assertWithMessage(
-                        "Directory "
-                                + dir.getAbsolutePath()
-                                + " is not empty, Files present = "
-                                + Arrays.toString(dir.list()))
-                .that(dir.delete())
-                .isTrue();
+    public TransactionManager getTransactionManager() {
+        return mTransactionManager;
     }
 }

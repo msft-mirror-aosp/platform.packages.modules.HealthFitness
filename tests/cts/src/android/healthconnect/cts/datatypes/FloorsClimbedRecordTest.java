@@ -42,7 +42,7 @@ import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -270,8 +270,6 @@ public class FloorsClimbedRecordTest {
                         recordNew);
         double newFloorsTotal = newResponse.get(FLOORS_CLIMBED_TOTAL);
         double oldFloorsTotal = oldResponse.get(FLOORS_CLIMBED_TOTAL);
-        assertThat(newFloorsTotal).isNotNull();
-        assertThat(oldFloorsTotal).isNotNull();
         assertThat(newFloorsTotal - oldFloorsTotal).isEqualTo(20);
         Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(FLOORS_CLIMBED_TOTAL);
         for (DataOrigin itr : newDataOrigin) {
@@ -475,7 +473,13 @@ public class FloorsClimbedRecordTest {
                         .addRecordType(FloorsClimbedRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     private void readFloorsClimbedRecordUsingIds(List<Record> recordList)

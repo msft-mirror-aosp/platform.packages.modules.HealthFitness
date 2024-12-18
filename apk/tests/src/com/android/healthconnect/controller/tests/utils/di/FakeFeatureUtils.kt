@@ -13,10 +13,12 @@ class FakeFeatureUtils : FeatureUtils {
     private var isSessionTypesEnabled = true
     private var isExerciseRoutesReadAllEnabled = true
     private var isEntryPointsEnabled = true
-    private var isNewAppPriorityEnabled = false
     private var isNewInformationArchitectureEnabled = false
     private var isBackgroundReadEnabled = false
-    private var isImportExportEnabled = false
+    private var isHistoryReadEnabled = false
+    private var isSkinTemperatureEnabled = false
+    private var isPlannedExerciseEnabled = false
+    private var isPersonalHealthRecordEnabled = false
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
         isSessionTypesEnabled = boolean
@@ -30,10 +32,6 @@ class FakeFeatureUtils : FeatureUtils {
         isEntryPointsEnabled = boolean
     }
 
-    fun setIsNewAppPriorityEnabled(boolean: Boolean) {
-        isNewAppPriorityEnabled = boolean
-    }
-
     fun setIsNewInformationArchitectureEnabled(boolean: Boolean) {
         isNewInformationArchitectureEnabled = boolean
     }
@@ -42,12 +40,20 @@ class FakeFeatureUtils : FeatureUtils {
         this.isBackgroundReadEnabled = isBackgroundReadEnabled
     }
 
-    fun setIsImportExportEnabled(isImportExportEnabled: Boolean) {
-        this.isImportExportEnabled = isImportExportEnabled
+    fun setIsHistoryReadEnabled(isHistoryReadEnabled: Boolean) {
+        this.isHistoryReadEnabled = isHistoryReadEnabled
     }
 
-    override fun isNewAppPriorityEnabled(): Boolean {
-        return isNewAppPriorityEnabled
+    fun setIsSkinTemperatureEnabled(isSkinTemperatureEnabled: Boolean) {
+        this.isSkinTemperatureEnabled = isSkinTemperatureEnabled
+    }
+
+    fun setIsPlannedExerciseEnabled(isPlannedExerciseEnabled: Boolean) {
+        this.isPlannedExerciseEnabled = isPlannedExerciseEnabled
+    }
+
+    fun setIsPersonalHealthRecordEnabled(isPersonalHealthRecordEnabled: Boolean) {
+        this.isPersonalHealthRecordEnabled = isPersonalHealthRecordEnabled
     }
 
     override fun isNewInformationArchitectureEnabled(): Boolean {
@@ -70,8 +76,20 @@ class FakeFeatureUtils : FeatureUtils {
         return isBackgroundReadEnabled
     }
 
-    override fun isImportExportEnabled(): Boolean {
-        return isImportExportEnabled
+    override fun isHistoryReadEnabled(): Boolean {
+        return isHistoryReadEnabled
+    }
+
+    override fun isPlannedExerciseEnabled(): Boolean {
+        return isPlannedExerciseEnabled
+    }
+
+    override fun isSkinTemperatureEnabled(): Boolean {
+        return isSkinTemperatureEnabled
+    }
+
+    override fun isPersonalHealthRecordEnabled(): Boolean {
+        return isPersonalHealthRecordEnabled
     }
 }
 

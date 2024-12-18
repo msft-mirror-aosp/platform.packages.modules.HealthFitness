@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.dialog.ProgressDialogFragment
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -107,5 +108,10 @@ fun Fragment.dismissLoadingDialog() {
 
 /** Returns a [Lazy] delegate to load the PreferenceFragment's preferences. */
 inline fun <P : Preference> HealthPreferenceFragment.pref(key: String): Lazy<P> {
+    return lazy { findPreference(key)!! }
+}
+
+/** Returns a [Lazy] delegate to load the PreferenceFragment's preferences. */
+inline fun <P : Preference> PreferenceFragmentCompat.pref(key: String): Lazy<P> {
     return lazy { findPreference(key)!! }
 }

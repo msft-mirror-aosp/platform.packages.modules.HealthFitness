@@ -19,22 +19,75 @@ import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.DistanceRecord
 import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
+import android.healthconnect.cts.lib.TestAppProxy
+import android.healthconnect.cts.lib.UiTestUtils
+import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
+import android.healthconnect.cts.lib.UiTestUtils.clickOnDescContains
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
-import android.healthconnect.cts.lib.UiTestUtils.distanceRecordFromTestApp
-import android.healthconnect.cts.lib.UiTestUtils.stepsRecordFromTestApp
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.utils.RevokedHealthPermissionRule
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecords
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.test.uiautomator.By
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.Instant
 import java.time.Period.ofDays
+import java.time.ZoneId
 import org.junit.AfterClass
+import org.junit.Rule
 import org.junit.Test
 
-/** CTS test for HealthConnect Data entries screen. */
+/** CTS test for HealthConnect Data entries screen in the old IA. */
+@RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
 class DataEntriesFragmentTest : HealthConnectBaseTest() {
+
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
+    @JvmField
+    @Rule
+    val revokedWriteDistanceARule =
+        RevokedHealthPermissionRule(
+            APP_A.getPackageName(),
+            "android.permission.health.WRITE_DISTANCE",
+        )
+
+    @JvmField
+    @Rule
+    val revokedWriteDistanceBRule =
+        RevokedHealthPermissionRule(
+            APP_B.getPackageName(),
+            "android.permission.health.WRITE_DISTANCE",
+        )
+
+    @JvmField
+    @Rule
+    val revokedReadDistanceARule =
+        RevokedHealthPermissionRule(
+            APP_A.getPackageName(),
+            "android.permission.health.READ_DISTANCE",
+        )
+
+    @JvmField
+    @Rule
+    val revokedReadDistanceBRule =
+        RevokedHealthPermissionRule(
+            APP_B.getPackageName(),
+            "android.permission.health.READ_DISTANCE",
+        )
 
     companion object {
         private const val TAG = "DataEntriesFragmentTest"
+
+        val APP_A =
+            TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A")
+
+        val APP_B =
+            TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.B")
 
         @JvmStatic
         @AfterClass
@@ -47,90 +100,88 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
             verifyDeleteRecords(
                 DistanceRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
         }
     }
 
     @Test
     fun dataEntries_showsInsertedEntry() {
-        insertRecords(listOf(distanceRecordFromTestApp()))
+        insertRecords(listOf(UiTestUtils.distanceRecordFromTestApp()))
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
-            // TODO(b/265789268): Fix "See all entries" view not found.
-            //            clickOnText("See all entries")
-            //
-            //            waitDisplayed(By.text("0.5 km"))
+            scrollDownToAndClick(By.text("See all entries"))
+
+            waitDisplayed(By.text("0.5 km"))
         }
     }
 
     @Test
     fun dataEntries_changeUnit_showsUpdatedUnit() {
-        insertRecords(listOf(distanceRecordFromTestApp()))
+        insertRecords(listOf(UiTestUtils.distanceRecordFromTestApp()))
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
 
-            // TODO(b/265789268): Fix "See all entries" view not found.
-            //            clickOnText("See all entries")
-            //            clickOnContentDescription("More options")
-            //            clickOnText("Set data units")
-            //            clickOnText("Distance")
-            //            clickOnText("Kilometers")
-            //            navigateUp()
-            //
-            //            waitDisplayed(By.text("0.5 km"))
+            scrollDownToAndClick(By.text("See all entries"))
+            clickOnContentDescription("More options")
+            clickOnText("Set units")
+            clickOnText("Distance")
+            clickOnText("Kilometers")
+            clickOnContentDescription("Navigate up")
+
+            waitDisplayed(By.text("0.5 km"))
         }
     }
 
     @Test
-    fun dataEntries_deletesData_showsNoData() {
-        insertRecords(listOf(distanceRecordFromTestApp()))
+    fun dataEntries_deletesData() {
+        insertRecords(listOf(UiTestUtils.distanceRecordFromTestApp()))
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
-            // TODO(b/265789268): Fix "See all entries" view not found.
-            //            clickOnText("See all entries")
-            //
-            //            // Delete entry
-            //            clickOnContentDescription("Delete data entry")
-            //            clickOnText("Delete")
-            //            clickOnText("Done")
-            //            waitDisplayed(By.text("No data"))
+            scrollDownToAndClick(By.text("See all entries"))
+
+            // Delete entry
+            clickOnDescContains("Delete data entry")
+            clickOnText("Delete")
+            clickOnText("Done")
         }
     }
 
     @Test
     fun dataEntries_changeDate_updatesSelectedDate() {
-        insertRecords(listOf(distanceRecordFromTestApp()))
+        insertRecords(listOf(UiTestUtils.distanceRecordFromTestApp()))
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
-            // TODO(b/265789268): Fix "See all entries" view not found.
-            //            clickOnText("See all entries")
-            //
-            //            clickOnContentDescription("Selected day")
-            //            clickOnText("1")
-            //            clickOnText("OK")
+            scrollDownToAndClick(By.text("See all entries"))
+
+            clickOnDescContains(Instant.now().atZone(ZoneId.systemDefault()).year.toString())
+            clickOnText("1")
+            clickOnText("OK")
         }
     }
 
     @Test
     fun dataEntries_navigateToYesterday() {
-        insertRecords(listOf(stepsRecordFromTestApp(12, Instant.now().minus(ofDays(1)))))
+        insertRecords(listOf(UiTestUtils.distanceRecordFromTestApp(Instant.now().minus(ofDays(1)))))
         context.launchDataActivity {
             clickOnText("Activity")
-            clickOnText("Steps")
-            // TODO(b/265789268): Fix "See all entries" view not found.
-            //            clickOnText("See all entries")
-            //            clickOnContentDescription("Previous day")
-            //            waitDisplayed(By.text("12 steps"))
+            clickOnText("Distance")
+            scrollDownToAndClick(By.text("See all entries"))
+
+            clickOnContentDescription("Previous day")
+
+            waitDisplayed(By.text("0.5 km"))
         }
     }
 }

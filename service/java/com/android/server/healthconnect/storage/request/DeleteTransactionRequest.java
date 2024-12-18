@@ -16,27 +16,24 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static android.health.connect.Constants.DELETE;
+import static android.health.connect.Constants.DEFAULT_LONG;
 
-import android.annotation.NonNull;
 import android.health.connect.Constants;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
-import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,31 +43,34 @@ import java.util.UUID;
 /** @hide */
 public final class DeleteTransactionRequest {
     private static final String TAG = "HealthConnectDelete";
+
+    @VisibleForTesting
+    static final String HEALTH_CONNECT_PACKAGE_NAME = "com.android.google.healthfitness";
+
     private final List<DeleteTableRequest> mDeleteTableRequests;
     private final long mRequestingPackageNameId;
-    private ChangeLogsHelper.ChangeLogs mChangeLogs;
+    private final String mPackageName;
+    private final Set<Integer> mRecordTypeIds = new HashSet<>();
     private boolean mHasHealthDataManagementPermission;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public DeleteTransactionRequest(String packageName, DeleteUsingFiltersRequestParcel request) {
+    public DeleteTransactionRequest(
+            String packageName,
+            DeleteUsingFiltersRequestParcel request,
+            AppInfoHelper appInfoHelper) {
         Objects.requireNonNull(packageName);
+        mPackageName = packageName;
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
-        mRequestingPackageNameId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+        mRequestingPackageNameId = appInfoHelper.getAppInfoId(packageName);
         if (request.usesIdFilters()) {
-            // We don't keep change logs for bulk deletes
-            mChangeLogs =
-                    new ChangeLogsHelper.ChangeLogs(
-                            DELETE, packageName, Instant.now().toEpochMilli());
             List<RecordIdFilter> recordIds =
                     request.getRecordIdFiltersParcel().getRecordIdFilters();
             Set<UUID> uuidSet = new ArraySet<>();
             Map<RecordHelper<?>, List<UUID>> recordTypeToUuids = new ArrayMap<>();
             for (RecordIdFilter recordId : recordIds) {
                 RecordHelper<?> recordHelper =
-                        RecordHelperProvider.getInstance()
-                                .getRecordHelper(
-                                        RecordMapper.getInstance()
-                                                .getRecordType(recordId.getRecordType()));
+                        RecordHelperProvider.getRecordHelper(
+                                RecordMapper.getInstance().getRecordType(recordId.getRecordType()));
                 UUID uuid = StorageUtils.getUUIDFor(recordId, packageName);
                 if (uuidSet.contains(uuid)) {
                     // id has been already been processed;
@@ -82,8 +82,10 @@ public final class DeleteTransactionRequest {
             }
 
             recordTypeToUuids.forEach(
-                    (recordHelper, uuids) ->
-                            mDeleteTableRequests.add(recordHelper.getDeleteTableRequest(uuids)));
+                    (recordHelper, uuids) -> {
+                        mDeleteTableRequests.add(recordHelper.getDeleteTableRequest(uuids));
+                        mRecordTypeIds.add(recordHelper.getRecordIdentifier());
+                    });
 
             // We currently only support either using filters or ids, so if we are deleting using
             // ids no need to proceed further.
@@ -102,8 +104,7 @@ public final class DeleteTransactionRequest {
 
         recordTypeFilters.forEach(
                 (recordType) -> {
-                    RecordHelper<?> recordHelper =
-                            RecordHelperProvider.getInstance().getRecordHelper(recordType);
+                    RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
                     Objects.requireNonNull(recordHelper);
 
                     mDeleteTableRequests.add(
@@ -111,8 +112,18 @@ public final class DeleteTransactionRequest {
                                     request.getPackageNameFilters(),
                                     request.getStartTime(),
                                     request.getEndTime(),
-                                    request.isLocalTimeFilter()));
+                                    request.isLocalTimeFilter(),
+                                    appInfoHelper));
+                    mRecordTypeIds.add(recordHelper.getRecordIdentifier());
                 });
+    }
+
+    // Used for auto delete only
+    public DeleteTransactionRequest(List<DeleteTableRequest> deleteTableRequests) {
+        mDeleteTableRequests = List.copyOf(deleteTableRequests);
+        mPackageName = HEALTH_CONNECT_PACKAGE_NAME;
+        mHasHealthDataManagementPermission = true;
+        mRequestingPackageNameId = DEFAULT_LONG;
     }
 
     public List<DeleteTableRequest> getDeleteTableRequests() {
@@ -120,27 +131,6 @@ public final class DeleteTransactionRequest {
             Slog.d(TAG, "num of delete requests: " + mDeleteTableRequests.size());
         }
         return mDeleteTableRequests;
-    }
-
-    /**
-     * Function to add an uuid corresponding to given pair of @recordType and @appId to
-     * recordTypeAndAppIdToUUIDMap of changeLogs
-     */
-    public void onRecordFetched(
-            @RecordTypeIdentifier.RecordType int recordType, long appId, UUID uuid) {
-        if (mChangeLogs == null) {
-            return;
-        }
-        mChangeLogs.addUUID(recordType, appId, uuid);
-    }
-
-    @NonNull
-    public List<UpsertTableRequest> getChangeLogUpsertRequests() {
-        if (mChangeLogs == null) {
-            return Collections.emptyList();
-        }
-
-        return mChangeLogs.getUpsertTableRequests();
     }
 
     public void enforcePackageCheck(UUID uuid, long appInfoId) {
@@ -160,5 +150,13 @@ public final class DeleteTransactionRequest {
         mHasHealthDataManagementPermission = hasHealthDataManagementPermission;
 
         return this;
+    }
+
+    public String getPackageName() {
+        return mPackageName;
+    }
+
+    public Set<Integer> getRecordTypeIds() {
+        return mRecordTypeIds;
     }
 }

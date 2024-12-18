@@ -38,14 +38,17 @@ import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.LeanBodyMassRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationPeriodRecord
+import android.health.connect.datatypes.MindfulnessSessionRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -63,11 +66,15 @@ import kotlin.reflect.KClass
 object Constants {
 
     const val INPUT_TYPE_DOUBLE = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+    const val INPUT_TYPE_SIGNED_DOUBLE =
+        InputType.TYPE_CLASS_NUMBER or
+            InputType.TYPE_NUMBER_FLAG_DECIMAL or
+            InputType.TYPE_NUMBER_FLAG_SIGNED
     const val INPUT_TYPE_LONG = InputType.TYPE_CLASS_NUMBER
     const val INPUT_TYPE_INT = InputType.TYPE_CLASS_NUMBER
     const val INPUT_TYPE_TEXT = InputType.TYPE_CLASS_TEXT
 
-    val ALL_PERMISSIONS =
+    val DATA_TYPE_PERMISSIONS =
         arrayOf(
             "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
             "android.permission.health.READ_BASAL_BODY_TEMPERATURE",
@@ -82,6 +89,7 @@ object Constants {
             "android.permission.health.READ_DISTANCE",
             "android.permission.health.READ_ELEVATION_GAINED",
             "android.permission.health.READ_EXERCISE",
+            "android.permission.health.READ_PLANNED_EXERCISE",
             "android.permission.health.READ_EXERCISE_ROUTES",
             "android.permission.health.READ_FLOORS_CLIMBED",
             "android.permission.health.READ_HEART_RATE",
@@ -90,6 +98,7 @@ object Constants {
             "android.permission.health.READ_HYDRATION",
             "android.permission.health.READ_LEAN_BODY_MASS",
             "android.permission.health.READ_MENSTRUATION",
+            "android.permission.health.READ_MINDFULNESS",
             "android.permission.health.READ_NUTRITION",
             "android.permission.health.READ_OVULATION_TEST",
             "android.permission.health.READ_OXYGEN_SATURATION",
@@ -97,6 +106,7 @@ object Constants {
             "android.permission.health.READ_RESPIRATORY_RATE",
             "android.permission.health.READ_RESTING_HEART_RATE",
             "android.permission.health.READ_SEXUAL_ACTIVITY",
+            "android.permission.health.READ_SKIN_TEMPERATURE",
             "android.permission.health.READ_SLEEP",
             "android.permission.health.READ_SPEED",
             "android.permission.health.READ_STEPS",
@@ -118,6 +128,7 @@ object Constants {
             "android.permission.health.WRITE_DISTANCE",
             "android.permission.health.WRITE_ELEVATION_GAINED",
             "android.permission.health.WRITE_EXERCISE",
+            "android.permission.health.WRITE_PLANNED_EXERCISE",
             "android.permission.health.WRITE_FLOORS_CLIMBED",
             "android.permission.health.WRITE_HEART_RATE",
             "android.permission.health.WRITE_HEART_RATE_VARIABILITY",
@@ -125,6 +136,7 @@ object Constants {
             "android.permission.health.WRITE_HYDRATION",
             "android.permission.health.WRITE_LEAN_BODY_MASS",
             "android.permission.health.WRITE_MENSTRUATION",
+            "android.permission.health.WRITE_MINDFULNESS",
             "android.permission.health.WRITE_NUTRITION",
             "android.permission.health.WRITE_OVULATION_TEST",
             "android.permission.health.WRITE_OXYGEN_SATURATION",
@@ -132,6 +144,7 @@ object Constants {
             "android.permission.health.WRITE_RESPIRATORY_RATE",
             "android.permission.health.WRITE_RESTING_HEART_RATE",
             "android.permission.health.WRITE_SEXUAL_ACTIVITY",
+            "android.permission.health.WRITE_SKIN_TEMPERATURE",
             "android.permission.health.WRITE_SLEEP",
             "android.permission.health.WRITE_SPEED",
             "android.permission.health.WRITE_STEPS",
@@ -140,7 +153,28 @@ object Constants {
             "android.permission.health.WRITE_WEIGHT",
             "android.permission.health.WRITE_WHEELCHAIR_PUSHES",
             "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING",
-            "android.permission.health.WRITE_EXERCISE_ROUTE")
+            "android.permission.health.WRITE_EXERCISE_ROUTE",
+        )
+
+    const val READ_HEALTH_DATA_IN_BACKGROUND =
+        "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
+    const val READ_HEALTH_DATA_HISTORY = "android.permission.health.READ_HEALTH_DATA_HISTORY"
+
+    val ADDITIONAL_PERMISSIONS = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_HEALTH_DATA_HISTORY)
+
+    const val READ_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"
+    const val WRITE_ALL_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA"
+    val MEDICAL_PERMISSIONS = arrayOf(
+        "android.permission.health.WRITE_MEDICAL_DATA",
+        "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE",
+        "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION",
+        "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS",
+        "android.permission.health.READ_MEDICAL_DATA_PREGNANCY",
+        "android.permission.health.READ_MEDICAL_DATA_PROBLEMS",
+        "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY",
+        "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS")
+
+    val HEALTH_PERMISSIONS = DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS + MEDICAL_PERMISSIONS
 
     /** Represents Category group for HealthConnect data. */
     enum class HealthDataCategory(
@@ -151,33 +185,45 @@ object Constants {
         ACTIVITY(
             CategoriesMappers.ACTIVITY_PERMISSION_GROUPS,
             R.string.activity_category,
-            R.drawable.quantum_gm_ic_directions_run_vd_theme_24),
+            R.drawable.quantum_gm_ic_directions_run_vd_theme_24,
+        ),
         BODY_MEASUREMENTS(
             CategoriesMappers.BODY_MEASUREMENTS_PERMISSION_GROUPS,
             R.string.body_measurements_category,
-            R.drawable.quantum_gm_ic_straighten_vd_theme_24),
+            R.drawable.quantum_gm_ic_straighten_vd_theme_24,
+        ),
         SLEEP(
             CategoriesMappers.SLEEP_PERMISSION_GROUPS,
             R.string.sleep_category,
-            R.drawable.ic_sleep),
+            R.drawable.ic_sleep,
+        ),
         VITALS(
             CategoriesMappers.VITALS_PERMISSION_GROUPS,
             R.string.vitals_category,
-            R.drawable.ic_vitals),
+            R.drawable.ic_vitals,
+        ),
         CYCLE_TRACKING(
             CategoriesMappers.CYCLE_TRACKING_PERMISSION_GROUPS,
             R.string.cycle_tracking_category,
-            R.drawable.ic_cycle_tracking),
+            R.drawable.ic_cycle_tracking,
+        ),
         NUTRITION(
             CategoriesMappers.NUTRITION_PERMISSION_GROUPS,
             R.string.nutrition_category,
-            R.drawable.quantum_gm_ic_grocery_vd_theme_24),
+            R.drawable.quantum_gm_ic_grocery_vd_theme_24,
+        ),
+        WELLNESS(
+            CategoriesMappers.WELLNESS_PERMISSION_GROUPS,
+            R.string.wellness_category,
+            R.drawable.ic_wellness,
+        ),
     }
 
     /** Permission groups for each {@link HealthDataCategory}. */
     object CategoriesMappers {
         val ACTIVITY_PERMISSION_GROUPS =
             listOf(
+                HealthPermissionType.PLANNED_EXERCISE,
                 HealthPermissionType.ACTIVE_CALORIES_BURNED,
                 HealthPermissionType.DISTANCE,
                 HealthPermissionType.ELEVATION_GAINED,
@@ -190,7 +236,8 @@ object Constants {
                 HealthPermissionType.VO2_MAX,
                 HealthPermissionType.CYCLING_PEDALING_CADENCE,
                 HealthPermissionType.WHEELCHAIR_PUSHES,
-                HealthPermissionType.EXERCISE_SESSION)
+                HealthPermissionType.EXERCISE_SESSION,
+            )
 
         val BODY_MEASUREMENTS_PERMISSION_GROUPS =
             listOf(
@@ -200,7 +247,8 @@ object Constants {
                 HealthPermissionType.BONE_MASS,
                 HealthPermissionType.HEIGHT,
                 HealthPermissionType.LEAN_BODY_MASS,
-                HealthPermissionType.WEIGHT)
+                HealthPermissionType.WEIGHT,
+            )
 
         val CYCLE_TRACKING_PERMISSION_GROUPS =
             listOf(
@@ -209,7 +257,8 @@ object Constants {
                 HealthPermissionType.MENSTRUATION_PERIOD,
                 HealthPermissionType.OVULATION_TEST,
                 HealthPermissionType.INTERMENSTRUAL_BLEEDING,
-                HealthPermissionType.SEXUAL_ACTIVITY)
+                HealthPermissionType.SEXUAL_ACTIVITY,
+            )
 
         val NUTRITION_PERMISSION_GROUPS =
             listOf(HealthPermissionType.HYDRATION, HealthPermissionType.NUTRITION)
@@ -226,7 +275,11 @@ object Constants {
                 HealthPermissionType.HEART_RATE_VARIABILITY,
                 HealthPermissionType.OXYGEN_SATURATION,
                 HealthPermissionType.RESPIRATORY_RATE,
-                HealthPermissionType.RESTING_HEART_RATE)
+                HealthPermissionType.RESTING_HEART_RATE,
+                HealthPermissionType.SKIN_TEMPERATURE,
+            )
+
+        val WELLNESS_PERMISSION_GROUPS = listOf(HealthPermissionType.MINDFULNESS)
     }
 
     enum class HealthPermissionType(
@@ -235,21 +288,28 @@ object Constants {
     ) {
         // ACTIVITY
         ACTIVE_CALORIES_BURNED(
-            ActiveCaloriesBurnedRecord::class, R.string.active_calories_burned_label),
+            ActiveCaloriesBurnedRecord::class,
+            R.string.active_calories_burned_label,
+        ),
         DISTANCE(DistanceRecord::class, R.string.distance_label),
         ELEVATION_GAINED(ElevationGainedRecord::class, R.string.elevation_gained_label),
         FLOORS_CLIMBED(FloorsClimbedRecord::class, R.string.floors_climbed_label),
         STEPS(StepsRecord::class, R.string.steps_label),
         STEPS_CADENCE(StepsCadenceRecord::class, R.string.steps_cadence_label),
         TOTAL_CALORIES_BURNED(
-            TotalCaloriesBurnedRecord::class, R.string.total_calories_burned_label),
+            TotalCaloriesBurnedRecord::class,
+            R.string.total_calories_burned_label,
+        ),
         VO2_MAX(Vo2MaxRecord::class, R.string.vo2_max_label),
         WHEELCHAIR_PUSHES(WheelchairPushesRecord::class, R.string.wheelchair_pushes_label),
         POWER(PowerRecord::class, R.string.power_label),
         SPEED(SpeedRecord::class, R.string.speed_label),
         CYCLING_PEDALING_CADENCE(
-            CyclingPedalingCadenceRecord::class, R.string.cycling_pedaling_cadence),
+            CyclingPedalingCadenceRecord::class,
+            R.string.cycling_pedaling_cadence,
+        ),
         EXERCISE_SESSION(ExerciseSessionRecord::class, R.string.exercise_session),
+        PLANNED_EXERCISE(PlannedExerciseSessionRecord::class, R.string.training_plans),
 
         // BODY_MEASUREMENTS
         BASAL_METABOLIC_RATE(BasalMetabolicRateRecord::class, R.string.basal_metabolic_rate_label),
@@ -267,7 +327,9 @@ object Constants {
         OVULATION_TEST(OvulationTestRecord::class, R.string.ovulation_test_label),
         SEXUAL_ACTIVITY(SexualActivityRecord::class, R.string.sexual_activity_label),
         INTERMENSTRUAL_BLEEDING(
-            IntermenstrualBleedingRecord::class, R.string.inter_menstrual_bleeding),
+            IntermenstrualBleedingRecord::class,
+            R.string.inter_menstrual_bleeding,
+        ),
 
         // NUTRITION
         HYDRATION(HydrationRecord::class, R.string.hydration_label),
@@ -278,15 +340,23 @@ object Constants {
 
         // VITALS
         BASAL_BODY_TEMPERATURE(
-            BasalBodyTemperatureRecord::class, R.string.basal_body_temperature_label),
+            BasalBodyTemperatureRecord::class,
+            R.string.basal_body_temperature_label,
+        ),
         BLOOD_GLUCOSE(BloodGlucoseRecord::class, R.string.blood_glucose_label),
         BLOOD_PRESSURE(BloodPressureRecord::class, R.string.blood_pressure_label),
         BODY_TEMPERATURE(BodyTemperatureRecord::class, R.string.body_temperature_label),
         HEART_RATE(HeartRateRecord::class, R.string.heart_rate_label),
         HEART_RATE_VARIABILITY(
-            HeartRateVariabilityRmssdRecord::class, R.string.heart_rate_variability_label),
+            HeartRateVariabilityRmssdRecord::class,
+            R.string.heart_rate_variability_label,
+        ),
         OXYGEN_SATURATION(OxygenSaturationRecord::class, R.string.oxygen_saturation_label),
         RESPIRATORY_RATE(RespiratoryRateRecord::class, R.string.respiratory_rate_label),
         RESTING_HEART_RATE(RestingHeartRateRecord::class, R.string.resting_heart_rate_label),
+        SKIN_TEMPERATURE(SkinTemperatureRecord::class, R.string.skin_temperature_label),
+
+        // WELLNESS
+        MINDFULNESS(MindfulnessSessionRecord::class, R.string.mindfulness_label),
     }
 }

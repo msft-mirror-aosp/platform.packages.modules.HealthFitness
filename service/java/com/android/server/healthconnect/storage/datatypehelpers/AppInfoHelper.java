@@ -31,7 +31,6 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -41,6 +40,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.ApplicationInfoFlags;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -54,6 +54,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -70,6 +71,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -110,8 +112,14 @@ public final class AppInfoHelper extends DatabaseHelper {
      */
     private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
+    private final TransactionManager mTransactionManager;
+    private final RecordMapper mRecordMapper;
+
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private AppInfoHelper() {}
+    private AppInfoHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+        mRecordMapper = RecordMapper.getInstance();
+    }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
@@ -129,14 +137,13 @@ public final class AppInfoHelper extends DatabaseHelper {
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
-    @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
     /** Populates record with appInfoId */
     public void populateAppInfoId(
-            @NonNull RecordInternal<?> record, @NonNull Context context, boolean requireAllFields) {
+            RecordInternal<?> record, Context context, boolean requireAllFields) {
         final String packageName = requireNonNull(record.getPackageName());
         AppInfoInternal appInfo = getAppInfoMap().get(packageName);
 
@@ -169,12 +176,14 @@ public final class AppInfoHelper extends DatabaseHelper {
      * onlyUpdate is false then only insert a new AppInfo entry; no replacement.
      */
     public void addOrUpdateAppInfoIfNotInstalled(
-            @NonNull Context context,
-            @NonNull String packageName,
+            Context context,
+            String packageName,
             @Nullable String name,
-            @Nullable byte[] icon,
+            @Nullable byte[] maybeIcon,
             boolean onlyUpdate) {
         if (!isAppInstalled(context, packageName)) {
+            byte[] icon =
+                    maybeIcon == null ? getIconFromPackageName(context, packageName) : maybeIcon;
             // using pre-existing value of recordTypesUsed.
             @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             var recordTypesUsed =
@@ -192,7 +201,27 @@ public final class AppInfoHelper extends DatabaseHelper {
         }
     }
 
-    private boolean isAppInstalled(@NonNull Context context, @NonNull String packageName) {
+    /**
+     * Inserts the application info of the specified {@code packageName} with the specified {@code
+     * name} and {@code icon}, only if no AppInfo entry already exists.
+     */
+    public void addOrUpdateAppInfoIfNoAppInfoEntryExists(
+            Context context, String packageName, @Nullable String name) {
+        if (!containsAppInfo(packageName)) {
+            byte[] icon = getIconFromPackageName(context, packageName);
+            @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+            var recordTypesUsed =
+                    containsAppInfo(packageName)
+                            ? mAppInfoMap.get(packageName).getRecordTypesUsed()
+                            : null;
+            AppInfoInternal appInfoInternal =
+                    new AppInfoInternal(
+                            DEFAULT_LONG, packageName, name, decodeBitmap(icon), recordTypesUsed);
+            insertIfNotPresent(packageName, appInfoInternal);
+        }
+    }
+
+    private boolean isAppInstalled(Context context, String packageName) {
         try {
             context.getPackageManager().getApplicationInfo(packageName, ApplicationInfoFlags.of(0));
             return true;
@@ -217,6 +246,10 @@ public final class AppInfoHelper extends DatabaseHelper {
         return appInfo.getId();
     }
 
+    /**
+     * @param packageName Name of package being checked.
+     * @return Boolean stating whether a record for the package being queried exists already.
+     */
     private boolean containsAppInfo(String packageName) {
         return getAppInfoMap().containsKey(packageName);
     }
@@ -241,12 +274,10 @@ public final class AppInfoHelper extends DatabaseHelper {
 
     /** Gets the package name corresponding to the {@code packageId}. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @NonNull
     public String getPackageName(long packageId) {
         return getIdPackageNameMap().get(packageId);
     }
 
-    @NonNull
     public List<String> getPackageNames(List<Long> packageIds) {
         if (packageIds == null || packageIds.isEmpty()) {
             return Collections.emptyList();
@@ -264,20 +295,42 @@ public final class AppInfoHelper extends DatabaseHelper {
         return packageNames;
     }
 
-    /** Returns a list of AppInfo objects which are contributing data to some recordType. */
-    public List<AppInfo> getApplicationInfosWithRecordTypes() {
+    /**
+     * Returns a list of AppInfo objects which are contributing data to some recordType, or belongs
+     * to the provided {@code appInfoIds}.
+     */
+    public List<AppInfo> getApplicationInfosWithRecordTypesOrInIdsList(Set<Long> appInfoIds) {
         return getAppInfoMap().values().stream()
                 .filter(
                         (appInfo) ->
                                 (appInfo.getRecordTypesUsed() != null
-                                        && !appInfo.getRecordTypesUsed().isEmpty()))
+                                                && !appInfo.getRecordTypesUsed().isEmpty())
+                                        || appInfoIds.contains(appInfo.getId()))
                 .map(AppInfoInternal::toExternal)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns AppInfo id for the provided {@code packageName}, creating it if needed using the
+     * given {@link SQLiteDatabase}.
+     */
+    public long getOrInsertAppInfoId(SQLiteDatabase db, String packageName, Context context) {
+        return getOrInsertAppInfoId(Optional.of(db), packageName, context);
+    }
+
     /** Returns AppInfo id for the provided {@code packageName}, creating it if needed. */
-    public long getOrInsertAppInfoId(@NonNull String packageName, @NonNull Context context) {
-        AppInfoInternal appInfoInternal = getAppInfoMap().get(packageName);
+    public long getOrInsertAppInfoId(String packageName, Context context) {
+        return getOrInsertAppInfoId(Optional.empty(), packageName, context);
+    }
+
+    /**
+     * Returns AppInfo id for the provided {@code packageName}, creating it if needed. If given db
+     * is null, the default will be {@link TransactionManager#getReadableDb()} for reads and {@link
+     * TransactionManager#getWritableDb()} for writes.
+     */
+    private long getOrInsertAppInfoId(
+            Optional<SQLiteDatabase> db, String packageName, Context context) {
+        AppInfoInternal appInfoInternal = getAppInfoMap(db).get(packageName);
 
         if (appInfoInternal == null) {
             try {
@@ -286,20 +339,19 @@ public final class AppInfoHelper extends DatabaseHelper {
                 throw new IllegalArgumentException("Could not find package info for package", e);
             }
 
-            insertIfNotPresent(packageName, appInfoInternal);
+            insertIfNotPresent(db, packageName, appInfoInternal);
         }
 
         return appInfoInternal.getId();
     }
 
-    private synchronized void populateAppInfoMap() {
+    private synchronized void populateAppInfoMap(Optional<SQLiteDatabase> db) {
         if (mAppInfoMap != null) {
             return;
         }
         ConcurrentHashMap<String, AppInfoInternal> appInfoMap = new ConcurrentHashMap<>();
         ConcurrentHashMap<Long, String> idPackageNameMap = new ConcurrentHashMap<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = readAppInfo(db)) {
             while (cursor.moveToNext()) {
                 long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
                 String packageName = getCursorString(cursor, PACKAGE_COLUMN_NAME);
@@ -319,6 +371,12 @@ public final class AppInfoHelper extends DatabaseHelper {
         }
         mAppInfoMap = appInfoMap;
         mIdPackageNameMap = idPackageNameMap;
+    }
+
+    private Cursor readAppInfo(Optional<SQLiteDatabase> db) {
+        ReadTableRequest request = new ReadTableRequest(TABLE_NAME);
+        return db.map(sqLiteDatabase -> mTransactionManager.read(sqLiteDatabase, request))
+                .orElseGet(() -> mTransactionManager.read(request));
     }
 
     @Nullable
@@ -403,17 +461,19 @@ public final class AppInfoHelper extends DatabaseHelper {
         Set<Integer> recordTypesToBeUpdated =
                 Objects.requireNonNullElseGet(
                         recordTypesToBeSynced,
-                        () ->
-                                RecordMapper.getInstance()
-                                        .getRecordIdToExternalRecordClassMap()
-                                        .keySet());
+                        () -> mRecordMapper.getRecordIdToExternalRecordClassMap().keySet());
 
-        Map<Integer, Set<String>> recordTypeToContributingPackagesMap =
-                TransactionManager.getInitialisedInstance()
-                        .getDistinctPackageNamesForRecordsTable(recordTypesToBeUpdated);
+        Map<Integer, Set<Long>> recordTypeToContributingPackageIdsMap =
+                mTransactionManager.getDistinctPackageIdsForRecordsTable(recordTypesToBeUpdated);
+
+        Map<Integer, Set<String>> recordTypeToContributingPackageNamesMap = new HashMap<>();
+        recordTypeToContributingPackageIdsMap.forEach(
+                (recordType, packageIds) ->
+                        recordTypeToContributingPackageNamesMap.put(
+                                recordType, convertPackageIdsToPackageName(packageIds)));
 
         if (recordTypesToBeSynced == null) {
-            syncAppInfoMapRecordTypesUsed(recordTypeToContributingPackagesMap);
+            syncAppInfoMapRecordTypesUsed(recordTypeToContributingPackageNamesMap);
         } else {
             getAppInfoMap()
                     .keySet()
@@ -421,7 +481,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                             (packageName) -> {
                                 deleteRecordTypesForPackagesIfRequiredInternal(
                                         recordTypesToBeUpdated,
-                                        recordTypeToContributingPackagesMap,
+                                        recordTypeToContributingPackageNamesMap,
                                         packageName);
                             });
         }
@@ -434,7 +494,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @SuppressLint("LongLogTag")
     private synchronized void syncAppInfoMapRecordTypesUsed(
-            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
+            Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap =
                 getPackageToRecordTypesMap(recordTypeToContributingPackagesMap);
         getAppInfoMap()
@@ -462,7 +522,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     private HashMap<String, List<Integer>> getPackageToRecordTypesMap(
-            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
+            Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap = new HashMap<>();
         recordTypeToContributingPackagesMap.forEach(
                 (recordType, packageList) -> {
@@ -526,9 +586,7 @@ public final class AppInfoHelper extends DatabaseHelper {
 
     @SuppressLint("LongLogTag")
     private synchronized void updateAppInfoRecordTypesUsedSync(
-            @NonNull String packageName,
-            @NonNull AppInfoInternal appInfo,
-            Set<Integer> recordTypesUsed) {
+            String packageName, AppInfoInternal appInfo, Set<Integer> recordTypesUsed) {
         appInfo.setRecordTypesUsed(recordTypesUsed);
         // create upsert table request to modify app info table, keyed by packages name.
         WhereClauses whereClauseForAppInfoTableUpdate = new WhereClauses(AND);
@@ -537,7 +595,7 @@ public final class AppInfoHelper extends DatabaseHelper {
         UpsertTableRequest upsertRequestForAppInfoUpdate =
                 new UpsertTableRequest(
                         TABLE_NAME, getContentValues(packageName, appInfo), UNIQUE_COLUMN_INFO);
-        TransactionManager.getInitialisedInstance().update(upsertRequestForAppInfoUpdate);
+        mTransactionManager.update(upsertRequestForAppInfoUpdate);
 
         // update locally stored maps to keep data in sync.
         getAppInfoMap().put(packageName, appInfo);
@@ -579,22 +637,39 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     private Map<String, AppInfoInternal> getAppInfoMap() {
+        return getAppInfoMap(Optional.empty());
+    }
+
+    /**
+     * Populates and gets the {@code mAppInfoMap} using the given {@link SQLiteDatabase} to read the
+     * table. If given db is null, the default will be {@link TransactionManager#getReadableDb()}.
+     */
+    private Map<String, AppInfoInternal> getAppInfoMap(Optional<SQLiteDatabase> db) {
         if (Objects.isNull(mAppInfoMap)) {
-            populateAppInfoMap();
+            populateAppInfoMap(db);
         }
 
         return mAppInfoMap;
     }
 
-    private Map<Long, String> getIdPackageNameMap() {
+    /**
+     * Populates and gets the {@code mIdPackageNameMap} using the given {@link SQLiteDatabase} to
+     * read the table. If given db is null, the default will be {@link
+     * TransactionManager#getReadableDb()}.
+     */
+    private Map<Long, String> getIdPackageNameMap(Optional<SQLiteDatabase> db) {
         if (mIdPackageNameMap == null) {
-            populateAppInfoMap();
+            populateAppInfoMap(db);
         }
 
         return mIdPackageNameMap;
     }
 
-    private AppInfoInternal getAppInfo(@NonNull String packageName, @NonNull Context context)
+    private Map<Long, String> getIdPackageNameMap() {
+        return getIdPackageNameMap(Optional.empty());
+    }
+
+    private AppInfoInternal getAppInfo(String packageName, Context context)
             throws NameNotFoundException {
         PackageManager packageManager = context.getPackageManager();
         ApplicationInfo info =
@@ -606,22 +681,48 @@ public final class AppInfoHelper extends DatabaseHelper {
         return new AppInfoInternal(DEFAULT_LONG, packageName, appName, bitmap, null);
     }
 
+    @Nullable
+    private byte[] getIconFromPackageName(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            Drawable drawable = packageManager.getApplicationIcon(packageName);
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        } catch (PackageManager.NameNotFoundException e) {
+            Drawable drawable = packageManager.getDefaultActivityIcon();
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        }
+    }
+
+    private synchronized void insertIfNotPresent(String packageName, AppInfoInternal appInfo) {
+        insertIfNotPresent(Optional.empty(), packageName, appInfo);
+    }
+
+    /**
+     * Inserts appInfo if not present in the db, using the given {@link SQLiteDatabase}. If given db
+     * is null, the default will be {@link TransactionManager#getReadableDb()} for reads and {@link
+     * TransactionManager#getWritableDb()} for writes.
+     */
     private synchronized void insertIfNotPresent(
-            @NonNull String packageName, @NonNull AppInfoInternal appInfo) {
-        if (getAppInfoMap().containsKey(packageName)) {
+            Optional<SQLiteDatabase> db, String packageName, AppInfoInternal appInfo) {
+        if (getAppInfoMap(db).containsKey(packageName)) {
             return;
         }
 
-        long rowId =
-                TransactionManager.getInitialisedInstance()
-                        .insert(
-                                new UpsertTableRequest(
-                                        TABLE_NAME,
-                                        getContentValues(packageName, appInfo),
-                                        UNIQUE_COLUMN_INFO));
+        long rowId = insertAppInfo(db, packageName, appInfo);
         appInfo.setId(rowId);
-        getAppInfoMap().put(packageName, appInfo);
-        getIdPackageNameMap().put(appInfo.getId(), packageName);
+        getAppInfoMap(db).put(packageName, appInfo);
+        getIdPackageNameMap(db).put(appInfo.getId(), packageName);
+    }
+
+    private long insertAppInfo(
+            Optional<SQLiteDatabase> db, String packageName, AppInfoInternal appInfo) {
+        UpsertTableRequest upsertRequest =
+                new UpsertTableRequest(
+                        TABLE_NAME, getContentValues(packageName, appInfo), UNIQUE_COLUMN_INFO);
+        return db.map(sqLiteDatabase -> mTransactionManager.insert(sqLiteDatabase, upsertRequest))
+                .orElseGet(() -> mTransactionManager.insert(upsertRequest));
     }
 
     private synchronized void updateIfPresent(String packageName, AppInfoInternal appInfoInternal) {
@@ -635,11 +736,10 @@ public final class AppInfoHelper extends DatabaseHelper {
                         getContentValues(packageName, appInfoInternal),
                         UNIQUE_COLUMN_INFO);
 
-        TransactionManager.getInitialisedInstance().updateTable(upsertTableRequest);
+        mTransactionManager.updateTable(upsertTableRequest);
         getAppInfoMap().put(packageName, appInfoInternal);
     }
 
-    @NonNull
     private ContentValues getContentValues(String packageName, AppInfoInternal appInfo) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(PACKAGE_COLUMN_NAME, packageName);
@@ -667,9 +767,7 @@ public final class AppInfoHelper extends DatabaseHelper {
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @Override
-    @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(PACKAGE_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));
@@ -680,9 +778,14 @@ public final class AppInfoHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    public static synchronized AppInfoHelper getInstance() {
+    public static AppInfoHelper getInstance() {
+        return getInstance(TransactionManager.getInitialisedInstance());
+    }
+
+    /** Returns an instance of AppInfoHelper by passing in the dependency. */
+    public static synchronized AppInfoHelper getInstance(TransactionManager transactionManager) {
         if (sAppInfoHelper == null) {
-            sAppInfoHelper = new AppInfoHelper();
+            sAppInfoHelper = new AppInfoHelper(transactionManager);
         }
 
         return sAppInfoHelper;
@@ -707,8 +810,7 @@ public final class AppInfoHelper extends DatabaseHelper {
         return bytes != null ? BitmapFactory.decodeByteArray(bytes, 0, bytes.length) : null;
     }
 
-    @NonNull
-    private static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
+    private static Bitmap getBitmapFromDrawable(Drawable drawable) {
         final Bitmap bmp =
                 Bitmap.createBitmap(
                         drawable.getIntrinsicWidth(),
@@ -718,5 +820,23 @@ public final class AppInfoHelper extends DatabaseHelper {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bmp;
+    }
+
+    private Set<String> convertPackageIdsToPackageName(Set<Long> packageIds) {
+        Set<String> packageNames = new HashSet<>();
+        for (Long packageId : packageIds) {
+            String packageName = getPackageName(packageId);
+            if (packageName != null && !packageName.isEmpty()) {
+                packageNames.add(packageName);
+            }
+        }
+        return packageNames;
+    }
+
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @VisibleForTesting
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void resetInstanceForTest() {
+        sAppInfoHelper = null;
     }
 }

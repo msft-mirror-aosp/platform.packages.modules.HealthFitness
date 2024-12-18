@@ -27,14 +27,22 @@ import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.navigateBackToHomeScreen
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 
 class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
+
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     @Test
     fun showDeclaredPermissions() {
@@ -42,6 +50,22 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             navigateToManageAppPermissions()
 
             waitDisplayed(By.text("Height"))
+        }
+    }
+
+    @Test
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun showsAdditionalPermissions() {
+        context.launchMainActivity {
+            navigateToManageAppPermissions()
+
+            scrollDownTo(By.text("Delete app data"))
+            waitDisplayed(By.text("Delete app data"))
+            scrollDownTo(By.text("Additional access"))
+            waitDisplayed(By.text("Additional access"))
+            clickOnText("Additional access")
+            waitDisplayed(By.text("Access past data"))
+            waitDisplayed(By.text("Access data in the background"))
         }
     }
 
@@ -100,7 +124,8 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             clickOnText("Allow all")
             waitDisplayed(By.text("Remove all permissions?"))
             waitDisplayed(
-                By.text("Also delete Health Connect cts test app data from Health Connect"))
+                By.text("Also delete Health Connect cts test app data from Health Connect")
+            )
         }
     }
 

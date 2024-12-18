@@ -41,7 +41,7 @@ import android.health.connect.datatypes.units.Temperature;
 import android.health.connect.internal.datatypes.SkinTemperatureRecordInternal;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
@@ -75,13 +75,11 @@ public final class SkinTemperatureRecordHelper
         super(RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE);
     }
 
-    @NonNull
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return TABLE_NAME;
     }
 
-    @NonNull
     String getSeriesDataTableName() {
         return SERIES_TABLE_NAME;
     }
@@ -107,8 +105,7 @@ public final class SkinTemperatureRecordHelper
 
     @Override
     @SuppressWarnings("unchecked")
-    List<UpsertTableRequest> getChildTableUpsertRequests(
-            @NonNull SkinTemperatureRecordInternal record) {
+    List<UpsertTableRequest> getChildTableUpsertRequests(SkinTemperatureRecordInternal record) {
         return record.getSamples().stream()
                 .map(
                         sample -> {
@@ -124,8 +121,7 @@ public final class SkinTemperatureRecordHelper
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull SkinTemperatureRecordInternal recordInternal) {
+    void populateSpecificRecordValue(Cursor cursor, SkinTemperatureRecordInternal recordInternal) {
         int measurementLocation =
                 getCursorInt(cursor, SKIN_TEMPERATURE_MEASUREMENT_LOCATION_COLUMN_NAME);
         double baseline = getCursorDouble(cursor, SKIN_TEMPERATURE_BASELINE_COLUMN_NAME);
@@ -150,14 +146,13 @@ public final class SkinTemperatureRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull SkinTemperatureRecordInternal record) {
+            ContentValues contentValues, SkinTemperatureRecordInternal record) {
         contentValues.put(
                 SKIN_TEMPERATURE_MEASUREMENT_LOCATION_COLUMN_NAME, record.getMeasurementLocation());
         contentValues.put(
                 SKIN_TEMPERATURE_BASELINE_COLUMN_NAME, record.getBaseline().getInCelsius());
     }
 
-    @NonNull
     @Override
     List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return List.of(
@@ -165,7 +160,6 @@ public final class SkinTemperatureRecordHelper
                 Pair.create(SKIN_TEMPERATURE_BASELINE_COLUMN_NAME, REAL));
     }
 
-    @NonNull
     List<Pair<String, String>> getSeriesTableColumnInfo() {
         return List.of(
                 Pair.create(PARENT_KEY_COLUMN_NAME, INTEGER),
@@ -174,14 +168,14 @@ public final class SkinTemperatureRecordHelper
     }
 
     void populateSampleTo(
-            @NonNull ContentValues contentValues,
-            @NonNull SkinTemperatureRecordInternal.SkinTemperatureDeltaSample sample) {
+            ContentValues contentValues,
+            SkinTemperatureRecordInternal.SkinTemperatureDeltaSample sample) {
         contentValues.put(SKIN_TEMPERATURE_DELTA_COLUMN_NAME, sample.mTemperatureDeltaInCelsius());
         contentValues.put(EPOCH_MILLIS_COLUMN_NAME, sample.mEpochMillis());
     }
 
     /** Adds the skin temperature tables. */
-    public void applySkinTemperatureUpgrade(@NonNull SQLiteDatabase db) {
+    public void applySkinTemperatureUpgrade(SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
     }
 
@@ -207,8 +201,8 @@ public final class SkinTemperatureRecordHelper
         }
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {

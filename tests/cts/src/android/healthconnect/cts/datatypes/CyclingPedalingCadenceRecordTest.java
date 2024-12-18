@@ -47,7 +47,7 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -100,8 +100,6 @@ public class CyclingPedalingCadenceRecordTest {
                 getBaseCyclingPedalingCadenceRecord();
 
         assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getTime()).isNotNull();
-        assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getRevolutionsPerMinute())
-                .isNotNull();
         TestUtils.insertRecords(
                 Arrays.asList(
                         baseCyclingPedalingCadenceRecord,
@@ -537,7 +535,13 @@ public class CyclingPedalingCadenceRecordTest {
                         .addRecordType(CyclingPedalingCadenceRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     @Test

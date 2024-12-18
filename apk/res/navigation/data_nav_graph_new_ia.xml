@@ -21,6 +21,12 @@
     android:id="@+id/permissions_nav_graph"
     app:startDestination="@id/allDataFragment">
 
+    <include app:graph="@navigation/fitness_app_nav_graph"/>
+    <include app:graph="@navigation/medical_app_nav_graph"/>
+    <include app:graph="@navigation/combined_permissions_nav_graph"/>
+    <include app:graph="@navigation/connected_apps_nav_graph"/>
+    <include app:graph="@navigation/data_sources_nav_graph"/>
+
     <fragment
         android:id="@+id/appDataFragment"
         android:label="@string/app_data_title"
@@ -55,6 +61,10 @@
         <action
             android:id="@+id/action_allDataFragment_to_unitFragment"
             app:destination="@id/unitFragment" />
+        <action
+            android:id="@+id/action_allDataFragment_to_dataSourcesFragment"
+            app:destination="@id/data_sources_nav_graph"/>
+
     </fragment>
 
     <fragment
@@ -65,8 +75,17 @@
             android:id="@+id/action_entriesAndAccessFragment_to_dataEntryDetailsFragment"
             app:destination="@id/dataEntryDetailsFragment" />
         <action
-            android:id="@+id/action_entriesAndAccessFragment_to_appAccess"
-            app:destination="@id/connectedAppFragment" />
+            android:id="@+id/action_entriesAndAccessFragment_to_rawFhirFragment"
+            app:destination="@id/rawFhirFragment" />
+        <action
+            android:id="@+id/action_entriesAndAccessFragment_to_fitnessApp"
+            app:destination="@id/fitness_app_nav_graph" />
+        <action
+            android:id="@+id/action_entriesAndAccessFragment_to_medicalApp"
+            app:destination="@id/medical_app_nav_graph" />
+        <action
+            android:id="@+id/action_entriesAndAccessFragment_to_combinedPermissions"
+            app:destination="@id/combined_permissions_nav_graph" />
         <action
             android:id="@+id/action_entriesAndAccessFragment_to_unitFragment"
             app:destination="@id/unitFragment" />
@@ -87,19 +106,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/connectedAppFragment"
-        android:label="@string/app_access_title"
-        android:name="com.android.healthconnect.controller.permissions.app.ConnectedAppFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_connectedApp_to_appData"
-            app:destination="@id/appDataFragment" />
+        android:id="@+id/rawFhirFragment"
+        android:name="com.android.healthconnect.controller.data.rawfhir.RawFhirFragment"
+        android:label="@string/entry_details_title" >
     </fragment>
 
-    <activity
-        android:id="@+id/manageAppPermissions"
-        app:action="android.health.connect.action.MANAGE_HEALTH_PERMISSIONS">
-    </activity>
 </navigation>

@@ -31,8 +31,13 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 /**
- * A request class to represent request based on id filters with ids for {@link
+ * A request class to represent request based on {@link RecordIdFilter RecordIdFilters} for {@link
  * HealthConnectManager#readRecords(ReadRecordsRequest, Executor, OutcomeReceiver)}
+ *
+ * <p>A {@link RecordIdFilter} can be constructed with either {@link RecordIdFilter#fromId(Class,
+ * String) record ID} or {@link RecordIdFilter#fromClientRecordId(Class, String) client record ID}.
+ * However, it's worth noting that only reading with own client record IDs is allowed, using client
+ * record IDs to read records inserted by another app will return no result.
  *
  * @param <T> the type of the Record for the request
  */

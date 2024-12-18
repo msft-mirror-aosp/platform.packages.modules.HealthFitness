@@ -22,17 +22,24 @@ import android.health.connect.datatypes.ExerciseLap
 import android.health.connect.datatypes.ExerciseSegment
 import android.health.connect.datatypes.ExerciseSegmentType
 import android.health.connect.datatypes.HeartRateRecord.HeartRateSample
+import android.health.connect.datatypes.PlannedExerciseBlock
 import android.health.connect.datatypes.PowerRecord.PowerRecordSample
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord.SpeedRecordSample
 import android.health.connect.datatypes.StepsCadenceRecord.StepsCadenceRecordSample
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Power
+import android.health.connect.datatypes.units.TemperatureDelta
 import android.health.connect.datatypes.units.Velocity
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_DOUBLE
+import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_INT
 import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_LONG
+import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_SIGNED_DOUBLE
+import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_TEXT
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.getStaticFieldNamesAndValues
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -71,9 +78,7 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
     private fun addRow() {
         val rowLayout = LinearLayout(context)
         rowLayout.orientation = VERTICAL
-
         val row = Row(context)
-
         rowLayout.addView(row.startTime)
         val dataPointField: InputFieldView =
             when (mDataTypeClass) {
@@ -94,7 +99,8 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                     EnumDropDown(
                         context,
                         "Sleep Stage",
-                        getStaticFieldNamesAndValues(SleepSessionRecord.StageType::class))
+                        getStaticFieldNamesAndValues(SleepSessionRecord.StageType::class),
+                    )
                 }
                 StepsCadenceRecordSample::class.java -> {
                     EditableTextView(context, "Steps Cadence", INPUT_TYPE_DOUBLE)
@@ -104,11 +110,24 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                     EnumDropDown(
                         context,
                         "Segment Type",
-                        getStaticFieldNamesAndValues(ExerciseSegmentType::class))
+                        getStaticFieldNamesAndValues(ExerciseSegmentType::class),
+                    )
                 }
                 ExerciseLap::class.java -> {
                     rowLayout.addView(row.endTime)
                     EditableTextView(context, "Length", INPUT_TYPE_DOUBLE)
+                }
+                SkinTemperatureRecord.Delta::class.java -> {
+                    EditableTextView(context, "Delta", INPUT_TYPE_SIGNED_DOUBLE)
+                }
+                PlannedExerciseBlock::class.java -> {
+                    rowLayout.removeView(row.startTime)
+                    ExerciseBlockInputField(
+                        context,
+                        EditableTextView(context, "Repetitions", INPUT_TYPE_INT),
+                        EditableTextView(context, "Description", INPUT_TYPE_TEXT),
+                        CheckBox(context),
+                    )
                 }
                 else -> {
                     return
@@ -122,16 +141,19 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
 
     override fun getFieldValue(): List<Any> {
         val samples: ArrayList<Any> = ArrayList()
+
         for (row in mRowsData) {
             val dataPoint = row.dataPointField
-            val instant = row.startTime
             val dataPointString = dataPoint.getFieldValue().toString()
+            val instant = row.startTime
             when (mDataTypeClass) {
                 SpeedRecordSample::class.java -> {
                     samples.add(
                         SpeedRecordSample(
                             Velocity.fromMetersPerSecond(dataPointString.toDouble()),
-                            instant.getFieldValue()))
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 HeartRateSample::class.java -> {
                     samples.add(HeartRateSample(dataPointString.toLong(), instant.getFieldValue()))
@@ -139,32 +161,45 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                 PowerRecordSample::class.java -> {
                     samples.add(
                         PowerRecordSample(
-                            Power.fromWatts(dataPointString.toDouble()), instant.getFieldValue()))
+                            Power.fromWatts(dataPointString.toDouble()),
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 CyclingPedalingCadenceRecordSample::class.java -> {
                     samples.add(
                         CyclingPedalingCadenceRecordSample(
-                            dataPointString.toDouble(), instant.getFieldValue()))
+                            dataPointString.toDouble(),
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 StepsCadenceRecordSample::class.java -> {
                     samples.add(
                         StepsCadenceRecordSample(
-                            dataPointString.toDouble(), instant.getFieldValue()))
+                            dataPointString.toDouble(),
+                            instant.getFieldValue(),
+                        )
+                    )
                 }
                 SleepSessionRecord.Stage::class.java -> {
                     samples.add(
                         SleepSessionRecord.Stage(
                             instant.getFieldValue(),
                             row.endTime.getFieldValue(),
-                            dataPointString.toInt()))
+                            dataPointString.toInt(),
+                        )
+                    )
                 }
                 ExerciseSegment::class.java -> {
                     samples.add(
                         ExerciseSegment.Builder(
                                 instant.getFieldValue(),
                                 row.endTime.getFieldValue(),
-                                dataPointString.toInt())
-                            .build())
+                                dataPointString.toInt(),
+                            )
+                            .build()
+                    )
                 }
                 ExerciseLap::class.java -> {
                     samples.add(
@@ -174,7 +209,21 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                                     setLength(Length.fromMeters(dataPointString.toDouble()))
                                 }
                             }
-                            .build())
+                            .build()
+                    )
+                }
+                PlannedExerciseBlock::class.java -> {
+                    samples.add(dataPoint.getFieldValue())
+                }
+                SkinTemperatureRecord.Delta::class.java -> {
+                    if (dataPointString.isNotEmpty()) {
+                        samples.add(
+                            SkinTemperatureRecord.Delta(
+                                TemperatureDelta.fromCelsius(dataPointString.toDouble()),
+                                instant.getFieldValue(),
+                            )
+                        )
+                    }
                 }
             }
         }

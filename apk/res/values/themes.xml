@@ -38,19 +38,23 @@
         <item name="autoDeleteIcon">@drawable/ic_auto_delete</item>
         <item name="autoDeleteOffIcon">@drawable/ic_auto_delete_off</item>
         <item name="deleteIcon">@drawable/ic_delete</item>
-        <item name="exportDataIcon">@drawable/ic_export_data</item>
+        <item name="importDataIcon">@drawable/ic_import_data</item>
         <item name="activityCategoryIcon">@drawable/ic_category_activity</item>
         <item name="bodyMeasurementsCategoryIcon">@drawable/ic_category_body_measurements</item>
         <item name="cycleTrackingCategoryIcon">@drawable/ic_category_cycle_tracking</item>
         <item name="nutritionCategoryIcon">@drawable/ic_category_nutrition</item>
         <item name="sleepCategoryIcon">@drawable/ic_category_sleep</item>
         <item name="vitalsCategoryIcon">@drawable/ic_category_vitals</item>
+        <item name="wellnessCategoryIcon">@drawable/ic_category_wellness</item>
 
         <!-- Permission types page -->
         <item name="appPriorityIcon">@drawable/ic_view_list</item>
 
         <!-- Data access page -->
         <item name="seeAllEntriesIcon">@drawable/ic_view_list</item>
+        <item name="deleteForeverIcon">@drawable/ic_delete_forever</item>
+        <item name="checkboxUncheckedIcon">@drawable/ic_checkbox_unchecked</item>
+        <item name="checkboxCheckedIcon">@drawable/ic_checkbox_checked</item>
 
         <!-- Dialogs -->
         <item name="deletionSettingsIcon">@drawable/ic_deletion_settings</item>
@@ -80,8 +84,30 @@
         <item name="editIcon">@drawable/ic_edit</item>
         <item name="closeIcon">@drawable/ic_close</item>
 
-        <!-- Export -->
+        <!-- Backup and restore -->
+
         <item name="repeatIcon">@drawable/ic_repeat</item>
+        <item name="uploadIcon">@drawable/ic_upload</item>
+        <item name="importIcon">@drawable/ic_import</item>
+        <item name="importDataIcon">@drawable/ic_import_data</item>
+
+        <item name="warningIcon">@drawable/ic_warning</item>
+        <item name="infoIcon">@drawable/ic_info</item>
+
+        <!-- Medical data -->
+        <item name="allergiesIcon">@drawable/ic_medical_allergies</item>
+        <item name="conditionsIcon">@drawable/ic_medical_conditions</item>
+        <item name="immunizationIcon">@drawable/ic_medical_immunization</item>
+        <item name="labResultsIcon">@drawable/ic_medical_lab_results</item>
+        <item name="medicalServicesIcon">@drawable/ic_medical_medical_services</item>
+        <item name="medicationsIcon">@drawable/ic_medical_medication</item>
+        <item name="pastVisitsIcon">@drawable/ic_medical_past_visits</item>
+        <item name="patientInfoIcon">@drawable/ic_medical_patient_info</item>
+        <item name="pregnancyIcon">@drawable/ic_medical_pregnancy</item>
+        <item name="practitionerDetailsIcon">@drawable/ic_medical_practitioner_details</item>
+        <item name="proceduresIcon">@drawable/ic_medical_procedures</item>
+        <item name="vitalsIcon">@drawable/ic_medical_vital_signs</item>
+        <item name="socialHistoryIcon">@drawable/ic_medical_social_history</item>
 
         <!-- END REGION -->
 
@@ -109,7 +135,8 @@
         <item name="textAppearanceSubheader2">@style/TextAppearance.HealthConnect.Subheader2</item>
         <item name="textAppearanceSubheader3">@style/TextAppearance.HealthConnect.Subheader3</item>
         <item name="textAppearanceRouteRequest">@style/TextAppearance.HealthConnect.RouteRequest</item>
-        <item name="textAppearancePreferenceCategory">@style/PreferenceCategoryTitleTextStyle.HealthConnect</item>
+        <item name="textAppearancePreferenceCategory">@style/TextAppearance.HealthConnect.CategoryTitle</item>
+        <item name="textAppearanceErrorMessage">@style/TextAppearance.HealthConnect.ErrorMessage</item>
 
         <!-- Buttons -->
         <item name="dialogButtonFull">@style/Widget.HealthConnect.DialogButton.Full</item>
@@ -118,13 +145,13 @@
         <item name="buttonBorderLess">@style/Widget.HealthConnect.Button.Borderless</item>
         <item name="permissionGrantButtonList">@style/PermissionGrantButtonListMaterial3</item>
         <item name="permissionGrantButtonTop">@style/PermissionGrantButtonTop</item>
-        <item name="permissionGrantButtonButton">@style/PermissionGrantButtonBottom</item>
+        <item name="permissionGrantButtonBottom">@style/PermissionGrantButtonBottom</item>
+        <item name="disabledSpinner">@style/Widget.HealthConnect.Button.DisabledButton</item>
 
         <!-- Dialogs -->
         <item name="alertDialogTheme">@style/Theme.HealthConnect.Dialog.Alert</item>
         <item name="dialogButtonBar">@style/Widget.HealthConnect.Dialog.ButtonBar</item>
 
-        <item name="android:checkboxStyle">@style/Widget.HealthConnect.CheckBox</item>
         <item name="chipStyle">@style/Widget.HealthConnect.RadioButton.Chip</item>
         <item name="spinnerStyle">@style/Widget.HealthConnect.CalendarSpinner</item>
         <item name="tabStyle">@style/Widget.HealthConnect.TabLayout</item>
@@ -143,6 +170,11 @@
 
         <!-- Popup Menu -->
         <item name="android:itemBackground">@color/settingslib_dialog_background</item>
+        <!-- END REGION -->
+
+        <!-- REGION CLIPPING -->
+        <item name="android:clipToPadding">true</item>
+        <item name="android:clipChildren">true</item>
         <!-- END REGION -->
     </style>
 

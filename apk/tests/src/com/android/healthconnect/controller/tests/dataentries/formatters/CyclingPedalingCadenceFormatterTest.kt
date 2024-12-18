@@ -19,9 +19,11 @@ import android.content.Context
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.compatibility.common.util.UserSettings
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.CyclingPedalingCadenceFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
+import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.getMetaData
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -41,6 +43,7 @@ import org.junit.Test
 class CyclingPedalingCadenceFormatterTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
 
     @Inject lateinit var formatter: CyclingPedalingCadenceFormatter
     @Inject lateinit var preferences: UnitPreferences

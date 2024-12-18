@@ -22,8 +22,8 @@ genrule {
     name: "statslog-healthfitness-java-gen",
     tools: ["stats-log-api-gen"],
     cmd: "$(location stats-log-api-gen) --java $(out) --module healthfitness" +
-         " --javaPackage android.health" +
-         " --javaClass HealthFitnessStatsLog --minApiLevel 34",
+        " --javaPackage android.health" +
+        " --javaClass HealthFitnessStatsLog --minApiLevel 34",
     out: ["android/health/HealthFitnessStatsLog.java"],
 }
 
@@ -50,8 +50,8 @@ java_library {
 filegroup {
     name: "framework-healthfitness-sources",
     srcs: [
-      "java/**/*.aidl",
-      "java/**/*.java"
+        "java/**/*.aidl",
+        "java/**/*.java",
     ],
     path: "java",
     visibility: [
@@ -62,18 +62,29 @@ filegroup {
 
 java_sdk_library {
     name: "framework-healthfitness",
+    permitted_packages: [
+        "android.health",
+        "com.android.healthfitness.flags",
+    ],
     srcs: [":framework-healthfitness-sources"],
     defaults: ["framework-module-defaults"],
     sdk_version: "module_current",
     min_sdk_version: "34",
     apex_available: ["com.android.healthfitness"],
     impl_library_visibility: [
-        "//packages/modules/HealthFitness:__subpackages__"
+        "//packages/modules/HealthFitness:__subpackages__",
     ],
-    static_libs: ["healthfitness-statsd"],
+    static_libs: [
+        "healthfitness-statsd",
+        "healthfitness-aconfig-flags-lib",
+        "healthfitness-aconfig-flags-helper",
+    ],
+    aconfig_declarations: [
+        "healthconnect-aconfig-flags",
+    ],
     errorprone: {
         extra_check_modules: [
-           "//external/nullaway:nullaway_plugin"
+            "//external/nullaway:nullaway_plugin",
         ],
         javacflags: [
             "-XepExcludedPaths:.*/out/soong/.*",

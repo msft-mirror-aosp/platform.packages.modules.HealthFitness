@@ -24,15 +24,24 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.test.filters.FlakyTest
 import androidx.test.uiautomator.By
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
+import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
 /** CTS test for HealthConnect Home screen. */
 class HomeFragmentTest : HealthConnectBaseTest() {
+
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     companion object {
 
@@ -47,7 +56,8 @@ class HomeFragmentTest : HealthConnectBaseTest() {
             }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
-                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build())
+                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
+            )
         }
 
         @JvmStatic
@@ -61,22 +71,24 @@ class HomeFragmentTest : HealthConnectBaseTest() {
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
         }
     }
 
     @Test
+    @FlakyTest(bugId = 328200136)
     fun homeFragment_openAppPermissions() {
         context.launchMainActivity {
             clickOnText("App permissions")
 
             waitDisplayed(By.text("Allowed access"))
-            // TODO(b/265789268): Fix flaky "Not allowed access" not found.
-            // waitDisplayed(By.text("Not allowed access"))
+            waitDisplayed(By.text("Not allowed access"), waitTimeout = Duration.ofSeconds(10))
         }
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun homeFragment_openDataManagement() {
         context.launchMainActivity {
             clickOnText("Data and access")
@@ -108,6 +120,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
+    @FlakyTest(bugId = 328200136)
     fun homeFragment_navigateToRecentAccess() {
         context.launchMainActivity {
             clickOnText("See all recent access")

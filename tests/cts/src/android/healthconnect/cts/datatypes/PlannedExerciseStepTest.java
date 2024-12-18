@@ -27,7 +27,7 @@ import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -175,6 +175,42 @@ public class PlannedExerciseStepTest {
                 new ExercisePerformanceGoal.PowerGoal(Power.fromWatts(200), Power.fromWatts(250)));
 
         assertThat(builder.clearPerformanceGoals().build().getPerformanceGoals()).isEmpty();
+    }
+
+    @Test
+    public void getCompletionGoal() {
+        PlannedExerciseStep.Builder builder =
+                new PlannedExerciseStep.Builder(
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING,
+                        PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                        new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+
+        assertThat(builder.build().getCompletionGoal())
+                .isEqualTo(new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+    }
+
+    @Test
+    public void getExerciseType() {
+        PlannedExerciseStep.Builder builder =
+                new PlannedExerciseStep.Builder(
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING,
+                        PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                        new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+
+        assertThat(builder.build().getExerciseType())
+                .isEqualTo(ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING);
+    }
+
+    @Test
+    public void getExerciseCategory() {
+        PlannedExerciseStep.Builder builder =
+                new PlannedExerciseStep.Builder(
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING,
+                        PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                        new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+
+        assertThat(builder.build().getExerciseCategory())
+                .isEqualTo(PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE);
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.utils;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT_ALL;
 
-import android.annotation.NonNull;
 import android.annotation.StringDef;
 
 import java.lang.annotation.Retention;
@@ -35,6 +34,8 @@ import java.util.Objects;
 public final class SqlJoin {
     public static final String SQL_JOIN_INNER = "INNER";
     public static final String SQL_JOIN_LEFT = "LEFT";
+
+    private static final String INNER_QUERY_ALIAS = "inner_query_result";
 
     /** @hide */
     @StringDef(
@@ -72,7 +73,7 @@ public final class SqlJoin {
      * Sets join type to the current joint, default value is inner join. Returns class with join
      * type set.
      */
-    public SqlJoin setJoinType(@NonNull @JoinType String joinType) {
+    public SqlJoin setJoinType(@JoinType String joinType) {
         Objects.requireNonNull(joinType);
         mJoinType = joinType;
         return this;
@@ -82,31 +83,31 @@ public final class SqlJoin {
      * Returns query by applying JOIN condition on the innerQuery
      *
      * @param innerQuery An inner query to be used for the JOIN
+     * @param selectStatement the outer select statement where you can specify column names,
+     *     DISTINCT, etc.
      * @return Final query with JOIN condition
      */
-    public String getJoinWithQueryCommand(String innerQuery) {
+    public String getJoinWithQueryCommand(String selectStatement, String innerQuery) {
         if (innerQuery == null) {
             throw new IllegalArgumentException("Inner query cannot be null");
         }
-        return SELECT_ALL
+        return selectStatement
                 + "( "
                 + innerQuery
-                + " ) "
-                + getJoinCommand(/* withSelfTableNamePrefix= */ false);
+                + " ) AS "
+                + INNER_QUERY_ALIAS
+                + " "
+                + getJoinCommand(/* withInnerQuery= */ true);
     }
 
     /** Returns join command. */
     public String getJoinCommand() {
-        return getJoinCommand(/* withSelfTableNamePrefix= */ true);
+        return getJoinCommand(/* withInnerQuery= */ false);
     }
 
     /** Attaches another join to this join. Returns this class with another join attached. */
-    public SqlJoin attachJoin(@NonNull SqlJoin join) {
+    public SqlJoin attachJoin(SqlJoin join) {
         Objects.requireNonNull(join);
-        if (!Objects.equals(mSelfTableName, join.mSelfTableName)) {
-            throw new IllegalArgumentException(
-                    "Sequenced joins must have the same self table name");
-        }
 
         if (mAttachedJoins == null) {
             mAttachedJoins = new ArrayList<>();
@@ -116,12 +117,14 @@ public final class SqlJoin {
         return this;
     }
 
-    public void setSecondTableWhereClause(WhereClauses whereClause) {
+    /** Sets the {@link WhereClauses} for the second table and returns this {@link SqlJoin}. */
+    public SqlJoin setSecondTableWhereClause(WhereClauses whereClause) {
         mTableToJoinWhereClause = whereClause;
+        return this;
     }
 
-    private String getJoinCommand(boolean withSelfTableNamePrefix) {
-        String selfColumnPrefix = withSelfTableNamePrefix ? mSelfTableName + "." : "";
+    private String getJoinCommand(boolean withInnerQuery) {
+        String selfColumnPrefix = withInnerQuery ? INNER_QUERY_ALIAS + "." : mSelfTableName + ".";
         return " "
                 + mJoinType
                 + " JOIN "
@@ -134,21 +137,28 @@ public final class SqlJoin {
                 + mTableNameToJoinOn
                 + "."
                 + mJoiningColumnNameToMatch
-                + buildAttachedJoinsCommand(withSelfTableNamePrefix);
+                + buildAttachedJoinsCommand(withInnerQuery);
     }
 
     private String buildFilterQuery() {
         return SELECT_ALL + mTableNameToJoinOn + mTableToJoinWhereClause.get(true);
     }
 
-    private String buildAttachedJoinsCommand(boolean withSelfTableNamePrefix) {
+    private String buildAttachedJoinsCommand(boolean withInnerQuery) {
         if (mAttachedJoins == null) {
             return "";
         }
 
         StringBuilder command = new StringBuilder();
         for (SqlJoin join : mAttachedJoins) {
-            command.append(" ").append(join.getJoinCommand(withSelfTableNamePrefix));
+            if (withInnerQuery && join.mSelfTableName.equals(mSelfTableName)) {
+                // When we're joining from the top level table, and there is an inner query, use the
+                // inner query prefix.
+                command.append(" ").append(join.getJoinCommand(true));
+            } else {
+                // Otherwise use the table name itself.
+                command.append(" ").append(join.getJoinCommand(false));
+            }
         }
 
         return command.toString();

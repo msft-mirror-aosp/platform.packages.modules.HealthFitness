@@ -27,13 +27,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.ProxyActivity;
 import android.os.Bundle;
 
@@ -51,7 +56,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TestAppProxy {
     private static final String TEST_APP_RECEIVER_CLASS_NAME =
             "android.healthconnect.cts.testhelper.TestAppReceiver";
-    private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(20);
+    private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(30);
+
+    public static final TestAppProxy APP_WRITE_PERMS_ONLY =
+            TestAppProxy.forPackageName("android.healthconnect.cts.testapp.writePermsOnly");
 
     private final String mPackageName;
     private final boolean mInBackground;
@@ -153,6 +161,34 @@ public class TestAppProxy {
         return BundleHelper.toChangeLogTokenResponse(responseBundle);
     }
 
+    /**
+     * Inserts a Medical Data Source to HC on behalf of the app.
+     *
+     * @return the inserted data source
+     */
+    public MedicalDataSource createMedicalDataSource(CreateMedicalDataSourceRequest request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromCreateMedicalDataSourceRequest(request);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalDataSource(responseBundle);
+    }
+
+    /**
+     * Upserts a Medical Resource to HC on behalf of the app.
+     *
+     * @return the inserted resource
+     */
+    public MedicalResource upsertMedicalResource(String datasourceId, String data)
+            throws Exception {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                datasourceId, PhrDataFactory.FHIR_VERSION_R4, data)
+                        .build();
+        Bundle requestBundle = BundleHelper.fromUpsertMedicalResourceRequests(List.of(request));
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalResources(responseBundle).get(0);
+    }
+
     /** Instructs the app to self-revokes the specified permission. */
     public void selfRevokePermission(String permission) throws Exception {
         Bundle requestBundle = BundleHelper.forSelfRevokePermissionRequest(permission);
@@ -167,7 +203,7 @@ public class TestAppProxy {
 
     /** Starts an activity on behalf of the app and returns the result. */
     public Instrumentation.ActivityResult startActivityForResult(Intent intent) throws Exception {
-        return startActivityForResult(intent, () -> {});
+        return startActivityForResult(intent, null);
     }
 
     /**

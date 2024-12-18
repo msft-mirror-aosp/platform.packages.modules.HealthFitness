@@ -31,17 +31,15 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.PriorityMigrationPayload;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,12 +73,10 @@ public class PriorityMigrationTest {
     @Mock FirstGrantTimeManager mFirstGrantTimeManager;
     @Mock DeviceInfoHelper mDeviceInfoHelper;
     @Mock AppInfoHelper mAppInfoHelper;
-    @Mock MigrationEntityHelper mMigrationEntityHelper;
-    @Mock RecordHelperProvider mRecordHelperProvider;
     @Mock HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     @Mock PriorityMigrationHelper mPriorityMigrationHelper;
-    @Mock ActivityDateHelper mActivityDateHelper;
     @Mock SQLiteDatabase mSQLiteDatabase;
+    @Mock PreferenceHelper mPreferenceHelper;
 
     DataMigrationManager mDataMigrationManager;
 
@@ -99,7 +95,7 @@ public class PriorityMigrationTest {
                             }
                         })
                 .when(mTransactionManager)
-                .runAsTransaction(any());
+                .runAsTransaction(any(TransactionManager.TransactionRunnable.class));
 
         mDataMigrationManager =
                 new DataMigrationManager(
@@ -109,11 +105,9 @@ public class PriorityMigrationTest {
                         mFirstGrantTimeManager,
                         mDeviceInfoHelper,
                         mAppInfoHelper,
-                        mMigrationEntityHelper,
-                        mRecordHelperProvider,
                         mHealthDataCategoryPriorityHelper,
                         mPriorityMigrationHelper,
-                        mActivityDateHelper);
+                        mPreferenceHelper);
     }
 
     @Test

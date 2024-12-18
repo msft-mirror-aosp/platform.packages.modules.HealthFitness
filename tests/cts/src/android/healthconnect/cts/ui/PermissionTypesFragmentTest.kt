@@ -26,15 +26,23 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
-/** CTS test for HealthConnect Permission types screen. */
+/** CTS test for HealthConnect Permission types screen in the old IA. */
+@RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
 class PermissionTypesFragmentTest : HealthConnectBaseTest() {
+
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     companion object {
         private val APP_A_WITH_READ_WRITE_PERMS: TestAppProxy =
@@ -66,19 +74,22 @@ class PermissionTypesFragmentTest : HealthConnectBaseTest() {
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
             verifyDeleteRecords(
                 HeartRateRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
             verifyDeleteRecords(
                 BasalMetabolicRateRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
         }
     }
 

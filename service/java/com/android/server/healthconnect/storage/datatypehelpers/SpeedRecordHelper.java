@@ -26,7 +26,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
-import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -64,7 +64,7 @@ public class SpeedRecordHelper
     }
 
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return TABLE_NAME;
     }
 
@@ -83,7 +83,7 @@ public class SpeedRecordHelper
 
     /** Populates the {@code record} with values specific to datatype */
     @Override
-    void populateSpecificValues(@NonNull Cursor seriesTableCursor, SpeedRecordInternal record) {
+    void populateSpecificValues(Cursor seriesTableCursor, SpeedRecordInternal record) {
         HashSet<SpeedRecordInternal.SpeedRecordSample> speedRecordSampleSet = new HashSet<>();
         UUID uuid = getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME);
         do {
@@ -99,8 +99,8 @@ public class SpeedRecordHelper
         record.setSamples(speedRecordSampleSet);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {

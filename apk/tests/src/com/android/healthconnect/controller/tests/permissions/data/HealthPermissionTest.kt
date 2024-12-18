@@ -15,13 +15,16 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import android.health.connect.HealthPermissions
+import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ACTIVE_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BLOOD_GLUCOSE
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
-import com.android.healthconnect.controller.tests.permissions.HealthPermissionConstants
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -44,33 +47,100 @@ class HealthPermissionTest {
     }
 
     @Test
-    fun fromPermission_returnsCorrectReadHealthPermission() {
+    fun fromPermission_returnsCorrectReadFitnessPermission() {
         assertThat(fromPermissionString("android.permission.health.READ_ACTIVE_CALORIES_BURNED"))
-            .isEqualTo(HealthPermission(ACTIVE_CALORIES_BURNED, PermissionsAccessType.READ))
+            .isEqualTo(FitnessPermission(ACTIVE_CALORIES_BURNED, PermissionsAccessType.READ))
     }
 
     @Test
-    fun fromPermission_returnsCorrectWriteHealthPermission() {
+    fun fromPermission_returnsCorrectWriteFitnessPermission() {
         assertThat(fromPermissionString("android.permission.health.WRITE_BLOOD_GLUCOSE"))
-            .isEqualTo(HealthPermission(BLOOD_GLUCOSE, PermissionsAccessType.WRITE))
+            .isEqualTo(FitnessPermission(BLOOD_GLUCOSE, PermissionsAccessType.WRITE))
     }
 
     @Test
-    fun fromPermissionString_canParseAllHealthPermissions() {
+    fun fromPermissionString_canParseAllFitnessPermissions() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm)
+                healthPermissionReader.isAdditionalPermission(perm) ||
+                    healthPermissionReader.isMedicalPermission(perm)
             }
         for (permissionString in allPermissions) {
-            if (permissionString == HealthPermissionConstants.READ_HEALTH_DATA_HISTORY) {
-                // TODO(b/325434006): Remove this exception case when we have strings properly
-                //  defined for the Background Read permission
-                continue
-            }
-
             assertThat(fromPermissionString(permissionString).toString())
                 .isEqualTo(permissionString)
         }
+    }
+
+    @Test
+    fun fromPermissionString_canParseAllMedicalPermissions() {
+        val medicalPermissions =
+            healthPermissionReader.getHealthPermissions().filter { perm ->
+                healthPermissionReader.isMedicalPermission(perm)
+            }
+        for (permissionString in medicalPermissions) {
+            assertThat(fromPermissionString(permissionString).toString())
+                .isEqualTo(permissionString)
+        }
+    }
+
+    @Test
+    fun fromPermissionString_returnsCorrectAdditionalPermission() {
+        assertThat(fromPermissionString("android.permission.health.READ_HEALTH_DATA_HISTORY"))
+            .isEqualTo(AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_HISTORY))
+
+        assertThat(fromPermissionString("android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"))
+            .isEqualTo(AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND))
+    }
+
+    @Test
+    fun fromPermissionString_returnsCorrectMedicalPermission() {
+        assertThat(fromPermissionString("android.permission.health.WRITE_MEDICAL_DATA"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.ALLERGY_INTOLERANCE))
+
+        assertThat(
+                fromPermissionString(
+                    "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATION))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.LABORATORY_RESULTS))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.MEDICATIONS))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_PREGNANCY"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.PREGNANCY))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_PROBLEMS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.PROBLEMS))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_PROCEDURES"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.PROCEDURES))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.SOCIAL_HISTORY))
+
+        assertThat(
+            fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.VITAL_SIGNS))
     }
 
     @Test

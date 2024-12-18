@@ -26,48 +26,96 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_COMPLETE
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.isHealthPermission;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
+import static android.healthconnect.cts.utils.ObservationBuilder.ObservationCategory.LABORATORY;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_EMPTY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
+import static android.healthconnect.cts.utils.PhrDataFactory.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
+import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
+import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
-import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
+import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
+import static com.google.common.truth.Correspondence.transforming;
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
-import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
+import android.health.connect.ApplicationInfoResponse;
+import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.MedicalResourceId;
+import android.health.connect.MedicalResourceTypeInfo;
+import android.health.connect.ReadMedicalResourcesInitialRequest;
+import android.health.connect.ReadMedicalResourcesPageRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.datatypes.AppInfo;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HydrationRecord;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.Record;
@@ -77,18 +125,31 @@ import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.ConditionBuilder;
 import android.healthconnect.cts.utils.DataFactory;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
+import android.healthconnect.cts.utils.MedicationsBuilder;
+import android.healthconnect.cts.utils.ObservationBuilder;
+import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+
+import com.android.compatibility.common.util.SystemUtil;
+
+import com.google.common.collect.Iterables;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -110,18 +171,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /** CTS test for API provided by HealthConnectManager. */
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectManagerTest {
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
     private static final String TAG = "HealthConnectManagerTest";
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts";
 
@@ -130,15 +198,20 @@ public class HealthConnectManagerTest {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
+    private HealthConnectManager mManager;
+
     @Before
     public void before() throws InterruptedException {
         deleteAllRecords();
         TestUtils.deleteAllStagedRemoteData();
+        TestUtils.deleteAllMedicalData();
+        mManager = TestUtils.getHealthConnectManager();
     }
 
     @After
     public void after() throws InterruptedException {
         deleteAllRecords();
+        TestUtils.deleteAllMedicalData();
     }
 
     private void deleteAllRecords() throws InterruptedException {
@@ -238,14 +311,14 @@ public class HealthConnectManagerTest {
         service.updateRecords(
                 updateRecords,
                 Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<Void, HealthConnectException>() {
+                new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {
                         latch.countDown();
                     }
 
                     @Override
-                    public void onError(HealthConnectException exception) {
+                    public void onError(@NonNull HealthConnectException exception) {
                         responseException.set(exception);
                         latch.countDown();
                         Log.e(
@@ -308,12 +381,12 @@ public class HealthConnectManagerTest {
         service.updateRecords(
                 updateRecords,
                 Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<Void, HealthConnectException>() {
+                new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {}
 
                     @Override
-                    public void onError(HealthConnectException exception) {
+                    public void onError(@NonNull HealthConnectException exception) {
                         responseException.set(exception);
                         latch.countDown();
                         Log.e(
@@ -370,10 +443,7 @@ public class HealthConnectManagerTest {
                             updateRecords.get(itr), insertRecords.get(itr).getMetadata().getId()));
             //             adding an entry with invalid packageName.
             if (updateRecords.get(itr).getRecordType() == RECORD_TYPE_STEPS) {
-                updateRecords.set(
-                        itr,
-                        getStepsRecord(
-                                /* clientRecordId= */ null, /* packageName= */ "abc.xyz.pqr"));
+                updateRecords.set(itr, getStepsRecord(/* packageName= */ "abc.xyz.pqr"));
             }
         }
 
@@ -382,14 +452,14 @@ public class HealthConnectManagerTest {
             service.updateRecords(
                     updateRecords,
                     Executors.newSingleThreadExecutor(),
-                    new OutcomeReceiver<Void, HealthConnectException>() {
+                    new OutcomeReceiver<>() {
                         @Override
                         public void onResult(Void result) {
                             latch.countDown();
                         }
 
                         @Override
-                        public void onError(HealthConnectException exception) {
+                        public void onError(@NonNull HealthConnectException exception) {
                             responseException.set(exception);
                             latch.countDown();
                             Log.e(
@@ -598,13 +668,9 @@ public class HealthConnectManagerTest {
         final Instant startTime = endTime.minusMillis(1000L);
 
         final String id1 =
-                TestUtils.insertRecordAndGetId(
-                        getHydrationRecord(
-                                /* clientRecordId= */ null, startTime, endTime, volume1));
+                TestUtils.insertRecordAndGetId(getHydrationRecord(startTime, endTime, volume1));
         final String id2 =
-                TestUtils.insertRecordAndGetId(
-                        getHydrationRecord(
-                                /* clientRecordId= */ null, startTime, endTime, volume2));
+                TestUtils.insertRecordAndGetId(getHydrationRecord(startTime, endTime, volume2));
 
         final List<HydrationRecord> records =
                 TestUtils.readRecords(
@@ -628,13 +694,9 @@ public class HealthConnectManagerTest {
         final Instant startTime = endTime.minusMillis(1000L);
 
         final String id1 =
-                TestUtils.insertRecordAndGetId(
-                        getNutritionRecord(
-                                /* clientRecordId= */ null, startTime, endTime, protein1));
+                TestUtils.insertRecordAndGetId(getNutritionRecord(startTime, endTime, protein1));
         final String id2 =
-                TestUtils.insertRecordAndGetId(
-                        getNutritionRecord(
-                                /* clientRecordId= */ null, startTime, endTime, protein2));
+                TestUtils.insertRecordAndGetId(getNutritionRecord(startTime, endTime, protein2));
 
         final List<NutritionRecord> records =
                 TestUtils.readRecords(
@@ -646,6 +708,18 @@ public class HealthConnectManagerTest {
         assertThat(records).hasSize(2);
         assertThat(getRecordById(records, id1).getProtein()).isEqualTo(protein1);
         assertThat(getRecordById(records, id2).getProtein()).isEqualTo(protein2);
+    }
+
+    // b/24128192
+    @Test
+    public void testInsertRecords_metadataGiven_responseDoesNotMutateMetadataReference()
+            throws InterruptedException {
+        Metadata metadata = DataFactory.getEmptyMetadata();
+        StepsRecord stepsRecord = DataFactory.getStepsRecord(20, metadata);
+
+        TestUtils.insertRecordAndGetId(stepsRecord);
+
+        assertThat(stepsRecord.getMetadata().getId()).isEmpty();
     }
 
     @Test
@@ -670,12 +744,12 @@ public class HealthConnectManagerTest {
                         getStepsRecord(t0300, UTC, t0400, UTC, 250));
         TestUtils.setupAggregation(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         TestUtils.insertRecords(records);
-        LocalDateTime startOfYesterday = LocalDateTime.now(UTC).truncatedTo(DAYS).minus(1, DAYS);
+        LocalDateTime startOfYesterday = LocalDateTime.now(UTC).truncatedTo(DAYS).minusDays(1);
         AggregateRecordsRequest<Long> aggregateRecordsRequest =
                 new AggregateRecordsRequest.Builder<Long>(
                                 new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(startOfYesterday.plus(1, HOURS))
-                                        .setEndTime(startOfYesterday.plus(4, HOURS))
+                                        .setStartTime(startOfYesterday.plusHours(1))
+                                        .setEndTime(startOfYesterday.plusHours(4))
                                         .build())
                         .addAggregationType(STEPS_COUNT_TOTAL)
                         .build();
@@ -699,7 +773,7 @@ public class HealthConnectManagerTest {
         // When no data falls in a given bucket, zone offset will be null and we use system default
         // zone to set bucket start and end time
         LocalDateTime localStart = t0100.atZone(utcPlusOne).toLocalDateTime();
-        LocalDateTime localEnd = localStart.plus(1, HOURS);
+        LocalDateTime localEnd = localStart.plusHours(1);
         ZoneOffset startZone = ZoneOffset.systemDefault().getRules().getOffset(localStart);
         Instant start = localStart.atZone(startZone).toInstant();
         ZoneOffset endZone = ZoneOffset.systemDefault().getRules().getOffset(localEnd);
@@ -845,21 +919,10 @@ public class HealthConnectManagerTest {
         }
 
         assertThat(latch.await(10, TimeUnit.SECONDS)).isEqualTo(true);
-        assertThat(observedExceptionsByFileName.get()).isNotNull();
-        assertThat(observedExceptionsByFileName.get().size()).isEqualTo(1);
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getKey())
-                .isEqualTo("testRestoreFile1");
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getValue()
-                                .getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_IO);
+        assertThat(observedExceptionsByFileName.get())
+                .comparingValuesUsing(
+                        transforming(HealthConnectException::getErrorCode, "has error code"))
+                .containsExactly("testRestoreFile1", HealthConnectException.ERROR_IO);
 
         deleteAllStagedRemoteData();
     }
@@ -979,21 +1042,10 @@ public class HealthConnectManagerTest {
         }
 
         assertThat(latch.await(10, TimeUnit.SECONDS)).isEqualTo(true);
-        assertThat(observedExceptionsByFileName.get()).isNotNull();
-        assertThat(observedExceptionsByFileName.get().size()).isEqualTo(1);
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getKey())
-                .isEqualTo("");
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getValue()
-                                .getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+        assertThat(observedExceptionsByFileName.get())
+                .comparingValuesUsing(
+                        transforming(HealthConnectException::getErrorCode, "has error code"))
+                .containsExactly("", HealthConnectException.ERROR_SECURITY);
 
         deleteAllStagedRemoteData();
     }
@@ -1209,7 +1261,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testGetHealthConnectDataState_afterStaging_returnsRestorePendingState()
+    public void testGetHealthConnectDataState_afterStagingAndMerge_returnsStateIdle()
             throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         CountDownLatch stateLatch = new CountDownLatch(1);
@@ -1276,7 +1328,7 @@ public class HealthConnectManagerTest {
         }
         assertThat(stateLatch.await(10, TimeUnit.SECONDS)).isEqualTo(true);
         assertThat(returnedHealthConnectDataState.get().getDataRestoreState())
-                .isEqualTo(RESTORE_STATE_PENDING);
+                .isEqualTo(RESTORE_STATE_IDLE);
 
         deleteAllStagedRemoteData();
     }
@@ -1537,19 +1589,12 @@ public class HealthConnectManagerTest {
     public void testDataApis_migrationInProgress_apisBlocked() throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
-        runWithShellPermissionIdentity(
-                () -> {
-                    TestUtils.startMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                },
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        startMigrationWithShellPermissionIdentity();
 
         StepsRecord testRecord = DataFactory.getStepsRecord();
 
         try {
-            TestUtils.insertRecords(Collections.singletonList(testRecord));
+            testRecord = (StepsRecord) TestUtils.insertRecord(testRecord);
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
@@ -1643,7 +1688,6 @@ public class HealthConnectManagerTest {
         }
 
         try {
-
             TestUtils.getChangeLogs(new ChangeLogsRequest.Builder(/* token */ "").build());
             Assert.fail();
         } catch (HealthConnectException exception) {
@@ -1698,8 +1742,43 @@ public class HealthConnectManagerTest {
                     .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
         }
 
-        runWithShellPermissionIdentity(
-                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testCreateMedicalDataSource_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        startMigrationWithShellPermissionIdentity();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+
+        mManager.createMedicalDataSource(getCreateMedicalDataSourceRequest(), executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResourcesByRequest_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        startMigrationWithShellPermissionIdentity();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
+
+        mManager.readMedicalResources(request, executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        finishMigrationWithShellPermissionIdentity();
     }
 
     @Test
@@ -1707,7 +1786,7 @@ public class HealthConnectManagerTest {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
         List<Record> testRecords = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> insertedRecords = insertRecords(testRecords);
 
         // Populate expected records. This method puts empty lists as contributing packages for all
         // records.
@@ -1745,7 +1824,7 @@ public class HealthConnectManagerTest {
         verifyRecordTypeResponse(response, expectedResponseMap);
 
         // delete first set inserted records.
-        TestUtils.deleteRecords(testRecords);
+        TestUtils.deleteRecords(insertedRecords);
 
         // clear out contributing packages.
         TestUtils.populateAndResetExpectedResponseMap(expectedResponseMap);
@@ -1768,7 +1847,7 @@ public class HealthConnectManagerTest {
         // Insert a sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
         List<Record> testRecords = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> insertedRecords = insertRecords(testRecords);
 
         // Populate expected records. This method puts empty lists as contributing packages for all
         // records.
@@ -1806,10 +1885,10 @@ public class HealthConnectManagerTest {
 
         // delete 2 of the inserted records.
         ArrayList<Record> recordsToBeDeleted = new ArrayList<>();
-        for (int itr = 0; itr < testRecords.size() / 2; itr++) {
-            recordsToBeDeleted.add(testRecords.get(itr));
+        for (int itr = 0; itr < insertedRecords.size() / 2; itr++) {
+            recordsToBeDeleted.add(insertedRecords.get(itr));
             expectedResponseMap
-                    .get(testRecords.get(itr).getClass())
+                    .get(insertedRecords.get(itr).getClass())
                     .getContributingPackages()
                     .clear();
         }
@@ -1832,11 +1911,9 @@ public class HealthConnectManagerTest {
             throws Exception {
         // Insert 2 sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> testRecords = TestUtils.insertRecords(DataFactory.getTestRecords());
 
-        List<Record> testRecords2 = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords2);
+        TestUtils.insertRecords(DataFactory.getTestRecords());
 
         // When recordTypes are modified the appInfo also gets updated and this update happens on
         // a background thread. To ensure the test has the latest values for appInfo, add a wait
@@ -1887,14 +1964,1254 @@ public class HealthConnectManagerTest {
         verifyRecordTypeResponse(response, expectedResponseMap);
     }
 
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testCreateMedicalDataSource_succeeds() throws InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
+
+        mManager.createMedicalDataSource(request, executor, receiver);
+
+        MedicalDataSource responseDataSource = receiver.getResponse();
+        assertThat(responseDataSource).isInstanceOf(MedicalDataSource.class);
+        assertThat(responseDataSource.getId()).isNotEmpty();
+        assertThat(responseDataSource.getFhirBaseUri()).isEqualTo(request.getFhirBaseUri());
+        assertThat(responseDataSource.getDisplayName()).isEqualTo(request.getDisplayName());
+        assertThat(responseDataSource.getPackageName()).isEqualTo(APP_PACKAGE_NAME);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testCreateMedicalDataSource_hasDataManagementPermission_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.createMedicalDataSource(
+                                getCreateMedicalDataSourceRequest(),
+                                Executors.newSingleThreadExecutor(),
+                                receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testCreateMedicalDataSource_maxNumberOfSources_succeeds()
+            throws InterruptedException {
+        for (int i = 0; i < MAX_ALLOWED_MEDICAL_DATA_SOURCES - 1; i++) {
+            String suffix = String.valueOf(i);
+            createDataSource(getCreateMedicalDataSourceRequest(suffix));
+        }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(getCreateMedicalDataSourceRequest(), executor, receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testCreateMedicalDataSource_moreThanAllowedMax_throws()
+            throws InterruptedException {
+        for (int i = 0; i < MAX_ALLOWED_MEDICAL_DATA_SOURCES; i++) {
+            String suffix = String.valueOf(i);
+            createDataSource(getCreateMedicalDataSourceRequest(suffix));
+        }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(getCreateMedicalDataSourceRequest(), executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSources_emptyIds_returnsEmptyList() throws InterruptedException {
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testGetMedicalDataSources_invalidId_fails() throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> callback = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of("illegal id"), Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesById_notPresent_returnsEmptyList() throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        List<String> ids = List.of(DATA_SOURCE_ID);
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.getMedicalDataSources(
+                                ids, Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesById_onePresent_returnsIt() throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(dataSource);
+        assertThat(dataSource.getLastDataUpdateTime()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesByRequest_nothingPresent_returnsEmpty() throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () -> {
+                    mManager.getMedicalDataSources(
+                            request, Executors.newSingleThreadExecutor(), receiver);
+                },
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesByRequest_onePresent_returnsIt() throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(dataSource);
+        assertThat(dataSource.getLastDataUpdateTime()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceInvalidId_fails() throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                "illegal id", Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceDoesntExist_fails()
+            throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceExists_succeedsAndDeletes()
+            throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                dataSource.getId(), Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.getResponse()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceExistsWithData_succeedsAndDeletes()
+            throws Exception {
+        // Create the datasource
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(), executor, createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        MedicalResource resource = upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(dataSource.getId(), executor, callback);
+
+        assertThat(callback.getResponse()).isNull();
+        // Check for existence of data
+        HealthConnectReceiver<List<MedicalResource>> readResourceReceiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(List.of(resource.getId()), executor, readResourceReceiver);
+        assertThat(readResourceReceiver.getResponse()).isEmpty();
+        // Check for existence of datasource by trying to create again.
+        // TODO: b/350010046 - switch to using read when it is implemented.
+        HealthConnectReceiver<MedicalDataSource> secondCreateReceiver =
+                new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(), executor, secondCreateReceiver);
+        secondCreateReceiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceDifferentPackage_denied()
+            throws Exception {
+        // Create the datasource
+        MedicalDataSource dataSource =
+                APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource resource =
+                APP_WRITE_PERMS_ONLY.upsertMedicalResource(
+                        dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(dataSource.getId(), executor, callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+
+        // Check for existence of the medicalResource and the dataSource.
+        HealthConnectReceiver<List<MedicalResource>> readResourceReceiver =
+                new HealthConnectReceiver<>();
+        HealthConnectReceiver<List<MedicalDataSource>> getDataSourceReceiver =
+                new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () -> {
+                    mManager.readMedicalResources(
+                            List.of(resource.getId()), executor, readResourceReceiver);
+                    mManager.getMedicalDataSources(
+                            List.of(dataSource.getId()), executor, getDataSourceReceiver);
+                },
+                MANAGE_HEALTH_DATA);
+        assertThat(readResourceReceiver.getResponse()).containsExactly(resource);
+        assertThat(getDataSourceReceiver.getResponse()).containsExactly(dataSource);
+    }
+
+    // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_forOwnDataSource_succeeds() throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_dataSourceOwnedByOtherApp_throws() throws Exception {
+        // Create data source with different package name
+        MedicalDataSource dataSource =
+                APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_dataSourceDoesNotExist_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest = getUpsertMedicalResourceRequest();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_emptyList_returnsEmptyList()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.upsertMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_invalidJson_throws() throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_missingResourceId_throws() throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_emptyResourceId_throws() throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION_ID_EMPTY)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_missingResourceType_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_unsupportedResourceType_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                FHIR_VERSION_R4,
+                                FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_unsupportedVersion_throws() throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_UNSUPPORTED, FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testUpsertMedicalResources_hasDataManagementPermission_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.upsertMedicalResources(
+                                List.of(getUpsertMedicalResourceRequest()),
+                                Executors.newSingleThreadExecutor(),
+                                receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.readMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_byIds_exceedsMaxPageSize_throws() {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(
+                    new MedicalResourceId(
+                            Integer.toString(i),
+                            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                            FHIR_RESOURCE_ID_IMMUNIZATION));
+        }
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                ids, Executors.newSingleThreadExecutor(), receiver));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byIds_noData_returnsEmptyList()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
+
+        mManager.readMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byRequest_noData_returnsEmptyList()
+            throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
+
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        assertThat(receiver.getResponse().getMedicalResources()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byRequest_filtersByMedicalResourceType()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization3 =
+                upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        // Read all Immunizations in 2 pages.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allImmunizationsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setPageSize(2)
+                        .build();
+
+        mManager.readMedicalResources(
+                allImmunizationsRequest, Executors.newSingleThreadExecutor(), receiver1);
+
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunization1, immunization2);
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization3);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byRequest_filtersByMedicalResourceTypeAndOneDataSource()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1FromDataSource1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2FromDataSource1 =
+                upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        // Read Immunizations only from data source 1 in 2 pages.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest immunizationsFromDataSource1Request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(dataSource1.getId())
+                        .setPageSize(1)
+                        .build();
+
+        mManager.readMedicalResources(
+                immunizationsFromDataSource1Request,
+                Executors.newSingleThreadExecutor(),
+                receiver1);
+
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunization1FromDataSource1);
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        assertThat(receiver2.getResponse().getMedicalResources())
+                .containsExactly(immunization2FromDataSource1);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byRequest_filtersByMedicalResourceTypeAndBothDataSources()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 2 Immunizations and 1 Allergy.
+        MedicalResource immunizationFromDataSource1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunizationFromDataSource2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        // Read Immunizations only from both data sources in 2 pages.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest immunizationsFromBothDataSourcesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(dataSource1.getId())
+                        .addDataSourceId(dataSource2.getId())
+                        .setPageSize(1)
+                        .build();
+
+        mManager.readMedicalResources(
+                immunizationsFromBothDataSourcesRequest,
+                Executors.newSingleThreadExecutor(),
+                receiver1);
+
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunizationFromDataSource1);
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        assertThat(receiver2.getResponse().getMedicalResources())
+                .containsExactly(immunizationFromDataSource2);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_byIdsNonExistent_succeeds() throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(
+                    new MedicalResourceId(
+                            dataSource.getId(),
+                            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                            FHIR_RESOURCE_ID_IMMUNIZATION + "." + i));
+        }
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByIds_managementPermissionNoData_succeeds()
+            throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(
+                    new MedicalResourceId(
+                            dataSource.getId(),
+                            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                            FHIR_RESOURCE_ID_IMMUNIZATION + "." + i));
+        }
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                ids, Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByIds_anIdMissing_succeeds() throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        dataSource.getId(),
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        mManager.deleteMedicalResources(List.of(id), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByIds_emptyIds_succeeds() throws InterruptedException {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByIds_managementPermissionAMissingId_succeeds()
+            throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        dataSource.getId(),
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                List.of(id), Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByIds_managementPermissionEmptyIds_succeeds()
+            throws InterruptedException {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                List.of(), Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testDeleteMedicalResourcesByIds_managementPermissionCreate2Delete1_succeeds()
+            throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        // Insert some data
+        MedicalResource resource1 = upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource2 =
+                upsertMedicalData(dataSource.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                List.of(resource1.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                callback),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(callback.getResponse()).isNull();
+        // Test resource2 is still present
+        HealthConnectReceiver<ReadMedicalResourcesResponse> readReceiver =
+                new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                new ReadMedicalResourcesInitialRequest.Builder(
+                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                                        .build(),
+                                Executors.newSingleThreadExecutor(),
+                                readReceiver));
+        assertThat(readReceiver.getResponse().getMedicalResources()).containsExactly(resource2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testDeleteMedicalResourcesByRequest_managementPermissionCreate2Delete1_succeeds()
+            throws InterruptedException {
+        // Create the datasource
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert some data
+        MedicalResource resource1 = upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource2 = upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(dataSource1.getId())
+                        .build();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                request, Executors.newSingleThreadExecutor(), callback),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(callback.getResponse()).isNull();
+        // Test resource2 is still present
+        HealthConnectReceiver<List<MedicalResource>> readReceiver2 = new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(resource1.getId(), resource2.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                readReceiver2));
+        assertThat(readReceiver2.getResponse()).containsExactly(resource2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testDeleteMedicalResourcesByRequest_badDataSourceId_doesntDeleteAll()
+            throws InterruptedException {
+        // Create the datasource
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        // Insert some data
+        MedicalResource resource1 = upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("illegal id").build();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                request, Executors.newSingleThreadExecutor(), callback),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        // Test resource is still present
+        HealthConnectReceiver<List<MedicalResource>> readReceiver2 = new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(resource1.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                readReceiver2));
+        assertThat(readReceiver2.getResponse()).containsExactly(resource1);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testDeleteMedicalResourcesByRequest_resourceTypesMatch_succeeds()
+            throws InterruptedException {
+        // Create the datasource
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert some data
+        MedicalResource imm1 = upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource imm2 = upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                request, Executors.newSingleThreadExecutor(), callback),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(callback.getResponse()).isNull();
+        // Test resource2 is still present
+        HealthConnectReceiver<List<MedicalResource>> readReceiver2 = new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(imm1.getId(), imm2.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                readReceiver2));
+        assertThat(readReceiver2.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testDeleteMedicalResourcesByRequest_resourceTypesMismatch_succeeds()
+            throws InterruptedException {
+        // Create the datasource
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert some data
+        MedicalResource imm1 = upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource imm2 = upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION + 1)
+                        .build();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.deleteMedicalResources(
+                                request, Executors.newSingleThreadExecutor(), callback),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(callback.getResponse()).isNull();
+        // Test resource2 is still present
+        HealthConnectReceiver<List<MedicalResource>> readReceiver2 = new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(imm1.getId(), imm2.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                readReceiver2));
+        assertThat(readReceiver2.getResponse()).containsExactly(imm1, imm2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_byRequestNothingPresent_succeeds() throws Exception {
+        // Insert a data source to ensure we have an appInfoId.
+        createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
+
+        mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testQueryAllMedicalResourceTypeInfos_succeeds() throws InterruptedException {
+        // Create some data sources with data: ds1 contains [immunization, differentImmunization,
+        // allergy], ds2 contains [immunization], and ds3 contains [allergy].
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        MedicalDataSource dataSource3 = createDataSource(getCreateMedicalDataSourceRequest("3"));
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource3.getId(), FHIR_DATA_ALLERGY);
+
+        HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =
+                new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.queryAllMedicalResourceTypeInfos(
+                                Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse())
+                .containsExactly(
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                Set.of(dataSource1, dataSource3)),
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                Set.of(dataSource1, dataSource2)),
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testQueryAllMedicalResourceTypeInfos_noDataSources_succeeds()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =
+                new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.queryAllMedicalResourceTypeInfos(
+                                Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse())
+                .containsExactly(
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of()),
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testQueryAllMedicalResourceTypeInfos_noMedicalResources_succeeds()
+            throws InterruptedException {
+        createDataSource(getCreateMedicalDataSourceRequest("1"));
+
+        HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =
+                new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.queryAllMedicalResourceTypeInfos(
+                                Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse())
+                .containsExactly(
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of()),
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testLabResultsInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource labResult =
+                upsertMedicalData(
+                        dataSource1.getId(),
+                        new ObservationBuilder()
+                                .setBloodGlucose()
+                                .setCategory(LABORATORY)
+                                .toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allLabResultsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(
+                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS)
+                        .build();
+
+        mManager.readMedicalResources(
+                allLabResultsRequest, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(labResult);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testPregnancyInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource pregnancyStatus =
+                upsertMedicalData(
+                        dataSource1.getId(),
+                        new ObservationBuilder()
+                                .setPregnancyStatus(ObservationBuilder.PregnancyStatus.PREGNANT)
+                                .toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allPregnancyRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PREGNANCY)
+                        .build();
+
+        mManager.readMedicalResources(
+                allPregnancyRequest, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(pregnancyStatus);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testSocialHistoryInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource smoking =
+                upsertMedicalData(
+                        dataSource1.getId(),
+                        new ObservationBuilder()
+                                .setTobaccoUse(ObservationBuilder.CurrentSmokingStatus.SMOKER)
+                                .toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allSocialHistoryRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY)
+                        .build();
+
+        mManager.readMedicalResources(
+                allSocialHistoryRequest, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(smoking);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testVitalSignsInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource heartRate =
+                upsertMedicalData(
+                        dataSource1.getId(), new ObservationBuilder().setHeartRate(100).toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allVitalSignsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS)
+                        .build();
+
+        mManager.readMedicalResources(
+                allVitalSignsRequest, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(heartRate);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testConditionInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource condition =
+                upsertMedicalData(dataSource1.getId(), new ConditionBuilder().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PROBLEMS)
+                        .build();
+
+        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(condition);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testProcedureInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource procedure =
+                upsertMedicalData(dataSource1.getId(), new ProcedureBuilder().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PROCEDURES)
+                        .build();
+
+        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(procedure);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testMedicationInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource medication =
+                upsertMedicalData(dataSource1.getId(), MedicationsBuilder.medication().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
+                        .build();
+
+        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(medication);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testMedicationStatementInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource statement =
+                upsertMedicalData(dataSource1.getId(), MedicationsBuilder.statementR4().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
+                        .build();
+
+        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(statement);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testMedicationRequestInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource request =
+                upsertMedicalData(dataSource1.getId(), MedicationsBuilder.request().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
+                        .build();
+
+        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(request);
+    }
+
+    @Test
+    public void testGetContributorApplicationsInfo_succeeds() throws Exception {
+        // Create health fitness data.
+        Set<String> expectedPackages = new HashSet<>();
+        TestUtils.insertRecords(getTestRecords());
+        expectedPackages.add(APP_PACKAGE_NAME);
+        // Create medical data with a different package.
+        if (personalHealthRecord()) {
+            APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+            expectedPackages.add(APP_WRITE_PERMS_ONLY.getPackageName());
+        }
+
+        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.getContributorApplicationsInfo(
+                                Executors.newSingleThreadExecutor(), receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(
+                        receiver.getResponse().getApplicationInfoList().stream()
+                                .map(AppInfo::getPackageName)
+                                .collect(Collectors.toSet()))
+                .isEqualTo(expectedPackages);
+    }
+
     private boolean isEmptyContributingPackagesForAll(
             Map<Class<? extends Record>, RecordTypeInfoResponse> response) {
         // If all the responses have empty lists in their contributing packages then we
         // return true. This can happen when the sync or insert took a long time to run, or they
         // faced an issue while running.
-        return !response.values().stream()
+        return response.values().stream()
                 .map(RecordTypeInfoResponse::getContributingPackages)
-                .anyMatch(list -> !list.isEmpty());
+                .allMatch(List::isEmpty);
+    }
+
+    private MedicalDataSource createDataSource(CreateMedicalDataSourceRequest createRequest)
+            throws InterruptedException {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                createRequest, Executors.newSingleThreadExecutor(), createReceiver);
+        return createReceiver.getResponse();
+    }
+
+    private MedicalResource upsertMedicalData(String dataSourceId, String data)
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(dataSourceId, FHIR_VERSION_R4, data)
+                        .build();
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), dataReceiver);
+        // Make sure something got inserted.
+        return Iterables.getOnlyElement(dataReceiver.getResponse());
     }
 
     private static void deleteAllStagedRemoteData()
@@ -1947,7 +3264,7 @@ public class HealthConnectManagerTest {
 
     private static List<Record> getTestRecords() {
         return Arrays.asList(
-                getStepsRecord(/* clientRecordId= */ null, /* packageName= */ ""),
+                getStepsRecord(/* packageName= */ ""),
                 getHeartRateRecord(),
                 getBasalMetabolicRateRecord());
     }
@@ -2023,9 +3340,9 @@ public class HealthConnectManagerTest {
         return readRecords;
     }
 
-    private static StepsRecord getStepsRecord(String clientRecordId, String packageName) {
+    private static StepsRecord getStepsRecord(String packageName) {
         return getStepsRecord(
-                clientRecordId,
+                /* clientRecordId= */ null,
                 packageName,
                 /* count= */ 10,
                 Instant.now(),
@@ -2033,7 +3350,7 @@ public class HealthConnectManagerTest {
     }
 
     private static StepsRecord getStepsRecord(
-            String clientRecordId,
+            @Nullable String clientRecordId,
             String packageName,
             int count,
             Instant startTime,
@@ -2102,27 +3419,21 @@ public class HealthConnectManagerTest {
     }
 
     private static HydrationRecord getHydrationRecord(
-            String clientRecordId, Instant startTime, Instant endTime, Volume volume) {
+            Instant startTime, Instant endTime, Volume volume) {
         Device device = getPhoneDevice();
         DataOrigin dataOrigin = getDataOrigin();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        if (clientRecordId != null) {
-            testMetadataBuilder.setClientRecordId(clientRecordId);
-        }
         return new HydrationRecord.Builder(testMetadataBuilder.build(), startTime, endTime, volume)
                 .build();
     }
 
     private static NutritionRecord getNutritionRecord(
-            String clientRecordId, Instant startTime, Instant endTime, Mass protein) {
+            Instant startTime, Instant endTime, Mass protein) {
         Device device = getPhoneDevice();
         DataOrigin dataOrigin = getDataOrigin();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        if (clientRecordId != null) {
-            testMetadataBuilder.setClientRecordId(clientRecordId);
-        }
         return new NutritionRecord.Builder(testMetadataBuilder.build(), startTime, endTime)
                 .setProtein(protein)
                 .build();

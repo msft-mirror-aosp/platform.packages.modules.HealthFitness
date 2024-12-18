@@ -27,7 +27,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -35,6 +34,8 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.util.Pair;
+
+import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.request.AggregateParams;
@@ -64,14 +65,13 @@ public final class BloodPressureRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return BLOOD_PRESSURE_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull BloodPressureRecordInternal bloodPressureRecord) {
+            Cursor cursor, BloodPressureRecordInternal bloodPressureRecord) {
         bloodPressureRecord.setMeasurementLocation(
                 getCursorInt(cursor, MEASUREMENT_LOCATION_COLUMN_NAME));
         bloodPressureRecord.setSystolic(getCursorDouble(cursor, SYSTOLIC_COLUMN_NAME));
@@ -81,8 +81,7 @@ public final class BloodPressureRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull BloodPressureRecordInternal bloodPressureRecord) {
+            ContentValues contentValues, BloodPressureRecordInternal bloodPressureRecord) {
         contentValues.put(
                 MEASUREMENT_LOCATION_COLUMN_NAME, bloodPressureRecord.getMeasurementLocation());
         contentValues.put(SYSTOLIC_COLUMN_NAME, bloodPressureRecord.getSystolic());
@@ -90,8 +89,8 @@ public final class BloodPressureRecordHelper
         contentValues.put(BODY_POSITION_COLUMN_NAME, bloodPressureRecord.getBodyPosition());
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;
@@ -134,7 +133,6 @@ public final class BloodPressureRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(MEASUREMENT_LOCATION_COLUMN_NAME, TEXT_NOT_NULL),

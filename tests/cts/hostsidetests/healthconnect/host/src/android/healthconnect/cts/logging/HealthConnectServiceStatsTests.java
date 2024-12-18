@@ -275,7 +275,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
-        assertThat(atom.getNumberOfRecords()).isEqualTo(1);
+        assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
     }
@@ -366,11 +366,17 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
 
     private StatsLog.EventMetricData getEventForApiMethod(
             List<StatsLog.EventMetricData> data, ApiMethod apiMethod) {
+        boolean isFirstCall = true;
         for (StatsLog.EventMetricData datum : data) {
             HealthConnectApiCalled atom =
                     datum.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
 
             if (atom.getApiMethod().equals(apiMethod)) {
+                if (ApiMethod.INSERT_DATA.equals(apiMethod) && isFirstCall) {
+                    // skip the insert api call in setup
+                    isFirstCall = false;
+                    continue;
+                }
                 return datum;
             }
         }

@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -43,26 +42,23 @@ public final class SexualActivityRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return SEXUAL_ACTIVITY_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull SexualActivityRecordInternal sexualActivityRecord) {
+            Cursor cursor, SexualActivityRecordInternal sexualActivityRecord) {
         sexualActivityRecord.setProtectionUsed(getCursorInt(cursor, PROTECTION_USED_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull SexualActivityRecordInternal sexualActivityRecord) {
+            ContentValues contentValues, SexualActivityRecordInternal sexualActivityRecord) {
         contentValues.put(PROTECTION_USED_COLUMN_NAME, sexualActivityRecord.getProtectionUsed());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(PROTECTION_USED_COLUMN_NAME, INTEGER));
     }

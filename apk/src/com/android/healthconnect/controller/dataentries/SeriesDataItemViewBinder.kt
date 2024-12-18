@@ -23,18 +23,20 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 /** ViewBinder for SeriesDataEntry. */
 class SeriesDataItemViewBinder(
     private val showSecondAction: Boolean = true,
     private val onItemClickedListener: OnClickEntryListener?,
     private val onDeleteEntryClicked: OnDeleteEntryListener?,
-) : ViewBinder<SeriesDataEntry, View> {
+) : SimpleViewBinder<SeriesDataEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -45,7 +47,7 @@ class SeriesDataItemViewBinder(
                 context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_heart_rate_entry, parent, false)
+            .inflate(R.layout.item_series_data_entry, parent, false)
     }
 
     override fun bind(view: View, data: SeriesDataEntry, index: Int) {

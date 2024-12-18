@@ -3,7 +3,7 @@ package com.android.healthconnect.controller.datasources.api
 import android.health.connect.datatypes.IntervalRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.utils.isAtLeastOneDayAfter
@@ -189,7 +189,7 @@ constructor(
         lastDateWithData: LocalDate
     ): List<SleepSessionRecord> {
         when (val result =
-            loadPriorityEntriesUseCase.invoke(HealthPermissionType.SLEEP, lastDateWithData)) {
+            loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, lastDateWithData)) {
             is UseCaseResults.Success -> {
                 return result.data.map { it as SleepSessionRecord }
             }

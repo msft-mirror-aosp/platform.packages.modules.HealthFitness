@@ -20,16 +20,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import android.health.connect.HealthConnectDataState;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.migration.MigrationStateManager.StateChangedListener;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -39,6 +42,10 @@ import org.mockito.MockitoAnnotations;
 @RunWith(AndroidJUnit4.class)
 public class MigrationCleanerTest {
 
+    @Rule
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this).mockStatic(TransactionManager.class).build();
+
     @Mock private TransactionManager mTransactionManager;
     @Mock private MigrationStateManager mMigrationStateManager;
 
@@ -47,12 +54,10 @@ public class MigrationCleanerTest {
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
+        // needed for now as some classes call it directly and not via constructor.
+        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
 
-        mCleaner =
-                new MigrationCleaner(
-                        mTransactionManager,
-                        MigrationEntityHelper.getInstance(),
-                        PriorityMigrationHelper.getInstance());
+        mCleaner = new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());
     }
 
     @Test

@@ -22,7 +22,7 @@ import androidx.annotation.StringRes
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.shared.EntryFormatter
-import com.android.healthconnect.controller.dataentries.formatters.shared.SessionDetailsFormatter
+import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,7 +32,7 @@ import javax.inject.Singleton
 /** Formatter for printing HeartRate data. */
 @Singleton
 class HeartRateFormatter @Inject constructor(@ApplicationContext private val context: Context) :
-    EntryFormatter<HeartRateRecord>(context), SessionDetailsFormatter<HeartRateRecord> {
+    EntryFormatter<HeartRateRecord>(context), RecordDetailsFormatter<HeartRateRecord> {
 
     private val timeFormatter = LocalDateTimeFormatter(context)
 

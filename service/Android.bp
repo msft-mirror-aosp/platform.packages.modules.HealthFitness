@@ -19,13 +19,17 @@ package {
 filegroup {
     name: "service-healthfitness-sources",
     srcs: [
-      "java/**/*.java"
+        "java/**/*.java",
     ],
     path: "java",
 }
 
 java_sdk_library {
     name: "service-healthfitness",
+    permitted_packages: [
+        "com.android.server.healthconnect",
+        "com.android.healthfitness.flags",
+    ],
     srcs: [":service-healthfitness-sources"],
     sdk_version: "system_server_current",
     min_sdk_version: "34",
@@ -37,28 +41,34 @@ java_sdk_library {
     libs: [
         "framework-healthfitness.impl",
         "androidx.annotation_annotation",
-        "framework-sdkextensions",
-        "framework-configinfrastructure",
+        "framework-sdkextensions.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
         "keepanno-annotations",
         "modules-utils-preconditions",
+        // Keeping aconfig lib deps in "libs" instead of "static_libs" because we already have them
+        // in the framework jar which is included in this service jar.
+        // See go/fixing-strict-java-packages.
+        "healthfitness-aconfig-flags-lib",
+        "healthfitness-aconfig-flags-helper",
     ],
     static_libs: [
-        "guava",
         "modules-utils-backgroundthread",
     ],
+    jarjar_rules: "jarjar-rules.txt",
     installable: true,
     optimize: {
         proguard_flags_files: ["proguard.flags"],
     },
     visibility: [
-            "//packages/modules/HealthFitness/tests:__subpackages__",
+        "//packages/modules/HealthFitness/tests:__subpackages__",
     ],
     impl_library_visibility: [
         "//packages/modules/HealthFitness/tests/unittests",
+        "//packages/modules/HealthFitness/tests/integrationtests",
     ],
     errorprone: {
         extra_check_modules: [
-            "//external/nullaway:nullaway_plugin"
+            "//external/nullaway:nullaway_plugin",
         ],
         javacflags: [
             "-Xep:NullAway:ERROR",

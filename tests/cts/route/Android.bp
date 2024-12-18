@@ -18,13 +18,14 @@ package {
 
 android_test {
     name: "CtsExerciseRouteTestCases",
+    team: "trendy_team_android_health",
     manifest: "AndroidManifest.xml",
     test_config: "AndroidTest.xml",
     defaults: ["cts_defaults"],
     srcs: [
         "src/**/*.java",
-        "src/**/*.kt"
-        ],
+        "src/**/*.kt",
+    ],
     static_libs: [
         "cts-healthconnect-lib",
         "modules-utils-build_system",
@@ -39,27 +40,28 @@ android_test {
     test_suites: [
         "cts",
         "general-tests",
-        "mts-healthfitness",
-        "mcts-healthfitness",
     ],
     sdk_version: "test_current",
     min_sdk_version: "34",
     libs: [
-        "android.test.base",
-        "android.test.mock",
-        "android.test.runner",
-        "framework-healthfitness",
+        "android.test.base.stubs.test",
+        "android.test.mock.stubs.test",
+        "android.test.runner.stubs.test",
+        "framework-healthfitness.stubs.system",
     ],
-    data : [
-          ":CtsExerciseRouteTestRouteWriterApp",
-          ":CtsExerciseRouteTestRouteReaderWriterApp",
-    ]
+    data: [
+        ":CtsExerciseRouteTestRouteWriterApp",
+        ":CtsExerciseRouteTestRouteReaderWriterApp",
+    ],
 }
 
 android_test_helper_app {
     name: "CtsExerciseRouteTestRouteWriterApp",
     manifest: "RouteWriterAppManifest.xml",
-    static_libs: ["cts-healthconnect-lib", "cts-healthconnect-test-helper"],
+    static_libs: [
+        "cts-healthconnect-lib",
+        "cts-healthconnect-test-helper",
+    ],
     sdk_version: "test_current",
     min_sdk_version: "34",
 }
@@ -67,7 +69,10 @@ android_test_helper_app {
 android_test_helper_app {
     name: "CtsExerciseRouteTestRouteReaderWriterApp",
     manifest: "RouteReaderWriterAppManifest.xml",
-    static_libs: ["cts-healthconnect-lib", "cts-healthconnect-test-helper"],
+    static_libs: [
+        "cts-healthconnect-lib",
+        "cts-healthconnect-test-helper",
+    ],
     sdk_version: "test_current",
     min_sdk_version: "34",
 }

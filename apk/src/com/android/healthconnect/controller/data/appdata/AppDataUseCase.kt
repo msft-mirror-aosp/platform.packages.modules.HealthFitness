@@ -16,14 +16,19 @@
 package com.android.healthconnect.controller.data.appdata
 
 import android.health.connect.HealthConnectManager
+import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import android.util.Log
 import androidx.core.os.asOutcomeReceiver
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromHealthPermissionCategory
+import com.android.healthconnect.controller.permissions.data.fromMedicalResourceType
 import com.android.healthconnect.controller.service.IoDispatcher
-import com.android.healthconnect.controller.shared.HEALTH_DATA_CATEGORIES
+import com.android.healthconnect.controller.shared.FITNESS_DATA_CATEGORIES
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.healthPermissionTypes
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -33,29 +38,32 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
+// TODO rename to LoadAllDataUseCase
 @Singleton
 class AppDataUseCase
 @Inject
 constructor(
     private val healthConnectManager: HealthConnectManager,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    /** Returns list of all health categories and permission types to be shown on the HC UI. */
-    suspend fun loadAllData(): UseCaseResults<List<PermissionTypesPerCategory>> =
+    /** Returns list of all fitness categories and permission types to be shown on the HC UI. */
+    suspend fun loadAllFitnessData(): UseCaseResults<List<PermissionTypesPerCategory>> =
         withContext(dispatcher) {
             try {
                 val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
                     suspendCancellableCoroutine { continuation ->
                         healthConnectManager.queryAllRecordTypesInfo(
-                            Runnable::run, continuation.asOutcomeReceiver())
+                            Runnable::run,
+                            continuation.asOutcomeReceiver(),
+                        )
                     }
                 val categories =
-                    HEALTH_DATA_CATEGORIES.map {
+                    FITNESS_DATA_CATEGORIES.map {
                         PermissionTypesPerCategory(
                             it,
-                            getPermissionTypesPerCategory(
-                                it, recordTypeInfoMap, packageName = null))
+                            getPermissionTypesPerCategory(it, recordTypeInfoMap, packageName = null),
+                        )
                     }
                 UseCaseResults.Success(categories)
             } catch (e: Exception) {
@@ -64,22 +72,56 @@ constructor(
             }
         }
 
+    /** Returns list of all medical permission types to be shown on the HC UI. */
+    suspend fun loadAllMedicalData(): UseCaseResults<List<PermissionTypesPerCategory>> =
+        withContext(dispatcher) {
+            try {
+                val medicalResourceTypeInfos: List<MedicalResourceTypeInfo> =
+                    suspendCancellableCoroutine { continuation ->
+                        healthConnectManager.queryAllMedicalResourceTypeInfos(
+                            Runnable::run,
+                            continuation.asOutcomeReceiver(),
+                        )
+                    }
+                val medicalPermissionTypes =
+                    medicalResourceTypeInfos
+                        .filter { it.contributingDataSources.isNotEmpty() }
+                        .map { fromMedicalResourceType(it.medicalResourceType) }
+                if (medicalPermissionTypes.isEmpty()) {
+                    UseCaseResults.Success(listOf())
+                } else {
+                    UseCaseResults.Success(
+                        listOf(PermissionTypesPerCategory(MEDICAL, medicalPermissionTypes))
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("TAG_ERROR", "Loading error ", e)
+                UseCaseResults.Failed(e)
+            }
+        }
+
     /**
-     * Returns list of health categories and permission types written by the given app to be shown
+     * Returns list of fitness categories and permission types written by the given app to be shown
      * on the HC UI.
      */
-    suspend fun loadAppData(packageName: String): UseCaseResults<List<PermissionTypesPerCategory>> =
+    suspend fun loadFitnessAppData(
+        packageName: String
+    ): UseCaseResults<List<PermissionTypesPerCategory>> =
         withContext(dispatcher) {
             try {
                 val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
                     suspendCancellableCoroutine { continuation ->
                         healthConnectManager.queryAllRecordTypesInfo(
-                            Runnable::run, continuation.asOutcomeReceiver())
+                            Runnable::run,
+                            continuation.asOutcomeReceiver(),
+                        )
                     }
                 val categories =
-                    HEALTH_DATA_CATEGORIES.map {
+                    FITNESS_DATA_CATEGORIES.map {
                         PermissionTypesPerCategory(
-                            it, getPermissionTypesPerCategory(it, recordTypeInfoMap, packageName))
+                            it,
+                            getPermissionTypesPerCategory(it, recordTypeInfoMap, packageName),
+                        )
                     }
                 UseCaseResults.Success(categories)
             } catch (e: Exception) {
@@ -88,13 +130,54 @@ constructor(
         }
 
     /**
-     * Returns those [HealthPermissionType]s that have some data written by the given [packageName]
+     * Returns list of medical categories and permission types written by the given app to be shown
+     * on the HC UI.
+     */
+    suspend fun loadMedicalAppData(
+        packageName: String
+    ): UseCaseResults<List<PermissionTypesPerCategory>> =
+        withContext(dispatcher) {
+            try {
+                val medicalResourceTypeInfos = suspendCancellableCoroutine { continuation ->
+                    healthConnectManager.queryAllMedicalResourceTypeInfos(
+                        Runnable::run,
+                        continuation.asOutcomeReceiver(),
+                    )
+                }
+                val medicalPermissionTypes =
+                    filterMedicalPermissionTypes(medicalResourceTypeInfos, packageName)
+                if (medicalPermissionTypes.isEmpty()) {
+                    UseCaseResults.Success(listOf())
+                } else {
+                    UseCaseResults.Success(
+                        listOf(PermissionTypesPerCategory(MEDICAL, medicalPermissionTypes))
+                    )
+                }
+            } catch (e: Exception) {
+                UseCaseResults.Failed(e)
+            }
+        }
+
+    private fun filterMedicalPermissionTypes(
+        medicalResourceTypeInfos: List<MedicalResourceTypeInfo>,
+        packageName: String,
+    ): List<MedicalPermissionType> =
+        medicalResourceTypeInfos
+            .filter { medicalResourceTypeInfo ->
+                val contributingPackageNames =
+                    medicalResourceTypeInfo.contributingDataSources.map { it.packageName }.toSet()
+                contributingPackageNames.contains(packageName)
+            }
+            .map { fromMedicalResourceType(it.medicalResourceType) }
+
+    /**
+     * Returns those [FitnessPermissionType]s that have some data written by the given [packageName]
      * app. If the is no app provided then return all data.
      */
     private fun getPermissionTypesPerCategory(
         category: @HealthDataCategoryInt Int,
         recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse>,
-        packageName: String?
+        packageName: String?,
     ): List<HealthPermissionType> {
         if (packageName == null) {
             return category.healthPermissionTypes().filter { hasData(it, recordTypeInfoMap) }
@@ -116,7 +199,7 @@ constructor(
     private fun hasDataByApp(
         permissionType: HealthPermissionType,
         recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse>,
-        packageName: String
+        packageName: String,
     ): Boolean =
         recordTypeInfoMap.values.firstOrNull {
             fromHealthPermissionCategory(it.permissionCategory) == permissionType &&
@@ -135,5 +218,5 @@ constructor(
  */
 data class PermissionTypesPerCategory(
     val category: @HealthDataCategoryInt Int,
-    val data: List<HealthPermissionType>
+    val data: List<HealthPermissionType>,
 )

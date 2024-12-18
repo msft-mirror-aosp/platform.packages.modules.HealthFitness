@@ -19,6 +19,7 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_FETCHING_DATA;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_UNKNOWN;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_VERSION_DIFF;
+import static android.health.connect.HealthConnectDataState.RESTORE_STATE_IDLE;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
@@ -39,19 +40,22 @@ import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_STAGING_TIMEOUT_CANCELLED_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_STAGING_TIMEOUT_INTERVAL_MILLIS;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_STAGING_TIMEOUT_KEY;
-import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_MERGING_DONE;
+import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_STAGING_DONE;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.MINIMUM_LATENCY_WINDOW_MILLIS;
+import static com.android.server.healthconnect.backuprestore.BackupRestore.STAGED_DATABASE_DIR;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.STAGED_DATABASE_NAME;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -59,6 +63,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.annotation.Nullable;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Context;
@@ -72,12 +77,14 @@ import android.os.PersistableBundle;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
@@ -101,6 +108,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 /** Unit test for class {@link BackupRestore} */
@@ -119,16 +127,14 @@ public class BackupRestoreTest {
                     .mockStatic(AppInfoHelper.class)
                     .mockStatic(SQLiteDatabase.class)
                     .spyStatic(GrantTimeXmlHelper.class)
-                    .spyStatic(BackupRestore.StagedDatabaseContext.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
     @Mock Context mServiceContext;
     @Mock private TransactionManager mTransactionManager;
     @Mock private AppInfoHelper mAppInfoHelper;
-    @Mock private BackupRestore.StagedDatabaseContext mStagedDbContext;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
-    @Mock private MigrationStateManager mMigrationStateManager;
+    @Mock private MigrationStateManager mMockMigrationStateManager;
     @Mock private Context mContext;
     @Mock private JobScheduler mJobScheduler;
     @Captor ArgumentCaptor<JobInfo> mJobInfoArgumentCaptor;
@@ -147,21 +153,29 @@ public class BackupRestoreTest {
         mMockStagedDataDirectory = mContext.getDir("mock_staged_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
 
-        when(PreferenceHelper.getInstance()).thenReturn(mFakePreferenceHelper);
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(mJobScheduler.forNamespace(BACKUP_RESTORE_JOBS_NAMESPACE)).thenReturn(mJobScheduler);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
         when(mServiceContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mServiceContext.getPackageName()).thenReturn("packageName");
 
-        when(BackupRestore.StagedDatabaseContext.create(mServiceContext, mUserHandle))
-                .thenReturn(mStagedDbContext);
-        when(mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME))
-                .thenReturn(new File(mMockStagedDataDirectory, STAGED_DATABASE_NAME));
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(mFakePreferenceHelper)
+                        .setMigrationStateManager(mMockMigrationStateManager)
+                        .setTransactionManager(mTransactionManager)
+                        .setAppInfoHelper(mAppInfoHelper)
+                        .build();
 
         mBackupRestore =
-                new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mServiceContext);
+                new BackupRestore(
+                        healthConnectInjector.getAppInfoHelper(),
+                        mFirstGrantTimeManager,
+                        healthConnectInjector.getMigrationStateManager(),
+                        healthConnectInjector.getPreferenceHelper(),
+                        healthConnectInjector.getTransactionManager(),
+                        mServiceContext,
+                        healthConnectInjector.getDeviceInfoHelper(),
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
     }
 
     @After
@@ -203,7 +217,8 @@ public class BackupRestoreTest {
         when(mTransactionManager.getDatabasePath()).thenReturn(dbFileToBackup);
         UserGrantTimeState userGrantTimeState =
                 new UserGrantTimeState(Map.of("package", Instant.now()), Map.of(), 1);
-        when(mFirstGrantTimeManager.createBackupState(mUserHandle)).thenReturn(userGrantTimeState);
+        when(mFirstGrantTimeManager.getGrantTimeStateForUser(mUserHandle))
+                .thenReturn(userGrantTimeState);
 
         Map<String, ParcelFileDescriptor> pfdsByFileName = new ArrayMap<>();
         pfdsByFileName.put(
@@ -301,7 +316,6 @@ public class BackupRestoreTest {
         JobInfo jobInfo = mJobInfoArgumentCaptor.getValue();
         assertThat(jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY))
                 .isEqualTo(DATA_STAGING_TIMEOUT_KEY);
-
     }
 
     @Test
@@ -497,10 +511,11 @@ public class BackupRestoreTest {
                         BackupRestore.BackupRestoreJobService.schedule(
                                 eq(mServiceContext),
                                 mJobInfoArgumentCaptor.capture(),
-                                eq(mBackupRestore)));
-        JobInfo jobInfo = mJobInfoArgumentCaptor.getValue();
-        assertThat(jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY))
-                .isEqualTo(DATA_MERGING_TIMEOUT_KEY);
+                                eq(mBackupRestore)),
+                atLeastOnce());
+
+        JobInfo jobInfo = findMergeTimeoutJob(mJobInfoArgumentCaptor.getAllValues());
+        assertWithMessage("Merging timeout job not found").that(jobInfo).isNotNull();
     }
 
     @Test
@@ -531,14 +546,14 @@ public class BackupRestoreTest {
                         BackupRestore.BackupRestoreJobService.schedule(
                                 eq(mServiceContext),
                                 mJobInfoArgumentCaptor.capture(),
-                                eq(mBackupRestore)));
-        JobInfo jobInfo = mJobInfoArgumentCaptor.getValue();
+                                eq(mBackupRestore)),
+                atLeastOnce());
 
+        JobInfo jobInfo = findMergeTimeoutJob(mJobInfoArgumentCaptor.getAllValues());
+        assertWithMessage("Merging timeout job not found").that(jobInfo).isNotNull();
         assertThat(jobInfo.getMinLatencyMillis()).isEqualTo(DATA_MERGING_TIMEOUT_INTERVAL_MILLIS);
         assertThat(jobInfo.getMaxExecutionDelayMillis())
                 .isEqualTo(DATA_MERGING_TIMEOUT_INTERVAL_MILLIS + MINIMUM_LATENCY_WINDOW_MILLIS);
-        assertThat(jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY))
-                .isEqualTo(DATA_MERGING_TIMEOUT_KEY);
     }
 
     @Test
@@ -557,13 +572,13 @@ public class BackupRestoreTest {
                         BackupRestore.BackupRestoreJobService.schedule(
                                 eq(mServiceContext),
                                 mJobInfoArgumentCaptor.capture(),
-                                eq(mBackupRestore)));
-        JobInfo jobInfo = mJobInfoArgumentCaptor.getValue();
+                                eq(mBackupRestore)),
+                atLeastOnce());
 
+        JobInfo jobInfo = findMergeTimeoutJob(mJobInfoArgumentCaptor.getAllValues());
+        assertWithMessage("Merging timeout job not found").that(jobInfo).isNotNull();
         assertThat(jobInfo.getMinLatencyMillis()).isEqualTo(0);
         assertThat(jobInfo.getMaxExecutionDelayMillis()).isEqualTo(MINIMUM_LATENCY_WINDOW_MILLIS);
-        assertThat(jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY))
-                .isEqualTo(DATA_MERGING_TIMEOUT_KEY);
     }
 
     @Test
@@ -571,7 +586,7 @@ public class BackupRestoreTest {
         mFakePreferenceHelper.insertOrReplacePreference(
                 DATA_RESTORE_STATE_KEY, String.valueOf(INTERNAL_RESTORE_STATE_STAGING_DONE));
 
-        when(mMigrationStateManager.isMigrationInProgress()).thenReturn(true);
+        when(mMockMigrationStateManager.isMigrationInProgress()).thenReturn(true);
 
         mBackupRestore.scheduleAllJobs();
         ExtendedMockito.verify(
@@ -592,7 +607,7 @@ public class BackupRestoreTest {
                 DATA_RESTORE_STATE_KEY,
                 String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE));
 
-        when(mMigrationStateManager.isMigrationInProgress()).thenReturn(true);
+        when(mMockMigrationStateManager.isMigrationInProgress()).thenReturn(true);
 
         mBackupRestore.scheduleAllJobs();
         ExtendedMockito.verify(
@@ -612,7 +627,7 @@ public class BackupRestoreTest {
         mFakePreferenceHelper.insertOrReplacePreference(
                 DATA_RESTORE_STATE_KEY, String.valueOf(INTERNAL_RESTORE_STATE_STAGING_DONE));
 
-        when(mMigrationStateManager.isMigrationInProgress()).thenReturn(true);
+        when(mMockMigrationStateManager.isMigrationInProgress()).thenReturn(true);
 
         mBackupRestore.scheduleAllJobs();
         ExtendedMockito.verify(
@@ -641,7 +656,7 @@ public class BackupRestoreTest {
                 String.valueOf(
                         now.minusMillis(DATA_MERGING_TIMEOUT_INTERVAL_MILLIS).toEpochMilli()));
 
-        when(mMigrationStateManager.isMigrationInProgress()).thenReturn(true);
+        when(mMockMigrationStateManager.isMigrationInProgress()).thenReturn(true);
 
         mBackupRestore.scheduleAllJobs();
         ExtendedMockito.verify(
@@ -663,8 +678,7 @@ public class BackupRestoreTest {
     public void testCancelAllJobs_cancelsAllJobs() {
         mBackupRestore.cancelAllJobs();
         ExtendedMockito.verify(
-                () ->
-                        BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mServiceContext)));
+                () -> BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mServiceContext)));
     }
 
     @Test
@@ -682,8 +696,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(DATA_DOWNLOAD_FAILED));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_FETCHING_DATA));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -703,8 +716,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(DATA_DOWNLOAD_FAILED));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_FETCHING_DATA));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -724,8 +736,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_UNKNOWN));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -745,8 +756,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_UNKNOWN));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -766,10 +776,23 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_UNKNOWN));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_MERGING_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_MERGING_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_MERGING_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
+    }
+
+    @Test
+    public void testMerge_restoreStateIsIdle() {
+        mFakePreferenceHelper.insertOrReplacePreference(
+                DATA_RESTORE_STATE_KEY, String.valueOf(INTERNAL_RESTORE_STATE_STAGING_DONE));
+        when(mTransactionManager.getDatabaseVersion()).thenReturn(1);
+
+        SQLiteDatabase mockDb = mock(SQLiteDatabase.class);
+        when(mockDb.getVersion()).thenReturn(1);
+        when(SQLiteDatabase.openDatabase(any(), any())).thenReturn(mockDb);
+
+        mBackupRestore.merge();
+        assertThat(mBackupRestore.getDataRestoreState()).isEqualTo(RESTORE_STATE_IDLE);
     }
 
     @Test
@@ -783,7 +806,7 @@ public class BackupRestoreTest {
         when(SQLiteDatabase.openDatabase(any(), any())).thenReturn(mockDb);
 
         mBackupRestore.merge();
-        verify(mFirstGrantTimeManager).applyAndStageBackupDataForUser(eq(mUserHandle), any());
+        verify(mFirstGrantTimeManager).applyAndStageGrantTimeStateForUser(eq(mUserHandle), any());
     }
 
     @Test
@@ -816,15 +839,14 @@ public class BackupRestoreTest {
         when(mockDb.getVersion()).thenReturn(2);
         when(SQLiteDatabase.openDatabase(any(), any())).thenReturn(mockDb);
 
-        when(mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME))
-                .thenReturn(createAndGetEmptyFile(mMockStagedDataDirectory, STAGED_DATABASE_NAME));
+        File hcDirectory = FilesUtil.getDataSystemCeHCDirectoryForUser(mUserHandle.getIdentifier());
+        File databaseDir = new File(hcDirectory, STAGED_DATABASE_DIR);
+        createAndGetEmptyFile(databaseDir, STAGED_DATABASE_NAME);
 
         mBackupRestore.merge();
-        assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
-                .isEqualTo(String.valueOf(RESTORE_ERROR_VERSION_DIFF));
+        assertThat(mBackupRestore.getDataRestoreError()).isEqualTo(RESTORE_ERROR_VERSION_DIFF);
         verify(mFirstGrantTimeManager, never())
-                .applyAndStageBackupDataForUser(eq(mUserHandle), any());
-
+                .applyAndStageGrantTimeStateForUser(eq(mUserHandle), any());
     }
 
     @Test
@@ -835,7 +857,7 @@ public class BackupRestoreTest {
                 DATA_MERGING_TIMEOUT_KEY, String.valueOf(Instant.now().toEpochMilli()));
         when(mTransactionManager.getDatabaseVersion()).thenReturn(1);
 
-        when(mMigrationStateManager.isMigrationInProgress()).thenReturn(true);
+        when(mMockMigrationStateManager.isMigrationInProgress()).thenReturn(true);
 
         mBackupRestore.merge();
         ExtendedMockito.verify(
@@ -849,7 +871,7 @@ public class BackupRestoreTest {
         assertThat(jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY))
                 .isEqualTo(DATA_MERGING_RETRY_KEY);
         verify(mFirstGrantTimeManager, never())
-                .applyAndStageBackupDataForUser(eq(mUserHandle), any());
+                .applyAndStageGrantTimeStateForUser(eq(mUserHandle), any());
     }
 
     @Test
@@ -883,8 +905,7 @@ public class BackupRestoreTest {
     @Test
     public void testShouldAttemptMerging_whenInMergingDone_returnsFalse() {
         mFakePreferenceHelper.insertOrReplacePreference(
-                DATA_RESTORE_STATE_KEY,
-                String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
+                DATA_RESTORE_STATE_KEY, String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
 
         boolean result = mBackupRestore.shouldAttemptMerging();
         assertThat(result).isFalse();
@@ -899,6 +920,17 @@ public class BackupRestoreTest {
         assertThat(result).isFalse();
     }
 
+    @Nullable
+    private static JobInfo findMergeTimeoutJob(List<JobInfo> jobInfos) {
+        for (JobInfo jobInfo : jobInfos) {
+            if (DATA_MERGING_TIMEOUT_KEY.equals(
+                    jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY))) {
+                return jobInfo;
+            }
+        }
+        return null;
+    }
+
     private static File createAndGetNonEmptyFile(File dir, String fileName) throws IOException {
         File file = new File(dir, fileName);
         FileWriter fileWriter = new FileWriter(file);
@@ -908,6 +940,7 @@ public class BackupRestoreTest {
     }
 
     private static File createAndGetEmptyFile(File dir, String fileName) throws IOException {
+        dir.mkdirs();
         File file = new File(dir, fileName);
         file.createNewFile();
         return file;
