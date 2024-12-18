@@ -33,10 +33,10 @@ import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecordWithEmptyMetaData;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.PermissionHelper.getGrantedHealthPermissions;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAndThenGrantHealthPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermissions;
-import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
 import static android.healthconnect.cts.utils.TestUtils.createReadRecordsRequestUsingFilters;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.deleteTestData;
@@ -171,14 +171,16 @@ public class HealthConnectDeviceTest {
     @Before
     public void setUp() {
         mContext = ApplicationProvider.getApplicationContext();
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
+        grantHealthPermission(
+                APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
     }
 
     @After
     public void tearDown() throws InterruptedException {
         deleteTestData();
         deleteAllStagedRemoteData();
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
+        grantHealthPermission(
+                APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
     }
 
     @Test
@@ -699,7 +701,7 @@ public class HealthConnectDeviceTest {
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
         for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            grantHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
         List<String> newPriorityList =
@@ -724,7 +726,7 @@ public class HealthConnectDeviceTest {
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
         for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            grantHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
         List<String> oldPriorityList =
@@ -739,7 +741,7 @@ public class HealthConnectDeviceTest {
 
         assertThat(oldPriorityList).contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        revokePermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), healthPerms.get(0));
+        revokeHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), healthPerms.get(0));
 
         List<String> newPriorityList =
                 runWithShellPermissionIdentity(
@@ -753,7 +755,7 @@ public class HealthConnectDeviceTest {
 
         assertThat(newPriorityList).contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), healthPerms.get(0));
+        grantHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), healthPerms.get(0));
     }
 
     @Test
@@ -764,7 +766,7 @@ public class HealthConnectDeviceTest {
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
         for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            grantHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
         List<String> oldPriorityList =
@@ -780,7 +782,7 @@ public class HealthConnectDeviceTest {
         assertThat(oldPriorityList).contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
         for (String perm : healthPerms) {
-            revokePermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            revokeHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
         List<String> newPriorityList =
@@ -797,13 +799,14 @@ public class HealthConnectDeviceTest {
                 .isFalse();
 
         for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            grantHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
     }
 
     @Test
     public void testSelfRevokePermissions_revokedOnKill() throws Exception {
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
+        grantHealthPermission(
+                APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
 
         APP_A_WITH_READ_WRITE_PERMS.selfRevokePermission(APP_A_DECLARED_PERMISSION);
         APP_A_WITH_READ_WRITE_PERMS.kill();
@@ -831,11 +834,11 @@ public class HealthConnectDeviceTest {
         revokeHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
         for (String perm : healthPermsA) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            grantHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
         for (String perm : healthPermsB) {
-            grantPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            grantHealthPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
         List<DataOrigin> dataOriginPrioOrder =
@@ -1159,7 +1162,7 @@ public class HealthConnectDeviceTest {
         assertThat(e.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
 
         for (String perm : healthPerms) {
-            grantPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+            grantHealthPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
     }
 
