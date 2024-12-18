@@ -9,11 +9,11 @@ option java_multiple_files=true;
 message FhirResourceSpec {
     // A map of the FHIR resource type int to the FHIR spec config.
     // The resource type int has to match one of the resource types in FhirResource.java
-    map<int32, FhirDataTypeConfig> resource_type_to_config = 1;
+    map<int32, FhirComplexTypeConfig> resource_type_to_config = 1;
 }
 
-// The FHIR spec config of a resource or data type.
-message FhirDataTypeConfig {
+// The FHIR spec config of a resource or complex type.
+message FhirComplexTypeConfig {
     // A map of all field names to field config for this data type. The keys of this map is the list
     // of fields that are allowed to be populated.
     map<string, FhirFieldConfig> allowed_field_names_to_config = 1;
@@ -56,7 +56,7 @@ message FhirFieldConfig {
     R4FhirType r4_type = 2;
 
     // The kind of FHIR data type of this field.
-    // TODO: b/361775175 - this should be moved to the FhirDataTypeConfig instead, when we have
+    // TODO: b/361775175 - this should be moved to the FhirComplexTypeConfig instead, when we have
     //  configs for types.
     Kind kind = 3;
 }

@@ -23,7 +23,7 @@ import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
 import android.health.connect.datatypes.FhirVersion;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.proto.FhirDataTypeConfig;
+import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
 import com.android.server.healthconnect.proto.FhirFieldConfig;
 import com.android.server.healthconnect.proto.MultiTypeFieldConfig;
 
@@ -63,8 +63,7 @@ public class FhirResourceValidator {
     // TODO: b/374949383 - Improve this to validate each field content by type
     public void validateFhirResource(
             JSONObject fhirJsonObject, @FhirResourceType int fhirResourceType) {
-        FhirDataTypeConfig config =
-                mFhirSpec.getFhirDataTypeConfigForResourceType(fhirResourceType);
+        FhirComplexTypeConfig config = mFhirSpec.getFhirResourceTypeConfig(fhirResourceType);
 
         Map<String, FhirFieldConfig> fieldToConfig = config.getAllowedFieldNamesToConfigMap();
 

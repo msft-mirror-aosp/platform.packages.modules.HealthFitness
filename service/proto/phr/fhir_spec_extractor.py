@@ -53,7 +53,7 @@ class FhirSpecExtractor:
             resource_type_int = RESOURCE_TYPE_STRING_TO_HC_INT_MAPPING[resource]
 
             resource_data_type_config = (
-                self._generate_fhir_data_type_config_from_element_definitions(element_definitions))
+                self._generate_fhir_complex_type_config_from_element_definitions(element_definitions))
 
             r4_resource_spec.resource_type_to_config[
                 resource_type_int].CopyFrom(resource_data_type_config)
@@ -74,8 +74,8 @@ class FhirSpecExtractor:
 
         return resource_to_element_definitions
 
-    def _generate_fhir_data_type_config_from_element_definitions(
-            self, element_definitions: Collection[Mapping]) -> fhirspec_pb2.FhirDataTypeConfig:
+    def _generate_fhir_complex_type_config_from_element_definitions(
+            self, element_definitions: Collection[Mapping]) -> fhirspec_pb2.FhirComplexTypeConfig:
         required_fields = set()
 
         multi_type_configs = []
@@ -131,7 +131,7 @@ class FhirSpecExtractor:
             else:
                 raise ValueError("This should not happen")
 
-        return fhirspec_pb2.FhirDataTypeConfig(
+        return fhirspec_pb2.FhirComplexTypeConfig(
             allowed_field_names_to_config=field_configs_by_name,
             # Sort the list of required fields alphabetically, as the output of this script is part
             # of the build, which needs to be deterministic. The required_fields come from a set,

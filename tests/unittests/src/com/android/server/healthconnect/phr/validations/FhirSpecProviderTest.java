@@ -52,7 +52,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.server.healthconnect.proto.FhirDataTypeConfig;
+import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
 import com.android.server.healthconnect.proto.FhirFieldConfig;
 import com.android.server.healthconnect.proto.Kind;
 import com.android.server.healthconnect.proto.MultiTypeFieldConfig;
@@ -96,7 +96,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_immunization_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_immunization_returnsConfig() {
         // Compare the full expected Fhir spec for Immunization. For the other resources we just
         // check a number of fields are as expected instead of the full list.
         // The test is based on the published spec at - https://hl7.org/fhir/R4/immunization.html
@@ -264,8 +264,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE)));
 
-        FhirDataTypeConfig immunizationConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        FhirComplexTypeConfig immunizationConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION);
 
         assertThat(immunizationConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -277,7 +277,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_allergy_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_allergy_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("patient");
         List<MultiTypeFieldConfig> expectedMultiTypeFieldConfigs =
@@ -315,8 +315,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig allergyConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        FhirComplexTypeConfig allergyConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
 
         assertThat(allergyConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -328,7 +328,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_observation_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_observation_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("status", "code");
         List<MultiTypeFieldConfig> expectedMultiTypeFieldConfigs =
@@ -378,8 +378,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig observationConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_OBSERVATION);
+        FhirComplexTypeConfig observationConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_OBSERVATION);
 
         assertThat(observationConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -391,7 +391,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_condition_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_condition_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("subject");
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -410,8 +410,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         false, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig conditionConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_CONDITION);
+        FhirComplexTypeConfig conditionConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_CONDITION);
 
         assertThat(conditionConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -420,7 +420,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_procedure_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_procedure_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("status", "subject");
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -439,8 +439,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig procedureConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PROCEDURE);
+        FhirComplexTypeConfig procedureConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_PROCEDURE);
 
         assertThat(procedureConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -449,7 +449,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_medication_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_medication_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of();
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -464,8 +464,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         false, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig medicationConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_MEDICATION);
+        FhirComplexTypeConfig medicationConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_MEDICATION);
 
         assertThat(medicationConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -474,7 +474,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_medicationRequest_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_medicationRequest_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("status", "intent", "subject");
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -495,8 +495,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         false, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig medicationRequestConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+        FhirComplexTypeConfig medicationRequestConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
 
         assertThat(medicationRequestConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -505,7 +505,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_medicationStatement_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_medicationStatement_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of("status", "subject");
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -517,8 +517,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig medicationStatementConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
+        FhirComplexTypeConfig medicationStatementConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
 
         assertThat(medicationStatementConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -527,7 +527,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_patient_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_patient_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of();
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -548,8 +548,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig patientConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PATIENT);
+        FhirComplexTypeConfig patientConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_PATIENT);
 
         assertThat(patientConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -558,7 +558,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_practitioner_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_practitioner_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of();
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -573,8 +573,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig practitionerConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PRACTITIONER);
+        FhirComplexTypeConfig practitionerConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_PRACTITIONER);
 
         assertThat(practitionerConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -583,7 +583,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_practitionerRole_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_practitionerRole_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of();
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -601,8 +601,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig practitionerRoleConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
+        FhirComplexTypeConfig practitionerRoleConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
 
         assertThat(practitionerRoleConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -611,7 +611,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_location_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_location_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of();
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -626,8 +626,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         false, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig locationConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_LOCATION);
+        FhirComplexTypeConfig locationConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_LOCATION);
 
         assertThat(locationConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -636,7 +636,7 @@ public class FhirSpecProviderTest {
     }
 
     @Test
-    public void testGetFhirDataTypeConfigForResourceType_organization_returnsConfig() {
+    public void testGetFhirResourceTypeConfig_organization_returnsConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
         List<String> expectedRequiredFields = List.of();
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
@@ -651,8 +651,8 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(
                                         true, R4_FHIR_TYPE_COMPLEX, KIND_COMPLEX_TYPE));
 
-        FhirDataTypeConfig organizationConfig =
-                spec.getFhirDataTypeConfigForResourceType(FHIR_RESOURCE_TYPE_ORGANIZATION);
+        FhirComplexTypeConfig organizationConfig =
+                spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_ORGANIZATION);
 
         assertThat(organizationConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);

@@ -22,7 +22,7 @@ import static android.health.connect.datatypes.FhirResource.validateFhirResource
 import android.health.connect.datatypes.FhirVersion;
 import android.util.ArrayMap;
 
-import com.android.server.healthconnect.proto.FhirDataTypeConfig;
+import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
 import com.android.server.healthconnect.proto.FhirResourceSpec;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ import java.util.Map;
 public class FhirSpecProvider {
     private static final String R4_FHIR_SPEC_FILE_NAME = "fhirspec-r4.binarypb";
 
-    private Map<Integer, FhirDataTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
+    private Map<Integer, FhirComplexTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
 
     /**
      * Parses the {@link FhirResourceSpec} proto file for the provided {@link FhirVersion} *
@@ -62,7 +62,7 @@ public class FhirSpecProvider {
         } catch (IOException e) {
             throw new IllegalStateException("Could not parse file");
         }
-        Map<Integer, FhirDataTypeConfig> resourceTypeToConfig =
+        Map<Integer, FhirComplexTypeConfig> resourceTypeToConfig =
                 r4FhirResourceSpec.getResourceTypeToConfigMap();
         resourceTypeToConfig.forEach(
                 (resourceType, config) -> {
@@ -72,15 +72,14 @@ public class FhirSpecProvider {
     }
 
     /**
-     * Returns the {@link FhirDataTypeConfig} for the provided {@code resourceType}
+     * Returns the {@link FhirComplexTypeConfig} for the provided {@code resourceType}
      *
      * @throws IllegalArgumentException if no config exists for the specified type.
      */
-    public FhirDataTypeConfig getFhirDataTypeConfigForResourceType(
-            @FhirResourceType int resourceType) {
+    public FhirComplexTypeConfig getFhirResourceTypeConfig(@FhirResourceType int resourceType) {
         validateFhirResourceType(resourceType);
 
-        FhirDataTypeConfig config = mResourceTypeIntToFhirSpecMap.get(resourceType);
+        FhirComplexTypeConfig config = mResourceTypeIntToFhirSpecMap.get(resourceType);
         if (config == null) {
             throw new IllegalArgumentException(
                     "Could not find config for resource type " + resourceType);
