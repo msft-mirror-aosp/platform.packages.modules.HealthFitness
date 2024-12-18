@@ -206,7 +206,8 @@ class MedicalPermissionsFragmentTest {
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
-        verify(healthConnectLogger, times(3)).logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        verify(healthConnectLogger, times(13)).logImpression(PermissionsElement.PERMISSION_SWITCH)
+        verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
     }
 
     @Test

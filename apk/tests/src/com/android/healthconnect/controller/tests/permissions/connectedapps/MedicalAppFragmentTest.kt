@@ -80,6 +80,7 @@ import org.junit.Test
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.reset
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -219,6 +220,10 @@ class MedicalAppFragmentTest {
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MEDICAL_APP_ACCESS_PAGE)
         verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, times(1))
+            .logImpression(AppAccessElement.PERMISSION_SWITCH_INACTIVE)
+        verify(healthConnectLogger)
+            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
     }
 
     @Test
