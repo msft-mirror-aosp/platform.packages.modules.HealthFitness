@@ -19,8 +19,11 @@ package com.android.server.healthconnect.backuprestore;
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 
 import android.annotation.FlaggedApi;
+import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.BackupSettings;
 import android.util.Slog;
+
+import java.util.List;
 
 /**
  * Manages Cloud Restore operations.
@@ -37,6 +40,16 @@ public class CloudRestoreManager {
     /** Takes the serialized user settings and overwrites existing settings. */
     public void pushSettingsForRestore(BackupSettings newSettings) {
         Slog.i(TAG, "Restoring user settings.");
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    /** Checks whether data with a certain version could be restored. */
+    public boolean canRestore(int dataVersion) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    /** Restores backup data changes. */
+    public void pushChangesForRestore(List<BackupChange> changes) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 }
