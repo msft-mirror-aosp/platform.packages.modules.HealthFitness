@@ -27,13 +27,13 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_COMPLETE
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.isHealthPermission;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
@@ -194,8 +194,7 @@ public class HealthConnectManagerTest {
 
     @Test
     public void testIsHealthPermission_forNonHealthGroupPermission_returnsFalse() {
-        assertThat(isHealthPermission(mContext, HealthPermissions.MANAGE_HEALTH_PERMISSIONS))
-                .isFalse();
+        assertThat(isHealthPermission(mContext, MANAGE_HEALTH_PERMISSIONS)).isFalse();
         assertThat(isHealthPermission(mContext, CAMERA)).isFalse();
     }
 
@@ -714,7 +713,7 @@ public class HealthConnectManagerTest {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
 
         TestUtils.setAutoDeletePeriod(30);
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
         try {
             assertThat(mManager.getRecordRetentionPeriodInDays()).isEqualTo(30);
         } finally {
@@ -722,7 +721,7 @@ public class HealthConnectManagerTest {
         }
 
         TestUtils.setAutoDeletePeriod(0);
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
         try {
             assertThat(mManager.getRecordRetentionPeriodInDays()).isEqualTo(0);
         } finally {
@@ -862,7 +861,8 @@ public class HealthConnectManagerTest {
     public void testGetHealthConnectDataState_beforeDownload_returnsIdleState() throws Exception {
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
-                        mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);
+                        mManager::getHealthConnectDataState,
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreState()).isEqualTo(RESTORE_STATE_IDLE);
     }
@@ -888,7 +888,7 @@ public class HealthConnectManagerTest {
                             mManager.getHealthConnectDataState(executor, receiver);
                         },
                         STAGE_HEALTH_CONNECT_REMOTE_DATA,
-                        MANAGE_HEALTH_DATA);
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreState()).isEqualTo(RESTORE_STATE_PENDING);
     }
@@ -903,7 +903,7 @@ public class HealthConnectManagerTest {
                             mManager.getHealthConnectDataState(executor, receiver);
                         },
                         STAGE_HEALTH_CONNECT_REMOTE_DATA,
-                        MANAGE_HEALTH_DATA);
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreState()).isEqualTo(RESTORE_STATE_PENDING);
     }
@@ -918,7 +918,7 @@ public class HealthConnectManagerTest {
                             mManager.getHealthConnectDataState(executor, receiver);
                         },
                         STAGE_HEALTH_CONNECT_REMOTE_DATA,
-                        MANAGE_HEALTH_DATA);
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreState()).isEqualTo(RESTORE_STATE_IDLE);
     }
@@ -955,7 +955,8 @@ public class HealthConnectManagerTest {
         Thread.sleep(500);
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
-                        mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);
+                        mManager::getHealthConnectDataState,
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreState()).isEqualTo(RESTORE_STATE_IDLE);
     }
@@ -994,7 +995,8 @@ public class HealthConnectManagerTest {
         Thread.sleep(500);
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
-                        mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);
+                        mManager::getHealthConnectDataState,
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreError())
                 .isEqualTo(RESTORE_ERROR_FETCHING_DATA);
@@ -1009,7 +1011,7 @@ public class HealthConnectManagerTest {
                             mManager.getHealthConnectDataState(executor, receiver);
                         },
                         STAGE_HEALTH_CONNECT_REMOTE_DATA,
-                        MANAGE_HEALTH_DATA);
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreError())
                 .isEqualTo(RESTORE_ERROR_FETCHING_DATA);
@@ -1046,7 +1048,8 @@ public class HealthConnectManagerTest {
         Thread.sleep(500);
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
-                        mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);
+                        mManager::getHealthConnectDataState,
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataRestoreError()).isEqualTo(RESTORE_ERROR_NONE);
     }
@@ -1055,7 +1058,8 @@ public class HealthConnectManagerTest {
     public void testDataMigrationState_byDefault_returnsIdleState() throws Exception {
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
-                        mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);
+                        mManager::getHealthConnectDataState,
+                        HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(healthConnectDataState.getDataMigrationState()).isEqualTo(MIGRATION_STATE_IDLE);
     }
@@ -1127,7 +1131,7 @@ public class HealthConnectManagerTest {
                     .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
         }
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
         try {
             TestUtils.getApplicationInfo();
             Assert.fail();
@@ -1139,7 +1143,7 @@ public class HealthConnectManagerTest {
             uiAutomation.dropShellPermissionIdentity();
         }
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
         try {
             TestUtils.queryAccessLogs();
             Assert.fail();
@@ -1151,7 +1155,7 @@ public class HealthConnectManagerTest {
             uiAutomation.dropShellPermissionIdentity();
         }
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
         try {
             TestUtils.setAutoDeletePeriod(1);
             Assert.fail();

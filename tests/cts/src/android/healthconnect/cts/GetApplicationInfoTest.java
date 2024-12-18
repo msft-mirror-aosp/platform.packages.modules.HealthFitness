@@ -16,12 +16,12 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
@@ -107,7 +107,7 @@ public class GetApplicationInfoTest {
     public void testEmptyApplicationInfo() throws InterruptedException {
         ApplicationInfoResponse response =
                 callAndGetResponseWithShellPermissionIdentity(
-                        mManager::getContributorApplicationsInfo, MANAGE_HEALTH_DATA);
+                        mManager::getContributorApplicationsInfo, MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(response.getApplicationInfoList()).hasSize(0);
     }
@@ -131,7 +131,7 @@ public class GetApplicationInfoTest {
                             ApplicationInfoResponse response =
                                     callAndGetResponseWithShellPermissionIdentity(
                                             mManager::getContributorApplicationsInfo,
-                                            MANAGE_HEALTH_DATA);
+                                            MANAGE_HEALTH_DATA_PERMISSION);
                             assertThat(response.getApplicationInfoList()).hasSize(1);
                             return response;
                         });
@@ -163,7 +163,7 @@ public class GetApplicationInfoTest {
                             ApplicationInfoResponse response =
                                     callAndGetResponseWithShellPermissionIdentity(
                                             mManager::getContributorApplicationsInfo,
-                                            MANAGE_HEALTH_DATA);
+                                            MANAGE_HEALTH_DATA_PERMISSION);
                             assertThat(response.getApplicationInfoList()).hasSize(2);
                             return response;
                         });
@@ -195,7 +195,7 @@ public class GetApplicationInfoTest {
                             ApplicationInfoResponse response =
                                     callAndGetResponseWithShellPermissionIdentity(
                                             mManager::getContributorApplicationsInfo,
-                                            MANAGE_HEALTH_DATA);
+                                            MANAGE_HEALTH_DATA_PERMISSION);
                             assertThat(response.getApplicationInfoList()).hasSize(2);
                             return response;
                         });
