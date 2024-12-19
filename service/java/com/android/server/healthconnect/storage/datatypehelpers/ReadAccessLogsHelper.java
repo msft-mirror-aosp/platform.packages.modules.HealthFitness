@@ -40,6 +40,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
@@ -64,6 +65,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "read_access_logs_table";
     private static final int NUM_COLS = 6;
     private static final int TIME_WINDOW_DAYS = 30;
+    private static final int DATA_RETENTION_PERIOD_DAYS = 31;
     @VisibleForTesting static final int PAGE_SIZE = 1000;
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     private static final String READER_APP_ID_COLUMN_NAME = "reader_app_id";
@@ -95,6 +97,20 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             return;
         }
         super.clearData(transactionManager);
+    }
+
+    /**
+     * Returns an instance of {@link DeleteTableRequest} to delete entries in the table older than
+     * the retention period.
+     */
+    public static DeleteTableRequest getDeleteRequestForAutoDelete() {
+        return new DeleteTableRequest(TABLE_NAME)
+                .setTimeFilter(
+                        READ_TIME,
+                        Instant.EPOCH.toEpochMilli(),
+                        Instant.now()
+                                .minus(DATA_RETENTION_PERIOD_DAYS, ChronoUnit.DAYS)
+                                .toEpochMilli());
     }
 
     public static CreateTableRequest getCreateTableRequest() {

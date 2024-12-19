@@ -24,6 +24,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
@@ -124,7 +125,9 @@ public class DailyCleanupJob {
     private void deleteStaleAccessLogEntries() {
         try {
             mTransactionManager.deleteAll(
-                    List.of(AccessLogsHelper.getDeleteRequestForAutoDelete()));
+                    List.of(
+                            AccessLogsHelper.getDeleteRequestForAutoDelete(),
+                            ReadAccessLogsHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Access logs failed", exception);
             // Don't rethrow as that will crash system_server
