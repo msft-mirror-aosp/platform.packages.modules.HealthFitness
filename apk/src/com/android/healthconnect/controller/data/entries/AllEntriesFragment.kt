@@ -198,7 +198,13 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_enter_deletion_state -> {
                 // enter deletion state
+                logger.logInteraction(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
                 triggerDeletionState(DELETE)
+                true
+            }
+            R.id.menu_open_units -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                findNavController().navigate(R.id.action_entriesAndAccess_to_setUnitsFragment)
                 true
             }
             else -> false
@@ -209,6 +215,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private val onEnterDeletionState: (MenuItem) -> Boolean = { menuItem ->
         when (menuItem.itemId) {
             R.id.delete -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_DELETE_BUTTON)
                 deleteData()
                 true
             }
@@ -221,6 +228,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_exit_deletion_state -> {
                 // exit deletion state
+                logger.logInteraction(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
                 triggerDeletionState(VIEW)
                 true
             }
@@ -306,11 +314,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         deletionViewModel.entriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) {
                 entriesViewModel.setScreenState(VIEW)
-                entriesViewModel.loadEntries(
-                    permissionType,
-                    dateNavigationView.getDate(),
-                    dateNavigationView.getPeriod(),
-                )
+                reloadEntries()
                 deletionViewModel.resetEntriesReloadNeeded()
             }
         }
@@ -325,6 +329,12 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
+        reloadEntries()
+        setLoggerPageId()
+        logger.logPageImpression()
+    }
+
+    private fun reloadEntries() {
         if (
             entriesViewModel.currentSelectedDate.value != null &&
                 entriesViewModel.period.value != null
@@ -341,8 +351,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 dateNavigationView.getPeriod(),
             )
         }
-        setLoggerPageId()
-        logger.logPageImpression()
     }
 
     private fun setLoggerPageId() {
@@ -369,11 +377,13 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         }
 
         if (screenState == VIEW) {
+            logger.logImpression(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
             setupMenu(R.menu.all_entries_menu, viewLifecycleOwner, logger, onMenuSetup)
             return
         }
 
         if (entriesViewModel.mapOfEntriesToBeDeleted.value.orEmpty().isEmpty()) {
+            logger.logImpression(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
             setupMenu(
                 R.menu.all_data_delete_menu,
                 viewLifecycleOwner,
@@ -383,6 +393,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             return
         }
 
+        logger.logImpression(ToolbarElement.TOOLBAR_DELETE_BUTTON)
         setupMenu(R.menu.deletion_state_menu, viewLifecycleOwner, logger, onEnterDeletionState)
     }
 

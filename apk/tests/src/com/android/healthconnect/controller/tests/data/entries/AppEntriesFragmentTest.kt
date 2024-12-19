@@ -53,6 +53,7 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -62,7 +63,12 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IM
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.withIndex
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.EntriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -71,10 +77,19 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.atLeastOnce
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -84,6 +99,9 @@ class AppEntriesFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
+    @BindValue
+    val deletionViewModel: DeletionViewModel = Mockito.mock(DeletionViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var context: Context
     private lateinit var navHostController: TestNavHostController
@@ -91,6 +109,7 @@ class AppEntriesFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
@@ -113,6 +132,15 @@ class AppEntriesFragmentTest {
             .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.VIEW))
         whenever(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
         whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(false))
+        whenever(deletionViewModel.appEntriesReloadNeeded).thenReturn(MutableLiveData(false))
+        whenever(deletionViewModel.deletionProgress)
+            .thenReturn(MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED))
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+        toggleAnimation(true)
     }
 
     @Test
@@ -128,6 +156,11 @@ class AppEntriesFragmentTest {
         )
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, atLeast(1)).logImpression(EntriesElement.DATE_VIEW_SPINNER_DAY)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.PREVIOUS_DAY_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.NEXT_DAY_BUTTON)
     }
 
     @Test
@@ -190,6 +223,7 @@ class AppEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("7 hours")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -207,6 +241,7 @@ class AppEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("128 - 140 bpm")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -226,6 +261,7 @@ class AppEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("Biking")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -245,6 +281,7 @@ class AppEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("Workout")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -265,6 +302,7 @@ class AppEntriesFragmentTest {
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2)).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
@@ -314,6 +352,40 @@ class AppEntriesFragmentTest {
     }
 
     @Test
+    fun reloadsAppEntries_whenReloadNeeded() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("12 steps")).check(matches(isDisplayed()))
+        onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
+        onView(withText("15 steps")).check(matches(isDisplayed()))
+
+        whenever(deletionViewModel.appEntriesReloadNeeded).thenReturn(MutableLiveData(true))
+        scenario.recreate()
+
+        onIdle()
+        verify(viewModel, atLeastOnce())
+            .loadEntries(
+                eq(STEPS),
+                eq(TEST_APP_PACKAGE_NAME),
+                any(),
+                eq(DateNavigationPeriod.PERIOD_DAY),
+            )
+        verify(viewModel, never())
+            .loadEntries(eq(STEPS), any(), eq(DateNavigationPeriod.PERIOD_DAY))
+    }
+
+    @Test
     fun inDeletion_showsCheckboxes() {
         whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
@@ -332,8 +404,11 @@ class AppEntriesFragmentTest {
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
         }
+        onIdle()
 
-        onView(withIndex(withId(R.id.item_checkbox_button), 1)).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(EntriesElement.SELECT_ALL_BUTTON)
+        verify(healthConnectLogger, times(2))
+            .logImpression(EntriesElement.ENTRY_BUTTON_WITH_CHECKBOX)
     }
 
     @Test
@@ -391,6 +466,7 @@ class AppEntriesFragmentTest {
         onView(withText("12 steps")).perform(click())
         onIdle()
         verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
+        verify(healthConnectLogger).logInteraction(EntriesElement.ENTRY_BUTTON_WITH_CHECKBOX)
     }
 
     @Test
@@ -417,6 +493,9 @@ class AppEntriesFragmentTest {
 
         onIdle()
         onView(withIndex(withText("Select all"), 0)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2))
+            .logImpression(EntriesElement.ENTRY_BUTTON_WITH_CHECKBOX)
+        verify(healthConnectLogger).logImpression(EntriesElement.SELECT_ALL_BUTTON)
     }
 
     @Test
@@ -445,6 +524,7 @@ class AppEntriesFragmentTest {
         onIdle()
         verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
         verify(viewModel).addToDeleteMap("test_id_2", StepsRecord::class)
+        verify(healthConnectLogger).logImpression(EntriesElement.SELECT_ALL_BUTTON)
     }
 
     @Test

@@ -59,6 +59,8 @@ import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
@@ -201,7 +203,13 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_enter_deletion_state -> {
                 // enter deletion state
+                logger.logInteraction(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
                 triggerDeletionState(DELETE)
+                true
+            }
+            R.id.menu_open_units -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                findNavController().navigate(R.id.action_appEntriesFragment_to_setUnitsFragment)
                 true
             }
             else -> false
@@ -212,6 +220,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
     private val onEnterDeletionState: (MenuItem) -> Boolean = { menuItem ->
         when (menuItem.itemId) {
             R.id.delete -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_DELETE_BUTTON)
                 deleteData()
                 true
             }
@@ -224,6 +233,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_exit_deletion_state -> {
                 // exit deletion state
+                logger.logInteraction(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
                 triggerDeletionState(VIEW)
                 true
             }
@@ -237,8 +247,6 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // TODO(b/291249677): Log pagename.
-
         if (
             requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
                 requireArguments().getString(EXTRA_PACKAGE_NAME) != null
@@ -259,6 +267,9 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
             permissionType = fromPermissionTypeName(permissionTypeName)
         }
+
+        logger.setPageId(PageName.APP_ENTRIES_PAGE)
+        logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
         setTitle(permissionType.upperCaseLabel())
 
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
@@ -341,11 +352,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         deletionViewModel.appEntriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) {
                 entriesViewModel.setScreenState(VIEW)
-                entriesViewModel.loadEntries(
-                    permissionType,
-                    dateNavigationView.getDate(),
-                    dateNavigationView.getPeriod(),
-                )
+                reloadEntries()
                 deletionViewModel.resetAppEntriesReloadNeeded()
             }
         }
@@ -359,7 +366,13 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
 
     override fun onResume() {
         super.onResume()
+        logger.setPageId(PageName.APP_ENTRIES_PAGE)
+        logger.logPageImpression()
         setTitle(permissionType.upperCaseLabel())
+        reloadEntries()
+    }
+
+    private fun reloadEntries() {
         if (
             entriesViewModel.currentSelectedDate.value != null &&
                 entriesViewModel.period.value != null
@@ -377,8 +390,6 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                 dateNavigationView.getPeriod(),
             )
         }
-
-        // TODO(b/291249677): Log pagename.
     }
 
     private fun updateMenu(
@@ -391,11 +402,13 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         }
 
         if (screenState == VIEW) {
+            logger.logImpression(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
             setupMenu(R.menu.all_entries_menu, viewLifecycleOwner, logger, onMenuSetup)
             return
         }
 
         if (entriesViewModel.mapOfEntriesToBeDeleted.value.orEmpty().isEmpty()) {
+            logger.logImpression(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
             setupMenu(
                 R.menu.all_data_delete_menu,
                 viewLifecycleOwner,
@@ -405,6 +418,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
             return
         }
 
+        logger.logImpression(ToolbarElement.TOOLBAR_DELETE_BUTTON)
         setupMenu(R.menu.deletion_state_menu, viewLifecycleOwner, logger, onEnterDeletionState)
     }
 

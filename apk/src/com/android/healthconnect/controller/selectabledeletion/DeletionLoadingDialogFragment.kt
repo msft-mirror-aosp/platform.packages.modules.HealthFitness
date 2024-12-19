@@ -30,7 +30,6 @@ class DeletionLoadingDialogFragment : DialogFragment() {
         val view: View = layoutInflater.inflate(R.layout.dialog_progress, null)
         val title = view.findViewById<TextView>(R.id.progress_indicator_title)
         title.setText(R.string.delete_progress_indicator)
-        // TODO: (b/341886932) add new telemetry for deletion dialogs
         return AlertDialogBuilder(this, ProgressDialogElement.DELETION_DIALOG_IN_PROGRESS_CONTAINER)
             .setView(view)
             .create()

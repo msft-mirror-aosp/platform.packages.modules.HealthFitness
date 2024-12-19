@@ -50,7 +50,11 @@ class CervicalMucusFormatter @Inject constructor(@ApplicationContext private val
         if (record.sensation != SENSATION_UNKNOWN) {
             stringJoiner.add(formatSensation(record.sensation))
         }
-        return stringJoiner.toString()
+        val stringResult = stringJoiner.toString()
+        if (stringResult.isBlank()) {
+            return context.getString(R.string.unknown_type)
+        }
+        return stringResult
     }
 
     private fun formatSensation(sensation: Int): String {

@@ -57,6 +57,7 @@ constructor(
     ): FormattedDataEntry {
         val totalDays = totalDaysOfPeriod(record)
         val appName = if (showDataOrigin) getAppName(record) else ""
+        val header = getHeader(record.startTime, record.endTime, appName)
         return when (period) {
             DateNavigationPeriod.PERIOD_DAY -> {
                 val dayOfPeriod = dayOfPeriod(record, day)
@@ -65,8 +66,8 @@ constructor(
                     uuid = record.metadata.id,
                     title = title,
                     titleA11y = title,
-                    header = appName,
-                    headerA11y = appName,
+                    header = header,
+                    headerA11y = header,
                     dataType = MenstruationPeriodRecord::class,
                     startTime = record.startTime,
                     endTime = record.endTime,
@@ -74,7 +75,6 @@ constructor(
             }
 
             else -> {
-                val header = getHeader(record.startTime, record.endTime, appName)
                 val title =
                     format(context.getString(R.string.period_length), mapOf("count" to totalDays))
                 FormattedDataEntry(
