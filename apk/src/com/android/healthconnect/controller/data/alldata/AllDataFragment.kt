@@ -315,6 +315,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
 
         if (!hasData) {
+            logger.logImpression(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
             setupMenu(
                 R.menu.all_data_empty_state_menu,
                 viewLifecycleOwner,
@@ -335,11 +336,13 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
 
         if (screenState == VIEW) {
+            logger.logImpression(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
             setupMenu(R.menu.all_data_menu, viewLifecycleOwner, logger, onMenuSetup)
             return
         }
 
         if (viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty().isEmpty()) {
+            logger.logImpression(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
             setupMenu(
                 R.menu.all_data_delete_menu,
                 viewLifecycleOwner,
@@ -349,6 +352,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             return
         }
 
+        logger.logImpression(ToolbarElement.TOOLBAR_DELETE_BUTTON)
         setupMenu(R.menu.deletion_state_menu, viewLifecycleOwner, logger, onEnterDeletionState)
     }
 

@@ -32,7 +32,6 @@ import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
@@ -84,9 +83,8 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.permissions_screen, rootKey)
-        // TODO(b/342159144): Update visual elements.
-        allowAllPreference.logNameActive = ErrorPageElement.UNKNOWN_ELEMENT
-        allowAllPreference.logNameInactive = ErrorPageElement.UNKNOWN_ELEMENT
+        allowAllPreference.logNameActive = PermissionsElement.ALLOW_ALL_SWITCH
+        allowAllPreference.logNameInactive = PermissionsElement.ALLOW_ALL_SWITCH
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -155,8 +153,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
     }
 
     private fun setupAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        logger.logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
 
         if (!viewModel.isMedicalPermissionRequestConcluded()) {
             viewModel.grantedMedicalPermissions.observe(viewLifecycleOwner) { grantedPermissions ->
@@ -171,14 +168,12 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
             // access date. We can't request all at once because we might accidentally
             // set the data type and additional permissions USER_FIXED
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
         }
     }
 
     private fun setupDontAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        logger.logImpression(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
 
         getDontAllowButton().setOnClickListener {
             viewModel.updateMedicalPermissions(false)
@@ -188,8 +183,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
             // access date. We can't request all at once because we might accidentally
             // set the data type and additional permissions USER_FIXED
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
         }
     }
 

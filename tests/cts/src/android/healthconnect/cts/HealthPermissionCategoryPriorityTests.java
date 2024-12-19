@@ -22,8 +22,8 @@ import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
 import static android.health.connect.HealthDataCategory.NUTRITION;
 import static android.health.connect.HealthDataCategory.SLEEP;
 import static android.health.connect.HealthDataCategory.VITALS;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -87,7 +87,7 @@ public class HealthPermissionCategoryPriorityTests {
                             (executor, receiver) ->
                                     mManager.fetchDataOriginsPriorityOrder(
                                             permissionCategory, executor, receiver),
-                            MANAGE_HEALTH_DATA);
+                            MANAGE_HEALTH_DATA_PERMISSION);
 
             assertThat(response).isNotNull();
         }
@@ -114,7 +114,7 @@ public class HealthPermissionCategoryPriorityTests {
                             (executor, receiver) ->
                                     mManager.fetchDataOriginsPriorityOrder(
                                             permissionCategory, executor, receiver),
-                            MANAGE_HEALTH_DATA);
+                            MANAGE_HEALTH_DATA_PERMISSION);
             assertThat(currentPriority).isNotNull();
             // The initial priority list is empty at this stage because permissions have
             // been granted through packageManager
@@ -129,14 +129,14 @@ public class HealthPermissionCategoryPriorityTests {
                             (executor, receiver) ->
                                     mManager.updateDataOriginPriorityOrder(
                                             updateRequest, executor, receiver),
-                            MANAGE_HEALTH_DATA);
+                            MANAGE_HEALTH_DATA_PERMISSION);
 
             FetchDataOriginsPriorityOrderResponse newPriority =
                     callAndGetResponseWithShellPermissionIdentity(
                             (executor, receiver) ->
                                     mManager.fetchDataOriginsPriorityOrder(
                                             permissionCategory, executor, receiver),
-                            MANAGE_HEALTH_DATA);
+                            MANAGE_HEALTH_DATA_PERMISSION);
 
             assertThat(newPriority.getDataOriginsPriorityOrder()).hasSize(1);
             assertThat(newPriority.getDataOriginsPriorityOrder().get(0).getPackageName())

@@ -68,7 +68,6 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 .setView(view)
                 .setPositiveButton(
                     R.string.confirming_question_delete_button,
-                    // TODO: create new log elements for new IA dialogs
                     DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON,
                 ) { _, _ ->
                     viewModel.removePermissions = checkbox.isChecked

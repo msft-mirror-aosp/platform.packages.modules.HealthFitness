@@ -16,6 +16,7 @@
 package android.healthconnect.cts.phr.apis;
 
 import static android.health.connect.HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.CHUNK_SIZE_LIMIT_IN_BYTES;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
@@ -39,10 +40,9 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedVa
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResource;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
-import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
-import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllHealthPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermission;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
@@ -116,8 +116,10 @@ public class UpsertMedicalResourcesCtsTest {
     @Before
     public void before() throws InterruptedException {
         // To make sure we don't leave any state behind after running each test.
-        revokeAllPermissions(PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
-        revokeAllPermissions(PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
+        revokeAllHealthPermissions(
+                PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
+        revokeAllHealthPermissions(
+                PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
@@ -840,7 +842,7 @@ public class UpsertMedicalResourcesCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_dataSourceOwnedByOtherApp_throws() throws Exception {
         // Create data source with different package name
-        grantPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
+        grantHealthPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
         MedicalDataSource dataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -1250,7 +1252,7 @@ public class UpsertMedicalResourcesCtsTest {
                     assertThat(receiver.assertAndGetException().getErrorCode())
                             .isEqualTo(HealthConnectException.ERROR_SECURITY);
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test
@@ -1280,10 +1282,10 @@ public class UpsertMedicalResourcesCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_inForegroundNoWritePerms_throws() throws Exception {
-        grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        grantHealthPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource dataSource =
                 PHR_FOREGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        revokePermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        revokeHealthPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         HealthConnectException exception =
                 assertThrows(
@@ -1298,10 +1300,10 @@ public class UpsertMedicalResourcesCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_inBackgroundNoWritePerms_throws() throws Exception {
-        grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        grantHealthPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource dataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
-        revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        revokeHealthPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
 
         HealthConnectException exception =
                 assertThrows(

@@ -93,6 +93,7 @@ import android.health.connect.aidl.IAccessLogsResponseCallback;
 import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IAggregateRecordsResponseCallback;
 import android.health.connect.aidl.IApplicationInfoResponseCallback;
+import android.health.connect.aidl.ICanRestoreResponseCallback;
 import android.health.connect.aidl.IChangeLogsResponseCallback;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
@@ -122,6 +123,7 @@ import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
 import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
+import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
@@ -640,16 +642,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     boolean shouldRecordAccessLog = !holdsDataManagementPermission;
                     callback.onResult(
                             new AggregateTransactionRequest(
-                                            mAppInfoHelper,
                                             attributionSource.getPackageName(),
                                             request,
-                                            mHealthDataCategoryPriorityHelper,
-                                            mInternalHealthConnectMappings,
                                             mTransactionManager,
+                                            mAppInfoHelper,
+                                            mHealthDataCategoryPriorityHelper,
+                                            mAccessLogsHelper,
                                             mReadAccessLogsHelper,
-                                            startDateAccess)
-                                    .getAggregateDataResponseParcel(
-                                            mAccessLogsHelper, shouldRecordAccessLog));
+                                            mInternalHealthConnectMappings,
+                                            startDateAccess,
+                                            shouldRecordAccessLog)
+                                    .getAggregateDataResponseParcel());
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
                             .setHealthDataServiceApiStatusSuccess();
                 },
@@ -1865,13 +1868,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void getHealthConnectDataState(IGetHealthConnectDataStateCallback callback) {
         checkParamsNonNull(callback);
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
 
         try {
             mDataPermissionEnforcer.enforceAnyOfPermissions(
                     MANAGE_HEALTH_DATA_PERMISSION, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
             final UserHandle userHandle = Binder.getCallingUserHandle();
             enforceIsForegroundUser(userHandle);
-            HealthConnectThreadScheduler.scheduleInternalTask(
+            HealthConnectThreadScheduler.schedule(
+                    mContext,
                     () -> {
                         try {
                             @HealthConnectDataState.DataRestoreError
@@ -1906,7 +1913,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         remoteException);
                             }
                         }
-                    });
+                    },
+                    uid,
+                    holdsDataManagementPermission);
         } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "getHealthConnectDataState: Exception encountered", e);
             @HealthConnectException.ErrorCode
@@ -1932,7 +1941,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -3244,6 +3253,41 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
+                        callback.onResult();
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void canRestore(int dataVersion, ICanRestoreResponseCallback callback) {
+        if (mCloudRestoreManager == null) return;
+        checkParamsNonNull(dataVersion);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        if (Flags.cloudBackupAndRestore()) {
+                            callback.onResult(mCloudRestoreManager.canRestore(dataVersion));
+                        }
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void pushChangesForRestore(List<BackupChange> changes, IEmptyResponseCallback callback) {
+        if (mCloudRestoreManager == null) return;
+        checkParamsNonNull(changes);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        if (Flags.cloudBackupAndRestore()) {
+                            mCloudRestoreManager.pushChangesForRestore(changes);
+                        }
                         callback.onResult();
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);

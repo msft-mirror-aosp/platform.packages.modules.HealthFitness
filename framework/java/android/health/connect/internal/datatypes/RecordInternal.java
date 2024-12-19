@@ -29,7 +29,6 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.os.Parcel;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -41,7 +40,7 @@ import java.util.UUID;
  * @param <T> The record type.
  * @hide
  */
-public abstract class RecordInternal<T extends Record> implements Serializable {
+public abstract class RecordInternal<T extends Record> {
     private final int mRecordIdentifier;
     private UUID mUuid;
     private String mPackageName;

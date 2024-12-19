@@ -259,6 +259,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         if (Flags.newInformationArchitecture()) {
             manageDataCategory.addPreference(
                 HealthPreference(requireContext()).also {
+                    it.logName = AppAccessElement.SEE_APP_DATA_BUTTON
                     it.title = getString(R.string.see_app_data)
                     it.setOnPreferenceClickListener {
                         findNavController()
