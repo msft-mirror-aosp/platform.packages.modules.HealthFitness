@@ -23,8 +23,8 @@ def get_all_types_from_resource_definitions(profiles_resources_json, resources_s
             if element_definition["id"] in [resource, "Observation.component.referenceRange"]:
                 continue
             else:
-                for type in element_definition["type"]:
-                    type_code = type["code"]
+                for data_type in element_definition["type"]:
+                    type_code = data_type["code"]
                     if type_code != "http://hl7.org/fhirpath/System.String":
                         fhir_type_strings.add(type_code)
 
@@ -49,8 +49,8 @@ def extract_and_print_type_enums(profiles_resources_json, resources_set):
     types.update(get_all_types_from_resource_definitions(
         profiles_resources_json, resources_set))
 
-    for i, type in enumerate(sorted(types, key=str.casefold)):
-        print("R4_FHIR_TYPE_" + to_upper_snake_case(type) + " = " + str(i + 1) + ";")
+    for i, data_type in enumerate(sorted(types, key=str.casefold)):
+        print("R4_FHIR_TYPE_" + to_upper_snake_case(data_type) + " = " + str(i + 1) + ";")
 
 
 if __name__ == '__main__':

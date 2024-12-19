@@ -3561,3 +3561,135 @@ resource_type_to_config {
     }
   }
 }
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ADDRESS
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_AGE
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ANNOTATION
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ATTACHMENT
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_BOOLEAN
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CANONICAL
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CODE
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CODING
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CONTACT_POINT
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DATE
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DATE_TIME
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DOSAGE
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DURATION
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_EXTENSION
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_HUMAN_NAME
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ID
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_IDENTIFIER
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_INSTANT
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_INTEGER
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_META
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_NARRATIVE
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PERIOD
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_QUANTITY
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_RANGE
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_RATIO
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_REFERENCE
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_SAMPLED_DATA
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_STRING
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_TIME
+  kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_TIMING
+  kind: KIND_COMPLEX_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_URI
+  kind: KIND_PRIMITIVE_TYPE
+}

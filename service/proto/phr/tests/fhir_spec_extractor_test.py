@@ -315,22 +315,10 @@ class FhirSpecExtractorTest(unittest.TestCase):
                     "code": "integer"
                   },
                   {
-                    "code": "Range"
-                  },
-                  {
-                    "code": "Ratio"
-                  },
-                  {
                     "code": "SampledData"
                   },
                   {
-                    "code": "time"
-                  },
-                  {
                     "code": "dateTime"
-                  },
-                  {
-                    "code": "Period"
                   }]
                 }
               ]
@@ -341,13 +329,490 @@ class FhirSpecExtractorTest(unittest.TestCase):
     }
     """)
 
+    BUNDLE_WITH_TYPE_STRUCTURE_DEFINITIONS = json.loads("""
+    {
+  "resourceType": "Bundle",
+  "id": "types",
+  "meta": {
+    "lastUpdated": "2019-11-01T09:29:23.356+11:00"
+  },
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/boolean",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "boolean",
+        "url": "http://hl7.org/fhir/StructureDefinition/boolean",
+        "name": "boolean",
+        "fhirVersion": "4.0.1",
+        "kind": "primitive-type",
+        "abstract": false,
+        "type": "boolean",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Element",
+        "snapshot": {
+          "element": [
+            {
+              "id": "boolean",
+              "path": "boolean",
+              "min": 0,
+              "max": "*",
+              "base": {
+                "path": "boolean",
+                "min": 0,
+                "max": "*"
+              },
+              "isModifier": false,
+              "isSummary": false
+            },
+            {
+              "id": "boolean.id",
+              "path": "boolean.id",
+              "min": 0,
+              "max": "1",
+              "base": {
+                "path": "Element.id",
+                "min": 0,
+                "max": "1"
+              },
+              "type": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type",
+                      "valueUrl": "string"
+                    }
+                  ],
+                  "code": "http://hl7.org/fhirpath/System.String"
+                }
+              ],
+              "isModifier": false,
+              "isSummary": false
+            },
+            {
+              "id": "boolean.extension",
+              "path": "boolean.extension",
+              "min": 0,
+              "max": "*",
+              "base": {
+                "path": "Element.extension",
+                "min": 0,
+                "max": "*"
+              },
+              "type": [
+                {
+                  "code": "Extension"
+                }
+              ],
+              "isModifier": false,
+              "isSummary": false
+            },
+            {
+              "id": "boolean.value",
+              "path": "boolean.value",
+              "representation": [
+                "xmlAttr"
+              ],
+              "short": "Primitive value for boolean",
+              "definition": "The actual value",
+              "min": 0,
+              "max": "1",
+              "base": {
+                "path": "boolean.value",
+                "min": 0,
+                "max": "1"
+              },
+              "type": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type",
+                      "valueUrl": "boolean"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                      "valueString": "true|false"
+                    }
+                  ],
+                  "code": "http://hl7.org/fhirpath/System.Boolean"
+                }
+              ],
+              "isModifier": false,
+              "isSummary": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/integer",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "integer",
+        "url": "http://hl7.org/fhir/StructureDefinition/integer",
+        "version": "4.0.1",
+        "name": "integer",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "primitive-type",
+        "type": "integer"
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/id",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "id",
+        "url": "http://hl7.org/fhir/StructureDefinition/id",
+        "version": "4.0.1",
+        "name": "id",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "primitive-type",
+        "type": "id"
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/string",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "string",
+        "url": "http://hl7.org/fhir/StructureDefinition/string",
+        "version": "4.0.1",
+        "name": "string",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "primitive-type",
+        "abstract": false,
+        "type": "string"
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/code",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "code",
+        "url": "http://hl7.org/fhir/StructureDefinition/code",
+        "version": "4.0.1",
+        "name": "code",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "primitive-type",
+        "abstract": false,
+        "type": "code",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/string"
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/dateTime",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "dateTime",
+        "url": "http://hl7.org/fhir/StructureDefinition/dateTime",
+        "version": "4.0.1",
+        "name": "dateTime",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "primitive-type",
+        "abstract": false,
+        "type": "dateTime",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Element"
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/CodeableConcept",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "CodeableConcept",
+        "url": "http://hl7.org/fhir/StructureDefinition/CodeableConcept",
+        "version": "4.0.1",
+        "name": "CodeableConcept",
+        "contact": [
+          {
+            "telecom": [
+              {
+                "system": "url",
+                "value": "http://hl7.org/fhir"
+              }
+            ]
+          }
+        ],
+        "fhirVersion": "4.0.1",
+        "kind": "complex-type",
+        "abstract": false,
+        "type": "CodeableConcept",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Element",
+        "derivation": "specialization",
+        "snapshot": {
+          "element": [
+            {
+              "id": "CodeableConcept",
+              "path": "CodeableConcept",
+              "min": 0,
+              "max": "*",
+              "base": {
+                "path": "CodeableConcept",
+                "min": 0,
+                "max": "*"
+              },
+              "isModifier": false
+            },
+            {
+              "id": "CodeableConcept.id",
+              "path": "CodeableConcept.id",
+              "min": 0,
+              "max": "1",
+              "base": {
+                "path": "Element.id",
+                "min": 0,
+                "max": "1"
+              },
+              "type": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type",
+                      "valueUrl": "string"
+                    }
+                  ],
+                  "code": "http://hl7.org/fhirpath/System.String"
+                }
+              ],
+              "isModifier": false
+            },
+            {
+              "id": "CodeableConcept.extension",
+              "path": "CodeableConcept.extension",
+              "min": 0,
+              "max": "*",
+              "base": {
+                "path": "Element.extension",
+                "min": 0,
+                "max": "*"
+              },
+              "type": [
+                {
+                  "code": "Extension"
+                }
+              ],
+              "isModifier": false
+            },
+            {
+              "id": "CodeableConcept.coding",
+              "path": "CodeableConcept.coding",
+              "min": 0,
+              "max": "*",
+              "base": {
+                "path": "CodeableConcept.coding",
+                "min": 0,
+                "max": "*"
+              },
+              "type": [
+                {
+                  "code": "Coding"
+                }
+              ],
+              "isModifier": false
+            },
+            {
+              "id": "CodeableConcept.text",
+              "path": "CodeableConcept.text",
+              "min": 0,
+              "max": "1",
+              "base": {
+                "path": "CodeableConcept.text",
+                "min": 0,
+                "max": "1"
+              },
+              "type": [
+                {
+                  "code": "string"
+                }
+              ],
+              "isModifier": false,
+              "isSummary": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/BackboneElement",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "BackboneElement",
+        "url": "http://hl7.org/fhir/StructureDefinition/BackboneElement",
+        "version": "4.0.1",
+        "name": "BackboneElement",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "complex-type",
+        "abstract": true,
+        "type": "BackboneElement",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Element",
+        "derivation": "specialization",
+        "snapshot": {
+          "element": [
+            {
+              "id": "BackboneElement",
+              "path": "BackboneElement",
+              "min": 0,
+              "max": "*",
+              "base": {
+                "path": "BackboneElement",
+                "min": 0,
+                "max": "*"
+              },
+              "isModifier": false
+            },
+            {
+              "id": "BackboneElement.id",
+              "path": "BackboneElement.id",
+              "min": 0,
+              "max": "1",
+              "base": {
+                "path": "Element.id",
+                "min": 0,
+                "max": "1"
+              },
+              "type": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type",
+                      "valueUrl": "string"
+                    }
+                  ],
+                  "code": "http://hl7.org/fhirpath/System.String"
+                }
+              ],
+              "isModifier": false,
+              "isSummary": false,
+              "mapping": [
+                {
+                  "identity": "rim",
+                  "map": "n/a"
+                }
+              ]
+            },
+            {
+              "id": "BackboneElement.modifierExtension",
+              "path": "BackboneElement.modifierExtension",
+              "min": 0,
+              "max": "*",
+              "base": {
+                "path": "BackboneElement.modifierExtension",
+                "min": 0,
+                "max": "*"
+              },
+              "type": [
+                {
+                  "code": "Extension"
+                }
+              ],
+              "isModifier": true,
+              "isSummary": true,
+              "mapping": [
+                {
+                  "identity": "rim",
+                  "map": "N/A"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/Quantity",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "Quantity",
+        "url": "http://hl7.org/fhir/StructureDefinition/Quantity",
+        "version": "4.0.1",
+        "name": "Quantity",
+        "fhirVersion": "4.0.1",
+        "kind": "complex-type",
+        "type": "Quantity",
+        "snapshot": {
+          "element": []
+        }
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/SampledData",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "SampledData",
+        "url": "http://hl7.org/fhir/StructureDefinition/SampledData",
+        "version": "4.0.1",
+        "name": "SampledData",
+        "fhirVersion": "4.0.1",
+        "kind": "complex-type",
+        "type": "SampledData",
+        "snapshot": {
+          "element": []
+        }
+      }
+    },
+    {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/OtherType",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "OtherType",
+        "url": "http://hl7.org/fhir/StructureDefinition/OtherType",
+        "version": "4.0.1",
+        "name": "OtherType",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "complex-type",
+        "abstract": false,
+        "type": "OtherType",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Element",
+        "snapshot": {
+          "element": [
+            {
+              "id": "CodeableConcept.id",
+              "path": "CodeableConcept.id",
+              "representation": [
+                "xmlAttr"
+              ],
+              "min": 0,
+              "max": "1",
+              "base": {
+                "path": "Element.id",
+                "min": 0,
+                "max": "1"
+              },
+              "type": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type",
+                      "valueUrl": "string"
+                    }
+                  ],
+                  "code": "http://hl7.org/fhirpath/System.String"
+                }
+              ],
+              "isModifier": false,
+              "isSummary": false
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+    """)
+
     IMMUNIZATION_RESOURCE_TYPE_INT = 1
 
     OBSERVATION_RESOURCE_TYPE_INT = 3
 
     PATIENT_RESOURCE_TYPE_INT = 9
 
-    def test_fhir_spec_extractor_immunization_resource_produces_expected(self):
+    def test_fhir_spec_extractor_immunization_resource_produces_expected_resource_config(self):
         fhir_spec_extractor = FhirSpecExtractor(
             self.BUNDLE_WITH_IMMUNIZATION_AND_PATIENT_STRUCTURE_DEFINITION,
             {"Immunization"})
@@ -404,7 +869,9 @@ class FhirSpecExtractorTest(unittest.TestCase):
             ),
         }
 
-        generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message()
+        generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message(
+            self.BUNDLE_WITH_TYPE_STRUCTURE_DEFINITIONS
+        )
 
         # Check that exactly one Immunization config is present
         self.assertEqual(len(generated_spec.resource_type_to_config.keys()), 1)
@@ -435,7 +902,9 @@ class FhirSpecExtractorTest(unittest.TestCase):
             self.BUNDLE_WITH_IMMUNIZATION_AND_PATIENT_STRUCTURE_DEFINITION,
             {"Immunization", "Patient"})
 
-        generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message()
+        generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message(
+            self.BUNDLE_WITH_TYPE_STRUCTURE_DEFINITIONS
+        )
 
         self.assertEqual(len(generated_spec.resource_type_to_config), 2)
 
@@ -451,7 +920,7 @@ class FhirSpecExtractorTest(unittest.TestCase):
                 self.BUNDLE_WITH_IMMUNIZATION_AND_PATIENT_STRUCTURE_DEFINITION,
                 {"Observation"})
 
-    def test_fhir_spec_extractor_observation_resource_produces_expected(self):
+    def test_fhir_spec_extractor_observation_resource_produces_expected_resource_config(self):
         fhir_spec_extractor = FhirSpecExtractor(
             self.BUNDLE_WITH_OBSERVATION_STRUCTURE_DEFINITION,
             {"Observation"})
@@ -468,12 +937,8 @@ class FhirSpecExtractorTest(unittest.TestCase):
                 "valueString",
                 "valueBoolean",
                 "valueInteger",
-                "valueRange",
-                "valueRatio",
                 "valueSampledData",
-                "valueTime",
-                "valueDateTime",
-                "valuePeriod"],
+                "valueDateTime"],
             is_required=False
         )
         expected_field_names_to_config = {
@@ -522,39 +987,21 @@ class FhirSpecExtractorTest(unittest.TestCase):
                 r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_INTEGER,
                 kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
             ),
-            "valueRange": fhirspec_pb2.FhirFieldConfig(
-                is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RANGE,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
-            ),
-            "valueRatio": fhirspec_pb2.FhirFieldConfig(
-                is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RATIO,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
-            ),
             "valueSampledData": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
                 r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SAMPLED_DATA,
                 kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
-            ),
-            "valueTime": fhirspec_pb2.FhirFieldConfig(
-                is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_TIME,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
             ),
             "valueDateTime": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
                 r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME,
                 kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
             ),
-            "valuePeriod": fhirspec_pb2.FhirFieldConfig(
-                is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_PERIOD,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
-            ),
         }
 
-        generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message()
+        generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message(
+            self.BUNDLE_WITH_TYPE_STRUCTURE_DEFINITIONS
+        )
 
         # Check that exactly one Observation config is present
         self.assertEqual(len(generated_spec.resource_type_to_config.keys()), 1)
@@ -579,6 +1026,62 @@ class FhirSpecExtractorTest(unittest.TestCase):
                 expected_config,
                 "Mismatching config for field " + expected_field
             )
+
+    def test_fhir_spec_extractor_immunization_produces_expected_type_configs(self):
+        fhir_spec_extractor = FhirSpecExtractor(
+            self.BUNDLE_WITH_IMMUNIZATION_AND_PATIENT_STRUCTURE_DEFINITION, {"Immunization"})
+        expected_complex_type_configs = [
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+            ),
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
+            ),
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+            ),
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
+            ),
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
+            ),
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
+            )]
+
+        generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message(
+            self.BUNDLE_WITH_TYPE_STRUCTURE_DEFINITIONS)
+
+        self.assertEqual(len(generated_spec.fhir_data_type_configs),
+                         len(expected_complex_type_configs))
+        self.assertEqual(set(str(config) for config in generated_spec.fhir_data_type_configs),
+                         set(str(config) for config in expected_complex_type_configs))
+
+    def test_fhir_spec_extractor_missing_type_structure_definition_raises_exception(self):
+        fhir_spec_extractor = FhirSpecExtractor(
+            self.BUNDLE_WITH_IMMUNIZATION_AND_PATIENT_STRUCTURE_DEFINITION, {"Immunization"})
+        type_definitions_bundle_without_any_definitions = json.loads("""
+        {
+            "resourceType": "Bundle",
+            "id": "types",
+            "meta": {
+            "lastUpdated": "2019-11-01T09:29:23.356+11:00"
+            },
+            "type": "collection",
+            "entry": []
+        }
+        """)
+
+        with self.assertRaises(ValueError):
+            fhir_spec_extractor.generate_r4_fhir_spec_proto_message(
+                type_definitions_bundle_without_any_definitions)
 
 
 if __name__ == '__main__':

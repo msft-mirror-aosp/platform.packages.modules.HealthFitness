@@ -10,6 +10,21 @@ message FhirResourceSpec {
     // A map of the FHIR resource type int to the FHIR spec config.
     // The resource type int has to match one of the resource types in FhirResource.java
     map<int32, FhirComplexTypeConfig> resource_type_to_config = 1;
+
+    // The fhir data type configs for types required by resource_type_to_config above
+    repeated FhirDataType fhir_data_type_configs = 2;
+}
+
+// Contains the type and kind for each data type and complex type config for complex types.
+message FhirDataType {
+    optional R4FhirType fhir_type = 1;
+
+    // The kind of FHIR data type.
+    Kind kind = 2;
+
+    // The complex type config, if the type is a complex-type. For primitive types this will not be
+    // set.
+    optional FhirComplexTypeConfig fhir_complex_type_config = 3;
 }
 
 // The FHIR spec config of a resource or complex type.
