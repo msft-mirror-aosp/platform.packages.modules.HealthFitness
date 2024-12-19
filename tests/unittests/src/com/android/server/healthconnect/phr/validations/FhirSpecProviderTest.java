@@ -35,15 +35,20 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4
 import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
 import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BOOLEAN;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CANONICAL;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_COMPLEX;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE_TIME;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ID;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INSTANT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INTEGER;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STRING;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_TIME;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_URI;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import static org.junit.Assert.assertThrows;
 
@@ -66,10 +71,37 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 public class FhirSpecProviderTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    private static final Set<R4FhirType> R4_PRIMITIVE_TYPES =
+            Set.of(
+                    R4_FHIR_TYPE_BOOLEAN,
+                    R4_FHIR_TYPE_INTEGER,
+                    R4_FHIR_TYPE_CANONICAL,
+                    R4_FHIR_TYPE_CODE,
+                    R4_FHIR_TYPE_DATE,
+                    R4_FHIR_TYPE_DATE_TIME,
+                    R4_FHIR_TYPE_ID,
+                    R4_FHIR_TYPE_INSTANT,
+                    R4_FHIR_TYPE_STRING,
+                    R4_FHIR_TYPE_TIME,
+                    R4_FHIR_TYPE_URI
+                    // The following primitive types are not yet used in the fhirspec textproto, so
+                    // will not
+                    // be present.
+                    // R4_FHIR_TYPE_DECIMAL,
+                    // R4_FHIR_TYPE_POSITIVE_INT,
+                    // R4_FHIR_TYPE_UNSIGNED_INT,
+                    // R4_FHIR_TYPE_BASE64_BINARY,
+                    // R4_FHIR_TYPE_MARKDOWN,
+                    // R4_FHIR_TYPE_OID,
+                    // R4_FHIR_TYPE_URL,
+                    // R4_FHIR_TYPE_UUID
+                    );
 
     private static final Correspondence<MultiTypeFieldConfig, MultiTypeFieldConfig>
             MULTI_TYPE_CONFIG_EQUIVALENCE =
@@ -93,6 +125,32 @@ public class FhirSpecProviderTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> new FhirSpecProvider(FhirVersion.parseFhirVersion("4.0.0")));
+    }
+
+    @Test
+    public void testIsPrimitiveType_allPrimitiveTypes_returnTrue() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        for (R4FhirType type : R4_PRIMITIVE_TYPES) {
+            assertWithMessage("Expected to be true for type: " + type.name())
+                    .that(spec.isPrimitiveType(type))
+                    .isTrue();
+        }
+    }
+
+    @Test
+    public void testIsPrimitiveType_allNonPrimitiveTypes_returnFalse() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        for (R4FhirType type : R4FhirType.values()) {
+            if (R4_PRIMITIVE_TYPES.contains(type)) {
+                continue;
+            }
+
+            assertWithMessage("Expected to be false for type: " + type.name())
+                    .that(spec.isPrimitiveType(type))
+                    .isFalse();
+        }
     }
 
     @Test

@@ -19,15 +19,21 @@ package com.android.server.healthconnect.phr.validations;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.FhirResource.validateFhirResourceType;
 
+import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
+
 import android.health.connect.datatypes.FhirVersion;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
+import com.android.server.healthconnect.proto.FhirFieldConfig;
 import com.android.server.healthconnect.proto.FhirResourceSpec;
+import com.android.server.healthconnect.proto.R4FhirType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Contains the parsed Fhir resource spec, which can be used to validate FHIR resources against the
@@ -39,6 +45,8 @@ public class FhirSpecProvider {
     private static final String R4_FHIR_SPEC_FILE_NAME = "fhirspec-r4.binarypb";
 
     private Map<Integer, FhirComplexTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
+
+    private Set<R4FhirType> mPrimitiveTypes = new HashSet<>();
 
     /**
      * Parses the {@link FhirResourceSpec} proto file for the provided {@link FhirVersion} *
@@ -68,7 +76,20 @@ public class FhirSpecProvider {
                 (resourceType, config) -> {
                     validateFhirResourceType(resourceType);
                     mResourceTypeIntToFhirSpecMap.put(resourceType, config);
+                    mPrimitiveTypes.addAll(getPrimitiveTypes(config));
                 });
+    }
+
+    private static Set<R4FhirType> getPrimitiveTypes(FhirComplexTypeConfig complexTypeConfig) {
+        Set<R4FhirType> primitiveTypes = new HashSet<>();
+        for (FhirFieldConfig fieldConfig :
+                complexTypeConfig.getAllowedFieldNamesToConfigMap().values()) {
+            if (fieldConfig.getKind() == KIND_PRIMITIVE_TYPE) {
+                primitiveTypes.add(fieldConfig.getR4Type());
+            }
+        }
+
+        return primitiveTypes;
     }
 
     /**
@@ -85,5 +106,13 @@ public class FhirSpecProvider {
                     "Could not find config for resource type " + resourceType);
         }
         return config;
+    }
+
+    /** Returns the {@code true} if the provided {@code fhirType} is a primitive type. */
+    public boolean isPrimitiveType(R4FhirType fhirType) {
+        return mPrimitiveTypes.contains(fhirType);
+
+        // TODO(b/377701407) After we extract a complex type config - throw exception if the spec is
+        //  not aware of the type.
     }
 }
