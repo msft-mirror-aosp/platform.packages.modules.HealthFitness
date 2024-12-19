@@ -55,9 +55,11 @@ import android.health.connect.internal.datatypes.HeartRateVariabilityRmssdRecord
 import android.health.connect.internal.datatypes.HeightRecordInternal;
 import android.health.connect.internal.datatypes.HydrationRecordInternal;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
+import android.health.connect.internal.datatypes.IntermenstrualBleedingRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
 import android.health.connect.internal.datatypes.LeanBodyMassRecordInternal;
 import android.health.connect.internal.datatypes.MenstruationFlowRecordInternal;
+import android.health.connect.internal.datatypes.MenstruationPeriodRecordInternal;
 import android.health.connect.internal.datatypes.MindfulnessSessionRecordInternal;
 import android.health.connect.internal.datatypes.NutritionRecordInternal;
 import android.health.connect.internal.datatypes.OvulationTestRecordInternal;
@@ -94,18 +96,25 @@ import com.android.server.healthconnect.proto.backuprestore.BodyWaterMass;
 import com.android.server.healthconnect.proto.backuprestore.BoneMass;
 import com.android.server.healthconnect.proto.backuprestore.CervicalMucus;
 import com.android.server.healthconnect.proto.backuprestore.CyclingPedalingCadence;
+import com.android.server.healthconnect.proto.backuprestore.CyclingPedalingCadence.CyclingPedalingCadenceSample;
 import com.android.server.healthconnect.proto.backuprestore.Distance;
 import com.android.server.healthconnect.proto.backuprestore.ElevationGained;
 import com.android.server.healthconnect.proto.backuprestore.ExerciseSession;
+import com.android.server.healthconnect.proto.backuprestore.ExerciseSession.ExerciseLap;
+import com.android.server.healthconnect.proto.backuprestore.ExerciseSession.ExerciseRoute;
+import com.android.server.healthconnect.proto.backuprestore.ExerciseSession.ExerciseRoute.Location;
+import com.android.server.healthconnect.proto.backuprestore.ExerciseSession.ExerciseSegment;
 import com.android.server.healthconnect.proto.backuprestore.FloorsClimbed;
 import com.android.server.healthconnect.proto.backuprestore.HeartRate;
 import com.android.server.healthconnect.proto.backuprestore.HeartRateVariabilityRmssd;
 import com.android.server.healthconnect.proto.backuprestore.Height;
 import com.android.server.healthconnect.proto.backuprestore.Hydration;
 import com.android.server.healthconnect.proto.backuprestore.InstantRecord;
+import com.android.server.healthconnect.proto.backuprestore.IntermenstrualBleeding;
 import com.android.server.healthconnect.proto.backuprestore.IntervalRecord;
 import com.android.server.healthconnect.proto.backuprestore.LeanBodyMass;
 import com.android.server.healthconnect.proto.backuprestore.MenstruationFlow;
+import com.android.server.healthconnect.proto.backuprestore.MenstruationPeriod;
 import com.android.server.healthconnect.proto.backuprestore.MindfulnessSession;
 import com.android.server.healthconnect.proto.backuprestore.Nutrition;
 import com.android.server.healthconnect.proto.backuprestore.OvulationTest;
@@ -121,7 +130,9 @@ import com.android.server.healthconnect.proto.backuprestore.RestingHeartRate;
 import com.android.server.healthconnect.proto.backuprestore.SexualActivity;
 import com.android.server.healthconnect.proto.backuprestore.SkinTemperature;
 import com.android.server.healthconnect.proto.backuprestore.SleepSession;
+import com.android.server.healthconnect.proto.backuprestore.SleepSession.SleepStage;
 import com.android.server.healthconnect.proto.backuprestore.Speed;
+import com.android.server.healthconnect.proto.backuprestore.Speed.SpeedSample;
 import com.android.server.healthconnect.proto.backuprestore.Steps;
 import com.android.server.healthconnect.proto.backuprestore.StepsCadence;
 import com.android.server.healthconnect.proto.backuprestore.TotalCaloriesBurned;
@@ -159,6 +170,879 @@ public final class RecordProtoConverter {
         RecordInternal<?> recordInternal = recordClass.getConstructor().newInstance();
         populateRecordInternal(recordProto, recordInternal);
         return recordInternal;
+    }
+
+    /** Creates a {@link Record} from the {@link RecordInternal} */
+    public Record toRecordProto(RecordInternal<?> recordInternal) {
+        Record.Builder builder =
+                Record.newBuilder()
+                        .setUuid(
+                                recordInternal.getUuid() == null
+                                        ? ""
+                                        : recordInternal.getUuid().toString())
+                        .setLastModifiedTime(recordInternal.getLastModifiedTime())
+                        .setClientRecordVersion(recordInternal.getClientRecordVersion())
+                        .setDeviceType(recordInternal.getDeviceType())
+                        .setRecordingMethod(recordInternal.getRecordingMethod());
+        if (recordInternal.getPackageName() != null) {
+            builder.setPackageName(recordInternal.getPackageName());
+        }
+        if (recordInternal.getAppName() != null) {
+            builder.setAppName(recordInternal.getAppName());
+        }
+        if (recordInternal.getClientRecordId() != null) {
+            builder.setClientRecordId(recordInternal.getClientRecordId());
+        }
+        if (recordInternal.getManufacturer() != null) {
+            builder.setManufacturer(recordInternal.getManufacturer());
+        }
+        if (recordInternal.getModel() != null) {
+            builder.setModel(recordInternal.getModel());
+        }
+
+        if (recordInternal instanceof IntervalRecordInternal<?> intervalRecordInternal) {
+            builder.setIntervalRecord(toIntervalRecordProto(intervalRecordInternal));
+        } else if (recordInternal instanceof InstantRecordInternal<?> instantRecordInternal) {
+            builder.setInstantRecord(toInstantRecordProto(instantRecordInternal));
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        return builder.build();
+    }
+
+    private IntervalRecord toIntervalRecordProto(IntervalRecordInternal<?> intervalRecordInternal) {
+        IntervalRecord.Builder builder =
+                IntervalRecord.newBuilder()
+                        .setStartTime(intervalRecordInternal.getStartTimeInMillis())
+                        .setStartZoneOffset(intervalRecordInternal.getStartZoneOffsetInSeconds())
+                        .setEndTime(intervalRecordInternal.getEndTimeInMillis())
+                        .setEndZoneOffset(intervalRecordInternal.getEndZoneOffsetInSeconds());
+
+        if (intervalRecordInternal
+                instanceof ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecordInternal) {
+            builder.setActiveCaloriesBurned(
+                    toActiveCaloriesBurnedProto(activeCaloriesBurnedRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof ActivityIntensityRecordInternal activityIntensityRecordInternal) {
+            builder.setActivityIntensity(toActivityIntensityProto(activityIntensityRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof
+                CyclingPedalingCadenceRecordInternal cyclingPedalingCadenceRecordInternal) {
+            builder.setCyclingPedalingCadence(
+                    toCyclingPedalingCadenceProto(cyclingPedalingCadenceRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof DistanceRecordInternal distanceRecordInternal) {
+            builder.setDistance(toDistanceProto(distanceRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof ElevationGainedRecordInternal elevationGainedRecordInternal) {
+            builder.setElevationGained(toElevationGainedProto(elevationGainedRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof ExerciseSessionRecordInternal exerciseSessionRecordInternal) {
+            builder.setExerciseSession(toExerciseSessionProto(exerciseSessionRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof FloorsClimbedRecordInternal floorsClimbedRecordInternal) {
+            builder.setFloorsClimbed(toFloorsClimbedProto(floorsClimbedRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof HeartRateRecordInternal heartRateRecordInternal) {
+            builder.setHeartRate(toHeartRateProto(heartRateRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof HydrationRecordInternal hydrationRecordInternal) {
+            builder.setHydration(toHydrationProto(hydrationRecordInternal));
+        } else if (intervalRecordInternal instanceof MenstruationPeriodRecordInternal) {
+            builder.setMenstruationPeriod(MenstruationPeriod.getDefaultInstance());
+        } else if (intervalRecordInternal
+                instanceof MindfulnessSessionRecordInternal mindfulnessSessionRecordInternal) {
+            builder.setMindfulnessSession(
+                    toMindfulnessSessionProto(mindfulnessSessionRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof NutritionRecordInternal nutritionRecordInternal) {
+            builder.setNutrition(toNutritionProto(nutritionRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof
+                PlannedExerciseSessionRecordInternal plannedExerciseSessionRecordInternal) {
+            builder.setPlannedExerciseSession(
+                    toPlannedExerciseSessionProto(plannedExerciseSessionRecordInternal));
+        } else if (intervalRecordInternal instanceof PowerRecordInternal powerRecordInternal) {
+            builder.setPower(toPowerProto(powerRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof SkinTemperatureRecordInternal skinTemperatureRecordInternal) {
+            builder.setSkinTemperature(toSkinTemperatureProto(skinTemperatureRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof SleepSessionRecordInternal sleepSessionRecordInternal) {
+            builder.setSleepSession(toSleepSessionProto(sleepSessionRecordInternal));
+        } else if (intervalRecordInternal instanceof SpeedRecordInternal speedRecordInternal) {
+            builder.setSpeed(toSpeedProto(speedRecordInternal));
+        } else if (intervalRecordInternal instanceof StepsRecordInternal stepsRecordInternal) {
+            builder.setSteps(toStepsProto(stepsRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof StepsCadenceRecordInternal stepsCadenceRecordInternal) {
+            builder.setStepsCadence(toStepsCadenceProto(stepsCadenceRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof TotalCaloriesBurnedRecordInternal totalCaloriesBurnedRecordInternal) {
+            builder.setTotalCaloriesBurned(
+                    toTotalCaloriesBurnedProto(totalCaloriesBurnedRecordInternal));
+        } else if (intervalRecordInternal
+                instanceof WheelchairPushesRecordInternal wheelchairPushesRecordInternal) {
+            builder.setWheelchairPushes(toWheelchairPushesProto(wheelchairPushesRecordInternal));
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        return builder.build();
+    }
+
+    private static ActiveCaloriesBurned toActiveCaloriesBurnedProto(
+            ActiveCaloriesBurnedRecordInternal activeCaloriesBurnedRecordInternal) {
+        return ActiveCaloriesBurned.newBuilder()
+                .setEnergy(activeCaloriesBurnedRecordInternal.getEnergy())
+                .build();
+    }
+
+    private static ActivityIntensity toActivityIntensityProto(
+            ActivityIntensityRecordInternal activityIntensityRecordInternal) {
+        return ActivityIntensity.newBuilder()
+                .setActivityIntensityType(
+                        activityIntensityRecordInternal.getActivityIntensityType())
+                .build();
+    }
+
+    private static CyclingPedalingCadence toCyclingPedalingCadenceProto(
+            CyclingPedalingCadenceRecordInternal cyclingPedalingCadenceRecordInternal) {
+        List<CyclingPedalingCadenceSample> samples =
+                cyclingPedalingCadenceRecordInternal.getSamples().stream()
+                        .map(
+                                sample ->
+                                        CyclingPedalingCadenceSample.newBuilder()
+                                                .setRevolutionsPerMinute(
+                                                        sample.getRevolutionsPerMinute())
+                                                .setEpochMillis(sample.getEpochMillis())
+                                                .build())
+                        .toList();
+
+        return CyclingPedalingCadence.newBuilder().addAllSample(samples).build();
+    }
+
+    private static Distance toDistanceProto(DistanceRecordInternal distanceRecordInternal) {
+        return Distance.newBuilder().setDistance(distanceRecordInternal.getDistance()).build();
+    }
+
+    private static ElevationGained toElevationGainedProto(
+            ElevationGainedRecordInternal elevationGainedRecordInternal) {
+        return ElevationGained.newBuilder()
+                .setElevation(elevationGainedRecordInternal.getElevation())
+                .build();
+    }
+
+    private static ExerciseSession toExerciseSessionProto(
+            ExerciseSessionRecordInternal exerciseSessionRecordInternal) {
+        ExerciseSession.Builder builder =
+                ExerciseSession.newBuilder()
+                        .setExerciseType(exerciseSessionRecordInternal.getExerciseType())
+                        .setHasRoute(exerciseSessionRecordInternal.hasRoute());
+
+        if (exerciseSessionRecordInternal.getNotes() != null) {
+            builder.setNotes(exerciseSessionRecordInternal.getNotes());
+        }
+        if (exerciseSessionRecordInternal.getTitle() != null) {
+            builder.setTitle(exerciseSessionRecordInternal.getTitle());
+        }
+        if (exerciseSessionRecordInternal.getRoute() != null) {
+            List<Location> routeLocations =
+                    exerciseSessionRecordInternal.getRoute().getRouteLocations().stream()
+                            .map(RecordProtoConverter::toLocationProto)
+                            .toList();
+            builder.setRoute(ExerciseRoute.newBuilder().addAllRouteLocation(routeLocations));
+        }
+        if (exerciseSessionRecordInternal.getLaps() != null) {
+            builder.addAllLap(
+                    exerciseSessionRecordInternal.getLaps().stream()
+                            .map(RecordProtoConverter::toLapProto)
+                            .toList());
+        }
+        if (exerciseSessionRecordInternal.getSegments() != null) {
+            builder.addAllSegment(
+                    exerciseSessionRecordInternal.getSegments().stream()
+                            .map(RecordProtoConverter::toSegmentProto)
+                            .toList());
+        }
+        if (exerciseSessionRecordInternal.getPlannedExerciseSessionId() != null) {
+            builder.setPlannedExerciseSessionId(
+                    exerciseSessionRecordInternal.getPlannedExerciseSessionId().toString());
+        }
+
+        return builder.build();
+    }
+
+    private static Location toLocationProto(LocationInternal locationInternal) {
+        return Location.newBuilder()
+                .setTime(locationInternal.getTime())
+                .setLatitude(locationInternal.getLatitude())
+                .setLongitude(locationInternal.getLongitude())
+                .setHorizontalAccuracy(locationInternal.getHorizontalAccuracy())
+                .setVerticalAccuracy(locationInternal.getVerticalAccuracy())
+                .setAltitude(locationInternal.getAltitude())
+                .build();
+    }
+
+    private static ExerciseLap toLapProto(ExerciseLapInternal lapInternal) {
+        return ExerciseLap.newBuilder()
+                .setStartTime(lapInternal.getStartTime())
+                .setEndTime(lapInternal.getEndTime())
+                .setLength(lapInternal.getLength())
+                .build();
+    }
+
+    private static ExerciseSegment toSegmentProto(ExerciseSegmentInternal segmentInternal) {
+        return ExerciseSegment.newBuilder()
+                .setStartTime(segmentInternal.getStartTime())
+                .setEndTime(segmentInternal.getEndTime())
+                .setSegmentType(segmentInternal.getSegmentType())
+                .setRepetitionsCount(segmentInternal.getRepetitionsCount())
+                .build();
+    }
+
+    private static FloorsClimbed toFloorsClimbedProto(
+            FloorsClimbedRecordInternal floorsClimbedRecordInternal) {
+        return FloorsClimbed.newBuilder()
+                .setFloors(floorsClimbedRecordInternal.getFloors())
+                .build();
+    }
+
+    private static HeartRate toHeartRateProto(HeartRateRecordInternal heartRateRecordInternal) {
+        List<HeartRate.HeartRateSample> samples =
+                heartRateRecordInternal.getSamples().stream()
+                        .map(
+                                sample ->
+                                        HeartRate.HeartRateSample.newBuilder()
+                                                .setBeatsPerMinute(sample.getBeatsPerMinute())
+                                                .setEpochMillis(sample.getEpochMillis())
+                                                .build())
+                        .toList();
+
+        return HeartRate.newBuilder().addAllSample(samples).build();
+    }
+
+    private static Hydration toHydrationProto(HydrationRecordInternal hydrationRecordInternal) {
+        return Hydration.newBuilder().setVolume(hydrationRecordInternal.getVolume()).build();
+    }
+
+    private static MindfulnessSession toMindfulnessSessionProto(
+            MindfulnessSessionRecordInternal mindfulnessSessionRecordInternal) {
+        MindfulnessSession.Builder builder =
+                MindfulnessSession.newBuilder()
+                        .setMindfulnessSessionType(
+                                mindfulnessSessionRecordInternal.getMindfulnessSessionType());
+        if (mindfulnessSessionRecordInternal.getTitle() != null) {
+            builder.setTitle(mindfulnessSessionRecordInternal.getTitle());
+        }
+        if (mindfulnessSessionRecordInternal.getNotes() != null) {
+            builder.setNotes(mindfulnessSessionRecordInternal.getNotes());
+        }
+
+        return builder.build();
+    }
+
+    private static Nutrition toNutritionProto(NutritionRecordInternal nutritionRecordInternal) {
+        Nutrition.Builder builder =
+                Nutrition.newBuilder()
+                        .setUnsaturatedFat(nutritionRecordInternal.getUnsaturatedFat())
+                        .setPotassium(nutritionRecordInternal.getPotassium())
+                        .setThiamin(nutritionRecordInternal.getThiamin())
+                        .setMealType(nutritionRecordInternal.getMealType())
+                        .setTransFat(nutritionRecordInternal.getTransFat())
+                        .setManganese(nutritionRecordInternal.getManganese())
+                        .setEnergyFromFat(nutritionRecordInternal.getEnergyFromFat())
+                        .setCaffeine(nutritionRecordInternal.getCaffeine())
+                        .setDietaryFiber(nutritionRecordInternal.getDietaryFiber())
+                        .setSelenium(nutritionRecordInternal.getSelenium())
+                        .setVitaminB6(nutritionRecordInternal.getVitaminB6())
+                        .setProtein(nutritionRecordInternal.getProtein())
+                        .setChloride(nutritionRecordInternal.getChloride())
+                        .setCholesterol(nutritionRecordInternal.getCholesterol())
+                        .setCopper(nutritionRecordInternal.getCopper())
+                        .setIodine(nutritionRecordInternal.getIodine())
+                        .setVitaminB12(nutritionRecordInternal.getVitaminB12())
+                        .setZinc(nutritionRecordInternal.getZinc())
+                        .setRiboflavin(nutritionRecordInternal.getRiboflavin())
+                        .setEnergy(nutritionRecordInternal.getEnergy())
+                        .setMolybdenum(nutritionRecordInternal.getMolybdenum())
+                        .setPhosphorus(nutritionRecordInternal.getPhosphorus())
+                        .setChromium(nutritionRecordInternal.getChromium())
+                        .setTotalFat(nutritionRecordInternal.getTotalFat())
+                        .setCalcium(nutritionRecordInternal.getCalcium())
+                        .setVitaminC(nutritionRecordInternal.getVitaminC())
+                        .setVitaminE(nutritionRecordInternal.getVitaminE())
+                        .setBiotin(nutritionRecordInternal.getBiotin())
+                        .setVitaminD(nutritionRecordInternal.getVitaminD())
+                        .setNiacin(nutritionRecordInternal.getNiacin())
+                        .setMagnesium(nutritionRecordInternal.getMagnesium())
+                        .setTotalCarbohydrate(nutritionRecordInternal.getTotalCarbohydrate())
+                        .setVitaminK(nutritionRecordInternal.getVitaminK())
+                        .setPolyunsaturatedFat(nutritionRecordInternal.getPolyunsaturatedFat())
+                        .setSaturatedFat(nutritionRecordInternal.getSaturatedFat())
+                        .setSodium(nutritionRecordInternal.getSodium())
+                        .setFolate(nutritionRecordInternal.getFolate())
+                        .setMonounsaturatedFat(nutritionRecordInternal.getMonounsaturatedFat())
+                        .setPantothenicAcid(nutritionRecordInternal.getPantothenicAcid())
+                        .setIron(nutritionRecordInternal.getIron())
+                        .setVitaminA(nutritionRecordInternal.getVitaminA())
+                        .setFolicAcid(nutritionRecordInternal.getFolicAcid())
+                        .setSugar(nutritionRecordInternal.getSugar());
+
+        if (nutritionRecordInternal.getMealName() != null) {
+            builder.setMealName(nutritionRecordInternal.getMealName());
+        }
+
+        return builder.build();
+    }
+
+    private static PlannedExerciseSession toPlannedExerciseSessionProto(
+            PlannedExerciseSessionRecordInternal plannedExerciseSessionRecordInternal) {
+        PlannedExerciseSession.Builder builder =
+                PlannedExerciseSession.newBuilder()
+                        .setExerciseType(plannedExerciseSessionRecordInternal.getExerciseType())
+                        .setHasExplicitTime(
+                                plannedExerciseSessionRecordInternal.getHasExplicitTime())
+                        .addAllExerciseBlock(
+                                plannedExerciseSessionRecordInternal.getExerciseBlocks().stream()
+                                        .map(RecordProtoConverter::toPlannedExerciseBlockProto)
+                                        .toList());
+        if (plannedExerciseSessionRecordInternal.getNotes() != null) {
+            builder.setNotes(plannedExerciseSessionRecordInternal.getNotes());
+        }
+        if (plannedExerciseSessionRecordInternal.getTitle() != null) {
+            builder.setTitle(plannedExerciseSessionRecordInternal.getTitle());
+        }
+        if (plannedExerciseSessionRecordInternal.getCompletedExerciseSessionId() != null) {
+            builder.setCompletedExerciseSessionId(
+                    plannedExerciseSessionRecordInternal
+                            .getCompletedExerciseSessionId()
+                            .toString());
+        }
+
+        return builder.build();
+    }
+
+    private static PlannedExerciseBlock toPlannedExerciseBlockProto(
+            PlannedExerciseBlockInternal plannedExerciseBlockInternal) {
+        PlannedExerciseBlock.Builder builder =
+                PlannedExerciseBlock.newBuilder()
+                        .setRepetitions(plannedExerciseBlockInternal.getRepetitions())
+                        .addAllStep(
+                                plannedExerciseBlockInternal.getExerciseSteps().stream()
+                                        .map(RecordProtoConverter::toPlannedExerciseStepProto)
+                                        .toList());
+        if (plannedExerciseBlockInternal.getDescription() != null) {
+            builder.setDescription(plannedExerciseBlockInternal.getDescription());
+        }
+
+        return builder.build();
+    }
+
+    private static PlannedExerciseStep toPlannedExerciseStepProto(
+            PlannedExerciseStepInternal plannedExerciseStepInternal) {
+        PlannedExerciseStep.Builder builder =
+                PlannedExerciseStep.newBuilder()
+                        .setExerciseType(plannedExerciseStepInternal.getExerciseType())
+                        .setExerciseCategory(plannedExerciseStepInternal.getExerciseCategory());
+        if (plannedExerciseStepInternal.getDescription() != null) {
+            builder.setDescription(plannedExerciseStepInternal.getDescription());
+        }
+        if (plannedExerciseStepInternal.getCompletionGoal() != null) {
+            builder.setCompletionGoal(
+                    toCompletionGoalProto(plannedExerciseStepInternal.getCompletionGoal()));
+        }
+        if (plannedExerciseStepInternal.getPerformanceGoals() != null) {
+            builder.addAllPerformanceGoal(
+                    plannedExerciseStepInternal.getPerformanceGoals().stream()
+                            .map(RecordProtoConverter::toPerformanceGoalProto)
+                            .toList());
+        }
+
+        return builder.build();
+    }
+
+    private static ExercisePerformanceGoal toPerformanceGoalProto(
+            ExercisePerformanceGoalInternal performanceGoalInternal) {
+        if (performanceGoalInternal
+                instanceof ExercisePerformanceGoalInternal.PowerGoalInternal powerGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setPowerGoal(
+                            ExercisePerformanceGoal.PowerGoal.newBuilder()
+                                    .setMinPower(powerGoalInternal.getMinPower().getInWatts())
+                                    .setMaxPower(powerGoalInternal.getMaxPower().getInWatts()))
+                    .build();
+        } else if (performanceGoalInternal
+                instanceof ExercisePerformanceGoalInternal.SpeedGoalInternal speedGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setSpeedGoal(
+                            ExercisePerformanceGoal.SpeedGoal.newBuilder()
+                                    .setMinSpeed(
+                                            speedGoalInternal.getMinSpeed().getInMetersPerSecond())
+                                    .setMaxSpeed(
+                                            speedGoalInternal.getMaxSpeed().getInMetersPerSecond()))
+                    .build();
+        } else if (performanceGoalInternal
+                instanceof
+                ExercisePerformanceGoalInternal.CadenceGoalInternal cadenceGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setCadenceGoal(
+                            ExercisePerformanceGoal.CadenceGoal.newBuilder()
+                                    .setMinRpm(cadenceGoalInternal.getMinRpm())
+                                    .setMaxRpm(cadenceGoalInternal.getMaxRpm()))
+                    .build();
+        } else if (performanceGoalInternal
+                instanceof
+                ExercisePerformanceGoalInternal.HeartRateGoalInternal heartRateGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setHeartRateGoal(
+                            ExercisePerformanceGoal.HeartRateGoal.newBuilder()
+                                    .setMinBpm(heartRateGoalInternal.getMinBpm())
+                                    .setMaxBpm(heartRateGoalInternal.getMaxBpm()))
+                    .build();
+        } else if (performanceGoalInternal
+                instanceof ExercisePerformanceGoalInternal.WeightGoalInternal weightGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setWeightGoal(
+                            ExercisePerformanceGoal.WeightGoal.newBuilder()
+                                    .setMass(weightGoalInternal.getMass().getInGrams()))
+                    .build();
+        } else if (performanceGoalInternal
+                instanceof
+                ExercisePerformanceGoalInternal.RateOfPerceivedExertionGoalInternal
+                                rateOfPerceivedExertionGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setRateOfPerceivedExertionGoal(
+                            ExercisePerformanceGoal.RateOfPerceivedExertionGoal.newBuilder()
+                                    .setRpe(rateOfPerceivedExertionGoalInternal.getRpe()))
+                    .build();
+        } else if (performanceGoalInternal
+                instanceof ExercisePerformanceGoalInternal.AmrapGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setAmrapGoal(ExercisePerformanceGoal.AmrapGoal.getDefaultInstance())
+                    .build();
+        } else if (performanceGoalInternal
+                instanceof ExercisePerformanceGoalInternal.UnknownGoalInternal) {
+            return ExercisePerformanceGoal.newBuilder()
+                    .setUnknownGoal(ExercisePerformanceGoal.UnknownGoal.getDefaultInstance())
+                    .build();
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static ExerciseCompletionGoal toCompletionGoalProto(
+            ExerciseCompletionGoalInternal completionGoalInternal) {
+        if (completionGoalInternal
+                instanceof
+                ExerciseCompletionGoalInternal.DistanceGoalInternal distanceGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setDistanceGoal(
+                            ExerciseCompletionGoal.DistanceGoal.newBuilder()
+                                    .setDistance(distanceGoalInternal.getDistance().getInMeters()))
+                    .build();
+        } else if (completionGoalInternal
+                instanceof ExerciseCompletionGoalInternal.StepsGoalInternal stepsGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setStepsGoal(
+                            ExerciseCompletionGoal.StepsGoal.newBuilder()
+                                    .setSteps(stepsGoalInternal.getSteps()))
+                    .build();
+        } else if (completionGoalInternal
+                instanceof
+                ExerciseCompletionGoalInternal.DurationGoalInternal durationGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setDurationGoal(
+                            ExerciseCompletionGoal.DurationGoal.newBuilder()
+                                    .setDuration(durationGoalInternal.getDuration().toMillis()))
+                    .build();
+        } else if (completionGoalInternal
+                instanceof
+                ExerciseCompletionGoalInternal.RepetitionsGoalInternal repetitionsGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setRepetitionsGoal(
+                            ExerciseCompletionGoal.RepetitionsGoal.newBuilder()
+                                    .setRepetitions(repetitionsGoalInternal.getReps()))
+                    .build();
+        } else if (completionGoalInternal
+                instanceof
+                ExerciseCompletionGoalInternal.TotalCaloriesBurnedGoalInternal
+                                totalCaloriesBurnedGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setTotalCaloriesBurnedGoal(
+                            ExerciseCompletionGoal.TotalCaloriesBurnedGoal.newBuilder()
+                                    .setTotalCalories(
+                                            totalCaloriesBurnedGoalInternal
+                                                    .getTotalCalories()
+                                                    .getInCalories()))
+                    .build();
+        } else if (completionGoalInternal
+                instanceof
+                ExerciseCompletionGoalInternal.ActiveCaloriesBurnedGoalInternal
+                                activeCaloriesBurnedGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setActiveCaloriesBurnedGoal(
+                            ExerciseCompletionGoal.ActiveCaloriesBurnedGoal.newBuilder()
+                                    .setActiveCalories(
+                                            activeCaloriesBurnedGoalInternal
+                                                    .getActiveCalories()
+                                                    .getInCalories()))
+                    .build();
+        } else if (completionGoalInternal
+                instanceof
+                ExerciseCompletionGoalInternal.DistanceWithVariableRestGoalInternal
+                                distanceWithVariableRestGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setDistanceWithVariableRestGoal(
+                            ExerciseCompletionGoal.DistanceWithVariableRestGoal.newBuilder()
+                                    .setDistance(
+                                            distanceWithVariableRestGoalInternal
+                                                    .getDistance()
+                                                    .getInMeters())
+                                    .setDuration(
+                                            distanceWithVariableRestGoalInternal
+                                                    .getDuration()
+                                                    .toMillis()))
+                    .build();
+        } else if (completionGoalInternal
+                instanceof ExerciseCompletionGoalInternal.UnspecifiedGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setUnspecifiedGoal(ExerciseCompletionGoal.UnspecifiedGoal.getDefaultInstance())
+                    .build();
+        } else if (completionGoalInternal
+                instanceof ExerciseCompletionGoalInternal.UnknownGoalInternal) {
+            return ExerciseCompletionGoal.newBuilder()
+                    .setUnknownGoal(ExerciseCompletionGoal.UnknownGoal.getDefaultInstance())
+                    .build();
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static com.android.server.healthconnect.proto.backuprestore.Power toPowerProto(
+            PowerRecordInternal powerRecordInternal) {
+        List<com.android.server.healthconnect.proto.backuprestore.Power.PowerSample> samples =
+                powerRecordInternal.getSamples().stream()
+                        .map(
+                                sample ->
+                                        com.android.server.healthconnect.proto.backuprestore.Power
+                                                .PowerSample.newBuilder()
+                                                .setPower(sample.getPower())
+                                                .setEpochMillis(sample.getEpochMillis())
+                                                .build())
+                        .toList();
+
+        return com.android.server.healthconnect.proto.backuprestore.Power.newBuilder()
+                .addAllSample(samples)
+                .build();
+    }
+
+    private static SkinTemperature toSkinTemperatureProto(
+            SkinTemperatureRecordInternal skinTemperatureRecordInternal) {
+        List<SkinTemperature.SkinTemperatureDeltaSample> samples =
+                skinTemperatureRecordInternal.getSamples().stream()
+                        .map(
+                                sample ->
+                                        SkinTemperature.SkinTemperatureDeltaSample.newBuilder()
+                                                .setTemperatureDeltaInCelsius(
+                                                        sample.mTemperatureDeltaInCelsius())
+                                                .setEpochMillis(sample.mEpochMillis())
+                                                .build())
+                        .toList();
+
+        return SkinTemperature.newBuilder()
+                .setMeasurementLocation(skinTemperatureRecordInternal.getMeasurementLocation())
+                .setBaseline(skinTemperatureRecordInternal.getBaseline().getInCelsius())
+                .addAllSample(samples)
+                .build();
+    }
+
+    private static SleepSession toSleepSessionProto(
+            SleepSessionRecordInternal sleepSessionRecordInternal) {
+        SleepSession.Builder builder = SleepSession.newBuilder();
+
+        if (sleepSessionRecordInternal.getNotes() != null) {
+            builder.setNotes(sleepSessionRecordInternal.getNotes());
+        }
+        if (sleepSessionRecordInternal.getTitle() != null) {
+            builder.setTitle(sleepSessionRecordInternal.getTitle());
+        }
+        if (sleepSessionRecordInternal.getSleepStages() != null) {
+            List<SleepStage> stages =
+                    sleepSessionRecordInternal.getSleepStages().stream()
+                            .map(RecordProtoConverter::toSleepStageProto)
+                            .toList();
+            builder.addAllStage(stages);
+        }
+
+        return builder.build();
+    }
+
+    private static SleepStage toSleepStageProto(SleepStageInternal sleepStageInternal) {
+        return SleepStage.newBuilder()
+                .setStartTime(sleepStageInternal.getStartTime())
+                .setEndTime(sleepStageInternal.getEndTime())
+                .setStageType(sleepStageInternal.getStageType())
+                .build();
+    }
+
+    private static Speed toSpeedProto(SpeedRecordInternal speedRecordInternal) {
+        List<SpeedSample> samples =
+                speedRecordInternal.getSamples().stream()
+                        .map(
+                                sample ->
+                                        SpeedSample.newBuilder()
+                                                .setSpeed(sample.getSpeed())
+                                                .setEpochMillis(sample.getEpochMillis())
+                                                .build())
+                        .toList();
+
+        return Speed.newBuilder().addAllSample(samples).build();
+    }
+
+    private static Steps toStepsProto(StepsRecordInternal stepsRecordInternal) {
+        return Steps.newBuilder().setCount(stepsRecordInternal.getCount()).build();
+    }
+
+    private static StepsCadence toStepsCadenceProto(
+            StepsCadenceRecordInternal stepsCadenceRecordInternal) {
+        List<StepsCadence.StepsCadenceSample> samples =
+                stepsCadenceRecordInternal.getSamples().stream()
+                        .map(
+                                sample ->
+                                        StepsCadence.StepsCadenceSample.newBuilder()
+                                                .setRate(sample.getRate())
+                                                .setEpochMillis(sample.getEpochMillis())
+                                                .build())
+                        .toList();
+
+        return StepsCadence.newBuilder().addAllSample(samples).build();
+    }
+
+    private static TotalCaloriesBurned toTotalCaloriesBurnedProto(
+            TotalCaloriesBurnedRecordInternal totalCaloriesBurnedRecordInternal) {
+        return TotalCaloriesBurned.newBuilder()
+                .setEnergy(totalCaloriesBurnedRecordInternal.getEnergy())
+                .build();
+    }
+
+    private static WheelchairPushes toWheelchairPushesProto(
+            WheelchairPushesRecordInternal wheelchairPushesRecordInternal) {
+        return WheelchairPushes.newBuilder()
+                .setCount((int) wheelchairPushesRecordInternal.getCount())
+                .build();
+    }
+
+    private InstantRecord toInstantRecordProto(InstantRecordInternal<?> instantRecordInternal) {
+        InstantRecord.Builder builder =
+                InstantRecord.newBuilder()
+                        .setTime(instantRecordInternal.getTimeInMillis())
+                        .setZoneOffset(instantRecordInternal.getZoneOffsetInSeconds());
+
+        if (instantRecordInternal
+                instanceof BasalBodyTemperatureRecordInternal basalBodyTemperatureRecordInternal) {
+            builder.setBasalBodyTemperature(
+                    toBasalBodyTemperatureProto(basalBodyTemperatureRecordInternal));
+        } else if (instantRecordInternal
+                instanceof BasalMetabolicRateRecordInternal basalMetabolicRateRecordInternal) {
+            builder.setBasalMetabolicRate(
+                    toBasalMetabolicRateProto(basalMetabolicRateRecordInternal));
+        } else if (instantRecordInternal
+                instanceof BloodGlucoseRecordInternal bloodGlucoseRecordInternal) {
+            builder.setBloodGlucose(toBloodGlucoseProto(bloodGlucoseRecordInternal));
+        } else if (instantRecordInternal
+                instanceof BloodPressureRecordInternal bloodPressureRecordInternal) {
+            builder.setBloodPressure(toBloodPressureProto(bloodPressureRecordInternal));
+        } else if (instantRecordInternal instanceof BodyFatRecordInternal bodyFatRecordInternal) {
+            builder.setBodyFat(toBodyFatProto(bodyFatRecordInternal));
+        } else if (instantRecordInternal
+                instanceof BodyTemperatureRecordInternal bodyTemperatureRecordInternal) {
+            builder.setBodyTemperature(toBodyTemperatureProto(bodyTemperatureRecordInternal));
+        } else if (instantRecordInternal
+                instanceof BodyWaterMassRecordInternal bodyWaterMassRecordInternal) {
+            builder.setBodyWaterMass(toBodyWaterMassProto(bodyWaterMassRecordInternal));
+        } else if (instantRecordInternal instanceof BoneMassRecordInternal boneMassRecordInternal) {
+            builder.setBoneMass(toBoneMassProto(boneMassRecordInternal));
+        } else if (instantRecordInternal
+                instanceof CervicalMucusRecordInternal cervicalMucusRecordInternal) {
+            builder.setCervicalMucus(toCervicalMucusProto(cervicalMucusRecordInternal));
+        } else if (instantRecordInternal
+                instanceof
+                HeartRateVariabilityRmssdRecordInternal heartRateVariabilityRmssdRecordInternal) {
+            builder.setHeartRateVariabilityRmssd(
+                    toHeartRateVariabilityRmssdProto(heartRateVariabilityRmssdRecordInternal));
+        } else if (instantRecordInternal instanceof HeightRecordInternal heightRecordInternal) {
+            builder.setHeight(toHeightProto(heightRecordInternal));
+        } else if (instantRecordInternal instanceof IntermenstrualBleedingRecordInternal) {
+            builder.setIntermenstrualBleeding(IntermenstrualBleeding.getDefaultInstance());
+        } else if (instantRecordInternal
+                instanceof LeanBodyMassRecordInternal leanBodyMassRecordInternal) {
+            builder.setLeanBodyMass(toLeanBodyMassProto(leanBodyMassRecordInternal));
+        } else if (instantRecordInternal
+                instanceof MenstruationFlowRecordInternal menstruationFlowRecordInternal) {
+            builder.setMenstruationFlow(toMenstruationFlowProto(menstruationFlowRecordInternal));
+        } else if (instantRecordInternal
+                instanceof OvulationTestRecordInternal ovulationTestRecordInternal) {
+            builder.setOvulationTest(toOvulationTestProto(ovulationTestRecordInternal));
+        } else if (instantRecordInternal
+                instanceof OxygenSaturationRecordInternal oxygenSaturationRecordInternal) {
+            builder.setOxygenSaturation(toOxygenSaturationProto(oxygenSaturationRecordInternal));
+        } else if (instantRecordInternal
+                instanceof RespiratoryRateRecordInternal respiratoryRateRecordInternal) {
+            builder.setRespiratoryRate(toRespiratoryRateProto(respiratoryRateRecordInternal));
+        } else if (instantRecordInternal
+                instanceof RestingHeartRateRecordInternal restingHeartRateRecordInternal) {
+            builder.setRestingHeartRate(toRestingHeartRateProto(restingHeartRateRecordInternal));
+        } else if (instantRecordInternal
+                instanceof SexualActivityRecordInternal sexualActivityRecordInternal) {
+            builder.setSexualActivity(toSexualActivityProto(sexualActivityRecordInternal));
+        } else if (instantRecordInternal instanceof Vo2MaxRecordInternal vo2MaxRecordInternal) {
+            builder.setVo2Max(toVo2MaxProto(vo2MaxRecordInternal));
+        } else if (instantRecordInternal instanceof WeightRecordInternal weightRecordInternal) {
+            builder.setWeight(toWeightProto(weightRecordInternal));
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        return builder.build();
+    }
+
+    private static BasalBodyTemperature toBasalBodyTemperatureProto(
+            BasalBodyTemperatureRecordInternal basalBodyTemperatureRecordInternal) {
+        return BasalBodyTemperature.newBuilder()
+                .setMeasurementLocation(basalBodyTemperatureRecordInternal.getMeasurementLocation())
+                .setTemperature(basalBodyTemperatureRecordInternal.getTemperature())
+                .build();
+    }
+
+    private static BasalMetabolicRate toBasalMetabolicRateProto(
+            BasalMetabolicRateRecordInternal basalMetabolicRateRecordInternal) {
+        return BasalMetabolicRate.newBuilder()
+                .setBasalMetabolicRate(basalMetabolicRateRecordInternal.getBasalMetabolicRate())
+                .build();
+    }
+
+    private static BloodGlucose toBloodGlucoseProto(
+            BloodGlucoseRecordInternal bloodGlucoseRecordInternal) {
+        return BloodGlucose.newBuilder()
+                .setSpecimenSource(bloodGlucoseRecordInternal.getSpecimenSource())
+                .setLevel(bloodGlucoseRecordInternal.getLevel())
+                .setRelationToMeal(bloodGlucoseRecordInternal.getRelationToMeal())
+                .setMealType(bloodGlucoseRecordInternal.getMealType())
+                .build();
+    }
+
+    private static BloodPressure toBloodPressureProto(
+            BloodPressureRecordInternal bloodPressureRecordInternal) {
+        return BloodPressure.newBuilder()
+                .setMeasurementLocation(bloodPressureRecordInternal.getMeasurementLocation())
+                .setSystolic(bloodPressureRecordInternal.getSystolic())
+                .setDiastolic(bloodPressureRecordInternal.getDiastolic())
+                .setBodyPosition(bloodPressureRecordInternal.getBodyPosition())
+                .build();
+    }
+
+    private static BodyFat toBodyFatProto(BodyFatRecordInternal bodyFatRecordInternal) {
+        return BodyFat.newBuilder().setPercentage(bodyFatRecordInternal.getPercentage()).build();
+    }
+
+    private static BodyTemperature toBodyTemperatureProto(
+            BodyTemperatureRecordInternal bodyTemperatureRecordInternal) {
+        return BodyTemperature.newBuilder()
+                .setMeasurementLocation(bodyTemperatureRecordInternal.getMeasurementLocation())
+                .setTemperature(bodyTemperatureRecordInternal.getTemperature())
+                .build();
+    }
+
+    private static BodyWaterMass toBodyWaterMassProto(
+            BodyWaterMassRecordInternal bodyWaterMassRecordInternal) {
+        return BodyWaterMass.newBuilder()
+                .setBodyWaterMass(bodyWaterMassRecordInternal.getBodyWaterMass())
+                .build();
+    }
+
+    private static BoneMass toBoneMassProto(BoneMassRecordInternal boneMassRecordInternal) {
+        return BoneMass.newBuilder().setMass(boneMassRecordInternal.getMass()).build();
+    }
+
+    private static CervicalMucus toCervicalMucusProto(
+            CervicalMucusRecordInternal cervicalMucusRecordInternal) {
+        return CervicalMucus.newBuilder()
+                .setSensation(cervicalMucusRecordInternal.getSensation())
+                .setAppearance(cervicalMucusRecordInternal.getAppearance())
+                .build();
+    }
+
+    private static HeartRateVariabilityRmssd toHeartRateVariabilityRmssdProto(
+            HeartRateVariabilityRmssdRecordInternal heartRateVariabilityRmssdRecordInternal) {
+        return HeartRateVariabilityRmssd.newBuilder()
+                .setHeartRateVariabilityMillis(
+                        heartRateVariabilityRmssdRecordInternal.getHeartRateVariabilityMillis())
+                .build();
+    }
+
+    private static Height toHeightProto(HeightRecordInternal heightRecordInternal) {
+        return Height.newBuilder().setHeight(heightRecordInternal.getHeight()).build();
+    }
+
+    private static LeanBodyMass toLeanBodyMassProto(
+            LeanBodyMassRecordInternal leanBodyMassRecordInternal) {
+        return LeanBodyMass.newBuilder().setMass(leanBodyMassRecordInternal.getMass()).build();
+    }
+
+    private static MenstruationFlow toMenstruationFlowProto(
+            MenstruationFlowRecordInternal menstruationFlowRecordInternal) {
+        return MenstruationFlow.newBuilder()
+                .setFlow(menstruationFlowRecordInternal.getFlow())
+                .build();
+    }
+
+    private static OvulationTest toOvulationTestProto(
+            OvulationTestRecordInternal ovulationTestRecordInternal) {
+        return OvulationTest.newBuilder()
+                .setResult(ovulationTestRecordInternal.getResult())
+                .build();
+    }
+
+    private static OxygenSaturation toOxygenSaturationProto(
+            OxygenSaturationRecordInternal oxygenSaturationRecordInternal) {
+        return OxygenSaturation.newBuilder()
+                .setPercentage(oxygenSaturationRecordInternal.getPercentage())
+                .build();
+    }
+
+    private static RespiratoryRate toRespiratoryRateProto(
+            RespiratoryRateRecordInternal respiratoryRateRecordInternal) {
+        return RespiratoryRate.newBuilder()
+                .setRate(respiratoryRateRecordInternal.getRate())
+                .build();
+    }
+
+    private static RestingHeartRate toRestingHeartRateProto(
+            RestingHeartRateRecordInternal restingHeartRateRecordInternal) {
+        return RestingHeartRate.newBuilder()
+                .setBeatsPerMinute(restingHeartRateRecordInternal.getBeatsPerMinute())
+                .build();
+    }
+
+    private static SexualActivity toSexualActivityProto(
+            SexualActivityRecordInternal sexualActivityRecordInternal) {
+        return SexualActivity.newBuilder()
+                .setProtectionUsed(sexualActivityRecordInternal.getProtectionUsed())
+                .build();
+    }
+
+    private static Vo2Max toVo2MaxProto(Vo2MaxRecordInternal vo2MaxRecordInternal) {
+        return Vo2Max.newBuilder()
+                .setMeasurementMethod(vo2MaxRecordInternal.getMeasurementMethod())
+                .setVo2MillilitersPerMinuteKilogram(
+                        vo2MaxRecordInternal.getVo2MillilitersPerMinuteKilogram())
+                .build();
+    }
+
+    private static Weight toWeightProto(WeightRecordInternal weightRecordInternal) {
+        return Weight.newBuilder().setWeight(weightRecordInternal.getWeight()).build();
     }
 
     @SuppressLint("WrongConstant") // Proto doesn't know about the device type & rec method IntDefs
@@ -203,10 +1087,11 @@ public final class RecordProtoConverter {
 
     private static void populateIntervalRecordInternal(
             IntervalRecord intervalRecordProto, IntervalRecordInternal<?> intervalRecordInternal) {
-        intervalRecordInternal.setStartTime(intervalRecordProto.getStartTime());
-        intervalRecordInternal.setStartZoneOffset(intervalRecordProto.getStartZoneOffset());
-        intervalRecordInternal.setEndTime(intervalRecordProto.getEndTime());
-        intervalRecordInternal.setEndZoneOffset(intervalRecordProto.getEndZoneOffset());
+        intervalRecordInternal
+                .setStartTime(intervalRecordProto.getStartTime())
+                .setStartZoneOffset(intervalRecordProto.getStartZoneOffset())
+                .setEndTime(intervalRecordProto.getEndTime())
+                .setEndZoneOffset(intervalRecordProto.getEndZoneOffset());
 
         switch (intervalRecordProto.getDataCase()) {
             case ACTIVE_CALORIES_BURNED ->

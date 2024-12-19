@@ -27,10 +27,10 @@ import static android.health.connect.HealthPermissionCategory.EXERCISE;
 import static android.health.connect.HealthPermissionCategory.HEART_RATE;
 import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_EXERCISE_RECORD;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_PLANNED_EXERCISE_RECORD;
@@ -297,13 +297,13 @@ public final class TestUtils {
     }
 
     /**
-     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
-     * HealthConnectManager#aggregate} with the given {@code request}.
+     * Given {@link android.health.connect.HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}, invokes
+     * {@link HealthConnectManager#aggregate} with the given {@code request}.
      */
     public static <T> AggregateRecordsResponse<T> getAggregateResponseWithManagePermission(
             AggregateRecordsRequest<T> request) throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
 
         try {
             return getAggregateResponse(request);
@@ -356,13 +356,13 @@ public final class TestUtils {
     }
 
     /**
-     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
-     * HealthConnectManager#readRecords} with the given {@code request}.
+     * Given {@link android.health.connect.HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}, invokes
+     * {@link HealthConnectManager#readRecords} with the given {@code request}.
      */
     public static <T extends Record> List<T> readRecordsWithManagePermission(
             ReadRecordsRequest<T> request) throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
 
         try {
             return readRecords(request);
@@ -447,7 +447,7 @@ public final class TestUtils {
 
     public static void setAutoDeletePeriod(int period) throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
@@ -462,7 +462,7 @@ public final class TestUtils {
     public static void verifyDeleteRecords(DeleteUsingFiltersRequest request)
             throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
@@ -481,7 +481,7 @@ public final class TestUtils {
             return;
         }
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
             HealthConnectManager manager = getHealthConnectManager();
@@ -542,7 +542,7 @@ public final class TestUtils {
 
     public static List<AccessLog> queryAccessLogs() throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<List<AccessLog>> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
@@ -556,7 +556,7 @@ public final class TestUtils {
     public static Map<Class<? extends Record>, RecordTypeInfoResponse> queryAllRecordTypesInfo()
             throws InterruptedException, NullPointerException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<Map<Class<? extends Record>, RecordTypeInfoResponse>> receiver =
                     new HealthConnectReceiver<>();
@@ -571,7 +571,7 @@ public final class TestUtils {
     public static List<LocalDate> getActivityDates(List<Class<? extends Record>> recordTypes)
             throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<List<LocalDate>> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
@@ -645,13 +645,15 @@ public final class TestUtils {
 
     public static int getHealthConnectDataMigrationState() throws InterruptedException {
         return callAndGetResponseWithShellPermissionIdentity(
-                        getHealthConnectManager()::getHealthConnectDataState, MANAGE_HEALTH_DATA)
+                        getHealthConnectManager()::getHealthConnectDataState,
+                        MANAGE_HEALTH_DATA_PERMISSION)
                 .getDataMigrationState();
     }
 
     public static int getHealthConnectDataRestoreState() throws InterruptedException {
         return callAndGetResponseWithShellPermissionIdentity(
-                        getHealthConnectManager()::getHealthConnectDataState, MANAGE_HEALTH_DATA)
+                        getHealthConnectManager()::getHealthConnectDataState,
+                        MANAGE_HEALTH_DATA_PERMISSION)
                 .getDataRestoreState();
     }
 
@@ -1035,7 +1037,7 @@ public final class TestUtils {
                 androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
                         .getUiAutomation();
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             updatePriority(permissionCategory, packageNames);
         } finally {
@@ -1092,8 +1094,9 @@ public final class TestUtils {
     /** returns true if the hardware is supported by HealthConnect. */
     public static boolean areHealthPermissionsSupported(Context context) {
         PackageManager pm = context.getPackageManager();
-        boolean isWatchEnabled = pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
-          && Flags.replaceBodySensorPermissionEnabled();
+        boolean isWatchEnabled =
+                pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+                        && Flags.replaceBodySensorPermissionEnabled();
         return isHealthConnectFullySupported(context) || isWatchEnabled;
     }
 
@@ -1104,7 +1107,7 @@ public final class TestUtils {
                 androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
                         .getUiAutomation();
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         FetchDataOriginsPriorityOrderResponse response;
 
         try {

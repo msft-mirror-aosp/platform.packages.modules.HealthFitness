@@ -24,7 +24,6 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -52,13 +51,10 @@ class PlannedExerciseSessionItemViewBinder(
         isDeletionState: Boolean,
         isChecked: Boolean,
     ) {
-        // TODO(b/332538555) Add implementation for telemetry
         val container = view.findViewById<LinearLayout>(R.id.item_data_entry_container)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
-        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
-
         header.text = data.header
         header.contentDescription = data.headerA11y
 
@@ -73,12 +69,19 @@ class PlannedExerciseSessionItemViewBinder(
                         isDeletionState,
                         checkBox.isChecked,
                     )
+                logger.logInteraction(logNameWithCheckbox)
             } else {
-                logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+                logger.logInteraction(logNameWithoutCheckbox)
                 onItemClickedListener?.onItemClicked(data.uuid, index)
             }
         }
+
         checkBox.isVisible = isDeletionState
+        if (isDeletionState) {
+            logger.logImpression(logNameWithCheckbox)
+        } else {
+            logger.logImpression(logNameWithoutCheckbox)
+        }
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
@@ -89,6 +92,7 @@ class PlannedExerciseSessionItemViewBinder(
                     isDeletionState,
                     checkBox.isChecked,
                 )
+            logger.logInteraction(logNameWithCheckbox)
         }
 
         title.text = data.title

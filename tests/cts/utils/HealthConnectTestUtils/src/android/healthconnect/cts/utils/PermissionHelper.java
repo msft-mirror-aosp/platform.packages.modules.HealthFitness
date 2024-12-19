@@ -18,6 +18,7 @@ package android.healthconnect.cts.utils;
 
 import static android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS;
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.healthconnect.cts.utils.TestUtils.getHealthConnectManager;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
@@ -30,7 +31,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
-import android.health.connect.HealthPermissions;
 import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
@@ -51,14 +51,9 @@ import java.util.Set;
 
 public final class PermissionHelper {
 
-    public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+    /** Copy of hidden {@link android.health.connect.HealthPermissions#READ_EXERCISE_ROUTE}. */
     public static final String READ_EXERCISE_ROUTE_PERMISSION =
             "android.permission.health.READ_EXERCISE_ROUTE";
-
-    public static final String READ_EXERCISE_ROUTES =
-            "android.permission.health.READ_EXERCISE_ROUTES";
-    private static final String MANAGE_HEALTH_PERMISSIONS =
-            HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 
     /** Returns valid Health permissions declared in the Manifest of the given package. */
     public static List<String> getDeclaredHealthPermissions(String packageName) {
@@ -110,24 +105,40 @@ public final class PermissionHelper {
                                 packageName, PackageManager.PackageInfoFlags.of(GET_PERMISSIONS)));
     }
 
-    public static void grantPermission(String pkgName, String permission) {
+    /**
+     * Grants the specified health permission to the app specified by {@code packageName}.
+     *
+     * @see HealthConnectManager#grantHealthPermission(String, String)
+     */
+    @SuppressLint("MissingPermission")
+    public static void grantHealthPermission(String packageName, String permission) {
         HealthConnectManager service = getHealthConnectManager();
         runWithShellPermissionIdentity(
                 () ->
                         service.getClass()
                                 .getMethod("grantHealthPermission", String.class, String.class)
-                                .invoke(service, pkgName, permission),
+                                .invoke(service, packageName, permission),
                 MANAGE_HEALTH_PERMISSIONS);
     }
 
-    /** Grants {@code permissions} to the app with {@code pkgName}. */
-    public static void grantPermissions(String pkgName, Collection<String> permissions) {
+    /**
+     * Grants the specified health permissions to the app specified by {@code packageName}.
+     *
+     * @see HealthConnectManager#grantHealthPermission(String, String)
+     */
+    public static void grantHealthPermissions(String packageName, Collection<String> permissions) {
         for (String permission : permissions) {
-            grantPermission(pkgName, permission);
+            grantHealthPermission(packageName, permission);
         }
     }
 
-    public static void revokePermission(String pkgName, String permission) {
+    /**
+     * Revokes the specified health permission from the app specified by {@code packageName}.
+     *
+     * @see HealthConnectManager#revokeHealthPermission(String, String, String)
+     */
+    @SuppressLint("MissingPermission")
+    public static void revokeHealthPermission(String packageName, String permission) {
         HealthConnectManager service = getHealthConnectManager();
         runWithShellPermissionIdentity(
                 () ->
@@ -137,7 +148,7 @@ public final class PermissionHelper {
                                         String.class,
                                         String.class,
                                         String.class)
-                                .invoke(service, pkgName, permission, null),
+                                .invoke(service, packageName, permission, null),
                 MANAGE_HEALTH_PERMISSIONS);
     }
 
@@ -145,7 +156,8 @@ public final class PermissionHelper {
      * Utility method to call {@link HealthConnectManager#revokeAllHealthPermissions(String,
      * String)}.
      */
-    public static void revokeAllPermissions(String packageName, @Nullable String reason) {
+    @SuppressLint("MissingPermission")
+    public static void revokeAllHealthPermissions(String packageName, @Nullable String reason) {
         HealthConnectManager service = getHealthConnectManager();
         runWithShellPermissionIdentity(
                 () ->
@@ -156,12 +168,13 @@ public final class PermissionHelper {
     }
 
     /**
-     * Same as {@link #revokeAllPermissions(String, String)} but with a delay to wait for grant time
-     * to be updated.
+     * Same as {@link #revokeAllHealthPermissions(String, String)} but with a delay to wait for
+     * grant time to be updated.
      */
-    public static void revokeAllPermissionsWithDelay(String packageName, @Nullable String reason)
-            throws InterruptedException {
-        revokeAllPermissions(packageName, reason);
+    public static void revokeAllHealthPermissionsWithDelay(
+            String packageName, @Nullable String reason) throws InterruptedException {
+        revokeAllHealthPermissions(packageName, reason);
+        // TODO(b/381409385): Replace with wait for grant time update.
         Thread.sleep(500);
     }
 
@@ -172,7 +185,7 @@ public final class PermissionHelper {
         revokeHealthPermissions(packageName);
 
         for (String perm : healthPerms) {
-            grantPermission(packageName, perm);
+            grantHealthPermission(packageName, perm);
         }
     }
 
@@ -204,6 +217,7 @@ public final class PermissionHelper {
      * Utility method to call {@link
      * HealthConnectManager#getHealthDataHistoricalAccessStartDate(String)}.
      */
+    @SuppressLint("MissingPermission")
     public static Instant getHealthDataHistoricalAccessStartDate(String packageName) {
         HealthConnectManager service = getHealthConnectManager();
         return (Instant)

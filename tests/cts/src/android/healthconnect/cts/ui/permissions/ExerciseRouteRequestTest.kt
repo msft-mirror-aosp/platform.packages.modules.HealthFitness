@@ -22,6 +22,7 @@ import android.health.connect.HealthConnectManager.ACTION_REQUEST_EXERCISE_ROUTE
 import android.health.connect.HealthConnectManager.EXTRA_EXERCISE_ROUTE
 import android.health.connect.HealthConnectManager.EXTRA_SESSION_ID
 import android.health.connect.HealthPermissions
+import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.ExerciseRoute
 import android.health.connect.datatypes.ExerciseSessionRecord
@@ -31,9 +32,8 @@ import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
-import android.healthconnect.cts.utils.PermissionHelper.READ_EXERCISE_ROUTES
 import android.healthconnect.cts.utils.PermissionHelper.getDeclaredHealthPermissions
-import android.healthconnect.cts.utils.PermissionHelper.grantPermission
+import android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission
 import android.healthconnect.cts.utils.PermissionHelper.runWithRevokedPermission
 import android.healthconnect.cts.utils.PermissionHelper.runWithUserFixedPermission
 import android.healthconnect.cts.utils.ProxyActivity
@@ -54,7 +54,10 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     @JvmField
     @Rule
     val revokedPermissionRule =
-        RevokedHealthPermissionRule(ROUTE_READER_WRITER_APP.getPackageName(), READ_EXERCISE_ROUTES)
+        RevokedHealthPermissionRule(
+            ROUTE_READER_WRITER_APP.getPackageName(),
+            READ_EXERCISE_ROUTES
+        )
 
     companion object {
         private val ROUTE_READER_WRITER_APP =
@@ -221,7 +224,10 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val recordId: String = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
         val requestIntent =
             Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
-        grantPermission(ROUTE_READER_WRITER_APP.getPackageName(), READ_EXERCISE_ROUTES)
+        grantHealthPermission(
+            ROUTE_READER_WRITER_APP.getPackageName(),
+            READ_EXERCISE_ROUTES
+        )
 
         val result =
             runWithRevokedPermission(
@@ -246,7 +252,10 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val recordId = insertRecordAndGetId(record)
         val requestIntent =
             Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
-        grantPermission(ROUTE_READER_WRITER_APP.getPackageName(), READ_EXERCISE_ROUTES)
+        grantHealthPermission(
+            ROUTE_READER_WRITER_APP.getPackageName(),
+            READ_EXERCISE_ROUTES
+        )
 
         val result = ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent)
 
@@ -332,7 +341,10 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val recordId = insertRecordAndGetId(record)
         val requestIntent =
             Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
-        grantPermission(ROUTE_READER_WRITER_APP.getPackageName(), READ_EXERCISE_ROUTES)
+        grantHealthPermission(
+            ROUTE_READER_WRITER_APP.getPackageName(),
+            READ_EXERCISE_ROUTES
+        )
 
         assertThrows(SecurityException::class.java) {
             runWithRevokedPermission(
@@ -477,11 +489,11 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
 
     private fun getExerciseSessionWithRoute(startTime: Instant) =
         ExerciseSessionRecord.Builder(
-                getEmptyMetadata(),
-                startTime,
-                startTime.plus(Duration.ofMinutes(30)),
-                ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
-            )
+            getEmptyMetadata(),
+            startTime,
+            startTime.plus(Duration.ofMinutes(30)),
+            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
+        )
             .setRoute(
                 ExerciseRoute(
                     listOf(
@@ -495,11 +507,11 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     private fun getExerciseSessionWithoutRoute(): ExerciseSessionRecord {
         val startTime = TestUtils.yesterdayAt("11:00")
         return ExerciseSessionRecord.Builder(
-                getEmptyMetadata(),
-                startTime,
-                startTime.plus(Duration.ofMinutes(30)),
-                ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
-            )
+            getEmptyMetadata(),
+            startTime,
+            startTime.plus(Duration.ofMinutes(30)),
+            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
+        )
             .build()
     }
 }

@@ -25,7 +25,6 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry.Exercise
 import com.android.healthconnect.controller.shared.RoundView
 import com.android.healthconnect.controller.shared.map.MapView
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -65,7 +64,6 @@ class ExerciseSessionItemViewBinder(
         val mapView = view.findViewById<MapView>(R.id.map_view)
         val mapContainer = view.findViewById<RoundView>(R.id.map_round_view)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
-        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         header.text = data.header
         header.contentDescription = data.headerA11y
         notes.isVisible = !data.notes.isNullOrBlank()
@@ -88,11 +86,12 @@ class ExerciseSessionItemViewBinder(
                         isDeletionState,
                         checkBox.isChecked,
                     )
+                logger.logInteraction(logNameWithCheckbox)
             }
         } else {
             if (data.isClickable) {
                 container.setOnClickListener {
-                    logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+                    logger.logInteraction(logNameWithoutCheckbox)
                     onItemClickedListener?.onItemClicked(data.uuid, index)
                 }
             } else {
@@ -101,6 +100,11 @@ class ExerciseSessionItemViewBinder(
         }
 
         checkBox.isVisible = isDeletionState
+        if (isDeletionState) {
+            logger.logImpression(logNameWithCheckbox)
+        } else {
+            logger.logImpression(logNameWithoutCheckbox)
+        }
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
@@ -111,6 +115,7 @@ class ExerciseSessionItemViewBinder(
                     isDeletionState,
                     checkBox.isChecked,
                 )
+            logger.logInteraction(logNameWithCheckbox)
         }
 
         title.text = data.title

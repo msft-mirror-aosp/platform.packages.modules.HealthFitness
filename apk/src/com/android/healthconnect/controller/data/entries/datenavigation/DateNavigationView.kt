@@ -32,8 +32,8 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.getPeriodStartDate
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.EntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import com.android.healthconnect.controller.utils.toInstant
@@ -194,15 +194,15 @@ constructor(
                     val period: DateNavigationPeriod =
                         when (position) {
                             0 -> {
-                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+                                logger.logInteraction(EntriesElement.DATE_VIEW_SPINNER_DAY)
                                 PERIOD_DAY
                             }
                             1 -> {
-                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
+                                logger.logInteraction(EntriesElement.DATE_VIEW_SPINNER_WEEK)
                                 PERIOD_WEEK
                             }
                             2 -> {
-                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+                                logger.logInteraction(EntriesElement.DATE_VIEW_SPINNER_MONTH)
                                 PERIOD_MONTH
                             }
                             else -> throw IllegalStateException("Not supported time period.")
@@ -228,9 +228,9 @@ constructor(
                 }
             }
         when (period) {
-            PERIOD_DAY -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
-            PERIOD_WEEK -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
-            PERIOD_MONTH -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+            PERIOD_DAY -> logger.logImpression(EntriesElement.DATE_VIEW_SPINNER_DAY)
+            PERIOD_WEEK -> logger.logImpression(EntriesElement.DATE_VIEW_SPINNER_WEEK)
+            PERIOD_MONTH -> logger.logImpression(EntriesElement.DATE_VIEW_SPINNER_MONTH)
         }
     }
 

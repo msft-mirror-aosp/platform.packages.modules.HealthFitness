@@ -24,24 +24,28 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -50,7 +54,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeToke
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -62,7 +65,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,13 +85,10 @@ public class CloudBackupManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
 
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
-
+    private Context mContext;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private CloudBackupManager mCloudBackupManager;
@@ -101,10 +100,9 @@ public class CloudBackupManagerTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
+        mContext = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mDatabaseTestRule.getDatabaseContext())
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
@@ -243,13 +241,15 @@ public class CloudBackupManagerTest {
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT));
 
         // Delete backup_change_token_table.
-        HealthConnectDatabase database =
-                new HealthConnectDatabase(mDatabaseTestRule.getDatabaseContext());
-        database.getWritableDatabase()
-                .execSQL("DROP TABLE IF EXISTS " + BackupChangeTokenHelper.getTableName());
+        HealthConnectContext dbContext = HealthConnectContext.create(mContext, mContext.getUser());
+        try (HealthConnectDatabase database = new HealthConnectDatabase(dbContext)) {
+            database.getWritableDatabase()
+                    .execSQL("DROP TABLE IF EXISTS " + BackupChangeTokenHelper.getTableName());
 
-        assertThrows(SQLiteException.class, () -> mCloudBackupManager.getChangesForBackup(null));
-        // Add backup_change_token_table back to not affect other tests.
-        BackupChangeTokenHelper.applyBackupTokenUpgrade(database.getWritableDatabase());
+            assertThrows(
+                    SQLiteException.class, () -> mCloudBackupManager.getChangesForBackup(null));
+            // Add backup_change_token_table back to not affect other tests.
+            BackupChangeTokenHelper.applyBackupTokenUpgrade(database.getWritableDatabase());
+        }
     }
 }
