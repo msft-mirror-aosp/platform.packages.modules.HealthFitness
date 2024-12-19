@@ -66,7 +66,7 @@ public class ExerciseSegmentInternalTest {
     public void testExerciseSegmentInternal_writeToParcelAndBack_recordsAreEqual() {
         ExerciseSegmentInternal segment =
                 new ExerciseSegmentInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli())
                         .setSegmentType(ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ARM_CURL)
                         .setRepetitionsCount(10);
@@ -82,7 +82,7 @@ public class ExerciseSegmentInternalTest {
     public void testExerciseSegmentInternal_writeToParcelAndBackNoReps_recordsAreEqual() {
         ExerciseSegmentInternal segment =
                 new ExerciseSegmentInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli())
                         .setSegmentType(ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ARM_CURL);
         Parcel parcel = Parcel.obtain();

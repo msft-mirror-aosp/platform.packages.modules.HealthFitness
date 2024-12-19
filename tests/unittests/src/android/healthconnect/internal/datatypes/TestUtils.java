@@ -153,7 +153,10 @@ public class TestUtils {
     }
 
     public static ExerciseLapInternal buildExerciseLap() {
-        return new ExerciseLapInternal().setStarTime(START_TIME).setEndTime(END_TIME).setLength(10);
+        return new ExerciseLapInternal()
+                .setStartTime(START_TIME)
+                .setEndTime(END_TIME)
+                .setLength(10);
     }
 
     public static SleepStageInternal buildSleepStage() {
@@ -165,7 +168,7 @@ public class TestUtils {
 
     public static ExerciseSegmentInternal buildExerciseSegment() {
         return new ExerciseSegmentInternal()
-                .setStarTime(START_TIME)
+                .setStartTime(START_TIME)
                 .setEndTime(END_TIME)
                 .setSegmentType(ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ARM_CURL)
                 .setRepetitionsCount(10);
