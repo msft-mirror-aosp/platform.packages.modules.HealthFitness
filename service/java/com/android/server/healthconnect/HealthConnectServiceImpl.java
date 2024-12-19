@@ -640,16 +640,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     boolean shouldRecordAccessLog = !holdsDataManagementPermission;
                     callback.onResult(
                             new AggregateTransactionRequest(
-                                            mAppInfoHelper,
                                             attributionSource.getPackageName(),
                                             request,
-                                            mHealthDataCategoryPriorityHelper,
-                                            mInternalHealthConnectMappings,
                                             mTransactionManager,
+                                            mAppInfoHelper,
+                                            mHealthDataCategoryPriorityHelper,
+                                            mAccessLogsHelper,
                                             mReadAccessLogsHelper,
-                                            startDateAccess)
-                                    .getAggregateDataResponseParcel(
-                                            mAccessLogsHelper, shouldRecordAccessLog));
+                                            mInternalHealthConnectMappings,
+                                            startDateAccess,
+                                            shouldRecordAccessLog)
+                                    .getAggregateDataResponseParcel());
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
                             .setHealthDataServiceApiStatusSuccess();
                 },
