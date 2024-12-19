@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.phr.apis;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
@@ -32,7 +33,6 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
@@ -111,7 +111,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                     assertThat(receiver.assertAndGetException().getErrorCode())
                             .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
 
         finishMigrationWithShellPermissionIdentity();
     }
@@ -198,7 +198,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test
@@ -283,7 +283,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test

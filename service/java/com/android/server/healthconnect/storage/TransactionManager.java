@@ -41,7 +41,6 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Pair;
 import android.util.Slog;
 
-import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -49,7 +48,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -65,7 +63,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -717,38 +714,6 @@ public final class TransactionManager {
     /** Get number of entries in the given table. */
     public long queryNumEntries(String tableName) {
         return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
-    }
-
-    public void populateWithAggregation(
-            AggregateTableRequest aggregateTableRequest,
-            String readerPackageName,
-            Set<Integer> recordTypeIds,
-            AccessLogsHelper accessLogsHelper,
-            ReadAccessLogsHelper readAccessLogsHelper,
-            long timeRangeForAggregationEndTime,
-            long readTime,
-            boolean shouldRecordAccessLog) {
-        final SQLiteDatabase db = getReadableDb();
-        try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
-                Cursor metaDataCursor =
-                        db.rawQuery(
-                                aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
-            List<String> contributingPackages =
-                    aggregateTableRequest.processResultsAndReturnContributingPackages(
-                            cursor, metaDataCursor);
-            if (AconfigFlagHelper.isEcosystemMetricsEnabled() && shouldRecordAccessLog) {
-                readAccessLogsHelper.recordAccessLogForAggregationReads(
-                        db,
-                        readerPackageName,
-                        /* readTimeStamp= */ readTime,
-                        aggregateTableRequest.getRecordTypeId(),
-                        /* endTimeStamp= */ timeRangeForAggregationEndTime,
-                        contributingPackages);
-            }
-        }
-        if (Flags.addMissingAccessLogs() && shouldRecordAccessLog) {
-            accessLogsHelper.recordReadAccessLog(getWritableDb(), readerPackageName, recordTypeIds);
-        }
     }
 
     /** Size of Health Connect database in bytes. */

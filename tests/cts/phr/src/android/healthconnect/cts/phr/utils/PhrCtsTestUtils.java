@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.phr.utils;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
@@ -44,9 +45,8 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_Patie
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResources;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
-import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermission;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
@@ -298,7 +298,7 @@ public class PhrCtsTestUtils {
             return;
         }
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
             ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -370,7 +370,7 @@ public class PhrCtsTestUtils {
      */
     public List<MedicalResourceId> insertSourceAndOneResourcePerPermissionCategory(
             TestAppProxy appProxy) throws Exception {
-        grantPermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
+        grantHealthPermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
         String dataSourceId =
                 appProxy.createMedicalDataSource(getCreateMedicalDataSourceRequest()).getId();
         List<MedicalResource> insertedMedicalResources =
@@ -390,7 +390,7 @@ public class PhrCtsTestUtils {
                         appProxy.upsertMedicalResource(
                                 dataSourceId, FHIR_DATA_OBSERVATION_VITAL_SIGNS),
                         appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_OBSERVATION_LABS));
-        revokePermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
+        revokeHealthPermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
 
         checkState(
                 insertedMedicalResources.stream()

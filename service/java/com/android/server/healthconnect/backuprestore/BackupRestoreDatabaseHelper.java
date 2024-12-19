@@ -18,9 +18,11 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
+import android.annotation.FlaggedApi;
 import android.annotation.Nullable;
 import android.database.Cursor;
 import android.health.connect.PageTokenWrapper;
@@ -33,9 +35,9 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
-import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -50,9 +52,6 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +64,7 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
+@FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public class BackupRestoreDatabaseHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
@@ -75,6 +75,7 @@ public class BackupRestoreDatabaseHelper {
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
+    private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
 
     // TODO: b/377648858 - maybe also allow client passes its own page size.
     @VisibleForTesting static final int MAXIMUM_PAGE_SIZE = 5000;
@@ -336,16 +337,10 @@ public class BackupRestoreDatabaseHelper {
                 .toList();
     }
 
-    private static byte[] serializeRecordInternal(RecordInternal<?> recordInternal) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ObjectOutputStream objectOutputStream =
-                        new ObjectOutputStream(byteArrayOutputStream)) {
-            objectOutputStream.writeObject(recordInternal);
-            objectOutputStream.flush();
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            Slog.e(TAG, "Failed to serialize an internal record", e);
-            return new byte[0];
-        }
+    private byte[] serializeRecordInternal(RecordInternal<?> recordInternal) {
+        return BackupData.newBuilder()
+                .setRecord(mRecordProtoConverter.toRecordProto(recordInternal))
+                .build()
+                .toByteArray();
     }
 }

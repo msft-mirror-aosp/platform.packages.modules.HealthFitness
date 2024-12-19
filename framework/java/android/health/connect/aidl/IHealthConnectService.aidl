@@ -38,6 +38,7 @@ import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.RecordsParcel;
+import android.health.connect.aidl.ICanRestoreResponseCallback;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
 import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
 import android.health.connect.backuprestore.BackupSettings;
@@ -53,6 +54,7 @@ import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.health.connect.backuprestore.BackupChange;
 import android.net.Uri;
 import android.os.UserHandle;
 
@@ -537,12 +539,42 @@ interface IHealthConnectService {
      */
     void queryAllMedicalResourceTypeInfos(in IMedicalResourceTypeInfosCallback callback);
 
-    /** @hide */
+    /**
+     * Returns the paganized changes for cloud backup based on the changeToken.
+     *
+     * @param changeToken Indicates whether and where to resume to the data backup.
+     * @param callback Callback to receive result of performing this operation.
+     */
     void getChangesForBackup(in @nullable String changeToken, in IGetChangesForBackupResponseCallback callback);
 
-    /** @hide */
+    /**
+     * Returns the settings for cloud backup.
+     *
+     * @param callback Callback to receive result of performing this operation.
+     */
     void getSettingsForBackup(in IGetSettingsForBackupResponseCallback callback);
 
-    /** @hide */
+    /**
+     * Restores the backed up settings for restore.
+     *
+     * @param backupSettings Settings that were previously backed up.
+     * @param callback Callback to receive result of performing this operation.
+     */
     void pushSettingsForRestore(in BackupSettings backupSettings, in IEmptyResponseCallback callback);
+
+    /**
+     * Returns whether the input data version can be restored.
+     *
+     * @param dataVersion Data version to be restored.
+     * @param callback Callback to receive result of performing this operation.
+     */
+     void canRestore(in int dataVersion, in ICanRestoreResponseCallback callback);
+
+    /**
+     * Restored the input changes.
+     *
+     * @param changes Changes to be restored.
+     * @param callback Callback to receive result of performing this operation.
+     */
+     void pushChangesForRestore(in List<BackupChange> changes, in IEmptyResponseCallback callback);
 }

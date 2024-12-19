@@ -18,6 +18,8 @@ package healthconnect.backuprestore;
 
 import static org.junit.Assert.assertThrows;
 
+import static java.util.Collections.emptyList;
+
 import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.BackupSettings;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -61,5 +63,19 @@ public class CloudRestoreManagerTest {
         assertThrows(
                 UnsupportedOperationException.class,
                 () -> mCloudRestoreManager.pushSettingsForRestore(backupSettings));
+    }
+
+    @Test
+    public void canRestore_unsupportedOperationExceptionThrown() {
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> mCloudRestoreManager.canRestore(/* dataVersion= */ 1));
+    }
+
+    @Test
+    public void pushChangesForRestore_unsupportedOperationExceptionThrown() {
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> mCloudRestoreManager.pushChangesForRestore(emptyList()));
     }
 }

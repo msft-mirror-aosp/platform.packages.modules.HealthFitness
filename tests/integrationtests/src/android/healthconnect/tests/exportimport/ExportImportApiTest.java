@@ -16,9 +16,9 @@
 
 package android.healthconnect.tests.exportimport;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.WRITE_STEPS;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
@@ -44,7 +44,7 @@ import android.platform.test.annotations.EnableFlags;
 import android.util.Slog;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.compatibility.common.util.SystemUtil;
 import com.android.healthfitness.flags.Flags;
@@ -113,7 +113,7 @@ public class ExportImportApiTest {
 
     @Test
     public void exportDeleteDataAndThenImport_dataIsRestored() throws Exception {
-        grantPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
         insertRecords(getTestStepRecords());
         List<StepsRecord> stepsRecords = readAllRecords(StepsRecord.class);
         assertThat(stepsRecords).isNotEmpty();
@@ -125,7 +125,7 @@ public class ExportImportApiTest {
                                         .setUri(mRemoteExportFileUri)
                                         .setPeriodInDays(1)
                                         .build()),
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
         SystemUtil.eventually(
                 () ->
                         assertWithMessage("The job is still not scheduled after 10 secs")
@@ -143,7 +143,7 @@ public class ExportImportApiTest {
         callAndGetResponseWithShellPermissionIdentity(
                 (executor, receiver) ->
                         mHealthConnectManager.runImport(mRemoteExportFileUri, executor, receiver),
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
 
         List<StepsRecord> stepsRecordsAfterImport = readAllRecords(StepsRecord.class);
         assertThat(stepsRecordsAfterImport).isEqualTo(stepsRecords);
@@ -159,7 +159,7 @@ public class ExportImportApiTest {
                                         .setUri(mRemoteExportFileUri)
                                         .setPeriodInDays(1)
                                         .build()),
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
         // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
         SystemUtil.eventually(
                 () ->
@@ -177,7 +177,7 @@ public class ExportImportApiTest {
                                     .setPeriodInDays(0)
                                     .build());
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
         // TODO: b/375190993 - Improve tests (as possible) by replacing polling checks.
         SystemUtil.eventually(
                 () ->
