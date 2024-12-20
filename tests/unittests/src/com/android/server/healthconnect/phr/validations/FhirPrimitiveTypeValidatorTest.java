@@ -20,7 +20,7 @@ import static com.android.server.healthconnect.phr.validations.FhirPrimitiveType
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BOOLEAN;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CANONICAL;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODE;
-import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_COMPLEX;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE_TIME;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DECIMAL;
@@ -79,7 +79,8 @@ public class FhirPrimitiveTypeValidatorTest {
     @Test
     public void testValidate_notPrimitive_complexType_throws() {
         assertThrows(
-                IllegalStateException.class, () -> validate(null, "field", R4_FHIR_TYPE_COMPLEX));
+                IllegalStateException.class,
+                () -> validate(null, "field", R4_FHIR_TYPE_CODEABLE_CONCEPT));
     }
 
     @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})

@@ -77,9 +77,7 @@ enum Kind {
 }
 
 // The R4 Fhir type used to indicate the type of a field extracted from the fhir spec.
-// Note that all complex data types (non-primitive type) are combined under R4_FHIR_TYPE_COMPLEX
-// for now.
-// Next ID: 44
+// Next ID: 43
 enum R4FhirType {
     R4_FHIR_TYPE_UNSPECIFIED = 0;
     R4_FHIR_TYPE_ADDRESS = 1;
@@ -124,7 +122,4 @@ enum R4FhirType {
     R4_FHIR_TYPE_URI = 40;
     R4_FHIR_TYPE_URL = 41;
     R4_FHIR_TYPE_UUID = 42;
-    // TODO:b/377701407 - Remove this after extracting complex types correctly
-    R4_FHIR_TYPE_COMPLEX = 43;
-
 }
