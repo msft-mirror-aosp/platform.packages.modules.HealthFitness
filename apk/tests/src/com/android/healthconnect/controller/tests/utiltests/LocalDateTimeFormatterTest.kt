@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.tests.utiltests
 
 import android.content.Context
 import android.content.res.Configuration
+import android.icu.util.VersionInfo
 import android.os.LocaleList
 import android.provider.Settings.System
 import com.android.compatibility.common.util.UserSettings
@@ -194,7 +195,8 @@ class LocalDateTimeFormatterTest {
     @Test
     fun formatWeekdayDateWithoutYear_ukLocale() {
         val formatter = setLocaleAndCreateFormatter(Locale.UK)
-        assertThat(formatter.formatWeekdayDateWithoutYear(time)).isEqualTo("Thu, 20 Oct")
+        val expected = if (VersionInfo.ICU_VERSION.major >= 76) "Thu 20 Oct" else "Thu, 20 Oct"
+        assertThat(formatter.formatWeekdayDateWithoutYear(time)).isEqualTo(expected)
     }
 
     @Test
