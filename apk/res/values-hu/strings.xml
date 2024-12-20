@@ -319,9 +319,9 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergia"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergia"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Allergiainformációk olvasása"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Feltételek"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"feltételek"</string>
-    <string name="conditions_content_description" msgid="3230552343616193829">"A feltételek elolvasása"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Állapotok"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"állapotok"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Állapotok elolvasása"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Oltások"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"oltások"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"Oltásinformációk olvasása"</string>
@@ -343,9 +343,9 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Eljárások"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"eljárások"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Eljárások olvasása"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Közösségimédia-előzmények"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Szociális kórelőzmény"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"társadalomtörténet"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"Közösségi előzmények olvasása"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Szociális kórelőzmény olvasása"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Látogatások"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"látogatások"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Látogatások olvasása"</string>
