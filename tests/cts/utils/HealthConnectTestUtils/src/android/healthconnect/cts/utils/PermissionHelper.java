@@ -44,9 +44,10 @@ import com.google.common.collect.Sets;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public final class PermissionHelper {
@@ -57,44 +58,48 @@ public final class PermissionHelper {
 
     /** Returns valid Health permissions declared in the Manifest of the given package. */
     public static List<String> getDeclaredHealthPermissions(String packageName) {
-        Context context = ApplicationProvider.getApplicationContext();
-        PackageInfo packageInfo = getAppPackageInfo(context, packageName);
-        String[] requestedPermissions = packageInfo.requestedPermissions;
-
-        if (requestedPermissions == null) {
-            return List.of();
-        }
-
-        return Arrays.stream(requestedPermissions)
-                .filter(permission -> HealthConnectManager.isHealthPermission(context, permission))
-                .toList();
+        return List.copyOf(getHealthPermissionFlags(packageName).keySet());
     }
 
     /** Returns all Health permissions that are granted to the specified package. */
     public static List<String> getGrantedHealthPermissions(String packageName) {
+        ArrayList<String> permissions = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : getHealthPermissionFlags(packageName).entrySet()) {
+            if ((entry.getValue() & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
+                permissions.add(entry.getKey());
+            }
+        }
+        return permissions;
+    }
+
+    /** Grants all health permissions to the app specified by {@code packageName}. */
+    public static void grantAllHealthPermissions(String packageName) {
+        for (Map.Entry<String, Integer> entry : getHealthPermissionFlags(packageName).entrySet()) {
+            if ((entry.getValue() & PackageInfo.REQUESTED_PERMISSION_GRANTED) == 0) {
+                grantHealthPermission(packageName, entry.getKey());
+            }
+        }
+    }
+
+    private static Map<String, Integer> getHealthPermissionFlags(String packageName) {
         Context context = ApplicationProvider.getApplicationContext();
-        PackageInfo packageInfo = getAppPackageInfo(context, packageName);
+        PackageManager packageManager = context.getPackageManager();
+
+        PackageInfo packageInfo = getAppPackageInfo(packageManager, packageName);
         String[] requestedPermissions = packageInfo.requestedPermissions;
         int[] requestedPermissionsFlags = packageInfo.requestedPermissionsFlags;
 
         if (requestedPermissions == null || requestedPermissionsFlags == null) {
-            return List.of();
+            return Map.of();
         }
 
-        final List<String> permissions = new ArrayList<>();
-
+        HashMap<String, Integer> flags = new HashMap<>();
         for (int i = 0; i < requestedPermissions.length; i++) {
-            if ((requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0
-                    && HealthConnectManager.isHealthPermission(context, requestedPermissions[i])) {
-                permissions.add(requestedPermissions[i]);
+            if (HealthConnectManager.isHealthPermission(context, requestedPermissions[i])) {
+                flags.put(requestedPermissions[i], requestedPermissionsFlags[i]);
             }
         }
-
-        return permissions;
-    }
-
-    private static PackageInfo getAppPackageInfo(Context context, String packageName) {
-        return getAppPackageInfo(context.getPackageManager(), packageName);
+        return flags;
     }
 
     private static PackageInfo getAppPackageInfo(

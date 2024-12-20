@@ -38,10 +38,13 @@ import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.SQLiteDatabaseFixture;
@@ -69,6 +72,9 @@ import java.util.UUID;
 public class ChangeLogsHelperTest {
 
     @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
@@ -162,6 +168,60 @@ public class ChangeLogsHelperTest {
 
         assertThat(mChangeLogsHelper.getRecordTypesWrittenInPast30Days())
                 .containsExactly(RECORD_TYPE_STEPS);
+    }
+
+    @Test
+    public void getDeleteRequestForAutoDelete_byDefault_removeChangeLogsMoreThan32DaysOld() {
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_STEPS,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().minus(60, ChronoUnit.DAYS).toEpochMilli());
+
+        mTransactionManager.deleteAll(List.of(ChangeLogsHelper.getDeleteRequestForAutoDelete()));
+
+        assertThat(mChangeLogsHelper.getLatestRowId()).isEqualTo(0);
+    }
+
+    @Test
+    public void getDeleteRequestForAutoDelete_byDefault_notRemoveChangeLogsLessThan32DaysOld() {
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_STEPS,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().minus(10, ChronoUnit.DAYS).toEpochMilli());
+
+        mTransactionManager.deleteAll(List.of(ChangeLogsHelper.getDeleteRequestForAutoDelete()));
+
+        assertThat(mChangeLogsHelper.getLatestRowId()).isEqualTo(1);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void getDeleteRequestForAutoDelete_doesNotRemoveChangeLogsLessThan90DaysOld() {
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_STEPS,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().minus(60, ChronoUnit.DAYS).toEpochMilli());
+
+        mTransactionManager.deleteAll(List.of(ChangeLogsHelper.getDeleteRequestForAutoDelete()));
+
+        assertThat(mChangeLogsHelper.getLatestRowId()).isEqualTo(1);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void getDeleteRequestForAutoDelete_removeChangeLogsMoreThan90DaysOld() {
+        insertChangeLog(
+                /* recordType= */ RECORD_TYPE_STEPS,
+                /* appInfoId= */ 1,
+                /* operationType= */ AccessLog.OperationType.OPERATION_TYPE_UPSERT,
+                /* timeStamp= */ Instant.now().minus(120, ChronoUnit.DAYS).toEpochMilli());
+
+        mTransactionManager.deleteAll(List.of(ChangeLogsHelper.getDeleteRequestForAutoDelete()));
+
+        assertThat(mChangeLogsHelper.getLatestRowId()).isEqualTo(0);
     }
 
     private void insertChangeLog(

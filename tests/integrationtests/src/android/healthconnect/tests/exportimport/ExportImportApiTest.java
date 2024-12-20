@@ -44,7 +44,7 @@ import android.platform.test.annotations.EnableFlags;
 import android.util.Slog;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.compatibility.common.util.SystemUtil;
 import com.android.healthfitness.flags.Flags;
