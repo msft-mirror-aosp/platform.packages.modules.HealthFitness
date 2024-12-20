@@ -69,11 +69,6 @@ message FhirFieldConfig {
 
     // The data type of this field.
     R4FhirType r4_type = 2;
-
-    // The kind of FHIR data type of this field.
-    // TODO: b/361775175 - this should be moved to the FhirComplexTypeConfig instead, when we have
-    //  configs for types.
-    Kind kind = 3;
 }
 
 // Represents the kind of fhir data type, as found in the StructureDefinition.kind field

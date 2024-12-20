@@ -829,43 +829,35 @@ class FhirSpecExtractorTest(unittest.TestCase):
         expected_field_names_to_config = {
             "resourceType": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
             ),
             "id": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID
             ),
             "status": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE
             ),
             "vaccineCode": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT
             ),
             "exampleFieldToTestOneToMany": fhirspec_pb2.FhirFieldConfig(
                 is_array=True,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT
             ),
             "occurrenceDateTime": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME
             ),
             "occurrenceString": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
             ),
             "performer": fhirspec_pb2.FhirFieldConfig(
                 is_array=True,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT
             ),
         }
 
@@ -944,58 +936,47 @@ class FhirSpecExtractorTest(unittest.TestCase):
         expected_field_names_to_config = {
             "resourceType": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
             ),
             "id": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID
             ),
             "status": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE
             ),
             "code": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT
             ),
             "valueQuantity": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_QUANTITY,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_QUANTITY
             ),
             "valueCodeableConcept": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT
             ),
             "valueString": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
             ),
             "valueBoolean": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BOOLEAN,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BOOLEAN
             ),
             "valueInteger": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_INTEGER,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_INTEGER
             ),
             "valueSampledData": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SAMPLED_DATA,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_SAMPLED_DATA
             ),
             "valueDateTime": fhirspec_pb2.FhirFieldConfig(
                 is_array=False,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME,
-                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME
             ),
         }
 

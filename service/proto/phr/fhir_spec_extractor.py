@@ -136,8 +136,7 @@ class FhirSpecExtractor:
         # Manually add resourceType field, as this is not present in the spec
         field_configs_by_name["resourceType"] = fhirspec_pb2.FhirFieldConfig(
             is_array=False,
-            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
-            kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
+            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
         )
 
         for element in element_definitions:
@@ -214,11 +213,9 @@ class FhirSpecExtractor:
             for data_type in element_definition["type"]:
                 field_with_type = self._get_multi_type_name_for_type(field_name, data_type["code"])
                 type_enum = self._extract_type_enum_from_type(data_type)
-                kind_enum = self._get_kind_enum_from_type_code(data_type["code"])
                 field_configs_by_name[field_with_type] = fhirspec_pb2.FhirFieldConfig(
                     is_array=False,
-                    r4_type=type_enum,
-                    kind=kind_enum
+                    r4_type=type_enum
                 )
                 multi_type_fields.append(field_with_type)
 
@@ -233,11 +230,9 @@ class FhirSpecExtractor:
                 raise ValueError("Expected exactly one type")
             fhir_type = element_definition["type"][0]
             type_enum = self._extract_type_enum_from_type(fhir_type)
-            kind_enum = self._get_kind_enum_from_type_code(fhir_type["code"])
             field_configs_by_name[field_name] = fhirspec_pb2.FhirFieldConfig(
                 is_array=field_is_array,
-                r4_type=type_enum,
-                kind=kind_enum
+                r4_type=type_enum
             )
 
         return field_configs_by_name, multi_type_config
@@ -328,16 +323,3 @@ class FhirSpecExtractor:
 
     def _get_kind_enum_from_kind(self, kind_string: str) -> fhirspec_pb2.Kind:
         return fhirspec_pb2.Kind.Value("KIND_" + to_upper_snake_case(kind_string))
-
-    # TODO:b/361775175 - remove this method when reading from the FhirDataType config, which
-    #  contains the KIND value read from the type definitions file (uses _get_kind_enum_from_kind)
-    def _get_kind_enum_from_type_code(self, type_code: str):
-        # "id" fields usually have a type containing the following type code and extension
-        # https://hl7.org/fhir/extensions/StructureDefinition-structuredefinition-fhir-type.html
-        if type_code == "http://hl7.org/fhirpath/System.String":
-            return fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE
-
-        is_primitive_type = type_code[0].islower() and type_code != "xhtml"
-
-        return fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE \
-            if is_primitive_type else fhirspec_pb2.Kind.KIND_COMPLEX_TYPE
