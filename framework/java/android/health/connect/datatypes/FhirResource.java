@@ -126,7 +126,7 @@ public final class FhirResource implements Parcelable {
      */
     public static final int FHIR_RESOURCE_TYPE_ORGANIZATION = 14;
 
-    // LINT.ThenChange(/service/proto/phr/fhir_spec_extractor.py:fhir_resource_type_mapping)
+    // LINT.ThenChange(/service/proto/phr/fhir_spec_utils.py:fhir_resource_type_mapping)
 
     /** @hide */
     @IntDef({

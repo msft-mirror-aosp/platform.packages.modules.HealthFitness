@@ -19,15 +19,21 @@ package com.android.server.healthconnect.phr.validations;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.FhirResource.validateFhirResourceType;
 
+import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
+
 import android.health.connect.datatypes.FhirVersion;
 import android.util.ArrayMap;
 
-import com.android.server.healthconnect.proto.FhirDataTypeConfig;
+import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
+import com.android.server.healthconnect.proto.FhirFieldConfig;
 import com.android.server.healthconnect.proto.FhirResourceSpec;
+import com.android.server.healthconnect.proto.R4FhirType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Contains the parsed Fhir resource spec, which can be used to validate FHIR resources against the
@@ -38,7 +44,9 @@ import java.util.Map;
 public class FhirSpecProvider {
     private static final String R4_FHIR_SPEC_FILE_NAME = "fhirspec-r4.binarypb";
 
-    private Map<Integer, FhirDataTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
+    private Map<Integer, FhirComplexTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
+
+    private Set<R4FhirType> mPrimitiveTypes = new HashSet<>();
 
     /**
      * Parses the {@link FhirResourceSpec} proto file for the provided {@link FhirVersion} *
@@ -62,29 +70,49 @@ public class FhirSpecProvider {
         } catch (IOException e) {
             throw new IllegalStateException("Could not parse file");
         }
-        Map<Integer, FhirDataTypeConfig> resourceTypeToConfig =
+        Map<Integer, FhirComplexTypeConfig> resourceTypeToConfig =
                 r4FhirResourceSpec.getResourceTypeToConfigMap();
         resourceTypeToConfig.forEach(
                 (resourceType, config) -> {
                     validateFhirResourceType(resourceType);
                     mResourceTypeIntToFhirSpecMap.put(resourceType, config);
+                    mPrimitiveTypes.addAll(getPrimitiveTypes(config));
                 });
     }
 
+    private static Set<R4FhirType> getPrimitiveTypes(FhirComplexTypeConfig complexTypeConfig) {
+        Set<R4FhirType> primitiveTypes = new HashSet<>();
+        for (FhirFieldConfig fieldConfig :
+                complexTypeConfig.getAllowedFieldNamesToConfigMap().values()) {
+            if (fieldConfig.getKind() == KIND_PRIMITIVE_TYPE) {
+                primitiveTypes.add(fieldConfig.getR4Type());
+            }
+        }
+
+        return primitiveTypes;
+    }
+
     /**
-     * Returns the {@link FhirDataTypeConfig} for the provided {@code resourceType}
+     * Returns the {@link FhirComplexTypeConfig} for the provided {@code resourceType}
      *
      * @throws IllegalArgumentException if no config exists for the specified type.
      */
-    public FhirDataTypeConfig getFhirDataTypeConfigForResourceType(
-            @FhirResourceType int resourceType) {
+    public FhirComplexTypeConfig getFhirResourceTypeConfig(@FhirResourceType int resourceType) {
         validateFhirResourceType(resourceType);
 
-        FhirDataTypeConfig config = mResourceTypeIntToFhirSpecMap.get(resourceType);
+        FhirComplexTypeConfig config = mResourceTypeIntToFhirSpecMap.get(resourceType);
         if (config == null) {
             throw new IllegalArgumentException(
                     "Could not find config for resource type " + resourceType);
         }
         return config;
+    }
+
+    /** Returns the {@code true} if the provided {@code fhirType} is a primitive type. */
+    public boolean isPrimitiveType(R4FhirType fhirType) {
+        return mPrimitiveTypes.contains(fhirType);
+
+        // TODO(b/377701407) After we extract a complex type config - throw exception if the spec is
+        //  not aware of the type.
     }
 }
