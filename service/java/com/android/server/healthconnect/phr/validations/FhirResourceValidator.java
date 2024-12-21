@@ -18,14 +18,13 @@ package com.android.server.healthconnect.phr.validations;
 
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 
-import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
-
 import android.health.connect.datatypes.FhirVersion;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.healthconnect.proto.FhirDataTypeConfig;
+import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
 import com.android.server.healthconnect.proto.FhirFieldConfig;
 import com.android.server.healthconnect.proto.MultiTypeFieldConfig;
+import com.android.server.healthconnect.proto.R4FhirType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,8 +62,7 @@ public class FhirResourceValidator {
     // TODO: b/374949383 - Improve this to validate each field content by type
     public void validateFhirResource(
             JSONObject fhirJsonObject, @FhirResourceType int fhirResourceType) {
-        FhirDataTypeConfig config =
-                mFhirSpec.getFhirDataTypeConfigForResourceType(fhirResourceType);
+        FhirComplexTypeConfig config = mFhirSpec.getFhirResourceTypeConfig(fhirResourceType);
 
         Map<String, FhirFieldConfig> fieldToConfig = config.getAllowedFieldNamesToConfigMap();
 
@@ -86,7 +84,7 @@ public class FhirResourceValidator {
                 throw new IllegalStateException(
                         "Could not find field config for required field " + requiredField);
             }
-            boolean fieldIsPrimitiveType = fieldConfig.getKind().equals(KIND_PRIMITIVE_TYPE);
+            boolean fieldIsPrimitiveType = mFhirSpec.isPrimitiveType(fieldConfig.getR4Type());
 
             if (!fieldIsPresent(fhirJsonObject, requiredField, fieldIsPrimitiveType)) {
                 throw new IllegalArgumentException("Missing required field " + requiredField);
@@ -111,7 +109,7 @@ public class FhirResourceValidator {
                     throw new IllegalStateException(
                             "Could not find field config for field " + typedField);
                 }
-                boolean fieldIsPrimitiveType = fieldConfig.getKind().equals(KIND_PRIMITIVE_TYPE);
+                boolean fieldIsPrimitiveType = mFhirSpec.isPrimitiveType(fieldConfig.getR4Type());
 
                 if (fieldIsPresent(fhirJsonObject, typedField, fieldIsPrimitiveType)) {
                     presentFieldCount++;
@@ -145,10 +143,13 @@ public class FhirResourceValidator {
                     fieldStartsWithUnderscore ? fieldName.substring(1) : fieldName;
 
             FhirFieldConfig fieldConfig = fieldToConfig.get(fieldWithoutLeadingUnderscore);
-            if (fieldConfig == null
-                    || (fieldStartsWithUnderscore
-                            && !fieldConfig.getKind().equals(KIND_PRIMITIVE_TYPE))) {
+            if (fieldConfig == null) {
                 // TODO: b/374953896 - Improve error message to include type and id.
+                throw new IllegalArgumentException("Found unexpected field " + fieldName);
+            }
+            R4FhirType fieldType = fieldConfig.getR4Type();
+            boolean fieldIsPrimitiveType = mFhirSpec.isPrimitiveType(fieldType);
+            if (fieldStartsWithUnderscore && !fieldIsPrimitiveType) {
                 throw new IllegalArgumentException("Found unexpected field " + fieldName);
             }
 
@@ -162,24 +163,27 @@ public class FhirResourceValidator {
                 }
 
                 if (fieldConfig.getIsArray()) {
-                    validateArrayFieldAndContents(fieldObject, fieldName, fieldConfig);
+                    validateArrayFieldAndContents(
+                            fieldObject, fieldName, fieldType, fieldIsPrimitiveType);
                 } else {
-                    validateField(fieldObject, fieldName, fieldConfig);
+                    validateField(fieldObject, fieldName, fieldType, fieldIsPrimitiveType);
                 }
             }
         }
     }
 
     private void validateArrayFieldAndContents(
-            Object fieldObject, String fieldName, FhirFieldConfig fieldConfig) {
+            Object fieldObject,
+            String fieldName,
+            R4FhirType fieldType,
+            boolean fieldIsPrimitiveType) {
         if (!(fieldObject instanceof JSONArray)) {
             throw new IllegalArgumentException(
                     "Invalid resource structure. Expected array for field: " + fieldName);
         }
         JSONArray jsonArray = (JSONArray) fieldObject;
 
-        boolean isPrimitiveTypeExtension =
-                fieldConfig.getKind().equals(KIND_PRIMITIVE_TYPE) && fieldName.startsWith("_");
+        boolean isPrimitiveTypeExtension = fieldIsPrimitiveType && fieldName.startsWith("_");
 
         for (int i = 0; i < jsonArray.length(); i++) {
             Object objectInArray;
@@ -200,7 +204,7 @@ public class FhirResourceValidator {
                 continue;
             }
 
-            validateField(objectInArray, fieldName, fieldConfig);
+            validateField(objectInArray, fieldName, fieldType, fieldIsPrimitiveType);
         }
     }
 
@@ -210,44 +214,14 @@ public class FhirResourceValidator {
      * <p>Null values are not allowed. Note that the fieldObject should not be an array. For
      * validating arrays use {@link #validateArrayFieldAndContents}.
      */
-    private void validateField(Object fieldObject, String fieldName, FhirFieldConfig fieldConfig) {
-        switch (fieldConfig.getKind()) {
-            case KIND_PRIMITIVE_TYPE:
-                // If the field is a primitive type extension, then it will be an object with
-                // fields "id" and/or "extension" fields.
-                if (fieldName.startsWith("_")) {
-                    validateObjectIsJSONObject(fieldObject, fieldName);
-                } else {
-                    if (fieldObject.equals(JSONObject.NULL)) {
-                        throw new IllegalArgumentException(
-                                "Found null value in field: " + fieldName);
-                    }
-                    if (fieldObject instanceof JSONObject) {
-                        throw new IllegalArgumentException(
-                                "Invalid resource structure. Found json object but expected"
-                                        + " primitive type in field: "
-                                        + fieldName);
-                    }
-                    if (fieldObject instanceof JSONArray) {
-                        throw new IllegalArgumentException(
-                                "Invalid resource structure. Found json array but expected"
-                                        + " primitive type in field: "
-                                        + fieldName);
-                    }
-
-                    if (Flags.phrFhirPrimitiveTypeValidation()) {
-                        FhirPrimitiveTypeValidator.validate(
-                                fieldObject, fieldName, fieldConfig.getR4Type());
-                    }
-                }
-                break;
-            case KIND_RESOURCE:
-            case KIND_COMPLEX_TYPE:
-                validateObjectIsJSONObject(fieldObject, fieldName);
-                break;
-            default:
-                throw new IllegalStateException(
-                        "Encountered unexpected type kind: " + fieldConfig.getKind().name());
+    private void validateField(
+            Object fieldObject, String fieldName, R4FhirType type, boolean fieldIsPrimitiveType) {
+        if (fieldIsPrimitiveType && !fieldName.startsWith("_")) {
+            // If the field is a primitive type extension (starts with "_"), then it will be an
+            // object with fields "id" and/or "extension" fields.
+            validatePrimitiveTypeField(fieldObject, fieldName, type);
+        } else {
+            validateObjectIsJSONObject(fieldObject, fieldName);
         }
     }
 
@@ -258,6 +232,28 @@ public class FhirResourceValidator {
         if (!(fieldObject instanceof JSONObject)) {
             throw new IllegalArgumentException(
                     "Invalid resource structure. Expected object in field: " + fieldName);
+        }
+    }
+
+    private void validatePrimitiveTypeField(Object fieldObject, String fieldName, R4FhirType type) {
+        if (fieldObject.equals(JSONObject.NULL)) {
+            throw new IllegalArgumentException("Found null value in field: " + fieldName);
+        }
+        if (fieldObject instanceof JSONObject) {
+            throw new IllegalArgumentException(
+                    "Invalid resource structure. Found json object but expected"
+                            + " primitive type in field: "
+                            + fieldName);
+        }
+        if (fieldObject instanceof JSONArray) {
+            throw new IllegalArgumentException(
+                    "Invalid resource structure. Found json array but expected"
+                            + " primitive type in field: "
+                            + fieldName);
+        }
+
+        if (Flags.phrFhirPrimitiveTypeValidation()) {
+            FhirPrimitiveTypeValidator.validate(fieldObject, fieldName, type);
         }
     }
 

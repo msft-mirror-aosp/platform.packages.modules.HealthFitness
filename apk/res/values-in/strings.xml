@@ -471,7 +471,7 @@
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ekspor terjadwal"</string>
     <string name="import_data" msgid="404502315533233094">"Impor data"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Pulihkan data dari file yang diekspor sebelumnya"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Pulihkan data dengan menggunakan file ekspor"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"Tidak dapat memulihkan data"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Pilih file"</string>
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"File yang Anda pilih tidak mendukung pemulihan. Pastikan untuk memilih file hasil ekspor yang benar."</string>
