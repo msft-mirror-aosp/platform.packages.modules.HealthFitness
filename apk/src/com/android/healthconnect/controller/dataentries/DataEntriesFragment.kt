@@ -52,7 +52,7 @@ import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
@@ -66,8 +66,10 @@ import com.android.healthconnect.controller.utils.toInstant
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
+import com.android.healthconnect.controller.data.entries.EntriesViewModel
 
 /** Fragment to show health data entries by date. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(Fragment::class)
 class DataEntriesFragment : Hilt_DataEntriesFragment() {
 
@@ -75,8 +77,9 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
     @Inject lateinit var timeSource: TimeSource
     private val pageName = PageName.DATA_ENTRIES_PAGE
 
-    private lateinit var permissionType: HealthPermissionType
-    private val entriesViewModel: DataEntriesFragmentViewModel by viewModels()
+    private lateinit var permissionType: FitnessPermissionType
+    private val entriesViewModel: EntriesViewModel by viewModels()
+    private val viewModel: DataEntriesFragmentViewModel by viewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
 
     private lateinit var dateNavigationView: DateNavigationView
@@ -145,7 +148,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
         val view = inflater.inflate(R.layout.fragment_data_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
             permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, HealthPermissionType::class.java)
+                arguments?.getSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType::class.java)
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
         }
         setTitle(fromPermissionType(permissionType).uppercaseLabel)
@@ -176,6 +179,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
                 .setViewBinder(
                     PlannedExerciseSessionEntry::class.java, plannedExerciseSessionItemViewBinder)
                 .setViewBinder(FormattedAggregation::class.java, aggregationViewBinder)
+                .setViewModel(entriesViewModel) // Added to adjust to the new RecyclerViewAdapter
                 .build()
         entriesRecyclerView =
             view.findViewById<RecyclerView?>(R.id.data_entries_list).also {
@@ -196,7 +200,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
         dateNavigationView.setDateChangedListener(
             object : DateNavigationView.OnDateChangedListener {
                 override fun onDateChanged(selectedDate: Instant) {
-                    entriesViewModel.loadData(permissionType, selectedDate)
+                    viewModel.loadData(permissionType, selectedDate)
                 }
             })
         observeDeleteState()
@@ -206,13 +210,13 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(fromPermissionType(permissionType).uppercaseLabel)
-        if (entriesViewModel.currentSelectedDate.value != null) {
-            val date = entriesViewModel.currentSelectedDate.value!!
+        if (viewModel.currentSelectedDate.value != null) {
+            val date = viewModel.currentSelectedDate.value!!
             dateNavigationView.setDate(date)
             setDateNavigationViewMaxDate()
-            entriesViewModel.loadData(permissionType, date)
+            viewModel.loadData(permissionType, date)
         } else {
-            entriesViewModel.loadData(permissionType, dateNavigationView.getDate())
+            viewModel.loadData(permissionType, dateNavigationView.getDate())
         }
 
         logger.setPageId(pageName)
@@ -225,7 +229,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
                 DeletionState.STATE_DELETION_SUCCESSFUL -> {
                     val index = (params.deletionType as DeletionType.DeleteDataEntry).index
                     adapter.notifyItemRemoved(index)
-                    entriesViewModel.loadData(permissionType, dateNavigationView.getDate())
+                    viewModel.loadData(permissionType, dateNavigationView.getDate())
                 }
                 else -> {
                     // do nothing
@@ -235,7 +239,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
     }
 
     private fun observeEntriesUpdates() {
-        entriesViewModel.dataEntries.observe(viewLifecycleOwner) { state ->
+        viewModel.dataEntries.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Loading -> {
                     loadingView.isVisible = true
@@ -268,7 +272,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
     }
 
     private fun setDateNavigationViewMaxDate() {
-        if (permissionType == HealthPermissionType.PLANNED_EXERCISE) {
+        if (permissionType == FitnessPermissionType.PLANNED_EXERCISE) {
             // Sets the maximum date to null for the date picker to be able navigate to future dates
             // since there can be training planned exercise session entries in future dates for
             // planned exercise session (training plan) permission type.

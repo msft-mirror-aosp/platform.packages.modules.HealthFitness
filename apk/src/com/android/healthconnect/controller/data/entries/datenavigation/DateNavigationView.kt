@@ -22,6 +22,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.AdapterView
 import android.widget.ImageButton
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.android.healthconnect.controller.R
@@ -57,9 +58,11 @@ constructor(
     private lateinit var previousDayButton: ImageButton
     private lateinit var nextDayButton: ImageButton
     private lateinit var datePickerSpinner: Spinner
+    private lateinit var disabledSpinner: TextView
     private var selectedDate = Instant.ofEpochMilli(timeSource.currentTimeMillis())
     private var period: DateNavigationPeriod = PERIOD_DAY
     private var onDateChangedListener: OnDateChangedListener? = null
+    private var mNextDayEnabled = true
 
     init {
         val hiltEntryPoint =
@@ -96,6 +99,44 @@ constructor(
         return period
     }
 
+    fun disableDateNavigationView(isEnabled: Boolean, text: String){
+        setSpinnerText(text)
+        disableButtons(isEnabled)
+        toggleSpinnerVisibility(isEnabled)
+    }
+
+    fun getDateNavigationText(): String? {
+        return (datePickerSpinner.adapter as DatePickerSpinnerAdapter).getText()
+    }
+
+    private fun setSpinnerText(text:String){
+        // text from the adapter can be null on rotation
+        if(getDateNavigationText() == null){
+            disabledSpinner.text = text
+        } else {
+            disabledSpinner.text = (datePickerSpinner.adapter as DatePickerSpinnerAdapter).getText()
+        }
+    }
+
+    private fun toggleSpinnerVisibility(isEnabled: Boolean){
+        if(!isEnabled){
+            datePickerSpinner.visibility = GONE
+            disabledSpinner.visibility = VISIBLE
+        } else {
+            datePickerSpinner.visibility = VISIBLE
+            disabledSpinner.visibility = GONE
+        }
+    }
+
+    private fun disableButtons(isEnabled: Boolean){
+        if(isEnabled){
+            nextDayButton.isEnabled = mNextDayEnabled
+        } else {
+            nextDayButton.isEnabled = false
+        }
+        previousDayButton.isEnabled = isEnabled
+    }
+
     private fun bindNextDayButton(view: View) {
         nextDayButton = view.findViewById(R.id.navigation_next_day) as ImageButton
         logger.logImpression(DataEntriesElement.NEXT_DAY_BUTTON)
@@ -120,7 +161,7 @@ constructor(
 
     private fun bindDateTextView(view: View) {
         datePickerSpinner = view.findViewById(R.id.date_picker_spinner) as Spinner
-
+        disabledSpinner = view.findViewById(R.id.disabled_spinner)
         val adapter =
             DatePickerSpinnerAdapter(view.context, getDisplayedStartDate(), period, timeSource)
         adapter.setDropDownViewResource(R.layout.date_navigation_spinner_item)
@@ -186,7 +227,9 @@ constructor(
                 .atStartOfDay(ZoneId.systemDefault())
                 .plus(toPeriod(period))
                 .toInstant()
+        //TODO: (b/363233408) Ensure new IA works with training plans
         nextDayButton.isEnabled = !displayedEndDate.isAfter(today)
+        mNextDayEnabled = nextDayButton.isEnabled
         (datePickerSpinner.adapter as DatePickerSpinnerAdapter).setStartTimeAndPeriod(
             getDisplayedStartDate(), period)
     }

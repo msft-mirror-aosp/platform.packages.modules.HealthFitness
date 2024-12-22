@@ -51,16 +51,19 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppPreference
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Fragment to show allowed and denied apps for health permissions. It is used as an entry point
@@ -77,6 +80,8 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
     init {
         this.setPageName(PageName.SETTINGS_MANAGE_PERMISSIONS_PAGE)
     }
+
+    @Inject lateinit var navigationUtils: NavigationUtils
 
     private val allowedAppsGroup: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(ALLOWED_APPS_GROUP)
@@ -184,14 +189,24 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
                 it.summary = null
             }
             it.setOnPreferenceClickListener {
-                findNavController()
-                    .navigate(
-                        R.id.action_settingsManagePermission_to_settingsManageAppPermissions,
-                        bundleOf(
-                            EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
-                            EXTRA_APP_NAME to app.appMetadata.appName))
+                navigateToSettingsAppInfoScreen(app)
                 true
             }
         }
+    }
+
+    private fun navigateToSettingsAppInfoScreen(app: ConnectedAppMetadata) {
+        val navigationId =
+                when (app.permissionsType) {
+                    AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_settingsManagePermission_to_settingsFitnessApp
+                    AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_settingsManagePermission_to_settingsMedicalApp
+                    AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_settingsManagePermission_to_settingsCombinedPermissions
+                }
+        navigationUtils.navigate(
+                fragment = this,
+                action = navigationId,
+                bundle = bundleOf(
+                        EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
+                        EXTRA_APP_NAME to app.appMetadata.appName))
     }
 }

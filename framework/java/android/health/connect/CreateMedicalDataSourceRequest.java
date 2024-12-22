@@ -24,20 +24,36 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/** Represents a create request for {@link HealthConnectManager#createMedicalDataSource}. */
+/**
+ * Represents a create request for {@link HealthConnectManager#createMedicalDataSource}
+ *
+ * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+ * Interoperability Resources (FHIR)</a> standard.
+ */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class CreateMedicalDataSourceRequest implements Parcelable {
-    @NonNull private final String mFhirBaseUri;
+    // The character limit for the {@code mDisplayName}
+    private static final int DISPLAY_NAME_CHARACTER_LIMIT = 90;
+    // The character limit for the {@code mFhirBaseUri}
+    private static final int FHIR_BASE_URI_CHARACTER_LIMIT = 2000;
+
+    @NonNull private final Uri mFhirBaseUri;
     @NonNull private final String mDisplayName;
+    private long mDataSize;
 
     @NonNull
     public static final Creator<CreateMedicalDataSourceRequest> CREATOR =
             new Creator<CreateMedicalDataSourceRequest>() {
                 @NonNull
                 @Override
+                /*
+                 * @throws IllegalArgumentException if the {@code mFhirBaseUri} or
+                 * {@code mDisplayName} exceed the character limits.
+                 */
                 public CreateMedicalDataSourceRequest createFromParcel(@NonNull Parcel in) {
                     return new CreateMedicalDataSourceRequest(in);
                 }
@@ -49,10 +65,11 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
                 }
             };
 
-    private CreateMedicalDataSourceRequest(
-            @NonNull String fhirBaseUri, @NonNull String displayName) {
+    private CreateMedicalDataSourceRequest(@NonNull Uri fhirBaseUri, @NonNull String displayName) {
         requireNonNull(fhirBaseUri);
         requireNonNull(displayName);
+        validateFhirBaseUriCharacterLimit(fhirBaseUri);
+        validateDisplayNameCharacterLimit(displayName);
 
         mFhirBaseUri = fhirBaseUri;
         mDisplayName = displayName;
@@ -60,13 +77,18 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
 
     private CreateMedicalDataSourceRequest(@NonNull Parcel in) {
         requireNonNull(in);
-        mFhirBaseUri = requireNonNull(in.readString());
+        mDataSize = in.dataSize();
+
+        mFhirBaseUri = requireNonNull(in.readParcelable(Uri.class.getClassLoader(), Uri.class));
         mDisplayName = requireNonNull(in.readString());
+
+        validateFhirBaseUriCharacterLimit(mFhirBaseUri);
+        validateDisplayNameCharacterLimit(mDisplayName);
     }
 
     /** Returns the fhir base uri. */
     @NonNull
-    public String getFhirBaseUri() {
+    public Uri getFhirBaseUri() {
         return mFhirBaseUri;
     }
 
@@ -76,6 +98,15 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         return mDisplayName;
     }
 
+    /**
+     * Returns the size of the parcel when the class was created from Parcel.
+     *
+     * @hide
+     */
+    public long getDataSize() {
+        return mDataSize;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -83,7 +114,7 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(mFhirBaseUri);
+        dest.writeParcelable(mFhirBaseUri, 0);
         dest.writeString(mDisplayName);
     }
 
@@ -115,15 +146,17 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
 
     /** Builder class for {@link CreateMedicalDataSourceRequest} */
     public static final class Builder {
-        @NonNull private String mFhirBaseUri;
+        @NonNull private Uri mFhirBaseUri;
         @NonNull private String mDisplayName;
 
         /**
          * @param fhirBaseUri The FHIR base URI of the data source. For data coming from a FHIR
-         *     server this should be the base URL.
-         * @param displayName The display name that describes the data source.
+         *     server this should be the base URL. The maximum length for the Uri is 2000
+         *     characters.
+         * @param displayName The display name that describes the data source. The maximum length
+         *     for the display name is 90 characters.
          */
-        public Builder(@NonNull String fhirBaseUri, @NonNull String displayName) {
+        public Builder(@NonNull Uri fhirBaseUri, @NonNull String displayName) {
             requireNonNull(fhirBaseUri);
             requireNonNull(displayName);
 
@@ -145,15 +178,21 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
 
         /**
          * Sets the fhir base URI. For data coming from a FHIR server this should be the base URL.
+         *
+         * <p>The uri may not exceed 2000 characters.
          */
         @NonNull
-        public Builder setFhirBaseUri(@NonNull String fhirBaseUri) {
+        public Builder setFhirBaseUri(@NonNull Uri fhirBaseUri) {
             requireNonNull(fhirBaseUri);
             mFhirBaseUri = fhirBaseUri;
             return this;
         }
 
-        /** Sets the display name. */
+        /**
+         * Sets the display name
+         *
+         * <p>The display name may not exceed 90 characters.
+         */
         @NonNull
         public Builder setDisplayName(@NonNull String displayName) {
             requireNonNull(displayName);
@@ -164,10 +203,38 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         /**
          * Returns a new instance of {@link CreateMedicalDataSourceRequest} with the specified
          * parameters.
+         *
+         * @throws IllegalArgumentException if the {@code mFhirBaseUri} or {@code mDisplayName}
+         *     exceed the character limits.
          */
         @NonNull
         public CreateMedicalDataSourceRequest build() {
             return new CreateMedicalDataSourceRequest(mFhirBaseUri, mDisplayName);
+        }
+    }
+
+    private static void validateDisplayNameCharacterLimit(String displayName) {
+        if (displayName.isEmpty()) {
+            throw new IllegalArgumentException("Display name cannot be empty.");
+        }
+        if (displayName.length() > DISPLAY_NAME_CHARACTER_LIMIT) {
+            throw new IllegalArgumentException(
+                    "Display name cannot be longer than "
+                            + DISPLAY_NAME_CHARACTER_LIMIT
+                            + " characters.");
+        }
+    }
+
+    private static void validateFhirBaseUriCharacterLimit(Uri fhirBaseUri) {
+        String fhirBaseUriString = fhirBaseUri.toString();
+        if (fhirBaseUriString.isEmpty()) {
+            throw new IllegalArgumentException("Fhir base uri cannot be empty.");
+        }
+        if (fhirBaseUriString.length() > FHIR_BASE_URI_CHARACTER_LIMIT) {
+            throw new IllegalArgumentException(
+                    "Fhir base uri cannot be longer than "
+                            + FHIR_BASE_URI_CHARACTER_LIMIT
+                            + " characters.");
         }
     }
 }

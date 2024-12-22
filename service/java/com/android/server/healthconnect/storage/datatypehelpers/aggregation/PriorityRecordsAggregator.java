@@ -21,6 +21,7 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ELEVATION_RECORD_ELEVATION_GAINED_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.EXERCISE_SESSION_DURATION_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.FLOORS_CLIMBED_RECORD_FLOORS_CLIMBED_TOTAL;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.MINDFULNESS_SESSION_DURATION_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.SLEEP_SESSION_DURATION_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.STEPS_RECORD_COUNT_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL;
@@ -34,7 +35,6 @@ import android.util.Slog;
 import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.time.ZoneOffset;
@@ -184,9 +184,7 @@ public class PriorityRecordsAggregator {
         AggregationRecordData data = readNewData(cursor);
         int priority = data.getPriority();
 
-        if (HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isAggregationSourceControlsEnabled()
-                && priority == Integer.MIN_VALUE) {
+        if (priority == Integer.MIN_VALUE) {
             return null;
         }
 
@@ -232,7 +230,9 @@ public class PriorityRecordsAggregator {
                     new ValueColumnAggregationData(
                             mExtraParams.getColumnToAggregateName(),
                             mExtraParams.getColumnToAggregateType());
-            case SLEEP_SESSION_DURATION_TOTAL, EXERCISE_SESSION_DURATION_TOTAL ->
+            case SLEEP_SESSION_DURATION_TOTAL,
+                            EXERCISE_SESSION_DURATION_TOTAL,
+                            MINDFULNESS_SESSION_DURATION_TOTAL ->
                     new SessionDurationAggregationData(
                             mExtraParams.getExcludeIntervalStartColumnName(),
                             mExtraParams.getExcludeIntervalEndColumnName());

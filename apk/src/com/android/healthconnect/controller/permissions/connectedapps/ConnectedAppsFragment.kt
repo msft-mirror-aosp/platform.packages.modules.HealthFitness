@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFr
 import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_BANNER_SEEN
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -208,8 +209,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 }
                 logger.logImpression(AppPermissionsElement.SEARCH_BUTTON)
 
-                mTopIntro?.title = getString(R.string.connected_apps_text)
-                mThingsToTryCategory?.isVisible = false
+                mTopIntro.title = getString(R.string.connected_apps_text)
+                mThingsToTryCategory.isVisible = false
                 setAppAndSettingsCategoriesVisibility(true)
 
                 val connectedAppsGroup = connectedApps.groupBy { it.status }
@@ -220,7 +221,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 activeApps.addAll(notAllowedApps)
                 createRemoveAllAppsAccessDialog(activeApps)
 
-                mSettingsAndHelpCategory?.addPreference(
+                mSettingsAndHelpCategory.addPreference(
                     getRemoveAccessForAllAppsPreference().apply {
                         isEnabled = allowedApps.isNotEmpty()
                         setOnPreferenceClickListener {
@@ -231,7 +232,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
                 if (deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
                     deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
-                    mSettingsAndHelpCategory?.addPreference(getHelpAndFeedbackPreference())
+                    mSettingsAndHelpCategory.addPreference(getHelpAndFeedbackPreference())
                 }
 
                 updateAllowedApps(allowedApps)
@@ -256,23 +257,25 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         if (appsList.isEmpty()) {
             preferenceScreen.removePreference(mInactiveAppsCategory)
         } else {
-            appsList.forEach { app ->
-                val inactiveAppPreference =
-                    InactiveAppPreference(requireContext()).also {
-                        it.title = app.appMetadata.appName
-                        it.icon = app.appMetadata.icon
-                        it.logName = AppPermissionsElement.INACTIVE_APP_BUTTON
-                        it.setOnDeleteButtonClickListener {
-                            val appDeletionType =
-                                DeletionType.DeletionTypeAppData(
-                                    app.appMetadata.packageName, app.appMetadata.appName)
-                            childFragmentManager.setFragmentResult(
-                                DeletionConstants.START_INACTIVE_APP_DELETION_EVENT,
-                                bundleOf(DELETION_TYPE to appDeletionType))
+            appsList
+                .sortedBy { it.appMetadata.appName }
+                .forEach { app ->
+                    val inactiveAppPreference =
+                        InactiveAppPreference(requireContext()).also {
+                            it.title = app.appMetadata.appName
+                            it.icon = app.appMetadata.icon
+                            it.logName = AppPermissionsElement.INACTIVE_APP_BUTTON
+                            it.setOnDeleteButtonClickListener {
+                                val appDeletionType =
+                                    DeletionType.DeletionTypeAppData(
+                                        app.appMetadata.packageName, app.appMetadata.appName)
+                                childFragmentManager.setFragmentResult(
+                                    DeletionConstants.START_INACTIVE_APP_DELETION_EVENT,
+                                    bundleOf(DELETION_TYPE to appDeletionType))
+                            }
                         }
-                    }
-                mInactiveAppsCategory?.addPreference(inactiveAppPreference)
-            }
+                    mInactiveAppsCategory.addPreference(inactiveAppPreference)
+                }
         }
     }
 
@@ -281,16 +284,18 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             mNeedUpdateAppsCategory?.isVisible = false
         } else {
             mNeedUpdateAppsCategory?.isVisible = true
-            appsList.forEach { app ->
-                val intent = appStoreUtils.getAppStoreLink(app.appMetadata.packageName)
-                if (intent == null) {
-                    mNeedUpdateAppsCategory?.addPreference(
-                        getAppPreference(app).also { it.isSelectable = false })
-                } else {
-                    mNeedUpdateAppsCategory?.addPreference(
-                        getAppPreference(app) { navigationUtils.startActivity(this, intent) })
+            appsList
+                .sortedBy { it.appMetadata.appName }
+                .forEach { app ->
+                    val intent = appStoreUtils.getAppStoreLink(app.appMetadata.packageName)
+                    if (intent == null) {
+                        mNeedUpdateAppsCategory?.addPreference(
+                            getAppPreference(app).also { it.isSelectable = false })
+                    } else {
+                        mNeedUpdateAppsCategory?.addPreference(
+                            getAppPreference(app) { navigationUtils.startActivity(this, intent) })
+                    }
                 }
-            }
 
             val sharedPreference =
                 requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
@@ -306,30 +311,43 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     private fun updateAllowedApps(appsList: List<ConnectedAppMetadata>) {
         if (appsList.isEmpty()) {
-            mAllowedAppsCategory?.addPreference(getNoAppsPreference(R.string.no_apps_allowed))
+            mAllowedAppsCategory.addPreference(getNoAppsPreference(R.string.no_apps_allowed))
         } else {
-            appsList.forEach { app ->
-                mAllowedAppsCategory?.addPreference(
-                    getAppPreference(app) { navigateToAppInfoScreen(app) })
-            }
+            appsList
+                .sortedBy { it.appMetadata.appName }
+                .forEach { app ->
+                    mAllowedAppsCategory.addPreference(
+                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                }
         }
     }
 
     private fun updateDeniedApps(appsList: List<ConnectedAppMetadata>) {
         if (appsList.isEmpty()) {
-            mNotAllowedAppsCategory?.addPreference(getNoAppsPreference(R.string.no_apps_denied))
+            mNotAllowedAppsCategory.addPreference(getNoAppsPreference(R.string.no_apps_denied))
         } else {
-            appsList.forEach { app ->
-                mNotAllowedAppsCategory?.addPreference(
-                    getAppPreference(app) { navigateToAppInfoScreen(app) })
-            }
+            appsList
+                .sortedBy { it.appMetadata.appName }
+                .forEach { app ->
+                    mNotAllowedAppsCategory.addPreference(
+                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                }
         }
     }
 
     private fun navigateToAppInfoScreen(app: ConnectedAppMetadata) {
+        val navigationId =
+            when (app.permissionsType) {
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_connectedApps_to_fitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_connectedApps_to_medicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_connectedApps_to_combinedPermissions
+            }
         findNavController()
             .navigate(
-                R.id.action_connectedApps_to_connectedApp,
+                navigationId,
                 bundleOf(
                     EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
                     EXTRA_APP_NAME to app.appMetadata.appName))
@@ -476,35 +494,35 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     }
 
     private fun setUpEmptyState() {
-        mTopIntro?.title = getString(R.string.connected_apps_empty_list_section_title)
+        mTopIntro.title = getString(R.string.connected_apps_empty_list_section_title)
         if (deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
             deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
-            mThingsToTryCategory?.isVisible = true
+            mThingsToTryCategory.isVisible = true
         }
         if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {
-            mThingsToTryCategory?.addPreference(getCheckForUpdatesPreference())
-            mThingsToTryCategory?.addPreference(getSeeAllCompatibleAppsPreference())
+            mThingsToTryCategory.addPreference(getCheckForUpdatesPreference())
+            mThingsToTryCategory.addPreference(getSeeAllCompatibleAppsPreference())
         }
         if (deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
-            mThingsToTryCategory?.addPreference(getSendFeedbackPreference())
+            mThingsToTryCategory.addPreference(getSendFeedbackPreference())
         }
         setAppAndSettingsCategoriesVisibility(false)
     }
 
     private fun setAppAndSettingsCategoriesVisibility(isVisible: Boolean) {
-        mInactiveAppsCategory?.isVisible = isVisible
-        mAllowedAppsCategory?.isVisible = isVisible
+        mInactiveAppsCategory.isVisible = isVisible
+        mAllowedAppsCategory.isVisible = isVisible
         mNeedUpdateAppsCategory?.isVisible = isVisible
-        mNotAllowedAppsCategory?.isVisible = isVisible
-        mSettingsAndHelpCategory?.isVisible = isVisible
+        mNotAllowedAppsCategory.isVisible = isVisible
+        mSettingsAndHelpCategory.isVisible = isVisible
     }
 
     private fun clearAllCategories() {
-        mThingsToTryCategory?.removeAll()
-        mAllowedAppsCategory?.removeAll()
-        mNotAllowedAppsCategory?.removeAll()
+        mThingsToTryCategory.removeAll()
+        mAllowedAppsCategory.removeAll()
+        mNotAllowedAppsCategory.removeAll()
         mNeedUpdateAppsCategory?.removeAll()
-        mInactiveAppsCategory?.removeAll()
-        mSettingsAndHelpCategory?.removeAll()
+        mInactiveAppsCategory.removeAll()
+        mSettingsAndHelpCategory.removeAll()
     }
 }

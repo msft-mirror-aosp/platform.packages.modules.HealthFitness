@@ -63,11 +63,11 @@ import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewMod
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.Loading
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.LoadingFailed
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.WithData
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEART_RATE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.PLANNED_EXERCISE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SKIN_TEMPERATURE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SLEEP
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEART_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SKIN_TEMPERATURE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TestData.WARSAW_ROUTE
 import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock

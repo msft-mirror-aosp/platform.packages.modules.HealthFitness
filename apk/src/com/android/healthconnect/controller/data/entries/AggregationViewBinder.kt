@@ -15,17 +15,19 @@ package com.android.healthconnect.controller.data.entries
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
+import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
-class AggregationViewBinder : ViewBinder<FormattedAggregation, View> {
+class AggregationViewBinder : DeletionViewBinder<FormattedAggregation, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -39,7 +41,7 @@ class AggregationViewBinder : ViewBinder<FormattedAggregation, View> {
             .inflate(R.layout.item_data_aggregation, parent, false)
     }
 
-    override fun bind(view: View, data: FormattedAggregation, index: Int) {
+    override fun bind(view: View, data: FormattedAggregation, index: Int, isDeletionState: Boolean, isChecked: Boolean) {
         val apps = view.findViewById<TextView>(R.id.item_data_origin_apps)
         val aggregation = view.findViewById<TextView>(R.id.item_data_aggregation)
         logger.logImpression(DataEntriesElement.AGGREGATION_DATA_VIEW)

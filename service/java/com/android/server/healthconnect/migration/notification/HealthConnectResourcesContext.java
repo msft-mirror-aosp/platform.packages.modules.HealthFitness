@@ -18,7 +18,6 @@ package com.android.server.healthconnect.migration.notification;
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -66,12 +65,12 @@ public final class HealthConnectResourcesContext extends ContextWrapper {
     // The AOSP package name needed for loading the resources
     @Nullable private String mResourceLoadPackageName;
 
-    public HealthConnectResourcesContext(@NonNull Context base) {
+    public HealthConnectResourcesContext(Context base) {
         this(base, RESOURCES_APK_ACTION, APEX_MODULE_PATH, PackageManager.MATCH_SYSTEM_ONLY);
     }
 
     HealthConnectResourcesContext(
-            @NonNull Context base,
+            Context base,
             @Nullable String resourcesApkAction,
             @Nullable String resourcesApkPath,
             int flags) {
@@ -183,21 +182,20 @@ public final class HealthConnectResourcesContext extends ContextWrapper {
 
     /** Returns a string by its resource name. */
     @Nullable
-    public String getStringByName(@NonNull String name) {
+    public String getStringByName(String name) {
         int id = getStringRes(name);
         return getOptionalString(id);
     }
 
     /** Returns a string by its resource name formatted with supplied arguments */
     @Nullable
-    public String getStringByNameWithArgs(@NonNull String name, Object... formatArgs) {
+    public String getStringByNameWithArgs(String name, Object... formatArgs) {
         int id = getStringRes(name);
         return getOptionalStringWithArgs(id, formatArgs);
     }
 
-    @NonNull
     @StringRes
-    private int getStringRes(@NonNull String name) {
+    private int getStringRes(String name) {
         String resourceApkPkgName = getResourcesApkPkgName();
         String resourcePkgName = getResourceLoadPackageName();
         if (resourceApkPkgName == null) {
@@ -232,7 +230,7 @@ public final class HealthConnectResourcesContext extends ContextWrapper {
 
     /** Returns an Icon by its drawable resource name. */
     @Nullable
-    public Icon getIconByDrawableName(@NonNull String drawableResName) {
+    public Icon getIconByDrawableName(String drawableResName) {
         String resourceApkPkgName = getResourcesApkPkgName();
         String resourcePkgName = getResourceLoadPackageName();
         if (resourceApkPkgName == null) {

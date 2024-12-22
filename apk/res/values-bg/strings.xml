@@ -20,8 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Управлявайте достъпа на приложенията до данните за здравословното състояние"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Разрешения и данни"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Управлявайте данните за здравословното състояние и физическата активност, съхранявани на телефона ви, и контролирайте кои приложения да имат достъп до тях"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"Управлявайте данните за здравословното състояние и физическата активност, съхранявани на устройството ви, и контролирайте кои приложения да имат достъп до тях"</string>
     <string name="data_title" msgid="4456619761533380816">"Данни и достъп"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Преглед на здравните картони"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Всички категории"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Преглед на всички категории"</string>
     <string name="no_data" msgid="1906986019249068659">"Няма данни"</string>
@@ -34,6 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 приложение има достъп}other{# приложения имат достъп}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Няма"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Подробности за записа"</string>
+    <string name="browse_data_title" msgid="5232691805953326097">"Разглеждане на данните"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Вижте данните и кои приложения имат достъп до тях"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Автоматично изтриване, източници на данни, резервни копия и възстановяване"</string>
     <string name="backup_title" msgid="211503191266235085">"Създаване на резервни копия"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Източници на данни и приоритет"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Задаване на мерни единици"</string>
@@ -63,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"проследяване на месечния цикъл"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Хранене"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"хранене"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Физическо благосъстояние"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"физическо благосъстояние"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Разглеждане на данните"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Управление на данните"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Експортиране на данни"</string>
@@ -75,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"Може да чете данни от типа „<xliff:g id="PERMISSION_TYPE">%s</xliff:g>“"</string>
     <string name="can_write" msgid="5082414937218423823">"Може да записва данни от типа „<xliff:g id="PERMISSION_TYPE">%s</xliff:g>“"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Неактивни приложения"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Тези приложения вече не могат да записват данни от типа „<xliff:g id="DATA_TYPE">%s</xliff:g>“, но техни данни все още се съхраняват в Health Connect"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Тези приложения вече не могат да четат или записват данни от типа „<xliff:g id="DATA_TYPE">%s</xliff:g>“, но техни данни все още се съхраняват в Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Приложенията вече не могат да четат или да записват данни от типа „<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>“ и в Health Connect няма съхранени данни от типа „<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>“"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Тези данни включват различна информация, като например времето на активност, типа на упражненията, обиколките, повторенията, сесиите или загребванията при плуване"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Тези данни включват различна информация, като например фазите и сесиите, свързани със съня"</string>
@@ -261,12 +267,36 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"температура на кожата"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Четене на температурата на кожата"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Записване на температурата на кожата"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Всички медицински данни"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"всички медицински данни"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Записване на всички медицински данни"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Всички здравни картони"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"всички здравни картони"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Записване на всички здравни картони"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Алергии"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"алергии"</string>
+    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Четене на данните за алергиите"</string>
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Имунизации"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"имунизации"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Четене на данните за имунизациите"</string>
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Лабораторни резултати"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"лабораторни резултати"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Четене на лабораторните резултати"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Лекарства"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"лекарства"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"Четене на данните за лекарствата"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Бременност"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"бременност"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Четене на данните за бременността"</string>
+    <string name="problems_uppercase_label" msgid="4047882613795113715">"Проблеми"</string>
+    <string name="problems_lowercase_label" msgid="6934298611508910866">"проблеми"</string>
+    <string name="problems_content_description" msgid="1549418294742668962">"Четене на проблемите"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Процедури"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"процедури"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Четене на процедурите"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Социална история"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"социална история"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Четене на социалната история"</string>
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Жизнени показатели"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"жизнени показатели"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"Четене на жизнените показатели"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Осъзнатост"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"осъзнатост"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Четене на данните за осъзнатост"</string>
@@ -290,10 +320,25 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително предишни данни.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до местоположението, камерата или микрофона."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително данни на заден план и предишни данни.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до местоположението, камерата или микрофона."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Изтриване от Health Connect и на данните от <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Да се премахнат ли всички разрешения?"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Да се премахнат ли всички разрешения за здравните картони?"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Да се премахнат ли разреш. за физ. активност и благосъст.?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до местоположението, камерата или микрофона."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително данни на заден план.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до камерата, микрофона или местоположението."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително данни за минали периоди.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до камерата, микрофона или местоположението."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително данни на заден план и данни за минали периоди.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до камерата, микрофона или местоположението."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Изтриване от Health Connect и на данните за физическата активност и здравните картони от <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Разрешенията за това приложение са премахнати"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Следващият ден"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Избраният ден"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Предишният ден"</string>
     <string name="default_error" msgid="7966868260616403475">"Нещо се обърка. Моля, опитайте отново."</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"Неизвестен ресурс"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Отваряща скоба."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Затваряща скоба."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Поле <xliff:g id="FIELD">%2$s</xliff:g> Стойност"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Подробен изходен код: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Приложенията с това разрешение могат да четат и записват данни за здравето и физическата активност."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Контролирайте кои приложения да имат достъп до съхраняваните в Health Connect данни. Докоснете дадено приложение, за да прегледате какви данни може да чете и записва."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"С разрешен достъп"</string>
@@ -310,6 +355,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Премахване на всички"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Управление на приложението"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Вижте данните от приложението"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Премахване на достъпа за това приложение"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Изтриване на данните от приложението"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Неактивни приложения"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Тези приложения вече нямат достъп, но техни данни все още се съхраняват в Health Connect"</string>
@@ -323,6 +369,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Понастоящем нямате инсталирани съвместими приложения"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Допълнителен достъп"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Допълнителните разрешения са премахнати за това приложение"</string>
+    <string name="permissions_header" msgid="6519976063360071569">"Разрешения"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Физическа активност и благосъстояние"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Упражнения, сън, хранене и др."</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Здравни досиета"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"здравни досиета"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Лаб. резултати, медикаменти, имунизации и др."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Премахнати разрешения за приложенията"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect премахна разрешенията за <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect премахна разрешенията за <xliff:g id="APP_DATA_0">%1$s</xliff:g> и <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -336,47 +388,84 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Данните не бяха експортирани"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Възникна проблем с експортирането на <xliff:g id="DATE">%1$s</xliff:g>. Настройте ново експортиране по график и опитайте отново."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Следващо експортиране: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Следващото експортиране започва скоро"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Резервно копие и възстановяване"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Последно експортиране: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Експортиране и импортиране"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Последно експортиране: сега"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Последно експортиране: преди 1 минута}other{Последно експортиране: преди # минути}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Последно експортиране: преди 1 час}other{Последно експортиране: преди # часа}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Последно експортиране: няма"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Експортиране по график"</string>
     <string name="import_data" msgid="404502315533233094">"Импортиране на данни"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Възстановяване на данни от по-рано експортиран файл"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Данните не бяха възстановени"</string>
     <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Избор на файл"</string>
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
-    <skip />
     <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Избраният от вас файл не е съвместим за възстановяване. Изберете правилния експортиран файл."</string>
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Актуализиране сега"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Актуализирайте системата си, за да може Health Connect да възстанови данните ви, и опитайте отново."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Нов опит"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"При възстановяването на данните от експортирания файл възникна проблем."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Експортирането ви дава възможност да запазвате данните си, за да можете да ги прехвърлите на нов телефон"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Научете повече"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Всичко за създ./възстанов. на рез. копия"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Вкл."</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Изкл."</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Избиране на честота"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Избиране на честота"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Изберете еднократно запазване на данните или задайте да се запазват автоматично през редовни интервали."</string>
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Използване на насрочено експортиране"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Промяна на честотата"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Ако изключите експортирането по график, експортираните по-рано данни няма да бъдат изтрити от мястото, на което са запазени"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Настройване на експортиране по график"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Изберете колко често да се експортират данните ви"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Ежедневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ежеседмично"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ежемесечно"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Изберете къде да експортирате"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"Изберете приложение за хранилище, към което да експортирате данните си"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Въведете парола"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Необходимо е шифроване с паролата ви, за да импортирате данните си в Health Connect"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Забравихте паролата си?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Парола"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ако още разполагате със стария си телефон, можете да експортирате отново данните си с нова парола"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Изберете място за експортиране по график"</string>
+    <string name="export_invalid_storage" msgid="1459055934301871321">"Изберете приложение за хранилище в облака, в което да експортирате данните си"</string>
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Искате ли да импортирате този файл?"</string>
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"Файлът <xliff:g id="FILE_NAME">%1$s</xliff:g> ще бъде импортиран в Health Connect"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Отказ"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Импортиране"</string>
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Възстановяването на Health Connect е в ход"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Възстановяването на Health Connect завърши"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Възстановяването е в ход"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Възстановяването на данните завърши"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect не възстанови данните"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Необходимо е още място"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"Избраният от вас файл не е съвместим за възстановяване. Изберете правилния експортиран файл."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"За да продължи възстановяването на данните ви, Health Connect се нуждае от <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> свободно място в хранилището на телефона ви."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"При възстановяването на данните от експортирания файл възникна проблем."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Актуализирайте системата си, за да може Health Connect да възстанови данните ви, и опитайте отново."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Актуализиране сега"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Нов опит"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Отваряне"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Избор на файл"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Освобождаване на място"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Експортирането по график е включено"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect не експортира данните"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Необходимо е още място"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Възникна проблем с експортирането на <xliff:g id="DATE">%1$s</xliff:g>. Настройте ново експортиране по график и опитайте отново."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"За да продължи планираното експортиране, Health Connect се нуждае от <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> свободно място в хранилището на телефона ви."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Настройване"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Освобождаване на място"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Напред"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Отказ"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Отказ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Напред"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Импортиране от"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"Изберете приложение за хранилище, от което да импортирате данните си"</string>
+    <string name="import_invalid_storage" msgid="341798262315495399">"Изберете приложение за хранилище в облака, от което да импортирате данните си"</string>
     <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Докоснете, за да изберете профил"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Избиране на профил"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Отказ"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Готово"</string>
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"Няма приложения. Инсталирайте приложения за хранилище в облака. Те ще се показват тук"</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"За още опции инсталирайте приложения за хранилище в облака. Те ще се показват тук"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Към Google Play Магазин"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Първи стъпки с Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на телефона си"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на устройството си"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделяне на данни с приложенията ви"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Изберете типовете данни, които отделните приложения да четат или записват в Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Настройки и поверителност"</string>
@@ -386,12 +475,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Изтриване на данните"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Стартиране на изтриването"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Изход от изтриването"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Изберете данните, които да се изтрият"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Изберете данните за изтриване от Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Напред"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Това действие ще изтрие за постоянно всички данни, добавени към Health Connect през избрания период от време"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Това действие ще изтрие за постоянно данните от типа „<xliff:g id="DATA_TYPE">%s</xliff:g>“, добавени към Health Connect през избрания период от време"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Това действие ще изтрие за постоянно данните от „<xliff:g id="CATEGORY">%s</xliff:g>“, добавени към Health Connect през избрания период от време"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Това действие ще изтрие за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g>, добавени към Health Connect през избрания период от време"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Това действие ще изтрие за постоянно данните от типа „<xliff:g id="DATA_TYPE">%1$s</xliff:g>“, добавени към Health Connect от <xliff:g id="APP_DATA">%2$s</xliff:g> през избрания период от време"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Изтриване на данните от последните 24 часа"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Изтриване на данните от последните 7 дни"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Изтриване на данните от последните 30 дни"</string>
@@ -412,17 +502,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Да се изтрият ли за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g> от последните 24 часа?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Да се изтрият ли за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g> от последните 7 дни?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Да се изтрият ли за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g> от последните 30 дни?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Да се изтрият ли за постоянно данните от типа „<xliff:g id="DATA_TYPE">%1$s</xliff:g>“, добавени от <xliff:g id="APP_DATA">%2$s</xliff:g> за цялото време?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Да се изтрият ли за постоянно данните от типа „<xliff:g id="DATA_TYPE">%1$s</xliff:g>“, добавени от <xliff:g id="APP_DATA">%2$s</xliff:g> за последните 24 часа?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Да се изтрият ли за постоянно данните от типа „<xliff:g id="DATA_TYPE">%1$s</xliff:g>“, добавени от <xliff:g id="APP_DATA">%2$s</xliff:g> за последните 7 дни?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Да се изтрият ли за постоянно данните от типа „<xliff:g id="DATA_TYPE">%1$s</xliff:g>“, добавени от <xliff:g id="APP_DATA">%2$s</xliff:g> за последните 30 дни?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Всички разрешения за <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> също да се премахнат от Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Да се изтрият ли за постоянно данните от типа „<xliff:g id="DATA_TYPE">%1$s</xliff:g>“, добавени от <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Искате ли да изтриете този запис за постоянно?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Да се изтрие ли за постоянно този запис от Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Свързаните приложения вече няма да могат да осъществяват достъп до тези данни от Health Connect"</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Това ще изтрие всички записи за менструацията от <xliff:g id="START_DATE">%1$s</xliff:g> до <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"Това ще изтрие всички записи за менструацията от <xliff:g id="START_DATE">%1$s</xliff:g> до <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Изтриване"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Назад"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Готово"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Затваряне"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Данните бяха изтрити"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Тези данни вече не се съхраняват в Health Connect."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Данни, изтрити от Health Connect"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Ако искате напълно да изтриете информацията от свързаните си приложения, проверете всяко приложение, в което може да са запазени ваши данни."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Готово"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Преглед на свързаните приложения"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Данните ви се изтриват"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Данните не бяха изтрити"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Нещо се обърка и Health Connect не успя да изтрие данните ви"</string>
@@ -600,6 +696,7 @@
     <string name="rest" msgid="5937058337671252210">"Почивка"</string>
     <string name="pause" msgid="5161459047750335691">"Пауза"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Австралийски футбол"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Неизвестен тип"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"Сън: <xliff:g id="DURATION"> %1$s</xliff:g>"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="NAME">%2$s</xliff:g>: <xliff:g id="DURATION">%1$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"събуждане"</string>
@@ -610,6 +707,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"лек сън"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"дълбок сън"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"няма данни"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Дишане"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Медитация"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Движение"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Музика"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Друго"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Без напътствия"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> мин"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ч и <xliff:g id="MIN">%2$s</xliff:g> мин"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ч"</string>
@@ -809,12 +912,14 @@
     <string name="range_off" msgid="8178520557618184215">"Изкл."</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Когато промените тези настройки, Health Connect ще изтрие част от съществуващите данни, така че да бъдат отразени новите ви предпочитания"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Данните да се изтриват ли автоматично след # месец?}other{Данните да се изтриват ли автоматично след # месеца?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect ще изтрива автоматично новите данни след # месец. Ако зададете тази опция, ще се изтрият и съществуващите данни, които са по-стари от # месец.}other{Health Connect ще изтрива автоматично новите данни след # месеца. Ако зададете тази опция, ще се изтрият и съществуващите данни, които са по-стари от # месеца.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Това ще изтрие от Health Connect и данните, по-стари от # месец.\n\nАко искате напълно да изтриете информацията от свързаните си приложения, проверете всяко приложение, в което може да са запазени ваши данни.}other{Това ще изтрие от Health Connect и данните, по-стари от # месеца.\n\nАко искате напълно да изтриете информацията от свързаните си приложения, проверете всяко приложение, в което може да са запазени ваши данни.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Настройване на автоматичното изтриване"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Съществуващи данни ще бъдат изтрити"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect ще изтрие всички данни, които са по-стари от # месец. Може да мине един ден, преди тези промени да се покажат в свързаните ви приложения.}other{Health Connect ще изтрие всички данни, които са по-стари от # месеца. Може да мине един ден, преди тези промени да се покажат в свързаните ви приложения.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Данни, които ще бъдат изтрити от тези"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Готово"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Авт. изтриване е включено. Данните, по-стари от # месец, ще бъдат изтрити}other{Авт. изтриване е включено. Данните, по-стари от # месеца, ще бъдат изтрити}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Автоматичното изтриване е изключено"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Задаване на приоритет за приложенията"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ако повече от едно приложение добави данни от типа „<xliff:g id="DATA_TYPE">%s</xliff:g>“, Health Connect дава приоритет на това, което е най-напред в списъка. Можете да промените реда на приложенията чрез преместване с плъзгане."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Запазване"</string>
@@ -945,9 +1050,33 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Активирайте поне едно разрешение за четене, за да предоставите на това приложение достъп на заден план или достъп до предишните данни"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Активирайте поне едно разрешение за четене, за да предоставите на това приложение достъп на заден план"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Активирайте поне едно разрешение за четене, за да предоставите на това приложение достъп до предишните данни"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Да се изтрият ли за постоянно всички данни от Health Connect?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Да се изтрият ли за постоянно избраните данни от Health Connect?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Всички данни са изтрити"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Данните от типа „<xliff:g id="PERMISSION_TYPE">%s</xliff:g>“ са изтрити"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Изтрихте <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> елемента"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Започнете да използвате Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Синхронизирайте първите си приложения, за да споделяте между тях данните за здравето и физическата активност"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Настройване"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Свързване на още приложения"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Започнете да споделяте данни между <xliff:g id="APP_NAME">%s</xliff:g> и здравните приложения на телефона ви"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Настройване"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Преглед на съвместимите приложения"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Намерете още приложения, които да синхронизирате с(ъс) <xliff:g id="APP_NAME">%s</xliff:g> чрез Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Преглед в магазина за приложения"</string>
+    <string name="select_all" msgid="837499881590001166">"Избиране на всички"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Свързаните приложения вече няма да могат да четат тези данни от Health Connect"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Да се изтрият ли за постоянно всички данни?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Да се изтрият ли за постоянно избраните данни?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Да се изтрият ли за постоянно всички данни от <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Да се изтрият ли за постоянно избраните данни от <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Да се изтрият ли за постоянно всички записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Да се изтрият ли за постоянно всички записи за седмицата <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Да се изтрият ли за постоянно всички записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Да се изтрият ли за постоянно избраните записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Да се изтрият ли за постоянно избраните записи за седмицата <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Да се изтрият ли за постоянно избраните записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Да се изтрие ли за постоянно този запис?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Да се изтрият ли за постоянно всички записи от <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Да се изтрият ли за постоянно всички записи от <xliff:g id="APP_NAME">%1$s</xliff:g> за седмицата <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Да се изтрият ли за постоянно всички записи от <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Да се изтрият ли за постоянно избраните записи от <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Да се изтрият ли за постоянно избраните записи от <xliff:g id="APP_NAME">%1$s</xliff:g> за седмицата <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Да се изтрият ли за постоянно избраните записи от <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Да се изтрие ли за постоянно този запис от <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
 </resources>

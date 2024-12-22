@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import android.annotation.NonNull;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.AggregateResult;
 import android.health.connect.TimeRangeFilter;
@@ -27,15 +26,20 @@ import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.time.Duration;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Refines aggregate request from what the client sent to a format that makes the most sense for the
@@ -49,50 +53,50 @@ public final class AggregateTransactionRequest {
     private final Period mPeriod;
     private final Duration mDuration;
     private final TimeRangeFilter mTimeRangeFilter;
+    private final AggregationTypeIdMapper mAggregationTypeIdMapper;
+    private final Set<Integer> mRecordTypeIds = new HashSet<>();
 
     public AggregateTransactionRequest(
-            @NonNull String packageName,
-            @NonNull AggregateDataRequestParcel request,
+            AppInfoHelper appInfoHelper,
+            String packageName,
+            AggregateDataRequestParcel request,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             long startDateAccess) {
         mPackageName = packageName;
         mAggregateTableRequests = new ArrayList<>(request.getAggregateIds().length);
         mPeriod = request.getPeriod();
         mDuration = request.getDuration();
         mTimeRangeFilter = request.getTimeRangeFilter();
+        mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
 
-        final AggregationTypeIdMapper aggregationTypeIdMapper =
-                AggregationTypeIdMapper.getInstance();
         for (int id : request.getAggregateIds()) {
-            AggregationType<?> aggregationType = aggregationTypeIdMapper.getAggregationTypeFor(id);
-            List<Integer> recordTypeIds = aggregationType.getApplicableRecordTypeIds();
-            if (recordTypeIds.size() == 1) {
-                RecordHelper<?> recordHelper =
-                        RecordHelperProvider.getRecordHelper(recordTypeIds.get(0));
-                AggregateTableRequest aggregateTableRequest =
-                        recordHelper.getAggregateTableRequest(
-                                aggregationType,
-                                packageName,
-                                request.getPackageFilters(),
-                                request.getStartTime(),
-                                request.getEndTime(),
-                                startDateAccess,
-                                request.useLocalTimeFilter());
+            AggregationType<?> aggregationType = mAggregationTypeIdMapper.getAggregationTypeFor(id);
+            int recordTypeId = aggregationType.getApplicableRecordTypeId();
+            mRecordTypeIds.add(recordTypeId);
+            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            AggregateTableRequest aggregateTableRequest =
+                    recordHelper.getAggregateTableRequest(
+                            aggregationType,
+                            packageName,
+                            request.getPackageFilters(),
+                            healthDataCategoryPriorityHelper,
+                            appInfoHelper,
+                            request.getStartTime(),
+                            request.getEndTime(),
+                            startDateAccess,
+                            request.useLocalTimeFilter());
 
-                if (mDuration != null || mPeriod != null) {
-                    aggregateTableRequest.setGroupBy(
-                            recordHelper.getDurationGroupByColumnName(),
-                            mPeriod,
-                            mDuration,
-                            mTimeRangeFilter);
-                }
-                mAggregateTableRequests.add(aggregateTableRequest);
-            } else {
-                throw new UnsupportedOperationException();
+            if (mDuration != null || mPeriod != null) {
+                aggregateTableRequest.setGroupBy(
+                        recordHelper.getDurationGroupByColumnName(),
+                        mPeriod,
+                        mDuration,
+                        mTimeRangeFilter);
             }
+            mAggregateTableRequests.add(aggregateTableRequest);
         }
     }
 
-    @NonNull
     public String getPackageName() {
         return mPackageName;
     }
@@ -100,12 +104,14 @@ public final class AggregateTransactionRequest {
     /**
      * @return Compute and return aggregations
      */
-    public AggregateDataResponseParcel getAggregateDataResponseParcel() {
+    public AggregateDataResponseParcel getAggregateDataResponseParcel(
+            AccessLogsHelper accessLogsHelper) {
         Map<AggregationType<?>, List<AggregateResult<?>>> results = new ArrayMap<>();
         for (AggregateTableRequest aggregateTableRequest : mAggregateTableRequests) {
-            // Compute aggregations
+            // Compute aggregations and record read access log
             TransactionManager.getInitialisedInstance()
-                    .populateWithAggregation(aggregateTableRequest);
+                    .populateWithAggregation(
+                            aggregateTableRequest, mPackageName, mRecordTypeIds, accessLogsHelper);
             results.put(
                     aggregateTableRequest.getAggregationType(),
                     aggregateTableRequest.getAggregateResults());
@@ -121,7 +127,7 @@ public final class AggregateTransactionRequest {
             Map<Integer, AggregateResult<?>> aggregateResultMap = new ArrayMap<>();
             for (AggregationType<?> aggregationType : results.keySet()) {
                 aggregateResultMap.put(
-                        (AggregationTypeIdMapper.getInstance().getIdFor(aggregationType)),
+                        (mAggregationTypeIdMapper.getIdFor(aggregationType)),
                         Objects.requireNonNull(results.get(aggregationType)).get(i));
             }
             aggregateRecordsResponses.add(new AggregateRecordsResponse<>(aggregateResultMap));

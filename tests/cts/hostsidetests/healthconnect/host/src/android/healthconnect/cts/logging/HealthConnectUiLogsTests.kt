@@ -54,7 +54,8 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
         HostSideTestUtil.setupRateLimitingFeatureFlag(device)
         val pmResult =
             device.executeShellCommand(
-                "pm list packages com.google.android.healthconnect.controller")
+                "pm list packages com.google.android.healthconnect.controller"
+            )
         packageName =
             if (pmResult.isEmpty()) {
                 "com.android.healthconnect.controller"
@@ -68,7 +69,9 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
             packageName,
             intArrayOf(
                 UiExtensionAtoms.HEALTH_CONNECT_UI_IMPRESSION_FIELD_NUMBER,
-                UiExtensionAtoms.HEALTH_CONNECT_UI_INTERACTION_FIELD_NUMBER))
+                UiExtensionAtoms.HEALTH_CONNECT_UI_INTERACTION_FIELD_NUMBER,
+            ),
+        )
     }
 
     @Throws(Exception::class)
@@ -89,7 +92,11 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
             return
         }
         DeviceUtils.runDeviceTests(
-            device, TEST_APP_PKG_NAME, ".HealthConnectUiTestHelper", "openHomeFragment")
+            device,
+            TEST_APP_PKG_NAME,
+            ".HealthConnectUiTestHelper",
+            "openHomeFragment",
+        )
         Thread.sleep(AtomTestUtils.WAIT_TIME_LONG.toLong())
         val registry = ExtensionRegistry.newInstance()
         UiExtensionAtoms.registerAllExtensions(registry)
@@ -152,11 +159,10 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
 
     private fun filterImpressionLogs(
         data: List<StatsLog.EventMetricData>,
-        elementId: ElementId
+        elementId: ElementId,
     ): List<StatsLog.EventMetricData> {
         return data.filter {
-                it.atom.getExtension(UiExtensionAtoms.healthConnectUiImpression).element ==
-                    elementId
+            it.atom.getExtension(UiExtensionAtoms.healthConnectUiImpression).element == elementId
         }
     }
 }

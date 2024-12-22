@@ -29,5 +29,11 @@
                      android:label="HealthConnect Export/Import integration tests"
                      android:targetPackage="android.healthconnect.tests.exportimport" />
 
+    <!-- This is needed to query for HC BR APK package name -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <uses-permission android:name="android.permission.health.READ_STEPS"/>
+    <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
+
     <!--  self-instrumenting test package. -->
 </manifest>

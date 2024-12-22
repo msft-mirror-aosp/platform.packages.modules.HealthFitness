@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.IntervalR
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.START_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.util.Pair;
 
@@ -62,7 +61,7 @@ public final class DeriveTotalCaloriesBurnedHelper {
     private boolean mUseLocalTime;
 
     public DeriveTotalCaloriesBurnedHelper(
-            long startTime, long endTime, @NonNull List<Long> priorityList, boolean useLocaleTime) {
+            long startTime, long endTime, List<Long> priorityList, boolean useLocaleTime) {
         Objects.requireNonNull(priorityList);
         mStartTime = startTime;
         mEndTime = endTime;

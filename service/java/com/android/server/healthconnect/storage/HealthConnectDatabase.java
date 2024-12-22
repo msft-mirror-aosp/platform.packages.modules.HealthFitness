@@ -16,7 +16,8 @@
 
 package com.android.server.healthconnect.storage;
 
-import android.annotation.NonNull;
+import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -32,42 +33,46 @@ import java.io.File;
  *
  * @hide
  */
-public class HealthConnectDatabase extends SQLiteOpenHelper {
+public final class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
 
     private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
     private final Context mContext;
 
-    public HealthConnectDatabase(@NonNull Context context) {
+    public HealthConnectDatabase(Context context) {
         this(context, DEFAULT_DATABASE_NAME);
     }
 
-    public HealthConnectDatabase(@NonNull Context context, String databaseName) {
-        super(context, databaseName, null, DatabaseUpgradeHelper.getDatabaseVersion());
+    public HealthConnectDatabase(Context context, String databaseName) {
+        super(context, databaseName, null, getDbVersion());
         mContext = context;
     }
 
     @Override
-    public void onCreate(@NonNull SQLiteDatabase db) {
-        // We implement onCreate as a series of upgrades.
-        onUpgrade(db, 0, DatabaseUpgradeHelper.getDatabaseVersion());
+    public void onCreate(SQLiteDatabase db) {
+        DatabaseUpgradeHelper.onUpgrade(db, 0, getDbVersion());
     }
 
     @Override
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         DatabaseUpgradeHelper.onUpgrade(db, oldVersion, newVersion);
     }
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
-        // Enforce FK constraints for DB writes as we want to enforce FK constraints on DB write.
+        // Enforce FK constraints for DB writes
         // This is also required for when we delete entries, for cascade to work
         db.setForeignKeyConstraintsEnabled(true);
     }
 
     @Override
-    public void onDowngrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(TAG, "onDowngrade oldVersion = " + oldVersion + " newVersion = " + newVersion);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        DevelopmentDatabaseHelper.onOpen(db);
     }
 
     public File getDatabasePath() {

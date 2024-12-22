@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -34,6 +33,8 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.PowerRecordInternal;
 import android.util.Pair;
+
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
@@ -61,8 +62,8 @@ public class PowerRecordHelper
         super(RecordTypeIdentifier.RECORD_TYPE_POWER);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public final AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
@@ -115,9 +116,10 @@ public class PowerRecordHelper
     String getSeriesDataTableName() {
         return SERIES_TABLE_NAME;
     }
+
     /** Populates the {@code record} with values specific to datatype */
     @Override
-    void populateSpecificValues(@NonNull Cursor seriesTableCursor, PowerRecordInternal record) {
+    void populateSpecificValues(Cursor seriesTableCursor, PowerRecordInternal record) {
         HashSet<PowerRecordInternal.PowerRecordSample> powerRecordSampleSet = new HashSet<>();
         UUID uuid = getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME);
         do {

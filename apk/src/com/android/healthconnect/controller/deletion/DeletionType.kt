@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.deletion
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 
@@ -45,16 +45,16 @@ sealed class DeletionType : Parcelable {
     }
 
     data class DeletionTypeHealthPermissionTypeData(
-        val healthPermissionType: HealthPermissionType
+        val fitnessPermissionType: FitnessPermissionType
     ) : DeletionType() {
         constructor(
             parcel: Parcel
         ) : this(
-            HealthPermissionType.valueOf(
-                parcel.readString() ?: HealthPermissionType.ACTIVE_CALORIES_BURNED.toString())) {}
+            FitnessPermissionType.valueOf(
+                parcel.readString() ?: FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString())) {}
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(healthPermissionType.toString())
+            parcel.writeString(fitnessPermissionType.toString())
         }
 
         override fun describeContents(): Int {
@@ -118,20 +118,20 @@ sealed class DeletionType : Parcelable {
     }
 
     data class DeletionTypeHealthPermissionTypeFromApp(
-        val healthPermissionType: HealthPermissionType,
+        val fitnessPermissionType: FitnessPermissionType,
         val packageName: String,
         val appName: String
     ) : DeletionType() {
         constructor(
             parcel: Parcel
         ) : this(
-            HealthPermissionType.valueOf(
-                parcel.readString() ?: HealthPermissionType.ACTIVE_CALORIES_BURNED.toString()),
+            FitnessPermissionType.valueOf(
+                parcel.readString() ?: FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()),
             parcel.readString() ?: "",
             parcel.readString() ?: "") {}
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(healthPermissionType.toString())
+            parcel.writeString(fitnessPermissionType.toString())
             parcel.writeString(packageName)
             parcel.writeString(appName)
         }

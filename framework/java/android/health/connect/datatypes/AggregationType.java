@@ -19,14 +19,10 @@ package android.health.connect.datatypes;
 import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.health.connect.HealthConnectManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -57,28 +53,14 @@ public final class AggregationType<T> {
 
     @AggregationTypeIdentifier.Id private final int mId;
     @AggregateOperationType private final int mType;
-    private final List<Integer> mApplicableRecordTypes;
+    @RecordTypeIdentifier.RecordType private final int mApplicableRecordTypeId;
     private final Class<T> mClass;
 
     /** @hide */
     AggregationType(
             @AggregationTypeIdentifier.Id int id,
             @AggregateOperationType int type,
-            @NonNull List<Integer> applicableRecordTypes,
-            Class<T> templateClass) {
-        Objects.requireNonNull(applicableRecordTypes);
-
-        mId = id;
-        mType = type;
-        mApplicableRecordTypes = applicableRecordTypes;
-        mClass = templateClass;
-    }
-
-    /** @hide */
-    AggregationType(
-            @AggregationTypeIdentifier.Id int id,
-            @AggregateOperationType int type,
-            @NonNull @RecordTypeIdentifier.RecordType int applicableRecordType,
+            @RecordTypeIdentifier.RecordType int applicableRecordTypeId,
             Class<T> templateClass) {
         validateIntDefValue(
                 id,
@@ -89,7 +71,7 @@ public final class AggregationType<T> {
 
         mId = id;
         mType = type;
-        mApplicableRecordTypes = Collections.singletonList(applicableRecordType);
+        mApplicableRecordTypeId = applicableRecordTypeId;
         mClass = templateClass;
     }
 
@@ -100,9 +82,9 @@ public final class AggregationType<T> {
     }
 
     /** @hide */
-    @NonNull
-    public List<Integer> getApplicableRecordTypeIds() {
-        return mApplicableRecordTypes;
+    @RecordTypeIdentifier.RecordType
+    public int getApplicableRecordTypeId() {
+        return mApplicableRecordTypeId;
     }
 
     /** @hide */

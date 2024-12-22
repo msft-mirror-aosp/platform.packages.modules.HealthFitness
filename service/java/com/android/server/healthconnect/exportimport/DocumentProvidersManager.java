@@ -115,6 +115,10 @@ public final class DocumentProvidersManager {
 
             String title = cursor.getString(titleIndex);
             String summary = summaryIndex != -1 ? cursor.getString(summaryIndex) : "";
+            // Returned summary can be null even though the column is present.
+            if (summary == null) {
+                summary = "";
+            }
             int iconResource = cursor.getInt(iconResourceIndex);
             String rootDocument = cursor.getString(rootDocumentIndex);
             Uri rootDocumentUri = DocumentsContract.buildRootUri(authority, rootDocument);
