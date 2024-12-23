@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.ApplicationInfoFlags
-import com.android.healthfitness.flags.Flags.readAssetsForDisabledAppsFromPackageManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,21 +40,20 @@ constructor(
         if (cache.containsKey(packageName)) {
             return cache[packageName]!!
         }
-        if (readAssetsForDisabledAppsFromPackageManager() || isAppEnabled(packageName)) {
-            try {
-                val app =
-                    AppMetadata(
-                        packageName = packageName,
-                        appName =
-                            packageManager
-                                .getApplicationLabel(getPackageInfo(packageName))
-                                .toString(),
-                        icon = packageManager.getApplicationIcon(packageName))
-                cache[packageName] = app
-                return app
-            } catch (e: PackageManager.NameNotFoundException) {
-                // Fallthrough to reading from storage.
-            }
+        try {
+            val app =
+                AppMetadata(
+                    packageName = packageName,
+                    appName =
+                        packageManager
+                            .getApplicationLabel(getPackageInfo(packageName))
+                            .toString(),
+                    icon = packageManager.getApplicationIcon(packageName)
+                )
+            cache[packageName] = app
+            return app
+        } catch (e: PackageManager.NameNotFoundException) {
+            // Fallthrough to reading from storage.
         }
         val contributorApps = applicationsInfoUseCase.invoke()
         cache.putAll(contributorApps)
