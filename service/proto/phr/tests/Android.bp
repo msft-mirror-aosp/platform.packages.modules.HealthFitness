@@ -4,6 +4,7 @@ genrule {
     name: "generate-fhir-spec-r4-textproto",
     srcs: [
         "//external/fhir/spec/r4:resource-definitions",
+        "//external/fhir/spec/r4:type-definitions",
     ],
     tools: ["generate-fhir-spec"],
     cmd: "$(location generate-fhir-spec) $(out) $(in)",

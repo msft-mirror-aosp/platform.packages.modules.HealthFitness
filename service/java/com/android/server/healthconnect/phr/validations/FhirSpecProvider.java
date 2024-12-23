@@ -19,13 +19,14 @@ package com.android.server.healthconnect.phr.validations;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.FhirResource.validateFhirResourceType;
 
+import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
 import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
 
 import android.health.connect.datatypes.FhirVersion;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
-import com.android.server.healthconnect.proto.FhirFieldConfig;
+import com.android.server.healthconnect.proto.FhirDataType;
 import com.android.server.healthconnect.proto.FhirResourceSpec;
 import com.android.server.healthconnect.proto.R4FhirType;
 
@@ -76,20 +77,21 @@ public class FhirSpecProvider {
                 (resourceType, config) -> {
                     validateFhirResourceType(resourceType);
                     mResourceTypeIntToFhirSpecMap.put(resourceType, config);
-                    mPrimitiveTypes.addAll(getPrimitiveTypes(config));
                 });
-    }
 
-    private static Set<R4FhirType> getPrimitiveTypes(FhirComplexTypeConfig complexTypeConfig) {
-        Set<R4FhirType> primitiveTypes = new HashSet<>();
-        for (FhirFieldConfig fieldConfig :
-                complexTypeConfig.getAllowedFieldNamesToConfigMap().values()) {
-            if (fieldConfig.getKind() == KIND_PRIMITIVE_TYPE) {
-                primitiveTypes.add(fieldConfig.getR4Type());
+        for (FhirDataType dataType : r4FhirResourceSpec.getFhirDataTypeConfigsList()) {
+            switch (dataType.getKind()) {
+                case KIND_PRIMITIVE_TYPE:
+                    mPrimitiveTypes.add(dataType.getFhirType());
+                    break;
+                case KIND_COMPLEX_TYPE:
+                    // TODO(b/377701407) - Read complex type config when it exists
+                    break;
+                default:
+                    throw new IllegalArgumentException(
+                            "Unexpected type kind: " + dataType.getKind().name());
             }
         }
-
-        return primitiveTypes;
     }
 
     /**
