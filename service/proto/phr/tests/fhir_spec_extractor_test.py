@@ -164,6 +164,20 @@ class FhirSpecExtractorTest(unittest.TestCase):
                   "type" : [{
                     "code" : "Extension"
                   }]
+                },
+                {
+                  "id" : "Immunization.contained",
+                  "path" : "Immunization.contained",
+                  "min" : 0,
+                  "max" : "*",
+                  "base" : {
+                    "path" : "DomainResource.contained",
+                    "min" : 0,
+                    "max" : "*"
+                  },
+                  "type" : [{
+                    "code" : "Resource"
+                  }]
                 }
               ]
               }
@@ -520,6 +534,22 @@ class FhirSpecExtractorTest(unittest.TestCase):
       }
     },
     {
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/uri",
+      "resource": {
+        "resourceType": "StructureDefinition",
+        "id": "uri",
+        "url": "http://hl7.org/fhir/StructureDefinition/uri",
+        "version": "4.0.1",
+        "name": "uri",
+        "status": "active",
+        "fhirVersion": "4.0.1",
+        "kind": "primitive-type",
+        "abstract": false,
+        "type": "uri",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Element"
+      }
+    },
+    {
       "fullUrl": "http://hl7.org/fhir/StructureDefinition/CodeableConcept",
       "resource": {
         "resourceType": "StructureDefinition",
@@ -756,6 +786,151 @@ class FhirSpecExtractorTest(unittest.TestCase):
       }
     },
     {
+      "fullUrl" : "http://hl7.org/fhir/StructureDefinition/Extension",
+      "resource" : {
+        "resourceType" : "StructureDefinition",
+        "id" : "Extension",
+        "url" : "http://hl7.org/fhir/StructureDefinition/Extension",
+        "version" : "4.0.1",
+        "name" : "Extension",
+        "fhirVersion" : "4.0.1",
+        "kind" : "complex-type",
+        "type" : "Extension",
+        "snapshot" : {
+          "element" : [{
+            "id" : "Extension",
+            "path" : "Extension",
+            "min" : 0,
+            "max" : "*",
+            "base" : {
+              "path" : "Extension",
+              "min" : 0,
+              "max" : "*"
+            }
+          },
+          {
+            "id" : "Extension.id",
+            "path" : "Extension.id",
+            "min" : 0,
+            "max" : "1",
+            "base" : {
+              "path" : "Element.id",
+              "min" : 0,
+              "max" : "1"
+            },
+            "type" : [{
+              "extension" : [{
+                "url" : "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type",
+                "valueUrl" : "string"
+              }],
+              "code" : "http://hl7.org/fhirpath/System.String"
+            }]
+          },
+          {
+            "id" : "Extension.extension",
+            "path" : "Extension.extension",
+            "min" : 0,
+            "max" : "*",
+            "base" : {
+              "path" : "Element.extension",
+              "min" : 0,
+              "max" : "*"
+            },
+            "type" : [{
+              "code" : "Extension"
+            }]
+          },
+          {
+            "id" : "Extension.url",
+            "path" : "Extension.url",
+            "min" : 1,
+            "max" : "1",
+            "base" : {
+              "path" : "Extension.url",
+              "min" : 1,
+              "max" : "1"
+            },
+            "type" : [{
+              "extension" : [{
+                "url" : "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type",
+                "valueUrl" : "uri"
+              }],
+              "code" : "http://hl7.org/fhirpath/System.String"
+            }]
+          },
+          {
+            "id" : "Extension.value[x]",
+            "path" : "Extension.value[x]",
+            "min" : 0,
+            "max" : "1",
+            "base" : {
+              "path" : "Extension.value[x]",
+              "min" : 0,
+              "max" : "1"
+            },
+            "type" : [{
+              "code" : "boolean"
+            },
+            {
+              "code" : "code"
+            },
+            {
+              "code" : "CodeableConcept"
+            },
+            {
+              "code" : "Coding"
+            }]
+          }]
+        }
+      }
+    },
+    {
+      "fullUrl" : "http://hl7.org/fhir/StructureDefinition/Coding",
+      "resource" : {
+        "resourceType" : "StructureDefinition",
+        "id" : "Coding",
+        "url" : "http://hl7.org/fhir/StructureDefinition/Coding",
+        "version" : "4.0.1",
+        "name" : "Coding",
+        "fhirVersion" : "4.0.1",
+        "kind" : "complex-type",
+        "type" : "Coding",
+        "baseDefinition" : "http://hl7.org/fhir/StructureDefinition/Element",
+        "snapshot" : {
+          "element" : [
+            {
+            "id" : "Coding.system",
+            "path" : "Coding.system",
+            "min" : 0,
+            "max" : "1",
+            "base" : {
+              "path" : "Coding.system",
+              "min" : 0,
+              "max" : "1"
+            },
+            "type" : [{
+              "code" : "uri"
+            }]
+          },
+          {
+            "id" : "Coding.code",
+            "path" : "Coding.code",
+            "min" : 0,
+            "max" : "1",
+            "base" : {
+              "path" : "Coding.code",
+              "min" : 0,
+              "max" : "1"
+            },
+            "type" : [{
+              "code" : "code"
+            }]
+          }
+        ]
+        }
+      }
+    },
+    {
       "fullUrl": "http://hl7.org/fhir/StructureDefinition/OtherType",
       "resource": {
         "resourceType": "StructureDefinition",
@@ -858,6 +1033,10 @@ class FhirSpecExtractorTest(unittest.TestCase):
             "performer": fhirspec_pb2.FhirFieldConfig(
                 is_array=True,
                 r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT
+            ),
+            "contained": fhirspec_pb2.FhirFieldConfig(
+                is_array=True,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RESOURCE
             ),
         }
 
@@ -1017,12 +1196,94 @@ class FhirSpecExtractorTest(unittest.TestCase):
                 kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
             ),
             fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RESOURCE,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+            ),
+            fhirspec_pb2.FhirDataType(
                 fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE,
                 kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
             ),
             fhirspec_pb2.FhirDataType(
                 fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT,
                 kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+                fhir_complex_type_config=fhirspec_pb2.FhirComplexTypeConfig(
+                    allowed_field_names_to_config={
+                        "id": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+                        ),
+                        "extension": fhirspec_pb2.FhirFieldConfig(
+                            is_array=True,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_EXTENSION
+                        ),
+                        "coding": fhirspec_pb2.FhirFieldConfig(
+                            is_array=True,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODING
+                        ),
+                        "text": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+                        )
+                    }),
+            ),
+            # Expected because Coding is a nested type used in CodeableConcept
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODING,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+                fhir_complex_type_config=fhirspec_pb2.FhirComplexTypeConfig(
+                    allowed_field_names_to_config={
+                        "system": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_URI
+                        ),
+                        "code": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE
+                        )
+                    }),
+            ),
+            # Expected because Extension is a nested type used in CodeableConcept
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_EXTENSION,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+                fhir_complex_type_config=fhirspec_pb2.FhirComplexTypeConfig(
+                    allowed_field_names_to_config={
+                        "id": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+                        ),
+                        "extension": fhirspec_pb2.FhirFieldConfig(
+                            is_array=True,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_EXTENSION
+                        ),
+                        "url": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_URI
+                        ),
+                        "valueBoolean": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BOOLEAN
+                        ),
+                        "valueCode": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODE
+                        ),
+                        "valueCodeableConcept": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT
+                        ),
+                        "valueCoding": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CODING
+                        ),
+                    },
+                    multi_type_fields=[fhirspec_pb2.MultiTypeFieldConfig(
+                        name="value[x]",
+                        typed_field_names=[
+                            "valueBoolean", "valueCode", "valueCodeableConcept", "valueCoding"],
+                        is_required=False,
+                    )],
+                    required_fields=["url"]),
             ),
             fhirspec_pb2.FhirDataType(
                 fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_DATE_TIME,
@@ -1035,15 +1296,27 @@ class FhirSpecExtractorTest(unittest.TestCase):
             fhirspec_pb2.FhirDataType(
                 fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING,
                 kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
+            ),
+            # Expected because it is used in the Extension definition
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BOOLEAN,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
+            ),
+            # Expected because URI is the type of "Coding.system"
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_URI,
+                kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
             )]
 
         generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message(
             self.BUNDLE_WITH_TYPE_STRUCTURE_DEFINITIONS)
 
-        self.assertEqual(len(generated_spec.fhir_data_type_configs),
-                         len(expected_complex_type_configs))
-        self.assertEqual(set(str(config) for config in generated_spec.fhir_data_type_configs),
-                         set(str(config) for config in expected_complex_type_configs))
+        self.assertEqual(set(config.fhir_type for config in expected_complex_type_configs),
+                         set(config.fhir_type for config in generated_spec.fhir_data_type_configs))
+        self.assertEqual(len(expected_complex_type_configs),
+                         len(generated_spec.fhir_data_type_configs))
+        self.assertEqual(set(str(config) for config in expected_complex_type_configs),
+                         set(str(config) for config in generated_spec.fhir_data_type_configs))
 
     def test_fhir_spec_extractor_missing_type_structure_definition_raises_exception(self):
         fhir_spec_extractor = FhirSpecExtractor(

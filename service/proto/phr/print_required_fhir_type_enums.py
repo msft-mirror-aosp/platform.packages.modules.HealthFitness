@@ -13,50 +13,82 @@ import json
 from fhir_spec_utils import *
 
 
-def get_all_types_from_resource_definitions(profiles_resources_json, resources_set):
-    fhir_type_strings = set()
-
+def extract_and_print_type_enums(profiles_resources_json, profiles_types_json, resources_set):
+    top_level_fhir_types = set()
     for resource, structure_definition in extract_type_to_structure_definitions_from_spec(
             profiles_resources_json, resources_set).items():
-        for element_definition in extract_element_definitions_from_structure_def(
-                structure_definition):
-            if element_definition["id"] in [resource, "Observation.component.referenceRange"]:
-                continue
-            else:
-                for data_type in element_definition["type"]:
-                    type_code = data_type["code"]
-                    if type_code != "http://hl7.org/fhirpath/System.String":
-                        fhir_type_strings.add(type_code)
+        top_level_fhir_types.update(_get_types_from_structure_definition(
+            resource, structure_definition))
+
+    all_required_fhir_types = _get_all_types_and_subtypes_from_type_definitions(
+        profiles_types_json, top_level_fhir_types)
+    # Add id type manually as the Resource ids use System.String in the spec
+    all_required_fhir_types.add("id")
+
+    for i, data_type in enumerate(sorted(all_required_fhir_types, key=str.casefold)):
+        print("R4_FHIR_TYPE_" + to_upper_snake_case(data_type) + " = " + str(i + 1) + ";")
+
+
+def _get_types_from_structure_definition(type_name, structure_definition):
+    fhir_type_strings = set()
+
+    # We don't need to extract subtypes for primitive types
+    if structure_definition["kind"] == "primitive-type":
+        return fhir_type_strings
+
+    for element_definition in extract_element_definitions_from_structure_def(
+            structure_definition):
+        if element_definition["id"] in [type_name, "Observation.component.referenceRange"]:
+            continue
+        else:
+            for data_type in element_definition["type"]:
+                type_code = data_type["code"]
+                if type_code != "http://hl7.org/fhirpath/System.String":
+                    fhir_type_strings.add(type_code)
 
     return fhir_type_strings
 
 
-def extract_and_print_type_enums(profiles_resources_json, resources_set):
-    # Add primitive types that are not yet used manually as they are supported in primitive type
-    # validation already
-    types = {
-        "base64Binary",
-        "decimal",
-        "markdown",
-        "oid",
-        "positiveInt",
-        "unsignedInt",
-        "url",
-        "uuid",
-    }
-    # Add id type manually as this Resource ids use System.String in the spec
-    types.add("id")
-    types.update(get_all_types_from_resource_definitions(
-        profiles_resources_json, resources_set))
+def _get_all_types_and_subtypes_from_type_definitions(profiles_types_json, types_set):
+    type_to_structure_definition = extract_type_to_structure_definitions_from_spec(
+        profiles_types_json, None)
 
-    for i, data_type in enumerate(sorted(types, key=str.casefold)):
-        print("R4_FHIR_TYPE_" + to_upper_snake_case(data_type) + " = " + str(i + 1) + ";")
+    return _recursively_get_all_types_from_type_definitions(type_to_structure_definition, types_set)
+
+
+def _recursively_get_all_types_from_type_definitions(
+        type_to_structure_definition, types_to_extract_set, extracted_types_set=set()):
+    new_types_to_extract_set = set()
+
+    for fhir_type in types_to_extract_set:
+
+        if fhir_type == "Resource":
+            # "Resource" type is not defined in the profile types file, and we don't need it as
+            # contained resources are disallowed at the moment.
+            continue
+        sub_types = _get_types_from_structure_definition(
+            fhir_type, type_to_structure_definition[fhir_type])
+        for sub_type in sub_types:
+            if sub_type not in extracted_types_set and sub_type not in types_to_extract_set:
+                new_types_to_extract_set.add(sub_type)
+
+    if new_types_to_extract_set:
+        return _recursively_get_all_types_from_type_definitions(
+            type_to_structure_definition, new_types_to_extract_set,
+            extracted_types_set.union(types_to_extract_set))
+
+    else:
+        return extracted_types_set.union(types_to_extract_set)
 
 
 if __name__ == '__main__':
     resource_definitions_file_name = sys.argv[1]
+    type_definitions_file_name = sys.argv[2]
 
-    with open(resource_definitions_file_name, 'r') as resources_file:
+    with open(resource_definitions_file_name, 'r') as resources_file, open(
+            type_definitions_file_name, 'r') as types_file:
         resource_definitions = json.load(resources_file)
+        type_definitions = json.load(types_file)
 
-        extract_and_print_type_enums(resource_definitions, HC_SUPPORTED_RESOURCE_SET)
+        extract_and_print_type_enums(resource_definitions, type_definitions,
+                                     HC_SUPPORTED_RESOURCE_SET)

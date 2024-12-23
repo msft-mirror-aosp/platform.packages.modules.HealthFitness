@@ -37,6 +37,7 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_AGE
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ANNOTATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ATTACHMENT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BASE64_BINARY;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BOOLEAN;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CANONICAL;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODE;
@@ -45,6 +46,7 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_COD
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CONTACT_POINT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE_TIME;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DECIMAL;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DOSAGE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_EXTENSION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_HUMAN_NAME;
@@ -52,15 +54,22 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ID;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_IDENTIFIER;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INSTANT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INTEGER;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_MARKDOWN;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_META;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_NARRATIVE;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_OID;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_POSITIVE_INT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_QUANTITY;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RANGE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_REFERENCE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RESOURCE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STRING;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_TIME;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_UNSIGNED_INT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_URI;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_URL;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_UUID;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_XHTML;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -103,19 +112,16 @@ public class FhirSpecProviderTest {
                     R4_FHIR_TYPE_INSTANT,
                     R4_FHIR_TYPE_STRING,
                     R4_FHIR_TYPE_TIME,
-                    R4_FHIR_TYPE_URI
-                    // The following primitive types are not yet used in the fhirspec textproto, so
-                    // will not
-                    // be present.
-                    // R4_FHIR_TYPE_DECIMAL,
-                    // R4_FHIR_TYPE_POSITIVE_INT,
-                    // R4_FHIR_TYPE_UNSIGNED_INT,
-                    // R4_FHIR_TYPE_BASE64_BINARY,
-                    // R4_FHIR_TYPE_MARKDOWN,
-                    // R4_FHIR_TYPE_OID,
-                    // R4_FHIR_TYPE_URL,
-                    // R4_FHIR_TYPE_UUID
-                    );
+                    R4_FHIR_TYPE_URI,
+                    R4_FHIR_TYPE_DECIMAL,
+                    R4_FHIR_TYPE_POSITIVE_INT,
+                    R4_FHIR_TYPE_UNSIGNED_INT,
+                    R4_FHIR_TYPE_BASE64_BINARY,
+                    R4_FHIR_TYPE_MARKDOWN,
+                    R4_FHIR_TYPE_OID,
+                    R4_FHIR_TYPE_URL,
+                    R4_FHIR_TYPE_UUID,
+                    R4_FHIR_TYPE_XHTML);
 
     private static final Correspondence<MultiTypeFieldConfig, MultiTypeFieldConfig>
             MULTI_TYPE_CONFIG_EQUIVALENCE =

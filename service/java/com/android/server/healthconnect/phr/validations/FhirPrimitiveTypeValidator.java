@@ -104,6 +104,8 @@ public class FhirPrimitiveTypeValidator {
         populateR4PrimitiveIntegerTypeToMinValueMap();
         populateR4PrimitiveStringTypeToPatternMap();
         switch (type) {
+                // TODO: b/385736773 - Handle xhtml type here before enabling object type
+                // validation.
             case R4_FHIR_TYPE_BOOLEAN:
                 validateBooleanType(fieldObject, fieldName);
                 break;
