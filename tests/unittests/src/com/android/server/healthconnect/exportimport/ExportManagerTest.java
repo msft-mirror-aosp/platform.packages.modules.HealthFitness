@@ -150,7 +150,7 @@ public class ExportManagerTest {
                 new ExportManager(
                         mContext, fakeClock, mExportImportSettingsStorage, transactionManager);
 
-        mPhrTestUtils = new PhrTestUtils(mContext, healthConnectInjector);
+        mPhrTestUtils = new PhrTestUtils(healthConnectInjector);
 
         mExportedDbContext =
                 HealthConnectContext.create(

@@ -134,7 +134,7 @@ public class BackupRestoreWithoutMocksTest {
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper());
 
-        mPhrTestUtils = new PhrTestUtils(mContext, healthConnectInjector);
+        mPhrTestUtils = new PhrTestUtils(healthConnectInjector);
     }
 
     @Test

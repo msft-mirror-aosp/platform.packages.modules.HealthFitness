@@ -173,7 +173,7 @@ public class MedicalDataSourceHelperTest {
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
-        mUtil = new PhrTestUtils(mContext, healthConnectInjector);
+        mUtil = new PhrTestUtils(healthConnectInjector);
     }
 
     @After
@@ -421,7 +421,6 @@ public class MedicalDataSourceHelperTest {
     public void createMedicalDataSources_sameDisplayNamesFromSamePackage_throws() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.createMedicalDataSource(
-                mContext,
                 new CreateMedicalDataSourceRequest.Builder(
                                 DATA_SOURCE_FHIR_BASE_URI,
                                 DATA_SOURCE_DISPLAY_NAME,
@@ -433,7 +432,6 @@ public class MedicalDataSourceHelperTest {
                 IllegalArgumentException.class,
                 () ->
                         mMedicalDataSourceHelper.createMedicalDataSource(
-                                mContext,
                                 new CreateMedicalDataSourceRequest.Builder(
                                                 DIFFERENT_DATA_SOURCE_BASE_URI,
                                                 DATA_SOURCE_DISPLAY_NAME,
@@ -683,7 +681,7 @@ public class MedicalDataSourceHelperTest {
     public void createMedicalDataSource_createsAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         mMedicalDataSourceHelper.createMedicalDataSource(
-                mContext, getCreateMedicalDataSourceRequest(), DATA_SOURCE_PACKAGE_NAME);
+                getCreateMedicalDataSourceRequest(), DATA_SOURCE_PACKAGE_NAME);
 
         AccessLog expected =
                 new AccessLog(
@@ -3374,7 +3372,7 @@ public class MedicalDataSourceHelperTest {
         CreateMedicalDataSourceRequest request =
                 new CreateMedicalDataSourceRequest.Builder(baseUri, displayName, fhirVersion)
                         .build();
-        return mMedicalDataSourceHelper.createMedicalDataSource(mContext, request, packageName);
+        return mMedicalDataSourceHelper.createMedicalDataSource(request, packageName);
     }
 
     private void insertApps(List<String> packageNames) {

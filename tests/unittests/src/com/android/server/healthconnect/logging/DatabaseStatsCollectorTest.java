@@ -85,17 +85,16 @@ public class DatabaseStatsCollectorTest {
     private long mPackageAppInfoId;
 
     private TransactionTestUtils mTransactionTestUtils;
-    private Context mContext;
     private HealthConnectInjector mHealthConnectInjector;
 
     private DatabaseStatsCollector mDatabaseStatsCollector;
 
     @Before
     public void setup() {
-        mContext = ApplicationProvider.getApplicationContext();
+        Context context = ApplicationProvider.getApplicationContext();
         FakeTimeSource mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         mHealthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
@@ -134,7 +133,6 @@ public class DatabaseStatsCollectorTest {
         FhirVersion fhirVersion = FhirVersion.parseFhirVersion("4.0.1");
         MedicalDataSource dataSource =
                 dataSourceHelper.createMedicalDataSource(
-                        mContext,
                         new CreateMedicalDataSourceRequest.Builder(
                                         Uri.parse("http://fakebaseuri.com/"),
                                         "Hospital",

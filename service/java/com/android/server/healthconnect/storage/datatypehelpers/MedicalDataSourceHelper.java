@@ -45,7 +45,6 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 
 import android.annotation.Nullable;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
@@ -330,7 +329,7 @@ public class MedicalDataSourceHelper {
      * @return The {@link MedicalDataSource} created and inserted into the database.
      */
     public MedicalDataSource createMedicalDataSource(
-            Context context, CreateMedicalDataSourceRequest request, String packageName) {
+            CreateMedicalDataSourceRequest request, String packageName) {
         try {
             // Get the appInfoId outside the transaction
             long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName);
@@ -339,7 +338,6 @@ public class MedicalDataSourceHelper {
                             db ->
                                     createMedicalDataSourceAndAppInfoAndCheckLimits(
                                             db,
-                                            context,
                                             request,
                                             appInfoId,
                                             packageName,
@@ -355,7 +353,6 @@ public class MedicalDataSourceHelper {
 
     private MedicalDataSource createMedicalDataSourceAndAppInfoAndCheckLimits(
             SQLiteDatabase db,
-            Context context,
             CreateMedicalDataSourceRequest request,
             long appInfoId,
             String packageName,

@@ -205,9 +205,7 @@ public class HealthConnectDatabaseTest {
         MedicalDataSourceHelper medicalDataSourceHelper = injector.getMedicalDataSourceHelper();
         MedicalDataSource originalMedicalDataSource =
                 medicalDataSourceHelper.createMedicalDataSource(
-                        mContext,
-                        PhrDataFactory.getCreateMedicalDataSourceRequest(),
-                        TEST_PACKAGE_NAME);
+                        PhrDataFactory.getCreateMedicalDataSourceRequest(), TEST_PACKAGE_NAME);
         List<MedicalDataSource> readMedicalDataSources =
                 medicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(UUID.fromString(originalMedicalDataSource.getId())));

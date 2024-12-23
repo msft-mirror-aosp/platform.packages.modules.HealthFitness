@@ -2042,7 +2042,7 @@ public class HealthConnectServiceImplTest {
         setUpCreateMedicalDataSourceDefaultMocks();
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
-        when(mMedicalDataSourceHelper.createMedicalDataSource(any(), any(), any()))
+        when(mMedicalDataSourceHelper.createMedicalDataSource(any(), any()))
                 .thenThrow(SQLiteException.class);
 
         mHealthConnectService.createMedicalDataSource(
@@ -2621,7 +2621,7 @@ public class HealthConnectServiceImplTest {
         ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxRecordMemoryUsage(anyLong()));
         ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxChunkMemoryUsage(anyLong()));
         when(mMedicalDataSourceHelper.createMedicalDataSource(
-                        eq(mServiceContext), eq(getCreateMedicalDataSourceRequest()), any()))
+                        eq(getCreateMedicalDataSourceRequest()), any()))
                 .thenReturn(getMedicalDataSourceRequiredFieldsOnly());
     }
 
@@ -2651,7 +2651,7 @@ public class HealthConnectServiceImplTest {
                 .when(mMedicalResourceHelper)
                 .deleteMedicalResourcesByRequestWithPermissionChecks(any(), any());
 
-        when(mMedicalDataSourceHelper.createMedicalDataSource(any(), any(), any()))
+        when(mMedicalDataSourceHelper.createMedicalDataSource(any(), any()))
                 .thenReturn(getMedicalDataSourceRequiredFieldsOnly());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(any()))
                 .thenReturn(List.of());
