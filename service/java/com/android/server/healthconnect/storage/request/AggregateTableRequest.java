@@ -370,11 +370,25 @@ public class AggregateTableRequest {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private List<String> updateResultWithDataOriginPackageNames(Cursor metaDataCursor) {
         List<Long> packageIds = new ArrayList<>();
+        List<Long> priorityList = getAppIdPriorityList(mRecordHelper.getRecordIdentifier());
+        boolean supportsPriority =
+                (mInternalHealthConnectMappings.supportsPriority(
+                        mRecordHelper.getRecordIdentifier(),
+                        mAggregationType.getAggregateOperationType()));
         while (metaDataCursor.moveToNext()) {
-            packageIds.add(StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME));
+            long packageId = StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME);
+
+            // As there is currently no way for us to tell which sources have been included in
+            // an aggregation, we filter the package names included in the data origins list to
+            // exclude those that are not in the priority list for data types that support
+            // aggregations based on priority, which cannot have been included in the aggregation.
+            // This is a partial fix for b/336783737, which would require a larger refactor to fix
+            // fully.
+            if (!supportsPriority || priorityList.contains(packageId)) {
+                packageIds.add(packageId);
+            }
         }
         List<String> packageNames = mAppInfoHelper.getPackageNames(packageIds);
-
         mAggregateResults.replaceAll(
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));
         return packageNames;

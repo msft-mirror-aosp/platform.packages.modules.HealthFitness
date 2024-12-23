@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 
@@ -178,6 +179,7 @@ public class AggregateTransactionRequestTest {
                                 TimeRangeFilterHelper.getLocalTimeFromMillis(
                                         testStartTime.minusMillis(1500).toEpochMilli()))
                         .build();
+        mHealthDataCategoryPriorityHelper.appendToPriorityList(TEST_PACKAGE_NAME, ACTIVITY, false);
         AggregateRecordsRequest<Long> aggregateRecordsRequest =
                 new AggregateRecordsRequest.Builder<Long>(timeRangeFilter)
                         .addAggregationType(StepsRecord.STEPS_COUNT_TOTAL)
