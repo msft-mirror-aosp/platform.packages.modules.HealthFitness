@@ -45,6 +45,7 @@ import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.INACTI
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.TopIntroPreference
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,21 +69,15 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     private var searchView: SearchView? = null
     private val viewModel: ConnectedAppsViewModel by viewModels()
 
-    private val allowedAppsCategory: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(ALLOWED_APPS_CATEGORY)!!
-    }
-    private val notAllowedAppsCategory: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(NOT_ALLOWED_APPS)!!
-    }
-    private val inactiveAppsPreference: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(INACTIVE_APPS)!!
-    }
-    private val emptySearchResultsPreference: NoSearchResultPreference by lazy {
-        preferenceScreen.findPreference(EMPTY_SEARCH_RESULT)!!
-    }
-    private val topIntroPreference: TopIntroPreference by lazy {
-        preferenceScreen.findPreference(TOP_INTRO_PREF)!!
-    }
+    private val allowedAppsCategory: PreferenceGroup by pref(ALLOWED_APPS_CATEGORY)
+
+    private val notAllowedAppsCategory: PreferenceGroup by pref(NOT_ALLOWED_APPS)
+
+    private val inactiveAppsPreference: PreferenceGroup by pref(INACTIVE_APPS)
+
+    private val emptySearchResultsPreference: NoSearchResultPreference by pref(EMPTY_SEARCH_RESULT)
+
+    private val topIntroPreference: TopIntroPreference by pref(TOP_INTRO_PREF)
 
     private val menuProvider =
         object : MenuProvider, SearchView.OnQueryTextListener {
@@ -102,7 +97,8 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
                             findNavController().popBackStack()
                             return true
                         }
-                    })
+                    }
+                )
                 searchView = searchMenuItem.actionView as SearchView
                 searchView!!.queryHint = getText(R.string.search_connected_apps)
                 searchView!!.setOnQueryTextListener(this)
@@ -164,7 +160,7 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         logger.setPageId(pageName)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -192,7 +188,8 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
                 .sortedBy { it.appMetadata.appName }
                 .forEach { app ->
                     allowedAppsCategory.addPreference(
-                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                        getAppPreference(app) { navigateToAppInfoScreen(app) }
+                    )
                 }
         }
     }
@@ -207,7 +204,8 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
                 .sortedBy { it.appMetadata.appName }
                 .forEach { app ->
                     notAllowedAppsCategory.addPreference(
-                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                        getAppPreference(app) { navigateToAppInfoScreen(app) }
+                    )
                 }
         }
     }
@@ -225,12 +223,14 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
                 navigationId,
                 bundleOf(
                     EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
-                    EXTRA_APP_NAME to app.appMetadata.appName))
+                    EXTRA_APP_NAME to app.appMetadata.appName,
+                ),
+            )
     }
 
     private fun getAppPreference(
         app: ConnectedAppMetadata,
-        onClick: (() -> Unit)? = null
+        onClick: (() -> Unit)? = null,
     ): Preference {
         return HealthAppPreference(requireContext(), app.appMetadata).also {
             if (app.status == ALLOWED) {
@@ -249,7 +249,10 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
 
     private fun setupMenu() {
         (activity as MenuHost).addMenuProvider(
-            menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
+            menuProvider,
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
+        )
     }
 
     private fun hideTitleFromCollapsingToolbarLayout() {

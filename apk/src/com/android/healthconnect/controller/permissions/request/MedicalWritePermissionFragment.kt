@@ -59,13 +59,9 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
 
     private val header: RequestPermissionHeaderPreference by pref(HEADER_PREFERENCE)
 
-    private val supportedMedicalPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(SUPPORTED_PERMS_PREFERENCE)
-    }
+    private val supportedMedicalPreference: HealthPreference by pref(SUPPORTED_PERMS_PREFERENCE)
 
-    private val footer: FooterPreference? by lazy {
-        preferenceScreen.findPreference(FOOTER_PREFERENCE)
-    }
+    private val footer: FooterPreference by pref(FOOTER_PREFERENCE)
 
     init {
         this.setPageName(PageName.REQUEST_WRITE_MEDICAL_PERMISSION_PAGE)
@@ -110,15 +106,15 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
                 .map { getString(it.upperCaseLabel()) }
                 .sorted()
                 .joinToString("\n")
-        supportedMedicalPreference?.summary = sampleMedicalPermissions
-        supportedMedicalPreference?.isSelectable = false
+        supportedMedicalPreference.summary = sampleMedicalPermissions
+        supportedMedicalPreference.isSelectable = false
 
-        footer?.title = getString(R.string.medical_request_footer)
-        footer?.setLearnMoreText(getString(R.string.medical_request_about_health_records))
-        footer?.setLearnMoreAction { deviceInfoUtils.openHCGetStartedLink(requireActivity()) }
+        footer.title = getString(R.string.medical_request_footer)
+        footer.setLearnMoreText(getString(R.string.medical_request_about_health_records))
+        footer.setLearnMoreAction { deviceInfoUtils.openHCGetStartedLink(requireActivity()) }
 
         setupAllowButton()
-        setupDontAllowButton()
+        setupDoNotAllowButton()
     }
 
     private fun setupAllowButton() {
@@ -135,7 +131,7 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
         }
     }
 
-    private fun setupDontAllowButton() {
+    private fun setupDoNotAllowButton() {
         logger.logImpression(MedicalWritePermissionPageElement.CANCEL_WRITE_HEALTH_RECORDS_BUTTON)
 
         getDontAllowButton().setOnClickListener {

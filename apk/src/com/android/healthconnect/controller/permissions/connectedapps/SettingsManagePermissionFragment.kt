@@ -59,6 +59,7 @@ import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -81,13 +82,9 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
 
     @Inject lateinit var navigationUtils: NavigationUtils
 
-    private val allowedAppsGroup: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(ALLOWED_APPS_GROUP)
-    }
+    private val allowedAppsGroup: PreferenceGroup by pref(ALLOWED_APPS_GROUP)
 
-    private val deniedAppsGroup: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(DENIED_APPS_GROUP)
-    }
+    private val deniedAppsGroup: PreferenceGroup by pref(DENIED_APPS_GROUP)
 
     private val viewModel: ConnectedAppsViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by viewModels()
@@ -149,21 +146,21 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
     }
 
     private fun updateAllowedApps(appsList: List<ConnectedAppMetadata>) {
-        allowedAppsGroup?.removeAll()
+        allowedAppsGroup.removeAll()
         if (appsList.isEmpty()) {
-            allowedAppsGroup?.addPreference(getNoAppsPreference(R.string.no_apps_allowed))
+            allowedAppsGroup.addPreference(getNoAppsPreference(R.string.no_apps_allowed))
         } else {
-            appsList.forEach { app -> allowedAppsGroup?.addPreference(getAppPreference(app)) }
+            appsList.forEach { app -> allowedAppsGroup.addPreference(getAppPreference(app)) }
         }
     }
 
     private fun updateDeniedApps(appsList: List<ConnectedAppMetadata>) {
-        deniedAppsGroup?.removeAll()
+        deniedAppsGroup.removeAll()
 
         if (appsList.isEmpty()) {
-            deniedAppsGroup?.addPreference(getNoAppsPreference(R.string.no_apps_denied))
+            deniedAppsGroup.addPreference(getNoAppsPreference(R.string.no_apps_denied))
         } else {
-            appsList.forEach { app -> deniedAppsGroup?.addPreference(getAppPreference(app)) }
+            appsList.forEach { app -> deniedAppsGroup.addPreference(getAppPreference(app)) }
         }
     }
 

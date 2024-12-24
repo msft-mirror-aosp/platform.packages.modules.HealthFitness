@@ -15,6 +15,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthfitness.flags.Flags.exportImport
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,21 +35,15 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
 
     private val autoDeleteViewModel: AutoDeleteViewModel by activityViewModels()
 
-    private val mAutoDeletePreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(AUTO_DELETE_PREFERENCE_KEY)
-    }
+    private val mAutoDeletePreference: HealthPreference by pref(AUTO_DELETE_PREFERENCE_KEY)
 
-    private val mDataSourcesPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(DATA_SOURCES_AND_PRIORITY_PREFERENCE_KEY)
-    }
+    private val mDataSourcesPreference: HealthPreference by
+        pref(DATA_SOURCES_AND_PRIORITY_PREFERENCE_KEY)
 
-    private val mSetUnitsPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(SET_UNITS_PREFERENCE_KEY)
-    }
+    private val mSetUnitsPreference: HealthPreference by pref(SET_UNITS_PREFERENCE_KEY)
 
-    private val backupAndRestorePreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(BACKUP_AND_RESTORE_PREFERENCE_KEY)
-    }
+    private val backupAndRestorePreference: HealthPreference by
+        pref(BACKUP_AND_RESTORE_PREFERENCE_KEY)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -58,31 +53,33 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
             setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
         }
 
-        mAutoDeletePreference?.logName = ManageDataElement.AUTO_DELETE_BUTTON
-        mAutoDeletePreference?.setOnPreferenceClickListener {
+        mAutoDeletePreference.logName = ManageDataElement.AUTO_DELETE_BUTTON
+        mAutoDeletePreference.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_manageData_to_autoDelete)
             true
         }
 
-        mDataSourcesPreference?.logName = ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON
-        mDataSourcesPreference?.setOnPreferenceClickListener {
+        mDataSourcesPreference.logName = ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON
+        mDataSourcesPreference.setOnPreferenceClickListener {
             findNavController()
                 .navigate(
                     R.id.action_manageData_to_dataSources,
                     bundleOf(
-                        HealthDataCategoriesFragment.CATEGORY_KEY to HealthDataCategory.UNKNOWN))
+                        HealthDataCategoriesFragment.CATEGORY_KEY to HealthDataCategory.UNKNOWN
+                    ),
+                )
             true
         }
 
-        mSetUnitsPreference?.logName = ManageDataElement.SET_UNITS_BUTTON
-        mSetUnitsPreference?.setOnPreferenceClickListener {
+        mSetUnitsPreference.logName = ManageDataElement.SET_UNITS_BUTTON
+        mSetUnitsPreference.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_manageData_to_setUnits)
             true
         }
 
         if (exportImport()) {
-            backupAndRestorePreference?.logName = ManageDataElement.BACKUP_AND_RESTORE_BUTTON
-            backupAndRestorePreference?.setOnPreferenceClickListener {
+            backupAndRestorePreference.logName = ManageDataElement.BACKUP_AND_RESTORE_BUTTON
+            backupAndRestorePreference.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
                 true
             }
@@ -95,13 +92,13 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         autoDeleteViewModel.storedAutoDeleteRange.observe(viewLifecycleOwner) { state ->
             when (state) {
                 AutoDeleteViewModel.AutoDeleteState.Loading -> {
-                    mAutoDeletePreference?.summary = ""
+                    mAutoDeletePreference.summary = ""
                 }
                 is AutoDeleteViewModel.AutoDeleteState.LoadingFailed -> {
-                    mAutoDeletePreference?.summary = ""
+                    mAutoDeletePreference.summary = ""
                 }
                 is AutoDeleteViewModel.AutoDeleteState.WithData -> {
-                    mAutoDeletePreference?.summary = buildSummary(state.autoDeleteRange)
+                    mAutoDeletePreference.summary = buildSummary(state.autoDeleteRange)
                 }
             }
         }
@@ -113,12 +110,16 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
             AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS -> {
                 val count = AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS.numberOfMonths
                 MessageFormat.format(
-                    getString(R.string.range_after_x_months), mapOf("count" to count))
+                    getString(R.string.range_after_x_months),
+                    mapOf("count" to count),
+                )
             }
             AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS -> {
                 val count = AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.numberOfMonths
                 MessageFormat.format(
-                    getString(R.string.range_after_x_months), mapOf("count" to count))
+                    getString(R.string.range_after_x_months),
+                    mapOf("count" to count),
+                )
             }
         }
     }

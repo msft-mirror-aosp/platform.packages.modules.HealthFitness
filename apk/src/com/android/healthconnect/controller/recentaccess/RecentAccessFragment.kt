@@ -30,7 +30,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
@@ -39,6 +38,7 @@ import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.RecentAccessElement
+import com.android.healthconnect.controller.utils.pref
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -65,17 +65,12 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
     private lateinit var fab: ExtendedFloatingActionButton
     private var recyclerView: RecyclerView? = null
 
-    private val mRecentAccessTodayPreferenceGroup: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(RECENT_ACCESS_TODAY_KEY)
-    }
+    private val mRecentAccessTodayPreferenceGroup: PreferenceGroup by pref(RECENT_ACCESS_TODAY_KEY)
 
-    private val mRecentAccessYesterdayPreferenceGroup: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(RECENT_ACCESS_YESTERDAY_KEY)
-    }
+    private val mRecentAccessYesterdayPreferenceGroup: PreferenceGroup by
+        pref(RECENT_ACCESS_YESTERDAY_KEY)
 
-    private val mRecentAccessNoDataPreference: Preference? by lazy {
-        preferenceScreen.findPreference(RECENT_ACCESS_NO_DATA_KEY)
-    }
+    private val mRecentAccessNoDataPreference: Preference by pref(RECENT_ACCESS_NO_DATA_KEY)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -85,7 +80,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
 
@@ -174,8 +169,10 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                         if (!recentApp.isInactive) {
                             // Do not set click listeners for inactive apps
                             it.setOnPreferenceClickListener {
-                                if (findNavController().currentDestination?.id ==
-                                    R.id.recentAccessFragment) {
+                                if (
+                                    findNavController().currentDestination?.id ==
+                                        R.id.recentAccessFragment
+                                ) {
                                     navigateToAppInfoScreen(recentApp)
                                 }
                                 true
@@ -187,13 +184,15 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                     mRecentAccessTodayPreferenceGroup?.addPreference(newPreference)
                     if (!isLastUsage) {
                         mRecentAccessTodayPreferenceGroup?.addPreference(
-                            DividerPreference(requireContext()))
+                            DividerPreference(requireContext())
+                        )
                     }
                 } else {
                     mRecentAccessYesterdayPreferenceGroup?.addPreference(newPreference)
                     if (!isLastUsage) {
                         mRecentAccessYesterdayPreferenceGroup?.addPreference(
-                            DividerPreference(requireContext()))
+                            DividerPreference(requireContext())
+                        )
                     }
                 }
             }
@@ -204,15 +203,20 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
         val appPermissionsType = recentApp.appPermissionsType
         val navigationId =
             when (appPermissionsType) {
-                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_recentAccessFragment_to_fitnessAppFragment
-                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_recentAccessFragment_to_medicalAppFragment
-                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_recentAccessFragment_to_combinedPermissionsFragment
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_recentAccessFragment_to_fitnessAppFragment
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_recentAccessFragment_to_medicalAppFragment
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_recentAccessFragment_to_combinedPermissionsFragment
             }
         findNavController()
             .navigate(
                 navigationId,
                 bundleOf(
                     Intent.EXTRA_PACKAGE_NAME to recentApp.metadata.packageName,
-                    Constants.EXTRA_APP_NAME to recentApp.metadata.appName))
+                    Constants.EXTRA_APP_NAME to recentApp.metadata.appName,
+                ),
+            )
     }
 }
