@@ -393,6 +393,117 @@ public class AggregateWithFiltersTest {
     }
 
     @Test
+    public void timeRangeFilter_nonPriorityType_expectPriorityListToBeIgnored() throws Exception {
+        Instant startTime = Instant.now().minus(1, DAYS);
+        Instant endTime = startTime.plus(1, HOURS);
+        ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
+        LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
+        LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
+        insertWeightRecordViaTestApp(mContext, startTime.plusMillis(1), 70);
+        insertRecords(
+                List.of(getWeightRecord(80, endTime), getWeightRecord(77, endTime.minusMillis(1))));
+
+        AggregateRecordsRequest<Mass> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Mass>(getTimeFilter(startTime, endTime))
+                        .addAggregationType(WEIGHT_MAX)
+                        .build();
+
+        AggregateRecordsResponse<Mass> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+        assertThat(aggregateResponse.get(WEIGHT_MAX)).isEqualTo(Mass.fromGrams(77));
+        assertThat(aggregateResponse.getDataOrigins(WEIGHT_MAX))
+                .containsExactly(getDataOrigin(mPackageName), getDataOrigin(PKG_TEST_APP));
+
+        AggregateRecordsRequest<Mass> requestWithLocalTimeFilter =
+                new AggregateRecordsRequest.Builder<Mass>(
+                                getTimeFilter(startLocalTime, endLocalTime))
+                        .addAggregationType(WEIGHT_MIN)
+                        .build();
+        AggregateRecordsResponse<Mass> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalTimeFilter);
+        assertThat(aggregateResponse2.get(WEIGHT_MIN)).isEqualTo(Mass.fromGrams(70));
+        assertThat(aggregateResponse2.getDataOrigins(WEIGHT_MIN))
+                .containsExactly(getDataOrigin(mPackageName), getDataOrigin(PKG_TEST_APP));
+    }
+
+    @Test
+    public void timeRangeFilter_priorityType_ifPriorityListHasMultipleItemsExpectMultipleSources()
+            throws Exception {
+        Instant startTime = Instant.now().minus(1, DAYS);
+        Instant endTime = startTime.plus(1, HOURS);
+        ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
+        LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
+        LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
+        insertStepsRecordViaTestApp(
+                mContext, startTime.plusMillis(1), startTime.plusMillis(400), 70);
+        insertRecords(
+                List.of(
+                        // fully in range
+                        getStepsRecord(123, Instant.EPOCH, Instant.ofEpochSecond(456)),
+                        // partially in range (29/30)
+                        getStepsRecord(30000, endTime.minus(29, HOURS), endTime.plus(1, HOURS))));
+        updatePriorityWithManageHealthDataPermission(
+                ACTIVITY, ImmutableList.of(PKG_TEST_APP, mPackageName));
+
+        AggregateRecordsRequest<Long> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Long>(getTimeFilter(startTime, endTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+
+        AggregateRecordsResponse<Long> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(1069);
+        assertThat(aggregateResponse.getDataOrigins(STEPS_COUNT_TOTAL))
+                .containsExactly(getDataOrigin(mPackageName), getDataOrigin(PKG_TEST_APP));
+
+        AggregateRecordsRequest<Long> requestWithLocalTimeFilter =
+                new AggregateRecordsRequest.Builder<Long>(
+                                getTimeFilter(startLocalTime, endLocalTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalTimeFilter);
+        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(1069);
+        assertThat(aggregateResponse2.getDataOrigins(STEPS_COUNT_TOTAL))
+                .containsExactly(getDataOrigin(mPackageName), getDataOrigin(PKG_TEST_APP));
+    }
+
+    @Test
+    public void timeRangeFilter_priorityType_ifPriorityListHasNoItemsExpectEmptyDataOrigins()
+            throws Exception {
+        Instant startTime = Instant.now().minus(1, DAYS);
+        Instant endTime = startTime.plus(1, HOURS);
+        insertStepsRecordViaTestApp(
+                mContext, startTime.plusMillis(1), startTime.plusMillis(400), 70);
+        insertRecords(
+                List.of(
+                        // fully in range
+                        getStepsRecord(123, Instant.EPOCH, Instant.ofEpochSecond(456)),
+                        // partially in range (29/30)
+                        getStepsRecord(30000, endTime.minus(29, HOURS), endTime.plus(1, HOURS))));
+        updatePriorityWithManageHealthDataPermission(ACTIVITY, ImmutableList.of());
+
+        AggregateRecordsRequest<Long> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Long>(getTimeFilter(startTime, endTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+
+        AggregateRecordsResponse<Long> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(null);
+        assertThat(aggregateResponse.getDataOrigins(STEPS_COUNT_TOTAL)).isEmpty();
+
+        AggregateRecordsRequest<Long> requestWithLocalTimeFilter =
+                new AggregateRecordsRequest.Builder<Long>(getTimeFilter(startTime, endTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalTimeFilter);
+        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(null);
+        assertThat(aggregateResponse2.getDataOrigins(STEPS_COUNT_TOTAL)).isEmpty();
+    }
+
+    @Test
     public void timeRangeFilter_openStartTime_aggregateDataFromEpoch() throws Exception {
         Instant filterEndTime = Instant.now().minus(1, DAYS);
         ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(filterEndTime);

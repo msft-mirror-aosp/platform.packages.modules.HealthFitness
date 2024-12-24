@@ -160,7 +160,7 @@ public class MedicalResourceHelperTest {
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
-        mUtil = new PhrTestUtils(context, healthConnectInjector);
+        mUtil = new PhrTestUtils(healthConnectInjector);
 
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);

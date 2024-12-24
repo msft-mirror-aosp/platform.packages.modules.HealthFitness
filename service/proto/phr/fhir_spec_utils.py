@@ -28,7 +28,7 @@ def to_upper_snake_case(string: str) -> str:
     snake_case_string = string[0].upper() + "".join(
         ["_" + c if c.isupper() else c for c in string[1:]])
 
-    return snake_case_string.upper()
+    return snake_case_string.upper().replace('-', '_')
 
 
 def extract_type_to_structure_definitions_from_spec(

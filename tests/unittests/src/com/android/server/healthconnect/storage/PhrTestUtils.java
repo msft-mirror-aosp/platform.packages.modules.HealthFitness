@@ -62,11 +62,9 @@ public class PhrTestUtils {
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
     private final TransactionManager mTransactionManager;
-    private final Context mContext;
     private final AppInfoHelper mAppInfoHelper;
 
-    public PhrTestUtils(Context context, HealthConnectInjector healthConnectInjector) {
-        mContext = context;
+    public PhrTestUtils(HealthConnectInjector healthConnectInjector) {
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
         mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
         mTransactionManager = healthConnectInjector.getTransactionManager();
@@ -139,7 +137,7 @@ public class PhrTestUtils {
                 new CreateMedicalDataSourceRequest.Builder(uri, displayName, FHIR_VERSION_R4)
                         .build();
         return mMedicalDataSourceHelper.createMedicalDataSource(
-                mContext, createMedicalDataSourceRequest, packageName);
+                createMedicalDataSourceRequest, packageName);
     }
 
     /** Interface for a {@link MedicalResource} creator. */

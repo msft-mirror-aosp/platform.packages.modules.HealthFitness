@@ -2244,8 +2244,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             attributionSource);
 
                     MedicalDataSource dataSource =
-                            mMedicalDataSourceHelper.createMedicalDataSource(
-                                    mContext, request, packageName);
+                            mMedicalDataSourceHelper.createMedicalDataSource(request, packageName);
 
                     tryAndReturnResult(callback, dataSource, logger);
                 },

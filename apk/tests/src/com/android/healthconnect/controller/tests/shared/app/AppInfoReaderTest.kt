@@ -22,43 +22,24 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.ApplicationInfoFlags
 import android.content.pm.PackageManager.NameNotFoundException
-import android.platform.test.flag.junit.FlagsParameterization
-import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.IGetContributorAppInfoUseCase
-import com.android.healthfitness.flags.Flags.FLAG_READ_ASSETS_FOR_DISABLED_APPS_FROM_PACKAGE_MANAGER
-import com.android.healthfitness.flags.Flags.readAssetsForDisabledAppsFromPackageManager
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
-import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.stub
-import platform.test.runner.parameterized.ParameterizedAndroidJunit4
-import platform.test.runner.parameterized.Parameters
 
 private const val PACKAGE_NAME = "com.example.test"
 private const val STORED_LABEL = "Stored label"
 private const val PACKAGE_MANAGER_LABEL = "PackageManager label"
 
-@RunWith(ParameterizedAndroidJunit4::class)
-class AppInfoReaderTest(flags: FlagsParameterization) {
-    @get:Rule val setFlagsRule = SetFlagsRule(flags)
-
-    companion object {
-
-        @JvmStatic
-        @Parameters(name = "{0}")
-        fun getParams(): List<FlagsParameterization> =
-            FlagsParameterization.allCombinationsOf(
-                FLAG_READ_ASSETS_FOR_DISABLED_APPS_FROM_PACKAGE_MANAGER)
-    }
+class AppInfoReaderTest {
 
     private val mockPackageManager = mock<PackageManager>()
     private val mockContext =
@@ -70,7 +51,7 @@ class AppInfoReaderTest(flags: FlagsParameterization) {
     fun uninstalledApp_returnsMetadataFromStorage() = runBlocking {
         mockPackageManager.stub {
             on { getApplicationInfo(eq(PACKAGE_NAME), any<ApplicationInfoFlags>()) } doThrow
-                NameNotFoundException()
+                    NameNotFoundException()
             on { getApplicationIcon(PACKAGE_NAME) } doThrow NameNotFoundException()
         }
 
@@ -88,7 +69,7 @@ class AppInfoReaderTest(flags: FlagsParameterization) {
             }
         mockPackageManager.stub {
             on { getApplicationInfo(eq(PACKAGE_NAME), any<ApplicationInfoFlags>()) } doReturn
-                applicationInfo
+                    applicationInfo
             on { getApplicationLabel(applicationInfo) } doReturn PACKAGE_MANAGER_LABEL
         }
 
@@ -98,7 +79,7 @@ class AppInfoReaderTest(flags: FlagsParameterization) {
     }
 
     @Test
-    fun disabledApp_returnsMetadata() = runBlocking {
+    fun disabledApp_returnsMetadataFromPackageManager() = runBlocking {
         val applicationInfo =
             ApplicationInfo().apply() {
                 packageName = PACKAGE_NAME
@@ -106,19 +87,13 @@ class AppInfoReaderTest(flags: FlagsParameterization) {
             }
         mockPackageManager.stub {
             on { getApplicationInfo(eq(PACKAGE_NAME), any<ApplicationInfoFlags>()) } doReturn
-                applicationInfo
+                    applicationInfo
             on { getApplicationLabel(applicationInfo) } doReturn PACKAGE_MANAGER_LABEL
         }
 
         val appMetadata = appInfoReader.getAppMetadata(PACKAGE_NAME)
         assertThat(appMetadata.packageName).isEqualTo(PACKAGE_NAME)
-        assertThat(appMetadata.appName)
-            .isEqualTo(
-                if (readAssetsForDisabledAppsFromPackageManager()) {
-                    PACKAGE_MANAGER_LABEL
-                } else {
-                    STORED_LABEL
-                })
+        assertThat(appMetadata.appName).isEqualTo(PACKAGE_MANAGER_LABEL)
     }
 }
 
@@ -126,6 +101,7 @@ private class FakeGetContributorAppInfoUseCase : IGetContributorAppInfoUseCase {
     override suspend fun invoke(): Map<String, AppMetadata> {
         return mapOf(
             PACKAGE_NAME to
-                AppMetadata(packageName = PACKAGE_NAME, appName = STORED_LABEL, icon = null))
+                    AppMetadata(packageName = PACKAGE_NAME, appName = STORED_LABEL, icon = null)
+        )
     }
 }
