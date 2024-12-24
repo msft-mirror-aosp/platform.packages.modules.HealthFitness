@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.datatypes.units.Temperature.fromCelsius;
+
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 
 import static java.util.stream.Collectors.toSet;
@@ -1252,7 +1254,7 @@ public final class RecordProtoConverter {
                         .map(
                                 lap ->
                                         new ExerciseLapInternal()
-                                                .setStarTime(lap.getStartTime())
+                                                .setStartTime(lap.getStartTime())
                                                 .setEndTime(lap.getEndTime())
                                                 .setLength(lap.getLength()))
                         .toList());
@@ -1261,7 +1263,7 @@ public final class RecordProtoConverter {
                         .map(
                                 segment ->
                                         new ExerciseSegmentInternal()
-                                                .setStarTime(segment.getStartTime())
+                                                .setStartTime(segment.getStartTime())
                                                 .setEndTime(segment.getEndTime())
                                                 .setSegmentType(segment.getSegmentType())
                                                 .setRepetitionsCount(segment.getRepetitionsCount()))
@@ -1515,15 +1517,18 @@ public final class RecordProtoConverter {
     private static void populateSkinTemperatureRecordInternal(
             SkinTemperature skinTemperatureProto,
             SkinTemperatureRecordInternal skinTemperatureRecordInternal) {
-        skinTemperatureRecordInternal.setSamples(
-                skinTemperatureProto.getSampleList().stream()
-                        .map(
-                                sample ->
-                                        new SkinTemperatureRecordInternal
-                                                .SkinTemperatureDeltaSample(
-                                                sample.getTemperatureDeltaInCelsius(),
-                                                sample.getEpochMillis()))
-                        .collect(toSet()));
+        skinTemperatureRecordInternal
+                .setMeasurementLocation(skinTemperatureProto.getMeasurementLocation())
+                .setBaseline(fromCelsius(skinTemperatureProto.getBaseline()))
+                .setSamples(
+                        skinTemperatureProto.getSampleList().stream()
+                                .map(
+                                        sample ->
+                                                new SkinTemperatureRecordInternal
+                                                        .SkinTemperatureDeltaSample(
+                                                        sample.getTemperatureDeltaInCelsius(),
+                                                        sample.getEpochMillis()))
+                                .collect(toSet()));
     }
 
     @SuppressLint("WrongConstant")
