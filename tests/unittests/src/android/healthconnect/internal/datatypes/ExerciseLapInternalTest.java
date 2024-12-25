@@ -57,7 +57,7 @@ public class ExerciseLapInternalTest {
     public void testExerciseLapInternal_writeToParcelAndBack_recordsAreEqual() {
         ExerciseLapInternal lap =
                 new ExerciseLapInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli())
                         .setLength(10);
         Parcel parcel = Parcel.obtain();
@@ -71,7 +71,7 @@ public class ExerciseLapInternalTest {
     public void testExerciseLapInternal_writeToParcelAndBackNoLength_recordsAreEqual() {
         ExerciseLapInternal lap =
                 new ExerciseLapInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli());
         Parcel parcel = Parcel.obtain();
         lap.writeToParcel(parcel);

@@ -23,6 +23,8 @@ import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_AUTOMAT
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.proto.backuprestore.BloodPressure;
@@ -39,10 +41,20 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public final class RecordProtoConverterTest {
 
-    // TODO: b/369800543 - Add a test that checks whether all types defined in HealthConnectMappings
-    //  are covered.
-
     private final RecordProtoConverter mConverter = new RecordProtoConverter();
+    private final HealthConnectMappings mHealthConnectMappings =
+            HealthConnectMappings.getInstance();
+
+    @Test
+    public void canConvertEveryRecordType() throws Exception {
+        for (int recordTypeId : mHealthConnectMappings.getAllRecordTypeIdentifiers()) {
+            var recordProto =
+                    com.android.server.healthconnect.backuprestore.ProtoTestData.generateRecord(
+                            recordTypeId);
+            var recordInternal = mConverter.toRecordInternal(recordProto);
+            assertThat(mConverter.toRecordProto(recordInternal)).isEqualTo(recordProto);
+        }
+    }
 
     @Test
     public void convertSetValues_intervalRecord() throws Exception {
