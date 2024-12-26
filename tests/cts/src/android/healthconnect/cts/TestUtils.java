@@ -221,6 +221,17 @@ public class TestUtils {
      * @return inserted records
      */
     public static List<Record> insertRecords(List<Record> records) throws InterruptedException {
+      return insertRecords(records, Duration.ofSeconds(TIMEOUT_SECONDS));
+    }
+
+    /**
+     * Inserts records to the database.
+     *
+     * @param records records to insert
+     * @return inserted records
+     */
+    public static List<Record> insertRecords(List<Record> records, Duration timeout)
+            throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
@@ -243,7 +254,7 @@ public class TestUtils {
                         latch.countDown();
                     }
                 });
-        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(timeout.toMillis(), TimeUnit.MILLISECONDS)).isTrue();
         if (exceptionAtomicReference.get() != null) {
             throw exceptionAtomicReference.get();
         }
