@@ -771,7 +771,7 @@
     <string name="single_arm_triceps_extension" msgid="4500495528709994121">"सिङ्गल आर्म ट्राइसेप्स एक्स्टेन्सन"</string>
     <string name="sit_up" msgid="1872162440154479950">"सिट अप"</string>
     <string name="rest" msgid="5937058337671252210">"विश्राम"</string>
-    <string name="pause" msgid="5161459047750335691">"रोक्नुहोस्"</string>
+    <string name="pause" msgid="5161459047750335691">"पज गर्नुहोस्"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"अस्ट्रेलियाली फुटबल"</string>
     <string name="unknown_type" msgid="4506151971125161053">"अज्ञात प्रकार"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> निदाएको"</string>
