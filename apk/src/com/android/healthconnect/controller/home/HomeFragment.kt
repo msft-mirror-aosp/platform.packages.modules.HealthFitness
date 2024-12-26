@@ -65,6 +65,7 @@ import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.android.healthfitness.flags.Flags.exportImport
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
@@ -124,17 +125,12 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.findPreference(RECENT_ACCESS_PREFERENCE_KEY)
     }
 
-    private val mConnectedAppsPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(CONNECTED_APPS_PREFERENCE_KEY)
-    }
+    private val mConnectedAppsPreference: HealthPreference by pref(CONNECTED_APPS_PREFERENCE_KEY)
 
-    private val mManageDataPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(MANAGE_DATA_PREFERENCE_KEY)
-    }
+    private val mManageDataPreference: HealthPreference by pref(MANAGE_DATA_PREFERENCE_KEY)
 
-    private val mBrowseMedicalDataPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
-    }
+    private val mBrowseMedicalDataPreference: HealthPreference by
+        pref(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
 
     private val dateFormatter: LocalDateTimeFormatter by lazy {
         LocalDateTimeFormatter(requireContext())
@@ -163,23 +159,23 @@ class HomeFragment : Hilt_HomeFragment() {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
         }
-        mConnectedAppsPreference?.logName = HomePageElement.APP_PERMISSIONS_BUTTON
-        mConnectedAppsPreference?.setOnPreferenceClickListener {
+        mConnectedAppsPreference.logName = HomePageElement.APP_PERMISSIONS_BUTTON
+        mConnectedAppsPreference.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_connectedAppsFragment)
             true
         }
 
-        mManageDataPreference?.logName = HomePageElement.MANAGE_DATA_BUTTON
-        mManageDataPreference?.setOnPreferenceClickListener {
+        mManageDataPreference.logName = HomePageElement.MANAGE_DATA_BUTTON
+        mManageDataPreference.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
             true
         }
         if (exportImport()) {
-            mManageDataPreference?.summary = getString(R.string.manage_data_summary)
+            mManageDataPreference.summary = getString(R.string.manage_data_summary)
         }
 
         if (isPersonalHealthRecordEnabled()) {
-            mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
+            mBrowseMedicalDataPreference.setOnPreferenceClickListener {
                 findNavController()
                     .navigate(
                         R.id.action_homeFragment_to_medicalDataFragment,
@@ -187,8 +183,8 @@ class HomeFragment : Hilt_HomeFragment() {
                     )
                 true
             }
-            mBrowseMedicalDataPreference?.isVisible = false
-            mBrowseMedicalDataPreference?.logName = HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON
+            mBrowseMedicalDataPreference.isVisible = false
+            mBrowseMedicalDataPreference.logName = HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON
         } else {
             preferenceScreen.removePreferenceRecursively(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
         }
@@ -260,7 +256,7 @@ class HomeFragment : Hilt_HomeFragment() {
         if (isPersonalHealthRecordEnabled()) {
             homeViewModel.loadHasAnyMedicalData()
             homeViewModel.hasAnyMedicalData.observe(viewLifecycleOwner) { hasAnyMedicalData ->
-                mBrowseMedicalDataPreference?.isVisible = hasAnyMedicalData ?: false
+                mBrowseMedicalDataPreference.isVisible = hasAnyMedicalData ?: false
             }
             if (isLockScreenBannerAvailable) {
                 val sharedPreference = getSharedPreference()
@@ -562,16 +558,16 @@ class HomeFragment : Hilt_HomeFragment() {
         val numTotalApps = numAllowedApps + numNotAllowedApps
 
         if (numTotalApps == 0) {
-            mConnectedAppsPreference?.summary =
+            mConnectedAppsPreference.summary =
                 getString(R.string.connected_apps_button_no_permissions_subtitle)
         } else if (numAllowedApps == numTotalApps) {
-            mConnectedAppsPreference?.summary =
+            mConnectedAppsPreference.summary =
                 MessageFormat.format(
                     getString(R.string.connected_apps_connected_subtitle),
                     mapOf("count" to numAllowedApps),
                 )
         } else {
-            mConnectedAppsPreference?.summary =
+            mConnectedAppsPreference.summary =
                 getString(
                     if (numAllowedApps == 1) R.string.only_one_connected_app_button_subtitle
                     else R.string.connected_apps_button_subtitle,

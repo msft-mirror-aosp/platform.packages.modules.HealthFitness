@@ -47,6 +47,7 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionTypesElement
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,25 +79,15 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
 
     private val viewModel: HealthPermissionTypesViewModel by activityViewModels()
 
-    private val mPermissionTypesHeader: AppHeaderPreference? by lazy {
-        preferenceScreen.findPreference(PERMISSION_TYPES_HEADER)
-    }
+    private val mPermissionTypesHeader: AppHeaderPreference by pref(PERMISSION_TYPES_HEADER)
 
-    private val mAppFiltersPreference: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(APP_FILTERS_PREFERENCE)
-    }
+    private val mAppFiltersPreference: PreferenceGroup by pref(APP_FILTERS_PREFERENCE)
 
-    private val mPermissionTypes: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(PERMISSION_TYPES_CATEGORY)
-    }
+    private val mPermissionTypes: PreferenceGroup by pref(PERMISSION_TYPES_CATEGORY)
 
-    private val mManageDataCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(MANAGE_DATA_CATEGORY)
-    }
+    private val mManageDataCategory: PreferenceGroup by pref(MANAGE_DATA_CATEGORY)
 
-    private val mDeleteCategoryData: HealthPreference? by lazy {
-        preferenceScreen.findPreference(DELETE_CATEGORY_DATA_BUTTON)
-    }
+    private val mDeleteCategoryData: HealthPreference by pref(DELETE_CATEGORY_DATA_BUTTON)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -110,13 +101,15 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
         }
 
-        mDeleteCategoryData?.logName = PermissionTypesElement.DELETE_CATEGORY_DATA_BUTTON
-        mDeleteCategoryData?.title =
+        mDeleteCategoryData.logName = PermissionTypesElement.DELETE_CATEGORY_DATA_BUTTON
+        mDeleteCategoryData.title =
             getString(R.string.delete_category_data_button, getString(category.lowercaseTitle()))
-        mDeleteCategoryData?.setOnPreferenceClickListener {
+        mDeleteCategoryData.setOnPreferenceClickListener {
             val deletionType = DeletionType.DeletionTypeCategoryData(category = category)
             childFragmentManager.setFragmentResult(
-                START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                START_DELETION_EVENT,
+                bundleOf(DELETION_TYPE to deletionType),
+            )
             true
         }
     }
@@ -124,8 +117,8 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mPermissionTypesHeader?.icon = category.icon(requireContext())
-        mPermissionTypesHeader?.title = getString(category.uppercaseTitle())
+        mPermissionTypesHeader.icon = category.icon(requireContext())
+        mPermissionTypesHeader.title = getString(category.uppercaseTitle())
         viewModel.loadData(category)
         viewModel.loadAppsWithData(category)
 
@@ -155,9 +148,9 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
                 is HealthPermissionTypesViewModel.AppsWithDataFragmentState.WithData -> {
                     if (state.appsWithData.size > 1) {
                         addAppFilters(state.appsWithData)
-                        mAppFiltersPreference?.isVisible = true
+                        mAppFiltersPreference.isVisible = true
                     } else {
-                        mAppFiltersPreference?.isVisible = false
+                        mAppFiltersPreference.isVisible = false
                     }
                 }
             }
@@ -167,7 +160,7 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
     }
 
     private fun updatePriorityButton() {
-        mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
+        mManageDataCategory.removePreferenceRecursively(APP_PRIORITY_BUTTON)
 
         // Only display the priority button for Activity and Sleep categories
         if (category !in setOf(HealthDataCategory.ACTIVITY, HealthDataCategory.SLEEP)) {
@@ -186,24 +179,26 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
                     findNavController()
                         .navigate(
                             R.id.action_healthPermissionTypes_to_dataSourcesAndPriority,
-                            bundleOf(CATEGORY_KEY to category))
+                            bundleOf(CATEGORY_KEY to category),
+                        )
                     true
                 }
             }
 
-        mManageDataCategory?.addPreference(newPriorityButton)
+        mManageDataCategory.addPreference(newPriorityButton)
     }
 
     private fun updatePermissionTypesList(permissionTypeList: List<HealthPermissionType>) {
-        mDeleteCategoryData?.isEnabled = permissionTypeList.isNotEmpty()
-        mPermissionTypes?.removeAll()
+        mDeleteCategoryData.isEnabled = permissionTypeList.isNotEmpty()
+        mPermissionTypes.removeAll()
         if (permissionTypeList.isEmpty()) {
-            mPermissionTypes?.addPreference(
-                Preference(requireContext()).also { it.setSummary(R.string.no_categories) })
+            mPermissionTypes.addPreference(
+                Preference(requireContext()).also { it.setSummary(R.string.no_categories) }
+            )
             return
         }
         permissionTypeList.forEach { permissionType ->
-            mPermissionTypes?.addPreference(
+            mPermissionTypes.addPreference(
                 HealthPreference(requireContext()).also {
                     it.setTitle(permissionType.upperCaseLabel())
                     it.logName = PermissionTypesElement.PERMISSION_TYPE_BUTTON
@@ -211,21 +206,25 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
                         findNavController()
                             .navigate(
                                 R.id.action_healthPermissionTypes_to_healthDataAccess,
-                                bundleOf(PERMISSION_TYPE_KEY to permissionType))
+                                bundleOf(PERMISSION_TYPE_KEY to permissionType),
+                            )
                         true
                     }
-                })
+                }
+            )
         }
     }
 
     private fun addAppFilters(appsWithHealthPermissions: List<AppMetadata>) {
-        mAppFiltersPreference?.removeAll()
-        mAppFiltersPreference?.addPreference(
+        mAppFiltersPreference.removeAll()
+        mAppFiltersPreference.addPreference(
             ChipPreference(
                 requireContext(),
                 appsWithHealthPermissions,
                 addFilterChip = ::addFilterChip,
-                addAllAppsFilterChip = ::addAllAppsFilterChip))
+                addAllAppsFilterChip = ::addAllAppsFilterChip,
+            )
+        )
     }
 
     private fun addFilterChip(appMetadata: AppMetadata, chipGroup: RadioGroup) {
