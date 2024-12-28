@@ -1,6 +1,6 @@
 import fhirspec_pb2
 from fhir_spec_utils import *
-from typing import Collection, Mapping
+from typing import Collection, Mapping, Iterable
 
 R4_FHIR_TYPE_PREFIX = "R4_FHIR_TYPE_"
 
@@ -9,7 +9,8 @@ class FhirSpecExtractor:
     """Extractor for getting information for HC FHIR validation from official FHIR spec json files.
 
     Typical usage example:
-        extractor = new FhirSpecExtractor(profile_resources_json, profiles_types_json, {"Immunization", "Observation"})
+        extractor = new FhirSpecExtractor(profile_resources_json, profiles_types_json,
+        {"Immunization", "Observation"})
         fhir_spec_message = extractor.generate_r4_fhir_spec_proto_message(profile_types_json)
     """
 
@@ -50,11 +51,6 @@ class FhirSpecExtractor:
             The FhirResourceSpec message, with an entry for each requested resource, and the data
             type configs for the required types.
         """
-        # TODO: b/360091651 - Extract additional information such as field types, cardinality and
-        #  structure of each type. Note that the field "Observation.component.referenceRange" will
-        #  need special handling. It doesn't have a type, but a contentReference to
-        #  "Observation.referenceRange" and should use that type's structure.
-
         r4_resource_spec = fhirspec_pb2.FhirResourceSpec()
 
         data_types_set = set()
@@ -62,30 +58,97 @@ class FhirSpecExtractor:
         for resource, element_definitions in self._resource_to_element_definitions.items():
             resource_type_int = RESOURCE_TYPE_STRING_TO_HC_INT_MAPPING[resource]
 
-            resource_data_type_config = (
+            resource_complex_type_config = (
                 self._generate_fhir_complex_type_config_from_element_definitions(
-                    element_definitions))
+                    element_definitions, is_resource_type=True))
 
-            for field_config in resource_data_type_config.allowed_field_names_to_config.values():
-                data_types_set.add(field_config.r4_type)
+            data_types_set.update(
+                self._extract_subtypes_from_complex_type_config(resource_complex_type_config))
 
             r4_resource_spec.resource_type_to_config[
-                resource_type_int].CopyFrom(resource_data_type_config)
+                resource_type_int].CopyFrom(resource_complex_type_config)
 
-        data_type_configs = []
-        type_to_structure_definition = self._extract_structure_definitions_by_data_type_from_spec(
+        data_type_configs = self._get_fhir_data_type_configs_for_types_and_nested_types(
             profile_types_json, data_types_set)
-        for data_type, structure_definition in type_to_structure_definition.items():
-            # TODO: b/377701407 extract and add the FhirComplexTypeConfig for each type
-            data_type_configs.append(fhirspec_pb2.FhirDataType(
-                fhir_type=data_type,
-                kind=self._get_kind_enum_from_kind(structure_definition["kind"])))
 
         # Sort list by fhir_type before adding to make sure the script output is deterministic
-        data_type_configs.sort(key=lambda x: x.fhir_type)
+        sorted(data_type_configs, key=lambda x: x.fhir_type)
         r4_resource_spec.fhir_data_type_configs.extend(data_type_configs)
 
         return r4_resource_spec
+
+    def _get_fhir_data_type_configs_for_types_and_nested_types(
+            self, profile_types_json: Mapping,
+            type_names: set[fhirspec_pb2.R4FhirType]) -> Iterable[fhirspec_pb2.FhirDataType]:
+        # All structure definitions that have a matching enum value. If one is missing, this will
+        # cause an exception when extracting the data type configs.
+        all_type_to_structure_definition = {}
+        for type_string, structure_definition in extract_type_to_structure_definitions_from_spec(
+                profile_types_json, None).items():
+            try:
+                type_enum = self._get_type_enum_from_type_code(type_string)
+                all_type_to_structure_definition[type_enum] = structure_definition
+            except ValueError:
+                print(f"Type {type_string} did not have an enum value.")
+
+        return self._recursively_extract_data_type_configs_and_sub_types_by_type(
+            all_type_to_structure_definition, type_names).values()
+
+    def _recursively_extract_data_type_configs_and_sub_types_by_type(
+            self, all_type_to_structure_definition: Mapping,
+            fhir_types_to_extract: set[fhirspec_pb2.R4FhirType],
+            already_extracted_types=set()) -> Mapping:
+        new_types_to_extract = set()
+        type_to_data_type_config_map = {}
+
+        for fhir_type in fhir_types_to_extract:
+            if fhir_type in [fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RESOURCE,
+                             fhirspec_pb2.R4_FHIR_TYPE_BACKBONE_ELEMENT]:
+                # The Resource type definition does not exist in the profile types file. As we don't
+                # support contained resources yet, we don't need a config for this type for now.
+                # The Backbone element definition also needs special handling, which is not
+                # implemented yet.
+                type_to_data_type_config_map[fhir_type] = fhirspec_pb2.FhirDataType(
+                    fhir_type=fhir_type,
+                    kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE)
+                continue
+
+            if fhir_type not in all_type_to_structure_definition:
+                raise ValueError(
+                    f"Type {fhir_type} was missing from the list of structure definitions.")
+
+            structure_definition = all_type_to_structure_definition[fhir_type]
+            kind = self._get_kind_enum_from_kind(structure_definition["kind"])
+            complex_type_config = None
+
+            if kind != fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE:
+                complex_type_config =(
+                    self._generate_fhir_complex_type_config_from_element_definitions(
+                    extract_element_definitions_from_structure_def(structure_definition)))
+                for sub_type in self._extract_subtypes_from_complex_type_config(
+                        complex_type_config):
+                    if sub_type not in already_extracted_types and \
+                            sub_type not in fhir_types_to_extract:
+                        new_types_to_extract.add(sub_type)
+
+            type_to_data_type_config_map[fhir_type] = fhirspec_pb2.FhirDataType(
+                fhir_type=fhir_type,
+                kind=kind,
+                fhir_complex_type_config=complex_type_config)
+
+        if new_types_to_extract:
+            type_to_data_type_config_map.update(
+                self._recursively_extract_data_type_configs_and_sub_types_by_type(
+                    all_type_to_structure_definition, new_types_to_extract,
+                    already_extracted_types.union(fhir_types_to_extract)))
+
+        return type_to_data_type_config_map
+
+    def _extract_subtypes_from_complex_type_config(
+            self, complex_type_config: fhirspec_pb2.FhirComplexTypeConfig) -> Collection[
+        fhirspec_pb2.R4FhirType]:
+        return set(field_config.r4_type
+                   for field_config in complex_type_config.allowed_field_names_to_config.values())
 
     def _extract_element_definitions_by_resource_from_spec(
             self, profile_resources_json: Mapping, resource_names: set[str]) -> Mapping:
@@ -101,43 +164,21 @@ class FhirSpecExtractor:
 
         return resource_to_element_definitions
 
-    def _extract_structure_definitions_by_data_type_from_spec(
-            self, profile_types_json: Mapping, data_types: set[fhirspec_pb2.R4FhirType]) -> Mapping:
-        data_type_strings = set()
-
-        for data_type in data_types:
-            if data_type == fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RESOURCE:
-                # There is no definition for the "Resource" type in the profile_types_json.
-                # This type is used for the "contained" field, and we don't allow contained
-                # resources right now. If we allow it in the future, contained resource validation
-                # will need to be handled separately.
-                continue
-
-            type_string = fhirspec_pb2.R4FhirType.Name(data_type).removeprefix(
-                R4_FHIR_TYPE_PREFIX).replace("_", "")
-            data_type_strings.add(type_string)
-
-        type_to_structure_definition = {}
-
-        for type_string, structure_definition in extract_type_to_structure_definitions_from_spec(
-                profile_types_json, data_type_strings).items():
-            type_enum = self._get_type_enum_from_type_code(type_string)
-            type_to_structure_definition[type_enum] = structure_definition
-
-        return type_to_structure_definition
-
     def _generate_fhir_complex_type_config_from_element_definitions(
-            self, element_definitions: Collection[Mapping]) -> fhirspec_pb2.FhirComplexTypeConfig:
+            self, element_definitions: Collection[Mapping],
+            is_resource_type=False) -> fhirspec_pb2.FhirComplexTypeConfig:
         required_fields = set()
 
         multi_type_configs = []
 
         field_configs_by_name = {}
-        # Manually add resourceType field, as this is not present in the spec
-        field_configs_by_name["resourceType"] = fhirspec_pb2.FhirFieldConfig(
-            is_array=False,
-            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
-        )
+
+        if is_resource_type:
+            # Manually add resourceType field, as this is not present in the spec
+            field_configs_by_name["resourceType"] = fhirspec_pb2.FhirFieldConfig(
+                is_array=False,
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+            )
 
         for element in element_definitions:
             field_id = element["id"]
@@ -157,7 +198,7 @@ class FhirSpecExtractor:
                 field_name = field_parts[1]
                 field_configs_to_add, multi_type_config = (
                     self._generate_field_configs_and_multi_type_config_from_field_element(
-                        element, field_name))
+                        element, field_name, is_resource_type))
                 for name in field_configs_to_add:
                     if name in field_configs_by_name: raise ValueError("Field name already exists")
 
@@ -170,10 +211,14 @@ class FhirSpecExtractor:
             elif field_parts_length > 2:
                 # This means the field is part of a BackBoneElement. For an example see the
                 # https://hl7.org/fhir/Immunization.html "reaction" field.
+                # TODO: b/377704968 - Extract spec information for BackBoneElements.
                 # BackBoneElements need to be handled separately, as those fields don't have a type
                 # defined, but have the BackBoneElement definition instead.
                 # Note that the following field contains a double backbone element, which we need to
-                # consider: "MedicationRequest.dispenseRequest.initialFill",
+                # consider: "MedicationRequest.dispenseRequest.initialFill".
+                # Observation.component.referenceRange" will also need special handling as it
+                # doesn't have a type, but a contentReference to "Observation.referenceRange" and
+                # should use that type's structure.
 
                 # For now we are just recording the top level allowed field, which has its own
                 # element definition, so is covered by the "elif field_parts_length == 2" above
@@ -192,8 +237,8 @@ class FhirSpecExtractor:
         )
 
     def _generate_field_configs_and_multi_type_config_from_field_element(
-            self, element_definition, field_name) -> (Mapping[str, fhirspec_pb2.FhirFieldConfig],
-                                                      list[fhirspec_pb2.MultiTypeFieldConfig]):
+            self, element_definition, field_name, is_resource_field: bool) -> (
+            Mapping[str, fhirspec_pb2.FhirFieldConfig], list[fhirspec_pb2.MultiTypeFieldConfig]):
         field_is_array = self._field_is_array(element_definition)
 
         field_configs_by_name = {}
@@ -229,7 +274,11 @@ class FhirSpecExtractor:
             if len(element_definition["type"]) != 1:
                 raise ValueError("Expected exactly one type")
             fhir_type = element_definition["type"][0]
-            type_enum = self._extract_type_enum_from_type(fhir_type)
+            # If the field is the resource "id" field manually set the type to be ID, since the spec
+            # just uses System.String extension with value "string"
+            type_enum = fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID \
+                if is_resource_field and field_name == "id" \
+                else self._extract_type_enum_from_type(fhir_type)
             field_configs_by_name[field_name] = fhirspec_pb2.FhirFieldConfig(
                 is_array=field_is_array,
                 r4_type=type_enum
@@ -304,18 +353,34 @@ class FhirSpecExtractor:
         #  A Reference field definition for example usually specifies which type of resource can be
         #  referenced (e.g. reference to Encounter).
 
+        # System.String code is used in cases such as Resource.id field, Element.id field,
+        # primitive type value field, and Extension.url field.
+        # The code is used with the extension
+        # https://hl7.org/fhir/extensions/StructureDefinition-structuredefinition-fhir-type.html.
+        # For value fields (which we don't read), the "valueUrl" can take different values, but for
+        # Resource.id fields and Element.id fields the valueUrl is "string", so we manually set it
+        # to string.
+        # The Resource.id field, should actually be of type id, but this isn't specified in the
+        # r4 spec, so this is changed manually when extracting the resource configs.
+        if type_code == "http://hl7.org/fhirpath/System.String":
+            extension = fhir_type["extension"][0]
+            if extension["url"] != \
+                    "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type":
+                raise ValueError("Unexpected extension value for code System.String")
+            if extension["valueUrl"] == "uri":
+                # Used by Extension.url field
+                return fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_URI
+            if extension["valueUrl"] == "string":
+                # Used by Resource.id and Element.id field
+                return fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+            else:
+                raise ValueError(
+                    f"Unexpected extension valueUrl in type extension: {str(fhir_type)}")
+
         return self._get_type_enum_from_type_code(type_code)
 
     def _get_type_enum_from_type_code(self, type_code: str):
-        # "id" fields usually have a type containing the following type code and extension
-        # https://hl7.org/fhir/extensions/StructureDefinition-structuredefinition-fhir-type.html
-        if type_code == "http://hl7.org/fhirpath/System.String":
-            return fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ID
-        # TODO: b/377701407 - In complex type definitions the "System.String" is also used for id,
-        #  but these need to be treated as a regular string type, so this will need to be updated
-        #  as part of implementing complex type validation.
-
-        if not type_code.isalpha():
+        if not type_code.isalnum():
             raise ValueError("Unexpected characters found in type_string: " + type_code)
 
         return fhirspec_pb2.R4FhirType.Value(

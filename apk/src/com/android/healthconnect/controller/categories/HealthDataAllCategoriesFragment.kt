@@ -30,6 +30,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.logging.CategoriesElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment for all health data categories. */
@@ -47,9 +48,7 @@ class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
 
     private val viewModel: HealthDataCategoryViewModel by viewModels()
 
-    private val mAllDataCategories: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(ALL_DATA_CATEGORY)
-    }
+    private val mAllDataCategories: PreferenceGroup by pref(ALL_DATA_CATEGORY)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -79,10 +78,11 @@ class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
     private fun updateAllDataList(categoriesList: List<HealthCategoryUiState>) {
         val sortedAllCategoriesList: List<HealthCategoryUiState> =
             categoriesList.sortedBy { getString(it.category.uppercaseTitle()) }
-        mAllDataCategories?.removeAll()
+        mAllDataCategories.removeAll()
         if (sortedAllCategoriesList.isEmpty()) {
-            mAllDataCategories?.addPreference(
-                Preference(requireContext()).also { it.setSummary(R.string.no_categories) })
+            mAllDataCategories.addPreference(
+                Preference(requireContext()).also { it.setSummary(R.string.no_categories) }
+            )
         } else {
             sortedAllCategoriesList.forEach { categoryInfo ->
                 val newPreference =
@@ -101,12 +101,14 @@ class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
                                             .action_healthDataAllCategories_to_healthPermissionTypes,
                                         bundleOf(
                                             HealthDataCategoriesFragment.CATEGORY_KEY to
-                                                categoryInfo.category))
+                                                categoryInfo.category
+                                        ),
+                                    )
                                 true
                             }
                         }
                     }
-                mAllDataCategories?.addPreference(newPreference)
+                mAllDataCategories.addPreference(newPreference)
             }
         }
     }

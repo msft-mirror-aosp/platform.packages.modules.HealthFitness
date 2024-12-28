@@ -35,6 +35,7 @@ import com.android.healthconnect.controller.shared.preference.topIntroPreference
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -54,9 +55,7 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
 
     private val viewModel: AutoDeleteViewModel by activityViewModels()
 
-    private val mAutoDeleteSection: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(AUTO_DELETE_SECTION)
-    }
+    private val mAutoDeleteSection: PreferenceGroup by pref(AUTO_DELETE_SECTION)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -85,7 +84,7 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
                 }
                 is AutoDeleteViewModel.AutoDeleteState.WithData -> {
                     if (
-                        mAutoDeleteSection?.findPreference<Preference>(
+                        mAutoDeleteSection.findPreference<Preference>(
                             AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
                         ) == null
                     ) {
@@ -96,10 +95,10 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
                                 state.autoDeleteRange,
                                 logger,
                             )
-                        mAutoDeleteSection?.addPreference(autoDeletePreference)
+                        mAutoDeleteSection.addPreference(autoDeletePreference)
                     } else {
                         val autoDeletePreference =
-                            mAutoDeleteSection?.findPreference<Preference>(
+                            mAutoDeleteSection.findPreference<Preference>(
                                 AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
                             ) as AutoDeleteRangePickerPreference
                         autoDeletePreference.updateAutoDeleteRange(state.autoDeleteRange)

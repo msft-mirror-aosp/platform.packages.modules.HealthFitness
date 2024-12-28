@@ -43,15 +43,20 @@ def extract_type_to_structure_definitions_from_spec(
             the structure of a https://hl7.org/fhir/Bundle.html, parsed to dict. The Bundle.entry
             will contain the list of https://hl7.org/fhir/StructureDefinition.html that we are
             interested in.
-            type_names: The set of FHIR types to extract StructureDefinitions for.
+            type_names: The set of FHIR types to extract StructureDefinitions for. If type_names is
+            None, all types will be extracted that have a url starting with
+            "http://hl7.org/fhir/StructureDefinition/".
 
     Returns:
         The mapping of type name to StructureDefinition.
     """
     type_to_structure_definition = {}
-    upper_case_type_names = set(name.upper() for name in type_names)
-    if len(upper_case_type_names) != len(type_names):
-        raise ValueError("Found type name duplicates after converting to upper case")
+    upper_case_type_names = None
+
+    if type_names is not None:
+        upper_case_type_names = set(name.upper() for name in type_names)
+        if len(upper_case_type_names) != len(type_names):
+            raise ValueError("Found type name duplicates after converting to upper case")
 
     for entry in definitions_json["entry"]:
         fullUrl = entry["fullUrl"]
@@ -59,7 +64,7 @@ def extract_type_to_structure_definitions_from_spec(
             continue
 
         type_name = fullUrl.split("/")[-1]
-        if type_name.upper() not in upper_case_type_names:
+        if type_names is not None and type_name.upper() not in upper_case_type_names:
             continue
 
         type_structure_definition = entry["resource"]
@@ -67,15 +72,18 @@ def extract_type_to_structure_definitions_from_spec(
         # Do some assertions on expected values
         if type_structure_definition["fhirVersion"] != FHIR_VERSION_R4:
             raise ValueError("Unexpected fhir version found")
-        if type_structure_definition["type"] != type_name:
+        # The definitions for SimpleQuantity and MoneyQuantity have type = Quantity
+        if type_structure_definition["type"] != type_name and type_name not in [
+            "SimpleQuantity", "MoneyQuantity"]:
             raise ValueError(
-                "Unexpected type in structure definition: " + type_structure_definition["type"])
+                f"Unexpected type in structure definition: {type_structure_definition['type']}" +
+                "for {type_name}")
 
         if type_name in type_to_structure_definition:
             raise ValueError("Type definition already exists: " + type_name)
         type_to_structure_definition[type_name] = type_structure_definition
 
-    if len(type_to_structure_definition.keys()) != len(type_names):
+    if type_names is not None and len(type_to_structure_definition.keys()) != len(type_names):
         raise ValueError("Did not find type definitions for all requested types.")
 
     return type_to_structure_definition
