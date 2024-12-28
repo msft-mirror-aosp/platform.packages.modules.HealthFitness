@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.selectabledeletion.api
 
+import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypesFromApp
@@ -37,7 +38,7 @@ constructor(
         DeleteFitnessPermissionTypesFromAppUseCase,
     private val deleteMedicalPermissionTypesFromAppUseCase:
         DeleteMedicalPermissionTypesFromAppUseCase,
-    private val deleteAppDataUseCase: DeleteAppDataUseCase,
+    private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
@@ -45,19 +46,15 @@ constructor(
         deletePermissionTypes: DeleteHealthPermissionTypesFromApp,
         removePermissions: Boolean = false,
     ) {
-        if (
-            deletePermissionTypes.healthPermissionTypes.size ==
-                deletePermissionTypes.totalPermissionTypes
-        ) {
-            deleteAppDataUseCase.invoke(deletePermissionTypes.toDeleteAppData(), removePermissions)
-            return
-        }
-
         withContext(dispatcher) {
             val deleteFitness = async { maybeDeleteFitnessData(deletePermissionTypes) }
             val deleteMedical = async { maybeDeleteMedicalData(deletePermissionTypes) }
             deleteFitness.await()
             deleteMedical.await()
+        }
+
+        if (removePermissions) {
+            revokeAllHealthPermissionsUseCase.invoke(deletePermissionTypes.packageName)
         }
     }
 
