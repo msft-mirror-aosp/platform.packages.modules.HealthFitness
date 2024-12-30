@@ -27,8 +27,6 @@ import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypesFromApp
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesFromAppUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -69,21 +67,15 @@ class DeleteFitnessPermissionTypesFromAppUseCaseTest {
             .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
 
         val deletePermissionTypes =
-            DeleteHealthPermissionTypesFromApp(
-                setOf(
-                    FitnessPermissionType.STEPS,
-                    FitnessPermissionType.HEART_RATE,
-                    FitnessPermissionType.SLEEP,
-                    FitnessPermissionType.EXERCISE,
-                    FitnessPermissionType.MENSTRUATION,
-                    MedicalPermissionType.VACCINES,
-                ),
-                8,
-                packageName = "package.name",
-                "app name",
+            setOf(
+                FitnessPermissionType.STEPS,
+                FitnessPermissionType.HEART_RATE,
+                FitnessPermissionType.SLEEP,
+                FitnessPermissionType.EXERCISE,
+                FitnessPermissionType.MENSTRUATION,
             )
 
-        useCase.invoke(deletePermissionTypes)
+        useCase.invoke("package.name", deletePermissionTypes)
 
         Mockito.verify(manager, Mockito.times(1))
             .deleteRecords(filtersCaptor.capture(), any(), any())
