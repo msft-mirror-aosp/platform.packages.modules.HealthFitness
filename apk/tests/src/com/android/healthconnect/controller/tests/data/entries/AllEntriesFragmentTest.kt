@@ -333,6 +333,7 @@ class AllEntriesFragmentTest {
         onView(withText("02 May 2023 • Health Connect Toolbox")).check(matches(isDisplayed()))
         onView(withText("12 Aug 2022 • Health Connect Toolbox")).check(matches(isDisplayed()))
         onView(withText("25 Sep 2021 • Health Connect Toolbox")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(3)).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test

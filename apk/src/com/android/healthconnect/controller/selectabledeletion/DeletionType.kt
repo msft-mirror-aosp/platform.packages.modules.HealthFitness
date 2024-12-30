@@ -63,7 +63,7 @@ sealed class DeletionType {
         fun toDeleteHealthPermissionTypesFromApp(): DeleteHealthPermissionTypesFromApp =
             DeleteHealthPermissionTypesFromApp(
                 healthPermissionTypes = setOf(healthPermissionType),
-                totalPermissionTypes = 1,
+                totalPermissionTypes = 1, // TODO(magdi) bad assumption. fix in following change
                 packageName = packageName,
                 appName = appName,
             )

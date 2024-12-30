@@ -321,6 +321,7 @@ class AppEntriesFragmentTest {
         onView(withText("Covid vaccine 1")).check(matches(isDisplayed()))
         onView(withText("Covid vaccine 2")).check(matches(isDisplayed()))
         onView(withText("Covid vaccine 3")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(3)).logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
