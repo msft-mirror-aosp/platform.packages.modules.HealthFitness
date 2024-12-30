@@ -58,6 +58,7 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
 
         if (isDeletionState) {
+            container.isClickable = true
             container.setOnClickListener {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
@@ -70,6 +71,8 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
                     )
                 logger.logInteraction(logNameWithCheckbox)
             }
+        } else {
+            container.isClickable = false
         }
 
         checkBox.isVisible = isDeletionState
