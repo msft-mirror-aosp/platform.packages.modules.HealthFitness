@@ -19,7 +19,6 @@ import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.DataOrigin
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import javax.inject.Inject
@@ -39,22 +38,17 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(
-        deletePermissionTypesFromApp: DeletionType.DeleteHealthPermissionTypesFromApp
-    ) {
+    suspend operator fun invoke(packageName: String, permissions: Set<FitnessPermissionType>) {
+
         val deleteRequest = DeleteUsingFiltersRequest.Builder()
 
-        deletePermissionTypesFromApp.healthPermissionTypes
-            .filterIsInstance<FitnessPermissionType>()
-            .map { permissionType ->
-                HealthPermissionToDatatypeMapper.getDataTypes(permissionType).map { recordType ->
-                    deleteRequest.addRecordType(recordType)
-                }
+        permissions.map { permission ->
+            HealthPermissionToDatatypeMapper.getDataTypes(permission).map { recordType ->
+                deleteRequest.addRecordType(recordType)
             }
+        }
 
-        deleteRequest.addDataOrigin(
-            DataOrigin.Builder().setPackageName(deletePermissionTypesFromApp.packageName).build()
-        )
+        deleteRequest.addDataOrigin(DataOrigin.Builder().setPackageName(packageName).build())
 
         withContext(dispatcher) {
             healthConnectManager.deleteRecords(deleteRequest.build(), Runnable::run) {}

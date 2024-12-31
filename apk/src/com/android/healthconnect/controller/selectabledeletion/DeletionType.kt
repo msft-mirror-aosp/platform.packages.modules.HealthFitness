@@ -32,9 +32,7 @@ sealed class DeletionType {
         val totalPermissionTypes: Int,
         val packageName: String,
         val appName: String,
-    ) : DeletionType() {
-        fun toDeleteAppData(): DeleteAppData = DeleteAppData(packageName, appName)
-    }
+    ) : DeletionType()
 
     data class DeleteEntries(
         val idsToDataTypes: Map<String, DataType>,
@@ -59,15 +57,7 @@ sealed class DeletionType {
         val packageName: String,
         val appName: String,
         val healthPermissionType: HealthPermissionType,
-    ) : DeletionType() {
-        fun toDeleteHealthPermissionTypesFromApp(): DeleteHealthPermissionTypesFromApp =
-            DeleteHealthPermissionTypesFromApp(
-                healthPermissionTypes = setOf(healthPermissionType),
-                totalPermissionTypes = 1, // TODO(magdi) bad assumption. fix in following change
-                packageName = packageName,
-                appName = appName,
-            )
-    }
+    ) : DeletionType()
 
     data class DeleteAppData(val packageName: String, val appName: String) : DeletionType()
 }

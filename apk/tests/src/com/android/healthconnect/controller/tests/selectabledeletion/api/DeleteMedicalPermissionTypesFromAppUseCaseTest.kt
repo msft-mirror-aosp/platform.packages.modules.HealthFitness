@@ -23,7 +23,6 @@ import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_AL
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import android.os.OutcomeReceiver
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteMedicalPermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
@@ -73,18 +72,10 @@ class DeleteMedicalPermissionTypesFromAppUseCaseTest {
             .`when`(manager)
             .getMedicalDataSources(any(GetMedicalDataSourcesRequest::class.java), any(), any())
 
-        val deletePermissionType =
-            DeletionType.DeleteHealthPermissionTypesFromApp(
-                setOf(
-                    MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                    MedicalPermissionType.VACCINES,
-                ),
-                8,
-                packageName = "package.name",
-                "app name",
-            )
+        val deletePermissionTypes =
+            setOf(MedicalPermissionType.ALLERGIES_INTOLERANCES, MedicalPermissionType.VACCINES)
 
-        useCase.invoke(deletePermissionType)
+        useCase.invoke("package.name", deletePermissionTypes)
 
         Mockito.verify(manager).deleteMedicalResources(medicalRequestCaptor.capture(), any(), any())
 

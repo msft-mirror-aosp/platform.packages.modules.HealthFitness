@@ -227,26 +227,28 @@ class DeletionViewModelTest {
     @Test
     fun permissionTypesFromApp_deleteFitnessWithoutRemovingPermissions_deletionInvokedCorrectly() =
         runTest {
+            val permissions = setOf(FitnessPermissionType.DISTANCE)
             val deletionType =
                 DeletionType.DeleteHealthPermissionTypesFromApp(
-                    setOf(FitnessPermissionType.DISTANCE),
+                    healthPermissionTypes = permissions,
                     totalPermissionTypes = 4,
-                    "some.package",
-                    "appName",
+                    packageName = "some.package",
+                    appName = "appName",
                 )
             viewModel.setDeletionType(deletionType)
             viewModel.delete()
             advanceUntilIdle()
 
-            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, false)
+            verify(deletePermissionTypesFromAppUseCase).invoke("some.package", permissions, false)
         }
 
     @Test
     fun permissionTypesFromApp_deleteFitnessWithRemovingPermissions_deletionInvokedCorrectly() =
         runTest {
+            val permissions = setOf(FitnessPermissionType.STEPS)
             val deletionType =
                 DeletionType.DeleteHealthPermissionTypesFromApp(
-                    setOf(FitnessPermissionType.DISTANCE),
+                    permissions,
                     totalPermissionTypes = 4,
                     "some.package",
                     "appName",
@@ -256,77 +258,82 @@ class DeletionViewModelTest {
             viewModel.delete()
             advanceUntilIdle()
 
-            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, true)
+            verify(deletePermissionTypesFromAppUseCase).invoke("some.package", permissions, true)
         }
 
     @Test
     fun permissionTypesFromApp_deleteMedicalWithoutRemovingPermissions_deletionInvokedCorrectly() =
         runTest {
+            val permissions = setOf(MedicalPermissionType.VACCINES)
             val deletionType =
                 DeletionType.DeleteHealthPermissionTypesFromApp(
-                    setOf(MedicalPermissionType.VACCINES),
-                    2,
-                    "some.package",
-                    "appName",
+                    healthPermissionTypes = permissions,
+                    totalPermissionTypes = 2,
+                    packageName = "some.package",
+                    appName = "appName",
                 )
+
             viewModel.setDeletionType(deletionType)
             viewModel.delete()
             advanceUntilIdle()
 
-            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, false)
+            verify(deletePermissionTypesFromAppUseCase).invoke("some.package", permissions, false)
         }
 
     @Test
     fun permissionTypesFromApp_deleteMedicalWithRemovingPermissions_deletionInvokedCorrectly() =
         runTest {
+            val permissions = setOf(MedicalPermissionType.MEDICATIONS)
             val deletionType =
                 DeletionType.DeleteHealthPermissionTypesFromApp(
-                    setOf(MedicalPermissionType.VACCINES),
-                    1,
-                    "some.package",
-                    "appName",
+                    healthPermissionTypes = permissions,
+                    totalPermissionTypes = 1,
+                    packageName = "some.package",
+                    appName = "appName",
                 )
             viewModel.setDeletionType(deletionType)
             viewModel.removePermissions = true
             viewModel.delete()
             advanceUntilIdle()
 
-            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, true)
+            verify(deletePermissionTypesFromAppUseCase).invoke("some.package", permissions, true)
         }
 
     @Test
     fun permissionTypesFromApp_deleteFitnessAndMedicalWithoutRemovingPermissions_deletionInvokedCorrectly() =
         runTest {
+            val permissions = setOf(MedicalPermissionType.VACCINES, FitnessPermissionType.STEPS)
             val deletionType =
                 DeletionType.DeleteHealthPermissionTypesFromApp(
-                    setOf(MedicalPermissionType.VACCINES, FitnessPermissionType.STEPS),
-                    3,
-                    "some.package",
-                    "appName",
+                    healthPermissionTypes = permissions,
+                    totalPermissionTypes = 3,
+                    packageName = "some.package",
+                    appName = "appName",
                 )
             viewModel.setDeletionType(deletionType)
             viewModel.delete()
             advanceUntilIdle()
 
-            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, false)
+            verify(deletePermissionTypesFromAppUseCase).invoke("some.package", permissions, false)
         }
 
     @Test
     fun permissionTypesFromApp_deleteFitnessAndMedicalWithRemovingPermissions_deletionInvokedCorrectly() =
         runTest {
+            val permissions = setOf(MedicalPermissionType.VACCINES, FitnessPermissionType.STEPS)
             val deletionType =
                 DeletionType.DeleteHealthPermissionTypesFromApp(
-                    setOf(MedicalPermissionType.VACCINES, FitnessPermissionType.STEPS),
-                    2,
-                    "some.package",
-                    "appName",
+                    healthPermissionTypes = permissions,
+                    totalPermissionTypes = 2,
+                    packageName = "some.package",
+                    appName = "appName",
                 )
             viewModel.setDeletionType(deletionType)
             viewModel.removePermissions = true
             viewModel.delete()
             advanceUntilIdle()
 
-            verify(deletePermissionTypesFromAppUseCase).invoke(deletionType, true)
+            verify(deletePermissionTypesFromAppUseCase).invoke("some.package", permissions, true)
         }
 
     @Test
@@ -426,7 +433,7 @@ class DeletionViewModelTest {
         viewModel.delete()
         advanceUntilIdle()
         verify(deletePermissionTypesFromAppUseCase)
-            .invoke(deletionType.toDeleteHealthPermissionTypesFromApp())
+            .invoke("package.name", setOf(FitnessPermissionType.STEPS))
     }
 }
 
