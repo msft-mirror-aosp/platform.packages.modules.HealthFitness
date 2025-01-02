@@ -29,6 +29,5 @@
     <string name="grant_dialog_button_allow_always" msgid="5216642447029937725">"Gjatë gjithë kohës"</string>
     <string name="grant_dialog_button_allow_foreground" msgid="2911675370133933600">"Kur përdor aplikacionin"</string>
     <string name="grant_dialog_button_allow_background" msgid="7827419162341440169">"Gjatë gjithë kohës"</string>
-    <!-- no translation found for permgrouplab_health (6793578181776346442) -->
-    <skip />
+    <string name="permgrouplab_health" msgid="6793578181776346442">"Fitnesi dhe mirëqenia"</string>
 </resources>
