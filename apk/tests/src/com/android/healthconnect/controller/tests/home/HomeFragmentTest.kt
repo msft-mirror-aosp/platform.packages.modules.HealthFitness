@@ -592,7 +592,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenDataRestoreStatePending_showsRestoreBanner() {
+    fun whenDataRestoreStatePending_andErrorVersionDiff_showsRestoreBanner() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -600,7 +600,7 @@ class HomeFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.PENDING,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                        dataRestoreError = DataRestoreUiError.ERROR_VERSION_DIFF,
                     )
                 )
             )
@@ -634,6 +634,43 @@ class HomeFragmentTest {
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.systemUpdateActivity)
         verify(healthConnectLogger)
             .logInteraction(DataRestoreElement.RESTORE_PENDING_BANNER_UPDATE_BUTTON)
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_ONBOARDING)
+    fun whenDataRestoreStatePending_noError_doesNotShowRestoreBanner() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.PENDING,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
+        }
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
+                )
+            )
+        }
+        launchFragment<HomeFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Update needed")).check(doesNotExist())
+        onView(withText("Before continuing restoring your data, update your phone system."))
+            .check(doesNotExist())
+        onView(withText("Update now")).check(doesNotExist())
     }
 
     @Test
