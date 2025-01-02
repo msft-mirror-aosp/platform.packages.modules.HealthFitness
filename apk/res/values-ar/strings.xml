@@ -80,7 +80,7 @@
     <string name="delete_category_data_button" msgid="2324773398768267043">"حذف بيانات <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"جميع التطبيقات"</string>
     <string name="can_read" msgid="4568261079308309564">"التطبيقات المسموح لها بقراءة بيانات <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
-    <string name="can_write" msgid="5082414937218423823">"تطبيقات تملُك إذنًا بكتابة بيانات <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_write" msgid="5082414937218423823">"التطبيقات المسموح لها بكتابة بيانات <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"التطبيقات غير النشطة"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"لم يعُد بإمكان هذه التطبيقات كتابة بيانات <xliff:g id="DATA_TYPE">%s</xliff:g> أو قراءتها، ولكن لا يزال لديها بيانات مخزَّنة في Health Connect."</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"لم يعُد بإمكان التطبيقات قراءة أو كتابة بيانات عن <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> ولا تتوفّر بيانات عن <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> مخزَّنة في تطبيق Health Connect."</string>
@@ -432,7 +432,7 @@
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"التطبيقات غير النشطة"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"لن تتمكن هذه التطبيقات من الوصول إلى البيانات بعد ذلك، ولكن لا يزال لديها بيانات مخزَّنة في تطبيق Health Connect."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"يمكن لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" قراءة البيانات التي تمت إضافتها بعد <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"لإدارة أذونات Android الأخرى التي يمكن لهذا التطبيق الوصول إليها، انتقِل إلى \"الإعدادات\" &gt; \"التطبيقات\""</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"لإدارة أذونات Android الأخرى التي يمكن لهذا التطبيق الوصول إليها، يمكنك الانتقال إلى \"الإعدادات\" &gt; \"التطبيقات\""</string>
     <string name="manage_permissions_rationale" msgid="2780008055185441703">"يمكنك التعرّف على كيفية معالجة تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" لبياناتك من خلال الاطّلاع على سياسة خصوصية المطوّر"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"لإدارة أذونات Android الأخرى التي يمكن لهذا التطبيق الوصول إليها، انتقِل إلى \"الإعدادات\" ثم انقر على \"التطبيقات\"."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"قراءة سياسة الخصوصية"</string>
@@ -1137,24 +1137,24 @@
     <string name="a11y_previous_day" msgid="2529677154858456085">"اليوم السابق"</string>
     <string name="a11y_previous_week" msgid="2992971531628685405">"الأسبوع السابق"</string>
     <string name="a11y_previous_month" msgid="3304373968190750755">"الشهر السابق"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"هل تريد حذف جميع البيانات نهائيًا؟"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"هل مطلوب حذف جميع البيانات نهائيًا؟"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"هل تريد حذف البيانات المحدّدة نهائيًا؟"</string>
-    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"هل تريد حذف جميع بيانات \"<xliff:g id="APP_NAME">%s</xliff:g>\" نهائيًا؟"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"هل مطلوب حذف جميع بيانات \"<xliff:g id="APP_NAME">%s</xliff:g>\" نهائيًا؟"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"هل تريد حذف بيانات \"<xliff:g id="APP_NAME">%s</xliff:g>\" المحدّدة نهائيًا؟"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"هل تريد حذف جميع الإدخالات في يوم ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
-    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"هل تريد حذف جميع الإدخالات في الأسبوع من ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"هل مطلوب حذف جميع الإدخالات في الأسبوع من ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"هل تريد حذف جميع الإدخالات في شهر ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"هل تريد حذف الإدخالات المحدّدة في يوم ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"هل مطلوب حذف الإدخالات المحدّدة في يوم ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"هل تريد حذف الإدخالات المحدّدة في الأسبوع من ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"هل تريد حذف الإدخالات المحدّدة في شهر ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
-    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"هل تريد حذف هذا الإدخال نهائيًا؟"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"هل مطلوب حذف الإدخالات المحدّدة في شهر ‎<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> نهائيًا؟"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"هل مطلوب حذف هذا الإدخال نهائيًا؟"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"هل تريد حذف جميع إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" في يوم ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"هل تريد حذف جميع إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" في الأسبوع من ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"هل تريد حذف جميع إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" في شهر ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"هل تريد حذف إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" المحدّدة في يوم ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"هل تريد حذف إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" المحدّدة في الأسبوع من ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"هل تريد حذف إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" المحدّدة في شهر ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
-    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"هل تريد حذف إدخال \"<xliff:g id="APP_NAME">%s</xliff:g>\" هذا نهائيًا؟"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"هل مطلوب حذف إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" المحدّدة في الأسبوع ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"هل مطلوب حذف إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" المحدّدة في شهر ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"هل مطلوب حذف إدخال \"<xliff:g id="APP_NAME">%s</xliff:g>\" هذا نهائيًا؟"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"هل تريد حذف بيانات <xliff:g id="DATA_TYPE">%1$s</xliff:g> الواردة من تطبيق \"<xliff:g id="APP_NAME">%2$s</xliff:g>\" نهائيًا؟"</string>
     <string name="on" msgid="8266542510798355807">"مفعّل"</string>
     <string name="off" msgid="6996623844428550649">"غير مفعَّل"</string>

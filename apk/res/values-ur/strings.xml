@@ -581,7 +581,7 @@
     <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 24 گھنٹوں کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 7 دن کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 30 دن کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
-    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Health Connect ایپ سے <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> کی تمام اجازتیں بھی ہٹا دیں"</string>
+    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"‫Health Connect ایپ سے <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> کی تمام اجازتیں بھی ہٹا دیں"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کردہ تمام <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"اس اندراج کو Health Connect سے مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"منسلک ایپس Health Connect سے اس ڈیٹا تک مزید رسائی حاصل نہیں کر سکیں گی"</string>
@@ -1139,7 +1139,7 @@
     <string name="a11y_previous_month" msgid="3304373968190750755">"پچھلا مہینہ"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"منتخب ڈیٹا مستقل طور پر حذف کریں؟"</string>
-    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g> کا تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"‫<xliff:g id="APP_NAME">%s</xliff:g> کا تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"منتخب <xliff:g id="APP_NAME">%s</xliff:g> کا ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے لیے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے ہفتے کے لیے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>

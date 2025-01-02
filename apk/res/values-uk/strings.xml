@@ -79,7 +79,7 @@
     <string name="app_priority_button" msgid="3126133977893705098">"Пріоритет додатків"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"Видалити дані типу \"<xliff:g id="CATEGORY">%s</xliff:g>\""</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Усі додатки"</string>
-    <string name="can_read" msgid="4568261079308309564">"Можуть читати дані типу \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
+    <string name="can_read" msgid="4568261079308309564">"Можуть переглядати дані типу \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
     <string name="can_write" msgid="5082414937218423823">"Можуть записувати дані типу \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Неактивні додатки"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"Ці додатки більше не можуть переглядати або записувати дані типу \"<xliff:g id="DATA_TYPE">%s</xliff:g>\", однак їх дані досі зберігаються в Health Connect"</string>

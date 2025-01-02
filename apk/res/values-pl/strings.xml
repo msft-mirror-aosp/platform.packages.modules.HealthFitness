@@ -200,7 +200,7 @@
     <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensywność aktywności"</string>
     <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Odczytuj dane o intensywności aktywności"</string>
     <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Zapisuj dane o intensywności aktywności"</string>
-    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Podstawowa przemiana materii"</string>
+    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Wskaźnik podstawowej przemiany materii"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"podstawowa przemiana materii"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Odczytuj dane o podstawowej przemianie materii"</string>
     <string name="basal_metabolic_rate_write_content_description" msgid="4246137679868953443">"Zapisuj dane o podstawowej przemianie materii"</string>
@@ -433,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Te aplikacje nie mają już dostępu, ale ich dane wciąż są przechowywane w Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> może odczytywać dane dodane po <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>."</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Aby zarządzać innymi uprawnieniami urządzeń z Androidem, do których ta aplikacja ma dostęp, otwórz Ustawienia &gt; Aplikacje."</string>
-    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Informacje o tym, jak aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> zarządza Twoimi danymi, znajdziesz w polityce prywatności określonej przez dewelopera"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Informacje o tym, jak aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> przetwarza Twoje dane, znajdziesz w polityce prywatności ustalonej przez jej dewelopera"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Aby zarządzać innymi uprawnieniami systemu Android, do których ta aplikacja ma dostęp, otwórz Ustawienia, a potem Aplikacje"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Przeczytaj politykę prywatności"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Dostęp w ciągu ostatnich 24 godzin"</string>

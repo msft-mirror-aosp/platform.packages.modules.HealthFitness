@@ -593,7 +593,7 @@
     <string name="delete_dialog_success_title" msgid="900884533930984889">"Adatok törölve a Health Connectből"</string>
     <string name="delete_dialog_success_message" msgid="7454086333205881294">"Ha teljesen szeretné törölni a társított alkalmazásokban lévő adatokat, ellenőrizzen minden olyan appot, amelyben elmentett adat lehet."</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"Kész"</string>
-    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Társított alkalmazások megtekintése"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Társított appok megtekintése"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Adatok törlése"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Nem sikerült törölni az adatokat"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Hiba történt, ezért a Health Connect nem tudta törölni az adatokat"</string>

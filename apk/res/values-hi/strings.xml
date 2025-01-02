@@ -47,7 +47,7 @@
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"डेटा एक्सपोर्ट और इंपोर्ट करें"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"हाल ही में डेटा ऐक्सेस करने वाले ऐप्लिकेशन"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"हाल ही में, किसी भी ऐप्लिकेशन ने Health Connect के डेटा का इस्तेमाल नहीं किया है"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"हाल में डेटा ऐक्सेस करने वाले सभी ऐप्लिकेशन देखें"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"हाल ही में डेटा ऐक्सेस करने वाले सभी ऐप्लिकेशन देखें"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"देखें कि पिछले 24 घंटों में किन ऐप्लिकेशन ने आपका डेटा ऐक्सेस किया है"</string>
     <string name="today_header" msgid="1006837293203834373">"आज"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"बीता हुआ कल"</string>
@@ -79,10 +79,10 @@
     <string name="app_priority_button" msgid="3126133977893705098">"ऐप्लिकेशन की प्राथमिकता का क्रम"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> का डेटा मिटाएं"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"सभी ऐप्लिकेशन"</string>
-    <string name="can_read" msgid="4568261079308309564">"ये ऐप्लिकेशन, <xliff:g id="PERMISSION_TYPE">%s</xliff:g> का डेटा पढ़ सकते हैं"</string>
-    <string name="can_write" msgid="5082414937218423823">"ये ऐप्लिकेशन, <xliff:g id="PERMISSION_TYPE">%s</xliff:g> का डेटा सेव कर सकते हैं"</string>
+    <string name="can_read" msgid="4568261079308309564">"ये ऐप्लिकेशन, <xliff:g id="PERMISSION_TYPE">%s</xliff:g> देख सकते हैं"</string>
+    <string name="can_write" msgid="5082414937218423823">"ये ऐप <xliff:g id="PERMISSION_TYPE">%s</xliff:g> सेव, क्रिएट, एडिट, और डिलीट कर सकते हैं"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"इनऐक्टिव ऐप्लिकेशन"</string>
-    <string name="inactive_apps_message" msgid="8335803540719022910">"अब ये ऐप्लिकेशन <xliff:g id="DATA_TYPE">%s</xliff:g> का डेटा देख नहीं सकते या उसमें बदलाव नहीं कर सकते. हालांकि, पहले सेव किया डेटा अब भी Health Connect में मौजूद है"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"अब ये ऐप्लिकेशन <xliff:g id="DATA_TYPE">%s</xliff:g> नहीं देख सकते या उसे सेव, क्रिएट, एडिट, और डिलीट नहीं कर सकते. हालांकि, पहले जोड़े, हटाए या बदले गए डेटा की जानकारी अब भी Health Connect में मौजूद होगी"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"अब किसी भी ऐप्लिकेशन के पास, <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> का डेटा पढ़ने या उसे सेव करने की अनुमति नहीं है. साथ ही, Health Connect में <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> का कोई डेटा सेव नहीं किया गया है"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"इस डेटा में कई तरह की जानकारी शामिल होती है. जैसे, कसरत का कुल समय, किस तरह की कसरत की गई, कितने लैप किए गए, कसरत कितनी बार दोहराई गई, कितने सेशन या स्विमिंग स्ट्रोक किए"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"इस डेटा में, नींद के चरण और इसके सेशन वगैरह की जानकारी शामिल होती है"</string>
@@ -244,7 +244,7 @@
     <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"माहवारी के साइकल के दौरान होने वाला रक्त स्राव"</string>
     <string name="intermenstrual_bleeding_read_content_description" msgid="5970939335115119015">"माहवारी के साइकल के दौरान होने वाले रक्त स्राव का डेटा देखें"</string>
     <string name="intermenstrual_bleeding_write_content_description" msgid="1377719923165234099">"माहवारी के साइकल के दौरान होने वाले रक्त स्राव के डेटा में बदलाव करें"</string>
-    <string name="menstruation_uppercase_label" msgid="9119506748428874832">"माहवारी का डेटा"</string>
+    <string name="menstruation_uppercase_label" msgid="9119506748428874832">"पीरियड्स का डेटा"</string>
     <string name="menstruation_lowercase_label" msgid="8098816978006207242">"माहवारी का डेटा"</string>
     <string name="menstruation_read_content_description" msgid="7710047469771882021">"माहवारी का डेटा पढ़ने की अनुमति दें"</string>
     <string name="menstruation_write_content_description" msgid="5142669435897047396">"माहवारी का डेटा सेव करने की अनुमति दें"</string>
@@ -639,11 +639,11 @@
     <string name="spotting" msgid="1637175837078770520">"खून का हल्का रिसाव"</string>
     <string name="flow_spotting" msgid="832418664953780156">"खून का हल्का रिसाव"</string>
     <string name="flow_light" msgid="1937543318146228793">"कम रिसाव"</string>
-    <string name="flow_medium" msgid="3783688724668943154">"मध्यम रिसाव"</string>
+    <string name="flow_medium" msgid="3783688724668943154">"मीडियम फ़्लो"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"ज़्यादा रिसाव"</string>
     <string name="flow_unknown" msgid="1634411759928572900">"पीरियड्स के फ़्लो की जानकारी मौजूद नहीं है"</string>
-    <string name="period_day" msgid="3821944462093965882">"पीरियड (माहवारी) का <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> में से <xliff:g id="DAY">%1$d</xliff:g> दिन"</string>
-    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{माहवारी (1 दिन)}one{माहवारी (# दिन)}other{माहवारी (# दिन)}}"</string>
+    <string name="period_day" msgid="3821944462093965882">"पीरियड्स के <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> दिनों में से दिन <xliff:g id="DAY">%1$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{पीरियड्स (1 दिन)}one{पीरियड्स (# दिन)}other{पीरियड्स (# दिन)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"पॉज़िटिव"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"नेगेटिव"</string>
     <string name="ovulation_high" msgid="205362931427158291">"ज़्यादा"</string>
@@ -1127,7 +1127,7 @@
     <string name="lock_screen_banner_content" msgid="3392527073622152481">"स्वास्थ्य से जुड़े अपने डेटा को ज़्यादा सुरक्षित रखने के लिए, इस डिवाइस पर कोई पिन, पैटर्न या पासवर्ड सेट करें"</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"स्क्रीन लॉक सेट करें"</string>
     <string name="select_all" msgid="837499881590001166">"सभी चुनें"</string>
-    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"ऐसा करने पर, डिवाइस से जुड़े हुए ऐप्लिकेशन, Health Connect के इस डेटा को नहीं पढ़ पाएंगे"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"ऐसा करने पर, डिवाइस से जुड़े हुए ऐप्लिकेशन, Health Connect के इस डेटा को ऐक्सेस नहीं कर पाएंगे"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"सही का निशान लगाया गया"</string>
     <string name="a11y_unchecked" msgid="6258943223981886207">"सही का निशान नहीं लगाया गया"</string>
     <string name="a11y_map_description" msgid="4992907698581164434">"कसरत के लिए, मैप रूट उपलब्ध है"</string>
@@ -1146,14 +1146,14 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> वाली सभी एंट्री हमेशा के लिए मिटानी हैं?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> वाली चुनी गई एंट्री हमेशा के लिए मिटानी हैं?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> वाले हफ़्ते के लिए चुनी गई एंट्री हमेशा के लिए मिटानी हैं?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> वाली चुनी गई एंट्री हमेशा के लिए मिटानी हैं?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> महीने के लिए चुनी गई एंट्री हमेशा के लिए मिटानी हैं?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"क्या आपको यह एंट्री हमेशा के लिए मिटानी है?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"क्या आपको <xliff:g id="APP_NAME">%1$s</xliff:g> की, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> वाली सभी एंट्री हमेशा के लिए मिटानी हैं?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"क्या आपको <xliff:g id="APP_NAME">%1$s</xliff:g> की, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> वाले हफ़्ते की सभी एंट्री मिटानी हैं?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"क्या आपको <xliff:g id="APP_NAME">%1$s</xliff:g> की, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> वाली सभी एंट्री हमेशा के लिए मिटानी हैं?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"क्या आपको <xliff:g id="APP_NAME">%1$s</xliff:g> की,<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> वाली अपनी चुनी हुई एंट्री हमेशा के लिए मिटानी हैं?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"क्या आपको <xliff:g id="APP_NAME">%1$s</xliff:g> की, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> वाले हफ़्ते की अपनी चुनी हुई एंट्री हमेशा के लिए मिटानी हैं?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"क्या आपको <xliff:g id="APP_NAME">%1$s</xliff:g> की,<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> वाली अपनी चुनी हुई एंट्री हमेशा के लिए मिटानी हैं?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> के लिए, <xliff:g id="APP_NAME">%1$s</xliff:g> की चुनी हुई एंट्री हमेशा के लिए मिटानी हैं?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> के लिए, <xliff:g id="APP_NAME">%1$s</xliff:g> की चुनी हुई एंट्री हमेशा के लिए मिटानी हैं?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"क्या आपको <xliff:g id="APP_NAME">%s</xliff:g> की इस एंट्री को हमेशा के लिए मिटाना है?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"क्या आपको <xliff:g id="APP_NAME">%2$s</xliff:g> के लिए, <xliff:g id="DATA_TYPE">%1$s</xliff:g> का डेटा हमेशा के लिए मिटाना है?"</string>
     <string name="on" msgid="8266542510798355807">"चालू है"</string>

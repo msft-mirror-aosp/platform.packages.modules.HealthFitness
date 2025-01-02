@@ -1141,7 +1141,7 @@
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Supprimer définitivement les données sélectionnées de l\'application ?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Supprimer définitivement toutes les données de l\'application <xliff:g id="APP_NAME">%s</xliff:g> ?"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Supprimer définitivement les données sélectionnées de l\'application <xliff:g id="APP_NAME">%s</xliff:g> ?"</string>
-    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Supprimer définitivement toutes les entrées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Supprimer définitivement toutes les entrées pour le <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Supprimer définitivement toutes les entrées pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Supprimer définitivement toutes les entrées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Supprimer définitivement les entrées sélectionnées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>

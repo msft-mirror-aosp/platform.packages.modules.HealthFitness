@@ -56,7 +56,7 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"પરવાનગીઓને મેનેજ કરો"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"સમય: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
-    <string name="activity_category_uppercase" msgid="136628843341377088">"પ્રવૃત્તિ"</string>
+    <string name="activity_category_uppercase" msgid="136628843341377088">"ઍક્ટિવિટી"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"પ્રવૃત્તિ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"શરીરના માપ"</string>
     <string name="body_measurements_category_lowercase" msgid="2259696274629666992">"શરીરના માપ"</string>
@@ -1153,7 +1153,7 @@
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"<xliff:g id="APP_NAME">%1$s</xliff:g>ની <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ની બધી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ના રોજની <xliff:g id="APP_NAME">%1$s</xliff:g>ની પસંદ કરવામાં આવેલી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ના અઠવાડિયાની <xliff:g id="APP_NAME">%1$s</xliff:g>ની પસંદ કરવામાં આવેલી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ની, <xliff:g id="APP_NAME">%1$s</xliff:g>ની પસંદ કરવામાં આવેલી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> માટે, પસંદ કરવામાં આવેલી <xliff:g id="APP_NAME">%1$s</xliff:g>ની એન્ટ્રીને કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"શું <xliff:g id="APP_NAME">%s</xliff:g>ની આ એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> માટે <xliff:g id="DATA_TYPE">%1$s</xliff:g> ડેટા કાયમી રીતે ડિલીટ કરીએ?"</string>
     <string name="on" msgid="8266542510798355807">"ચાલુ છે"</string>

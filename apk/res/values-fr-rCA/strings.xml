@@ -27,7 +27,7 @@
     <string name="all_categories_title" msgid="1446410643217937926">"Toutes les catégories"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Afficher toutes les catégories"</string>
     <string name="no_data" msgid="1906986019249068659">"Aucune donnée"</string>
-    <string name="connected_apps_title" msgid="279942692804743223">"Autorisations de l\'appli"</string>
+    <string name="connected_apps_title" msgid="279942692804743223">"Autorisations des applis"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Gérez vos applis et vos autorisations"</string>
     <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> appli sur <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> a accès"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> appli(s) sur <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ont accès"</string>
@@ -1141,7 +1141,7 @@
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Supprimer définitivement les données sélectionnées?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Supprimer définitivement toutes les données <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Supprimer définitivement les données <xliff:g id="APP_NAME">%s</xliff:g> sélectionnées?"</string>
-    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Supprimer définitivement toutes les entrées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Supprimer définitivement toutes les entrées pour le <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Supprimer définitivement toutes les entrées pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Supprimer définitivement toutes les entrées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Supprimer définitivement les entrées sélectionnées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>

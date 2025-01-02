@@ -82,7 +82,7 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ਨੂੰ ਪੜ੍ਹ ਸਕਦੀਆਂ ਹਨ"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ਦਾ ਸੰਪਾਦਨ ਕਰ ਸਕਦੀਆਂ ਹਨ"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"ਅਕਿਰਿਆਸ਼ੀਲ ਐਪਾਂ"</string>
-    <string name="inactive_apps_message" msgid="8335803540719022910">"ਇਹ ਐਪਾਂ ਹੁਣ <xliff:g id="DATA_TYPE">%s</xliff:g> ਨੂੰ ਪੜ੍ਹ ਜਾਂ ਲਿਖ ਨਹੀਂ ਸਕਦੀਆਂ, ਹਾਲੇ ਵੀ ਇਨ੍ਹਾਂ ਨੇ Health Connect ਵਿੱਚ ਡਾਟਾ ਸਟੋਰ ਕੀਤਾ ਹੋਇਆ ਹੈ"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"ਇਹ ਐਪਾਂ ਹੁਣ <xliff:g id="DATA_TYPE">%s</xliff:g> ਪੜ੍ਹ ਜਾਂ ਲਿਖ ਨਹੀਂ ਸਕਦੀਆਂ, ਪਰ ਹਾਲੇ ਵੀ ਇਨ੍ਹਾਂ ਦਾ ਡਾਟਾ Health Connect ਵਿੱਚ ਸਟੋਰ ਹੈ"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"ਐਪਾਂ ਹੁਣ <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> ਸੰਬੰਧੀ ਡਾਟਾ ਪੜ੍ਹ ਜਾਂ ਉਸਦਾ ਸੰਪਾਦਨ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ ਅਤੇ Health Connect ਵਿੱਚ <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> ਸੰਬੰਧੀ ਕੋਈ ਡਾਟਾ ਸਟੋਰ ਨਹੀਂ ਹੈ"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"ਇਸ ਡਾਟਾ ਵਿੱਚ ਕਿਰਿਆਸ਼ੀਲ ਸਮਾਂ, ਕਸਰਤ ਦੀ ਕਿਸਮ, ਲੈਪ, ਕਸਰਤ ਕਿੰਨੀ ਵਾਰ ਦੁਹਰਾਈ ਗਈ, ਸੈਸ਼ਨ ਜਾਂ ਤੈਰਾਕੀ ਦੇ ਸਟ੍ਰੋਕਾਂ ਵਰਗੀ ਜਾਣਕਾਰੀ ਸ਼ਾਮਲ ਹੈ"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ਇਸ ਡਾਟਾ ਵਿੱਚ ਨੀਂਦ ਦੇ ਪੜਾਅ ਅਤੇ ਨੀਂਦ ਸੰਬੰਧੀ ਸੈਸ਼ਨਾਂ ਵਰਗੀ ਜਾਣਕਾਰੀ ਸ਼ਾਮਲ ਹੈ"</string>
@@ -200,8 +200,8 @@
     <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"ਸਰਗਰਮੀ ਦੀ ਤੀਬਰਤਾ"</string>
     <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"ਸਰਗਰਮੀ ਦੀ ਤੀਬਰਤਾ ਸੰਬੰਧੀ ਡਾਟਾ ਪੜ੍ਹਨ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ"</string>
     <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"ਸਰਗਰਮੀ ਦੀ ਤੀਬਰਤਾ ਸੰਬੰਧੀ ਡਾਟੇ ਵਿੱਚ ਤਬਦੀਲੀ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ"</string>
-    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"ਮੂਲ ਆਹਾਰ ਪਾਚਕ ਕਿਰਿਆ ਦੀ ਦਰ ਸੰਬੰਧੀ ਡਾਟਾ"</string>
-    <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"ਮੂਲ ਆਹਾਰ ਪਾਚਕ ਕਿਰਿਆ ਦੀ ਦਰ ਸੰਬੰਧੀ ਡਾਟਾ"</string>
+    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"ਮੂਲ ਮੈਟਾਬੌਲਿਕ ਦਰ ਸੰਬੰਧੀ ਡਾਟਾ"</string>
+    <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"ਮੂਲ ਮੈਟਾਬੌਲਿਕ ਦਰ ਸੰਬੰਧੀ ਡਾਟਾ"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"ਮੂਲ ਆਹਾਰ ਪਾਚਕ ਕਿਰਿਆ ਦੀ ਦਰ ਸੰਬੰਧੀ ਡਾਟਾ ਪੜ੍ਹੋ"</string>
     <string name="basal_metabolic_rate_write_content_description" msgid="4246137679868953443">"ਮੂਲ ਆਹਾਰ ਪਾਚਕ ਕਿਰਿਆ ਦੀ ਦਰ ਸੰਬੰਧੀ ਡਾਟੇ ਦਾ ਸੰਪਾਦਨ ਕਰੋ"</string>
     <string name="body_fat_uppercase_label" msgid="4618860235119416449">"ਸਰੀਰ ਵਿੱਚ ਚਰਬੀ ਸੰਬੰਧੀ ਡਾਟਾ"</string>
@@ -431,7 +431,7 @@
     <string name="delete_app_data" msgid="6890357774873859952">"ਐਪ ਡਾਟਾ ਮਿਟਾਓ"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"ਅਕਿਰਿਆਸ਼ੀਲ ਐਪਾਂ"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ਇਨ੍ਹਾਂ ਐਪਾਂ ਕੋਲ ਹੁਣ ਪਹੁੰਚ ਨਹੀਂ ਹੈ, ਪਰ ਹਾਲੇ ਵੀ ਇਨ੍ਹਾਂ ਨੇ Health Connect ਵਿੱਚ ਡਾਟਾ ਸਟੋਰ ਕੀਤਾ ਹੋਇਆ ਹੈ"</string>
-    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g>, <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> ਤੋਂ ਬਾਅਦ ਸ਼ਾਮਲ ਕੀਤੇ ਗਏ ਡਾਟਾ ਨੂੰ ਪੜ੍ਹ ਸਕਦੀ ਹੈ"</string>
+    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g>, <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> ਤੋਂ ਬਾਅਦ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ ਡਾਟਾ ਪੜ੍ਹ ਸਕਦੀ ਹੈ"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"ਇਸ ਐਪ ਵੱਲੋਂ ਪਹੁੰਚ ਕੀਤੀਆਂ ਜਾ ਸਕਣ ਵਾਲੀਆਂ ਹੋਰ Android ਇਜਾਜ਼ਤਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰਨ ਲਈ, ਸੈਟਿੰਗਾਂ &gt; ਐਪਾਂ \'ਤੇ ਜਾਓ"</string>
     <string name="manage_permissions_rationale" msgid="2780008055185441703">"ਤੁਸੀਂ ਵਿਕਾਸਕਾਰ ਦੀ ਪਰਦੇਦਾਰੀ ਨੀਤੀ ਵਿੱਚ ਇਹ ਜਾਣ ਸਕਦੇ ਹੋ ਕਿ <xliff:g id="APP_NAME">%1$s</xliff:g> ਤੁਹਾਡੇ ਡਾਟੇ ਨੂੰ ਕਿਵੇਂ ਸੰਭਾਲਦੀ ਹੈ"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"ਹੋਰ Android ਇਜਾਜ਼ਤਾਂ, ਜਿਨ੍ਹਾਂ ਤੱਕ ਇਹ ਐਪ ਪਹੁੰਚ ਕਰ ਸਕਦੀ ਹੈ, ਉਨ੍ਹਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰਨ ਲਈ, ਸੈਟਿੰਗਾਂ \'ਤੇ ਜਾਓ, ਫਿਰ ਐਪਾਂ \'ਤੇ ਟੈਪ ਕਰੋ"</string>
@@ -1127,7 +1127,7 @@
     <string name="lock_screen_banner_content" msgid="3392527073622152481">"ਆਪਣੇ ਸਿਹਤ ਸੰਬੰਧੀ ਡਾਟੇ ਦੀ ਵਧੇਰੇ ਸੁਰੱਖਿਆ ਲਈ, ਇਸ ਡੀਵਾਈਸ ਲਈ ਪਿੰਨ, ਪੈਟਰਨ ਜਾਂ ਪਾਸਵਰਡ ਸੈੱਟ ਕਰੋ"</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"ਸਕ੍ਰੀਨ ਲਾਕ ਸੈੱਟ ਕਰੋ"</string>
     <string name="select_all" msgid="837499881590001166">"ਸਭ ਚੁਣੋ"</string>
-    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"ਕਨੈਕਟ ਕੀਤੀਆਂ ਐਪਾਂ ਹੁਣ Health Connect ਦੇ ਇਸ ਡਾਟੇ ਨੂੰ ਪੜ੍ਹ ਨਹੀਂ ਕਰ ਸਕਣਗੀਆਂ"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"ਕਨੈਕਟ ਕੀਤੀਆਂ ਐਪਾਂ ਹੁਣ Health Connect ਦੇ ਇਸ ਡਾਟੇ ਨੂੰ ਪੜ੍ਹ ਨਹੀਂ ਸਕਣਗੀਆਂ"</string>
     <string name="a11y_checked" msgid="3685413382346589880">"ਨਿਸ਼ਾਨ ਲਗਾਇਆ"</string>
     <string name="a11y_unchecked" msgid="6258943223981886207">"ਸਹੀ ਦਾ ਨਿਸ਼ਾਨ ਨਹੀਂ ਲਾਇਆ ਗਿਆ"</string>
     <string name="a11y_map_description" msgid="4992907698581164434">"ਕਸਰਤ ਲਈ ਨਕਸ਼ੇ ਦਾ ਰਸਤਾ ਉਪਲਬਧ ਹੈ"</string>
@@ -1152,9 +1152,9 @@
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"ਕੀ <xliff:g id="APP_NAME">%1$s</xliff:g> ਦੇ, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ਵਾਲੇ ਹਫ਼ਤੇ ਦੇ ਸਾਰੇ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣੇ ਹਨ?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"ਕੀ <xliff:g id="APP_NAME">%1$s</xliff:g> ਦੇ, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ਵਾਲੇ ਸਾਰੇ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣੇ ਹਨ?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"ਕੀ ਚੁਣੀ ਗਈ <xliff:g id="APP_NAME">%1$s</xliff:g> ਦੇ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ਵਾਲੇ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣੇ ਹਨ?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"ਕੀ ਚੁਣੀ ਗਈ <xliff:g id="APP_NAME">%1$s</xliff:g> ਦੇ, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ਵਾਲੇ ਹਫ਼ਤੇ ਦੇ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣੇ ਹਨ?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"ਕੀ ਚੁਣੀ ਗਈ <xliff:g id="APP_NAME">%1$s</xliff:g> ਦੇ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ਵਾਲੇ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣੇ ਹਨ?"</string>
-    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ਕੀ ਇਸ <xliff:g id="APP_NAME">%s</xliff:g> ਦਾ ਇਹ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣਾ ਹੈ?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"ਕੀ <xliff:g id="APP_NAME">%1$s</xliff:g> ਦੇ, <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ਵਾਲੇ ਹਫ਼ਤੇ ਦੇ ਚੁਣੇ ਗਏ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣੇ ਹਨ?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"ਕੀ <xliff:g id="APP_NAME">%1$s</xliff:g> ਦੇ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ਵਾਲੇ ਚੁਣੇ ਗਏ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣੇ ਹਨ?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ਕੀ <xliff:g id="APP_NAME">%s</xliff:g> ਦਾ ਇਹ ਇੰਦਰਾਜ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣਾ ਹੈ?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"ਕੀ <xliff:g id="APP_NAME">%2$s</xliff:g> ਲਈ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ਡਾਟੇ ਨੂੰ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣਾ ਹੈ?"</string>
     <string name="on" msgid="8266542510798355807">"ਚਾਲੂ"</string>
     <string name="off" msgid="6996623844428550649">"ਬੰਦ"</string>

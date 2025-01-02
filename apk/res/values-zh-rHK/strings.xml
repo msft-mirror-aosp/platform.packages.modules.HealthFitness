@@ -431,7 +431,7 @@
     <string name="delete_app_data" msgid="6890357774873859952">"刪除應用程式資料"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"已停用的應用程式"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"這些應用程式不再擁有存取權，但仍有資料儲存在 Health Connect"</string>
-    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以讀取 <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>後新增的資料"</string>
+    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以讀取<xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>後新增的資料"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"如要管理此應用程式可以存取的其他 Android 權限，請前往「設定」&gt; [應用程式]"</string>
     <string name="manage_permissions_rationale" msgid="2780008055185441703">"如要瞭解「<xliff:g id="APP_NAME">%1$s</xliff:g>」如何處理你的資料，請參閱開發人員的私隱權政策"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"如要管理此應用程式可以存取的其他 Android 權限，請前往「設定」，然後輕按 [應用程式]"</string>
@@ -590,7 +590,7 @@
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"返回"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"完成"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"關閉"</string>
-    <string name="delete_dialog_success_title" msgid="900884533930984889">"已從「健康資料同步」刪除的資料"</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"已從「健康資料同步」刪除資料"</string>
     <string name="delete_dialog_success_message" msgid="7454086333205881294">"如果你想從已連接應用程式徹底刪除資料，請檢查每個可能有儲存資料的應用程式。"</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"完成"</string>
     <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"查看已連接的應用程式"</string>
@@ -1112,7 +1112,7 @@
     <string name="last_week_header" msgid="5194448963146719382">"上週"</string>
     <string name="this_month_header" msgid="2452395268894677189">"本月"</string>
     <string name="last_month_header" msgid="1359164797239191253">"上個月"</string>
-    <string name="tab_entries" msgid="3402700951602029493">"項目"</string>
+    <string name="tab_entries" msgid="3402700951602029493">"資料"</string>
     <string name="tab_access" msgid="7818197975407243701">"存取權"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"開始使用「健康資料同步」"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"同步第一個應用程式，即可在這些應用程式間分享健康和健身資料"</string>
@@ -1143,17 +1143,17 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"要永久刪除所選的「<xliff:g id="APP_NAME">%s</xliff:g>」資料嗎？"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有項目嗎？"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>該星期的所有項目嗎？"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有項目嗎？"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有項目嗎？"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所選項目嗎？"</string>
-    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>該星期的所選項目嗎？"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所選項目嗎？"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>該星期的所選項目嗎？"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所選項目嗎？"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"要永久刪除此項目嗎？"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所有「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>該星期的所有「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所有「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
-    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>所選的「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>該星期所選的「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>所選的「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>該星期的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"要永久刪除此「<xliff:g id="APP_NAME">%s</xliff:g>」項目嗎？"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"要永久刪除「<xliff:g id="APP_NAME">%2$s</xliff:g>」的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
     <string name="on" msgid="8266542510798355807">"開啟"</string>
