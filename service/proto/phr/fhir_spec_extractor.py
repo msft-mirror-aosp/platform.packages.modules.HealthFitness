@@ -73,7 +73,7 @@ class FhirSpecExtractor:
             profile_types_json, data_types_set)
 
         # Sort list by fhir_type before adding to make sure the script output is deterministic
-        sorted(data_type_configs, key=lambda x: x.fhir_type)
+        data_type_configs = sorted(data_type_configs, key=lambda x: x.fhir_type)
         r4_resource_spec.fhir_data_type_configs.extend(data_type_configs)
 
         return r4_resource_spec
