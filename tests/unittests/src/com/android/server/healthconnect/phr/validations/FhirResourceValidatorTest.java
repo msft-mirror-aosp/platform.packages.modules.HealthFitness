@@ -684,6 +684,70 @@ public class FhirResourceValidatorTest {
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
     @Test
+    public void testValidateFhirResource_r4ExtensionMetaValue_succeeds() throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // The Extension.valueMeta field is only in the R4 spec but not in R4B
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{
+                            \"url\": \"http://hl7.org/fhir/StructureDefinition/test\",
+                            \"valueMeta\": { \"id\": \"123\"}
+                        }]
+                        """);
+        JSONObject immunizationJson =
+                new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
+
+        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
+    @Test
+    public void testValidateFhirResource_r4bExtensionCodeableReferenceValue_succeeds()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // CodeableReference is a new R4B data type
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{
+                            \"url\":
+                                \"http://hl7.org/fhir/StructureDefinition/immunization-procedure\",
+                            \"valueCodeableReference\": {
+                                \"reference\": { \"reference\": \"Procedure/123\" }
+                            }
+                        }]
+                        """);
+        JSONObject immunizationJson =
+                new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
+
+        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
+    @Test
+    public void testValidateFhirResource_r4bExtensionRatioRangeValue_succeeds()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // RatioRange is a new R4B data type
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{
+                            \"url\": \"http://hl7.org/fhir/StructureDefinition/test\",
+                            \"valueRatioRange\": {
+                                \"lowNumerator\": { \"value\": 1.0 }
+                            }
+                        }]
+                        """);
+        JSONObject immunizationJson =
+                new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
+
+        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
+    @Test
     public void testValidateFhirResource_arrayOfPrimitiveTypeExtensionsNotJsonObject_throws()
             throws JSONException {
         FhirResourceValidator validator = new FhirResourceValidator();
