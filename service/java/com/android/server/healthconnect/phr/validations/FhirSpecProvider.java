@@ -19,9 +19,7 @@ package com.android.server.healthconnect.phr.validations;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.FhirResource.validateFhirResourceType;
 
-import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
-import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
-import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RESOURCE;
 
 import android.annotation.Nullable;
@@ -54,11 +52,13 @@ public class FhirSpecProvider {
     // validated.
     private static final Set<R4FhirType> FHIR_COMPLEX_TYPES_WITHOUT_CONFIG =
             Set.of(
-                    // TODO: b/377704968 - Implement validation of "BackboneElement".
-                    R4_FHIR_TYPE_RESOURCE,
                     // TODO: b/376462255 - Implement validation of "Resource" data type when
                     //  supporting contained resources.
-                    R4_FHIR_TYPE_BACKBONE_ELEMENT);
+                    R4_FHIR_TYPE_RESOURCE,
+                    // TODO: b/377704968 - Implement validation of "BackboneElement" and "Element"
+                    // types that are used to define child types of Resources and Complex types
+                    // respectively.
+                    R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION);
 
     private Map<Integer, FhirComplexTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
 

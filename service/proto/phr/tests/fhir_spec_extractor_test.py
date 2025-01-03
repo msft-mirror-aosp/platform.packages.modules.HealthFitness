@@ -667,37 +667,36 @@ class FhirSpecExtractorTest(unittest.TestCase):
       }
     },
     {
-      "fullUrl": "http://hl7.org/fhir/StructureDefinition/BackboneElement",
+      "fullUrl": "http://hl7.org/fhir/StructureDefinition/Element",
       "resource": {
         "resourceType": "StructureDefinition",
-        "id": "BackboneElement",
-        "url": "http://hl7.org/fhir/StructureDefinition/BackboneElement",
+        "id": "Element",
+        "url": "http://hl7.org/fhir/StructureDefinition/Element",
         "version": "4.0.1",
-        "name": "BackboneElement",
+        "name": "BElement",
         "status": "active",
         "fhirVersion": "4.0.1",
         "kind": "complex-type",
         "abstract": true,
-        "type": "BackboneElement",
+        "type": "Element",
         "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Element",
-        "derivation": "specialization",
         "snapshot": {
           "element": [
             {
-              "id": "BackboneElement",
-              "path": "BackboneElement",
+              "id": "Element",
+              "path": "Element",
               "min": 0,
               "max": "*",
               "base": {
-                "path": "BackboneElement",
+                "path": "Element",
                 "min": 0,
                 "max": "*"
               },
               "isModifier": false
             },
             {
-              "id": "BackboneElement.id",
-              "path": "BackboneElement.id",
+              "id": "Element.id",
+              "path": "Element.id",
               "min": 0,
               "max": "1",
               "base": {
@@ -717,21 +716,15 @@ class FhirSpecExtractorTest(unittest.TestCase):
                 }
               ],
               "isModifier": false,
-              "isSummary": false,
-              "mapping": [
-                {
-                  "identity": "rim",
-                  "map": "n/a"
-                }
-              ]
+              "isSummary": false
             },
             {
-              "id": "BackboneElement.modifierExtension",
-              "path": "BackboneElement.modifierExtension",
+              "id": "Element.extension",
+              "path": "Element.extension",
               "min": 0,
               "max": "*",
               "base": {
-                "path": "BackboneElement.modifierExtension",
+                "path": "Element.extension",
                 "min": 0,
                 "max": "*"
               },
@@ -740,14 +733,8 @@ class FhirSpecExtractorTest(unittest.TestCase):
                   "code": "Extension"
                 }
               ],
-              "isModifier": true,
-              "isSummary": true,
-              "mapping": [
-                {
-                  "identity": "rim",
-                  "map": "N/A"
-                }
-              ]
+              "isModifier": false,
+              "isSummary": false
             }
           ]
         }
@@ -1032,7 +1019,7 @@ class FhirSpecExtractorTest(unittest.TestCase):
             ),
             "performer": fhirspec_pb2.FhirFieldConfig(
                 is_array=True,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
             ),
             "contained": fhirspec_pb2.FhirFieldConfig(
                 is_array=True,
@@ -1192,7 +1179,7 @@ class FhirSpecExtractorTest(unittest.TestCase):
             self.BUNDLE_WITH_IMMUNIZATION_AND_PATIENT_STRUCTURE_DEFINITION, {"Immunization"})
         expected_complex_type_configs = [
             fhirspec_pb2.FhirDataType(
-                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT,
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION,
                 kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
             ),
             fhirspec_pb2.FhirDataType(
@@ -1224,6 +1211,22 @@ class FhirSpecExtractorTest(unittest.TestCase):
                             is_array=False,
                             r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
                         )
+                    }),
+            ),
+            # Expected because this is added for primitive type extension validation
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ELEMENT,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+                fhir_complex_type_config=fhirspec_pb2.FhirComplexTypeConfig(
+                    allowed_field_names_to_config={
+                        "id": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+                        ),
+                        "extension": fhirspec_pb2.FhirFieldConfig(
+                            is_array=True,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_EXTENSION
+                        ),
                     }),
             ),
             # Expected because Coding is a nested type used in CodeableConcept

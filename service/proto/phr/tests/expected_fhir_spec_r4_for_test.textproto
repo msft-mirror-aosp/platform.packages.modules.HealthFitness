@@ -19,7 +19,7 @@ resource_type_to_config {
       key: "education"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -152,7 +152,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -173,14 +173,14 @@ resource_type_to_config {
       key: "protocolApplied"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
       key: "reaction"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -439,7 +439,7 @@ resource_type_to_config {
       key: "reaction"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -531,7 +531,7 @@ resource_type_to_config {
       key: "component"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -706,7 +706,7 @@ resource_type_to_config {
       key: "referenceRange"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -939,7 +939,7 @@ resource_type_to_config {
       key: "evidence"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -1065,7 +1065,7 @@ resource_type_to_config {
       key: "stage"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -1187,7 +1187,7 @@ resource_type_to_config {
       key: "focalDevice"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -1320,7 +1320,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -1427,7 +1427,7 @@ resource_type_to_config {
       key: "batch"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -1483,7 +1483,7 @@ resource_type_to_config {
       key: "ingredient"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -1586,7 +1586,7 @@ resource_type_to_config {
       key: "dispenseRequest"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -1824,7 +1824,7 @@ resource_type_to_config {
       key: "substitution"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2101,14 +2101,14 @@ resource_type_to_config {
       key: "communication"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
       key: "contact"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2185,7 +2185,7 @@ resource_type_to_config {
       key: "link"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2391,7 +2391,7 @@ resource_type_to_config {
       key: "qualification"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2438,7 +2438,7 @@ resource_type_to_config {
       key: "availableTime"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2529,7 +2529,7 @@ resource_type_to_config {
       key: "notAvailable"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2618,7 +2618,7 @@ resource_type_to_config {
       key: "classHistory"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2632,7 +2632,7 @@ resource_type_to_config {
       key: "diagnosis"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2653,7 +2653,7 @@ resource_type_to_config {
       key: "hospitalization"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2695,7 +2695,7 @@ resource_type_to_config {
       key: "location"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2723,7 +2723,7 @@ resource_type_to_config {
       key: "participant"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2786,7 +2786,7 @@ resource_type_to_config {
       key: "statusHistory"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2870,7 +2870,7 @@ resource_type_to_config {
       key: "hoursOfOperation"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -2961,7 +2961,7 @@ resource_type_to_config {
       key: "position"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -3029,7 +3029,7 @@ resource_type_to_config {
       key: "contact"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -3416,10 +3416,6 @@ fhir_data_type_configs {
   }
 }
 fhir_data_type_configs {
-  fhir_type: R4_FHIR_TYPE_BACKBONE_ELEMENT
-  kind: KIND_COMPLEX_TYPE
-}
-fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_BOOLEAN
   kind: KIND_PRIMITIVE_TYPE
 }
@@ -3612,7 +3608,7 @@ fhir_data_type_configs {
       key: "doseAndRate"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -3765,6 +3761,26 @@ fhir_data_type_configs {
       value {
         is_array: false
         r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ELEMENT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
       }
     }
   }
@@ -4774,7 +4790,7 @@ fhir_data_type_configs {
       key: "repeat"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
   }
@@ -4782,6 +4798,10 @@ fhir_data_type_configs {
 fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_URI
   kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+  kind: KIND_COMPLEX_TYPE
 }
 fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_BASE64_BINARY
@@ -4927,14 +4947,14 @@ fhir_data_type_configs {
       key: "codeFilter"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
       key: "dateFilter"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -4976,7 +4996,7 @@ fhir_data_type_configs {
       key: "sort"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_ELEMENT
+        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
       }
     }
     allowed_field_names_to_config {
@@ -5064,26 +5084,6 @@ fhir_data_type_configs {
       value {
         is_array: false
         r4_type: R4_FHIR_TYPE_DECIMAL
-      }
-    }
-  }
-}
-fhir_data_type_configs {
-  fhir_type: R4_FHIR_TYPE_ELEMENT
-  kind: KIND_COMPLEX_TYPE
-  fhir_complex_type_config {
-    allowed_field_names_to_config {
-      key: "extension"
-      value {
-        is_array: true
-        r4_type: R4_FHIR_TYPE_EXTENSION
-      }
-    }
-    allowed_field_names_to_config {
-      key: "id"
-      value {
-        is_array: false
-        r4_type: R4_FHIR_TYPE_STRING
       }
     }
   }
