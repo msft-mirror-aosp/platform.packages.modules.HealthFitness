@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement.ADDITIONAL_ACCESS_BUTTON
@@ -274,7 +275,7 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
         permissionMap.clear()
 
         permissions
-            .sortedBy {
+            .sortByLocale {
                 requireContext()
                     .getString(fromPermissionType(it.medicalPermissionType).uppercaseLabel)
             }

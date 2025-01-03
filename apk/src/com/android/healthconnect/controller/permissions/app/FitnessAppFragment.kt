@@ -55,6 +55,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -333,7 +334,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         permissionMap.clear()
 
         permissions
-            .sortedBy {
+            .sortByLocale {
                 requireContext()
                     .getString(fromPermissionType(it.fitnessPermissionType).uppercaseLabel)
             }
