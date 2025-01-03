@@ -21,10 +21,14 @@ import static android.health.connect.datatypes.FhirResource.validateFhirResource
 
 import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
 import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BACKBONE_ELEMENT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RESOURCE;
 
+import android.annotation.Nullable;
 import android.health.connect.datatypes.FhirVersion;
 import android.util.ArrayMap;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
 import com.android.server.healthconnect.proto.FhirDataType;
 import com.android.server.healthconnect.proto.FhirResourceSpec;
@@ -45,7 +49,20 @@ import java.util.Set;
 public class FhirSpecProvider {
     private static final String R4_FHIR_SPEC_FILE_NAME = "fhirspec-r4.binarypb";
 
+    // The list of complex types for which no FhirComplexTypeConfig exists in this spec provider.
+    // This means that we don't support validation of this type yet, and the type should not be
+    // validated.
+    private static final Set<R4FhirType> FHIR_COMPLEX_TYPES_WITHOUT_CONFIG =
+            Set.of(
+                    // TODO: b/377704968 - Implement validation of "BackboneElement".
+                    R4_FHIR_TYPE_RESOURCE,
+                    // TODO: b/376462255 - Implement validation of "Resource" data type when
+                    //  supporting contained resources.
+                    R4_FHIR_TYPE_BACKBONE_ELEMENT);
+
     private Map<Integer, FhirComplexTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
+
+    private Map<R4FhirType, FhirComplexTypeConfig> mFhirComplexTypeToFhirSpecMap = new ArrayMap<>();
 
     private Set<R4FhirType> mPrimitiveTypes = new HashSet<>();
 
@@ -79,17 +96,30 @@ public class FhirSpecProvider {
                     mResourceTypeIntToFhirSpecMap.put(resourceType, config);
                 });
 
-        for (FhirDataType dataType : r4FhirResourceSpec.getFhirDataTypeConfigsList()) {
-            switch (dataType.getKind()) {
+        for (FhirDataType dataTypeConfig : r4FhirResourceSpec.getFhirDataTypeConfigsList()) {
+            R4FhirType fhirType = dataTypeConfig.getFhirType();
+            switch (dataTypeConfig.getKind()) {
                 case KIND_PRIMITIVE_TYPE:
-                    mPrimitiveTypes.add(dataType.getFhirType());
+                    mPrimitiveTypes.add(fhirType);
                     break;
                 case KIND_COMPLEX_TYPE:
-                    // TODO(b/377701407) - Read complex type config when it exists
+                    if (Flags.phrFhirComplexTypeValidation()) {
+                        if (FHIR_COMPLEX_TYPES_WITHOUT_CONFIG.contains(fhirType)) {
+                            continue;
+                        }
+                        if (!dataTypeConfig.hasFhirComplexTypeConfig()) {
+                            throw new IllegalArgumentException(
+                                    "Missing config for data type: "
+                                            + dataTypeConfig.getKind().name());
+                        }
+
+                        mFhirComplexTypeToFhirSpecMap.put(
+                                fhirType, dataTypeConfig.getFhirComplexTypeConfig());
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException(
-                            "Unexpected type kind: " + dataType.getKind().name());
+                            "Unexpected type kind: " + dataTypeConfig.getKind().name());
             }
         }
     }
@@ -106,6 +136,26 @@ public class FhirSpecProvider {
         if (config == null) {
             throw new IllegalArgumentException(
                     "Could not find config for resource type " + resourceType);
+        }
+        return config;
+    }
+
+    /**
+     * Returns the {@link FhirComplexTypeConfig} for the provided {@link R4FhirType}
+     *
+     * @return the {@link FhirComplexTypeConfig} for the type or {@code null}, if the type is a
+     *     complex type that should not be validated, such as "Resource" or "BackboneElement".
+     * @throws IllegalArgumentException if the type needs validation and no config exists for the
+     *     specified type, for example if a primitive type is provided.
+     */
+    public @Nullable FhirComplexTypeConfig getFhirComplexTypeConfig(R4FhirType fhirType) {
+        if (FHIR_COMPLEX_TYPES_WITHOUT_CONFIG.contains(fhirType)) {
+            return null;
+        }
+        FhirComplexTypeConfig config = mFhirComplexTypeToFhirSpecMap.get(fhirType);
+        if (config == null) {
+            throw new IllegalArgumentException(
+                    "Could not find config for fhir type " + fhirType.name());
         }
         return config;
     }

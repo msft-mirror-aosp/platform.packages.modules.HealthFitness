@@ -290,9 +290,12 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.removePreferenceRecursively(MIGRATION_BANNER_PREFERENCE_KEY)
         preferenceScreen.removePreferenceRecursively(DATA_RESTORE_BANNER_PREFERENCE_KEY)
 
-        val (migrationUiState, dataRestoreUiState, _) = migrationRestoreState
+        val (migrationUiState, dataRestoreUiState, dataRestoreError) = migrationRestoreState
 
-        if (dataRestoreUiState == DataRestoreUiState.PENDING) {
+        if (
+            dataRestoreUiState == DataRestoreUiState.PENDING &&
+                dataRestoreError == MigrationRestoreState.DataRestoreUiError.ERROR_VERSION_DIFF
+        ) {
             preferenceScreen.addPreference(getDataRestorePendingBanner())
         } else if (
             migrationUiState in
