@@ -639,7 +639,7 @@
     <string name="spotting" msgid="1637175837078770520">"ಸ್ಪಾಟಿಂಗ್"</string>
     <string name="flow_spotting" msgid="832418664953780156">"ಸ್ಪಾಟಿಂಗ್"</string>
     <string name="flow_light" msgid="1937543318146228793">"ಕಡಿಮೆ ಫ್ಲೋ"</string>
-    <string name="flow_medium" msgid="3783688724668943154">"ಮಧ್ಯಮ ಫ್ಲೋ"</string>
+    <string name="flow_medium" msgid="3783688724668943154">"ಮೀಡಿಯಂ ಫ್ಲೋ"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"ಹೆಚ್ಚಿನ ಫ್ಲೋ"</string>
     <string name="flow_unknown" msgid="1634411759928572900">"ಫ್ಲೋ ಕುರಿತಾದ ಮಾಹಿತಿ ಇಲ್ಲ"</string>
     <string name="period_day" msgid="3821944462093965882">"ಒಟ್ಟು <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> ರಲ್ಲಿ <xliff:g id="DAY">%1$d</xliff:g> ನೇ ಪೀರಿಯಡ್ ದಿನ"</string>

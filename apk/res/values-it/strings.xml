@@ -642,7 +642,7 @@
     <string name="flow_medium" msgid="3783688724668943154">"Flusso medio"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Flusso abbondante"</string>
     <string name="flow_unknown" msgid="1634411759928572900">"Flusso sconosciuto"</string>
-    <string name="period_day" msgid="3821944462093965882">"Giorno del periodo mestruale <xliff:g id="DAY">%1$d</xliff:g> di <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <string name="period_day" msgid="3821944462093965882">"Giorno <xliff:g id="DAY">%1$d</xliff:g> di <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> delle mestruazioni"</string>
     <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Mestruazioni (1 giorno)}other{Mestruazioni (# giorni)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positivo"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativo"</string>
@@ -1142,18 +1142,18 @@
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Eliminare definitivamente tutti i dati relativi all\'app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Eliminare definitivamente i dati selezionati dell\'app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Eliminare definitivamente tutte le voci per il giorno <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Eliminare definitivamente tutte le voci per la settimana (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>)?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Eliminare definitivamente tutte le voci per la settimana <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Eliminare definitivamente tutte le voci per il giorno <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Eliminare definitivamente le voci selezionate per il giorno <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Eliminare definitivamente le voci selezionate per la settimana (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>)?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Eliminare definitivamente le voci selezionate per il giorno <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Eliminare definitivamente le voci selezionate per la settimana <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Eliminare definitivamente le voci selezionate per <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Eliminare definitivamente questa voce?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Eliminare definitivamente tutte le voci dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per il giorno <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Eliminare definitivamente tutte le voci dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per la settimana (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>)?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Eliminare definitivamente tutte le voci dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per il giorno <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Eliminare definitivamente le voci selezionate dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per il giorno <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Eliminare definitivamente le voci selezionate dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per la settimana (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>)?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Eliminare definitivamente le voci selezionate dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per il giorno <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Eliminare definitivamente le voci selezionate dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per la settimana <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Eliminare definitivamente le voci selezionate dell\'app <xliff:g id="APP_NAME">%1$s</xliff:g> per <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Eliminare definitivamente questa voce dell\'app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Eliminare definitivamente i dati di <xliff:g id="DATA_TYPE">%1$s</xliff:g> per <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
     <string name="on" msgid="8266542510798355807">"On"</string>

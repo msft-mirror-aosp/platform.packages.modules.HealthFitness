@@ -308,8 +308,8 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"pokojový pulz"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Čítanie údajov o pokojovom pulze"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Zapisovanie údajov o pokojovom pulze"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Teplota pokožky"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"teplota pokožky"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Teplota kože"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"teplota kože"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Čítať teplotu pokožky"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisovať teplotu pokožky"</string>
     <string name="browse_health_records_intro" msgid="1611488691642390523">"Týka sa to všetkých zdravotných záznamov, ktoré sú pridané do Dát o zdraví a synchronizované s nimi. Nemusí to byť váš úplný zdravotný záznam a nemusí obsahovať lekársky opis vašich zdravotných záznamov."</string>
@@ -431,9 +431,9 @@
     <string name="delete_app_data" msgid="6890357774873859952">"Odstrániť údaje aplikácie"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Neaktívne aplikácie"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Tieto aplikácie už nemajú prístup, ale stále majú údaje uložené v Dátach o zdraví"</string>
-    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> môže čítať údaje pridané po <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"Ak chcete spravovať ďalšie povolenia pre Android pre túto aplikáciu, prejdite do sekcie Nastavenia &gt; Aplikácie"</string>
-    <string name="manage_permissions_rationale" msgid="2780008055185441703">"V pravidlách ochrany súkromia príslušného vývojára zistíte, ako aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> narába s vašimi údajmi"</string>
+    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> môže čítať údaje pridané od <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>."</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"Ak chcete spravovať ďalšie povolenia pre Android pre túto aplikáciu, prejdite do sekcie Nastavenia &gt; Aplikácie."</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"V pravidlách ochrany súkromia príslušného vývojára zistíte, ako aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> narába s vašimi údajmi."</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Ak chcete spravovať ďalšie povolenia pre Android, ku ktorým má táto aplikácia prístup, prejdite do sekcie Nastavenia a potom Aplikácie"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Zobraziť pravidlá ochrany súkromia"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Použité v posledných 24 hodinách"</string>
@@ -997,7 +997,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Dáta o zdraví odstránia všetky údaje staršie ako # mesiac. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}few{Dáta o zdraví odstránia všetky údaje staršie ako # mesiace. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}many{Dáta o zdraví odstránia všetky údaje staršie ako # mesiaca. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}other{Dáta o zdraví odstránia všetky údaje staršie ako # mesiacov. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Údaje na odstránenie z týchto kategórií"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Hotovo"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiac budú odstránené.}few{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiace budú odstránené.}many{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiaca budú odstránené.}other{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiacov budú odstránené.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiac budú odstránené.}few{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiace budú odstránené.}many{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiaca budú odstránené.}other{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiacov budú odstránené.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automatické odstraňovanie je vypnuté"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Nastavenie priority aplikácií"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ak údaje typu <xliff:g id="DATA_TYPE">%s</xliff:g> pridá viacero aplikácií, Dáta o zdraví uprednostnia aplikáciu, ktorá je v tomto zozname najvyššie. Poradie aplikácií zmeníte presunutím."</string>
@@ -1112,7 +1112,7 @@
     <string name="last_week_header" msgid="5194448963146719382">"Minulý týždeň"</string>
     <string name="this_month_header" msgid="2452395268894677189">"Tento mesiac"</string>
     <string name="last_month_header" msgid="1359164797239191253">"Minulý mesiac"</string>
-    <string name="tab_entries" msgid="3402700951602029493">"Vstupy"</string>
+    <string name="tab_entries" msgid="3402700951602029493">"Záznamy"</string>
     <string name="tab_access" msgid="7818197975407243701">"Prístup"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Začnite používať Dáta o zdraví"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synchronizujte svoje prvé aplikácie a zdieľajte medzi nimi údaje o zdraví a kondícii"</string>

@@ -184,8 +184,8 @@
     <string name="steps_lowercase_label" msgid="706153549312838582">"langkah"</string>
     <string name="steps_read_content_description" msgid="7839297670092769964">"Baca langkah"</string>
     <string name="steps_write_content_description" msgid="6360223825799711659">"Tulis langkah"</string>
-    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"Total kalori yang dibakar"</string>
-    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"total kalori yang dibakar"</string>
+    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"Total kalori terbakar"</string>
+    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"total kalori terbakar"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Baca total kalori yang dibakar"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Tulis total kalori yang dibakar"</string>
     <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"VO2 maks"</string>

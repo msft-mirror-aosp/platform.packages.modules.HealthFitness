@@ -1146,7 +1146,7 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Xoá vĩnh viễn toàn bộ mục trong tháng <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Xoá vĩnh viễn các mục đã chọn trong ngày <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Xoá vĩnh viễn các mục đã chọn trong tuần từ ngày <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Xoá vĩnh viễn các mục đã chọn trong tháng <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Xoá vĩnh viễn các mục đã chọn trong <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Xoá vĩnh viễn mục này?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Xoá vĩnh viễn toàn bộ mục trên <xliff:g id="APP_NAME">%1$s</xliff:g> trong ngày <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Xoá vĩnh viễn toàn bộ mục trên <xliff:g id="APP_NAME">%1$s</xliff:g> trong tuần từ ngày <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>

@@ -593,7 +593,7 @@
     <string name="delete_dialog_success_title" msgid="900884533930984889">"S\'han suprimit les dades de Salut connectada"</string>
     <string name="delete_dialog_success_message" msgid="7454086333205881294">"Si vols suprimir completament les dades de les aplicacions connectades, comprova totes les aplicacions on pot haver-hi desades les teves dades."</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"Fet"</string>
-    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Consulta les aplicacions connectades"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Mostra les apps connectades"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"S\'estan suprimint les dades"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"No s\'han pogut suprimir les dades"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"S\'ha produït un error i Salut connectada no ha pogut suprimir les dades"</string>
@@ -1152,8 +1152,8 @@
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Vols suprimir permanentment totes les entrades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de la setmana <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Vols suprimir permanentment totes les entrades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Vols suprimir permanentment les entrades seleccionades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> del dia <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vols suprimir permanentment les entrades seleccionades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de la setmana <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vols suprimir permanentment les entrades seleccionades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vols suprimir permanentment les entrades seleccionades de <xliff:g id="APP_NAME">%1$s</xliff:g> de la setmana <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vols suprimir permanentment les entrades seleccionades de <xliff:g id="APP_NAME">%1$s</xliff:g> de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vols suprimir permanentment aquesta entrada de l\'aplicació <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Vols suprimir permanentment les dades de <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
     <string name="on" msgid="8266542510798355807">"Activat"</string>
