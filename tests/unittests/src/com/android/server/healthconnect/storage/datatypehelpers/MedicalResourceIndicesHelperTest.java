@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
@@ -31,13 +31,17 @@ import static com.google.common.truth.Truth.assertThat;
 import android.content.ContentValues;
 import android.util.Pair;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collections;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class MedicalResourceIndicesHelperTest {
     @Test
     public void getCreateTableRequest_correctResult() {
@@ -62,11 +66,11 @@ public class MedicalResourceIndicesHelperTest {
         long rowId = 1L;
         ContentValues contentValues =
                 MedicalResourceIndicesHelper.getContentValues(
-                        rowId, MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+                        rowId, MEDICAL_RESOURCE_TYPE_VACCINES);
 
         assertThat(contentValues.get(getMedicalResourceTypeColumnName()))
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
         assertThat(contentValues.get(MedicalResourceIndicesHelper.getParentColumnReference()))
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
     }
 }

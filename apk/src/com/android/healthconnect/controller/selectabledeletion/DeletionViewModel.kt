@@ -25,6 +25,7 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionType.Dele
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteEntriesFromApp
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypesFromApp
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteInactiveAppData
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
@@ -47,6 +48,9 @@ constructor(
     companion object {
         private const val TAG = "DeletionViewModel"
     }
+
+    // Artificial delay for reloads, to give enough time for the deletion task to end
+    private val defaultDelay = 2000L
 
     private lateinit var deletionType: DeletionType
 
@@ -85,44 +89,56 @@ constructor(
     val inactiveAppsReloadNeeded: LiveData<Boolean>
         get() = _inactiveAppsReloadNeeded
 
+    var removePermissions = false
+
     fun delete() {
         viewModelScope.launch {
             _deletionProgress.postValue(DeletionProgress.STARTED)
+            val currentDeletionType = deletionType
             try {
                 _deletionProgress.postValue(DeletionProgress.PROGRESS_INDICATOR_CAN_START)
 
-                when (deletionType) {
+                when (currentDeletionType) {
                     is DeleteHealthPermissionTypes -> {
-                        deletePermissionTypesUseCase.invoke(
-                            deletionType as DeleteHealthPermissionTypes
-                        )
+                        deletePermissionTypesUseCase.invoke(currentDeletionType)
+                        delay(defaultDelay)
                         _permissionTypesReloadNeeded.postValue(true)
                     }
+
                     is DeleteEntries -> {
-                        deleteEntriesUseCase.invoke(deletionType as DeleteEntries)
+                        deleteEntriesUseCase.invoke(currentDeletionType)
+                        delay(defaultDelay)
                         _entriesReloadNeeded.postValue(true)
                     }
+
                     is DeleteHealthPermissionTypesFromApp -> {
                         deletePermissionTypesFromAppUseCase.invoke(
-                            deletionType as DeleteHealthPermissionTypesFromApp
+                            currentDeletionType.packageName,
+                            currentDeletionType.healthPermissionTypes,
+                            removePermissions,
                         )
+                        delay(defaultDelay)
                         _appPermissionTypesReloadNeeded.postValue(true)
                     }
+
                     is DeleteEntriesFromApp -> {
-                        deleteEntriesUseCase.invoke(
-                            (deletionType as DeleteEntriesFromApp).toDeleteEntries()
-                        )
+                        deleteEntriesUseCase.invoke(currentDeletionType.toDeleteEntries())
+                        delay(defaultDelay)
                         _appEntriesReloadNeeded.postValue(true)
                     }
+
                     is DeleteAppData -> {
-                        deleteAppDataUseCase.invoke((deletionType as DeleteAppData))
+                        deleteAppDataUseCase.invoke(currentDeletionType)
+                        delay(defaultDelay)
                         _connectedAppsReloadNeeded.postValue(true)
                     }
-                    is DeletionType.DeleteInactiveAppData -> {
+
+                    is DeleteInactiveAppData -> {
                         deletePermissionTypesFromAppUseCase.invoke(
-                            (deletionType as DeletionType.DeleteInactiveAppData)
-                                .toDeleteHealthPermissionTypesFromApp()
+                            currentDeletionType.packageName,
+                            setOf(currentDeletionType.healthPermissionType),
                         )
+                        delay(defaultDelay)
                         _inactiveAppsReloadNeeded.postValue(true)
                     }
                 }

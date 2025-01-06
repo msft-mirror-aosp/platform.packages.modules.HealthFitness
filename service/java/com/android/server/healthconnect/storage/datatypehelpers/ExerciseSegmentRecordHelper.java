@@ -85,7 +85,7 @@ public class ExerciseSegmentRecordHelper {
 
         segmentsSet.add(
                 new ExerciseSegmentInternal()
-                        .setStarTime(getCursorLong(cursor, EXERCISE_SEGMENT_START_TIME))
+                        .setStartTime(getCursorLong(cursor, EXERCISE_SEGMENT_START_TIME))
                         .setEndTime(getCursorLong(cursor, EXERCISE_SEGMENT_END_TIME))
                         .setSegmentType(getCursorInt(cursor, EXERCISE_SEGMENT_TYPE))
                         .setRepetitionsCount(

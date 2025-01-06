@@ -16,8 +16,16 @@ package com.android.healthconnect.controller.shared.recyclerview
 import android.content.res.Resources
 import android.view.View
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.utils.logging.ElementName
+import com.android.healthconnect.controller.utils.logging.EntriesElement
 
 interface DeletionViewBinder<T, V : View> : ViewBinder<T, V> {
+    val logNameWithCheckbox: ElementName
+        get() = EntriesElement.ENTRY_BUTTON_WITH_CHECKBOX
+
+    val logNameWithoutCheckbox: ElementName
+        get() = EntriesElement.ENTRY_BUTTON_NO_CHECKBOX
+
     /** Populate a view with data. */
     fun bind(
         view: View,
@@ -36,7 +44,7 @@ interface DeletionViewBinder<T, V : View> : ViewBinder<T, V> {
         isDeletionState: Boolean,
         isChecked: Boolean,
     ): String {
-        val separator = ", "
+        val separator = resources.getString(R.string.separator)
         val checkedState =
             if (isDeletionState) {
                 if (isChecked) {

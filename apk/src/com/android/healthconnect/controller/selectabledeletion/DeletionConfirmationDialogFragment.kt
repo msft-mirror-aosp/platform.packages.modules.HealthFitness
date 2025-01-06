@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.selectabledeletion
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
@@ -39,12 +40,15 @@ import javax.inject.Inject
 class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragment() {
     @Inject lateinit var timeSource: TimeSource
     private val viewModel: DeletionViewModel by activityViewModels()
+    // TODO (b/384028690) replace after pagination implementation
+    private val PAGE_SIZE = 1000
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view: View = layoutInflater.inflate(R.layout.dialog_custom_layout, null)
         val title: TextView = view.findViewById(R.id.dialog_title)
         val message: TextView = view.findViewById(R.id.dialog_custom_message)
         val icon: ImageView = view.findViewById(R.id.dialog_icon)
+        val checkbox: CheckBox = view.findViewById(R.id.dialog_checkbox)
         val iconDrawable = AttributeResolver.getNullableDrawable(view.context, R.attr.deleteIcon)
 
         title.text = buildTitle()
@@ -54,6 +58,8 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
             icon.visibility = View.VISIBLE
         }
 
+        setupCheckbox(checkbox)
+
         val alertDialogBuilder =
             AlertDialogBuilder(
                     this,
@@ -62,9 +68,9 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 .setView(view)
                 .setPositiveButton(
                     R.string.confirming_question_delete_button,
-                    // TODO: create new log elements for new IA dialogs
                     DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON,
                 ) { _, _ ->
+                    viewModel.removePermissions = checkbox.isChecked
                     setFragmentResult(CONFIRMATION_KEY, Bundle())
                 }
                 .setNeutralButton(
@@ -73,6 +79,22 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 )
 
         return alertDialogBuilder.create()
+    }
+
+    private fun setupCheckbox(checkBox: CheckBox) {
+        val deletionType = viewModel.getDeletionType()
+        if (deletionType is DeletionType.DeleteHealthPermissionTypesFromApp) {
+            if (deletionType.healthPermissionTypes.size == deletionType.totalPermissionTypes) {
+                checkBox.visibility = View.VISIBLE
+            } else {
+                checkBox.visibility = View.GONE
+            }
+            val appName = deletionType.appName
+            checkBox.text =
+                getString(R.string.confirming_question_app_remove_all_permissions, appName)
+        } else {
+            checkBox.visibility = View.GONE
+        }
     }
 
     private fun buildTitle(): String {
@@ -107,7 +129,9 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         false,
                     )
                 if (selectedPeriod == DateNavigationPeriod.PERIOD_DAY) {
-                    if (deletionMapSize < deletionType.totalEntries) {
+                    if (
+                        deletionMapSize < deletionType.totalEntries || deletionMapSize == PAGE_SIZE
+                    ) {
                         getString(
                             R.string.some_entries_selected_day_deletion_confirmation_dialog,
                             displayString,
@@ -119,7 +143,9 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         )
                     }
                 } else if (selectedPeriod == DateNavigationPeriod.PERIOD_WEEK) {
-                    if (deletionMapSize < deletionType.totalEntries) {
+                    if (
+                        deletionMapSize < deletionType.totalEntries || deletionMapSize == PAGE_SIZE
+                    ) {
                         getString(
                             R.string.some_entries_selected_week_deletion_confirmation_dialog,
                             displayString,
@@ -131,7 +157,9 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         )
                     }
                 } else {
-                    if (deletionMapSize < deletionType.totalEntries) {
+                    if (
+                        deletionMapSize < deletionType.totalEntries || deletionMapSize == PAGE_SIZE
+                    ) {
                         getString(
                             R.string.some_entries_selected_month_deletion_confirmation_dialog,
                             displayString,
@@ -165,7 +193,9 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                     )
 
                 if (selectedPeriod == DateNavigationPeriod.PERIOD_DAY) {
-                    if (deletionMapSize < deletionType.totalEntries) {
+                    if (
+                        deletionMapSize < deletionType.totalEntries || deletionMapSize == PAGE_SIZE
+                    ) {
                         getString(
                             R.string.some_app_entries_selected_day_deletion_confirmation_dialog,
                             appName,
@@ -179,7 +209,9 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         )
                     }
                 } else if (selectedPeriod == DateNavigationPeriod.PERIOD_WEEK) {
-                    if (deletionMapSize < deletionType.totalEntries) {
+                    if (
+                        deletionMapSize < deletionType.totalEntries || deletionMapSize == PAGE_SIZE
+                    ) {
                         getString(
                             R.string.some_app_entries_selected_week_deletion_confirmation_dialog,
                             appName,
@@ -193,7 +225,9 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         )
                     }
                 } else {
-                    if (deletionMapSize < deletionType.totalEntries) {
+                    if (
+                        deletionMapSize < deletionType.totalEntries || deletionMapSize == PAGE_SIZE
+                    ) {
                         getString(
                             R.string.some_app_entries_selected_month_deletion_confirmation_dialog,
                             appName,

@@ -16,9 +16,7 @@
 package com.android.healthconnect.controller.permissions.request
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
@@ -34,7 +32,7 @@ import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
@@ -56,8 +54,6 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         private const val HEADER = "request_permissions_header"
     }
 
-    // TODO(b/342159144): Update page name.
-    private val pageName = PageName.UNKNOWN_PAGE
     @Inject lateinit var logger: HealthConnectLogger
 
     private val viewModel: RequestPermissionViewModel by activityViewModels()
@@ -82,31 +78,14 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         viewModel.updateMedicalPermissions(grant)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        logger.setPageId(pageName)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        logger.setPageId(pageName)
-        logger.logPageImpression()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        logger.setPageId(pageName)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    init {
+        this.setPageName(PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.permissions_screen, rootKey)
-        // TODO(b/342159144): Update visual elements.
-        allowAllPreference.logNameActive = ErrorPageElement.UNKNOWN_ELEMENT
-        allowAllPreference.logNameInactive = ErrorPageElement.UNKNOWN_ELEMENT
+        allowAllPreference.logNameActive = PermissionsElement.ALLOW_ALL_SWITCH
+        allowAllPreference.logNameInactive = PermissionsElement.ALLOW_ALL_SWITCH
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -175,8 +154,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
     }
 
     private fun setupAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        logger.logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
 
         if (!viewModel.isMedicalPermissionRequestConcluded()) {
             viewModel.grantedMedicalPermissions.observe(viewLifecycleOwner) { grantedPermissions ->
@@ -191,14 +169,12 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
             // access date. We can't request all at once because we might accidentally
             // set the data type and additional permissions USER_FIXED
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
         }
     }
 
     private fun setupDontAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        logger.logImpression(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
 
         getDontAllowButton().setOnClickListener {
             viewModel.updateMedicalPermissions(false)
@@ -208,8 +184,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
             // access date. We can't request all at once because we might accidentally
             // set the data type and additional permissions USER_FIXED
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
         }
     }
 
@@ -229,7 +204,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         writePermissionCategory.removeAll()
 
         permissionsList
-            .sortedBy {
+            .sortByLocale {
                 requireContext()
                     .getString(
                         MedicalPermissionStrings.fromPermissionType(it.medicalPermissionType)

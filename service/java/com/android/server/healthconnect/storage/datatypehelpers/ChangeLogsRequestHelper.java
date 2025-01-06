@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
@@ -56,8 +57,9 @@ import java.util.List;
  * @hide
  */
 public final class ChangeLogsRequestHelper extends DatabaseHelper {
+    public static final String TABLE_NAME = "change_log_request_table";
     static final int DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS = 32;
-    private static final String TABLE_NAME = "change_log_request_table";
+    static final int NEW_CHANGE_LOG_TIME_PERIOD_IN_DAYS = 90;
     private static final String PACKAGES_TO_FILTERS_COLUMN_NAME = "packages_to_filter";
     private static final String RECORD_TYPES_COLUMN_NAME = "record_types";
     private static final String PACKAGE_NAME_COLUMN_NAME = "package_name";
@@ -66,7 +68,9 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
 
     private final TransactionManager mTransactionManager;
 
-    public ChangeLogsRequestHelper(TransactionManager transactionManager) {
+    public ChangeLogsRequestHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 
@@ -140,13 +144,15 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
     }
 
     public static DeleteTableRequest getDeleteRequestForAutoDelete() {
+        int changeLogTimePeriod =
+                cloudBackupAndRestore()
+                        ? NEW_CHANGE_LOG_TIME_PERIOD_IN_DAYS
+                        : DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS;
         return new DeleteTableRequest(TABLE_NAME)
                 .setTimeFilter(
                         TIME_COLUMN_NAME,
                         Instant.EPOCH.toEpochMilli(),
-                        Instant.now()
-                                .minus(DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
-                                .toEpochMilli());
+                        Instant.now().minus(changeLogTimePeriod, ChronoUnit.DAYS).toEpochMilli());
     }
 
     private static List<Pair<String, String>> getColumnInfo() {

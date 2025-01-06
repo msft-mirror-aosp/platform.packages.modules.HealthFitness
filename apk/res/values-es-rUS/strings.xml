@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Ayer"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Leer: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrar permisos"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Actividad"</string>
@@ -82,7 +82,7 @@
     <string name="can_read" msgid="4568261079308309564">"Acceso de lectura a <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Acceso de escritura a <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Apps inactivas"</string>
-    <string name="inactive_apps_message" msgid="8335803540719022910">"Estas apps ya no podrán interactuar con datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, pero seguirán teniendo datos almacenados en Health Connect"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Estas apps ya no tendrán acceso de lectura ni de escritura a datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, pero seguirán teniendo datos almacenados en Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Las apps ya no pueden leer ni escribir datos de <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, y no hay datos almacenados de <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> en Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Estos datos incluyen información como el tiempo de actividad, el tipo de ejercicio, las vueltas, las repeticiones, las sesiones y las brazadas"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Estos datos incluyen información como las fases y las sesiones de sueño"</string>
@@ -200,8 +200,8 @@
     <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensidad de la actividad"</string>
     <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Medir intensidad de la actividad"</string>
     <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Escribir intensidad de la actividad"</string>
-    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Tasa metabólica basal"</string>
-    <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"tasa metabólica basal"</string>
+    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Tasa metabólica basal (BMR)"</string>
+    <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"tasa metabólica basal (BMR)"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Medir tasa metabólica basal"</string>
     <string name="basal_metabolic_rate_write_content_description" msgid="4246137679868953443">"Registrar tasa metabólica basal"</string>
     <string name="body_fat_uppercase_label" msgid="4618860235119416449">"Grasa corporal"</string>
@@ -312,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura cutánea"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lee la temperatura cutánea"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escribe la temperatura cutánea"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Esto incluye todos los registros de salud que se sincronizaron y agregaron a Health Connect. Es posible que no se trate de tu historial médico completo y no incluya una descripción médica de tus registros de salud."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Todos los registros de salud"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"todos los registros de salud"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Escribir todos los registros de salud"</string>
@@ -321,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Condiciones"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"condiciones"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Leer condiciones"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vacunas"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vacunas"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Leer vacunas"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vacunas"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vacunas"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Leer vacunas"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Resultados de laboratorio"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"resultados de laboratorio"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Leer resultados de laboratorio"</string>
@@ -373,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si otorgas acceso, la app podrá leer y escribir datos como alergias, resultados de laboratorio, vacunas y más\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Si otorgas acceso, la app podrá leer datos como alergias, resultados de laboratorio, vacunas y más\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Información sobre los registros de salud"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Datos para compartir"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Los datos para compartir incluyen"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Si lo permites, <xliff:g id="APP_NAME">%1$s</xliff:g> podrá compartir tus registros de salud con Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sincroniza los registros de salud de diferentes apps y fuentes para tenerlos en un solo lugar"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"¿Quieres quitar todos los permisos?"</string>
@@ -425,14 +426,14 @@
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Ninguna de las apps podrá acceder a Health Connect ni agregar datos nuevos en ella. No se borrarán los datos existentes.\n\nEsto no afecta los otros permisos que puede tener esta app, como a la ubicación, la cámara o el micrófono."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Quitar todo"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Administrar app"</string>
-    <string name="see_app_data" msgid="3951030076195119476">"Ver datos de app"</string>
+    <string name="see_app_data" msgid="3951030076195119476">"Ver datos de la app"</string>
     <string name="remove_access_for_this_app" msgid="7701101420310711833">"Quitar el acceso de esta app"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Borrar datos de la app"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Apps inactivas"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Estas apps ya no tienen acceso, pero todavía tienen datos almacenados en Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> puede leer datos agregados después del <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Para administrar otros permisos de Android a los que esta app puede acceder, ve a Configuración &gt; Apps"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Los datos que compartas con <xliff:g id="APP_NAME">%1$s</xliff:g> están sujetos a la política de privacidad de esa app"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Consulta la política de privacidad del desarrollador para entender cómo <xliff:g id="APP_NAME">%1$s</xliff:g> maneja tus datos"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Para administrar otros permisos de Android a los que esta app puede acceder, ve a Configuración y, luego, presiona Apps"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Leer la política de privacidad"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Se accedió en las últimas 24 horas"</string>
@@ -468,7 +469,7 @@
     <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Última exportación: hace 1 hora}other{Última exportación hace # horas}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"Última exportación: ninguna"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
-    <string name="scheduled_export" msgid="8737660963687364370">"Se programó la exportación"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Exportación programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restablece datos desde un archivo exportado anteriormente"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"No se pudieron restablecer los datos"</string>
@@ -789,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Música"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Otro"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Sin guía"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Moderada"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Vigorosa"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -994,8 +997,8 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect borrará todos los datos que tengan más de # mes. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}other{Health Connect borrará todos los datos que tengan más de # meses. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Datos que se borrarán de las siguientes categorías"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Listo"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{La eliminación automática está activada. Se borrarán los datos de hace más de # mes.}other{La eliminación automática está activada. Se borrarán los datos de hace más de # meses.}}"</string>
-    <string name="auto_delete_off_toast" msgid="6530926709108821768">"La eliminación automática está desactivada"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Eliminación automática activada. Se borrarán los datos de hace más de # mes}other{Eliminación automática activada. Se borrarán los datos de hace más de # meses}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Eliminación automática desactivada"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Establecer prioridad de apps"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Si más de una app agrega datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, Health Connect priorizará la que esté más arriba en esta lista. Arrastra las apps para volver a ordenarlas."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Guardar"</string>
@@ -1041,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integración en curso"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect se está integrando al sistema Android.\n\nEl proceso puede demorar unos minutos mientras se transfieren tus datos y permisos."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"No cierres la app hasta que recibas una notificación que te indique que se completó el proceso."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Integración con Health Connect en curso"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Debes actualizar la app"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect se está integrando al sistema Android para que puedas acceder directamente desde la configuración."</string>
     <string name="update_button" msgid="4544529019832009496">"Actualizar"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Inicia esta actualización para que Health Connect pueda continuar integrándose con la configuración del sistema"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Actualizar ahora"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Actualización del sistema necesaria"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Antes de continuar, actualiza el sistema de tu teléfono."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Si ya actualizaste el sistema del teléfono, intenta reiniciarlo para continuar con la integración"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Debes actualizar Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Antes de continuar, actualiza la app de Health Connect a su última versión."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Necesitas más espacio"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect necesita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> de espacio de almacenamiento en tu teléfono para continuar con la integración.\n\nLibera espacio en el teléfono y vuelve a intentar."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Reintentar"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Liberar espacio"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Necesitas más espacio"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect necesita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> de espacio de almacenamiento en tu teléfono para continuar con la integración."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Se pausó la integración"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"La app de Health Connect se cerró durante la integración con el sistema Android.\n\nHaz clic en Reanudar para abrir nuevamente la app y continuar con la transferencia de datos y permisos."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Para preservar los datos de Health Connect, completa este proceso en un plazo de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1068,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Presiona para continuar integrando Health Connect con el sistema Android. Para preservar tus datos, completa el proceso en un plazo de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Presiona para continuar integrando Health Connect con el sistema Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Continuar"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reanuda la integración con Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Para preservar tus datos, completa el proceso en un plazo de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Se debe actualizar la app"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> debe actualizarse para seguir sincronizándose con Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Algunas apps deben actualizarse para seguir sincronizándose con Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> debe actualizarse para seguir sincronizándose con Health Connect Es posible que no haya actualizaciones disponibles para todas las apps."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Algunas apps deben actualizarse para seguir sincronizándose con Health Connect. Es posible que no haya actualizaciones disponibles para todas las apps."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Comprueba si hay actualizaciones"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Más información"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integración con Health Connect"</string>
@@ -1087,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"La integración con Health Connect no se completó"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Recibirás una notificación cuando vuelva a estar disponible."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Entendido"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"La integración con Health Connect no se completó"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Leer más"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Se completó la integración con Health Connect"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Abrir"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novedades"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Ya puedes acceder a Health Connect directamente desde la configuración. Desinstala la app de Health Connect en cualquier momento para liberar espacio de almacenamiento."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Entendido"</string>
@@ -1110,7 +1102,7 @@
     <string name="data_sources_add_app" msgid="319926596123692514">"Agrega una app"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Editar fuentes de app"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Opción predeterminada del dispositivo"</string>
-    <string name="app_data_title" msgid="6499967982291000837">"Datos de app"</string>
+    <string name="app_data_title" msgid="6499967982291000837">"Datos de la app"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"Aquí se mostrarán datos de <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="all_data_no_data_footer" msgid="2553443887019153340">"Aquí se mostrará la información de apps con acceso a Health Connect"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Día"</string>
@@ -1131,26 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Consulta las apps compatibles"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Busca más apps para sincronizar con <xliff:g id="APP_NAME">%s</xliff:g> a través de Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Ver en la tienda de aplicaciones"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Establece un bloqueo de pantalla"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Para proteger mejor tus datos de salud, establece un PIN, un patrón o una contraseña para este dispositivo"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Configurar bloqueo de pantalla"</string>
     <string name="select_all" msgid="837499881590001166">"Seleccionar todo"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Las apps conectadas ya no podrán leer estos datos de Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Marcado"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Sin marcar"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Ruta de mapa de ejercicio disponible"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Día siguiente"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Semana siguiente"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mes siguiente"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Día anterior"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Semana anterior"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mes anterior"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"¿Quieres borrar de forma permanente todos los datos?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"¿Quieres borrar de forma permanente los datos seleccionados?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"¿Quieres borrar de forma permanente todos los datos de <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1160,14 +1146,14 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"¿Quieres borrar de forma permanente todas las entradas del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"¿Quieres borrar de forma permanente las entradas seleccionadas del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"¿Quieres borrar de forma permanente las entradas seleccionadas de la semana del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"¿Quieres borrar de forma permanente las entradas seleccionadas del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"¿Quieres borrar de forma permanente esta entrada?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"¿Quieres borrar de forma permanente todas las entradas de <xliff:g id="APP_NAME">%1$s</xliff:g> del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"¿Quieres borrar de forma permanente todas las entradas de <xliff:g id="APP_NAME">%1$s</xliff:g> de la semana del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"¿Quieres borrar de forma permanente todas las entradas de <xliff:g id="APP_NAME">%1$s</xliff:g> del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="APP_NAME">%1$s</xliff:g> del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="APP_NAME">%1$s</xliff:g> de la semana del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="APP_NAME">%1$s</xliff:g> del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"¿Borrar definitivamente las entradas seleccionadas de <xliff:g id="APP_NAME">%1$s</xliff:g> de la semana del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="APP_NAME">%1$s</xliff:g> de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"¿Quieres borrar de forma permanente esta entrada de <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"¿Quieres borrar de forma permanente los datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
     <string name="on" msgid="8266542510798355807">"Activado"</string>
@@ -1175,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Último acceso: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Último acceso: ayer a la(s) <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Último acceso: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> a la(s) <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Permitir todo el tiempo"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Permitir selección"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Mientras la app está en uso"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Rechazar todos"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a datos antiguos de actividad física y bienestar?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> solicitó acceso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nElige permitir el control total o individual de los datos."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Actividad física y bienestar"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"todo el tiempo"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"mientras está en uso"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Todo el tiempo"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Mientras está en uso"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> puede acceder a todos tus datos de actividad física y bienestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Se permite el acceso"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Permisos de lectura"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Estos permisos le otorgan a <xliff:g id="APP_NAME">%1$s</xliff:g> acceso a los datos de los sensores de tu dispositivo."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Apps con permiso: <xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"No hay apps que soliciten"</string>
+    <string name="allowed" msgid="4158456017482263737">"Permitido"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"No se permite"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Las apps que tienen este permiso pueden acceder a los datos de <xliff:g id="DATA_TYPE">%s</xliff:g> de los sensores de tu dispositivo."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quieres quitar el acceso a <xliff:g id="DATA_TYPE">%s</xliff:g> para todas las apps de tu reloj?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificación"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Marca de tachado"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Actualmente, <xliff:g id="APP_NAME">%1$s</xliff:g> puede acceder a los datos de actividad física y bienestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos de actividad física y bienestar todo el tiempo?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> tiene acceso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Administrar permisos de salud y bienestar"</string>
 </resources>

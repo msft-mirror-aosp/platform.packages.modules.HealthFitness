@@ -19,19 +19,27 @@ package com.android.server.healthconnect.storage;
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
-import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.HEART_RATE_RECORD_BPM_AVG;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
+import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
@@ -42,35 +50,38 @@ import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
-import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
-import android.os.Environment;
+import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
+import android.util.ArrayMap;
 import android.util.Pair;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
-import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
-import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -78,16 +89,15 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class TransactionManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
 
@@ -104,14 +114,9 @@ public class TransactionManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new com.android.server.healthconnect.storage.datatypehelpers
-                    .HealthConnectDatabaseTestRule();
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -123,30 +128,24 @@ public class TransactionManagerTest {
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
-    private InternalHealthConnectMappings mInternalHealthConnectMappings;
-    private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private ReadAccessLogsHelper mReadAccessLogsHelper;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        StorageContext context = mHealthConnectDatabaseTestRule.getDatabaseContext();
-
-        DeviceInfoHelper.resetInstanceForTest();
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
-        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
-        mHealthDataCategoryPriorityHelper =
-                healthConnectInjector.getHealthDataCategoryPriorityHelper();
+        mReadAccessLogsHelper = spy(healthConnectInjector.getReadAccessLogsHelper());
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
 
     @Test
@@ -173,6 +172,7 @@ public class TransactionManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
@@ -204,6 +204,7 @@ public class TransactionManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
@@ -228,6 +229,7 @@ public class TransactionManagerTest {
                 mAppInfoHelper,
                 mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ false);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
@@ -257,6 +259,7 @@ public class TransactionManagerTest {
                                         mAppInfoHelper,
                                         mAccessLogsHelper,
                                         mDeviceInfoHelper,
+                                        mReadAccessLogsHelper,
                                         /* shouldRecordAccessLog= */ false));
         assertThat(thrown).hasMessageThat().contains("Expect read by id request");
     }
@@ -291,6 +294,7 @@ public class TransactionManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         List<RecordInternal<?>> records = result.first;
         assertThat(records).hasSize(1);
@@ -312,6 +316,7 @@ public class TransactionManagerTest {
                 mAppInfoHelper,
                 mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ true);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
@@ -338,6 +343,7 @@ public class TransactionManagerTest {
                 mAppInfoHelper,
                 mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ true);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
@@ -363,6 +369,7 @@ public class TransactionManagerTest {
                                         mAppInfoHelper,
                                         mAccessLogsHelper,
                                         mDeviceInfoHelper,
+                                        mReadAccessLogsHelper,
                                         /* shouldRecordAccessLog= */ false));
         assertThat(thrown).hasMessageThat().contains("Expect read by filter request");
     }
@@ -378,7 +385,7 @@ public class TransactionManagerTest {
                 new DeleteUsingFiltersRequestParcel(
                         new RecordIdFiltersParcel(ids), TEST_PACKAGE_NAME);
         assertThat(parcel.usesIdFilters()).isTrue();
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -402,7 +409,7 @@ public class TransactionManagerTest {
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
         assertThat(parcel.usesIdFilters()).isFalse();
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -427,7 +434,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -449,7 +456,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ true,
                 mAccessLogsHelper);
@@ -475,7 +482,7 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(
+        mTransactionManager.deleteAllRecords(
                 new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
@@ -485,48 +492,398 @@ public class TransactionManagerTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_ADD_MISSING_ACCESS_LOGS)
-    public void populateWithAggregation_accessLogRecorded() {
-        RecordHelper<?> helper =
-                mInternalHealthConnectMappings.getRecordHelper(RECORD_TYPE_HEART_RATE);
-        AggregationType<?> aggregationType =
-                AggregationTypeIdMapper.getInstance()
-                        .getAggregationTypeFor(HEART_RATE_RECORD_BPM_AVG);
-        AggregateTableRequest request =
-                helper.getAggregateTableRequest(
-                        aggregationType,
-                        TEST_PACKAGE_NAME,
-                        /* packageFilters= */ List.of(),
-                        mHealthDataCategoryPriorityHelper,
-                        mInternalHealthConnectMappings,
-                        mAppInfoHelper,
-                        mTransactionManager,
-                        /* startTime= */ 123,
-                        /* endTime= */ 456,
-                        /* startDateAccess= */ 0,
-                        /* useLocalTime= */ false);
+    public void insertAllRecords_noChangeLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(
+                                createStepsRecord(500, 750, 100)
+                                        .setPackageName(TEST_PACKAGE_NAME)
+                                        .setUuid(UUID.randomUUID())),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        mTransactionManager.insertOrIgnoreAllOnConflict(
+                upsertTransactionRequest.getUpsertRequests());
 
-        // We have to set group by for single aggregation here because in the
-        // AggregateDataRequestParcel this is set and the implementation relies on it
-        request.setGroupBy(
-                TIME_COLUMN_NAME,
-                /* period= */ null,
-                Duration.ofMillis(456 - 123),
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.ofEpochMilli(123))
-                        .setEndTime(Instant.ofEpochMilli(456))
-                        .build());
-        mTransactionManager.populateWithAggregation(
-                request,
-                TEST_PACKAGE_NAME,
-                Set.of(RECORD_TYPE_HEART_RATE),
-                mAccessLogsHelper,
-                /* shouldRecordAccessLog= */ true);
+        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
+                .isEqualTo(0);
+    }
+
+    @Test
+    public void insertAllRecordsForRestore_addChangeLogs_withNoAccessLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForRestore(
+                        List.of(
+                                createStepsRecord(500, 750, 100)
+                                        .setPackageName(TEST_PACKAGE_NAME)
+                                        .setUuid(UUID.randomUUID())),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertTransactionRequest);
+
+        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
+                .isEqualTo(1);
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void insertAllRecords_addAccessLogs() {
+        UpsertTransactionRequest upsertTransactionRequest =
+                UpsertTransactionRequest.createForInsert(
+                        TEST_PACKAGE_NAME /* packageName */,
+                        List.of(createStepsRecord(500, 750, 100).setPackageName(TEST_PACKAGE_NAME)),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper,
+                        new ArrayMap<>());
+        mTransactionManager.insertAllRecords(
+                mAppInfoHelper, mAccessLogsHelper, upsertTransactionRequest);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
-        AccessLog log = result.get(0);
-        assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
-        assertThat(log.getRecordTypes()).containsExactly(HeartRateRecord.class);
-        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+        assertThat(result).isNotEmpty();
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsEnabled_readRecordsById_addReadAccessLog() {
+        String readerPackage = "reader.package";
+        mTransactionTestUtils.insertApp(readerPackage);
+        String uuid =
+                mTransactionTestUtils
+                        .insertRecords(
+                                TEST_PACKAGE_NAME,
+                                createStepsRecord(
+                                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                                        Instant.now().toEpochMilli(),
+                                        Instant.now().toEpochMilli(),
+                                        100))
+                        .get(0);
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        readerPackage,
+                        ImmutableMap.of(
+                                RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))));
+
+        mTransactionManager.readRecordsByIds(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ true);
+
+        List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
+                mReadAccessLogsHelper.queryReadAccessLogs();
+        assertThat(readAccessLogs.size()).isEqualTo(1);
+        ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
+        assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
+        assertThat(readAccessLog.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
+        assertThat(readAccessLog.getDataType()).isEqualTo(RecordTypeIdentifier.RECORD_TYPE_STEPS);
+        assertThat(readAccessLog.getReaderPackage()).isEqualTo(readerPackage);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsEnabled_readSelfData_readRecordsById_doNotAddReadAccessLog() {
+        String readerPackage = "reader.package";
+        mTransactionTestUtils.insertApp(readerPackage);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                        Instant.now().toEpochMilli(),
+                        Instant.now().toEpochMilli(),
+                        100));
+        // TODO(b/366149374): Fix the read by uuid case and add is not reading self data test case
+        // Read by id requests are always reading self data. Clients are not allowed to read other
+        // apps' data by client id
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
+                                .addClientRecordId("id")
+                                .build()
+                                .toReadRecordsRequestParcel());
+
+        mTransactionManager.readRecordsByIds(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ true);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsEnabled_doNotRecordAccessLogs_readRecordsById_doNotAddReadAccessLog() {
+        String readerPackage = "reader.package";
+        mTransactionTestUtils.insertApp(readerPackage);
+        String uuid =
+                mTransactionTestUtils
+                        .insertRecords(
+                                TEST_PACKAGE_NAME,
+                                createStepsRecord(
+                                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                                        Instant.now().toEpochMilli(),
+                                        Instant.now().toEpochMilli(),
+                                        100))
+                        .get(0);
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        readerPackage,
+                        ImmutableMap.of(
+                                RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))));
+
+        mTransactionManager.readRecordsByIds(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ false);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
+    }
+
+    @Test
+    @DisableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsDisabled_readRecordsById_doNotAddReadAccessLog() {
+        String readerPackage = "reader.package";
+        mTransactionTestUtils.insertApp(readerPackage);
+        String uuid =
+                mTransactionTestUtils
+                        .insertRecords(
+                                TEST_PACKAGE_NAME,
+                                createStepsRecord(
+                                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                                        Instant.now().toEpochMilli(),
+                                        Instant.now().toEpochMilli(),
+                                        100))
+                        .get(0);
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        readerPackage,
+                        ImmutableMap.of(
+                                RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))));
+
+        mTransactionManager.readRecordsByIds(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ true);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsEnabled_readRecordsAndPageToken_addReadAccessLog() {
+        String readerPackage = "reader.package";
+        mTransactionTestUtils.insertApp(readerPackage);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                        /* startTimeMillis= */ Instant.now().minusSeconds(1000).toEpochMilli(),
+                        /* endTimeMillis= */ Instant.now().minusSeconds(500).toEpochMilli(),
+                        100));
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .setEndTime(Instant.now())
+                                        .build())
+                        .setPageSize(1)
+                        .build();
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        readerPackage, request.toReadRecordsRequestParcel());
+
+        mTransactionManager.readRecordsAndPageToken(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ true);
+
+        List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
+                mReadAccessLogsHelper.queryReadAccessLogs();
+        assertThat(readAccessLogs.size()).isEqualTo(1);
+        ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
+        assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
+        assertThat(readAccessLog.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
+        assertThat(readAccessLog.getDataType()).isEqualTo(RecordTypeIdentifier.RECORD_TYPE_STEPS);
+        assertThat(readAccessLog.getReaderPackage()).isEqualTo(readerPackage);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsEnabled_doNotRecordAccessLogs_readRecordsAndPageToken_doNotReadAccessLog() {
+        String readerPackage = "reader.package";
+        mTransactionTestUtils.insertApp(readerPackage);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                        Instant.now().minusMillis(1000).toEpochMilli(),
+                        Instant.now().minusMillis(500).toEpochMilli(),
+                        100));
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .setEndTime(Instant.now())
+                                        .build())
+                        .setPageSize(1)
+                        .build();
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        readerPackage, request.toReadRecordsRequestParcel());
+
+        mTransactionManager.readRecordsAndPageToken(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ false);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
+    }
+
+    @Test
+    @DisableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsDisabled_readRecordsAndPageToken_doNotReadAccessLog() {
+        String readerPackage = "reader.package";
+        mTransactionTestUtils.insertApp(readerPackage);
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                        Instant.now().minusMillis(1000).toEpochMilli(),
+                        Instant.now().minusMillis(500).toEpochMilli(),
+                        100));
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .setEndTime(Instant.now())
+                                        .build())
+                        .setPageSize(1)
+                        .build();
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        readerPackage, request.toReadRecordsRequestParcel());
+
+        mTransactionManager.readRecordsAndPageToken(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ true);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void flagsEnabled_readSelfData_readRecordsAndPageToken_doNotAddReadAccessLog() {
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME,
+                createStepsRecord(
+                        mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME),
+                        /* startTimeMillis= */ Instant.now().minusSeconds(1000).toEpochMilli(),
+                        /* endTimeMillis= */ Instant.now().minusSeconds(500).toEpochMilli(),
+                        100));
+
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .addDataOrigins(getDataOrigin(TEST_PACKAGE_NAME))
+                        .build();
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        TEST_PACKAGE_NAME, request.toReadRecordsRequestParcel());
+
+        mTransactionManager.readRecordsAndPageToken(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                mReadAccessLogsHelper,
+                /* shouldRecordAccessLog= */ true);
+
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
+        verify(mReadAccessLogsHelper, times(0))
+                .recordAccessLogForAggregationReads(
+                        any(), any(), anyLong(), anyInt(), anyLong(), any());
     }
 }

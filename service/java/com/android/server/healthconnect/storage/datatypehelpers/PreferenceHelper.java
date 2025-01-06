@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 // TODO(b/303023796): Make this final.
 public class PreferenceHelper extends DatabaseHelper {
+    private static final String TAG = "PreferenceHelper";
     private static final String TABLE_NAME = "preference_table";
     private static final String KEY_COLUMN_NAME = "key";
     public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
@@ -53,19 +54,24 @@ public class PreferenceHelper extends DatabaseHelper {
     private static final String VALUE_COLUMN_NAME = "value";
     private final TransactionManager mTransactionManager;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile PreferenceHelper sPreferenceHelper;
+    /**
+     * Key to store timestamp of the last time any PHR <b>read medical resources</b> API is called.
+     */
+    private static final String PREFS_KEY_PHR_LAST_READ_MEDICAL_RESOURCES_API =
+            "phr_last_read_medical_resources_api";
 
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    protected PreferenceHelper(TransactionManager transactionManager) {
+    public PreferenceHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
     }
 
     /** Note: Overrides existing preference (if it exists) with the new value */
     public synchronized void insertOrReplacePreference(String key, String value) {
-        mTransactionManager.insertOrReplace(
+        mTransactionManager.insertOrReplaceOnConflict(
                 new UpsertTableRequest(
                         TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
         getPreferences().put(key, value);
@@ -88,7 +94,7 @@ public class PreferenceHelper extends DatabaseHelper {
                                         TABLE_NAME,
                                         getContentValues(key, value),
                                         UNIQUE_COLUMN_INFO)));
-        mTransactionManager.insertOrReplaceAll(requests);
+        mTransactionManager.insertOrReplaceAllOnConflict(requests);
         getPreferences().putAll(keyValues);
     }
 
@@ -152,27 +158,5 @@ public class PreferenceHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(VALUE_COLUMN_NAME, TEXT_NULL));
 
         return columnInfo;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
-        sPreferenceHelper = null;
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static PreferenceHelper getInstance() {
-        return getInstance(TransactionManager.getInitialisedInstance());
-    }
-
-    /** Method to get an instance of PreferenceHelper by passing in the dependency. */
-    public static synchronized PreferenceHelper getInstance(TransactionManager transactionManager) {
-        if (sPreferenceHelper == null) {
-            sPreferenceHelper = new PreferenceHelper(transactionManager);
-        }
-
-        return sPreferenceHelper;
     }
 }

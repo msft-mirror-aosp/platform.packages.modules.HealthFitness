@@ -32,8 +32,8 @@ import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecordsByIdFilter;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseWithManagePermission;
@@ -109,7 +109,8 @@ public class HealthConnectAccessLogsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setup() {
@@ -414,7 +415,8 @@ public class HealthConnectAccessLogsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
     public void testAccessLogs_deleteByInvalidId_expectDeleteLogs() throws Exception {
-        grantPermissions(SELF_PACKAGE_NAME, List.of(WRITE_HEART_RATE, WRITE_SKIN_TEMPERATURE));
+        grantHealthPermissions(
+                SELF_PACKAGE_NAME, List.of(WRITE_HEART_RATE, WRITE_SKIN_TEMPERATURE));
         deleteRecordsByIdFilter(
                 List.of(
                         RecordIdFilter.fromId(HeartRateRecord.class, UUID.randomUUID().toString()),
@@ -434,7 +436,7 @@ public class HealthConnectAccessLogsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
     public void testAccessLogs_deleteByFilter_expectDeleteLogs() throws Exception {
-        grantPermission(SELF_PACKAGE_NAME, WRITE_STEPS);
+        grantHealthPermission(SELF_PACKAGE_NAME, WRITE_STEPS);
         TimeInstantRangeFilter timeFilter =
                 new TimeInstantRangeFilter.Builder()
                         .setStartTime(EPOCH)
@@ -493,7 +495,7 @@ public class HealthConnectAccessLogsTest {
 
     @Test
     public void testAccessLogs_readRecords_readAccessLogCreated() throws Exception {
-        grantPermission(SELF_PACKAGE_NAME, READ_STEPS);
+        grantHealthPermission(SELF_PACKAGE_NAME, READ_STEPS);
         readRecords(new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
 
         List<AccessLog> accessLogs = TestUtils.queryAccessLogs();
@@ -506,7 +508,7 @@ public class HealthConnectAccessLogsTest {
 
     @Test
     public void testAccessLogs_insertRecord_writeAccessLogCreated() throws Exception {
-        grantPermission(SELF_PACKAGE_NAME, WRITE_HEART_RATE);
+        grantHealthPermission(SELF_PACKAGE_NAME, WRITE_HEART_RATE);
         insertRecord(getHeartRateRecord());
 
         List<AccessLog> accessLogs = TestUtils.queryAccessLogs();
@@ -520,7 +522,7 @@ public class HealthConnectAccessLogsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
     public void testAccessLogs_deleteRecords_deleteAccessLogCreated() throws Exception {
-        grantPermission(SELF_PACKAGE_NAME, WRITE_DISTANCE);
+        grantHealthPermission(SELF_PACKAGE_NAME, WRITE_DISTANCE);
         TimeInstantRangeFilter timeFilter =
                 new TimeInstantRangeFilter.Builder()
                         .setStartTime(Instant.EPOCH)

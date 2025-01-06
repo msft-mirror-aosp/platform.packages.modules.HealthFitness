@@ -16,10 +16,12 @@
 
 package com.android.server.healthconnect.permission;
 
+import android.annotation.Nullable;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.health.connect.Constants;
 import android.net.Uri;
 import android.os.UserHandle;
@@ -74,6 +76,10 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String packageName = getPackageName(intent);
         UserHandle userHandle = getUserHandle(intent);
+        if (packageName == null || userHandle == null) {
+            Log.w(TAG, "onReceive package change, can't extract info from the input intent");
+            return;
+        }
         if (Constants.DEBUG) {
             Slog.d(
                     TAG,
@@ -85,15 +91,9 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                             + intent.getAction());
         }
 
-        if (packageName == null || userHandle == null) {
-            Log.w(TAG, "can't extract info from the input intent");
-            return;
-        }
-
         boolean isPackageRemoved =
                 intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)
                         && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
-
         // This call also has a (unintended?) positive side-effect of removing the package from
         // the intent tracker, if the package was removed. Keep calling this even if
         // isPackageRemoved is true.
@@ -106,6 +106,13 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
             removePermissions =
                     mPermissionIntentTracker.updateStateAndGetIfIntentWasRemoved(
                             packageName, userHandle);
+        }
+
+        // Wear Apps don't require the permissions intent. No need to revoke the permissions if it
+        // is missing.
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            Flags.replaceBodySensorPermissionEnabled()) {
+            removePermissions = false;
         }
         // If the package was removed, we reset grant time. If the package is present but the health
         // intent support removed we revoke all health permissions and also reset grant time
@@ -164,13 +171,13 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
         return filter;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     private String getPackageName(Intent intent) {
         Uri uri = intent.getData();
         return uri != null ? uri.getSchemeSpecificPart() : null;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     private UserHandle getUserHandle(Intent intent) {
         final int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
         if (uid >= 0) {

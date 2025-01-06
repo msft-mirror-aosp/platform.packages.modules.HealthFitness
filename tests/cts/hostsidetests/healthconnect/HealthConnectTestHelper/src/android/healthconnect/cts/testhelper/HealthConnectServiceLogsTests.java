@@ -17,13 +17,14 @@
 package android.healthconnect.cts.testhelper;
 
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.NutritionRecord.BIOTIN_TOTAL;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.TIMEOUT_SECONDS;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteAllRecordsAddedByTestApp;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteRecords;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getBloodPressureRecord;
-import static android.healthconnect.cts.testhelper.TestHelperUtils.getDataOrigin;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getDefaultTimeRangeFilter;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeartRateRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeightRecord;
@@ -34,15 +35,19 @@ import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import static java.time.Instant.EPOCH;
 import static java.util.Objects.requireNonNull;
 
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
-import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsResponse;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -53,11 +58,14 @@ import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HeightRecord;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
+import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -70,7 +78,6 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -93,10 +100,11 @@ public class HealthConnectServiceLogsTests {
 
     @Before
     public void before() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
         // insert a record so the test app gets an app id in HC
         Record record =
                 new StepsRecord.Builder(getEmptyMetadata(), EPOCH, Instant.now(), 123).build();
-        insertRecords(List.of(record), mHealthConnectManager);
+        insertRecords(mHealthConnectManager, List.of(record));
 
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
         mPhrTestUtils.deleteAllMedicalData();
@@ -109,35 +117,216 @@ public class HealthConnectServiceLogsTests {
     }
 
     @Test
-    public void testCreateMedicalDataSource() throws Exception {
-        logErrorIfAny(() -> mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1")));
+    public void testCreateMedicalDataSourceSuccess() throws InterruptedException {
+        mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+    }
+
+    @Test
+    public void testCreateMedicalDataSourceError() {
+        callApiWhileMigrationInProgress(
+                () -> mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1")));
+    }
+
+    @Test
+    public void testGetMedicalDataSourcesByIdsSuccess() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+
+        mPhrTestUtils.getMedicalDataSourcesByIds(List.of(dataSource.getId()));
+    }
+
+    @Test
+    public void testGetMedicalDataSourcesByIdsError() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+
+        callApiWhileMigrationInProgress(
+                () -> mPhrTestUtils.getMedicalDataSourcesByIds(List.of(dataSource.getId())));
+    }
+
+    @Test
+    public void testGetMedicalDataSourcesByRequestSuccess() throws InterruptedException {
+        GetMedicalDataSourcesRequest request =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName(mContext.getPackageName())
+                        .build();
+
+        mPhrTestUtils.getMedicalDataSourcesByRequest(request);
+    }
+
+    @Test
+    public void testGetMedicalDataSourcesByRequestError() {
+        GetMedicalDataSourcesRequest request =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName(mContext.getPackageName())
+                        .build();
+
+        callApiWhileMigrationInProgress(
+                () -> mPhrTestUtils.getMedicalDataSourcesByRequest(request));
+    }
+
+    @Test
+    public void testDeleteMedicalDataSourceWithDataSuccess() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+
+        mPhrTestUtils.deleteMedicalDataSourceWithData(dataSource.getId());
+    }
+
+    @Test
+    public void testDeleteMedicalDataSourceWithDataError() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        callApiWhileMigrationInProgress(
+                () -> mPhrTestUtils.deleteMedicalDataSourceWithData(dataSource.getId()));
+    }
+
+    @Test
+    public void testUpsertMedicalResourcesSuccess() throws InterruptedException {
+        MedicalDataSource medicalDataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        mPhrTestUtils.upsertMedicalData(medicalDataSource.getId(), FHIR_DATA_IMMUNIZATION);
+    }
+
+    @Test
+    public void testUpsertMedicalResourcesError() throws InterruptedException {
+        MedicalDataSource medicalDataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+
+        callApiWhileMigrationInProgress(
+                () ->
+                        mPhrTestUtils.upsertMedicalData(
+                                medicalDataSource.getId(), FHIR_DATA_IMMUNIZATION));
+    }
+
+    @Test
+    public void testReadMedicalResourcesByIdsSuccess() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource resource =
+                mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        mPhrTestUtils.readMedicalResourcesByIds(List.of(resource.getId()));
+    }
+
+    @Test
+    public void testReadMedicalResourcesByIdsError() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource resource =
+                mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        callApiWhileMigrationInProgress(
+                () -> mPhrTestUtils.readMedicalResourcesByIds(List.of(resource.getId())));
+    }
+
+    @Test
+    public void testReadMedicalResourcesByRequestsSuccess() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build();
+        mPhrTestUtils.readMedicalResourcesByRequest(request);
+    }
+
+    @Test
+    public void testReadMedicalResourcesByRequestsError() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        callApiWhileMigrationInProgress(
+                () -> {
+                    ReadMedicalResourcesInitialRequest request =
+                            new ReadMedicalResourcesInitialRequest.Builder(
+                                            MEDICAL_RESOURCE_TYPE_VACCINES)
+                                    .build();
+                    mPhrTestUtils.readMedicalResourcesByRequest(request);
+                });
+    }
+
+    @Test
+    public void testDeleteMedicalResourcesByIdsSuccess() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource medicalResource =
+                mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        mPhrTestUtils.deleteMedicalResourcesByIds(List.of(medicalResource.getId()));
+    }
+
+    @Test
+    public void testDeleteMedicalResourcesByIdsError() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource medicalResource =
+                mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        callApiWhileMigrationInProgress(
+                () -> mPhrTestUtils.deleteMedicalResourcesByIds(List.of(medicalResource.getId())));
+    }
+
+    @Test
+    public void testDeleteMedicalResourcesByRequestSuccess() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource medicalResource =
+                mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        mPhrTestUtils.deleteMedicalResourcesByRequest(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addMedicalResourceType(medicalResource.getType())
+                        .build());
+    }
+
+    @Test
+    public void testDeleteMedicalResourcesByRequestError() throws InterruptedException {
+        MedicalDataSource dataSource =
+                mPhrTestUtils.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource medicalResource =
+                mPhrTestUtils.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+
+        callApiWhileMigrationInProgress(
+                () ->
+                        mPhrTestUtils.deleteMedicalResourcesByRequest(
+                                new DeleteMedicalResourcesRequest.Builder()
+                                        .addMedicalResourceType(medicalResource.getType())
+                                        .build()));
     }
 
     @Test
     public void testHealthConnectInsertRecords() throws Exception {
         insertRecords(
-                List.of(getBloodPressureRecord(), getHeartRateRecord()), mHealthConnectManager);
+                mHealthConnectManager, List.of(getBloodPressureRecord(), getHeartRateRecord()));
     }
 
     @Test
     public void testHealthConnectInsertRecordsError() throws Exception {
         // No permission for Height so it should throw Security Exception
-        insertRecords(List.of(getBloodPressureRecord(), getHeightRecord()), mHealthConnectManager);
+        assertThrows(
+                HealthConnectException.class,
+                () ->
+                        insertRecords(
+                                mHealthConnectManager,
+                                List.of(getBloodPressureRecord(), getHeightRecord())));
     }
 
     @Test
     public void testHealthConnectUpdateRecords() throws Exception {
         List<Record> records =
                 insertRecords(
-                        List.of(getBloodPressureRecord(), getHeartRateRecord(), getStepsRecord()),
-                        mHealthConnectManager);
+                        mHealthConnectManager,
+                        List.of(getBloodPressureRecord(), getHeartRateRecord(), getStepsRecord()));
         updateRecords(records);
     }
 
     @Test
     public void testHealthConnectUpdateRecordsError() throws Exception {
         List<Record> insertRecords =
-                insertRecords(List.of(getBloodPressureRecord()), mHealthConnectManager);
+                insertRecords(mHealthConnectManager, List.of(getBloodPressureRecord()));
 
         updateRecords(
                 List.of(
@@ -150,35 +339,24 @@ public class HealthConnectServiceLogsTests {
 
     @Test
     public void testHealthConnectDeleteRecords() throws Exception {
-        insertRecords(List.of(getBloodPressureRecord(), getStepsRecord()), mHealthConnectManager);
-        DeleteUsingFiltersRequest deleteUsingFiltersRequest =
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BloodPressureRecord.class)
-                        .addRecordType(StepsRecord.class)
-                        .addDataOrigin(getDataOrigin())
-                        .build();
+        insertRecords(mHealthConnectManager, List.of(getBloodPressureRecord(), getStepsRecord()));
 
-        assertThat(mHealthConnectManager).isNotNull();
-        deleteRecords(deleteUsingFiltersRequest, mHealthConnectManager);
+        deleteRecords(mHealthConnectManager, List.of(BloodPressureRecord.class, StepsRecord.class));
     }
 
     @Test
     public void testHealthConnectDeleteRecordsError() throws Exception {
-        insertRecords(List.of(getBloodPressureRecord(), getStepsRecord()), mHealthConnectManager);
-        DeleteUsingFiltersRequest deleteUsingFiltersRequest =
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(HeightRecord.class)
-                        .addDataOrigin(getDataOrigin())
-                        .build();
+        insertRecords(mHealthConnectManager, List.of(getBloodPressureRecord(), getStepsRecord()));
 
-        assertThat(mHealthConnectManager).isNotNull();
-        deleteRecords(deleteUsingFiltersRequest, mHealthConnectManager);
+        assertThrows(
+                HealthConnectException.class,
+                () -> deleteRecords(mHealthConnectManager, List.of(HeightRecord.class)));
     }
 
     @Test
     public void testHealthConnectReadRecords() throws Exception {
+        insertRecords(mHealthConnectManager, List.of(getStepsRecord()));
 
-        insertRecords(List.of(getStepsRecord()), mHealthConnectManager);
         CountDownLatch latch = new CountDownLatch(1);
         assertThat(mHealthConnectManager).isNotNull();
         mHealthConnectManager.readRecords(
@@ -268,14 +446,9 @@ public class HealthConnectServiceLogsTests {
         String token = getChangeLogToken();
 
         insertRecords(
-                List.of(getBloodPressureRecord(), getHeartRateRecord()), mHealthConnectManager);
+                mHealthConnectManager, List.of(getBloodPressureRecord(), getHeartRateRecord()));
 
-        deleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BloodPressureRecord.class)
-                        .addDataOrigin(getDataOrigin())
-                        .build(),
-                mHealthConnectManager);
+        deleteRecords(mHealthConnectManager, List.of(BloodPressureRecord.class));
 
         CountDownLatch latch = new CountDownLatch(1);
         assertThat(mHealthConnectManager).isNotNull();
@@ -374,8 +547,8 @@ public class HealthConnectServiceLogsTests {
     @Test
     public void testHealthConnectDatabaseStats() throws Exception {
         insertRecords(
-                List.of(getStepsRecord(), getBloodPressureRecord(), getHeartRateRecord()),
-                mHealthConnectManager);
+                mHealthConnectManager,
+                List.of(getStepsRecord(), getBloodPressureRecord(), getHeartRateRecord()));
     }
 
     private String getChangeLogToken() throws Exception {
@@ -429,14 +602,32 @@ public class HealthConnectServiceLogsTests {
     }
 
     /**
-     * Executes a {@link Callable} and logs error if any. This is mainly used to make an API call to
-     * trigger telemetry events, the result of the call is irrelevant.
+     * Executes {code apiCall} when migration is in progress.
+     *
+     * <p>This is mainly used to emulate API call failures.
      */
-    private void logErrorIfAny(Callable<?> callable) {
+    private static void callApiWhileMigrationInProgress(Task apiCall) {
         try {
-            callable.call();
+            logErrorIfAny(TestUtils::startMigrationWithShellPermissionIdentity);
+
+            apiCall.execute();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            logErrorIfAny(TestUtils::finishMigrationWithShellPermissionIdentity);
+        }
+    }
+
+    /** Executes a {@link Task} and logs error if any. */
+    private static void logErrorIfAny(Task task) {
+        try {
+            task.execute();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    private interface Task {
+        void execute() throws Exception;
     }
 }

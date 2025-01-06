@@ -103,17 +103,12 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     private val setUpExportLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(contract, ::onSetUpExport)
 
-    private val scheduledExportPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
-    }
+    private val scheduledExportPreference: HealthPreference by pref(SCHEDULED_EXPORT_PREFERENCE_KEY)
 
-    private val importDataPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(IMPORT_DATA_PREFERENCE_KEY)
-    }
+    private val importDataPreference: HealthPreference by pref(IMPORT_DATA_PREFERENCE_KEY)
 
-    private val settingsCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY)
-    }
+    private val settingsCategory: PreferenceGroup by
+        pref(EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY)
 
     private val dateFormatter: LocalDateTimeFormatter by lazy {
         LocalDateTimeFormatter(requireContext())
@@ -130,10 +125,10 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             deviceInfoUtils.openHCBackupAndRestoreLink(requireActivity())
         }
 
-        scheduledExportPreference?.logName = BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON
+        scheduledExportPreference.logName = BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON
 
-        importDataPreference?.logName = BackupAndRestoreElement.RESTORE_DATA_BUTTON
-        importDataPreference?.setOnPreferenceClickListener {
+        importDataPreference.logName = BackupAndRestoreElement.RESTORE_DATA_BUTTON
+        importDataPreference.setOnPreferenceClickListener {
             triggerImport()
             true
         }
@@ -155,7 +150,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         }
 
         importFlowViewModel.lastImportCompletionInstant.observe(viewLifecycleOwner) {
-            importDataPreference?.isEnabled = true
+            importDataPreference.isEnabled = true
             toastManager.showToast(requireActivity(), R.string.import_complete_toast_text)
             importStatusViewModel.loadImportStatus()
         }
@@ -178,7 +173,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                 is ExportSettings.WithData -> {
                     val frequency = exportSettings.frequency
                     if (frequency == ExportFrequency.EXPORT_FREQUENCY_NEVER) {
-                        scheduledExportPreference?.setOnPreferenceClickListener {
+                        scheduledExportPreference.setOnPreferenceClickListener {
                             val exportSetupIntent =
                                 Intent(requireActivity(), ExportSetupActivity::class.java)
                             setUpExportLauncher.launch(exportSetupIntent)
@@ -186,7 +181,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                             true
                         }
                     } else {
-                        scheduledExportPreference?.setOnPreferenceClickListener {
+                        scheduledExportPreference.setOnPreferenceClickListener {
                             findNavController()
                                 .navigate(
                                     R.id
@@ -195,7 +190,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                             true
                         }
                     }
-                    scheduledExportPreference?.summary = buildSummary(frequency)
+                    scheduledExportPreference.summary = buildSummary(frequency)
                 }
                 is ExportSettings.LoadingFailed ->
                     Toast.makeText(activity, R.string.default_error, Toast.LENGTH_LONG).show()
@@ -226,16 +221,17 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     }
 
     private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
-        settingsCategory?.removePreferenceRecursively(
+        settingsCategory.removePreferenceRecursively(
             ExportStatusPreference.EXPORT_STATUS_PREFERENCE
         )
         val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
         if (lastSuccessfulExportTime != null) {
             val lastExportTime = getLastExportTime(lastSuccessfulExportTime)
             val exportLocation = getExportLocationString(scheduledExportUiState)
-            settingsCategory?.addPreference(
+            settingsCategory.addPreference(
                 ExportStatusPreference(requireContext(), lastExportTime, exportLocation).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
+                    it.isSelectable = false
                 }
             )
         } else if (
@@ -245,7 +241,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                     ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
         ) {
             val lastExportMessage = getString(R.string.no_last_export_message)
-            settingsCategory?.addPreference(
+            settingsCategory.addPreference(
                 ExportStatusPreference(requireContext(), lastExportMessage, null).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
                 }
@@ -413,7 +409,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             val uriString = result.data?.extras?.getString(IMPORT_FILE_URI_KEY)
             Slog.i(TAG, "uri: $uriString")
             if (uriString != null) {
-                importDataPreference?.setEnabled(false)
+                importDataPreference.setEnabled(false)
                 toastManager.showToast(requireActivity(), R.string.import_in_progress_toast_text)
                 importFlowViewModel.triggerImportOfSelectedFile(Uri.parse(uriString))
             }

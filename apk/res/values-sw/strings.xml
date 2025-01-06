@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Jana"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Data iliyosoma: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Data iliyoandika: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Dhibiti ruhusa"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Saa: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Shughuli"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"misukumo ya kiti cha magurudumu"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Isome data ya misukumo ya kiti cha magurudumu"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Iandike data ya misukumo ya kiti cha magurudumu"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Data ya kiwango cha shughuli"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"data ya kiwango cha shughuli"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Kusoma data ya kiwango cha shughuli"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Kuandika data ya kiwango cha shughuli"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Kiwango cha kawaida cha shughuli za ndani ya mwili"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"kiwango cha kawaida cha shughuli za ndani ya mwili"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Isome data ya kiwango cha kawaida cha shughuli za ndani ya mwili"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"kiwango cha joto kwenye ngozi"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Soma kiwango cha joto kwenye ngozi"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Andika kiwango cha joto kwenye ngozi"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Hii inajumuisha rekodi zote za afya zilizosawazishwa na kuwekwa kwenye Health Connect. Huenda hii isiwe rekodi yako kamili ya matibabu na haijumuishi maelezo ya kimatibabu ya rekodi zako za afya."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Rekodi zote za afya"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"rekodi zote za afya"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Andika rekodi zote za afya"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Hali"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"hali"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Soma hali"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Chanjo"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"chanjo"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Soma data ya chanjo"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Chanjo"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"chanjo"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Soma data ya chanjo"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Matokeo ya maabara"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"matokeo ya maabara"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Soma matokeo ya maabara"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ukiipa ruhusa, programu inaweza kusoma na kuandika data kama vile ya mizio, matokeo ya maabara, chanjo na nyingineyo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ukiipa ruhusa, programu inaweza kusoma data kama vile ya mizio, matokeo ya maabara, chanjo na nyingineyo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Kuhusu rekodi za afya"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Data ya kutuma"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Data ya kutuma inajumuisha"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Ukiruhusu, <xliff:g id="APP_NAME">%1$s</xliff:g> inaweza kutuma rekodi zako za afya kwenye Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sawazisha rekodi zako za afya kwenye programu na vyanzo vyako mbalimbali ili uziweke katika sehemu moja"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Ungependa kuondoa ruhusa zote?"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Programu hizi hazina tena ufikiaji, lakini bado zina data iliyohifadhiwa kwenye Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> inaweza kusoma data iliyowekwa baada ya <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Ili udhibiti ruhusa zingine za Android ambazo programu hii inaweza kufikia, nenda kwenye Mipangilio &gt; Programu"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Data unayoruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie inasimamiwa na sera yake ya faragha"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Unaweza kupata maelezo kuhusu jinsi <xliff:g id="APP_NAME">%1$s</xliff:g> inavyoshughulikia data yako katika sera ya faragha ya msanidi programu"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Ili udhibiti ruhusa zingine za Android ambazo programu hii inaweza kufikia, nenda kwenye Mipangilio kisha uguse Programu"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Soma sera ya faragha"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Ilifikiwa katika saa 24 zilizopita"</string>
@@ -642,8 +639,8 @@
     <string name="spotting" msgid="1637175837078770520">"Data ya matone"</string>
     <string name="flow_spotting" msgid="832418664953780156">"Data ya matone"</string>
     <string name="flow_light" msgid="1937543318146228793">"Mtiririko mdogo wa damu"</string>
-    <string name="flow_medium" msgid="3783688724668943154">"Mtiririko kiasi wa damu"</string>
-    <string name="flow_heavy" msgid="8672261792750634294">"Mtiririko mkubwa wa damu"</string>
+    <string name="flow_medium" msgid="3783688724668943154">"Uvujaji wa wastani"</string>
+    <string name="flow_heavy" msgid="8672261792750634294">"Uvujaji mwingi"</string>
     <string name="flow_unknown" msgid="1634411759928572900">"Mtiririko wa kiwango kisichojulikana cha hedhi"</string>
     <string name="period_day" msgid="3821944462093965882">"Siku ya <xliff:g id="DAY">%1$d</xliff:g> kati ya siku <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> za hedhi"</string>
     <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Hedhi (siku 1)}other{Hedhi (siku #)}}"</string>
@@ -793,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Muziki"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Mengineyo"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Bila mwongozo"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Wastani"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Kwa nguvu"</string>
     <string name="minute_duration" msgid="9035288227090160206">"Dak <xliff:g id="MINUTE">%1$s</xliff:g>"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"Saa <xliff:g id="HOUR">%1$s</xliff:g> dak <xliff:g id="MIN">%2$s</xliff:g>"</string>
     <string name="hour_duration" msgid="3472489613837138711">"Saa <xliff:g id="HOUR">%1$s</xliff:g>"</string>
@@ -1045,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Shughuli ya ujumuishaji inaendelea"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Programu ya Health Connect inajumuishwa na mfumo wa Android.\n\nInaweza kuchukua muda wakati data na ruhusa zako zinahamishwa."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Usifunge programu hadi upate arifa kwamba shughuli imekamilika."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Programu ya Health Connect inaendelea kujumuishwa"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Unahitaji kusasisha"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Programu ya Health Connect inajumuishwa na mfumo wa Android ili uweze kuifikia moja kwa moja kupitia mipangilio yako."</string>
     <string name="update_button" msgid="4544529019832009496">"Sasisha"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Anzisha sasisho hili ili programu ya Health Connect iweze kuendelee kujumuishwa na mipangilio ya mfumo wako"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Sasisha sasa"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Inahitaji sasisho la mfumo"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Kabla ya kuendelea, sasisha mfumo wa simu yako."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Ikiwa tayari umesasisha mfumo wa simu yako, jaribu kuzima kisha uwashe simu yako ili uendelee na shughuli ya ujumuishaji"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Programu ya Health Connect inahitaji kusasishwa"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Kabla ya kuendelea, sasisha programu ya Health Connect ili utumie toleo jipya zaidi."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Nafasi zaidi inahitajika"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Programu ya Health Connect inahitaji nafasi ya kuhifadhi ya <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> kwenye simu yako ili shughuli ya ujumuishaji iendelee.\n\nFuta baadhi ya vipengee ili upate nafasi kwenye simu yako kisha ujaribu tena."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Jaribu tena"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Futa ili upate nafasi"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Nafasi zaidi inahitajika"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Programu ya Health Connect inahitaji nafasi ya kuhifadhi ya <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> kwenye simu yako ili iendelee na shughuli ya ujumuishaji."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Shughuli ya ujumuishaji imesitishwa"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Programu ya Health Connect ilifungwa wakati ilikuwa inajumuishwa na mfumo wa Android.\n\nBofya endelea ili ufungue upya programu na uendelee kuhamisha data na ruhusa zako."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Ili kuhifadhi data ya programu yako ya Health Connect, kamilisha shughuli hii ndani ya <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1072,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Gusa ili uendelee kujumuisha programu ya Health Connect na mfumo wa Android. Ili kuhifadhi data yako, kamilisha shughuli hii ndani ya <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Gusa ili uendelee kujumuisha programu ya Health Connect na mfumo wa Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Endelea"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Endelea na shughuli ya ujumuishaji wa programu ya Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Ili kuhifadhi data yako, kamilisha shughuli hii ndani ya <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Unahitaji kusasisha programu"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> inahitaji kusasishwa ili iendelee kusawazishwa na Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Baadhi ya programu zinahitaji kusasishwa ili ziendelee kusawazishwa na Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> inahitaji kusasishwa ili iendelee kusawazishwa na Health Connect. Huenda masasisho yasipatikane kwa programu zote."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Baadhi ya programu zinahitaji kusasishwa ili ziendelee kusawazishwa na Health Connect. Huenda masasisho yasipatikane kwa programu zote."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Angalia masasisho"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Pata maelezo zaidi"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Ujumuishaji wa programu ya Health Connect"</string>
@@ -1091,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Shughuli ya ujumuishaji wa programu ya Health Connect haijakamilika"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Utapata arifa itakapopatikana tena."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Nimeelewa"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Shughuli ya ujumuishaji wa programu ya Health Connect haijakamilika"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Endelea kusoma"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Programu ya Health Connect imemaliza kujumuishwa"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Fungua"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Mambo mapya"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Sasa unaweza kufikia programu ya Health Connect moja kwa moja kupitia mipangilio yako. Ondoa programu ya Health Connect wakati wowote ili upate nafasi ya kuhifadhi."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Nimeelewa"</string>
@@ -1135,26 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Angalia programu zinazooana"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Pata programu zaidi za kusawazisha na <xliff:g id="APP_NAME">%s</xliff:g> kupitia Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Angalia kwenye duka la programu"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Weka mbinu ya kufunga skrini"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Weka PIN, mchoro au nenosiri kwenye kifaa hiki ili uimarishe usalama wa data yako ya afya"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Weka mbinu ya kufunga skrini"</string>
     <string name="select_all" msgid="837499881590001166">"Chagua zote"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Programu zilizounganishwa hazitaweza tena kusoma data hii kutoka Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Imechaguliwa"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Haijachaguliwa"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Ramani inayoonyesha njia ya kufanyia mazoezi inapatikana"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Siku inayofuata"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Wiki ijayo"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mwezi ujao"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Siku iliyotangulia"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Wiki iliyopita"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mwezi uliopita"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Ungependa kufuta kabisa data yote?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Ungependa kufuta kabisa data uliyochagua?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Ungependa kufuta kabisa data yote ya <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1162,7 +1144,7 @@
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Ungependa kufuta kabisa data yote ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Ungependa kufuta kabisa data yote ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Ungependa kufuta kabisa data yote ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ungependa kufuta kabisa data uliyochagua ya tarehe <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Ungependa kufuta kabisa data uliyochagua ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Ungependa kufuta kabisa data hii?"</string>
@@ -1170,7 +1152,7 @@
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Ungependa kufuta kabisa data yote ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Ungependa kufuta kabisa data yote ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya wiki ya tarehe <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Ungependa kufuta kabisa data hii ya <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Ungependa kufuta kabisa data ya <xliff:g id="DATA_TYPE">%1$s</xliff:g> kwenye <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
@@ -1179,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Kilifunguliwa <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Kilifunguliwa jana <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Kilifunguliwa <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Ruhusu kila wakati"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Ruhusu ulizochagua"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Unapotumia programu"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Kataa zote"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya mazoezi na siha?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> inaomba ruhusa ya kufikia data ya <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChagua kuruhusu zote au udhibiti kila ruhusa kivyake."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Siha na afya"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"kila wakati"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"inapotumika"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Kila wakati"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Inapotumika"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ina idhini ya kufikia data yako yote ya siha na afya <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Inaruhusiwa kufikia"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Inaruhusiwa kusoma"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Ruhusa hizi huipa <xliff:g id="APP_NAME">%1$s</xliff:g> idhini ya kufikia data kwenye vitambuzi vya kifaa chako."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Programu <xliff:g id="NUMBER_0">%1$d</xliff:g> kati ya <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> zinaruhusiwa"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Hakuna programu zinazoomba"</string>
+    <string name="allowed" msgid="4158456017482263737">"Inaruhusiwa"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Hairuhusiwi"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Programu zilizo na ruhusa hii zinaweza kufikia data ya <xliff:g id="DATA_TYPE">%s</xliff:g> kwenye vitambuzi vya kifaa chako."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Ungependa kuondoa ruhusa ya programu zote kufikia <xliff:g id="DATA_TYPE">%s</xliff:g> kwenye saa yako?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Alama ya kuteua"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Alama ya kuondoa"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Kwa sasa, <xliff:g id="APP_NAME">%1$s</xliff:g> inaweza kufikia data ya siha na afya <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya siha na afya kila wakati?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> inaweza kufikia <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Dhibiti ruhusa za siha na afya"</string>
 </resources>

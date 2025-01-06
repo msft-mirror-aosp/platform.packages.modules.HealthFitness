@@ -15,14 +15,19 @@
  */
 package com.android.healthconnect.controller.utils
 
+import android.content.Context
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_DAY
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_MONTH
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_WEEK
 import java.time.DayOfWeek
 import java.time.Instant
+import java.time.LocalTime
 import java.time.Period
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.WeekFields
+import java.util.Locale
 
 /**
  * Returns the localized instant start time of a period: Day: start of day Week: start of Monday of
@@ -39,12 +44,14 @@ fun getPeriodStartDate(selectedDate: Instant, period: DateNavigationPeriod): Ins
         }
 
         PERIOD_WEEK -> {
+            val weekFields = WeekFields.of(Locale.getDefault())
+            val firstDayOfWeek = weekFields.firstDayOfWeek
             val dayOfWeek: DayOfWeek =
                 selectedDate.atZone(ZoneId.systemDefault()).toLocalDate().dayOfWeek
-            val dayOfWeekOffset: Int = dayOfWeek.value - 1
+            val dayOfWeekOffset: Int = (dayOfWeek.value - firstDayOfWeek.value + 7) % 7
             selectedDate
                 .atZone(ZoneId.systemDefault())
-                .minus(Period.ofDays(dayOfWeekOffset))
+                .minusDays(dayOfWeekOffset.toLong())
                 .toLocalDate()
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant()
@@ -135,4 +142,18 @@ private fun areInSameYear(instant1: Instant, instant2: Instant, timeSource: Time
     val year1 = instant1.atZone(timeSource.deviceZoneOffset()).toLocalDate().year
     val year2 = instant2.atZone(timeSource.deviceZoneOffset()).toLocalDate().year
     return year1 == year2
+}
+
+/** Formats an [Instant] to a time in the local time format of the device, e.g. 13:45 or 9:25am. */
+fun formatRecentAccessTime(instant: Instant, timeSource: TimeSource, context: Context): String {
+    val localTime: LocalTime = instant.atZone(ZoneId.systemDefault()).toLocalTime()
+    return if (timeSource.is24Hour(context)) {
+        localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+    } else {
+        if (Locale.getDefault() == Locale.KOREA || Locale.getDefault() == Locale.KOREAN) {
+            localTime.format(DateTimeFormatter.ofPattern("a h:mm"))
+        } else {
+            localTime.format(DateTimeFormatter.ofPattern("h:mm a"))
+        }
+    }
 }

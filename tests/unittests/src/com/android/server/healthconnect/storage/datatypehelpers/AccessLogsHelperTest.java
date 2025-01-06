@@ -20,7 +20,7 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BODY_FAT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_DISTANCE;
@@ -52,13 +52,17 @@ import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
 import android.health.connect.datatypes.StepsRecord;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -70,13 +74,14 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
 public class AccessLogsHelperTest {
 
     @Rule(order = 1)
@@ -86,15 +91,10 @@ public class AccessLogsHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
-
-    private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
     private AccessLogsHelper mAccessLogsHelper;
 
@@ -105,20 +105,18 @@ public class AccessLogsHelperTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-
-        Context context = mHealthConnectDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(context, healthConnectInjector);
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        transactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }
 
     @Test
@@ -140,12 +138,12 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedSingleMedicalResourceType_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
                                         DATA_SOURCE_PACKAGE_NAME,
-                                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
@@ -155,7 +153,7 @@ public class AccessLogsHelperTest {
         assertThat(result).hasSize(1);
         assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog.getMedicalResourceTypes())
-                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_VACCINES));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
         assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
@@ -166,14 +164,14 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMultipleMedicalResourceTypes_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
                                         DATA_SOURCE_PACKAGE_NAME,
                                         Set.of(
                                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                                MEDICAL_RESOURCE_TYPE_VACCINES),
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
@@ -186,7 +184,7 @@ public class AccessLogsHelperTest {
                 .isEqualTo(
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
+                                MEDICAL_RESOURCE_TYPE_VACCINES));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
         assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
@@ -197,7 +195,7 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testAddAccessLogsPhr_accessedMedicalDataSource_success() {
         mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnable<RuntimeException>)
+                (TransactionManager.Runnable<RuntimeException>)
                         db ->
                                 mAccessLogsHelper.addAccessLog(
                                         db,
@@ -252,7 +250,7 @@ public class AccessLogsHelperTest {
                     mAccessLogsHelper.addAccessLog(
                             db,
                             DATA_SOURCE_PACKAGE_NAME,
-                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                            Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                             OPERATION_TYPE_UPSERT,
                             /* accessedMedicalDataSource= */ false);
                 });
@@ -272,7 +270,7 @@ public class AccessLogsHelperTest {
 
         assertThat(accessLog2.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog2.getMedicalResourceTypes())
-                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_VACCINES));
         assertThat(accessLog2.getRecordTypes()).isEmpty();
         assertThat(accessLog2.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
         assertThat(accessLog2.isMedicalDataSourceAccessed()).isFalse();

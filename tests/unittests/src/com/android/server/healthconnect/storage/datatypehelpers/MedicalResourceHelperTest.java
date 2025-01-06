@@ -22,7 +22,7 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
@@ -30,18 +30,14 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.createAllergyMedicalResource;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.createImmunizationMedicalResource;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.createImmunizationMedicalResources;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createDifferentVaccineMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedAllergyMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createUpdatedVaccineMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResource;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResources;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResource;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceAllergy;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceBuilder;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResourceDifferentImmunization;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpdatedAllergyFhirResource;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpdatedImmunizationFhirResource;
 
 import static com.android.server.healthconnect.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
 import static com.android.server.healthconnect.storage.PhrTestUtils.makeUpsertRequest;
@@ -70,6 +66,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.HealthConnectManager;
@@ -81,13 +78,17 @@ import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
-import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -95,7 +96,6 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.PhrTestUtils;
-import com.android.server.healthconnect.storage.StorageContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -106,6 +106,7 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.time.Instant;
@@ -121,6 +122,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@RunWith(AndroidJUnit4.class)
 public class MedicalResourceHelperTest {
 
     @Rule(order = 1)
@@ -130,62 +132,39 @@ public class MedicalResourceHelperTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 3)
-    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private static final long DATA_SOURCE_ROW_ID = 1234;
     private static final String INVALID_PAGE_TOKEN = "aw==";
     private static final Instant INSTANT_NOW = Instant.now();
 
     private MedicalResourceHelper mMedicalResourceHelper;
-    private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private TransactionManager mTransactionManager;
-    private TransactionTestUtils mTransactionTestUtils;
-    private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
-    private StorageContext mContext;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
 
     @Before
     public void setup() {
-
-        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
-        mContext = mHealthConnectDatabaseTestRule.getDatabaseContext();
+        Context context = ApplicationProvider.getApplicationContext();
+        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
-                        .setTransactionManager(mTransactionManager)
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
+                        .setTimeSource(mFakeTimeSource)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
-        mMedicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        mTransactionManager, mAppInfoHelper, mFakeTimeSource, mAccessLogsHelper);
-        mMedicalResourceHelper =
-                new MedicalResourceHelper(
-                        mTransactionManager,
-                        mAppInfoHelper,
-                        mMedicalDataSourceHelper,
-                        mFakeTimeSource,
-                        mAccessLogsHelper);
-        mUtil =
-                new PhrTestUtils(
-                        mContext,
-                        mTransactionManager,
-                        mMedicalResourceHelper,
-                        mMedicalDataSourceHelper);
+        mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
+        mUtil = new PhrTestUtils(healthConnectInjector);
+
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        transactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        transactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
     }
 
     @Test
@@ -228,7 +207,7 @@ public class MedicalResourceHelperTest {
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 makeUpsertRequest(
                         fhirResource,
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         FHIR_VERSION_R4,
                         DATA_SOURCE_ID);
 
@@ -280,7 +259,7 @@ public class MedicalResourceHelperTest {
 
         ReadTableRequest request =
                 MedicalResourceHelper.getFilteredReadRequestForDistinctResourceTypes(
-                        List.of(), Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS), appId);
+                        List.of(), Set.of(MEDICAL_RESOURCE_TYPE_VACCINES), appId);
 
         assertThat(request.getReadCommand())
                 .isEqualTo(
@@ -308,7 +287,7 @@ public class MedicalResourceHelperTest {
 
         ReadTableRequest request =
                 MedicalResourceHelper.getFilteredReadRequestForDistinctResourceTypes(
-                        dataSourceIds, Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS), appId);
+                        dataSourceIds, Set.of(MEDICAL_RESOURCE_TYPE_VACCINES), appId);
 
         assertThat(request.getReadCommand())
                 .isEqualTo(
@@ -335,28 +314,13 @@ public class MedicalResourceHelperTest {
     public void insertAndUpdateResource_lastModifiedTimeIsUpdated() throws JSONException {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        UpsertMedicalResourceInternalRequest upsertRequest =
-                makeUpsertRequest(
-                        getFhirResource(),
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                        FHIR_VERSION_R4,
-                        dataSource.getId());
-        // The same MedicalResource with FHIR JSON updated.
-        UpsertMedicalResourceInternalRequest updateRequest =
-                makeUpsertRequest(
-                        new MedicalResource.Builder(
-                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                        dataSource.getId(),
-                                        FHIR_VERSION_R4,
-                                        getFhirResourceBuilder()
-                                                .setData(
-                                                        addCompletedStatus(
-                                                                getFhirResource().getData()))
-                                                .build())
-                                .build());
+        MedicalResource resource = createVaccineMedicalResource(dataSource.getId());
+        UpsertMedicalResourceInternalRequest insertRequest = makeUpsertRequest(resource);
+        MedicalResource updatedResource = createUpdatedVaccineMedicalResource(dataSource.getId());
+        UpsertMedicalResourceInternalRequest updateRequest = makeUpsertRequest(updatedResource);
 
         mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME, List.of(upsertRequest));
+                DATA_SOURCE_PACKAGE_NAME, List.of(insertRequest));
         long lastModifiedTimeOriginal =
                 mUtil.readLastModifiedTimestamp(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(lastModifiedTimeOriginal).isEqualTo(INSTANT_NOW.toEpochMilli());
@@ -372,9 +336,10 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT})
     public void getReadTableRequest_usingRequest_correctQuery() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         ReadTableRequest readRequest =
                 MedicalResourceHelper.getReadTableRequestUsingRequestFilters(
@@ -385,31 +350,39 @@ public class MedicalResourceHelperTest {
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_resource_table ORDER BY"
-                                + " medical_resource_row_id LIMIT "
-                                + (DEFAULT_PAGE_SIZE + 1)
-                                + " ) AS"
+                        "SELECT medical_resource_row_id,fhir_resource_type,fhir_resource_id,"
+                                + "fhir_data,fhir_version,medical_resource_type,"
+                                + "data_source_uuid,inner_query_result.last_modified_time"
+                                + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
+                                + " medical_resource_table ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
                                 + " medical_resource_indices_table WHERE medical_resource_type IN "
                                 + "("
-                                + MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+                                + MEDICAL_RESOURCE_TYPE_VACCINES
                                 + ")"
                                 + ") medical_resource_indices_table ON"
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
-                                + " = medical_data_source_table.medical_data_source_row_id");
+                                + " = medical_data_source_table.medical_data_source_row_id"
+                                + " ORDER BY medical_resource_row_id"
+                                + " LIMIT "
+                                + (DEFAULT_PAGE_SIZE + 1));
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @EnableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PHR_READ_MEDICAL_RESOURCES_FIX_QUERY_LIMIT
+    })
     public void getReadTableRequest_usingRequestWithDataSourceIds_correctQuery() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource2.getId())
                         .build();
@@ -424,14 +397,15 @@ public class MedicalResourceHelperTest {
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_resource_table ORDER BY"
-                                + " medical_resource_row_id LIMIT "
-                                + (DEFAULT_PAGE_SIZE + 1)
-                                + " ) AS"
+                        "SELECT medical_resource_row_id,fhir_resource_type,fhir_resource_id,"
+                                + "fhir_data,fhir_version,medical_resource_type,data_source_uuid,"
+                                + "inner_query_result.last_modified_time"
+                                + " AS medical_resource_last_modified_time FROM ( SELECT * FROM"
+                                + " medical_resource_table ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
                                 + " medical_resource_indices_table WHERE medical_resource_type IN "
                                 + "("
-                                + MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
+                                + MEDICAL_RESOURCE_TYPE_VACCINES
                                 + ")) medical_resource_indices_table ON"
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
@@ -440,7 +414,10 @@ public class MedicalResourceHelperTest {
                                 + String.join(", ", dataSourceIdHexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.medical_data_source_row_id");
+                                + " medical_data_source_table.medical_data_source_row_id"
+                                + " ORDER BY medical_resource_row_id"
+                                + " LIMIT "
+                                + (DEFAULT_PAGE_SIZE + 1));
     }
 
     @Test
@@ -464,12 +441,7 @@ public class MedicalResourceHelperTest {
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void readMedicalResourcesByIds_dbEmpty_returnsEmpty() {
-        List<MedicalResourceId> medicalResourceIds =
-                List.of(
-                        new MedicalResourceId(
-                                DATA_SOURCE_ID,
-                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                                FHIR_RESOURCE_ID_IMMUNIZATION));
+        List<MedicalResourceId> medicalResourceIds = List.of(getMedicalResourceId());
 
         List<MedicalResource> resources =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
@@ -481,14 +453,13 @@ public class MedicalResourceHelperTest {
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void readMedicalResourcesByRequest_dbEmpty_returnsEmpty() {
-        ReadMedicalResourcesInitialRequest readImmunizationRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         ReadMedicalResourcesInternalResponse result =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(readImmunizationRequest.toParcel()),
-                        readImmunizationRequest.getPageSize());
+                        PhrPageTokenWrapper.from(request.toParcel()), request.getPageSize());
 
         assertThat(result.getMedicalResources()).isEmpty();
         assertThat(result.getPageToken()).isEqualTo(null);
@@ -500,34 +471,21 @@ public class MedicalResourceHelperTest {
     public void upsertAndReadMedicalResourcesByRequest_MedicalResourceTypeDoesNotExist_success() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        UpsertMedicalResourceInternalRequest upsertImmunizationResourceRequest =
-                makeUpsertRequest(
-                        fhirResource,
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                        FHIR_VERSION_R4,
-                        dataSource.getId());
+        MedicalResource vaccine = createVaccineMedicalResource(dataSource.getId());
 
         List<MedicalResource> upsertedResources =
                 mMedicalResourceHelper.upsertMedicalResources(
-                        DATA_SOURCE_PACKAGE_NAME, List.of(upsertImmunizationResourceRequest));
-        ReadMedicalResourcesInitialRequest readAllergyRequest =
+                        DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(vaccine)));
+        ReadMedicalResourcesInitialRequest readAllAllergiesRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
         ReadMedicalResourcesInternalResponse result =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(readAllergyRequest.toParcel()),
-                        readAllergyRequest.getPageSize());
+                        PhrPageTokenWrapper.from(readAllAllergiesRequest.toParcel()),
+                        readAllAllergiesRequest.getPageSize());
 
-        assertThat(upsertedResources)
-                .containsExactly(
-                        new MedicalResource.Builder(
-                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                        dataSource.getId(),
-                                        FHIR_VERSION_R4,
-                                        fhirResource)
-                                .build());
+        assertThat(upsertedResources).containsExactly(vaccine);
         assertThat(result.getMedicalResources()).isEmpty();
         assertThat(result.getPageToken()).isEqualTo(null);
         assertThat(result.getRemainingCount()).isEqualTo(0);
@@ -536,200 +494,141 @@ public class MedicalResourceHelperTest {
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void upsertMedicalResourcesSameDataSource_readMedicalResourcesByRequest_success() {
-        // Upsert 3 resources in this test: immunization, differentImmunization and allergy, all
+        // Upsert 3 resources in this test: vaccine, differentVaccine and allergy, all
         // with the same data source.
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource immunization =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
-                makeUpsertRequest(immunization);
-        FhirResource differentFhirResource = getFhirResourceDifferentImmunization();
-        MedicalResource differentImmunization =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                differentFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
-                makeUpsertRequest(differentImmunization);
-        FhirResource allergyFhirResource = getFhirResourceAllergy();
-        MedicalResource allergy =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                allergyFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest3 =
-                makeUpsertRequest(allergy);
+        MedicalResource vaccine = createVaccineMedicalResource(dataSource.getId());
+        MedicalResource differentVaccine =
+                createDifferentVaccineMedicalResource(dataSource.getId());
+        MedicalResource allergy = createAllergyMedicalResource(dataSource.getId());
         List<MedicalResource> upsertedResources =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
                         List.of(
-                                upsertMedicalResourceInternalRequest1,
-                                upsertMedicalResourceInternalRequest2,
-                                upsertMedicalResourceInternalRequest3));
+                                makeUpsertRequest(vaccine),
+                                makeUpsertRequest(differentVaccine),
+                                makeUpsertRequest(allergy)));
 
-        ReadMedicalResourcesInitialRequest readAllergyRequest =
+        ReadMedicalResourcesInitialRequest readAllAllergiesRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
-        ReadMedicalResourcesInitialRequest readAllImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest readAllVaccinesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
-        ReadMedicalResourcesInitialRequest readImmunizationsFromSameDataSourceRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest readVaccinesFromSameDataSourceRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource.getId())
                         .build();
-        ReadMedicalResourcesInitialRequest readImmunizationsFromDifferentDataSourceRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest readVaccinesFromDifferentDataSourceRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .build();
-        ReadMedicalResourcesInternalResponse allergyResult =
+        ReadMedicalResourcesInternalResponse allAllergiesResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(readAllergyRequest.toParcel()),
-                        readAllergyRequest.getPageSize());
-        ReadMedicalResourcesInternalResponse allImmunizationsResult =
+                        PhrPageTokenWrapper.from(readAllAllergiesRequest.toParcel()),
+                        readAllAllergiesRequest.getPageSize());
+        ReadMedicalResourcesInternalResponse allVaccinesResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(readAllImmunizationsRequest.toParcel()),
-                        readAllImmunizationsRequest.getPageSize());
-        ReadMedicalResourcesInternalResponse immunizationsFromSameDataSourceResult =
+                        PhrPageTokenWrapper.from(readAllVaccinesRequest.toParcel()),
+                        readAllVaccinesRequest.getPageSize());
+        ReadMedicalResourcesInternalResponse vaccinesFromSameDataSourceResult =
+                mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
+                        PhrPageTokenWrapper.from(readVaccinesFromSameDataSourceRequest.toParcel()),
+                        readVaccinesFromSameDataSourceRequest.getPageSize());
+        ReadMedicalResourcesInternalResponse vaccinesFromDifferentDataSourceResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
                         PhrPageTokenWrapper.from(
-                                readImmunizationsFromSameDataSourceRequest.toParcel()),
-                        readImmunizationsFromSameDataSourceRequest.getPageSize());
-        ReadMedicalResourcesInternalResponse immunizationsFromDifferentDataSourceResult =
-                mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(
-                                readImmunizationsFromDifferentDataSourceRequest.toParcel()),
-                        readImmunizationsFromDifferentDataSourceRequest.getPageSize());
+                                readVaccinesFromDifferentDataSourceRequest.toParcel()),
+                        readVaccinesFromDifferentDataSourceRequest.getPageSize());
 
-        assertThat(upsertedResources).containsExactly(immunization, differentImmunization, allergy);
-        assertThat(allergyResult.getMedicalResources()).containsExactly(allergy);
-        assertThat(allergyResult.getPageToken()).isEqualTo(null);
-        assertThat(allergyResult.getRemainingCount()).isEqualTo(0);
-        assertThat(allImmunizationsResult.getMedicalResources())
-                .containsExactly(immunization, differentImmunization);
-        assertThat(allImmunizationsResult.getPageToken()).isEqualTo(null);
-        assertThat(allImmunizationsResult.getRemainingCount()).isEqualTo(0);
-        assertThat(immunizationsFromSameDataSourceResult.getMedicalResources())
-                .containsExactly(immunization, differentImmunization);
-        assertThat(immunizationsFromSameDataSourceResult.getPageToken()).isEqualTo(null);
-        assertThat(immunizationsFromDifferentDataSourceResult.getMedicalResources()).isEmpty();
-        assertThat(immunizationsFromDifferentDataSourceResult.getPageToken()).isEqualTo(null);
-        assertThat(immunizationsFromDifferentDataSourceResult.getRemainingCount()).isEqualTo(0);
+        assertThat(upsertedResources).containsExactly(vaccine, differentVaccine, allergy);
+        assertThat(allAllergiesResult.getMedicalResources()).containsExactly(allergy);
+        assertThat(allAllergiesResult.getPageToken()).isEqualTo(null);
+        assertThat(allAllergiesResult.getRemainingCount()).isEqualTo(0);
+        assertThat(allVaccinesResult.getMedicalResources())
+                .containsExactly(vaccine, differentVaccine);
+        assertThat(allVaccinesResult.getPageToken()).isEqualTo(null);
+        assertThat(allVaccinesResult.getRemainingCount()).isEqualTo(0);
+        assertThat(vaccinesFromSameDataSourceResult.getMedicalResources())
+                .containsExactly(vaccine, differentVaccine);
+        assertThat(vaccinesFromSameDataSourceResult.getPageToken()).isEqualTo(null);
+        assertThat(vaccinesFromDifferentDataSourceResult.getMedicalResources()).isEmpty();
+        assertThat(vaccinesFromDifferentDataSourceResult.getPageToken()).isEqualTo(null);
+        assertThat(vaccinesFromDifferentDataSourceResult.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void upsertMedicalResourcesDifferentDataSources_readMedicalResourcesByRequest_success() {
-        // Upsert 3 resources in this test: immunization, differentImmunization and allergy. Among
-        // which immunization and allergy are from data source 1 and the differentImmunization is
+        // Upsert 3 resources in this test: vaccine, differentVaccine and allergy. Among
+        // which vaccine and allergy are from data source 1 and the differentVaccine is
         // from data source 2.
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource immunizationDS1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource1.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertRequestImmunizationDataSource1 =
-                makeUpsertRequest(immunizationDS1);
-        FhirResource differentFhirResource = getFhirResourceDifferentImmunization();
-        MedicalResource differentImmunizationDS2 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource2.getId(),
-                                FHIR_VERSION_R4,
-                                differentFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertRequestImmunization2DataSource2 =
-                makeUpsertRequest(differentImmunizationDS2);
-        FhirResource allergyFhirResource = getFhirResourceAllergy();
-        MedicalResource allergyDS1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                dataSource1.getId(),
-                                FHIR_VERSION_R4,
-                                allergyFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertRequestAllergyDataSource1 =
-                makeUpsertRequest(allergyDS1);
+        MedicalResource vaccineDS1 = createVaccineMedicalResource(dataSource1.getId());
+        MedicalResource differentVaccineDS2 =
+                createDifferentVaccineMedicalResource(dataSource2.getId());
+        MedicalResource allergyDS1 = createAllergyMedicalResource(dataSource1.getId());
         List<MedicalResource> upsertedResources =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
-                        List.of(
-                                upsertRequestImmunizationDataSource1,
-                                upsertRequestAllergyDataSource1));
+                        List.of(makeUpsertRequest(vaccineDS1), makeUpsertRequest(allergyDS1)));
         upsertedResources.addAll(
                 mMedicalResourceHelper.upsertMedicalResources(
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
-                        List.of(upsertRequestImmunization2DataSource2)));
+                        List.of(makeUpsertRequest(differentVaccineDS2))));
 
-        ReadMedicalResourcesInitialRequest readAllergyRequest =
+        ReadMedicalResourcesInitialRequest readAllAllergiesRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
-        ReadMedicalResourcesInitialRequest readImmunizationRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest readAllVaccinesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
-        ReadMedicalResourcesInitialRequest readImmunizationsFromDataSource1Request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest readVaccinesFromDataSource1Request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource1.getId())
                         .build();
-        ReadMedicalResourcesInitialRequest readImmunizationsFromDataSource2Request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+        ReadMedicalResourcesInitialRequest readVaccinesFromDataSource2Request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(dataSource2.getId())
                         .build();
-        ReadMedicalResourcesInternalResponse allergyResult =
+        ReadMedicalResourcesInternalResponse allAllergiesResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(readAllergyRequest.toParcel()),
-                        readAllergyRequest.getPageSize());
-        ReadMedicalResourcesInternalResponse immunizationResult =
+                        PhrPageTokenWrapper.from(readAllAllergiesRequest.toParcel()),
+                        readAllAllergiesRequest.getPageSize());
+        ReadMedicalResourcesInternalResponse allVaccinesResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(readImmunizationRequest.toParcel()),
-                        readImmunizationRequest.getPageSize());
-        ReadMedicalResourcesInternalResponse immunizationsFromDataSource1Result =
+                        PhrPageTokenWrapper.from(readAllVaccinesRequest.toParcel()),
+                        readAllVaccinesRequest.getPageSize());
+        ReadMedicalResourcesInternalResponse vaccinesFromDataSource1Result =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(
-                                readImmunizationsFromDataSource1Request.toParcel()),
-                        readImmunizationsFromDataSource1Request.getPageSize());
-        ReadMedicalResourcesInternalResponse immunizationsFromDataSource2Result =
+                        PhrPageTokenWrapper.from(readVaccinesFromDataSource1Request.toParcel()),
+                        readVaccinesFromDataSource1Request.getPageSize());
+        ReadMedicalResourcesInternalResponse vaccinesFromDataSource2Result =
                 mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
-                        PhrPageTokenWrapper.from(
-                                readImmunizationsFromDataSource2Request.toParcel()),
-                        readImmunizationsFromDataSource2Request.getPageSize());
+                        PhrPageTokenWrapper.from(readVaccinesFromDataSource2Request.toParcel()),
+                        readVaccinesFromDataSource2Request.getPageSize());
 
-        assertThat(upsertedResources)
-                .containsExactly(immunizationDS1, differentImmunizationDS2, allergyDS1);
-        assertThat(allergyResult.getMedicalResources()).containsExactly(allergyDS1);
-        assertThat(allergyResult.getPageToken()).isEqualTo(null);
-        assertThat(allergyResult.getRemainingCount()).isEqualTo(0);
-        assertThat(immunizationResult.getMedicalResources())
-                .containsExactly(immunizationDS1, differentImmunizationDS2);
-        assertThat(immunizationResult.getPageToken()).isEqualTo(null);
-        assertThat(immunizationResult.getRemainingCount()).isEqualTo(0);
-        assertThat(immunizationsFromDataSource1Result.getMedicalResources())
-                .containsExactly(immunizationDS1);
-        assertThat(immunizationsFromDataSource1Result.getPageToken()).isEqualTo(null);
-        assertThat(immunizationsFromDataSource1Result.getRemainingCount()).isEqualTo(0);
-        assertThat(immunizationsFromDataSource2Result.getMedicalResources())
-                .containsExactly(differentImmunizationDS2);
-        assertThat(immunizationsFromDataSource2Result.getPageToken()).isEqualTo(null);
-        assertThat(immunizationsFromDataSource2Result.getRemainingCount()).isEqualTo(0);
+        assertThat(upsertedResources).containsExactly(vaccineDS1, differentVaccineDS2, allergyDS1);
+        assertThat(allAllergiesResult.getMedicalResources()).containsExactly(allergyDS1);
+        assertThat(allAllergiesResult.getPageToken()).isEqualTo(null);
+        assertThat(allAllergiesResult.getRemainingCount()).isEqualTo(0);
+        assertThat(allVaccinesResult.getMedicalResources())
+                .containsExactly(vaccineDS1, differentVaccineDS2);
+        assertThat(allVaccinesResult.getPageToken()).isEqualTo(null);
+        assertThat(allVaccinesResult.getRemainingCount()).isEqualTo(0);
+        assertThat(vaccinesFromDataSource1Result.getMedicalResources()).containsExactly(vaccineDS1);
+        assertThat(vaccinesFromDataSource1Result.getPageToken()).isEqualTo(null);
+        assertThat(vaccinesFromDataSource1Result.getRemainingCount()).isEqualTo(0);
+        assertThat(vaccinesFromDataSource2Result.getMedicalResources())
+                .containsExactly(differentVaccineDS2);
+        assertThat(vaccinesFromDataSource2Result.getPageToken()).isEqualTo(null);
+        assertThat(vaccinesFromDataSource2Result.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -740,7 +639,7 @@ public class MedicalResourceHelperTest {
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 makeUpsertRequest(
                         fhirResource,
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         FHIR_VERSION_R4,
                         datasourceId);
 
@@ -768,13 +667,13 @@ public class MedicalResourceHelperTest {
         UpsertMedicalResourceInternalRequest upsertRequestOwnDataSource =
                 makeUpsertRequest(
                         getFhirResource(),
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         FHIR_VERSION_R4,
                         ownDataSource.getId());
         UpsertMedicalResourceInternalRequest upsertRequestDifferentDataSource =
                 makeUpsertRequest(
                         getFhirResource(),
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         FHIR_VERSION_R4,
                         differentDataSource.getId());
 
@@ -802,7 +701,7 @@ public class MedicalResourceHelperTest {
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 makeUpsertRequest(
                         fhirResource,
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         FHIR_VERSION_R4B,
                         dataSource.getId());
 
@@ -827,47 +726,23 @@ public class MedicalResourceHelperTest {
     public void readSubsetOfResourcesByIds_multipleResourcesUpserted_success() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource resource1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
-                makeUpsertRequest(resource1);
-        MedicalResourceId medicalResourceId1 =
-                new MedicalResourceId(
-                        dataSource.getId(), fhirResource.getType(), fhirResource.getId());
-        FhirResource allergyFhirResource = getFhirResourceAllergy();
-        MedicalResource resource2 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                allergyFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
-                makeUpsertRequest(resource2);
-
+        MedicalResource resource1 = createVaccineMedicalResource(dataSource.getId());
+        MedicalResource resource2 = createAllergyMedicalResource(dataSource.getId());
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
-                        List.of(
-                                upsertMedicalResourceInternalRequest1,
-                                upsertMedicalResourceInternalRequest2));
-        List<MedicalResource> readResult =
+                        List.of(makeUpsertRequest(resource1), makeUpsertRequest(resource2)));
+        List<MedicalResource> readResource1Result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                        List.of(medicalResourceId1));
+                        List.of(resource1.getId()));
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
 
         assertThat(upsertedMedicalResources).containsExactly(resource1, resource2);
         assertThat(indicesResult)
                 .containsExactly(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
-        assertThat(readResult).containsExactly(resource1);
+        assertThat(readResource1Result).containsExactly(resource1);
     }
 
     @Test
@@ -875,14 +750,7 @@ public class MedicalResourceHelperTest {
     public void insertMedicalResources_returnsMedicalResources() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource expectedResource =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
+        MedicalResource expectedResource = createVaccineMedicalResource(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 makeUpsertRequest(expectedResource);
 
@@ -898,14 +766,7 @@ public class MedicalResourceHelperTest {
     public void insertSingleMedicalResource_readSingleResource() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource expectedResource =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
+        MedicalResource expectedResource = createVaccineMedicalResource(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 makeUpsertRequest(expectedResource);
         List<MedicalResourceId> ids = List.of(expectedResource.getId());
@@ -919,7 +780,7 @@ public class MedicalResourceHelperTest {
 
         assertThat(result).isEqualTo(upsertedMedicalResources);
         assertThat(result).containsExactly(expectedResource);
-        assertThat(indicesResult).containsExactly(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+        assertThat(indicesResult).containsExactly(MEDICAL_RESOURCE_TYPE_VACCINES);
     }
 
     @Test
@@ -956,7 +817,7 @@ public class MedicalResourceHelperTest {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                 ids,
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ true);
@@ -966,11 +827,11 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void readById_inBgWithoutBgPerm_noWritePerm_immunizationReadPermOnly_noAccessLog() {
+    public void readById_inBgWithoutBgPerm_noWritePerm_vaccineReadPermOnly_noAccessLog() {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                 ids,
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ true);
@@ -985,25 +846,23 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationPackage1 =
-                createImmunizationMedicalResource(dataSource1.getId());
-        MedicalResource immunizationPackage2 =
-                createImmunizationMedicalResource(dataSource2.getId());
+        MedicalResource vaccinePackage1 = createVaccineMedicalResource(dataSource1.getId());
+        MedicalResource vaccinePackage2 = createVaccineMedicalResource(dataSource2.getId());
         MedicalResource allergyResourcePackage2 = createAllergyMedicalResource(dataSource2.getId());
         mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(immunizationPackage1)));
+                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(vaccinePackage1)));
         mMedicalResourceHelper.upsertMedicalResources(
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                 List.of(
-                        makeUpsertRequest(immunizationPackage2),
+                        makeUpsertRequest(vaccinePackage2),
                         makeUpsertRequest(allergyResourcePackage2)));
         // Clear access logs table, so that only the access logs from read will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                 List.of(
-                        immunizationPackage1.getId(),
-                        immunizationPackage2.getId(),
+                        vaccinePackage1.getId(),
+                        vaccinePackage2.getId(),
                         allergyResourcePackage2.getId()),
                 Set.of(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                 DATA_SOURCE_PACKAGE_NAME,
@@ -1014,7 +873,7 @@ public class MedicalResourceHelperTest {
         // is calling from foreground or background with permission.
         // has MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES read permission.
         // has write permission.
-        // The data that the calling app can read: immunizationPackage1 (through selfRead)
+        // The data that the calling app can read: vaccinePackage1 (through selfRead)
         // allergyResourcePackage2 (through read permission)
         // In this case, read access log is only created for non self read data:
         // MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES.
@@ -1038,11 +897,10 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationPackage1 =
-                createImmunizationMedicalResource(dataSource1.getId());
+        MedicalResource vaccinePackage1 = createVaccineMedicalResource(dataSource1.getId());
         MedicalResource allergyResourcePackage2 = createAllergyMedicalResource(dataSource2.getId());
         mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(immunizationPackage1)));
+                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(vaccinePackage1)));
         mMedicalResourceHelper.upsertMedicalResources(
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                 List.of(makeUpsertRequest(allergyResourcePackage2)));
@@ -1050,25 +908,25 @@ public class MedicalResourceHelperTest {
         mAccessLogsHelper.clearData(mTransactionManager);
 
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
-                List.of(immunizationPackage1.getId(), allergyResourcePackage2.getId()),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                List.of(vaccinePackage1.getId(), allergyResourcePackage2.getId()),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ false);
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // no write permission.
-        // The data that the calling app can read: immunizationPackage1 (through read permission)
+        // The data that the calling app can read: vaccinePackage1 (through read permission)
         // In this case, read access log is created based on the intention of the app
-        // even though the actual data accessed is self data: MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS.
+        // even though the actual data accessed is self data: MEDICAL_RESOURCE_TYPE_VACCINES.
         AccessLog expected =
                 new AccessLog(
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_READ,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -1080,33 +938,32 @@ public class MedicalResourceHelperTest {
     public void readById_expectAccessLogsWhenAppHasNoWritePermHasReadPermReadNonSelfData() {
         String dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME).getId();
-        MedicalResource immunizationDifferentPackage =
-                createImmunizationMedicalResource(dataSource);
+        MedicalResource vaccineDifferentPackage = createVaccineMedicalResource(dataSource);
         mMedicalResourceHelper.upsertMedicalResources(
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
-                List.of(makeUpsertRequest(immunizationDifferentPackage)));
+                List.of(makeUpsertRequest(vaccineDifferentPackage)));
         // Clear access logs table, so that only the access logs from read will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
-                List.of(immunizationDifferentPackage.getId()),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                List.of(vaccineDifferentPackage.getId()),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ false);
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // no write permission.
-        // The data that the calling app can read: immunization (through read permission)
-        // In this case, read access log is created: MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS.
+        // The data that the calling app can read: vaccine (through read permission)
+        // In this case, read access log is created: MEDICAL_RESOURCE_TYPE_VACCINES.
         AccessLog expected =
                 new AccessLog(
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_READ,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -1115,11 +972,11 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void readById_inForegroundOrBgWithPerm_hasReadImmunization_noResourceRead_noAccessLog() {
+    public void readById_inForegroundOrBgWithPerm_hasReadVaccine_noResourceRead_noAccessLog() {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                 ids,
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
@@ -1148,31 +1005,31 @@ public class MedicalResourceHelperTest {
     public void readById_expectAccessLogsWhenAppHasWritePermHasReadPermReadSelfData() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunization =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        MedicalResource vaccine =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         // Clear access logs table, so that only the access logs from read will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
-                List.of(immunization.getId()),
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                List.of(vaccine.getId()),
+                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS read permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES read permission.
         // has write permission.
-        // The data that the calling app can read: immunization (through read permission)
+        // The data that the calling app can read: vaccine (through read permission)
         // In this case, read access log is created based on the intention of the app
-        // even though the actual data accessed is self data: MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS.
+        // even though the actual data accessed is self data: MEDICAL_RESOURCE_TYPE_VACCINES.
         AccessLog expected =
                 new AccessLog(
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_READ,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -1184,28 +1041,27 @@ public class MedicalResourceHelperTest {
     public void readById_expectAccessLogsForEachResourceTypeReadBasedOnReadPerm() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunization =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        MedicalResource vaccine =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         // Clear access logs table, so that only the access logs from read will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
-                List.of(immunization.getId()),
+                List.of(vaccine.getId()),
                 Set.of(
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        MEDICAL_RESOURCE_TYPE_VACCINES),
                 DATA_SOURCE_PACKAGE_NAME,
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
 
         // Testing the case where calling app:
         // is calling from foreground or background with permission.
-        // has MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS and MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
-        // read
-        // permission.
+        // has MEDICAL_RESOURCE_TYPE_VACCINES and MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
+        // read permission.
         // has write permission.
-        // The data that the calling app reads: immunization (through read permission)
-        // In this case, read access log is created only for: MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS.
+        // The data that the calling app reads: vaccine (through read permission)
+        // In this case, read access log is created only for: MEDICAL_RESOURCE_TYPE_VACCINES.
         // Even though the app has read permission for MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
         // the app did
         // not read any data of that type, so no access logs added for that.
@@ -1214,7 +1070,7 @@ public class MedicalResourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_READ,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -1228,20 +1084,18 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
@@ -1253,7 +1107,7 @@ public class MedicalResourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(immunizationDatasource1, allergyDatasource1);
+        assertThat(result).containsExactly(vaccineDatasource1, allergyDatasource1);
     }
 
     @Test
@@ -1263,91 +1117,84 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         ids,
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(immunizationDatasource1, allergyDatasource1);
+        assertThat(result).containsExactly(vaccineDatasource1, allergyDatasource1);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void readById_inBgWithoutBgPerm_noWritePerm_immunizationReadPermOnly_success() {
+    public void readById_inBgWithoutBgPerm_noWritePerm_vaccineReadPermOnly_success() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         ids,
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(immunizationDatasource1);
+        assertThat(result).containsExactly(vaccineDatasource1);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void
-            readById_inBgWithoutBgPerm_noWritePerm_bothAllergyAndImmunizationReadPerm_success() {
+    public void readById_inBgWithoutBgPerm_noWritePerm_bothAllergyAndVaccineReadPerm_success() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
@@ -1356,12 +1203,12 @@ public class MedicalResourceHelperTest {
                         ids,
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(immunizationDatasource1, allergyDatasource1);
+        assertThat(result).containsExactly(vaccineDatasource1, allergyDatasource1);
     }
 
     @Test
@@ -1371,32 +1218,30 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         ids,
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(immunizationDatasource1, immunizationDatasource2);
+        assertThat(result).containsExactly(vaccineDatasource1, vaccineDatasource2);
     }
 
     @Test
@@ -1406,20 +1251,18 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
@@ -1431,42 +1274,40 @@ public class MedicalResourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(immunizationDatasource1, allergyDatasource1);
+        assertThat(result).containsExactly(vaccineDatasource1, allergyDatasource1);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void readById_inForeground_noWritePerm_readImmunizationPerm_canOnlyReadImmunization() {
+    public void readById_inForeground_noWritePerm_readVaccinePerm_canOnlyReadVaccine() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         ids,
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(immunizationDatasource1, immunizationDatasource2);
+        assertThat(result).containsExactly(vaccineDatasource1, vaccineDatasource2);
     }
 
     @Test
@@ -1476,20 +1317,18 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
@@ -1506,25 +1345,23 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void readById_inForeground_noWritePerm_readImmunizationAndAllergyPerm_canReadBoth() {
+    public void readById_inForeground_noWritePerm_readVaccineAndAllergyPerm_canReadBoth() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
@@ -1533,62 +1370,58 @@ public class MedicalResourceHelperTest {
                         ids,
                         Set.of(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                                MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
         assertThat(result)
                 .containsExactly(
-                        immunizationDatasource1,
-                        immunizationDatasource2,
+                        vaccineDatasource1,
+                        vaccineDatasource2,
                         allergyDatasource1,
                         allergyDatasource2);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void
-            readById_inForeground_hasWritePermAndReadImmunization_readsSelfDataAndImmunizations() {
+    public void readById_inForeground_hasWritePermAndReadVaccine_readsSelfDataAndVaccines() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationDatasource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccineDatasource1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource allergyDatasource1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource immunizationDatasource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDatasource2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyDatasource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         List<MedicalResourceId> ids =
                 List.of(
-                        immunizationDatasource1.getId(),
-                        immunizationDatasource2.getId(),
+                        vaccineDatasource1.getId(),
+                        vaccineDatasource2.getId(),
                         allergyDatasource1.getId(),
                         allergyDatasource2.getId());
 
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         ids,
-                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         DATA_SOURCE_PACKAGE_NAME,
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
         assertThat(result)
-                .containsExactly(
-                        immunizationDatasource1, immunizationDatasource2, allergyDatasource1);
+                .containsExactly(vaccineDatasource1, vaccineDatasource2, allergyDatasource1);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readByRequest_isNotEnforceSelfRead_createsAccessLog() {
         ReadMedicalResourcesInitialRequest readRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                 PhrPageTokenWrapper.from(readRequest.toParcel()),
@@ -1601,7 +1434,7 @@ public class MedicalResourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_READ,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
 
         assertThat(mAccessLogsHelper.queryAccessLogs())
@@ -1613,7 +1446,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readByRequest_isEnforceSelfRead_doesNotCreateAccessLog() {
         ReadMedicalResourcesInitialRequest readRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                 PhrPageTokenWrapper.from(readRequest.toParcel()),
@@ -1628,20 +1461,20 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void readByRequest_isNotEnforceSelfRead_immunizationFilter_canReadAllImmunizations() {
+    public void readByRequest_isNotEnforceSelfRead_vaccineFilter_canReadAllVaccines() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        // In total inserts 8 resources, among which 6 are Immunizations to be read in 3 pages.
-        List<MedicalResource> immunizationsDataSource1 =
+        // In total inserts 8 resources, among which 6 are vaccines to be read in 3 pages.
+        List<MedicalResource> vaccinesDataSource1 =
                 mUtil.upsertResources(
-                        PhrDataFactory::createImmunizationMedicalResources,
+                        PhrDataFactory::createVaccineMedicalResources,
                         /* numOfResources= */ 4,
                         dataSource1);
-        List<MedicalResource> immunizationsDataSource2 =
+        List<MedicalResource> vaccinesDataSource2 =
                 mUtil.upsertResources(
-                        PhrDataFactory::createImmunizationMedicalResources,
+                        PhrDataFactory::createVaccineMedicalResources,
                         /* numOfResources= */ 2,
                         dataSource2);
         List<MedicalResource> allergyDatasource1 =
@@ -1650,10 +1483,10 @@ public class MedicalResourceHelperTest {
                         /* numOfResources= */ 2,
                         dataSource1);
         List<MedicalResource> resources =
-                joinLists(immunizationsDataSource1, immunizationsDataSource2, allergyDatasource1);
+                joinLists(vaccinesDataSource1, vaccinesDataSource2, allergyDatasource1);
 
         ReadMedicalResourcesInitialRequest initialRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(2)
                         .build();
         PhrPageTokenWrapper initialPageTokenWrapper =
@@ -1708,21 +1541,21 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void readByRequest_enforceSelfRead_immunizationFilter_canReadOnlySelfImmunization() {
+    public void readByRequest_enforceSelfRead_vaccineFilter_canReadOnlySelfVaccines() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        // In total inserts 8 resources, among which 4 are Immunizations from data source 1 to be
+        // In total inserts 8 resources, among which 4 are vaccines from data source 1 to be
         // read in 2 pages.
-        List<MedicalResource> immunizationsDataSource1 =
+        List<MedicalResource> vaccinesDataSource1 =
                 mUtil.upsertResources(
-                        PhrDataFactory::createImmunizationMedicalResources,
+                        PhrDataFactory::createVaccineMedicalResources,
                         /* numOfResources= */ 4,
                         dataSource1);
-        List<MedicalResource> immunizationsDataSource2 =
+        List<MedicalResource> vaccinesDataSource2 =
                 mUtil.upsertResources(
-                        PhrDataFactory::createImmunizationMedicalResources,
+                        PhrDataFactory::createVaccineMedicalResources,
                         /* numOfResources= */ 2,
                         dataSource2);
         List<MedicalResource> allergyDatasource1 =
@@ -1731,10 +1564,10 @@ public class MedicalResourceHelperTest {
                         /* numOfResources= */ 2,
                         dataSource1);
         List<MedicalResource> resources =
-                joinLists(immunizationsDataSource1, immunizationsDataSource2, allergyDatasource1);
+                joinLists(vaccinesDataSource1, vaccinesDataSource2, allergyDatasource1);
 
         ReadMedicalResourcesInitialRequest initialRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(2)
                         .build();
         PhrPageTokenWrapper initialPageTokenWrapper =
@@ -1777,43 +1610,23 @@ public class MedicalResourceHelperTest {
         // clearer.
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource1 = getFhirResource();
-        MedicalResource resource1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource1)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
-                makeUpsertRequest(resource1);
-        FhirResource fhirResource2 = getFhirResourceAllergy();
-        MedicalResource resource2 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource2)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
-                makeUpsertRequest(resource2);
-        List<MedicalResourceId> ids = List.of(resource1.getId(), resource2.getId());
+        MedicalResource resource1 = createVaccineMedicalResource(dataSource.getId());
+        MedicalResource resource2 = createAllergyMedicalResource(dataSource.getId());
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
-                        List.of(
-                                upsertMedicalResourceInternalRequest1,
-                                upsertMedicalResourceInternalRequest2));
+                        List.of(makeUpsertRequest(resource1), makeUpsertRequest(resource2)));
         List<MedicalResource> result =
-                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(ids);
+                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                        List.of(resource1.getId(), resource2.getId()));
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
 
         assertThat(result).containsExactly(resource1, resource2);
         assertThat(upsertedMedicalResources).containsExactly(resource1, resource2);
         assertThat(indicesResult)
                 .containsExactly(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
     }
 
@@ -1823,16 +1636,14 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResources(
-                PhrDataFactory::createImmunizationMedicalResources,
-                /* numOfResources= */ 6,
-                dataSource);
+                PhrDataFactory::createVaccineMedicalResources, /* numOfResources= */ 6, dataSource);
 
         AccessLog expected =
                 new AccessLog(
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_UPSERT,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
 
         assertThat(mAccessLogsHelper.queryAccessLogs())
@@ -1844,11 +1655,11 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void insertMedicalResourcesOfDifferentTypes_createsAccessLog_success() {
         String dataSource = mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
-        MedicalResource immunization = createImmunizationMedicalResource(dataSource);
+        MedicalResource vaccine = createVaccineMedicalResource(dataSource);
         MedicalResource allergy = createAllergyMedicalResource(dataSource);
         mMedicalResourceHelper.upsertMedicalResources(
                 DATA_SOURCE_PACKAGE_NAME,
-                createUpsertMedicalResourceRequests(List.of(immunization, allergy), dataSource));
+                createUpsertMedicalResourceRequests(List.of(vaccine, allergy), dataSource));
 
         AccessLog expected =
                 new AccessLog(
@@ -1856,7 +1667,7 @@ public class MedicalResourceHelperTest {
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_UPSERT,
                         /* medicalResourceTypes= */ Set.of(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                         /* isMedicalDataSourceAccessed= */ false);
 
@@ -1869,17 +1680,17 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void insertAndUpdateMedicalResources_createsAccessLog_success() throws JSONException {
         String dataSource = mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
-        MedicalResource immunization = createImmunizationMedicalResource(dataSource);
+        MedicalResource vaccine = createVaccineMedicalResource(dataSource);
         MedicalResource allergy = createAllergyMedicalResource(dataSource);
-        MedicalResource updatedImmunization = createUpdatedImmunizationMedicalResource(dataSource);
+        MedicalResource updatedVaccine = createUpdatedVaccineMedicalResource(dataSource);
         // initial insert
         mMedicalResourceHelper.upsertMedicalResources(
                 DATA_SOURCE_PACKAGE_NAME,
-                createUpsertMedicalResourceRequests(List.of(immunization, allergy), dataSource));
-        // update the immunization resource
+                createUpsertMedicalResourceRequests(List.of(vaccine, allergy), dataSource));
+        // update the vaccine resource
         mMedicalResourceHelper.upsertMedicalResources(
                 DATA_SOURCE_PACKAGE_NAME,
-                createUpsertMedicalResourceRequests(List.of(updatedImmunization), dataSource));
+                createUpsertMedicalResourceRequests(List.of(updatedVaccine), dataSource));
 
         AccessLog insertAccessLog =
                 new AccessLog(
@@ -1887,7 +1698,7 @@ public class MedicalResourceHelperTest {
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_UPSERT,
                         /* medicalResourceTypes= */ Set.of(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                         /* isMedicalDataSourceAccessed= */ false);
         AccessLog updateAccessLog =
@@ -1895,7 +1706,7 @@ public class MedicalResourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_UPSERT,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
 
         assertThat(mAccessLogsHelper.queryAccessLogs())
@@ -1910,42 +1721,22 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource resource1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource1.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
-                makeUpsertRequest(resource1);
-        MedicalResource resource2 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource2.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
-                makeUpsertRequest(resource2);
-        List<MedicalResourceId> ids = List.of(resource1.getId(), resource2.getId());
+        MedicalResource resource1 = createVaccineMedicalResource(dataSource1.getId());
+        MedicalResource resource2 = createDifferentVaccineMedicalResource(dataSource2.getId());
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
-                        List.of(
-                                upsertMedicalResourceInternalRequest1,
-                                upsertMedicalResourceInternalRequest2));
+                        List.of(makeUpsertRequest(resource1), makeUpsertRequest(resource2)));
         List<MedicalResource> result =
-                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(ids);
+                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                        List.of(resource1.getId(), resource2.getId()));
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
 
         assertThat(result).containsExactly(resource1, resource2);
         assertThat(upsertedMedicalResources).containsExactly(resource1, resource2);
         assertThat(indicesResult)
-                .containsExactly(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+                .containsExactly(MEDICAL_RESOURCE_TYPE_VACCINES, MEDICAL_RESOURCE_TYPE_VACCINES);
     }
 
     @Test
@@ -1953,40 +1744,22 @@ public class MedicalResourceHelperTest {
     public void updateSingleMedicalResource_success() throws JSONException {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource originalFhirResource = getFhirResource();
-        FhirResource fhirResourceUpdated =
-                getFhirResourceBuilder()
-                        .setData(addCompletedStatus(getFhirResource().getData()))
-                        .build();
-        UpsertMedicalResourceInternalRequest originalUpsertRequest =
-                makeUpsertRequest(
-                        originalFhirResource,
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                        FHIR_VERSION_R4,
-                        dataSource.getId());
-        MedicalResource expectedUpdatedMedicalResource =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResourceUpdated)
-                        .build();
-        UpsertMedicalResourceInternalRequest updateRequest =
-                makeUpsertRequest(expectedUpdatedMedicalResource);
-        List<MedicalResourceId> ids = List.of(expectedUpdatedMedicalResource.getId());
+        MedicalResource originalResource = createVaccineMedicalResource(dataSource.getId());
+        MedicalResource updatedResource = createUpdatedVaccineMedicalResource(dataSource.getId());
 
         mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME, List.of(originalUpsertRequest));
+                DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(originalResource)));
         List<MedicalResource> updatedMedicalResource =
                 mMedicalResourceHelper.upsertMedicalResources(
-                        DATA_SOURCE_PACKAGE_NAME, List.of(updateRequest));
+                        DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(updatedResource)));
         List<MedicalResource> result =
-                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(ids);
+                mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                        List.of(originalResource.getId()));
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
 
-        assertThat(result).containsExactly(expectedUpdatedMedicalResource);
+        assertThat(result).containsExactly(updatedResource);
         assertThat(result).isEqualTo(updatedMedicalResource);
-        assertThat(indicesResult).containsExactly(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
+        assertThat(indicesResult).containsExactly(MEDICAL_RESOURCE_TYPE_VACCINES);
     }
 
     @Test
@@ -1995,60 +1768,30 @@ public class MedicalResourceHelperTest {
             throws JSONException {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource originalResource =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
-                makeUpsertRequest(originalResource);
-        FhirResource updatedFhirResource = getUpdatedImmunizationFhirResource();
-        MedicalResource updatedResource1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                updatedFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequestUpdated1 =
-                makeUpsertRequest(updatedResource1);
-        FhirResource allergyFhirResource = getFhirResourceAllergy();
-        MedicalResource resource2 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                allergyFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
-                makeUpsertRequest(resource2);
-        List<MedicalResourceId> medicalIdFilters =
-                List.of(updatedResource1.getId(), resource2.getId());
+        MedicalResource originalResource1 = createVaccineMedicalResource(dataSource.getId());
+        MedicalResource updatedResource1 = createUpdatedVaccineMedicalResource(dataSource.getId());
+        MedicalResource resource2 = createAllergyMedicalResource(dataSource.getId());
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
                         List.of(
-                                upsertMedicalResourceInternalRequest1,
-                                upsertMedicalResourceInternalRequest2));
+                                makeUpsertRequest(originalResource1),
+                                makeUpsertRequest(resource2)));
         List<MedicalResource> updatedMedicalResource =
                 mMedicalResourceHelper.upsertMedicalResources(
-                        DATA_SOURCE_PACKAGE_NAME,
-                        List.of(upsertMedicalResourceInternalRequestUpdated1));
-        List<MedicalResource> result =
+                        DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(updatedResource1)));
+        List<MedicalResource> readResults =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                        medicalIdFilters);
+                        List.of(updatedResource1.getId(), resource2.getId()));
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
 
-        assertThat(result).containsExactly(updatedResource1, resource2);
-        assertThat(upsertedMedicalResources).containsExactly(originalResource, resource2);
+        assertThat(readResults).containsExactly(updatedResource1, resource2);
+        assertThat(upsertedMedicalResources).containsExactly(originalResource1, resource2);
         assertThat(updatedMedicalResource).containsExactly(updatedResource1);
         assertThat(indicesResult)
                 .containsExactly(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
     }
 
@@ -2058,73 +1801,35 @@ public class MedicalResourceHelperTest {
             throws JSONException {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
-        FhirResource fhirResource = getFhirResource();
-        MedicalResource resource1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                fhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
-                makeUpsertRequest(resource1);
-        FhirResource updatedFhirResource = getUpdatedImmunizationFhirResource();
-        MedicalResource updatedResource1 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                updatedFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequestUpdated1 =
-                makeUpsertRequest(updatedResource1);
-        FhirResource allergyFhirResource = getFhirResourceAllergy();
-        MedicalResource resource2 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                allergyFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
-                makeUpsertRequest(resource2);
-        FhirResource updatedAllergyFhirResource = getUpdatedAllergyFhirResource();
-        MedicalResource updatedResource2 =
-                new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                dataSource.getId(),
-                                FHIR_VERSION_R4,
-                                updatedAllergyFhirResource)
-                        .build();
-        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequestUpdated2 =
-                makeUpsertRequest(updatedResource2);
+        MedicalResource resource1 = createVaccineMedicalResource(dataSource.getId());
+        MedicalResource updatedResource1 = createUpdatedVaccineMedicalResource(dataSource.getId());
+        MedicalResource resource2 = createAllergyMedicalResource(dataSource.getId());
+        MedicalResource updatedResource2 = createUpdatedAllergyMedicalResource(dataSource.getId());
 
-        List<MedicalResource> upsertedMedicalResources =
+        List<MedicalResource> insertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
-                        List.of(
-                                upsertMedicalResourceInternalRequest1,
-                                upsertMedicalResourceInternalRequest2));
+                        List.of(makeUpsertRequest(resource1), makeUpsertRequest(resource2)));
         List<MedicalResource> updatedMedicalResource =
                 mMedicalResourceHelper.upsertMedicalResources(
                         DATA_SOURCE_PACKAGE_NAME,
                         List.of(
-                                upsertMedicalResourceInternalRequestUpdated1,
-                                upsertMedicalResourceInternalRequestUpdated2));
+                                makeUpsertRequest(updatedResource1),
+                                makeUpsertRequest(updatedResource2)));
         List<MedicalResourceId> medicalIdFilters = List.of(resource1.getId(), resource2.getId());
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
                         medicalIdFilters);
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
 
-        assertThat(upsertedMedicalResources).containsExactly(resource1, resource2);
+        assertThat(insertedMedicalResources).containsExactly(resource1, resource2);
         assertThat(updatedMedicalResource)
                 .containsExactly(updatedResource1, updatedResource2)
                 .inOrder();
         assertThat(result).containsExactly(updatedResource1, updatedResource2);
         assertThat(indicesResult)
                 .containsExactly(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
     }
 
@@ -2134,7 +1839,7 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         List<MedicalResource> resources =
-                createImmunizationMedicalResources(/* numOfResources= */ 6, dataSource.getId());
+                createVaccineMedicalResources(/* numOfResources= */ 6, dataSource.getId());
         List<UpsertMedicalResourceInternalRequest> upsertRequests =
                 createUpsertMedicalResourceRequests(resources, dataSource.getId());
 
@@ -2144,7 +1849,7 @@ public class MedicalResourceHelperTest {
         assertThat(upsertedMedicalResources).containsExactlyElementsIn(resources);
 
         ReadMedicalResourcesInitialRequest initialRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(2)
                         .build();
         PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(initialRequest.toParcel());
@@ -2192,14 +1897,14 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         List<MedicalResource> resources =
-                createImmunizationMedicalResources(/* numOfResources= */ 6, dataSource.getId());
+                createVaccineMedicalResources(/* numOfResources= */ 6, dataSource.getId());
         List<UpsertMedicalResourceInternalRequest> requests =
                 createUpsertMedicalResourceRequests(resources, dataSource.getId());
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(DATA_SOURCE_PACKAGE_NAME, requests);
         ReadMedicalResourcesInitialRequest readRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .setPageSize(10)
                         .build();
         ReadMedicalResourcesInternalResponse result =
@@ -2251,8 +1956,7 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource resource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
@@ -2269,27 +1973,26 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationPackage1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccinePackage1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource unknownResourcePackage2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
         mMedicalResourceHelper.deleteMedicalResourcesByIdsWithPermissionChecks(
-                List.of(immunizationPackage1.getId(), unknownResourcePackage2.getId()),
+                List.of(vaccinePackage1.getId(), unknownResourcePackage2.getId()),
                 /* packageName= */ DATA_SOURCE_PACKAGE_NAME);
 
         // In this test, we have inserted two different resource types from different packages.
         // When the calling app, calls the delete API, we expect access log to be created only
-        // for the deleted resource type. In this case it would be: immunizationPackage1
+        // for the deleted resource type. In this case it would be: vaccinePackage1
         AccessLog deleteAccessLog =
                 new AccessLog(
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -2303,21 +2006,20 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationPackage1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        MedicalResource vaccinePackage1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource unknownResourcePackage1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
         mMedicalResourceHelper.deleteMedicalResourcesByIdsWithPermissionChecks(
-                List.of(immunizationPackage1.getId(), unknownResourcePackage1.getId()),
+                List.of(vaccinePackage1.getId(), unknownResourcePackage1.getId()),
                 /* packageName= */ DATA_SOURCE_PACKAGE_NAME);
 
         // In this test, we have inserted two different resource types from the same package.
         // When the calling app, calls the delete API, we expect access log to be created
-        // for the deleted resource types. In this case it would be: immunizationPackage1,
+        // for the deleted resource types. In this case it would be: vaccinePackage1,
         // allergyResourcePackage1
         AccessLog deleteAccessLog =
                 new AccessLog(
@@ -2325,7 +2027,7 @@ public class MedicalResourceHelperTest {
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
                         /* medicalResourceTypes= */ Set.of(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
@@ -2360,7 +2062,7 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
 
         mMedicalResourceHelper.deleteMedicalResourcesByIdsWithoutPermissionChecks(
                 List.of(medicalResource1.getId()));
@@ -2380,7 +2082,7 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         MedicalResource medicalResource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource);
 
@@ -2401,7 +2103,7 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         MedicalResource medicalResource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource);
 
@@ -2420,7 +2122,7 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
         MedicalResource medicalResource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource);
 
@@ -2441,11 +2143,9 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource expectedResource1Source1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource expectedResource1Source2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource expectedResource2Source1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         MedicalResource expectedResource2Source2 =
@@ -2486,11 +2186,9 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource dataSource1Resource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         MedicalResource dataSource2Resource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource dataSource1Resource2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
 
@@ -2524,15 +2222,12 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource3 =
                 mUtil.insertR4MedicalDataSource("ds3", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource dataSource1Immunization =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        MedicalResource dataSource2Immunization =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
-        MedicalResource dataSource3Immunization =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource3);
+        MedicalResource vaccineDS1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        MedicalResource vaccineDS2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
+        MedicalResource vaccineDS3 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource3);
 
         // Delete all of the data for the first and second datasource
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
@@ -2545,44 +2240,41 @@ public class MedicalResourceHelperTest {
         // Test that the data for data source 1 and 2 is gone, but 3 is still present
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(
-                                        dataSource1Immunization.getId(),
-                                        dataSource2Immunization.getId())))
+                                List.of(vaccineDS1.getId(), vaccineDS2.getId())))
                 .hasSize(0);
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(dataSource3Immunization.getId())))
+                                List.of(vaccineDS3.getId())))
                 .hasSize(1);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByRequestWithPermChecks_singleType_succeeds() {
-        // Create two datasources, with one immunization each and one extra allergy
+        // Create two data sources, with one vaccine each and one extra allergy.
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunization1 =
+        MedicalResource vaccine1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        MedicalResource vaccine2 =
                 mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        MedicalResource immunization2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createDifferentImmunizationMedicalResource, dataSource2);
+                        PhrDataFactory::createDifferentVaccineMedicalResource, dataSource2);
         MedicalResource allergy =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
 
-        // Delete all Immunizations
+        // Delete all vaccines.
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 DATA_SOURCE_PACKAGE_NAME);
 
         // Test that only the allergy remains
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(immunization1.getId(), immunization2.getId())))
+                                List.of(vaccine1.getId(), vaccine2.getId())))
                 .hasSize(0);
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
@@ -2593,26 +2285,25 @@ public class MedicalResourceHelperTest {
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByRequestWithPermChecks_multipleTypes_succeeds() {
-        // Create two datasources, with one allergy and one immunization each
+        // Create two data sources, with one allergy and one vaccine each.
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource dataSource1Immunization =
+        MedicalResource vaccineDS1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        MedicalResource vaccineDS2 =
                 mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        MedicalResource dataSource2Immunization =
-                mUtil.upsertResource(
-                        PhrDataFactory::createDifferentImmunizationMedicalResource, dataSource2);
-        MedicalResource dataSource1Allergy =
+                        PhrDataFactory::createDifferentVaccineMedicalResource, dataSource2);
+        MedicalResource allergyDS1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource dataSource2Allergy =
+        MedicalResource allergyDS2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
-        // Delete all Immunizations and Allergies
+        // Delete all vaccines and allergies.
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build(),
                 DATA_SOURCE_PACKAGE_NAME);
@@ -2621,51 +2312,50 @@ public class MedicalResourceHelperTest {
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
                                 List.of(
-                                        dataSource1Immunization.getId(),
-                                        dataSource2Immunization.getId(),
-                                        dataSource1Allergy.getId(),
-                                        dataSource2Allergy.getId())))
+                                        vaccineDS1.getId(),
+                                        vaccineDS2.getId(),
+                                        allergyDS1.getId(),
+                                        allergyDS2.getId())))
                 .isEmpty();
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByRequestWithPermChecks_byTypeAndDataSource_succeeds() {
-        // Create two datasources, with one allergy and one immunization each
+        // Create two data sources, with one allergy and one vaccine each.
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource dataSource1Immunization =
+        MedicalResource vaccineDS1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        MedicalResource vaccineDS2 =
                 mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        MedicalResource dataSource2Immunization =
-                mUtil.upsertResource(
-                        PhrDataFactory::createDifferentImmunizationMedicalResource, dataSource2);
-        MedicalResource dataSource1Allergy =
+                        PhrDataFactory::createDifferentVaccineMedicalResource, dataSource2);
+        MedicalResource allergyDS1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        MedicalResource dataSource2Allergy =
+        MedicalResource allergyDS2 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
-        // Delete data by Immunization and data source 1
+        // Delete data by vaccine and data source 1.
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource1.getId())
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 DATA_SOURCE_PACKAGE_NAME);
 
-        // Test that only one immunization was deleted
+        // Test that only one vaccine was deleted.
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
                                 List.of(
-                                        dataSource2Immunization.getId(),
-                                        dataSource1Allergy.getId(),
-                                        dataSource2Allergy.getId())))
+                                        vaccineDS2.getId(),
+                                        allergyDS1.getId(),
+                                        allergyDS2.getId())))
                 .hasSize(3);
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(dataSource1Immunization.getId())))
+                                List.of(vaccineDS1.getId())))
                 .hasSize(0);
     }
 
@@ -2691,7 +2381,7 @@ public class MedicalResourceHelperTest {
 
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 DATA_SOURCE_PACKAGE_NAME);
     }
@@ -2702,19 +2392,19 @@ public class MedicalResourceHelperTest {
             deleteMedicalResourcesByRequestWithPermChecks_byTypeDataBelongsToOtherApp_noDelete() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds1", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunization =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        MedicalResource vaccine =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
 
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 DATA_SOURCE_PACKAGE_NAME);
 
         // Test that nothing was deleted
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(immunization.getId())))
+                                List.of(vaccine.getId())))
                 .hasSize(1);
     }
 
@@ -2724,8 +2414,8 @@ public class MedicalResourceHelperTest {
             deleteMedicalResourcesByRequestWithPermChecks_bySourceDataBelongsToOtherApp_noDelete() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds1", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunization =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        MedicalResource vaccine =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
 
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
@@ -2736,7 +2426,7 @@ public class MedicalResourceHelperTest {
         // Test that nothing was deleted
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(immunization.getId())))
+                                List.of(vaccine.getId())))
                 .hasSize(1);
     }
 
@@ -2746,20 +2436,20 @@ public class MedicalResourceHelperTest {
             deleteMedicalResourcesByRequestWithPermChecks_bySourceAndTypeOtherPackage_noDelete() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("ds1", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunization =
-                mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
+        MedicalResource vaccine =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
 
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource.getId())
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 DATA_SOURCE_PACKAGE_NAME);
 
         // Test that nothing was deleted
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(immunization.getId())))
+                                List.of(vaccine.getId())))
                 .hasSize(1);
     }
 
@@ -2770,7 +2460,7 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
@@ -2791,7 +2481,7 @@ public class MedicalResourceHelperTest {
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
                         /* medicalResourceTypes= */ Set.of(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_VACCINES,
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
@@ -2806,7 +2496,7 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
@@ -2828,7 +2518,7 @@ public class MedicalResourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -2843,7 +2533,7 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
@@ -2854,7 +2544,7 @@ public class MedicalResourceHelperTest {
         // only for the deleted resourceType.
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
@@ -2864,7 +2554,7 @@ public class MedicalResourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -2879,8 +2569,8 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
@@ -2910,7 +2600,7 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
@@ -2918,7 +2608,7 @@ public class MedicalResourceHelperTest {
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource2.getId())
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
 
@@ -2930,7 +2620,7 @@ public class MedicalResourceHelperTest {
     public void deleteByRequestWithPermChecks_expectAccessLogsForAccessedTypesAndSources_logs() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
@@ -2938,7 +2628,7 @@ public class MedicalResourceHelperTest {
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource1.getId())
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
 
@@ -2947,7 +2637,7 @@ public class MedicalResourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         INSTANT_NOW.toEpochMilli(),
                         OPERATION_TYPE_DELETE,
-                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ false);
         assertThat(mAccessLogsHelper.queryAccessLogs())
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
@@ -2959,7 +2649,7 @@ public class MedicalResourceHelperTest {
     public void deleteByRequestWithPermChecks_noMatchingDataSources_noAccessLogsCreated() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
@@ -2977,7 +2667,7 @@ public class MedicalResourceHelperTest {
     public void deleteByRequestWithoutPermChecks_withoutPackageRestriction_noAccessLogsCreated() {
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
         // Clear access logs table, so that only the access logs from delete will be present
         mAccessLogsHelper.clearData(mTransactionManager);
 
@@ -2997,27 +2687,23 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationResourceDataSource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        MedicalResource immunizationResourceDataSource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        MedicalResource vaccineDS1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        MedicalResource vaccineDS2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         MedicalResource allergyResource =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
 
         // Delete all of the data for just the first datasource
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build());
 
-        // Test that the data for the immunizations are gone, but the allergy is still present
+        // Test that the data for the vaccines are gone, but the allergy is still present
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(
-                                        immunizationResourceDataSource1.getId(),
-                                        immunizationResourceDataSource2.getId())))
+                                List.of(vaccineDS1.getId(), vaccineDS2.getId())))
                 .hasSize(0);
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
@@ -3034,91 +2720,83 @@ public class MedicalResourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource3 =
                 mUtil.insertR4MedicalDataSource("ds3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationResourceDataSource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        MedicalResource immunizationResourceDataSource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
-        MedicalResource immunizationResourceDataSource3 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource3);
-        MedicalResource allergyResource =
+        MedicalResource vaccineDS1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        MedicalResource vaccineDS2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
+        MedicalResource vaccineDS3 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource3);
+        MedicalResource allergyDS1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
 
-        // Delete data for data sources one and two
+        // Delete data for data sources 1 and 2.
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource2.getId())
                         .build());
 
-        // Test that only data for data source 3 remains
+        // Test that only data for data source 3 remains.
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
                                 List.of(
-                                        immunizationResourceDataSource1.getId(),
-                                        immunizationResourceDataSource2.getId(),
-                                        allergyResource.getId())))
+                                        vaccineDS1.getId(),
+                                        vaccineDS2.getId(),
+                                        allergyDS1.getId())))
                 .hasSize(0);
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(immunizationResourceDataSource3.getId())))
+                                List.of(vaccineDS3.getId())))
                 .hasSize(1);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByRequestWithoutPermChecks_oneResourceTypeAndDataSource_succeeds() {
-        // Create two datasources, with one resource each.
+        // Create two data sources, with one resource each.
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
-        MedicalResource immunizationResourceDataSource1 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        MedicalResource immunizationResourceDataSource2 =
-                mUtil.upsertResource(
-                        PhrDataFactory::createImmunizationMedicalResource, dataSource2);
-        MedicalResource allergyResource =
+        MedicalResource vaccineDS1 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        MedicalResource vaccineDS2 =
+                mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
+        MedicalResource allergyDS1 =
                 mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
 
-        // Delete all of the data for just the first datasource
+        // Delete all of the data for just data source 1.
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource1.getId())
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build());
 
-        // Test that the data for the immunizations are gone, but the allergy is still present
+        // Test that the data for the vaccines are gone, but the allergy is still present.
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(immunizationResourceDataSource1.getId())))
+                                List.of(vaccineDS1.getId())))
                 .hasSize(0);
         assertThat(
                         mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
-                                List.of(
-                                        allergyResource.getId(),
-                                        immunizationResourceDataSource2.getId())))
+                                List.of(allergyDS1.getId(), vaccineDS2.getId())))
                 .hasSize(2);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void testGetMedicalResourceTypeToContributingDataSourcesMap_success() {
-        // Create some data sources with data: ds1 contains [immunization, differentImmunization,
-        // allergy], ds2 contains [immunization], and ds3 contains [allergy].
+        // Create some data sources with data: ds1 contains [vaccine, differentVaccine,
+        // allergy], ds2 contains [vaccine], and ds3 contains [allergy].
         MedicalDataSource dataSource1 =
                 mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource3 =
                 mUtil.insertR4MedicalDataSource("ds3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        mUtil.upsertResource(
-                PhrDataFactory::createDifferentImmunizationMedicalResource, dataSource1);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createDifferentVaccineMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource3);
         Instant lastDataUpdateTime =
@@ -3142,9 +2820,9 @@ public class MedicalResourceHelperTest {
         assertThat(response).hasSize(2);
         assertThat(response.keySet())
                 .containsExactly(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                        MEDICAL_RESOURCE_TYPE_VACCINES,
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
-        assertThat(response.get(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS))
+        assertThat(response.get(MEDICAL_RESOURCE_TYPE_VACCINES))
                 .containsExactly(expectedDataSource1, expectedDataSource2);
         assertThat(response.get(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES))
                 .containsExactly(expectedDataSource1, expectedDataSource3);

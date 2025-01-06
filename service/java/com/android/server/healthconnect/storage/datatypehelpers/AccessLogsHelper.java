@@ -37,6 +37,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.accesslog.AccessLog;
@@ -90,7 +91,11 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
 
-    public AccessLogsHelper(TransactionManager transactionManager, AppInfoHelper appInfoHelper) {
+    public AccessLogsHelper(
+            TransactionManager transactionManager,
+            AppInfoHelper appInfoHelper,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
     }
@@ -108,10 +113,13 @@ public final class AccessLogsHelper extends DatabaseHelper {
         List<AccessLog> accessLogsList = new ArrayList<>();
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
-                String packageName =
-                        mAppInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
-                if (packageName == null) {
-                    Slog.w(TAG, "encounter null package name while query access logs");
+                String packageName;
+                try {
+                    packageName =
+                            mAppInfoHelper.getPackageName(
+                                    getCursorLong(cursor, APP_ID_COLUMN_NAME));
+                } catch (PackageManager.NameNotFoundException e) {
+                    Slog.e(TAG, "Package name not found while query access logs", e);
                     continue;
                 }
                 @RecordTypeIdentifier.RecordType
@@ -281,7 +289,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         ContentValues contentValues =
                 populateCommonColumns(appInfoId, recordTypeIds.stream().toList(), operationType);
         UpsertTableRequest request = new UpsertTableRequest(TABLE_NAME, contentValues);
-        mTransactionManager.insertRecord(db, request);
+        mTransactionManager.insert(db, request);
     }
 
     @VisibleForTesting

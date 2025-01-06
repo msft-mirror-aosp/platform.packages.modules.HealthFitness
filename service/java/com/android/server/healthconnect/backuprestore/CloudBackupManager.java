@@ -39,6 +39,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.util.List;
@@ -70,7 +71,8 @@ public final class CloudBackupManager {
             ChangeLogsRequestHelper changeLogsRequestHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper,
-            ExportImportSettingsStorage exportImportSettingsStorage) {
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            ReadAccessLogsHelper readAccessLogsHelper) {
         mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
@@ -84,7 +86,8 @@ public final class CloudBackupManager {
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
-                        changeLogsRequestHelper);
+                        changeLogsRequestHelper,
+                        readAccessLogsHelper);
     }
 
     /**
@@ -122,7 +125,8 @@ public final class CloudBackupManager {
                         backupChangeToken.getDataTablePageToken(),
                         backupChangeToken.getChangeLogsRequestToken());
             }
-            throw new UnsupportedOperationException();
+            return mDatabaseHelper.getIncrementalChanges(
+                    backupChangeToken.getChangeLogsRequestToken());
         } catch (SQLiteException exception) {
             Slog.e(TAG, "Failed to read or write to database", exception);
             throw exception;

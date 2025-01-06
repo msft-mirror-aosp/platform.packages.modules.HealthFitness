@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement.ADDITIONAL_ACCESS_BUTTON
@@ -66,7 +67,7 @@ import javax.inject.Inject
 class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
@@ -274,7 +275,7 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
         permissionMap.clear()
 
         permissions
-            .sortedBy {
+            .sortByLocale {
                 requireContext()
                     .getString(fromPermissionType(it.medicalPermissionType).uppercaseLabel)
             }
@@ -289,7 +290,7 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
                     }
                 val switchPreference =
                     HealthSwitchPreference(requireContext()).also {
-                        // it.icon = healthCategory.icon(requireContext())
+                        it.icon = permission.medicalPermissionType.icon(requireContext())
                         it.setTitle(
                             fromPermissionType(permission.medicalPermissionType).uppercaseLabel
                         )

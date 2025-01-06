@@ -25,7 +25,6 @@ import android.icu.text.MessageFormat.format
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.TimeSource
@@ -58,6 +57,7 @@ constructor(
     ): FormattedDataEntry {
         val totalDays = totalDaysOfPeriod(record)
         val appName = if (showDataOrigin) getAppName(record) else ""
+        val header = getHeader(record.startTime, record.endTime, appName)
         return when (period) {
             DateNavigationPeriod.PERIOD_DAY -> {
                 val dayOfPeriod = dayOfPeriod(record, day)
@@ -66,15 +66,15 @@ constructor(
                     uuid = record.metadata.id,
                     title = title,
                     titleA11y = title,
-                    header = appName,
-                    headerA11y = appName,
-                    dataType = DataType.MENSTRUATION_PERIOD,
+                    header = header,
+                    headerA11y = header,
+                    dataType = MenstruationPeriodRecord::class,
                     startTime = record.startTime,
                     endTime = record.endTime,
                 )
             }
+
             else -> {
-                val header = getHeader(record.startTime, record.endTime, appName)
                 val title =
                     format(context.getString(R.string.period_length), mapOf("count" to totalDays))
                 FormattedDataEntry(
@@ -83,7 +83,7 @@ constructor(
                     titleA11y = title,
                     header = header,
                     headerA11y = header,
-                    dataType = DataType.MENSTRUATION_PERIOD,
+                    dataType = MenstruationPeriodRecord::class,
                     startTime = record.startTime,
                     endTime = record.endTime,
                 )

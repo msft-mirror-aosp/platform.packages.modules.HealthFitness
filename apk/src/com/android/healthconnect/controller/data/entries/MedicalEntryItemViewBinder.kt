@@ -20,7 +20,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.EntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -47,8 +47,7 @@ class MedicalEntryItemViewBinder(
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
+        logger.logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
 
         title.text = data.title
         title.contentDescription = data.titleA11y
@@ -59,7 +58,7 @@ class MedicalEntryItemViewBinder(
         deleteButton.visibility = View.GONE
 
         view.setOnClickListener {
-            // TODO(b/342159144): Log interaction
+            logger.logInteraction(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
             onClickMedicalEntryListener?.onItemClicked(data.medicalResourceId, index)
         }
     }

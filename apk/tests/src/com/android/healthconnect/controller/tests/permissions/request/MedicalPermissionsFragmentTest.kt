@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.tests.permissions.request
 
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS
@@ -25,6 +24,7 @@ import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_D
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS
 import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
@@ -52,6 +52,7 @@ import com.android.healthconnect.controller.permissions.request.MedicalScreenSta
 import com.android.healthconnect.controller.permissions.request.PermissionsFragment
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -64,7 +65,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.logging.UIAction
-import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -114,7 +114,6 @@ class MedicalPermissionsFragmentTest {
             listOf(
                 fromPermissionString(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES),
                 fromPermissionString(READ_MEDICAL_DATA_CONDITIONS),
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
                 fromPermissionString(READ_MEDICAL_DATA_LABORATORY_RESULTS),
                 fromPermissionString(READ_MEDICAL_DATA_MEDICATIONS),
                 fromPermissionString(READ_MEDICAL_DATA_PERSONAL_DETAILS),
@@ -122,6 +121,7 @@ class MedicalPermissionsFragmentTest {
                 fromPermissionString(READ_MEDICAL_DATA_PREGNANCY),
                 fromPermissionString(READ_MEDICAL_DATA_PROCEDURES),
                 fromPermissionString(READ_MEDICAL_DATA_SOCIAL_HISTORY),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(READ_MEDICAL_DATA_VISITS),
                 fromPermissionString(READ_MEDICAL_DATA_VITAL_SIGNS),
             )
@@ -190,10 +190,24 @@ class MedicalPermissionsFragmentTest {
             )
         Espresso.onIdle()
         onView(withText("Allow \u201C$TEST_APP_NAME\u201D to write")).check(matches(isDisplayed()))
+    }
 
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.UNKNOWN_PAGE)
+    @Test
+    fun medicalReadAndWrite_phrUiTelemetryFlagEnabled_phrTelemetry() {
+        whenever(viewModel.medicalScreenState).then {
+            MutableLiveData(
+                MedicalScreenState.ShowMedicalReadWrite(
+                    appMetadata = appMetadata,
+                    medicalPermissions = allMedicalPermissions,
+                )
+            )
+        }
+        launchFragment<MedicalPermissionsFragment>(bundleOf())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.REQUEST_MEDICAL_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
-        verify(healthConnectLogger, times(3)).logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        verify(healthConnectLogger, times(13)).logImpression(PermissionsElement.PERMISSION_SWITCH)
+        verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
     }
 
     @Test
@@ -245,7 +259,7 @@ class MedicalPermissionsFragmentTest {
     fun togglesPermissions_callsUpdatePermissions() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -275,7 +289,7 @@ class MedicalPermissionsFragmentTest {
     fun allowAllToggleOn_updatesAllPermissions() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -294,7 +308,7 @@ class MedicalPermissionsFragmentTest {
                     as PermissionsFragment
             val allowAllPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
             allowAllPreference?.isChecked =
                 false // makes sure the preference is on so OnPreferenceChecked is triggered
 
@@ -312,7 +326,7 @@ class MedicalPermissionsFragmentTest {
     fun allowAllToggleOff_updatesAllPermissions() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -331,7 +345,7 @@ class MedicalPermissionsFragmentTest {
                     as PermissionsFragment
             val allowAllPreference =
                 fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as MainSwitchPreference?
+                    as HealthMainSwitchPreference?
             allowAllPreference?.isChecked =
                 true // makes sure the preference is on so OnPreferenceChecked is triggered
 
@@ -345,7 +359,7 @@ class MedicalPermissionsFragmentTest {
     fun allowButton_noMedicalPermissionsSelected_isDisabled() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -368,7 +382,7 @@ class MedicalPermissionsFragmentTest {
     fun allowButton_medicalPermissionsSelected_isEnabled() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS),
+                fromPermissionString(READ_MEDICAL_DATA_VACCINES),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
         whenever(viewModel.medicalScreenState).then {
@@ -380,7 +394,7 @@ class MedicalPermissionsFragmentTest {
             )
         }
         whenever(viewModel.grantedMedicalPermissions).then {
-            MutableLiveData(setOf(fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS)))
+            MutableLiveData(setOf(fromPermissionString(READ_MEDICAL_DATA_VACCINES)))
         }
 
         launchFragment<MedicalPermissionsFragment>(bundleOf())

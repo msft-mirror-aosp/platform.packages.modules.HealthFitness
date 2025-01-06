@@ -16,6 +16,8 @@
 package com.android.healthconnect.controller.tests.selectabledeletion
 
 import android.content.Context
+import android.health.connect.datatypes.StepsCadenceRecord
+import android.health.connect.datatypes.StepsRecord
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
@@ -33,7 +35,6 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionConstants
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -44,16 +45,17 @@ import com.android.healthconnect.controller.utils.TimeSource
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.whenever
 import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import org.hamcrest.Matchers.not
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class DeletionFragmentTest {
@@ -75,6 +77,7 @@ class DeletionFragmentTest {
                 totalPermissionTypes = 10,
             )
         }
+        whenever(viewModel.removePermissions).thenReturn(false)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
@@ -208,6 +211,8 @@ class DeletionFragmentTest {
             )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+        onView(withText("Also remove all $TEST_APP_NAME permissions from Health Connect"))
+            .check(matches(not(isDisplayed())))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -242,6 +247,8 @@ class DeletionFragmentTest {
             )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+        onView(withText("Also remove all $TEST_APP_NAME permissions from Health Connect"))
+            .check(matches(not(isDisplayed())))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -276,6 +283,8 @@ class DeletionFragmentTest {
             )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+        onView(withText("Also remove all $TEST_APP_NAME permissions from Health Connect"))
+            .check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -294,7 +303,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -331,8 +340,45 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected entries for Sep 19?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteEntries_fromDayWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntries(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
             )
@@ -368,8 +414,45 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected entries for Sep 19, 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteEntries_fromDayPastYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntries(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
             )
@@ -405,7 +488,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -442,7 +525,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -482,7 +565,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -511,17 +594,17 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekWithinYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -534,7 +617,46 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete selected entries for the week of Sep 19 – 25?"))
+        onView(withText("Permanently delete selected entries for the week of Sep 18 – 24?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteEntries_fromWeekWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntries(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                totalEntries = 1000,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected entries for the week of Sep 18 – 24?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -550,17 +672,17 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekPastYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -573,7 +695,46 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete selected entries for the week of Sep 13 – 19, 2021?"))
+        onView(withText("Permanently delete selected entries for the week of Sep 12 – 18, 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteEntries_fromWeekPastYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntries(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                totalEntries = 1000,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected entries for the week of Sep 12 – 18, 2021?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -589,17 +750,17 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekWithinYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -612,7 +773,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete all entries for the week of Sep 19 – 25?"))
+        onView(withText("Permanently delete all entries for the week of Sep 18 – 24?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -628,17 +789,17 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteEntries_fromWeekPastYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -651,7 +812,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_KEY, bundleOf())
         }
 
-        onView(withText("Permanently delete all entries for the week of Sep 13 – 19, 2021?"))
+        onView(withText("Permanently delete all entries for the week of Sep 12 – 18, 2021?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
@@ -678,7 +839,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -715,8 +876,45 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected entries for September?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteEntries_fromMonthWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntries(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
             )
@@ -752,8 +950,45 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected entries for September 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteEntries_fromMonthPastYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntries(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
             )
@@ -789,7 +1024,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -826,7 +1061,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -870,7 +1105,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -909,10 +1144,49 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for Sep 19?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromDayWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
             )
@@ -948,10 +1222,49 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for Sep 19, 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromDayPastYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
             )
@@ -987,7 +1300,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1026,7 +1339,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1068,7 +1381,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1099,17 +1412,17 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekWithinYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this SUnday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1126,7 +1439,52 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 19 – 25?"
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 18 – 24?"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromWeekWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 1000,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(
+                withText(
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 18 – 24?"
                 )
             )
             .inRoot(isDialog())
@@ -1144,10 +1502,10 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekPastYear_someSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         // This needs to be start of period in the local time
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
@@ -1155,7 +1513,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1172,7 +1530,53 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 13 – 19, 2021?"
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 12 – 18, 2021?"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromWeekPastYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Satrday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
+        // This needs to be start of period in the local time
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 1000,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(
+                withText(
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 12 – 18, 2021?"
                 )
             )
             .inRoot(isDialog())
@@ -1190,17 +1594,17 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekWithinYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Monday. The dialog should show the current week range,
-        // which starts on this Monday
-        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Sunday. The dialog should show the current week range,
+        // which starts on this Sunday
+        val selectedDay = Instant.parse("2022-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1217,7 +1621,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 19 – 25?"
+                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 18 – 24?"
                 )
             )
             .inRoot(isDialog())
@@ -1235,17 +1639,17 @@ class DeletionFragmentTest {
 
     @Test
     fun deleteAppEntries_fromWeekPastYear_allSelected_confirmationDialog_showsCorrectText() {
-        val now = Instant.parse("2022-09-20T20:00:00.000Z")
-        // This date is on a Sunday. The dialog should show the current week range,
-        // which ends on this Sunday
-        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        val now = Instant.parse("2022-09-19T20:00:00.000Z")
+        // This date is on a Saturday. The dialog should show the current week range,
+        // which ends on this Saturday
+        val selectedDay = Instant.parse("2021-09-18T20:00:00.000Z")
         (testTimeSource as TestTimeSource).setNow(now)
         whenever(viewModel.deletionProgress).then {
             MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1262,7 +1666,7 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 13 – 19, 2021?"
+                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 12 – 18, 2021?"
                 )
             )
             .inRoot(isDialog())
@@ -1291,7 +1695,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1330,10 +1734,49 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for September?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromMonthWithinYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
             )
@@ -1369,10 +1812,49 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for September 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromMonthPastYear_1000Selected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                (1..1000).associate { "test_id_$it" to StepsRecord::class },
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 1000,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
             )
@@ -1408,7 +1890,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1447,7 +1929,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,

@@ -80,7 +80,12 @@ class PlannedExerciseSessionRecordFormatterTest {
                                         ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                         ExercisePerformanceGoal.SpeedGoal(
                                             Velocity.fromMetersPerSecond(15.0),
-                                            Velocity.fromMetersPerSecond(25.0)))))),
+                                            Velocity.fromMetersPerSecond(25.0),
+                                        ),
+                                    ),
+                            )
+                        ),
+                ),
                 getPlannedExerciseBlock(
                     repetitions = 1,
                     description = "Main set",
@@ -96,15 +101,84 @@ class PlannedExerciseSessionRecordFormatterTest {
                                         ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                         ExercisePerformanceGoal.SpeedGoal(
                                             Velocity.fromMetersPerSecond(25.0),
-                                            Velocity.fromMetersPerSecond(50.0)))))))
+                                            Velocity.fromMetersPerSecond(50.0),
+                                        ),
+                                    ),
+                            )
+                        ),
+                ),
+            )
 
         assertThat(
                 formatter.formatTitle(
                     getPlannedExerciseSessionRecord(
                         title = "Morning Run",
                         note = "Morning quick run by the park",
-                        exerciseBlocks = exerciseBlocks)))
+                        exerciseBlocks = exerciseBlocks,
+                    )
+                )
+            )
             .isEqualTo("Running • Morning Run")
+    }
+
+    @Test
+    fun formatTitle_whenEmpty() = runBlocking {
+        val exerciseBlocks =
+            listOf(
+                getPlannedExerciseBlock(
+                    repetitions = 1,
+                    description = "Warm up",
+                    exerciseSteps =
+                        listOf(
+                            getPlannedExerciseStep(
+                                exerciseSegmentType =
+                                    ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                                completionGoal =
+                                    ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(1000.0)),
+                                performanceGoals =
+                                    listOf(
+                                        ExercisePerformanceGoal.HeartRateGoal(100, 150),
+                                        ExercisePerformanceGoal.SpeedGoal(
+                                            Velocity.fromMetersPerSecond(15.0),
+                                            Velocity.fromMetersPerSecond(25.0),
+                                        ),
+                                    ),
+                            )
+                        ),
+                ),
+                getPlannedExerciseBlock(
+                    repetitions = 1,
+                    description = "Main set",
+                    exerciseSteps =
+                        listOf(
+                            getPlannedExerciseStep(
+                                exerciseSegmentType =
+                                    ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                                completionGoal =
+                                    ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(4000.0)),
+                                performanceGoals =
+                                    listOf(
+                                        ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                                        ExercisePerformanceGoal.SpeedGoal(
+                                            Velocity.fromMetersPerSecond(25.0),
+                                            Velocity.fromMetersPerSecond(50.0),
+                                        ),
+                                    ),
+                            )
+                        ),
+                ),
+            )
+
+        assertThat(
+                formatter.formatTitle(
+                    getPlannedExerciseSessionRecord(
+                        title = null,
+                        note = null,
+                        exerciseBlocks = exerciseBlocks,
+                    )
+                )
+            )
+            .isEqualTo("Running • Unknown type")
     }
 
     @Test
@@ -124,7 +198,12 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                     ExercisePerformanceGoal.SpeedGoal(
                                         Velocity.fromMetersPerSecond(15.0),
-                                        Velocity.fromMetersPerSecond(25.0))))))
+                                        Velocity.fromMetersPerSecond(25.0),
+                                    ),
+                                ),
+                        )
+                    ),
+            )
         val exerciseBlock2 =
             getPlannedExerciseBlock(
                 repetitions = 1,
@@ -140,7 +219,12 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                     ExercisePerformanceGoal.SpeedGoal(
                                         Velocity.fromMetersPerSecond(25.0),
-                                        Velocity.fromMetersPerSecond(50.0))))))
+                                        Velocity.fromMetersPerSecond(50.0),
+                                    ),
+                                ),
+                        )
+                    ),
+            )
         val exerciseBlocks = listOf(exerciseBlock1, exerciseBlock2)
 
         assertThat(
@@ -148,7 +232,10 @@ class PlannedExerciseSessionRecordFormatterTest {
                     getPlannedExerciseSessionRecord(
                         title = "Morning Run",
                         note = "Morning quick run by the park",
-                        exerciseBlocks = exerciseBlocks)))
+                        exerciseBlocks = exerciseBlocks,
+                    )
+                )
+            )
             .isEqualTo(
                 listOf(
                     ItemDataEntrySeparator(),
@@ -158,7 +245,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                     PlannedExerciseBlockEntry(
                         block = exerciseBlock1,
                         title = "Warm up: 1 time",
-                        titleA11y = "Warm up 1 time"),
+                        titleA11y = "Warm up 1 time",
+                    ),
                     PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
@@ -171,25 +259,33 @@ class PlannedExerciseSessionRecordFormatterTest {
                                         ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                         ExercisePerformanceGoal.SpeedGoal(
                                             Velocity.fromMetersPerSecond(15.0),
-                                            Velocity.fromMetersPerSecond(25.0)))),
+                                            Velocity.fromMetersPerSecond(25.0),
+                                        ),
+                                    ),
+                            ),
                         title = "1 km Running",
-                        titleA11y = "1 kilometre Running"),
+                        titleA11y = "1 kilometre Running",
+                    ),
                     ExercisePerformanceGoalEntry(
                         goal = ExercisePerformanceGoal.HeartRateGoal(100, 150),
                         title = "100 bpm - 150 bpm",
-                        titleA11y = "100 beats per minute - 150 beats per minute"),
+                        titleA11y = "100 beats per minute - 150 beats per minute",
+                    ),
                     ExercisePerformanceGoalEntry(
                         goal =
                             ExercisePerformanceGoal.SpeedGoal(
                                 Velocity.fromMetersPerSecond(15.0),
-                                Velocity.fromMetersPerSecond(25.0)),
+                                Velocity.fromMetersPerSecond(25.0),
+                            ),
                         title = "00:40 min/km - 01:06 min/km",
-                        titleA11y = "00:40 minute per kilometre - 01:06 minute per kilometre"),
+                        titleA11y = "00:40 minute per kilometre - 01:06 minute per kilometre",
+                    ),
                     ItemDataEntrySeparator(),
                     PlannedExerciseBlockEntry(
                         block = exerciseBlock2,
                         title = "Main set: 1 time",
-                        titleA11y = "Main set 1 time"),
+                        titleA11y = "Main set 1 time",
+                    ),
                     PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
@@ -202,21 +298,29 @@ class PlannedExerciseSessionRecordFormatterTest {
                                         ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                         ExercisePerformanceGoal.SpeedGoal(
                                             Velocity.fromMetersPerSecond(25.0),
-                                            Velocity.fromMetersPerSecond(50.0)))),
+                                            Velocity.fromMetersPerSecond(50.0),
+                                        ),
+                                    ),
+                            ),
                         title = "4 km Running",
-                        titleA11y = "4 kilometres Running"),
+                        titleA11y = "4 kilometres Running",
+                    ),
                     ExercisePerformanceGoalEntry(
                         goal = ExercisePerformanceGoal.HeartRateGoal(150, 180),
                         title = "150 bpm - 180 bpm",
-                        titleA11y = "150 beats per minute - 180 beats per minute"),
+                        titleA11y = "150 beats per minute - 180 beats per minute",
+                    ),
                     ExercisePerformanceGoalEntry(
                         goal =
                             ExercisePerformanceGoal.SpeedGoal(
                                 Velocity.fromMetersPerSecond(25.0),
-                                Velocity.fromMetersPerSecond(50.0)),
+                                Velocity.fromMetersPerSecond(50.0),
+                            ),
                         title = "00:20 min/km - 00:40 min/km",
-                        titleA11y = "00:20 minute per kilometre - 00:40 minute per kilometre"),
-                    ItemDataEntrySeparator()),
+                        titleA11y = "00:20 minute per kilometre - 00:40 minute per kilometre",
+                    ),
+                    ItemDataEntrySeparator(),
+                )
             )
     }
 }

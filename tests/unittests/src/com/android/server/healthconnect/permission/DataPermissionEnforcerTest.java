@@ -45,12 +45,14 @@ import android.os.UserHandle;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -58,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@RunWith(AndroidJUnit4.class)
 public class DataPermissionEnforcerTest {
     @Mock private PermissionManager mPermissionManager;
 
@@ -75,8 +78,6 @@ public class DataPermissionEnforcerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        HealthConnectDeviceConfigManager.initializeInstance(mContext);
-
         mAttributionSource = buildAttributionSource();
 
         when(mContext.getUser()).thenReturn(UserHandle.CURRENT);

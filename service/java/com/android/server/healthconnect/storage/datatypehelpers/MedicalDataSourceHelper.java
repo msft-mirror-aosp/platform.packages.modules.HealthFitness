@@ -31,6 +31,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTableRequest.UNION;
+import static com.android.server.healthconnect.storage.utils.SqlJoin.INNER_QUERY_ALIAS;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
@@ -44,7 +45,6 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 
 import android.annotation.Nullable;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
@@ -101,6 +101,8 @@ public class MedicalDataSourceHelper {
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(DATA_SOURCE_UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
     private static final String LAST_RESOURCES_MODIFIED_TIME_ALIAS = "last_data_update_time";
+    private static final String LAST_DATA_SOURCE_MODIFIED_TIME_ALIAS =
+            "last_data_source_update_time";
 
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
@@ -256,7 +258,7 @@ public class MedicalDataSourceHelper {
      * {@link Constants#MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws {@link
      * IllegalArgumentException}.
      */
-    private static List<MedicalDataSource> getMedicalDataSources(Cursor cursor) {
+    public static List<MedicalDataSource> getMedicalDataSources(Cursor cursor) {
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
             throw new IllegalArgumentException(
                     "Too many data sources in the cursor. Max allowed: "
@@ -269,6 +271,32 @@ public class MedicalDataSourceHelper {
             } while (cursor.moveToNext());
         }
         return medicalDataSources;
+    }
+
+    /**
+     * Returns List of pair of {@link MedicalDataSource}s and their associated {@link
+     * MedicalDataSourceHelper#LAST_DATA_SOURCE_MODIFIED_TIME_ALIAS} from the cursor. If the cursor
+     * contains more than {@link Constants#MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws
+     * {@link IllegalArgumentException}.
+     */
+    public static List<Pair<MedicalDataSource, Long>> getMedicalDataSourcesWithTimestamps(
+            Cursor cursor) {
+        if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
+            throw new IllegalStateException(
+                    "Too many data sources in the cursor. Max allowed: "
+                            + MAXIMUM_ALLOWED_CURSOR_COUNT);
+        }
+        List<Pair<MedicalDataSource, Long>> medicalDataSourceAndTimestamps = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                long lastModifiedTimestamp =
+                        getCursorLong(cursor, LAST_DATA_SOURCE_MODIFIED_TIME_ALIAS);
+                MedicalDataSource medicalDataSource = getMedicalDataSource(cursor);
+                medicalDataSourceAndTimestamps.add(
+                        new Pair<>(medicalDataSource, lastModifiedTimestamp));
+            } while (cursor.moveToNext());
+        }
+        return medicalDataSourceAndTimestamps;
     }
 
     private static MedicalDataSource getMedicalDataSource(Cursor cursor) {
@@ -301,17 +329,15 @@ public class MedicalDataSourceHelper {
      * @return The {@link MedicalDataSource} created and inserted into the database.
      */
     public MedicalDataSource createMedicalDataSource(
-            Context context, CreateMedicalDataSourceRequest request, String packageName) {
+            CreateMedicalDataSourceRequest request, String packageName) {
         try {
             // Get the appInfoId outside the transaction
-            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName, context);
+            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName);
             return mTransactionManager.runAsTransaction(
-                    (TransactionManager.TransactionRunnableWithReturn<
-                                    MedicalDataSource, RuntimeException>)
+                    (TransactionManager.RunnableWithReturn<MedicalDataSource, RuntimeException>)
                             db ->
                                     createMedicalDataSourceAndAppInfoAndCheckLimits(
                                             db,
-                                            context,
                                             request,
                                             appInfoId,
                                             packageName,
@@ -327,7 +353,6 @@ public class MedicalDataSourceHelper {
 
     private MedicalDataSource createMedicalDataSourceAndAppInfoAndCheckLimits(
             SQLiteDatabase db,
-            Context context,
             CreateMedicalDataSourceRequest request,
             long appInfoId,
             String packageName,
@@ -358,6 +383,12 @@ public class MedicalDataSourceHelper {
         readTableRequest.setWhereClause(
                 new WhereClauses(AND)
                         .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, List.of(appInfoId)));
+        return mTransactionManager.count(readTableRequest);
+    }
+
+    /** Returns the total number of medical data sources in HC database. */
+    public int getMedicalDataSourcesCount() {
+        ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
         return mTransactionManager.count(readTableRequest);
     }
 
@@ -409,8 +440,7 @@ public class MedicalDataSourceHelper {
                     "app has not written any data and does not have any read permission");
         }
         return mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnableWithReturn<
-                                List<MedicalDataSource>, RuntimeException>)
+                (TransactionManager.RunnableWithReturn<List<MedicalDataSource>, RuntimeException>)
                         db -> {
                             String query =
                                     getReadQueryBasedOnPermissionFilters(
@@ -628,8 +658,7 @@ public class MedicalDataSourceHelper {
                     "app doesn't have permission to read based on the given packages");
         }
         return mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnableWithReturn<
-                                List<MedicalDataSource>, RuntimeException>)
+                (TransactionManager.RunnableWithReturn<List<MedicalDataSource>, RuntimeException>)
                         db -> {
                             String readQuery =
                                     getReadQueryByPackagesWithPermissionChecks(
@@ -739,8 +768,49 @@ public class MedicalDataSourceHelper {
                 null, appInfoIds, resourceTypes);
     }
 
-    private static String getReadQueryForDataSources() {
+    public static String getReadQueryForDataSources() {
         return getReadQueryForDataSourcesFilterOnIdsAndAppIdsAndResourceTypes(null, null, null);
+    }
+
+    /**
+     * Create a {@link ReadTableRequest} to read a dataSource using the given {@code displayName}
+     * and {@code appId}.
+     */
+    public static ReadTableRequest getReadQueryForDataSourcesUsingUniqueIds(
+            String displayName, long appId) {
+        ReadTableRequest dataSourceReadUsingUniqueIds =
+                new ReadTableRequest(getMainTableName())
+                        .setWhereClause(getReadTableWhereClause(displayName, appId))
+                        .setColumnNames(List.of(MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME));
+        return dataSourceReadUsingUniqueIds;
+    }
+
+    private static WhereClauses getReadTableWhereClause(String displayName, long appId) {
+        return new WhereClauses(AND)
+                .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, List.of(appId))
+                .addWhereInClause(DISPLAY_NAME_COLUMN_NAME, List.of(displayName));
+    }
+
+    /**
+     * Returns the rowId of the {@link MedicalDataSource} read in the given {@link Cursor}.
+     *
+     * <p>This is only used in the DatabaseMerger code, to read the result of a query which filters
+     * out {@link MedicalDataSource}s based on a given displayName and appId. Since these two are
+     * part of the unique ID of {@link MedicalDataSource}, it throws {@link IllegalStateException}
+     * if there isn't exactly one row in the {@link Cursor}.
+     */
+    public static long readDisplayNameAndAppIdFromCursor(Cursor cursor) {
+        if (cursor.getCount() != 1) {
+            throw new IllegalStateException(
+                    "There should only exist one dataSource row with the given displayName and"
+                            + " appId.");
+        }
+        if (cursor.moveToFirst()) {
+            return getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
+        } else {
+            throw new IllegalStateException(
+                    "No dataSources with the displayName and appId exists.");
+        }
     }
 
     /**
@@ -801,8 +871,15 @@ public class MedicalDataSourceHelper {
                         MedicalResourceHelper.getMainTableName(),
                         LAST_MODIFIED_TIME_COLUMN_NAME,
                         LAST_RESOURCES_MODIFIED_TIME_ALIAS);
+        String dataSourceLastModifiedTime =
+                String.format(
+                        "%1$s.%2$s AS %3$s",
+                        INNER_QUERY_ALIAS,
+                        LAST_MODIFIED_TIME_COLUMN_NAME,
+                        LAST_DATA_SOURCE_MODIFIED_TIME_ALIAS);
         List<String> allColumns = new ArrayList<>();
         allColumns.add(resourcesLastModifiedTimeColumnSelect);
+        allColumns.add(dataSourceLastModifiedTime);
         allColumns.addAll(groupByColumns);
 
         WhereClauses dataSourceIdFilterWhereClause =
@@ -1009,6 +1086,27 @@ public class MedicalDataSourceHelper {
             }
         }
         return appInfoIds;
+    }
+
+    /**
+     * Create {@link ContentValues} for the given {@link MedicalDataSource}, {@code appInfoId} and
+     * {@code lastModifiedTimestamp}.
+     *
+     * <p>This is only used in DatabaseMerger code, where we want to provide a lastModifiedTimestamp
+     * from the source database rather than based on the current time.
+     */
+    public static ContentValues getContentValues(
+            MedicalDataSource medicalDataSource, long appInfoId, long lastModifiedTimestamp) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(
+                DATA_SOURCE_UUID_COLUMN_NAME,
+                StorageUtils.convertUUIDToBytes(UUID.fromString(medicalDataSource.getId())));
+        contentValues.put(DISPLAY_NAME_COLUMN_NAME, medicalDataSource.getDisplayName());
+        contentValues.put(FHIR_BASE_URI_COLUMN_NAME, medicalDataSource.getFhirBaseUri().toString());
+        contentValues.put(FHIR_VERSION_COLUMN_NAME, medicalDataSource.getFhirVersion().toString());
+        contentValues.put(APP_INFO_ID_COLUMN_NAME, appInfoId);
+        contentValues.put(LAST_MODIFIED_TIME_COLUMN_NAME, lastModifiedTimestamp);
+        return contentValues;
     }
 
     private static ContentValues getContentValues(

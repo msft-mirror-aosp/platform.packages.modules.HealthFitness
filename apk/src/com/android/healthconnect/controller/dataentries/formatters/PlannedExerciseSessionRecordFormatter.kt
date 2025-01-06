@@ -26,7 +26,6 @@ import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessi
 import com.android.healthconnect.controller.dataentries.formatters.shared.BaseFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
-import com.android.healthconnect.controller.shared.DataType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -35,7 +34,7 @@ class PlannedExerciseSessionRecordFormatter
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val plannedExerciseBlockFormatter: PlannedExerciseBlockFormatter
+    private val plannedExerciseBlockFormatter: PlannedExerciseBlockFormatter,
 ) :
     BaseFormatter<PlannedExerciseSessionRecord>(context),
     RecordDetailsFormatter<PlannedExerciseSessionRecord> {
@@ -44,7 +43,7 @@ constructor(
         record: PlannedExerciseSessionRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.PlannedExerciseSessionEntry(
             uuid = record.metadata.id,
@@ -53,14 +52,16 @@ constructor(
             title = formatTitle(record),
             titleA11y = formatTitle(record),
             notes = getNotes(record),
-            dataType = DataType.PLANNED_EXERCISE)
+            dataType = PlannedExerciseSessionRecord::class,
+        )
     }
 
     fun formatTitle(record: PlannedExerciseSessionRecord): String {
         return context.getString(
             R.string.planned_exercise_session_title,
             getExerciseType(context, record.exerciseType),
-            record.title)
+            record.title ?: context.getString(R.string.unknown_type),
+        )
     }
 
     private fun getNotes(record: PlannedExerciseSessionRecord): String? {
@@ -82,7 +83,10 @@ constructor(
                 add(plannedExerciseBlockFormatter.formatBlock(plannedExerciseBlock))
                 addAll(
                     plannedExerciseBlockFormatter.formatBlockDetails(
-                        plannedExerciseBlock, unitPreferences))
+                        plannedExerciseBlock,
+                        unitPreferences,
+                    )
+                )
                 add(ItemDataEntrySeparator())
             }
         }

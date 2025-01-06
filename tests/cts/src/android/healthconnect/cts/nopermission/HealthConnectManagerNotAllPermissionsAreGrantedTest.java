@@ -28,9 +28,9 @@ import static android.healthconnect.cts.utils.DataFactory.getDistanceRecordWithN
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecord;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
-import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
-import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllHealthPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermission;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
@@ -73,7 +73,8 @@ public class HealthConnectManagerNotAllPermissionsAreGrantedTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Test
     public void testInsert_somePermissionsAreNotGranted_expectError() throws InterruptedException {
@@ -134,8 +135,8 @@ public class HealthConnectManagerNotAllPermissionsAreGrantedTest {
     public void testGetChangeLogs_somePermissionsAreNotGranted_expectError() throws Exception {
         TestAppProxy testApp = APP_A_WITH_READ_WRITE_PERMS;
         String packageName = testApp.getPackageName();
-        revokeAllPermissions(packageName, /* reason= */ "for test");
-        grantPermissions(
+        revokeAllHealthPermissions(packageName, /* reason= */ "for test");
+        grantHealthPermissions(
                 packageName,
                 List.of(
                         READ_STEPS,
@@ -156,7 +157,7 @@ public class HealthConnectManagerNotAllPermissionsAreGrantedTest {
                                 .build());
 
         // revoke one permission which the app needs so it can use the token
-        revokePermission(packageName, READ_DISTANCE);
+        revokeHealthPermission(packageName, READ_DISTANCE);
 
         try {
             testApp.getChangeLogs(new ChangeLogsRequest.Builder(token).build());

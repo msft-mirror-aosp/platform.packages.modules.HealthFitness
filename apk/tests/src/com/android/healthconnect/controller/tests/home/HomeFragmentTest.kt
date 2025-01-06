@@ -22,6 +22,8 @@ import android.os.Bundle
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
+import android.provider.Settings.ACTION_SECURITY_SETTINGS
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -30,17 +32,20 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.home.HomeFragment
-import com.android.healthconnect.controller.home.HomeFragmentViewModel
+import com.android.healthconnect.controller.home.HomeViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.WithData
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState
@@ -66,6 +71,7 @@ import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.KeyguardManagerUtil
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -92,6 +98,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -103,9 +110,7 @@ class HomeFragmentTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
     private lateinit var context: Context
 
-    @BindValue
-    val homeFragmentViewModel: HomeFragmentViewModel =
-        Mockito.mock(HomeFragmentViewModel::class.java)
+    @BindValue val homeViewModel: HomeViewModel = Mockito.mock(HomeViewModel::class.java)
 
     @BindValue
     val recentAccessViewModel: RecentAccessViewModel =
@@ -118,8 +123,6 @@ class HomeFragmentTest {
     val exportStatusViewModel: ExportStatusViewModel =
         Mockito.mock(ExportStatusViewModel::class.java)
 
-    @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
-
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
 
     @BindValue val timeSource = TestTimeSource
@@ -127,6 +130,8 @@ class HomeFragmentTest {
 
     private lateinit var navHostController: TestNavHostController
     @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
+    @BindValue
+    val keyguardManagerUtils: KeyguardManagerUtil = Mockito.mock(KeyguardManagerUtil::class.java)
 
     companion object {
         private const val TEST_EXPORT_FREQUENCY_IN_DAYS = 1
@@ -165,8 +170,20 @@ class HomeFragmentTest {
                 )
             )
         }
-        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
+        whenever(homeViewModel.hasAnyMedicalData).then { MutableLiveData(false) }
         navHostController = TestNavHostController(context)
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
+        }
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.NoBanner)
+        }
+        (deviceInfoUtils as FakeDeviceInfoUtils).setIntentHandlerAvailability(true)
+
+        Intents.init()
 
         // disable animations
         toggleAnimation(false)
@@ -176,6 +193,7 @@ class HomeFragmentTest {
     @After
     fun teardown() {
         timeSource.reset()
+        Intents.release()
         // enable animations
         toggleAnimation(true)
         reset(healthConnectLogger)
@@ -204,7 +222,7 @@ class HomeFragmentTest {
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_navigatesToBrowseMedicalData() {
-        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
+        whenever(homeViewModel.hasAnyMedicalData).then { MutableLiveData(true) }
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -245,7 +263,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -284,7 +302,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -323,7 +341,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -376,7 +394,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -425,7 +443,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -443,7 +461,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -476,7 +494,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
         }
 
@@ -501,7 +519,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -545,7 +563,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -574,7 +592,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenDataRestoreStatePending_showsRestoreBanner() {
+    fun whenDataRestoreStatePending_andErrorVersionDiff_showsRestoreBanner() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -582,7 +600,7 @@ class HomeFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.PENDING,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                        dataRestoreError = DataRestoreUiError.ERROR_VERSION_DIFF,
                     )
                 )
             )
@@ -590,7 +608,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -620,6 +638,43 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
+    fun whenDataRestoreStatePending_noError_doesNotShowRestoreBanner() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.PENDING,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
+        }
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
+                )
+            )
+        }
+        launchFragment<HomeFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Update needed")).check(doesNotExist())
+        onView(withText("Before continuing restoring your data, update your phone system."))
+            .check(doesNotExist())
+        onView(withText("Update now")).check(doesNotExist())
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_ONBOARDING)
     fun whenMigrationStateComplete_showsDialog() {
         val sharedPreference =
             context.getSharedPreferences(Constants.USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
@@ -641,7 +696,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -696,7 +751,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -738,38 +793,30 @@ class HomeFragmentTest {
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
-        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them"))
+            .check(doesNotExist())
+        verify(healthConnectLogger, times(0))
+            .logImpression(HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON)
     }
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    fun browseMedicalData_errorFetchingMedicalData_notDisplayed() {
-        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
+    fun browseMedicalData_errorFetchingMedicalDataOrEmptyMedicalData_notDisplayed() {
+        whenever(homeViewModel.hasAnyMedicalData).then { MutableLiveData(false) }
 
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
-        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    fun browseMedicalData_emptyMedicalData_notDisplayed() {
-        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
-
-        setupFragmentForNavigation()
-
-        onView(withText("Browse health records")).check(doesNotExist())
-        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them"))
+            .check(doesNotExist())
     }
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_medicalDataExists_isDisplayed() {
-        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
+        whenever(homeViewModel.hasAnyMedicalData).then { MutableLiveData(true) }
 
         setupFragmentForNavigation()
 
@@ -777,6 +824,7 @@ class HomeFragmentTest {
         onView(withText("View your health records and which apps can access them"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON)
     }
 
     // endregion
@@ -788,7 +836,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -821,7 +869,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -855,7 +903,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -890,7 +938,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -925,7 +973,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -967,7 +1015,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -1004,7 +1052,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -1048,7 +1096,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
@@ -1105,7 +1153,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -1145,7 +1193,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -1170,7 +1218,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.DENIED)))
         }
 
@@ -1194,7 +1242,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.DENIED)))
         }
 
@@ -1212,7 +1260,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.DENIED),
@@ -1245,7 +1293,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(
                 listOf(
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.DENIED),
@@ -1273,7 +1321,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
         }
 
@@ -1298,7 +1346,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
         }
 
@@ -1320,7 +1368,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
         }
 
@@ -1329,6 +1377,161 @@ class HomeFragmentTest {
         onView(withText("Find more apps to sync with Health Connect test app via Health Connect"))
             .check(doesNotExist())
         onView(withText("See on app store")).check(doesNotExist())
+    }
+
+    // endregion
+
+    // region lock screen banner
+    @Test
+    @DisableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun lockScreenBanner_phrFlagOff_bannerFlagOff_bannerNotShown() {
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set a screen lock")).check(doesNotExist())
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER)
+    fun lockScreenBanner_phrFlagOff_bannerFlagOn_bannerNotShown() {
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set a screen lock")).check(doesNotExist())
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    fun lockScreenBanner_phrFlagOn_bannerFlagOff_bannerNotShown() {
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set a screen lock")).check(doesNotExist())
+    }
+
+    @Test
+    @EnableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun lockScreenBanner_shouldNotShowBanner_bannerNotShown() {
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.NoBanner)
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set a screen lock")).check(doesNotExist())
+    }
+
+    @Test
+    @EnableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun lockScreenBanner_securityIntentNotHandled_bannerNotShown() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setIntentHandlerAvailability(false)
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.ShowBanner())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set a screen lock")).check(doesNotExist())
+    }
+
+    @Test
+    @EnableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun lockScreenBanner_bannerShown() {
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.ShowBanner())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set a screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "For added security for your health data, set a PIN, pattern, or password for this device"
+                )
+            )
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Set screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER)
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON)
+    }
+
+    @Test
+    @EnableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun lockScreenBanner_whenMedicalAndFitnessData_bannerShown() {
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(
+                HomeViewModel.LockScreenBannerState.ShowBanner(
+                    hasAnyFitnessData = true,
+                    hasAnyMedicalData = true,
+                )
+            )
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set a screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_ONBOARDING)
+    @EnableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun lockScreenBanner_startsNewPasswordIntent() {
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.ShowBanner())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+        onView(withText("Set screen lock")).perform(scrollTo()).perform(click())
+        verify(healthConnectLogger).logInteraction(HomePageElement.LOCK_SCREEN_BANNER_BUTTON)
+
+        intended(hasAction(ACTION_SECURITY_SETTINGS))
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_ONBOARDING)
+    @EnableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun lockScreenBanner_dismissBanner_bannerDisappears() {
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.ShowBanner())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Set screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withId(R.id.dismiss_button)).perform(scrollTo()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON)
+
+        onView(withText("Set screen lock")).check(doesNotExist())
     }
 
     // endregion
@@ -1356,7 +1559,7 @@ class HomeFragmentTest {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
-        whenever(homeFragmentViewModel.connectedApps).then {
+        whenever(homeViewModel.connectedApps).then {
             MutableLiveData(listOf<ConnectedAppMetadata>())
         }
 
@@ -1379,14 +1582,6 @@ class HomeFragmentTest {
             context.getSharedPreferences(Constants.USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
         editor.putBoolean(Constants.CONNECT_MORE_APPS_BANNER_SEEN, seen)
-        editor.apply()
-    }
-
-    private fun setSeeCompatibleAppsBannerSeen(context: Context, seen: Boolean) {
-        val sharedPreference =
-            context.getSharedPreferences(Constants.USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putBoolean(Constants.SEE_MORE_COMPATIBLE_APPS_BANNER_SEEN, seen)
         editor.apply()
     }
 }

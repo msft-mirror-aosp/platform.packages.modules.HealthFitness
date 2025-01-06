@@ -32,7 +32,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -41,9 +40,12 @@ import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.health.connect.internal.datatypes.SpeedRecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
+import android.util.ArrayMap;
 
 import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -54,7 +56,6 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 import com.google.common.collect.ImmutableList;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,11 +67,9 @@ public final class TransactionTestUtils {
     private static final Set<String> NO_EXTRA_PERMS = Set.of();
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
-    private final Context mContext;
     private final HealthConnectInjector mHealthConnectInjector;
 
-    public TransactionTestUtils(Context context, HealthConnectInjector injector) {
-        mContext = context;
+    public TransactionTestUtils(HealthConnectInjector injector) {
         mTransactionManager = injector.getTransactionManager();
         mHealthConnectInjector = injector;
     }
@@ -86,6 +85,16 @@ public final class TransactionTestUtils {
                 .isNotEqualTo(DEFAULT_LONG);
     }
 
+    /** Inserts {@code packageName} into the given {@link HealthConnectDatabase}. */
+    public void insertApp(HealthConnectDatabase db, String packageName) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PACKAGE_COLUMN_NAME, packageName);
+        mTransactionManager.insert(
+                db.getWritableDatabase(),
+                new UpsertTableRequest(
+                        AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
+    }
+
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, RecordInternal<?>... records) {
         return insertRecords(packageName, List.of(records));
@@ -94,17 +103,15 @@ public final class TransactionTestUtils {
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, List<RecordInternal<?>> records) {
         AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
-        return mTransactionManager.insertAll(
+        return mTransactionManager.insertAllRecords(
                 appInfoHelper,
                 mHealthConnectInjector.getAccessLogsHelper(),
-                new UpsertTransactionRequest(
+                UpsertTransactionRequest.createForInsert(
                         packageName,
                         records,
                         mHealthConnectInjector.getDeviceInfoHelper(),
-                        mContext,
-                        /* isInsertRequest= */ true,
-                        /* extraPermsStateMap= */ Collections.emptyMap(),
-                        mHealthConnectInjector.getAppInfoHelper()));
+                        mHealthConnectInjector.getAppInfoHelper(),
+                        /* extraPermsStateMap= */ new ArrayMap<>()));
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */
@@ -175,12 +182,30 @@ public final class TransactionTestUtils {
                 .setClientRecordId(clientId);
     }
 
+    public static RecordInternal<StepsRecord> createStepsRecord(
+            long appInfoId, long startTimeMillis, long endTimeMillis, int stepsCount) {
+        return new StepsRecordInternal()
+                .setCount(stepsCount)
+                .setStartTime(startTimeMillis)
+                .setEndTime(endTimeMillis)
+                .setAppInfoId(appInfoId);
+    }
+
     public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
             long timeMillis, double systolic, double diastolic) {
         return new BloodPressureRecordInternal()
                 .setSystolic(systolic)
                 .setDiastolic(diastolic)
                 .setTime(timeMillis);
+    }
+
+    public static RecordInternal<BloodPressureRecord> createBloodPressureRecord(
+            long appInfoId, long timeMillis, double systolic, double diastolic) {
+        return new BloodPressureRecordInternal()
+                .setSystolic(systolic)
+                .setDiastolic(diastolic)
+                .setTime(timeMillis)
+                .setAppInfoId(appInfoId);
     }
 
     /** Creates an exercise sessions with a route. */
@@ -190,6 +215,17 @@ public final class TransactionTestUtils {
                 new ExerciseSessionRecordInternal()
                         .setExerciseType(EXERCISE_SESSION_TYPE_RUNNING)
                         .setRoute(createExerciseRoute(startTime))
+                        .setStartTime(startTime.toEpochMilli())
+                        .setEndTime(startTime.plus(ofMinutes(10)).toEpochMilli());
+    }
+
+    public static SpeedRecordInternal createSpeedRecordInternal(Instant startTime) {
+        return (SpeedRecordInternal)
+                new SpeedRecordInternal()
+                        .setSamples(
+                                Set.of(
+                                        new SpeedRecordInternal.SpeedRecordSample(
+                                                100, startTime.plus(ofMinutes(1)).toEpochMilli())))
                         .setStartTime(startTime.toEpochMilli())
                         .setEndTime(startTime.plus(ofMinutes(10)).toEpochMilli());
     }
@@ -229,6 +265,11 @@ public final class TransactionTestUtils {
             }
             return uuids.build();
         }
+    }
+
+    /** Returns the number of rows in the specified table. */
+    public long queryNumEntries(String tableName) {
+        return mTransactionManager.queryNumEntries(tableName);
     }
 
     /** Returns a valid UUID string. */

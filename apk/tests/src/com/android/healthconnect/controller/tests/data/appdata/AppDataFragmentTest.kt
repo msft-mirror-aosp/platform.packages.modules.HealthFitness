@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.data.appdata
 
+import android.content.Context
 import android.content.Intent
 import android.health.connect.HealthConnectManager
 import android.health.connect.MedicalResourceTypeInfo
@@ -22,6 +23,8 @@ import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import android.os.OutcomeReceiver
 import androidx.core.os.bundleOf
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceCategory
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
@@ -32,14 +35,16 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
+import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataFragment
-import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
-import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.DELETE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.DELETE
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.Constants
@@ -55,6 +60,9 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
+import com.android.healthconnect.controller.utils.logging.AppDataElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -62,7 +70,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -75,7 +83,12 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -83,18 +96,23 @@ class AppDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
     @Inject lateinit var appInfoReader: AppInfoReader
     @BindValue lateinit var appDataViewModel: AppDataViewModel
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+    private lateinit var navHostController: TestNavHostController
+    private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
-        val appDataUseCase = AppDataUseCase(manager, Dispatchers.Main)
-        appDataViewModel = AppDataViewModel(appInfoReader, appDataUseCase)
+        context = InstrumentationRegistry.getInstrumentation().context
+        navHostController = TestNavHostController(context)
+        val allDataUseCase = AllDataUseCase(manager, Dispatchers.Main)
+        appDataViewModel = AppDataViewModel(appInfoReader, allDataUseCase)
         toggleAnimation(false)
     }
 
@@ -102,7 +120,7 @@ class AppDataFragmentTest {
     fun tearDown() {
         toggleAnimation(true)
         Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -155,8 +173,59 @@ class AppDataFragmentTest {
         onView(withText("Health records")).check(doesNotExist())
         onView(withText("Vaccines")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
-        onView(withText("Data from Health Connect test app will show here"))
-            .check(doesNotExist())
+        onView(withText("Data from Health Connect test app will show here")).check(doesNotExist())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_DATA_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, times(5))
+            .logImpression(AppDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
+    }
+
+    @Test
+    fun navigatesToAppEntries() {
+        mockData(
+            listOf(
+                FitnessPermissionType.DISTANCE,
+                FitnessPermissionType.EXERCISE,
+                FitnessPermissionType.STEPS,
+                FitnessPermissionType.MENSTRUATION,
+                FitnessPermissionType.SEXUAL_ACTIVITY,
+            )
+        )
+        launchFragment<AppDataFragment>(
+            bundleOf(
+                Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("Steps")).check(matches(isDisplayed()))
+        onView(withText("Steps")).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(AppDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.appEntriesFragment)
+    }
+
+    @Test
+    fun navigatesToMedicalAppEntries() {
+        mockData(listOf(MedicalPermissionType.VACCINES))
+        launchFragment<AppDataFragment>(
+            bundleOf(
+                Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(AppDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.appEntriesFragment)
     }
 
     @Test
@@ -165,7 +234,7 @@ class AppDataFragmentTest {
             listOf(
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.EXERCISE,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -187,13 +256,12 @@ class AppDataFragmentTest {
         onView(withText("Body measurements")).check(doesNotExist())
         onView(withText("Cycle tracking")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
-        onView(withText("Data from Health Connect test app will show here"))
-            .check(doesNotExist())
+        onView(withText("Data from Health Connect test app will show here")).check(doesNotExist())
     }
 
     @Test
     fun medicalDataOnly_populatedDataTypesDisplayed() = runTest {
-        mockData(listOf(MedicalPermissionType.IMMUNIZATIONS))
+        mockData(listOf(MedicalPermissionType.VACCINES))
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -232,6 +300,10 @@ class AppDataFragmentTest {
 
         assertCheckboxShown("Distance")
         assertCheckboxShown("Steps")
+
+        verify(healthConnectLogger).logImpression(AppDataElement.SELECT_ALL_BUTTON)
+        verify(healthConnectLogger, atLeast(2))
+            .logImpression(AppDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
     }
 
     @Test
@@ -241,7 +313,7 @@ class AppDataFragmentTest {
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
                 MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -267,6 +339,9 @@ class AppDataFragmentTest {
         assertCheckboxShown("Vaccines")
         assertCheckboxShown("Distance")
         assertCheckboxShown("Steps")
+        verify(healthConnectLogger).logImpression(AppDataElement.SELECT_ALL_BUTTON)
+        verify(healthConnectLogger, atLeast(4))
+            .logImpression(AppDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
     }
 
     @Test
@@ -289,6 +364,8 @@ class AppDataFragmentTest {
         onIdle()
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
             .containsExactlyElementsIn(setOf(FitnessPermissionType.DISTANCE))
+        verify(healthConnectLogger)
+            .logInteraction(AppDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
         onView(withText("Distance")).perform(click())
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
@@ -300,7 +377,7 @@ class AppDataFragmentTest {
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
                 MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                MedicalPermissionType.IMMUNIZATIONS,
+                MedicalPermissionType.VACCINES,
             )
         )
 
@@ -319,7 +396,9 @@ class AppDataFragmentTest {
         onView(withText("Vaccines")).perform(click())
         onIdle()
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(MedicalPermissionType.IMMUNIZATIONS))
+            .containsExactlyElementsIn(setOf(MedicalPermissionType.VACCINES))
+        verify(healthConnectLogger)
+            .logInteraction(AppDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
         onView(withText("Vaccines")).perform(click())
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
@@ -552,6 +631,7 @@ class AppDataFragmentTest {
             .containsExactlyElementsIn(
                 setOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
             )
+        verify(healthConnectLogger).logInteraction(AppDataElement.SELECT_ALL_BUTTON)
     }
 
     @Test
@@ -639,6 +719,7 @@ class AppDataFragmentTest {
                     MedicalPermissionType.VITAL_SIGNS,
                 )
             )
+        verify(healthConnectLogger).logInteraction(AppDataElement.SELECT_ALL_BUTTON)
     }
 
     @Test
@@ -698,7 +779,7 @@ class AppDataFragmentTest {
                     FitnessPermissionType.DISTANCE,
                     FitnessPermissionType.STEPS,
                     MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                    MedicalPermissionType.IMMUNIZATIONS,
+                    MedicalPermissionType.VACCINES,
                 )
             )
             val scenario =
@@ -721,7 +802,7 @@ class AppDataFragmentTest {
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.STEPS,
                         MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                        MedicalPermissionType.IMMUNIZATIONS,
+                        MedicalPermissionType.VACCINES,
                     )
                 )
             onView(withText("Select all")).perform(click())
@@ -743,7 +824,7 @@ class AppDataFragmentTest {
                                             FitnessPermissionType.DISTANCE,
                                             FitnessPermissionType.STEPS,
                                             MedicalPermissionType.ALLERGIES_INTOLERANCES,
-                                            MedicalPermissionType.IMMUNIZATIONS,
+                                            MedicalPermissionType.VACCINES,
                                         )
                                 ) {
                                     assertThat(permissionTypePreference.getIsChecked()).isFalse()

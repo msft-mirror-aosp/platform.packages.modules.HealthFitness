@@ -47,6 +47,8 @@ import static org.mockito.Mockito.times;
 
 import android.health.HealthFitnessStatsLog;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
@@ -54,7 +56,9 @@ import com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMe
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectServiceLoggerTest {
 
     private static final int CALLER_FOREGROUND_STATE_UNSPECIFIED =
@@ -112,29 +116,6 @@ public class HealthConnectServiceLoggerTest {
                                 eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
                                 eq(TEST_APP_PACKAGE_NAME)),
                 times(1));
-    }
-
-    @Test
-    public void testShouldLogIsFalse_expectNoLogs() {
-        new HealthConnectServiceLogger.Builder(false, ApiMethods.CREATE_MEDICAL_DATA_SOURCE)
-                .setPackageName(TEST_APP_PACKAGE_NAME)
-                .setShouldLog(false)
-                .build()
-                .log();
-
-        ExtendedMockito.verify(
-                () ->
-                        HealthFitnessStatsLog.write(
-                                anyInt(),
-                                anyInt(),
-                                anyInt(),
-                                anyInt(),
-                                anyLong(),
-                                anyInt(),
-                                anyInt(),
-                                anyInt(),
-                                anyString()),
-                times(0));
     }
 
     @Test

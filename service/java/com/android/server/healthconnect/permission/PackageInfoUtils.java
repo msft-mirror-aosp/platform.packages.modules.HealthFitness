@@ -24,14 +24,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
 import android.os.UserHandle;
-import android.util.ArrayMap;
-import android.util.ArraySet;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -43,20 +39,6 @@ public final class PackageInfoUtils {
     private static final String TAG = "HCPackageInfoUtils";
 
     public PackageInfoUtils() {}
-
-    Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
-            List<PackageInfo> packageInfos) {
-        Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
-        for (PackageInfo info : packageInfos) {
-            if (info.sharedUserId != null) {
-                if (sharedUserNameToUids.get(info.sharedUserId) == null) {
-                    sharedUserNameToUids.put(info.sharedUserId, new ArraySet<>());
-                }
-                sharedUserNameToUids.get(info.sharedUserId).add(info.applicationInfo.uid);
-            }
-        }
-        return sharedUserNameToUids;
-    }
 
     public List<PackageInfo> getPackagesHoldingHealthPermissions(UserHandle user, Context context) {
         // TODO(b/260707328): replace with getPackagesHoldingPermissions
@@ -73,12 +55,25 @@ public final class PackageInfoUtils {
         return healthAppsInfos;
     }
 
-    @SuppressWarnings("NullAway")
-    // TODO(b/317029272): fix this suppression
+    public List<PackageInfo> getPackagesCompatibleWithHealthConnect(
+            Context context, UserHandle user) {
+        List<PackageInfo> allInfos =
+                getPackageManagerAsUser(context, user)
+                        .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
+        List<PackageInfo> healthAppsInfos = new ArrayList<>();
+
+        for (PackageInfo info : allInfos) {
+            if (hasRequestedHealthPermission(context, info)) {
+                healthAppsInfos.add(info);
+            }
+        }
+        return healthAppsInfos;
+    }
+
     boolean hasGrantedHealthPermissions(String[] packageNames, UserHandle user, Context context) {
         for (String packageName : packageNames) {
             PackageInfo info = getPackageInfoWithPermissionsAsUser(packageName, user, context);
-            if (anyRequestedHealthPermissionGranted(context, info)) {
+            if (info != null && anyRequestedHealthPermissionGranted(context, info)) {
                 return true;
             }
         }
@@ -86,8 +81,13 @@ public final class PackageInfoUtils {
     }
 
     @Nullable
-    String[] getPackagesForUid(int packageUid, UserHandle user, Context context) {
+    String[] getPackagesForUid(Context context, UserHandle user, int packageUid) {
         return getPackageManagerAsUser(context, user).getPackagesForUid(packageUid);
+    }
+
+    String[] getPackagesForUidNonNull(Context context, UserHandle user, int packageUid) {
+        String[] packages = getPackagesForUid(context, user, packageUid);
+        return packages != null ? packages : new String[] {};
     }
 
     /**
@@ -97,16 +97,16 @@ public final class PackageInfoUtils {
      * @param packageInfo Package to check
      * @return If the given package is connected to Health Connect.
      */
-    public static boolean anyRequestedHealthPermissionGranted(
-            @Nullable Context context, @Nullable PackageInfo packageInfo) {
-        if (context == null || packageInfo == null || packageInfo.requestedPermissions == null) {
-            Log.w(TAG, "Can't extract requested permissions from the package info.");
+    private static boolean anyRequestedHealthPermissionGranted(
+            Context context, PackageInfo packageInfo) {
+        if (packageInfo.requestedPermissions == null) {
             return false;
         }
+        Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(context);
 
         for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
             String currPerm = packageInfo.requestedPermissions[i];
-            if (HealthConnectManager.isHealthPermission(context, currPerm)
+            if (healthPermissions.contains(currPerm)
                     && ((packageInfo.requestedPermissionsFlags[i]
                                     & PackageInfo.REQUESTED_PERMISSION_GRANTED)
                             != 0)) {
@@ -150,25 +150,6 @@ public final class PackageInfoUtils {
         }
     }
 
-    Optional<String> getPackageNameForUid(Context context, int uid) {
-        String[] packages = getPackageNamesForUid(context, uid);
-        if (packages.length != 1) {
-            Log.w(TAG, "Can't get one package name for UID: " + uid);
-            return Optional.empty();
-        }
-        return Optional.of(packages[0]);
-    }
-
-    String[] getPackageNamesForUid(Context context, int uid) {
-        PackageManager packageManager =
-                getPackageManagerAsUser(context, UserHandle.getUserHandleForUid(uid));
-        if (packageManager == null) {
-            return new String[] {};
-        }
-        String[] packages = packageManager.getPackagesForUid(uid);
-        return packages != null ? packages : new String[] {};
-    }
-
     @Nullable
     Integer getPackageUid(String packageName, UserHandle user, Context context) {
         Integer uid = null;
@@ -186,15 +167,10 @@ public final class PackageInfoUtils {
 
     /**
      * Returns the list of health permissions granted to a given package name. It does not check if
-     * the given package name is valid. TODO(b/368072570): Make this function non-static once DI
-     * flag is removed.
+     * the given package name is valid.
      */
     public static List<String> getGrantedHealthPermissions(
             Context context, String packageName, UserHandle user) {
-        // Ideally we could've used the Map in the state for this class. However, this function
-        // needs
-        // to be static due to complications around passing Context to the constructor of this
-        // class.
         PackageInfo packageInfo =
                 getPackageInfoUnchecked(
                         packageName,
@@ -238,16 +214,27 @@ public final class PackageInfoUtils {
             PackageManager.PackageInfoFlags flags,
             Context context) {
         try {
-            PackageManager packageManager =
-                    context.createContextAsUser(user, /* flags= */ 0).getPackageManager();
-
-            return packageManager.getPackageInfo(packageName, flags);
+            return getPackageManagerAsUser(context, user).getPackageInfo(packageName, flags);
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalArgumentException("invalid package", e);
         }
     }
 
-    private PackageManager getPackageManagerAsUser(Context context, UserHandle user) {
+    private static PackageManager getPackageManagerAsUser(Context context, UserHandle user) {
         return context.createContextAsUser(user, /* flags */ 0).getPackageManager();
+    }
+
+    private boolean hasRequestedHealthPermission(Context context, PackageInfo packageInfo) {
+        if (packageInfo == null || packageInfo.requestedPermissions == null) {
+            return false;
+        }
+
+        Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(context);
+        for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
+            if (healthPermissions.contains(packageInfo.requestedPermissions[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

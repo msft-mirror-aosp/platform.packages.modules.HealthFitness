@@ -78,7 +78,7 @@ public class ExerciseLapRecordHelper {
 
         lapsSet.add(
                 new ExerciseLapInternal()
-                        .setStarTime(getCursorLong(cursor, EXERCISE_LAPS_START_TIME))
+                        .setStartTime(getCursorLong(cursor, EXERCISE_LAPS_START_TIME))
                         .setEndTime(getCursorLong(cursor, EXERCISE_LAPS_END_TIME))
                         .setLength(getCursorDouble(cursor, EXERCISE_LAPS_LENGTH)));
     }

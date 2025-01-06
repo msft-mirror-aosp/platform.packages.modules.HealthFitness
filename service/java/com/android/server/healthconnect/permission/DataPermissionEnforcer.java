@@ -185,9 +185,9 @@ public class DataPermissionEnforcer {
                 .collect(toSet());
     }
 
-    public Map<String, Boolean> collectExtraWritePermissionStateMapping(
+    public ArrayMap<String, Boolean> collectExtraWritePermissionStateMapping(
             List<RecordInternal<?>> recordInternals, AttributionSource attributionSource) {
-        Map<String, Boolean> mapping = new ArrayMap<>();
+        ArrayMap<String, Boolean> mapping = new ArrayMap<>();
         for (RecordInternal<?> recordInternal : recordInternals) {
             int recordTypeId = recordInternal.getRecordType();
             RecordHelper<?> recordHelper =

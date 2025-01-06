@@ -55,7 +55,7 @@ filegroup {
     ],
     path: "java",
     visibility: [
-        "//frameworks/base",
+        "//frameworks/base/api",
         "//packages/modules/HealthFitness:__subpackages__",
     ],
 }

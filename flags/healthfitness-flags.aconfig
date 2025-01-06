@@ -48,8 +48,17 @@ flag {
 flag {
     name: "personal_health_record_telemetry"
     namespace: "health_fitness_aconfig"
-    description: "Flag for guarding telemetry for PHR MVP APIs."
+    description: "Flag for guarding telemetry for PHR MVP APIs. This is for normal WW"
     bug: "361796560"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "personal_health_record_telemetry_private_ww"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for guarding telemetry for PHR MVP APIs. This is for private WW"
+    bug: "375157800"
     is_fixed_read_only: true
     is_exported: true
 }
@@ -121,6 +130,78 @@ flag {
     bug: "350010200"
     is_fixed_read_only: true
     is_exported: true
+}
+
+flag {
+    name: "phr_fhir_oneof_validation"
+    namespace: "health_fitness_aconfig"
+    description: "UNUSED."
+    bug: "376673951"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_primitive_type_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating FHIR primitive data types when upserting medical data."
+    bug: "361775172"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_basic_complex_type_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for basic validation of FHIR complex types when upserting medical data."
+    bug: "376283237"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "phr_fhir_complex_type_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for full validation of FHIR complex types when upserting medical data."
+    bug: "377701407"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "phr_upsert_fix_parcel_size_calculation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for fixing the UpsertMedicalResourceRequest parcel size calculation."
+    bug: "379819662"
+    is_fixed_read_only: true
+    is_exported: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "phr_upsert_fix_use_shared_memory"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for fixing upsertMedicalResources to use shared memory."
+    bug: "380022133"
+    is_fixed_read_only: true
+    is_exported: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "phr_read_medical_resources_fix_query_limit"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for fixing the readMedicalResources query."
+    bug: "381201968"
+    is_fixed_read_only: true
+    is_exported: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {
@@ -199,17 +280,6 @@ flag {
     bug: "356819770"
     is_fixed_read_only: true
     is_exported: true
-}
-
-flag {
-   name: "read_assets_for_disabled_apps_from_package_manager"
-   namespace: "health_fitness_aconfig"
-   description: "Enables reading of assets from PackageManager for apps that are disabled."
-   bug: "321705074"
-   is_fixed_read_only: true
-   metadata {
-       purpose: PURPOSE_BUGFIX
-   }
 }
 
 flag {
@@ -359,3 +429,30 @@ flag {
     description: "This fixed read-only flag is used to enable replacing permission BODY_SENSORS (and BODY_SENSORS_BACKGROUND) with granular health permission READ_HEART_RATE (and READ_HEALTH_DATA_IN_BACKGROUND)"
     bug: "364638912"
 }
+
+flag {
+    name: "deprecate_exercise_session_type_breathing"
+    namespace: "android_health_services"
+    description: "Deprecates ExerciseSessionType#EXERCISE_SESSION_TYPE_GUIDED_BREATHING"
+    bug: "373629817"
+    is_exported: true
+}
+
+flag {
+    name: "refactor_aggregations"
+    namespace: "health_fitness_aconfig"
+    description: "Make changes to the aggregation code to make it safer and more intuitive."
+    bug: "382661671"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "smoking"
+    namespace: "health_fitness_aconfig"
+    description: "Enables smoking data type."
+    bug: "383298243"
+    is_fixed_read_only: true
+    is_exported: true
+}
+

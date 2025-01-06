@@ -23,11 +23,15 @@ import android.health.connect.datatypes.ExerciseSegmentType;
 import android.health.connect.internal.datatypes.ExerciseSegmentInternal;
 import android.os.Parcel;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.Period;
 
+@RunWith(AndroidJUnit4.class)
 public class ExerciseSegmentInternalTest {
 
     private final Instant mStartTime = Instant.now().minus(Period.ofDays(1));
@@ -62,7 +66,7 @@ public class ExerciseSegmentInternalTest {
     public void testExerciseSegmentInternal_writeToParcelAndBack_recordsAreEqual() {
         ExerciseSegmentInternal segment =
                 new ExerciseSegmentInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli())
                         .setSegmentType(ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ARM_CURL)
                         .setRepetitionsCount(10);
@@ -78,7 +82,7 @@ public class ExerciseSegmentInternalTest {
     public void testExerciseSegmentInternal_writeToParcelAndBackNoReps_recordsAreEqual() {
         ExerciseSegmentInternal segment =
                 new ExerciseSegmentInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli())
                         .setSegmentType(ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ARM_CURL);
         Parcel parcel = Parcel.obtain();

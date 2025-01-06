@@ -56,7 +56,7 @@
   "asserter": {
     "reference": "Practitioner/practitioner-1",
     "type": "Practitioner",
-     "display": "Dr Maria Hernandez"
+    "display": "Dr Maria Hernandez"
   },
   "encounter": {
     "reference": "Encounter/encounter-4"

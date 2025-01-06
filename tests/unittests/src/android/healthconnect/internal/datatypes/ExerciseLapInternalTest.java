@@ -23,11 +23,15 @@ import android.health.connect.datatypes.units.Length;
 import android.health.connect.internal.datatypes.ExerciseLapInternal;
 import android.os.Parcel;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.Period;
 
+@RunWith(AndroidJUnit4.class)
 public class ExerciseLapInternalTest {
     private final Instant mStartTime = Instant.now().minus(Period.ofDays(1));
     private final Instant mEndTime = Instant.now();
@@ -53,7 +57,7 @@ public class ExerciseLapInternalTest {
     public void testExerciseLapInternal_writeToParcelAndBack_recordsAreEqual() {
         ExerciseLapInternal lap =
                 new ExerciseLapInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli())
                         .setLength(10);
         Parcel parcel = Parcel.obtain();
@@ -67,7 +71,7 @@ public class ExerciseLapInternalTest {
     public void testExerciseLapInternal_writeToParcelAndBackNoLength_recordsAreEqual() {
         ExerciseLapInternal lap =
                 new ExerciseLapInternal()
-                        .setStarTime(mStartTime.toEpochMilli())
+                        .setStartTime(mStartTime.toEpochMilli())
                         .setEndTime(mEndTime.toEpochMilli());
         Parcel parcel = Parcel.obtain();
         lap.writeToParcel(parcel);

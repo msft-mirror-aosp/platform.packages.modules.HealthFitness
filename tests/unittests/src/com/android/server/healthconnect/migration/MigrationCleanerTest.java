@@ -20,7 +20,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import android.health.connect.HealthConnectDataState;
 
@@ -65,7 +64,6 @@ public class MigrationCleanerTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         // needed for now as some classes call it directly and not via constructor.
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(
                                 InstrumentationRegistry.getInstrumentation().getContext())
@@ -77,7 +75,9 @@ public class MigrationCleanerTest {
 
         mCleaner =
                 new MigrationCleaner(
-                        mTransactionManager, healthConnectInjector.getPriorityMigrationHelper());
+                        mTransactionManager,
+                        healthConnectInjector.getPriorityMigrationHelper(),
+                        healthConnectInjector.getMigrationEntityHelper());
     }
 
     @Test

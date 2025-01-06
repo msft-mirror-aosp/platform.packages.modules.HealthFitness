@@ -28,8 +28,7 @@
     <uses-permission android:name="android.permission.health.WRITE_HEART_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_BASAL_METABOLIC_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_ACTIVE_CALORIES_BURNED"/>
-    <uses-permission android:name="android.permission.health.WRITE_ACTIVITY_INTENSITY"
-        android:featureFlag="com.android.healthfitness.flags.activity_intensity"/>
+    <uses-permission android:name="android.permission.health.WRITE_ACTIVITY_INTENSITY"/>
     <uses-permission android:name="android.permission.health.WRITE_HYDRATION"/>
     <uses-permission android:name="android.permission.health.WRITE_ELEVATION_GAINED"/>
     <uses-permission android:name="android.permission.health.WRITE_FLOORS_CLIMBED"/>
@@ -70,8 +69,7 @@
     <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
     <uses-permission android:name="android.permission.health.READ_BASAL_METABOLIC_RATE"/>
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED"/>
-    <uses-permission android:name="android.permission.health.READ_ACTIVITY_INTENSITY"
-        android:featureFlag="com.android.healthfitness.flags.activity_intensity"/>
+    <uses-permission android:name="android.permission.health.READ_ACTIVITY_INTENSITY"/>
     <uses-permission android:name="android.permission.health.READ_HYDRATION"/>
     <uses-permission android:name="android.permission.health.READ_ELEVATION_GAINED"/>
     <uses-permission android:name="android.permission.health.READ_FLOORS_CLIMBED"/>

@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.route;
 
+import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES;
 import static android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE;
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.ROUTES_READER_WRITER_APP;
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.ROUTE_WRITER_APP;
@@ -27,7 +28,6 @@ import static android.healthconnect.cts.route.ExerciseRouteTestHelper.readAllExe
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForClientId;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
-import static android.healthconnect.cts.utils.PermissionHelper.READ_EXERCISE_ROUTES;
 import static android.healthconnect.cts.utils.PermissionHelper.runWithRevokedPermissions;
 import static android.healthconnect.cts.utils.TestUtils.connectAppsWithGrantedPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
@@ -58,7 +58,8 @@ public class ExerciseRouteNoReadWritePermissionTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {

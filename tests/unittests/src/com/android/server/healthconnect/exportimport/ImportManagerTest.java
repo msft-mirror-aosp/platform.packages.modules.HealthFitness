@@ -32,11 +32,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -45,15 +43,19 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.UserHandle;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -62,14 +64,15 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
-import com.android.server.healthconnect.storage.StorageContext;
+import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
@@ -110,31 +113,32 @@ public class ImportManagerTest {
     private static final int TEST_COMPRESSED_FILE_SIZE = 1042;
 
     @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
-                    .setStrictness(Strictness.LENIENT)
                     .mockStatic(ExportImportLogger.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
+                    .setStrictness(Strictness.LENIENT)
                     .build();
-
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule mDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
     private ImportManager mImportManagerSpy;
 
-    private StorageContext mContext;
+    private Context mContext;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
-    private HealthConnectNotificationSender mNotificationSender;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
+    private DatabaseHelpers mDatabaseHelpers;
     private DeviceInfoHelper mDeviceInfoHelper;
+    private ReadAccessLogsHelper mReadAccessLogsHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
+    @Mock private HealthConnectNotificationSender mNotificationSender;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
@@ -142,35 +146,29 @@ public class ImportManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        InstrumentationRegistry.getInstrumentation()
-                .getUiAutomation()
-                .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-
-        DeviceInfoHelper.resetInstanceForTest();
-
-        mContext = mDatabaseTestRule.getDatabaseContext();
-        mTransactionManager = mDatabaseTestRule.getTransactionManager();
+        mContext = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
-                        .setTransactionManager(mTransactionManager)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
-        mTransactionTestUtils = new TransactionTestUtils(mContext, healthConnectInjector);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
-        mNotificationSender = mock(HealthConnectNotificationSender.class);
-
+        mTransactionManager = healthConnectInjector.getTransactionManager();
+        mDatabaseHelpers = healthConnectInjector.getDatabaseHelpers();
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
-        healthConnectInjector.getHealthConnectDeviceConfigManager();
+        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
+        mReadAccessLogsHelper = healthConnectInjector.getReadAccessLogsHelper();
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
+
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
-        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
 
         Instant timeStamp = Instant.parse("2024-06-04T16:39:12Z");
         Clock fakeClock = Clock.fixed(timeStamp, ZoneId.of("UTC"));
@@ -194,7 +192,6 @@ public class ImportManagerTest {
     @After
     public void tearDown() throws Exception {
         TestUtils.waitForAllScheduledTasksToComplete();
-        DatabaseHelper.clearAllData(mTransactionManager);
 
         File testDir = mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE);
         File[] allContents = testDir.listFiles();
@@ -204,8 +201,6 @@ public class ImportManagerTest {
             }
         }
         testDir.delete();
-
-        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test
@@ -218,7 +213,7 @@ public class ImportManagerTest {
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
@@ -247,6 +242,7 @@ public class ImportManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
@@ -264,14 +260,14 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY))
                 .containsExactly(TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -286,7 +282,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME)
                 .inOrder();
     }
@@ -301,7 +297,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY))
                 .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
@@ -309,7 +305,7 @@ public class ImportManagerTest {
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3));
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3)
                 .inOrder();
 
@@ -324,7 +320,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+        assertThat(mPriorityHelper.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY))
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3, TEST_PACKAGE_NAME)
                 .inOrder();
     }
@@ -352,7 +348,7 @@ public class ImportManagerTest {
 
         File zipToImport = zipExportedDb(dbToImport);
 
-        DatabaseHelper.clearAllData(mTransactionManager);
+        mDatabaseHelpers.clearAllData(mTransactionManager);
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
@@ -381,6 +377,7 @@ public class ImportManagerTest {
                         mAppInfoHelper,
                         mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(bloodPressureUuids.get(0));
@@ -403,7 +400,7 @@ public class ImportManagerTest {
                         DEFAULT_USER_HANDLE);
 
         File databaseDir =
-                StorageContext.create(mContext, mContext.getUser(), IMPORT_DATABASE_DIR_NAME)
+                HealthConnectContext.create(mContext, mContext.getUser(), IMPORT_DATABASE_DIR_NAME)
                         .getDataDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }
@@ -594,6 +591,85 @@ public class ImportManagerTest {
                                 expectedOriginalFileSize,
                                 TEST_COMPRESSED_FILE_SIZE),
                 times(1));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void copiesAllData_usingInsertAllWithoutAccessLogs() throws Exception {
+        List<String> uuids =
+                mTransactionTestUtils.insertRecords(
+                        TEST_PACKAGE_NAME,
+                        createStepsRecord(123, 345, 100),
+                        createBloodPressureRecord(234, 120.0, 80.0));
+
+        File zipToImport = zipExportedDb(exportCurrentDb());
+
+        mDatabaseHelpers.clearAllData(mTransactionManager);
+
+        // Insert a change log so insertAllWithoutAccessLogs is called instead of insertAll.
+        mTransactionTestUtils.insertChangeLog();
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        verify(mNotificationSender, times(1))
+                .sendNotificationAsUser(
+                        ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_IN_PROGRESS,
+                        DEFAULT_USER_HANDLE);
+        verify(mNotificationSender, times(1))
+                .sendNotificationAsUser(
+                        ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
+                        DEFAULT_USER_HANDLE);
+
+        List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
+        List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
+        ReadTransactionRequest request =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        ImmutableMap.of(
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                stepsUuids,
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
+                                bloodPressureUuids));
+
+        List<RecordInternal<?>> records =
+                mTransactionManager.readRecordsByIds(
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
+                        /* shouldRecordAccessLog= */ false);
+        assertThat(records).hasSize(2);
+        assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
+        assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+                .isEqualTo(DATA_IMPORT_ERROR_NONE);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void copiesAllData_changeLogsTokenExists_generateChangeLogs() throws Exception {
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
+        File zipToImport = zipExportedDb(exportCurrentDb());
+        mDatabaseHelpers.clearAllData(mTransactionManager);
+
+        // Insert a change log.
+        mTransactionTestUtils.insertChangeLog();
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        assertThat(mTransactionTestUtils.queryNumEntries(ChangeLogsHelper.TABLE_NAME)).isEqualTo(1);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void copiesAllData_noChangeLogsToken_noChangeLogs() throws Exception {
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
+        File zipToImport = zipExportedDb(exportCurrentDb());
+        mDatabaseHelpers.clearAllData(mTransactionManager);
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        assertThat(mTransactionTestUtils.queryNumEntries(ChangeLogsHelper.TABLE_NAME)).isEqualTo(0);
     }
 
     private File exportCurrentDb() throws Exception {

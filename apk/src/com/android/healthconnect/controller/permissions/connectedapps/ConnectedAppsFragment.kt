@@ -72,12 +72,12 @@ import com.android.healthconnect.controller.utils.logging.DisconnectAllAppsDialo
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.personalHealthRecord
-import com.android.settingslib.widget.AppPreference
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -114,33 +114,19 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private lateinit var removeAllAppsDialog: AlertDialog
     private val newDeletionFlow = personalHealthRecord() || newInformationArchitecture()
 
-    private val mTopIntro: TopIntroPreference by lazy {
-        preferenceScreen.findPreference(TOP_INTRO)!!
-    }
+    private val mTopIntro: TopIntroPreference by pref(TOP_INTRO)
 
-    private val mAllowedAppsCategory: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(ALLOWED_APPS_CATEGORY)!!
-    }
+    private val mAllowedAppsCategory: PreferenceGroup by pref(ALLOWED_APPS_CATEGORY)
 
-    private val mNotAllowedAppsCategory: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(NOT_ALLOWED_APPS)!!
-    }
+    private val mNotAllowedAppsCategory: PreferenceGroup by pref(NOT_ALLOWED_APPS)
 
-    private val mInactiveAppsCategory: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(INACTIVE_APPS)!!
-    }
+    private val mInactiveAppsCategory: PreferenceGroup by pref(INACTIVE_APPS)
 
-    private val mNeedUpdateAppsCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(NEED_UPDATE_APPS)!!
-    }
+    private val mNeedUpdateAppsCategory: PreferenceGroup by pref(NEED_UPDATE_APPS)
 
-    private val mThingsToTryCategory: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(THINGS_TO_TRY)!!
-    }
+    private val mThingsToTryCategory: PreferenceGroup by pref(THINGS_TO_TRY)
 
-    private val mSettingsAndHelpCategory: PreferenceGroup by lazy {
-        preferenceScreen.findPreference(SETTINGS_AND_HELP)!!
-    }
+    private val mSettingsAndHelpCategory: PreferenceGroup by pref(SETTINGS_AND_HELP)
 
     private fun createRemoveAllAppsAccessDialog(apps: List<ConnectedAppMetadata>) {
         if (newDeletionFlow) {
@@ -197,9 +183,6 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             body.findViewById<CheckBox>(R.id.dialog_checkbox).apply {
                 text = getString(R.string.disconnect_all_app_permissions_dialog_checkbox)
             }
-        checkBox.setOnCheckedChangeListener { _, _ ->
-            // TODO(b/372636258): add logging
-        }
 
         removeAllAppsDialog =
             AlertDialogBuilder(
@@ -213,6 +196,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON,
                 ) { _, _ ->
                     viewModel.setAlertDialogStatus(false)
+                    viewModel.setAlertDialogCheckBoxChecked(false)
                 }
                 .setPositiveButton(
                     R.string.permissions_disconnect_all_dialog_disconnect,
@@ -227,6 +211,19 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     }
                 }
                 .create()
+                .apply {
+                    setOnShowListener {
+                        checkBox.setOnCheckedChangeListener(null)
+                        checkBox.isChecked = viewModel.alertDialogCheckBoxChecked.value ?: false
+                        checkBox.setOnCheckedChangeListener { _, isChecked ->
+                            viewModel.setAlertDialogCheckBoxChecked(isChecked)
+                            logger.logInteraction(
+                                DisconnectAllAppsDialogElement
+                                    .DISCONNECT_ALL_APPS_DIALOG_DELETE_CHECKBOX
+                            )
+                        }
+                    }
+                }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -395,19 +392,19 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     private fun updateNeedUpdateApps(appsList: List<ConnectedAppMetadata>) {
         if (appsList.isEmpty()) {
-            mNeedUpdateAppsCategory?.isVisible = false
+            mNeedUpdateAppsCategory.isVisible = false
         } else {
-            mNeedUpdateAppsCategory?.isVisible = true
+            mNeedUpdateAppsCategory.isVisible = true
             appsList
                 .sortedBy { it.appMetadata.appName }
                 .forEach { app ->
                     val intent = appStoreUtils.getAppStoreLink(app.appMetadata.packageName)
                     if (intent == null) {
-                        mNeedUpdateAppsCategory?.addPreference(
+                        mNeedUpdateAppsCategory.addPreference(
                             getAppPreference(app).also { it.isSelectable = false }
                         )
                     } else {
-                        mNeedUpdateAppsCategory?.addPreference(
+                        mNeedUpdateAppsCategory.addPreference(
                             getAppPreference(app) { navigationUtils.startActivity(this, intent) }
                         )
                     }
@@ -483,7 +480,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private fun getAppPreference(
         app: ConnectedAppMetadata,
         onClick: (() -> Unit)? = null,
-    ): AppPreference {
+    ): HealthAppPreference {
         return HealthAppPreference(requireContext(), app.appMetadata).also {
             if (app.status == ALLOWED) {
                 it.logName = AppPermissionsElement.CONNECTED_APP_BUTTON
@@ -638,7 +635,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private fun setAppAndSettingsCategoriesVisibility(isVisible: Boolean) {
         mInactiveAppsCategory.isVisible = isVisible
         mAllowedAppsCategory.isVisible = isVisible
-        mNeedUpdateAppsCategory?.isVisible = isVisible
+        mNeedUpdateAppsCategory.isVisible = isVisible
         mNotAllowedAppsCategory.isVisible = isVisible
         mSettingsAndHelpCategory.isVisible = isVisible
     }
@@ -647,7 +644,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         mThingsToTryCategory.removeAll()
         mAllowedAppsCategory.removeAll()
         mNotAllowedAppsCategory.removeAll()
-        mNeedUpdateAppsCategory?.removeAll()
+        mNeedUpdateAppsCategory.removeAll()
         mInactiveAppsCategory.removeAll()
         mSettingsAndHelpCategory.removeAll()
     }

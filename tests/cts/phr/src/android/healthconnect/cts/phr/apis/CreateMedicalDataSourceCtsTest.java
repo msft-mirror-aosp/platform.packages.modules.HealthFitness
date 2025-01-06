@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.phr.apis;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.utils.PhrCtsTestUtils.PHR_BACKGROUND_APP;
@@ -30,10 +31,8 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
-import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllHealthPermissions;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
@@ -80,7 +79,8 @@ public class CreateMedicalDataSourceCtsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     private HealthConnectManager mManager;
     private PhrCtsTestUtils mUtil;
@@ -89,8 +89,10 @@ public class CreateMedicalDataSourceCtsTest {
 
     @Before
     public void setUp() throws Exception {
-        revokeAllPermissions(PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
-        revokeAllPermissions(PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
+        revokeAllHealthPermissions(
+                PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
+        revokeAllHealthPermissions(
+                PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
@@ -137,33 +139,34 @@ public class CreateMedicalDataSourceCtsTest {
                     assertThat(receiver.assertAndGetException().getErrorCode())
                             .isEqualTo(HealthConnectException.ERROR_SECURITY);
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_writeLimitExceeded_throws() throws Exception {
-        // Insert a data source to ensure we have an appInfoId.
-        mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("test-id"));
         // Make the maximum number of delete medical resources calls just to use up the WRITE quota,
         // because data sources one app can create has a lower limit than this rate limit. Minus 1
         // because of the above call.
         int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
-        for (int i = 0; i < maximumCalls; i++) {
-            HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
-            mManager.deleteMedicalResources(
-                    List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), callback);
-            callback.verifyNoExceptionOrThrow();
+        float remainingQuota = mUtil.tryAcquireCallQuotaNTimesForWrite(dataSource, maximumCalls);
+
+        // Exceed the quota by using up any remaining quota that accumulated during the previous
+        // calls and make one additional call.
+        HealthConnectReceiver<MedicalDataSource> callback = new HealthConnectReceiver<>();
+        int additionalCalls = (int) Math.ceil(remainingQuota) + 1;
+        for (int i = 0; i < additionalCalls; i++) {
+            mManager.createMedicalDataSource(
+                    getCreateMedicalDataSourceRequest(String.valueOf(i)),
+                    Executors.newSingleThreadExecutor(),
+                    callback);
         }
 
-        // Make 1 extra create call and check quota is exceeded.
-        HealthConnectReceiver<MedicalDataSource> callback = new HealthConnectReceiver<>();
-        mManager.createMedicalDataSource(
-                getCreateMedicalDataSourceRequest("2"),
-                Executors.newSingleThreadExecutor(),
-                callback);
-
         HealthConnectException exception = callback.assertAndGetException();
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_RATE_LIMIT_EXCEEDED);
         assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
@@ -346,7 +349,7 @@ public class CreateMedicalDataSourceCtsTest {
                                 DATA_SOURCE_DISPLAY_NAME,
                                 FHIR_VERSION_R4B)
                         .build();
-        grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        grantHealthPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         PHR_BACKGROUND_APP.createMedicalDataSource(request1);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();

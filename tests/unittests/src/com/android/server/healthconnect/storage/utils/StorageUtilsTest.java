@@ -24,17 +24,22 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.getFhirResource
 import static com.android.server.healthconnect.storage.utils.StorageUtils.UUID_BYTE_SIZE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.bytesToUuids;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getNormalisedString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getSingleByteArray;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.json.JSONException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.UUID;
 
+@RunWith(AndroidJUnit4.class)
 public class StorageUtilsTest {
     @Test
     public void uuidToBytesAndBack_emptyList() {
@@ -72,5 +77,47 @@ public class StorageUtilsTest {
                         DATA_SOURCE_ID);
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getNormalisedString_quotedId_returnsQuotedId() {
+        String id = "'id'";
+        String result = getNormalisedString(id);
+        assertThat(result).isEqualTo("'id'");
+    }
+
+    @Test
+    public void getNormalisedString_xQuotedId_returnsQuotedId() {
+        String id = "x'id'";
+        String result = getNormalisedString(id);
+        assertThat(result).isEqualTo("x'id'");
+    }
+
+    @Test
+    public void getNormalisedString_unquotedId_returnsQuotedId() {
+        String id = "id";
+        String result = getNormalisedString(id);
+        assertThat(result).isEqualTo("'id'");
+    }
+
+    @Test
+    public void getNormalisedString_quotedIdWithEscapedQuotes_returnsQuotedId() {
+        String id = "'id with 'escaped' quotes'";
+        String result = getNormalisedString(id);
+        assertThat(result).isEqualTo("'id with ''escaped'' quotes'");
+    }
+
+    @Test
+    public void getNormalisedString_xQuotedIdWithEscapedQuotes_returnsQuotedId() {
+        String id = "x'id with 'escaped' quotes'";
+        String result = getNormalisedString(id);
+        assertThat(result).isEqualTo("x'id with ''escaped'' quotes'");
+    }
+
+    @Test
+    public void getNormalisedString_unquotedIdWithEscapedQuotes_returnsQuotedId() {
+        String id = "id with 'escaped' quotes";
+        String result = getNormalisedString(id);
+        assertThat(result).isEqualTo("'id with ''escaped'' quotes'");
     }
 }

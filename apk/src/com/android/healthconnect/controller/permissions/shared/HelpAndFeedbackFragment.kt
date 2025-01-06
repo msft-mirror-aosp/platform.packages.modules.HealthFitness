@@ -40,6 +40,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -64,44 +65,38 @@ class HelpAndFeedbackFragment : Hilt_HelpAndFeedbackFragment() {
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
-    private val mCheckForUpdates: HealthPreference? by lazy {
-        preferenceScreen.findPreference(CHECK_FOR_UPDATES)
-    }
+    private val mCheckForUpdates: HealthPreference by pref(CHECK_FOR_UPDATES)
 
-    private val mSeeAllCompatibleApps: HealthPreference? by lazy {
-        preferenceScreen.findPreference(SEE_ALL_COMPATIBLE_APPS)
-    }
+    private val mSeeAllCompatibleApps: HealthPreference by pref(SEE_ALL_COMPATIBLE_APPS)
 
-    private val mSendFeedback: HealthPreference? by lazy {
-        preferenceScreen.findPreference(SEND_FEEDBACK)
-    }
+    private val mSendFeedback: HealthPreference by pref(SEND_FEEDBACK)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.help_and_feedback_screen, rootKey)
 
-        mCheckForUpdates?.logName = AppPermissionsElement.CHECK_FOR_UPDATES_BUTTON
-        mCheckForUpdates?.setOnPreferenceClickListener {
+        mCheckForUpdates.logName = AppPermissionsElement.CHECK_FOR_UPDATES_BUTTON
+        mCheckForUpdates.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_cant_see_all_apps_to_updated_apps)
             true
         }
 
-        mSeeAllCompatibleApps?.logName = AppPermissionsElement.SEE_ALL_COMPATIBLE_APPS_BUTTON
-        mSeeAllCompatibleApps?.setOnPreferenceClickListener {
+        mSeeAllCompatibleApps.logName = AppPermissionsElement.SEE_ALL_COMPATIBLE_APPS_BUTTON
+        mSeeAllCompatibleApps.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_cant_see_all_apps_to_play_store)
             true
         }
 
-        mSendFeedback?.logName = AppPermissionsElement.SEND_FEEDBACK_BUTTON
-        mSendFeedback?.setOnPreferenceClickListener {
+        mSendFeedback.logName = AppPermissionsElement.SEND_FEEDBACK_BUTTON
+        mSendFeedback.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_BUG_REPORT)
             intent.putExtra("category_tag", APP_INTEGRATION_REQUEST_BUCKET_ID)
             activity?.startActivityForResult(intent, FEEDBACK_INTENT_RESULT_CODE)
             true
         }
 
-        mSendFeedback?.isVisible = deviceInfoUtils.isSendFeedbackAvailable(requireContext())
-        mCheckForUpdates?.isVisible = deviceInfoUtils.isPlayStoreAvailable(requireContext())
-        mSeeAllCompatibleApps?.isVisible = deviceInfoUtils.isPlayStoreAvailable(requireContext())
+        mSendFeedback.isVisible = deviceInfoUtils.isSendFeedbackAvailable(requireContext())
+        mCheckForUpdates.isVisible = deviceInfoUtils.isPlayStoreAvailable(requireContext())
+        mSeeAllCompatibleApps.isVisible = deviceInfoUtils.isPlayStoreAvailable(requireContext())
     }
 }

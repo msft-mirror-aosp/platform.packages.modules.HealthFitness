@@ -53,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Χθες"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Ανάγνωση: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Εγγραφή: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Διαχείριση αδειών"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Ώρα: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Δραστηριότητα"</string>
@@ -82,7 +82,7 @@
     <string name="can_read" msgid="4568261079308309564">"Δυνατότητα ανάγνωσης <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Δυνατότητα γραφής <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Ανενεργές εφαρμογές"</string>
-    <string name="inactive_apps_message" msgid="8335803540719022910">"Αυτές οι εφαρμογές δεν μπορούν πλέον να διαβάσουν ή να γράψουν δεδομένα <xliff:g id="DATA_TYPE">%s</xliff:g>, αλλά εξακολουθούν να έχουν δεδομένα αποθηκευμένα στο Health Connect"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Αυτές οι εφαρμογές δεν μπορούν πλέον να διαβάσουν ή να γράψουν <xliff:g id="DATA_TYPE">%s</xliff:g>, αλλά εξακολουθούν να έχουν δεδομένα αποθηκευμένα στο Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Οι εφαρμογές δεν μπορούν πλέον να διαβάζουν ή να εγγράφουν δεδομένα <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> και δεν υπάρχουν αποθηκευμένα δεδομένα <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> στο Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Αυτά τα δεδομένα περιλαμβάνουν πληροφορίες όπως είναι ο χρόνος σωματικής δραστηριότητας, ο τύπος της άσκησης, οι γύροι, οι επαναλήψεις ή οι απλωτές κατά την κολύμβηση"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Αυτά τα δεδομένα περιλαμβάνουν πληροφορίες όπως είναι τα στάδια του ύπνου και οι περίοδοι ύπνου"</string>
@@ -196,14 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ωθήσεις αναπηρικού αμαξιδίου"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Ανάγνωση δεδομένων ωθήσεων αναπηρικού αμαξιδίου"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Εγγραφή δεδομένων ωθήσεων αναπηρικού αμαξιδίου"</string>
-    <!-- no translation found for activity_intensity_uppercase_label (8718366426053335611) -->
-    <skip />
-    <!-- no translation found for activity_intensity_lowercase_label (4260366013498161858) -->
-    <skip />
-    <!-- no translation found for activity_intensity_read_content_description (5503681098610026279) -->
-    <skip />
-    <!-- no translation found for activity_intensity_write_content_description (4843212785611055496) -->
-    <skip />
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Ένταση δραστηριότητας"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"ένταση δραστηριότητας"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Ανάγνωση δεδομένων έντασης δραστηριότητας"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Εγγραφή δεδομένων έντασης δραστηριότητας"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Βασικός ρυθμός μεταβολισμού"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"βασικός ρυθμός μεταβολισμού"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Ανάγνωση δεδομένων βασικού ρυθμού μεταβολισμού"</string>
@@ -316,6 +312,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"θερμοκρασία δέρματος"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Ανάγνωση θερμοκρασίας δέρματος"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Εγγραφή θερμοκρασίας δέρματος"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Αυτό περιλαμβάνει όλους τους ιατρικούς φακέλους που συγχρονίστηκαν και προστέθηκαν στο Health Connect. Αυτό μπορεί να μην είναι το πλήρες ιατρικό αρχείο σας και δεν περιλαμβάνει ιατρική περιγραφή των ιατρικών φακέλων."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Όλοι οι ιατρικοί φάκελοι"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"όλοι οι ιατρικοί φάκελοι"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Σύνταξη όλων των ιατρικών φακέλων"</string>
@@ -325,9 +322,9 @@
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"Ιατρικές παθήσεις"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"ιατρικές παθήσεις"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Ανάγνωση δεδομένων ιατρικών παθήσεων"</string>
-    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Εμβόλια"</string>
-    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"εμβόλια"</string>
-    <string name="immunizations_content_description" msgid="2239351886343062194">"Ανάγνωση δεδομένων εμβολίων"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Εμβόλια"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"εμβόλια"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Ανάγνωση δεδομένων εμβολίων"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Αποτελέσματα εργαστηριακών εξετάσεων"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"αποτελέσματα εργαστηριακών εξετάσεων"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Ανάγνωση αποτελεσμάτων εργαστηριακών εξετάσεων"</string>
@@ -377,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Εάν παραχωρήσετε πρόσβαση, η εφαρμογή θα έχει τη δυνατότητα ανάγνωσης και εγγραφής δεδομένων όπως είναι οι αλλεργίες, τα αποτελέσματα εργαστηριακών εξετάσεων, τα εμβόλια και άλλα\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Εάν παραχωρήσετε πρόσβαση, η εφαρμογή θα έχει τη δυνατότητα ανάγνωσης δεδομένων όπως είναι οι αλλεργίες, τα αποτελέσματα εργαστηριακών εξετάσεων, τα εμβόλια και άλλα\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Σχετικά με τους ιατρικούς φακέλους"</string>
-    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Δεδομένα για κοινή χρήση"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Στα κοινόχρηστα δεδομένα περιλαμβάνονται τα εξής"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Εάν παραχωρήσετε την πρόσβαση, η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> θα μπορεί να μοιράζεται τους ιατρικούς φακέλους σας με το Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Συγχρονίστε τους ιατρικούς φακέλους από τις διάφορες εφαρμογές και πηγές σας, για να τους διατηρείτε σε ένα σημείο"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Κατάργηση όλων των αδειών;"</string>
@@ -436,7 +433,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Αυτές οι εφαρμογές δεν έχουν πλέον πρόσβαση, αλλά έχουν ακόμη αποθηκευμένα δεδομένα στο Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> μπορεί να διαβάζει δεδομένα που προστέθηκαν μετά τις <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Για να διαχειριστείτε άλλες άδειες Android στις οποίες μπορεί να έχει πρόσβαση αυτή η εφαρμογή, μεταβείτε στην επιλογή Ρυθμίσεις &gt; Εφαρμογές"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Τα δεδομένα που κοινοποιείτε στην εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> καλύπτονται από την πολιτική απορρήτου της"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Μπορείτε να μάθετε πώς η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> χειρίζεται τα δεδομένα σας στην πολιτική απορρήτου του προγραμματιστή"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Για να διαχειριστείτε άλλες άδειες Android στις οποίες έχει πρόσβαση αυτή η εφαρμογή, μεταβείτε στις Ρυθμίσεις και πατήστε Εφαρμογές"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Ανάγνωση πολιτικής απορρήτου"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Πρόσβαση τις τελευταίες 24 ώρες"</string>
@@ -493,9 +490,9 @@
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Εάν απενεργοποιήσετε την προγραμματισμένη εξαγωγή, δεν θα διαγραφούν τα δεδομένα που είχαν εξαχθεί προηγουμένως από την τοποθεσία αποθήκευσής τους"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Ρύθμιση προγραμματισμένης εξαγωγής"</string>
     <string name="choose_frequency_description" msgid="7698155810053504157">"Επιλέξτε τη συχνότητα εξαγωγής των δεδομένων σας"</string>
-    <string name="frequency_daily" msgid="3596412357416125727">"Ανά ημέρα"</string>
-    <string name="frequency_weekly" msgid="7302587625019573393">"Ανά εβδομάδα"</string>
-    <string name="frequency_monthly" msgid="729674398053825938">"Ανά μήνα"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Ημερήσια"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Εβδομαδιαία"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Μηνιαία"</string>
     <string name="export_destination_title" msgid="8352929396306002479">"Επιλέξτε τοποθ. αποθήκ. προγρ. εξαγωγών"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Επιλέξτε μια εφαρμογή αποθηκευτικού χώρου cloud για την εξαγωγή των δεδομένων σας"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
@@ -793,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Mουσική"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Άλλo"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Χωρίς καθοδήγηση"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Μέτρια"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Έντονη"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> λ."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ώ. <xliff:g id="MIN">%2$s</xliff:g> λ."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ω."</string>
@@ -998,7 +997,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Το Health Connect θα διαγράφει όλα τα δεδομένα που είναι παλαιότερα των # μηνών. Μπορεί να χρειαστεί μία ημέρα για να εμφανιστούν αυτές οι αλλαγές στις συνδεδεμένες εφαρμογές σας.}other{Το Health Connect θα διαγράφει όλα τα δεδομένα που είναι παλαιότερα των # μηνών. Μπορεί να χρειαστεί μία ημέρα για να εμφανιστούν αυτές οι αλλαγές στις συνδεδεμένες εφαρμογές σας.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Διαγραφή δεδομένων από τις ακόλουθες κατηγορίες"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Τέλος"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Η Αυτόματη διαγραφή είναι ενεργοποιημένη. Τα δεδομένα που είναι παλαιότερα του # μήνα θα διαγραφούν}other{Η Αυτόματη διαγραφή είναι ενεργοποιημένη. Τα δεδομένα που είναι παλαιότερα των # μηνών θα διαγραφούν}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Ενεργοποιημένη Αυτόματη διαγραφή για δεδομένα πάνω από # μήνα}other{Ενεργοποιημένη Αυτόματη διαγραφή για δεδομένα πάνω από # μηνών}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Η Αυτόματη διαγραφή είναι απενεργοποιημένη"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Ορισμός προτεραιότητας εφαρμογών"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Εάν περισσότερες από μία εφαρμογές προσθέτουν δεδομένα τύπου \"<xliff:g id="DATA_TYPE">%s</xliff:g>\", το Health Connect δίνει προτεραιότητα στην εφαρμογή που βρίσκεται υψηλότερα σε αυτήν τη λίστα. Σύρετε τις εφαρμογές για να τις αναδιατάξετε."</string>
@@ -1045,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Η ενσωμάτωση είναι σε εξέλιξη"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Γίνεται ενσωμάτωση του Health Connect με το σύστημα Android.\n\nΜπορεί να χρειαστεί λίγος χρόνος για τη μεταφορά των δεδομένων και των αδειών σας."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Μην κλείσετε την εφαρμογή μέχρι να λάβετε μια ειδοποίηση ότι η διαδικασία έχει ολοκληρωθεί."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Η ενσωμάτωση του Health Connect είναι σε εξέλιξη"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Απαιτείται ενημέρωση"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Γίνεται ενσωμάτωση του Health Connect με το σύστημα Android, έτσι ώστε να μπορείτε να αποκτήσετε πρόσβαση σε αυτό απευθείας από τις ρυθμίσεις σας."</string>
     <string name="update_button" msgid="4544529019832009496">"Ενημέρωση"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Ξεκινήστε αυτή την ενημέρωση, έτσι ώστε το Health Connect να συνεχίσει την ενσωμάτωση με τις ρυθμίσεις συστήματός σας"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Ενημέρωση τώρα"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Απαιτείται ενημέρωση συστήματος"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Πριν συνεχίσετε, ενημερώστε το σύστημα του τηλεφώνου σας."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Αν έχετε ενημερώσει ήδη το σύστημα του τηλεφώνου σας, δοκιμάστε να επανεκκινήσετε το τηλέφωνό σας για να συνεχίσει την ενσωμάτωση"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Απαιτείται ενημέρωση του Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Πριν συνεχίσετε, ενημερώστε την εφαρμογή Health Connect στην πιο πρόσφατη έκδοση."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Απαιτείται περισσότερος χρόνος"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας προκειμένου να συνεχιστεί η ενσωμάτωση.\n\nΑποδεσμεύστε χώρο στο τηλέφωνό σας και δοκιμάστε ξανά."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Δοκιμάστε ξανά"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Αποδεσμεύστε χώρο"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Απαιτείται περισσότερος χρόνος"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας για να συνεχίσει την ενσωμάτωση."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Η ενσωμάτωση τέθηκε σε παύση"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Η εφαρμογή Health Connect έκλεισε ενώ γινόταν ενσωμάτωση με το σύστημα Android.\n\nΚάντε κλικ στη συνέχιση για να ανοίξετε ξανά την εφαρμογή και να συνεχίσετε τη μεταφορά των δεδομένων και των αδειών σας."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Για να διατηρήσετε τα δεδομένα σας Health Connect, ολοκληρώστε αυτήν τη διαδικασία εντός <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -1072,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Πατήστε για να συνεχίσετε την ενσωμάτωση του Health Connect με το σύστημα Android. Για να διατηρήσετε τα δεδομένα σας, ολοκληρώστε αυτήν τη διαδικασία εντός <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Πατήστε για να συνεχίσετε την ενσωμάτωση του Health Connect με το σύστημα Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Συνέχεια"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Συνέχιση ενσωμάτωσης Health Connect"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Για να διατηρήσετε τα δεδομένα σας, ολοκληρώστε αυτήν τη διαδικασία εντός <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Απαιτείται ενημέρωση της εφαρμογής"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> πρέπει να ενημερωθεί για να συνεχιστεί ο συγχρονισμός με το Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Ορισμένες εφαρμογές πρέπει να ενημερωθούν για να συνεχιστεί ο συγχρονισμός με το Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> πρέπει να ενημερωθεί, για να συνεχιστεί ο συγχρονισμός με το Health Connect. Οι ενημερώσεις ενδέχεται να μην είναι διαθέσιμες για όλες τις εφαρμογές."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Ορισμένες εφαρμογές πρέπει να ενημερωθούν, για να συνεχιστεί ο συγχρονισμός με το Health Connect. Οι ενημερώσεις ενδέχεται να μην είναι διαθέσιμες για όλες τις εφαρμογές."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Έλεγχος για ενημερώσεις"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Μάθετε περισσότερα"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Ενσωμάτωση Health Connect"</string>
@@ -1091,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Η ενσωμάτωση του Health Connect δεν ολοκληρώθηκε"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Θα λάβετε μια ειδοποίηση όταν γίνει ξανά διαθέσιμη."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Το κατάλαβα"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Η ενσωμάτωση του Health Connect δεν ολοκληρώθηκε"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Διαβάστε περισσότερα"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Η ενσωμάτωση του Health Connect ολοκληρώθηκε"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Άνοιγμα"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Τι νέο υπάρχει"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Μπορείτε πλέον να αποκτήσετε πρόσβαση στο Health Connect απευθείας από τις ρυθμίσεις σας. Απεγκαταστήστε την εφαρμογή Health Connect ανά πάσα στιγμή για να αποδεσμεύσετε αποθηκευτικό χώρο."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Το κατάλαβα"</string>
@@ -1135,26 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Εμφάνιση συμβατών εφαρμογών"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Βρείτε περισσότερες εφαρμογές για συγχρονισμό με την εφαρμογή <xliff:g id="APP_NAME">%s</xliff:g> μέσω του Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Εμφάνιση στο app store"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ορισμός κλειδώματος οθόνης"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Για πρόσθετη ασφάλεια για τα δεδομένα υγείας σας, ορίστε ένα PIN, ένα μοτίβο ή έναν κωδικό πρόσβασης για αυτή τη συσκευή"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Ορισμός κλειδώματος οθόνης"</string>
     <string name="select_all" msgid="837499881590001166">"Επιλογή όλων"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Οι συνδεδεμένες εφαρμογές δεν θα έχουν πλέον τη δυνατότητα ανάγνωσης αυτών των δεδομένων από το Health Connect"</string>
-    <!-- no translation found for a11y_checked (3685413382346589880) -->
-    <skip />
-    <!-- no translation found for a11y_unchecked (6258943223981886207) -->
-    <skip />
-    <!-- no translation found for a11y_map_description (4992907698581164434) -->
-    <skip />
-    <!-- no translation found for a11y_next_day (7298174378837366410) -->
-    <skip />
-    <!-- no translation found for a11y_next_week (6692230156318350735) -->
-    <skip />
-    <!-- no translation found for a11y_next_month (4462534553687997396) -->
-    <skip />
-    <!-- no translation found for a11y_previous_day (2529677154858456085) -->
-    <skip />
-    <!-- no translation found for a11y_previous_week (2992971531628685405) -->
-    <skip />
-    <!-- no translation found for a11y_previous_month (3304373968190750755) -->
-    <skip />
+    <string name="a11y_checked" msgid="3685413382346589880">"Επιλεγμένο"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Μη επιλεγμένο"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Διατίθεται χάρτης διαδρομής άσκησης"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Επόμενη ημέρα"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Επόμενη εβδομάδα"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Επόμενος μήνας"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Προηγούμενη ημέρα"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Προηγούμενη εβδομάδα"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Προηγούμενος μήνας"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Οριστική διαγραφή όλων των δεδομένων;"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Οριστική διαγραφή των επιλεγμένων δεδομένων;"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Οριστική διαγραφή όλων των δεδομένων της εφαρμογής <xliff:g id="APP_NAME">%s</xliff:g>;"</string>
@@ -1164,14 +1146,14 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Οριστική διαγραφή όλων των καταχωρίσεων για τον μήνα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων για την ημέρα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων για την εβδομάδα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων για τον μήνα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων του <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Οριστική διαγραφή αυτής της καταχώρισης;"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Οριστική διαγραφή όλων των καταχωρίσεων της εφαρμογής <xliff:g id="APP_NAME">%1$s</xliff:g> για την ημέρα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Οριστική διαγραφή όλων των καταχωρίσεων της εφαρμογής <xliff:g id="APP_NAME">%1$s</xliff:g> για την εβδομάδα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Οριστική διαγραφή όλων των καταχωρίσεων της εφαρμογής <xliff:g id="APP_NAME">%1$s</xliff:g> για τον μήνα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων της εφαρμογής <xliff:g id="APP_NAME">%1$s</xliff:g> για την ημέρα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων της εφαρμογής <xliff:g id="APP_NAME">%1$s</xliff:g> για την εβδομάδα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων της εφαρμογής <xliff:g id="APP_NAME">%1$s</xliff:g> για τον μήνα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων του <xliff:g id="APP_NAME">%1$s</xliff:g> για την εβδομάδα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων του <xliff:g id="APP_NAME">%1$s</xliff:g> για τον μήνα <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>;"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Οριστική διαγραφή αυτής της καταχώρισης της εφαρμογής <xliff:g id="APP_NAME">%s</xliff:g>;"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Να διαγραφούν οριστικά τα δεδομένα <xliff:g id="DATA_TYPE">%1$s</xliff:g> για την εφαρμογή <xliff:g id="APP_NAME">%2$s</xliff:g>;"</string>
     <string name="on" msgid="8266542510798355807">"Ενεργό"</string>
@@ -1179,4 +1161,32 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Πρόσβαση στις <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Πρόσβαση χθες, στις <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Πρόσβαση στις <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Να επιτρέπεται πάντα"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Αποδοχή επιλεγμένων"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Κατά τη χρήση της εφαρμογής"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Απόρριψη όλων"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Να επιτρέπεται στην εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> να έχει πρόσβαση σε δεδομένα φυσικής κατάστασης και ευεξίας;"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> ζητά πρόσβαση στα δεδομένα <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nΕπιλέξτε να επιτραπεί η πρόσβαση σε όλα ή να τα ελέγξετε μεμονωμένα."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Να επιτρέπεται η πρόσβαση της εφαρμογής <xliff:g id="APP_NAME">%1$s</xliff:g> στα δεδομένα <xliff:g id="DATA_TYPE">%2$s</xliff:g>;"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Φυσική κατάσταση και ευεξία"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"να επιτρέπεται πάντα"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"κατά τη χρήση"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Να επιτρέπεται πάντα"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Κατά τη χρήση"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> μπορεί να έχει πρόσβαση σε όλα τα δεδομένα φυσικής κατάστασης και ευεξίας <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Επιτρέπεται η πρόσβαση"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Επιτρέπεται η ανάγνωση"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Αυτές οι άδειες παρέχουν στην εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> πρόσβαση σε δεδομένα από τους αισθητήρες της συσκευής σας."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Επιτρέπονται <xliff:g id="NUMBER_0">%1$d</xliff:g> από <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> εφαρμογές"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Δεν υπάρχουν αιτήματα από εφαρμογές"</string>
+    <string name="allowed" msgid="4158456017482263737">"Επιτρέπεται"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Δεν επιτρέπεται"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Οι εφαρμογές με αυτή την άδεια μπορούν να αποκτήσουν πρόσβαση σε δεδομένα <xliff:g id="DATA_TYPE">%s</xliff:g> από τους αισθητήρες της συσκευής σας."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Κατάργηση πρόσβασης στα δεδομένα <xliff:g id="DATA_TYPE">%s</xliff:g> για όλες τις εφαρμογές στο ρολόι σας;"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Σύμβολο επιλογής"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Σύμβολο \"Χ\""</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Αυτή τη στιγμή, η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> μπορεί να έχει πρόσβαση σε δεδομένα φυσικής κατάστασης και ευεξίας <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Να επιτρέπεται στην εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> η πρόσβαση σε δεδομένα φυσικής κατάστασης και ευεξίας ανά πάσα στιγμή;"</string>
+    <string name="current_access" msgid="1457167070428176139">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> έχει πρόσβαση στα δεδομένα <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Διαχείριση αδειών φυσικής κατάστασης και ευεξίας"</string>
 </resources>

@@ -183,14 +183,14 @@ class LoadAccessUseCaseTest {
         val steps =
             FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
         val immunization =
-            HealthPermission.MedicalPermission(MedicalPermissionType.IMMUNIZATIONS).toString()
+            HealthPermission.MedicalPermission(MedicalPermissionType.VACCINES).toString()
         fakeGetGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(steps, immunization),
         )
 
         val actual =
-            (useCase.invoke(MedicalPermissionType.IMMUNIZATIONS) as UseCaseResults.Success).data
+            (useCase.invoke(MedicalPermissionType.VACCINES) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(0)
@@ -213,7 +213,7 @@ class LoadAccessUseCaseTest {
         val steps =
             FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
         val immunization =
-            HealthPermission.MedicalPermission(MedicalPermissionType.IMMUNIZATIONS).toString()
+            HealthPermission.MedicalPermission(MedicalPermissionType.VACCINES).toString()
         val allMedicalData =
             HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA).toString()
         fakeGetGrantedHealthPermissionsUseCase.updateData(
@@ -222,7 +222,7 @@ class LoadAccessUseCaseTest {
         )
 
         val actual =
-            (useCase.invoke(MedicalPermissionType.IMMUNIZATIONS) as UseCaseResults.Success).data
+            (useCase.invoke(MedicalPermissionType.VACCINES) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
@@ -279,7 +279,7 @@ class LoadAccessUseCaseTest {
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
 
         val actual =
-            (useCase.invoke(MedicalPermissionType.IMMUNIZATIONS) as UseCaseResults.Success).data
+            (useCase.invoke(MedicalPermissionType.VACCINES) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(0)

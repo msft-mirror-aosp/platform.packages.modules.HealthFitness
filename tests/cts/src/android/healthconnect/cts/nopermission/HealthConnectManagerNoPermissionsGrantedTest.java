@@ -38,8 +38,8 @@ import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
-import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllHealthPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -108,7 +108,8 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Rule
     public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
@@ -191,7 +192,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     public void testGetChangeLogs_noPermissions_expectError() throws Exception {
         TestAppProxy testApp = APP_A_WITH_READ_WRITE_PERMS;
         String packageName = testApp.getPackageName();
-        revokeAllPermissions(packageName, /* reason= */ "for test");
+        revokeAllHealthPermissions(packageName, /* reason= */ "for test");
         List<Pair<String, Class<? extends Record>>> permissionAndRecordClassPairs =
                 List.of(
                         new Pair<>(READ_STEPS, StepsRecord.class),
@@ -204,11 +205,11 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         for (var permissionAndRecordClass : permissionAndRecordClassPairs) {
             String permission = permissionAndRecordClass.first;
             Class<? extends Record> recordClass = permissionAndRecordClass.second;
-            grantPermission(packageName, permission);
+            grantHealthPermission(packageName, permission);
             String token =
                     testApp.getChangeLogToken(
                             new ChangeLogTokenRequest.Builder().addRecordType(recordClass).build());
-            revokeAllPermissions(packageName, /* reason= */ "for test");
+            revokeAllHealthPermissions(packageName, /* reason= */ "for test");
 
             try {
                 testApp.getChangeLogs(new ChangeLogsRequest.Builder(token).build());

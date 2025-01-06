@@ -24,8 +24,15 @@ import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.TestUtils.connectAppsWithGrantedPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 
+import static com.android.compatibility.common.util.SystemUtil.eventually;
+
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.util.Objects.requireNonNull;
+
+import android.app.AppOpsManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -35,6 +42,8 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,17 +59,34 @@ public class ExerciseRouteBackgroundReadTest {
     private static final TestAppProxy ROUTES_READER_WRITER_BACKGROUND_APP =
             TestAppProxy.forPackageNameInBackground(ROUTES_READER_WRITER_APP.getPackageName());
 
-    private static final String BACKGROUND_READ_FEATURE_FLAG = "background_read_enable";
-
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        // Ensure that App Ops considers the test app to be in the background. This may take a few
+        // seconds if another test has recently launched it in the foreground.
+        Context context = ApplicationProvider.getApplicationContext();
+        PackageManager packageManager = context.getPackageManager();
+        AppOpsManager appOpsManager = requireNonNull(context.getSystemService(AppOpsManager.class));
+        String packageName = ROUTES_READER_WRITER_BACKGROUND_APP.getPackageName();
+        int uid = packageManager.getPackageUid(packageName, /* flags= */ 0);
+        eventually(
+                () ->
+                        assertThat(
+                                        appOpsManager.unsafeCheckOp(
+                                                AppOpsManager.OPSTR_FINE_LOCATION,
+                                                uid,
+                                                packageName))
+                                .isEqualTo(AppOpsManager.MODE_IGNORED));
+
         assertCorrectHealthPermissions();
         connectAppsWithGrantedPermissions();
+
+        deleteAllStagedRemoteData();
     }
 
     @After

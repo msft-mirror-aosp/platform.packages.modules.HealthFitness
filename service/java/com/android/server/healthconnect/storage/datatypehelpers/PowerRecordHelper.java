@@ -64,7 +64,7 @@ public class PowerRecordHelper
 
     @Override
     @Nullable
-    public final AggregateResult<?> getAggregateResult(
+    public final AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case POWER_RECORD_POWER_MIN:

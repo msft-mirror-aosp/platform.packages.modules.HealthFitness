@@ -16,10 +16,10 @@
 
 package android.healthconnect.cts.phr.utils;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -27,6 +27,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
@@ -42,10 +43,10 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_PRACT
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_PROCEDURE;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_Patient;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResources;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
-import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermission;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
@@ -55,21 +56,29 @@ import static java.util.stream.Collectors.toSet;
 
 import android.app.UiAutomation;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
+import android.os.OutcomeReceiver;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.collect.Iterables;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -78,6 +87,9 @@ public class PhrCtsTestUtils {
     public static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
     public static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
     public static final int RECORD_SIZE_LIMIT_IN_BYTES = 1000000;
+    public static final int CHUNK_SIZE_LIMIT_IN_BYTES = 5000000;
+    private static final int MAX_NUMBER_OF_MEDICAL_RESOURCES_PER_INSERT_REQUEST = 20;
+    private static final int MAXIMUM_PAGE_SIZE = 5000;
     public static final String PHR_BACKGROUND_APP_PKG =
             "android.healthconnect.cts.phr.testhelper.app1";
     public static final String PHR_FOREGROUND_APP_PKG =
@@ -89,7 +101,7 @@ public class PhrCtsTestUtils {
 
     public static final Set<Integer> MEDICAL_RESOURCE_TYPES_LIST =
             Set.of(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    MEDICAL_RESOURCE_TYPE_VACCINES,
                     MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                     MEDICAL_RESOURCE_TYPE_CONDITIONS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
@@ -122,6 +134,79 @@ public class PhrCtsTestUtils {
     }
 
     /**
+     * Makes a call to {@link HealthConnectManager#getMedicalDataSources(List, Executor,
+     * OutcomeReceiver)}.
+     */
+    public List<MedicalDataSource> getMedicalDataSourcesByIds(List<String> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalDataSource>> createReceiver =
+                new HealthConnectReceiver<>();
+        mManager.getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), createReceiver);
+        return createReceiver.getResponse();
+    }
+
+    /**
+     * Makes a call to {@link
+     * HealthConnectManager#getMedicalDataSources(GetMedicalDataSourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public List<MedicalDataSource> getMedicalDataSourcesByRequest(
+            GetMedicalDataSourcesRequest request) throws InterruptedException {
+        HealthConnectReceiver<List<MedicalDataSource>> createReceiver =
+                new HealthConnectReceiver<>();
+        mManager.getMedicalDataSources(
+                request, Executors.newSingleThreadExecutor(), createReceiver);
+        return createReceiver.getResponse();
+    }
+
+    /**
+     * Given a {@code dataSourceId} and {@code numOfResources}, it inserts as many vaccine medical
+     * resources as specified.
+     */
+    public List<MedicalResource> upsertVaccineMedicalResources(
+            String dataSourceId, int numOfResources) throws InterruptedException {
+        List<MedicalResource> medicalResources =
+                createVaccineMedicalResources(numOfResources, dataSourceId);
+        return upsertMedicalData(medicalResources);
+    }
+
+    private List<MedicalResource> upsertMedicalData(List<MedicalResource> medicalResources)
+            throws InterruptedException {
+        int numOfResources = medicalResources.size();
+        // To avoid hitting transaction limit:
+        List<MedicalResource> result = new ArrayList<>();
+        for (int chunk = 0;
+                chunk <= numOfResources / MAX_NUMBER_OF_MEDICAL_RESOURCES_PER_INSERT_REQUEST;
+                chunk++) {
+            List<UpsertMedicalResourceRequest> requests = new ArrayList<>();
+            HealthConnectReceiver<List<MedicalResource>> dataReceiver =
+                    new HealthConnectReceiver<>();
+            for (int indexWithinChunk = 0;
+                    indexWithinChunk < MAX_NUMBER_OF_MEDICAL_RESOURCES_PER_INSERT_REQUEST;
+                    indexWithinChunk++) {
+                int index =
+                        chunk * MAX_NUMBER_OF_MEDICAL_RESOURCES_PER_INSERT_REQUEST
+                                + indexWithinChunk;
+                if (index >= numOfResources) {
+                    break;
+                }
+                MedicalResource medicalResource = medicalResources.get(index);
+                UpsertMedicalResourceRequest request =
+                        new UpsertMedicalResourceRequest.Builder(
+                                        medicalResource.getDataSourceId(),
+                                        medicalResource.getFhirVersion(),
+                                        medicalResource.getFhirResource().getData())
+                                .build();
+                requests.add(request);
+            }
+            mManager.upsertMedicalResources(
+                    requests, Executors.newSingleThreadExecutor(), dataReceiver);
+            result.addAll(dataReceiver.getResponse());
+        }
+        return result;
+    }
+
+    /**
      * Makes a call to {@link HealthConnectManager#upsertMedicalResources} and returns the upserted
      * medical resource.
      */
@@ -146,6 +231,65 @@ public class PhrCtsTestUtils {
     }
 
     /**
+     * A utility method to call {@link HealthConnectManager#readMedicalResources(List, Executor,
+     * OutcomeReceiver)}.
+     */
+    public List<MedicalResource> readMedicalResourcesByIds(List<MedicalResourceId> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
+        mManager.readMedicalResources(ids, Executors.newSingleThreadExecutor(), dataReceiver);
+        return dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link
+     * HealthConnectManager#readMedicalResources(ReadMedicalResourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public ReadMedicalResourcesResponse readMedicalResourcesByRequest(
+            ReadMedicalResourcesRequest request) throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> dataReceiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), dataReceiver);
+        return dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link HealthConnectManager#deleteMedicalResources(List, Executor,
+     * OutcomeReceiver)}.
+     */
+    public void deleteMedicalResourcesByIds(List<MedicalResourceId> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<Void> dataReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), dataReceiver);
+        dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link
+     * HealthConnectManager#deleteMedicalResources(DeleteMedicalResourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public void deleteMedicalResourcesByRequest(DeleteMedicalResourcesRequest request)
+            throws InterruptedException {
+        HealthConnectReceiver<Void> dataReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), dataReceiver);
+        dataReceiver.getResponse();
+    }
+
+    /**
+     * A utility method to call {@link
+     * HealthConnectManager#deleteMedicalResources(DeleteMedicalResourcesRequest, Executor,
+     * OutcomeReceiver)}.
+     */
+    public void readMedicalResourcesByRequest(DeleteMedicalResourcesRequest request)
+            throws InterruptedException {
+        HealthConnectReceiver<Void> dataReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), dataReceiver);
+        dataReceiver.getResponse();
+    }
+
+    /**
      * Delete all health records (data sources, resources etc) stored in the Health Connect
      * database.
      */
@@ -154,7 +298,7 @@ public class PhrCtsTestUtils {
             return;
         }
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
         try {
             HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
             ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -172,12 +316,61 @@ public class PhrCtsTestUtils {
     }
 
     /**
+     * Given a list of {@link MedicalResource}s, reads out the resources using the {@link
+     * MedicalResourceId}s. It splits the resources to fit the maximum page size limit.
+     */
+    public List<MedicalResource> readMedicalResources(List<MedicalResource> medicalResources)
+            throws InterruptedException {
+        List<MedicalResourceId> ids =
+                medicalResources.stream()
+                        .map(
+                                medicalResource ->
+                                        new MedicalResourceId(
+                                                medicalResource.getDataSourceId(),
+                                                medicalResource.getFhirResource().getType(),
+                                                medicalResource.getFhirResource().getId()))
+                        .toList();
+
+        List<MedicalResource> result = new ArrayList<>();
+        for (int chunk = 0; chunk <= ids.size() / MAXIMUM_PAGE_SIZE; chunk++) {
+            List<MedicalResourceId> resourceIds = new ArrayList<>();
+            HealthConnectReceiver<List<MedicalResource>> dataReceiver =
+                    new HealthConnectReceiver<>();
+            for (int indexWithinChunk = 0;
+                    indexWithinChunk < MAXIMUM_PAGE_SIZE;
+                    indexWithinChunk++) {
+                int index = chunk * MAXIMUM_PAGE_SIZE + indexWithinChunk;
+                if (index >= ids.size()) {
+                    break;
+                }
+
+                resourceIds.add(ids.get(index));
+            }
+            mManager.readMedicalResources(
+                    resourceIds, Executors.newSingleThreadExecutor(), dataReceiver);
+            result.addAll(dataReceiver.getResponse());
+        }
+        return result;
+    }
+
+    /**
+     * Given a {@code dataSourceId} deletes the {@link MedicalDataSource} and all its associated
+     * {@link MedicalResource}s.
+     */
+    public void deleteMedicalDataSourceWithData(String dataSourceId) throws InterruptedException {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        mManager.deleteMedicalDataSourceWithData(
+                dataSourceId, Executors.newSingleThreadExecutor(), callback);
+        callback.verifyNoExceptionOrThrow();
+    }
+
+    /**
      * Inserts a data source with one resource for each permission category and returns the ids of
      * inserted resources.
      */
     public List<MedicalResourceId> insertSourceAndOneResourcePerPermissionCategory(
             TestAppProxy appProxy) throws Exception {
-        grantPermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
+        grantHealthPermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
         String dataSourceId =
                 appProxy.createMedicalDataSource(getCreateMedicalDataSourceRequest()).getId();
         List<MedicalResource> insertedMedicalResources =
@@ -197,7 +390,7 @@ public class PhrCtsTestUtils {
                         appProxy.upsertMedicalResource(
                                 dataSourceId, FHIR_DATA_OBSERVATION_VITAL_SIGNS),
                         appProxy.upsertMedicalResource(dataSourceId, FHIR_DATA_OBSERVATION_LABS));
-        revokePermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
+        revokeHealthPermission(appProxy.getPackageName(), WRITE_MEDICAL_DATA);
 
         checkState(
                 insertedMedicalResources.stream()
@@ -206,5 +399,64 @@ public class PhrCtsTestUtils {
                         .equals(MEDICAL_RESOURCE_TYPES_LIST));
 
         return insertedMedicalResources.stream().map(MedicalResource::getId).toList();
+    }
+
+    /**
+     * This method tries to use the specified quota by calling readMedicalResources and
+     * getMedicalResources APIs.
+     *
+     * @return the available quota that may have accumulated during the read.
+     */
+    public float tryAcquireCallQuotaNTimesForRead(
+            MedicalDataSource insertedMedicalDataSource,
+            List<MedicalResource> insertedMedicalResources,
+            int nTimes)
+            throws InterruptedException {
+        int readMedicalDataSourceCalls = nTimes / 2;
+        int readMedicalResourceCalls = nTimes - readMedicalDataSourceCalls;
+        List<MedicalResourceId> medicalResourceIds =
+                insertedMedicalResources.stream().map(MedicalResource::getId).toList();
+
+        Instant readStartTime = Instant.now();
+        for (int i = 0; i < readMedicalDataSourceCalls; i++) {
+            getMedicalDataSourcesByIds(List.of(insertedMedicalDataSource.getId()));
+        }
+        for (int i = 0; i < readMedicalResourceCalls; i++) {
+            readMedicalResourcesByIds(medicalResourceIds);
+        }
+        Instant readEndTime = Instant.now();
+
+        return getAvailableQuotaAccumulated(
+                readStartTime, readEndTime, Duration.ofMinutes(15), MAX_FOREGROUND_READ_CALL_15M);
+    }
+
+    /**
+     * This method tries to use the specified quota by calling the upsertMedicalResources API.
+     *
+     * @return the available quota that may have accumulated during the write.
+     */
+    public float tryAcquireCallQuotaNTimesForWrite(
+            MedicalDataSource insertedMedicalDataSource, int nTimes) throws InterruptedException {
+        String dataSourceId = insertedMedicalDataSource.getId();
+
+        Instant readStartTime = Instant.now();
+        for (int i = 0; i < nTimes; i++) {
+            upsertMedicalData(dataSourceId, FHIR_DATA_IMMUNIZATION);
+        }
+        Instant readEndTime = Instant.now();
+
+        return getAvailableQuotaAccumulated(
+                readStartTime, readEndTime, Duration.ofMinutes(15), MAX_FOREGROUND_WRITE_CALL_15M);
+    }
+
+    /**
+     * Returns the quota that would have accumulated between start and end time for the specified
+     * window and max quota. The calculation matches the calculation in
+     * RateLimiter#getAvailableQuota.
+     */
+    private float getAvailableQuotaAccumulated(
+            Instant startTime, Instant endTime, Duration window, int maxQuota) {
+        Duration timeSpent = Duration.between(startTime, endTime);
+        return timeSpent.toMillis() * ((float) maxQuota / (float) window.toMillis());
     }
 }

@@ -29,31 +29,12 @@ import java.util.Set;
  */
 public abstract class DatabaseHelper {
 
-    private static final Set<DatabaseHelper> sDatabaseHelpers = new HashSet<>();
-
-    protected DatabaseHelper() {
-        sDatabaseHelpers.add(this);
-    }
-
-    /**
-     * Deletes all entries from the database and clears the cache for all the helper class.
-     *
-     * <p>This function is only used for testing, do not use in production.
-     */
-    public static void clearAllData(TransactionManager transactionManager) {
-        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
-            databaseHelper.clearData(transactionManager);
-        }
-    }
-
-    public static void clearAllCache() {
-        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
-            databaseHelper.clearCache();
-        }
+    protected DatabaseHelper(DatabaseHelpers databaseHelpers) {
+        databaseHelpers.add(this);
     }
 
     /** Deletes all entries from the database and clears the cache for the helper class. */
-    public final synchronized void clearData(TransactionManager transactionManager) {
+    public synchronized void clearData(TransactionManager transactionManager) {
         transactionManager.delete(new DeleteTableRequest(getMainTableName()));
         clearCache();
     }
@@ -61,4 +42,32 @@ public abstract class DatabaseHelper {
     protected void clearCache() {}
 
     protected abstract String getMainTableName();
+
+    /** A collection of {@link DatabaseHelper}. */
+    public static final class DatabaseHelpers {
+
+        private final Set<DatabaseHelper> mDatabaseHelpers = new HashSet<>();
+
+        /**
+         * Deletes all entries from the database and clears the cache for all the helper class.
+         *
+         * <p>This function is only used for testing, do not use in production.
+         */
+        public void clearAllData(TransactionManager transactionManager) {
+            for (DatabaseHelper databaseHelper : mDatabaseHelpers) {
+                databaseHelper.clearData(transactionManager);
+            }
+        }
+
+        /** Clears cache in all the helpers. */
+        public void clearAllCache() {
+            for (DatabaseHelper databaseHelper : mDatabaseHelpers) {
+                databaseHelper.clearCache();
+            }
+        }
+
+        private void add(DatabaseHelper databaseHelper) {
+            mDatabaseHelpers.add(databaseHelper);
+        }
+    }
 }

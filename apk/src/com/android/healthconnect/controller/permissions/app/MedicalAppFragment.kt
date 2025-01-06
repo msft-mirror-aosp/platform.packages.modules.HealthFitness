@@ -44,9 +44,9 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
@@ -75,8 +75,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
     }
 
     init {
-        // TODO(b/342159144): Update visual elements.
-        this.setPageName(PageName.UNKNOWN_PAGE)
+        setPageName(PageName.MEDICAL_APP_ACCESS_PAGE)
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -101,9 +100,8 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.connected_app_screen, rootKey)
 
-        // TODO(b/342159144): Update visual elements.
-        allowAllPreference.logNameActive = ErrorPageElement.UNKNOWN_ELEMENT
-        allowAllPreference.logNameInactive = ErrorPageElement.UNKNOWN_ELEMENT
+        allowAllPreference.logNameActive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_ACTIVE
+        allowAllPreference.logNameInactive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -201,19 +199,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
 
         manageDataCategory.isVisible = true
         manageDataCategory.removeAll()
-        manageDataCategory.addPreference(
-            HealthPreference(requireContext()).also {
-                it.title = getString(R.string.see_app_data)
-                it.setOnPreferenceClickListener {
-                    findNavController()
-                        .navigate(
-                            R.id.action_medicalApp_to_appData,
-                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
-                        )
-                    true
-                }
-            }
-        )
+
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
             if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
@@ -237,6 +223,20 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
             manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
                 state.isAvailable()
         }
+
+        manageDataCategory.addPreference(
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.see_app_data)
+                it.setOnPreferenceClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_medicalApp_to_appData,
+                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
+                        )
+                    true
+                }
+            }
+        )
     }
 
     private fun shouldAddAdditionalAccessPref(): Boolean {
@@ -280,7 +280,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
         permissionMap.clear()
 
         permissions
-            .sortedBy {
+            .sortByLocale {
                 requireContext()
                     .getString(fromPermissionType(it.medicalPermissionType).uppercaseLabel)
             }

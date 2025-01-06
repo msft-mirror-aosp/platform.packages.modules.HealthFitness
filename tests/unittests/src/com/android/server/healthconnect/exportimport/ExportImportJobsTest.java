@@ -36,6 +36,8 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
@@ -47,6 +49,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -56,6 +59,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class ExportImportJobsTest {
 
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";
@@ -73,7 +77,6 @@ public class ExportImportJobsTest {
     @Mock Context mContext;
     @Mock private JobScheduler mJobScheduler;
     @Mock private ExportManager mExportManager;
-    @Mock private TransactionManager mTransactionManager;
     @Mock private HealthConnectNotificationSender mHealthConnectNotificationSender;
 
     @Captor ArgumentCaptor<JobInfo> mJobInfoCaptor;
@@ -86,12 +89,10 @@ public class ExportImportJobsTest {
         MockitoAnnotations.initMocks(this);
         mExportImportSettingsStorage = new ExportImportSettingsStorage(mFakePreferenceHelper);
 
-        when(PreferenceHelper.getInstance()).thenReturn(mFakePreferenceHelper);
         when(mJobScheduler.forNamespace(ExportImportJobs.NAMESPACE)).thenReturn(mJobScheduler);
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn(ANDROID_SERVER_PACKAGE_NAME);
         when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(ExportImportNotificationSender.createSender(any()))
                 .thenReturn(mHealthConnectNotificationSender);
     }

@@ -17,14 +17,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -57,15 +55,12 @@ class SeriesDataItemViewBinder(
         isChecked: Boolean,
     ) {
         val container = view.findViewById<RelativeLayout>(R.id.item_data_entry_container)
-        val divider = view.findViewById<LinearLayout>(R.id.item_data_entry_divider)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
 
-        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         header.text = data.header
         header.contentDescription = data.headerA11y
-        divider.isVisible = false
         container.setOnClickListener {
             if (isDeletionState) {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
@@ -77,12 +72,18 @@ class SeriesDataItemViewBinder(
                         isDeletionState,
                         checkBox.isChecked,
                     )
+                logger.logInteraction(logNameWithCheckbox)
             } else {
-                logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+                logger.logInteraction(logNameWithoutCheckbox)
                 onItemClickedListener?.onItemClicked(data.uuid, index)
             }
         }
         checkBox.isVisible = isDeletionState
+        if (isDeletionState) {
+            logger.logImpression(logNameWithCheckbox)
+        } else {
+            logger.logImpression(logNameWithoutCheckbox)
+        }
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
@@ -93,6 +94,7 @@ class SeriesDataItemViewBinder(
                     isDeletionState,
                     checkBox.isChecked,
                 )
+            logger.logInteraction(logNameWithCheckbox)
         }
         checkBox.tag = if (isDeletionState) "checkbox" else ""
 

@@ -22,6 +22,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
@@ -36,15 +37,16 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppUtils
 import com.android.healthconnect.controller.shared.preference.CardContainerPreference
-import com.android.healthconnect.controller.shared.preference.HeaderPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.topIntroPreference
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.DataSourcesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
@@ -87,21 +89,14 @@ class DataSourcesFragment :
     private var currentCategorySelection: @HealthDataCategoryInt Int = HealthDataCategory.ACTIVITY
     @Inject lateinit var timeSource: TimeSource
 
-    private val dataTypeSpinnerPreferenceGroup: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(DATA_TYPE_SPINNER_PREFERENCE_GROUP)
-    }
+    private val dataTypeSpinnerPreferenceGroup: PreferenceGroup by
+        pref(DATA_TYPE_SPINNER_PREFERENCE_GROUP)
 
-    private val dataTotalsPreferenceGroup: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(DATA_TOTALS_PREFERENCE_GROUP)
-    }
+    private val dataTotalsPreferenceGroup: PreferenceGroup by pref(DATA_TOTALS_PREFERENCE_GROUP)
 
-    private val appSourcesPreferenceGroup: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(APP_SOURCES_PREFERENCE_GROUP)
-    }
+    private val appSourcesPreferenceGroup: PreferenceGroup by pref(APP_SOURCES_PREFERENCE_GROUP)
 
-    private val nonEmptyFooterPreference: FooterPreference? by lazy {
-        preferenceScreen.findPreference(NON_EMPTY_FOOTER_PREFERENCE_KEY)
-    }
+    private val nonEmptyFooterPreference: FooterPreference by pref(NON_EMPTY_FOOTER_PREFERENCE_KEY)
 
     private val onEditMenuItemSelected: (MenuItem) -> Boolean = { menuItem ->
         when (menuItem.itemId) {
@@ -222,7 +217,7 @@ class DataSourcesFragment :
     fun editPriorityList() {
         isEditMode = true
         updateMenu(shouldShowEditButton = false)
-        appSourcesPreferenceGroup?.removePreferenceRecursively(ADD_AN_APP_PREFERENCE_KEY)
+        appSourcesPreferenceGroup.removePreferenceRecursively(ADD_AN_APP_PREFERENCE_KEY)
         val appSourcesPreference =
             preferenceScreen?.findPreference<AppSourcesPreference>(APP_SOURCES_PREFERENCE_KEY)
         appSourcesPreference?.toggleEditMode(true)
@@ -230,7 +225,7 @@ class DataSourcesFragment :
 
     private fun exitEditMode() {
         appSourcesPreferenceGroup
-            ?.findPreference<AppSourcesPreference>(APP_SOURCES_PREFERENCE_KEY)
+            .findPreference<AppSourcesPreference>(APP_SOURCES_PREFERENCE_KEY)
             ?.toggleEditMode(false)
         updateMenu(dataSourcesViewModel.getEditedPriorityList().size > 1)
         updateAddApp(dataSourcesViewModel.getEditedPotentialAppSources().isNotEmpty())
@@ -240,27 +235,29 @@ class DataSourcesFragment :
     /** Updates the priority list preference. */
     private fun updateAppSourcesSection(
         priorityList: List<AppMetadata>,
-        potentialAppSources: List<AppMetadata>
+        potentialAppSources: List<AppMetadata>,
     ) {
         removeEmptyState()
-        appSourcesPreferenceGroup?.isVisible = true
-        appSourcesPreferenceGroup?.removePreferenceRecursively(APP_SOURCES_PREFERENCE_KEY)
+        appSourcesPreferenceGroup.isVisible = true
+        appSourcesPreferenceGroup.removePreferenceRecursively(APP_SOURCES_PREFERENCE_KEY)
 
         dataSourcesViewModel.setEditedPriorityList(priorityList)
-        appSourcesPreferenceGroup?.addPreference(
+        appSourcesPreferenceGroup.addPreference(
             AppSourcesPreference(
                     requireContext(),
                     appUtils,
                     dataSourcesViewModel,
                     currentCategorySelection,
-                    this)
+                    this,
+                )
                 .also {
                     it.key = APP_SOURCES_PREFERENCE_KEY
                     it.setEditMode(isEditMode)
-                })
+                }
+        )
 
         updateAddApp(potentialAppSources.isNotEmpty() && !isEditMode)
-        nonEmptyFooterPreference?.isVisible = true
+        nonEmptyFooterPreference.isVisible = true
     }
 
     /**
@@ -270,13 +267,13 @@ class DataSourcesFragment :
      * list.
      */
     private fun updateAddApp(shouldShow: Boolean) {
-        appSourcesPreferenceGroup?.removePreferenceRecursively(ADD_AN_APP_PREFERENCE_KEY)
+        appSourcesPreferenceGroup.removePreferenceRecursively(ADD_AN_APP_PREFERENCE_KEY)
 
         if (!shouldShow) {
             return
         }
 
-        appSourcesPreferenceGroup?.addPreference(
+        appSourcesPreferenceGroup.addPreference(
             HealthPreference(requireContext()).also {
                 it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.addIcon)
                 it.title = getString(R.string.data_sources_add_app)
@@ -288,31 +285,34 @@ class DataSourcesFragment :
                     findNavController()
                         .navigate(
                             R.id.action_dataSourcesFragment_to_addAnAppFragment,
-                            bundleOf(CATEGORY_KEY to currentCategorySelection))
+                            bundleOf(CATEGORY_KEY to currentCategorySelection),
+                        )
                     true
                 }
-            })
+            }
+        )
     }
 
     /** Populates the data totals section with aggregation cards if needed. */
     private fun updateDataTotalsSection(cardInfos: List<AggregationCardInfo>) {
-        dataTotalsPreferenceGroup?.removePreferenceRecursively(DATA_TOTALS_PREFERENCE_KEY)
+        dataTotalsPreferenceGroup.removePreferenceRecursively(DATA_TOTALS_PREFERENCE_KEY)
         // Do not show data cards when there are no apps on the priority list
-        if (appSourcesPreferenceGroup?.isVisible == false) {
+        if (appSourcesPreferenceGroup.isVisible == false) {
             return
         }
 
         if (cardInfos.isEmpty()) {
-            dataTotalsPreferenceGroup?.isVisible = false
+            dataTotalsPreferenceGroup.isVisible = false
         } else {
-            dataTotalsPreferenceGroup?.isVisible = true
+            dataTotalsPreferenceGroup.isVisible = true
             cardContainerPreference =
                 CardContainerPreference(requireContext(), timeSource).also {
                     it.setAggregationCardInfo(cardInfos)
                     it.key = DATA_TOTALS_PREFERENCE_KEY
                 }
-            dataTotalsPreferenceGroup?.addPreference(
-                (cardContainerPreference as CardContainerPreference))
+            dataTotalsPreferenceGroup.addPreference(
+                (cardContainerPreference as CardContainerPreference)
+            )
         }
     }
 
@@ -322,9 +322,9 @@ class DataSourcesFragment :
             cardContainerPreference?.setLoading(true)
         } else {
             if (cardInfos.isEmpty()) {
-                dataTotalsPreferenceGroup?.isVisible = false
+                dataTotalsPreferenceGroup.isVisible = false
             } else {
-                dataTotalsPreferenceGroup?.isVisible = true
+                dataTotalsPreferenceGroup.isVisible = true
                 cardContainerPreference?.setAggregationCardInfo(cardInfos)
                 cardContainerPreference?.setLoading(false)
             }
@@ -355,16 +355,17 @@ class DataSourcesFragment :
         preferenceScreen.removePreferenceRecursively(DATA_TOTALS_PREFERENCE_KEY)
 
         // We hide the preference group headers and footer instead of removing them
-        appSourcesPreferenceGroup?.isVisible = false
-        dataTotalsPreferenceGroup?.isVisible = false
-        nonEmptyFooterPreference?.isVisible = false
+        appSourcesPreferenceGroup.isVisible = false
+        dataTotalsPreferenceGroup.isVisible = false
+        nonEmptyFooterPreference.isVisible = false
     }
 
-    private fun getEmptyStateHeaderPreference(): HeaderPreference {
-        return HeaderPreference(requireContext()).also {
-            it.setHeaderText(getString(R.string.data_sources_empty_state))
-            it.key = EMPTY_STATE_HEADER_PREFERENCE_KEY
-        }
+    private fun getEmptyStateHeaderPreference(): Preference {
+        return topIntroPreference(
+            context = requireContext(),
+            preferenceTitle = getString(R.string.data_sources_empty_state),
+            preferenceKey = EMPTY_STATE_HEADER_PREFERENCE_KEY,
+        )
     }
 
     private fun getEmptyStateFooterPreference(): FooterPreference {
@@ -372,7 +373,8 @@ class DataSourcesFragment :
             it.title =
                 getString(
                     R.string.data_sources_empty_state_footer,
-                    getString(currentCategorySelection.lowercaseTitle()))
+                    getString(currentCategorySelection.lowercaseTitle()),
+                )
             it.setLearnMoreText(getString(R.string.data_sources_help_link))
             it.setLearnMoreAction { DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity()) }
             it.key = EMPTY_STATE_FOOTER_PREFERENCE_KEY
@@ -382,9 +384,8 @@ class DataSourcesFragment :
     private fun setupSpinnerPreference() {
         spinnerPreference = SettingsSpinnerPreference(context)
         spinnerPreference.setAdapter(
-            SettingsSpinnerAdapter<String>(context).also {
-                it.addAll(dataSourcesCategoriesStrings)
-            })
+            SettingsSpinnerAdapter<String>(context).also { it.addAll(dataSourcesCategoriesStrings) }
+        )
 
         spinnerPreference.setOnItemSelectedListener(
             object : AdapterView.OnItemSelectedListener {
@@ -392,7 +393,7 @@ class DataSourcesFragment :
                     parent: AdapterView<*>?,
                     view: View?,
                     position: Int,
-                    id: Long
+                    id: Long,
                 ) {
                     logger.logInteraction(DataSourcesElement.DATA_TYPE_SPINNER)
 
@@ -406,13 +407,15 @@ class DataSourcesFragment :
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
-            })
+            }
+        )
 
         spinnerPreference.setSelection(
-            dataSourcesCategories.indexOf(dataSourcesViewModel.getCurrentSelection()))
+            dataSourcesCategories.indexOf(dataSourcesViewModel.getCurrentSelection())
+        )
 
-        dataTypeSpinnerPreferenceGroup?.isVisible = true
-        dataTypeSpinnerPreferenceGroup?.addPreference(spinnerPreference)
+        dataTypeSpinnerPreferenceGroup.isVisible = true
+        dataTypeSpinnerPreferenceGroup.addPreference(spinnerPreference)
         logger.logImpression(DataSourcesElement.DATA_TYPE_SPINNER)
     }
 }

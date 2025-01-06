@@ -16,64 +16,45 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.APP_ID_PRIORITY_ORDER_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.flattenLongList;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import static java.util.Objects.requireNonNull;
-
 import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.database.Cursor;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
-import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
-import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.request.DeleteTableRequest;
-import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,38 +63,19 @@ import java.util.Set;
 @RunWith(AndroidJUnit4.class)
 public class HealthDataCategoryPriorityHelperTest {
 
-    private static final long APP_PACKAGE_ID = 1;
-    private static final long APP_PACKAGE_ID_2 = 2;
-    private static final long APP_PACKAGE_ID_3 = 3;
-    private static final long APP_PACKAGE_ID_4 = 4;
-
     private static final String APP_PACKAGE_NAME = "android.healthconnect.mocked.app";
     private static final String APP_PACKAGE_NAME_2 = "android.healthconnect.mocked.app2";
     private static final String APP_PACKAGE_NAME_3 = "android.healthconnect.mocked.app3";
     private static final String APP_PACKAGE_NAME_4 = "android.healthconnect.mocked.app4";
-    private static final int APP_ID_PRIORITY_ORDER_COLUMN_INDEX = 2;
-    private static final int HEALTH_DATA_CATEGORY_COLUMN_INDEX = 1;
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(TransactionManager.class)
-                    .mockStatic(AppInfoHelper.class)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
-                    .mockStatic(PackageInfoUtils.class)
-                    .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectManager.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
 
-    @Mock private Cursor mCursor;
-    @Mock private TransactionManager mTransactionManager;
-    @Mock private AppInfoHelper mAppInfoHelper;
-    @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
-    @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private PackageInfoUtils mPackageInfoUtils;
-    @Mock private PackageInfo mPackageInfo1;
-    @Mock private PackageInfo mPackageInfo2;
-    @Mock private PackageInfo mPackageInfo3;
     @Mock private PreferenceHelper mPreferenceHelper;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
@@ -121,47 +83,37 @@ public class HealthDataCategoryPriorityHelperTest {
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
+    private long mAppPackageId;
+    private long mAppPackageId2;
+    private long mAppPackageId3;
+    private long mAppPackageId4;
+
+    private AppInfoHelper mAppInfoHelper;
     private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
-    private Context mContext;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        when(mTransactionManager.read(any())).thenReturn(mCursor);
-        when(mTransactionManager.getCurrentUserHandle()).thenReturn(UserHandle.CURRENT);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME), any()))
-                .thenReturn(APP_PACKAGE_ID);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_2), any()))
-                .thenReturn(APP_PACKAGE_ID_2);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_3), any()))
-                .thenReturn(APP_PACKAGE_ID_3);
-        when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME_4), any()))
-                .thenReturn(APP_PACKAGE_ID_4);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME_2)).thenReturn(APP_PACKAGE_ID_2);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME_3)).thenReturn(APP_PACKAGE_ID_3);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME_4)).thenReturn(APP_PACKAGE_ID_4);
-        when(mAppInfoHelper.getPackageName(APP_PACKAGE_ID)).thenReturn(APP_PACKAGE_NAME);
-        when(mAppInfoHelper.getPackageName(APP_PACKAGE_ID_2)).thenReturn(APP_PACKAGE_NAME_2);
-        when(mAppInfoHelper.getPackageName(APP_PACKAGE_ID_3)).thenReturn(APP_PACKAGE_NAME_3);
-        when(mAppInfoHelper.getPackageName(APP_PACKAGE_ID_4)).thenReturn(APP_PACKAGE_NAME_4);
-        when(mCursor.getColumnIndex(eq(HEALTH_DATA_CATEGORY_COLUMN_NAME)))
-                .thenReturn(HEALTH_DATA_CATEGORY_COLUMN_INDEX);
-        when(mCursor.getColumnIndex(eq(APP_ID_PRIORITY_ORDER_COLUMN_NAME)))
-                .thenReturn(APP_ID_PRIORITY_ORDER_COLUMN_INDEX);
-
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
-                        .setAppInfoHelper(mAppInfoHelper)
-                        .setTransactionManager(mTransactionManager)
-                        .setHealthConnectDeviceConfigManager(mHealthConnectDeviceConfigManager)
                         .setPreferenceHelper(mPreferenceHelper)
                         .setPackageInfoUtils(mPackageInfoUtils)
                         .build();
+
+        TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        transactionTestUtils.insertApp(APP_PACKAGE_NAME);
+        transactionTestUtils.insertApp(APP_PACKAGE_NAME_2);
+        transactionTestUtils.insertApp(APP_PACKAGE_NAME_3);
+        transactionTestUtils.insertApp(APP_PACKAGE_NAME_4);
+
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAppPackageId = mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME);
+        mAppPackageId2 = mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME_2);
+        mAppPackageId3 = mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME_3);
+        mAppPackageId4 = mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME_4);
+
         mHealthDataCategoryPriorityHelper =
                 healthConnectInjector.getHealthDataCategoryPriorityHelper();
     }
@@ -169,679 +121,427 @@ public class HealthDataCategoryPriorityHelperTest {
     @After
     public void tearDown() throws Exception {
         TestUtils.waitForAllScheduledTasksToComplete();
-        reset(mPackageInfo1, mPackageInfo2, mPackageInfo3);
-        clearInvocations(mPreferenceHelper);
-        clearInvocations(mTransactionManager);
-        clearInvocations(mHealthConnectDeviceConfigManager);
     }
 
     @Test
     public void testAppendToPriorityList_ifAppInList_doesNotAddToList() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
 
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID);
         mHealthDataCategoryPriorityHelper.appendToPriorityList(
-                APP_PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS, mContext, true);
+                APP_PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS, true);
 
-        verify(mTransactionManager, never()).insertOrReplace(any());
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.BODY_MEASUREMENTS, List.of(mAppPackageId, mAppPackageId2));
     }
 
     @Test
     public void testAppendToPriorityList_activeDefaultApp_addsToTopOfList() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID_4);
-        spy.appendToPriorityList(
-                APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, false);
+        doReturn(true).when(spy).isDefaultApp(APP_PACKAGE_NAME_4);
+        spy.appendToPriorityList(APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, false);
 
-        List<Long> expectedPriorityOrder =
-                List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID, APP_PACKAGE_ID_2);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.BODY_MEASUREMENTS))
-                .isEqualTo(expectedPriorityOrder);
+                .containsExactly(mAppPackageId4, mAppPackageId, mAppPackageId2)
+                .inOrder();
     }
 
     @Test
     public void testAppendToPriorityList_ifNonDefaultApp_addsToBottomOfList() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
 
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(false).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID_4);
-        spy.appendToPriorityList(
-                APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, false);
+        assertThat(mHealthDataCategoryPriorityHelper.isDefaultApp(APP_PACKAGE_NAME_4)).isFalse();
 
-        List<Long> expectedPriorityOrder =
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_4);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
-        assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.BODY_MEASUREMENTS))
-                .isEqualTo(expectedPriorityOrder);
+        mHealthDataCategoryPriorityHelper.appendToPriorityList(
+                APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, false);
+
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(mAppPackageId, mAppPackageId2, mAppPackageId4));
     }
 
     @Test
     public void testAppendToPriorityList_inactiveDefaultApp_addsToBottomOfList() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
 
         HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true).when(spy).isDefaultApp(eq(APP_PACKAGE_NAME_4), any());
-        when(mAppInfoHelper.getOrInsertAppInfoId(any(), any())).thenReturn(APP_PACKAGE_ID_4);
-        spy.appendToPriorityList(
-                APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, mContext, true);
+        doReturn(true).when(spy).isDefaultApp(APP_PACKAGE_NAME_4);
+        spy.appendToPriorityList(APP_PACKAGE_NAME_4, HealthDataCategory.BODY_MEASUREMENTS, true);
 
-        List<Long> expectedPriorityOrder =
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_4);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
         assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.BODY_MEASUREMENTS))
-                .isEqualTo(expectedPriorityOrder);
+                .containsExactly(mAppPackageId, mAppPackageId2, mAppPackageId4)
+                .inOrder();
     }
 
     @Test
     public void testMaybeRemoveAppFromPriorityList_ifWritePermissionsForApp_doesNotRemoveApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+        setupPackageInfoWithWritePermissionGranted();
 
-        when(mHealthConnectPermissionHelper.getGrantedHealthPermissions(
-                        eq(APP_PACKAGE_NAME), any()))
-                .thenReturn(
-                        List.of(HealthPermissions.READ_DISTANCE, HealthPermissions.WRITE_STEPS));
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        spy.maybeRemoveAppFromPriorityList(
-                APP_PACKAGE_NAME,
-                HealthDataCategory.ACTIVITY,
-                mHealthConnectPermissionHelper,
-                UserHandle.CURRENT);
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
+                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
-        verify(mTransactionManager, never()).insertOrReplace(any());
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.BODY_MEASUREMENTS, List.of(mAppPackageId, mAppPackageId2));
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId3, mAppPackageId));
     }
 
     @Test
-    public void testNewMaybeRemoveAppFromPriorityList_ifDataForApp_doesNotRemoveApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
+    public void testMaybeRemoveAppFromPriorityList_ifDataForApp_doesNotRemoveApp() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+        setupPackageInfoWithWritePermissionNotGranted();
 
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        when(mHealthConnectPermissionHelper.getGrantedHealthPermissions(
-                        eq(APP_PACKAGE_NAME), any()))
-                .thenReturn(List.of(HealthPermissions.READ_DISTANCE));
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppFromPriorityList(
-                APP_PACKAGE_NAME,
-                HealthDataCategory.ACTIVITY,
-                mHealthConnectPermissionHelper,
-                UserHandle.CURRENT);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS), APP_PACKAGE_NAME);
 
-        verify(mTransactionManager, never()).insertOrReplace(any());
-    }
-
-    @Test
-    public void testNewMaybeRemoveAppFromPriorityList_ifNoDataForApp_removesApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
-
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        when(mHealthConnectPermissionHelper.getGrantedHealthPermissions(
-                        eq(APP_PACKAGE_NAME), any()))
-                .thenReturn(List.of(HealthPermissions.READ_DISTANCE));
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(false)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppFromPriorityList(
-                APP_PACKAGE_NAME,
-                HealthDataCategory.ACTIVITY,
-                mHealthConnectPermissionHelper,
-                UserHandle.CURRENT);
-
-        List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
-        assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
-                .isEqualTo(expectedPriorityOrder);
-    }
-
-    @Test
-    public void testOldMaybeRemoveAppFromPriorityList_ifNoWritePermissionsForApp_removesApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
-
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        when(mHealthConnectPermissionHelper.getGrantedHealthPermissions(
-                        eq(APP_PACKAGE_NAME), any()))
-                .thenReturn(List.of(HealthPermissions.READ_DISTANCE));
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppFromPriorityList(
-                APP_PACKAGE_NAME,
-                HealthDataCategory.ACTIVITY,
-                mHealthConnectPermissionHelper,
-                UserHandle.CURRENT);
-
-        List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
-        assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
-                .isEqualTo(expectedPriorityOrder);
-    }
-
-    @Test
-    public void testUpdateHealthDataPriority_ifWritePermissionsForApp_doesNotRemoveApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
-
-        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(any(), any(), any()))
-                .thenReturn(mPackageInfo1);
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {0, PackageInfo.REQUESTED_PERMISSION_GRANTED, 0, 0};
-        mHealthDataCategoryPriorityHelper.updateHealthDataPriority(
-                new String[] {APP_PACKAGE_NAME}, UserHandle.CURRENT, mContext);
-
-        List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID);
         assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(expectedPriorityOrder);
+                        mHealthDataCategoryPriorityHelper.appHasDataInCategory(
+                                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY))
+                .isTrue();
+
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
+                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.BODY_MEASUREMENTS, List.of(mAppPackageId, mAppPackageId2));
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId3, mAppPackageId));
     }
 
     @Test
-    public void testNewUpdateHealthDataPriority_ifDataForApp_doesNotRemoveApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
+    public void testMaybeRemoveAppFromPriorityList_ifNoDataForApp_removesApp() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+        setupPackageInfoWithWritePermissionNotGranted();
 
-        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(any(), any(), any()))
-                .thenReturn(mPackageInfo1);
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        mPackageInfo1.requestedPermissionsFlags = new int[] {0, 0, 0, 0};
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.updateHealthDataPriority(new String[] {APP_PACKAGE_NAME}, UserHandle.CURRENT, mContext);
+        assertThat(
+                        mHealthDataCategoryPriorityHelper.appHasDataInCategory(
+                                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY))
+                .isFalse();
 
-        verify(mTransactionManager, never()).insertOrReplace(any());
-    }
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
+                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
-    @Test
-    public void testNewUpdateHealthDataPriority_ifNoDataForApp_removesApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
-
-        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(any(), any(), any()))
-                .thenReturn(mPackageInfo1);
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        mPackageInfo1.requestedPermissionsFlags = new int[] {0, 0, 0, 0};
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(false)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
-        spy.updateHealthDataPriority(new String[] {APP_PACKAGE_NAME}, UserHandle.CURRENT, mContext);
-        List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
-        assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
-                .isEqualTo(expectedPriorityOrder);
-    }
-
-    @Test
-    public void testOldUpdateHealthDataPriority_ifNoWritePermissionsForApp_removesApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
-
-        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(any(), any(), any()))
-                .thenReturn(mPackageInfo1);
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        mPackageInfo1.requestedPermissionsFlags = new int[] {0, 0, 0, 0};
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
-        spy.updateHealthDataPriority(new String[] {APP_PACKAGE_NAME}, UserHandle.CURRENT, mContext);
-
-        List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
-        assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
-                .isEqualTo(expectedPriorityOrder);
-    }
-
-    @Test
-    public void testOldMaybeRemoveAppWithoutWritePermissionsFromPriorityList_removesApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
-
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        spy.maybeRemoveAppWithoutWritePermissionsFromPriorityList(APP_PACKAGE_NAME);
-
-        List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
-        assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
-                .isEqualTo(expectedPriorityOrder);
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.ACTIVITY, List.of(mAppPackageId3));
     }
 
     @Test
     public void
-            testNewMaybeRemoveAppWithoutWritePermissionsFromPriorityList_ifNoDataForApp_removesApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
+            testMaybeRemoveAppFromPriorityList_allCategories_ifWritePermissionsForApp_doesNotRemoveApp() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+        setupPackageInfoWithWritePermissionGranted();
 
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(false)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppWithoutWritePermissionsFromPriorityList(APP_PACKAGE_NAME);
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
 
-        List<Long> expectedPriorityOrder = List.of(APP_PACKAGE_ID_3);
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(expectedPriorityOrder)));
-        assertThat(spy.getAppIdPriorityOrder(HealthDataCategory.ACTIVITY))
-                .isEqualTo(expectedPriorityOrder);
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId3, mAppPackageId));
+    }
+
+    @Test
+    public void testMaybeRemoveAppFromPriorityList_allCategories_ifDataForApp_doesNotRemoveApp() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+        setupPackageInfoWithWritePermissionNotGranted();
+
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS), APP_PACKAGE_NAME);
+
+        assertThat(
+                        mHealthDataCategoryPriorityHelper.appHasDataInCategory(
+                                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY))
+                .isTrue();
+
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
+
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId3, mAppPackageId));
+    }
+
+    @Test
+    public void testMaybeRemoveAppFromPriorityList_allCategories_ifNoDataForApp_removesApp() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+        setupPackageInfoWithWritePermissionNotGranted();
+
+        assertThat(
+                        mHealthDataCategoryPriorityHelper.appHasDataInCategory(
+                                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY))
+                .isFalse();
+
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(APP_PACKAGE_NAME);
+
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.ACTIVITY, List.of(mAppPackageId3));
     }
 
     @Test
     public void
-            testNewMaybeRemoveAppWithoutWritePermissionsFromPriorityList_ifDataForApp_doesNotRemoveApp() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
+            testMaybeRemoveAppWithoutWritePermissionsFromPriorityList_ifDataForApp_doesNotRemoveApp() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
 
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        when(mAppInfoHelper.getAppInfoId(APP_PACKAGE_NAME)).thenReturn(APP_PACKAGE_ID);
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doReturn(true)
-                .when(spy)
-                .appHasDataInCategory(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        spy.maybeRemoveAppWithoutWritePermissionsFromPriorityList(APP_PACKAGE_NAME);
-
-        verify(mTransactionManager, never()).insertOrReplace(any());
-    }
-
-    @Test
-    public void testOldGetPriorityOrder_doesNotReSyncPriority() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        when(mAppInfoHelper.getPackageNames(any()))
-                .thenReturn(List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-
-        spy.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext);
-        verify(spy, never()).reSyncHealthDataPriorityTable(mContext);
-    }
-
-    @Test
-    public void testNewGetPriorityOrder_callsReSyncPriority() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        when(mAppInfoHelper.getPackageNames(any()))
-                .thenReturn(List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
-        doNothing().when(spy).reSyncHealthDataPriorityTable(any());
-
-        spy.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext);
-        verify(spy, times(1)).reSyncHealthDataPriorityTable(mContext);
-    }
-
-    @Test
-    public void testGetPriorityOrder_returnsCorrectPriorityForCategory() {
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID));
-        setupPriorityList(priorityList);
-
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        when(mAppInfoHelper.getPackageNames(any()))
-                .thenReturn(List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS), APP_PACKAGE_NAME);
 
         assertThat(
-                        mHealthDataCategoryPriorityHelper.getPriorityOrder(
-                                HealthDataCategory.ACTIVITY, mContext))
-                .isEqualTo(List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+                        mHealthDataCategoryPriorityHelper.appHasDataInCategory(
+                                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY))
+                .isTrue();
+
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppWithoutWritePermissionsFromPriorityList(
+                APP_PACKAGE_NAME);
+
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId3, mAppPackageId));
     }
 
     @Test
-    public void testNewSetPriority_additionalPackages_addsToPriorityList() {
-        List<String> newPriorityOrder =
+    public void
+            testMaybeRemoveAppWithoutWritePermissionsFromPriorityList_ifNoDataForApp_removesApp() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_3, APP_PACKAGE_NAME));
+
+        assertThat(
+                        mHealthDataCategoryPriorityHelper.appHasDataInCategory(
+                                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY))
+                .isFalse();
+
+        mHealthDataCategoryPriorityHelper.maybeRemoveAppWithoutWritePermissionsFromPriorityList(
+                APP_PACKAGE_NAME);
+
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.ACTIVITY, List.of(mAppPackageId3));
+    }
+
+    @Test
+    public void testGetPriorityOrder_callsReSyncPriority() {
+        HealthDataCategoryPriorityHelper spy = Mockito.spy(mHealthDataCategoryPriorityHelper);
+        doNothing().when(spy).reSyncHealthDataPriorityTable();
+
+        spy.syncAndGetPriorityOrder(HealthDataCategory.ACTIVITY);
+        verify(spy, times(1)).reSyncHealthDataPriorityTable();
+    }
+
+    @Test
+    public void testSetPriority_additionalPackages_addsToPriorityList() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
+
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
                 List.of(
                         APP_PACKAGE_NAME_4,
                         APP_PACKAGE_NAME_3,
                         APP_PACKAGE_NAME_2,
-                        APP_PACKAGE_NAME);
+                        APP_PACKAGE_NAME));
 
-        List<Long> newPriorityOrderId = new ArrayList<>();
-        newPriorityOrderId.add(APP_PACKAGE_ID_4);
-        newPriorityOrderId.add(APP_PACKAGE_ID_3);
-        newPriorityOrderId.add(APP_PACKAGE_ID_2);
-        newPriorityOrderId.add(APP_PACKAGE_ID);
-
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
-
-        when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        mHealthDataCategoryPriorityHelper.setPriorityOrder(
-                HealthDataCategory.BODY_MEASUREMENTS, newPriorityOrder);
-
-        verifyPriorityUpdate(
-                List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_3, APP_PACKAGE_ID_2, APP_PACKAGE_ID),
-                HealthDataCategory.BODY_MEASUREMENTS);
-    }
-
-    @Test
-    public void testNewSetPriority_fewerPackages_removesFromPriorityList() {
-        List<String> newPriorityOrder = List.of(APP_PACKAGE_NAME_2, APP_PACKAGE_NAME);
-
-        List<Long> newPriorityOrderId = new ArrayList<>();
-        newPriorityOrderId.add(APP_PACKAGE_ID_2);
-        newPriorityOrderId.add(APP_PACKAGE_ID);
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
+        assertAppIdPriorityOrderIsEqualTo(
                 HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        setupPriorityList(priorityList);
-
-        when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-
-        mHealthDataCategoryPriorityHelper.setPriorityOrder(
-                HealthDataCategory.BODY_MEASUREMENTS, newPriorityOrder);
-
-        verifyPriorityUpdate(
-                List.of(APP_PACKAGE_ID_2, APP_PACKAGE_ID), HealthDataCategory.BODY_MEASUREMENTS);
+                List.of(mAppPackageId4, mAppPackageId3, mAppPackageId2, mAppPackageId));
     }
 
     @Test
-    public void testNewSetPriority_samePackages_reordersPriorityList() {
-        List<String> newPriorityOrder =
+    public void testSetPriority_fewerPackages_removesFromPriorityList() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(
+                        APP_PACKAGE_NAME,
+                        APP_PACKAGE_NAME_2,
+                        APP_PACKAGE_NAME_3,
+                        APP_PACKAGE_NAME_4));
+
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(APP_PACKAGE_NAME_2, APP_PACKAGE_NAME));
+
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.BODY_MEASUREMENTS, List.of(mAppPackageId2, mAppPackageId));
+    }
+
+    @Test
+    public void testSetPriority_samePackages_reordersPriorityList() {
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
+                List.of(
+                        APP_PACKAGE_NAME,
+                        APP_PACKAGE_NAME_2,
+                        APP_PACKAGE_NAME_3,
+                        APP_PACKAGE_NAME_4));
+
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.BODY_MEASUREMENTS,
                 List.of(
                         APP_PACKAGE_NAME_3,
                         APP_PACKAGE_NAME_2,
                         APP_PACKAGE_NAME,
-                        APP_PACKAGE_NAME_4);
+                        APP_PACKAGE_NAME_4));
 
-        List<Long> newPriorityOrderId = new ArrayList<>();
-        newPriorityOrderId.add(APP_PACKAGE_ID_3);
-        newPriorityOrderId.add(APP_PACKAGE_ID_2);
-        newPriorityOrderId.add(APP_PACKAGE_ID);
-        newPriorityOrderId.add(APP_PACKAGE_ID_4);
-
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
+        assertAppIdPriorityOrderIsEqualTo(
                 HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        setupPriorityList(priorityList);
-
-        when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        mHealthDataCategoryPriorityHelper.setPriorityOrder(
-                HealthDataCategory.BODY_MEASUREMENTS, newPriorityOrder);
-
-        verifyPriorityUpdate(
-                List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID_2, APP_PACKAGE_ID, APP_PACKAGE_ID_4),
-                HealthDataCategory.BODY_MEASUREMENTS);
+                List.of(mAppPackageId3, mAppPackageId2, mAppPackageId, mAppPackageId4));
     }
 
     @Test
-    public void testOldSetPriority_additionalPackagesDifferentOrder_newPackagesRemoved() {
-        List<String> newPriorityOrder =
-                List.of(
-                        APP_PACKAGE_NAME_4,
-                        APP_PACKAGE_NAME_3,
-                        APP_PACKAGE_NAME_2,
-                        APP_PACKAGE_NAME);
+    public void testReSyncHealthDataPriorityTable_emptyListAndNoContributingApps_remainsEmpty() {
+        // Setup apps with write permissions
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
+                new String[] {
+                    HealthPermissions.WRITE_SLEEP,
+                    HealthPermissions.WRITE_STEPS,
+                    HealthPermissions.READ_HEART_RATE,
+                    HealthPermissions.WRITE_OVULATION_TEST
+                };
+        packageInfo1.requestedPermissionsFlags =
+                new int[] {
+                    0,
+                    0,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED
+                };
 
-        List<Long> newPriorityOrderId = new ArrayList<>();
-        newPriorityOrderId.add(APP_PACKAGE_ID_4);
-        newPriorityOrderId.add(APP_PACKAGE_ID_3);
-        newPriorityOrderId.add(APP_PACKAGE_ID_2);
-        newPriorityOrderId.add(APP_PACKAGE_ID);
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
+                new String[] {
+                    HealthPermissions.WRITE_SLEEP,
+                    HealthPermissions.WRITE_NUTRITION,
+                    HealthPermissions.WRITE_HEART_RATE,
+                    HealthPermissions.READ_BLOOD_GLUCOSE
+                };
+        packageInfo2.requestedPermissionsFlags =
+                new int[] {
+                    0,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED
+                };
+        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
+        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
+                .thenReturn(List.of(packageInfo1, packageInfo2));
 
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
 
-        when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        mHealthDataCategoryPriorityHelper.setPriorityOrder(
-                HealthDataCategory.BODY_MEASUREMENTS, newPriorityOrder);
-
-        verifyPriorityUpdate(
-                List.of(APP_PACKAGE_ID_2, APP_PACKAGE_ID), HealthDataCategory.BODY_MEASUREMENTS);
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.ACTIVITY);
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.SLEEP);
     }
 
     @Test
-    public void testOldSetPriority_reducedPackagesDifferentOrder_oldPackagesAdded() {
-        List<String> newPriorityOrder = List.of(APP_PACKAGE_NAME_2);
+    public void testReSyncHealthDataPriorityTable_emptyList_populateContributingApps() {
+        // Setup contributor apps
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION), APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_3);
 
-        List<Long> newPriorityOrderId = new ArrayList<>();
-        newPriorityOrderId.add(APP_PACKAGE_ID_2);
+        // Setup apps with write permissions
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
+                new String[] {
+                    HealthPermissions.WRITE_SLEEP,
+                    HealthPermissions.WRITE_STEPS,
+                    HealthPermissions.READ_HEART_RATE,
+                    HealthPermissions.WRITE_OVULATION_TEST
+                };
+        packageInfo1.requestedPermissionsFlags =
+                new int[] {
+                    0,
+                    0,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED
+                };
 
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS, List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
+                new String[] {
+                    HealthPermissions.WRITE_SLEEP,
+                    HealthPermissions.WRITE_NUTRITION,
+                    HealthPermissions.WRITE_HEART_RATE,
+                    HealthPermissions.READ_BLOOD_GLUCOSE
+                };
+        packageInfo2.requestedPermissionsFlags =
+                new int[] {
+                    0,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED
+                };
+        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
+        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
+                .thenReturn(List.of(packageInfo1, packageInfo2));
 
-        when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        mHealthDataCategoryPriorityHelper.setPriorityOrder(
-                HealthDataCategory.BODY_MEASUREMENTS, newPriorityOrder);
-
-        verifyPriorityUpdate(
-                List.of(APP_PACKAGE_ID_2, APP_PACKAGE_ID), HealthDataCategory.BODY_MEASUREMENTS);
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId2, mAppPackageId3));
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.SLEEP, List.of(mAppPackageId, mAppPackageId2, mAppPackageId3));
     }
 
     @Test
-    public void testOldSetPriority_samePackagesDifferentOrder_newPrioritySaved() {
-        List<String> newPriorityOrder =
-                List.of(
-                        APP_PACKAGE_NAME_4,
-                        APP_PACKAGE_NAME_3,
-                        APP_PACKAGE_NAME_2,
-                        APP_PACKAGE_NAME);
-
-        List<Long> newPriorityOrderId = new ArrayList<>();
-        newPriorityOrderId.add(APP_PACKAGE_ID_4);
-        newPriorityOrderId.add(APP_PACKAGE_ID_3);
-        newPriorityOrderId.add(APP_PACKAGE_ID_2);
-        newPriorityOrderId.add(APP_PACKAGE_ID);
-
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        setupPriorityList(priorityList);
-
-        when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        mHealthDataCategoryPriorityHelper.setPriorityOrder(
-                HealthDataCategory.BODY_MEASUREMENTS, newPriorityOrder);
-
-        verifyPriorityUpdate(
-                List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_3, APP_PACKAGE_ID_2, APP_PACKAGE_ID),
-                HealthDataCategory.BODY_MEASUREMENTS);
-    }
-
-    @Test
-    public void testOldReSyncHealthDataPriorityTable_maintainsExistingOrdering() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
+    public void testReSyncHealthDataPriorityTable_oneEmptyList_leaveNonEmptyListsUnchanged() {
         // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
-                HealthDataCategory.ACTIVITY,
-                List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.SLEEP, List.of(APP_PACKAGE_NAME_2));
 
         // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2, APP_PACKAGE_NAME_3));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION), APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_3);
 
         // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions = new String[] {HealthPermissions.WRITE_STEPS};
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {PackageInfo.REQUESTED_PERMISSION_GRANTED};
-
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions = new String[] {HealthPermissions.WRITE_STEPS};
-        mPackageInfo2.requestedPermissionsFlags =
-                new int[] {PackageInfo.REQUESTED_PERMISSION_GRANTED};
-
-        mPackageInfo3.packageName = APP_PACKAGE_NAME_3;
-        mPackageInfo3.requestedPermissions = new String[] {HealthPermissions.WRITE_STEPS};
-        mPackageInfo3.requestedPermissionsFlags =
-                new int[] {PackageInfo.REQUESTED_PERMISSION_GRANTED};
-        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2, mPackageInfo3));
-
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of(APP_PACKAGE_ID_3, APP_PACKAGE_ID, APP_PACKAGE_ID_2));
-    }
-
-    @Test
-    public void testOldReSyncHealthDataPriorityTable_addsNewApps_withWritePermission() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID));
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
-
-        // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3, APP_PACKAGE_NAME_2));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
-
-        // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
+        packageInfo1.requestedPermissionsFlags =
                 new int[] {
                     0,
                     0,
@@ -849,15 +549,16 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
 
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_NUTRITION,
                     HealthPermissions.WRITE_HEART_RATE,
                     HealthPermissions.READ_BLOOD_GLUCOSE
                 };
-        mPackageInfo2.requestedPermissionsFlags =
+        packageInfo2.requestedPermissionsFlags =
                 new int[] {
                     0,
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
@@ -866,330 +567,56 @@ public class HealthDataCategoryPriorityHelperTest {
                 };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
+                .thenReturn(List.of(packageInfo1, packageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.CYCLE_TRACKING))
-                .isEqualTo(List.of(APP_PACKAGE_ID));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.NUTRITION))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.VITALS))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2));
-    }
-
-    @Test
-    public void testOldReSyncHealthDataPriorityTable_removesApps_withoutWritePermissionAndData() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID));
-        priorityList.put(
-                HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
-
-        // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_NUTRITION,
-                    HealthPermissions.WRITE_HEART_RATE,
-                    HealthPermissions.READ_BLOOD_GLUCOSE
-                };
-        mPackageInfo2.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
-
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.ACTIVITY)));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of());
-
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.BODY_MEASUREMENTS)));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.BODY_MEASUREMENTS))
-                .isEqualTo(List.of());
-
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.SLEEP)));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.SLEEP))
-                .isEqualTo(List.of());
-    }
-
-    @Test
-    public void testNewReSyncHealthDataPriorityTable_emptyListAndNoContributingApps_remainsEmpty() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        // Setup current empty priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of());
-        setupPriorityList(priorityList);
-
-        // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_NUTRITION,
-                    HealthPermissions.WRITE_HEART_RATE,
-                    HealthPermissions.READ_BLOOD_GLUCOSE
-                };
-        mPackageInfo2.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
-
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of());
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.SLEEP))
-                .isEqualTo(List.of());
-    }
-
-    @Test
-    public void testNewReSyncHealthDataPriorityTable_emptyList_populateContributingApps() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        // Setup current empty priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of());
-        setupPriorityList(priorityList);
-
-        // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3, APP_PACKAGE_NAME_2));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
-
-        // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_NUTRITION,
-                    HealthPermissions.WRITE_HEART_RATE,
-                    HealthPermissions.READ_BLOOD_GLUCOSE
-                };
-        mPackageInfo2.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
-
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2, APP_PACKAGE_ID_3));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.SLEEP))
-                .isEqualTo(List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3));
-    }
-
-    @Test
-    public void testNewReSyncHealthDataPriorityTable_oneEmptyList_leaveNonEmptyListsUnchanged() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
-        // Setup current empty priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
-
-        // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3, APP_PACKAGE_NAME_2));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
-
-        // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.WRITE_OVULATION_TEST
-                };
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.WRITE_NUTRITION,
-                    HealthPermissions.WRITE_HEART_RATE,
-                    HealthPermissions.READ_BLOOD_GLUCOSE
-                };
-        mPackageInfo2.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-        when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
-
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2, APP_PACKAGE_ID_3));
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId2, mAppPackageId3));
         // Not populated by contributing apps.
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.SLEEP))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2));
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.SLEEP, List.of(mAppPackageId2));
     }
 
     @Test
-    public void testNewReSyncHealthDataPriorityTable_newWritePermission_doesNotUpdateTable() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
+    public void testReSyncHealthDataPriorityTable_newWritePermission_doesNotUpdateTable() {
         // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID));
-        priorityList.put(
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
                 HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+                List.of(
+                        APP_PACKAGE_NAME,
+                        APP_PACKAGE_NAME_2,
+                        APP_PACKAGE_NAME_3,
+                        APP_PACKAGE_NAME_4));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.SLEEP, List.of(APP_PACKAGE_NAME_4, APP_PACKAGE_NAME_2));
 
         // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3, APP_PACKAGE_NAME_2));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION), APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_3);
 
         // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
+        packageInfo1.requestedPermissionsFlags =
                 new int[] {
                     0,
                     0,
@@ -1197,15 +624,16 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
 
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_NUTRITION,
                     HealthPermissions.WRITE_HEART_RATE,
                     HealthPermissions.READ_BLOOD_GLUCOSE
                 };
-        mPackageInfo2.requestedPermissionsFlags =
+        packageInfo2.requestedPermissionsFlags =
                 new int[] {
                     0,
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
@@ -1214,52 +642,53 @@ public class HealthDataCategoryPriorityHelperTest {
                 };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
+                .thenReturn(List.of(packageInfo1, packageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.VITALS))
-                .isEqualTo(List.of());
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.VITALS);
     }
 
     @Test
-    public void testNewReSyncHealthDataPriorityTable_someAppsNoDataNopermission_removesApps() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
+    public void testReSyncHealthDataPriorityTable_someAppsNoDataNoPermission_removesApps() {
         // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID));
-        priorityList.put(
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
                 HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+                List.of(
+                        APP_PACKAGE_NAME,
+                        APP_PACKAGE_NAME_2,
+                        APP_PACKAGE_NAME_3,
+                        APP_PACKAGE_NAME_4));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.SLEEP, List.of(APP_PACKAGE_NAME_4, APP_PACKAGE_NAME_2));
 
         // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3, APP_PACKAGE_NAME_2));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION), APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_3);
 
         // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
+        packageInfo1.requestedPermissionsFlags =
                 new int[] {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                     0,
@@ -1267,15 +696,16 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
 
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_NUTRITION,
                     HealthPermissions.WRITE_HEART_RATE,
                     HealthPermissions.READ_BLOOD_GLUCOSE
                 };
-        mPackageInfo2.requestedPermissionsFlags =
+        packageInfo2.requestedPermissionsFlags =
                 new int[] {
                     0,
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
@@ -1284,52 +714,41 @@ public class HealthDataCategoryPriorityHelperTest {
                 };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
+                .thenReturn(List.of(packageInfo1, packageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.ACTIVITY)));
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
         // This would have been empty hence not populating with contributing apps.
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2, APP_PACKAGE_ID_3));
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.BODY_MEASUREMENTS)));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.BODY_MEASUREMENTS))
-                .isEqualTo(List.of());
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY, List.of(mAppPackageId2, mAppPackageId3));
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.BODY_MEASUREMENTS);
         // This was non-empty hence not populated with contributing apps.
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.SLEEP))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2));
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.SLEEP, List.of(mAppPackageId2));
     }
 
     @Test
-    public void testNewReSyncHealthDataPriorityTable_noDataNorPermission_removesApps() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
+    public void testReSyncHealthDataPriorityTable_noDataNorPermission_removesApps() {
         // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID));
-        priorityList.put(
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
                 HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+                List.of(
+                        APP_PACKAGE_NAME,
+                        APP_PACKAGE_NAME_2,
+                        APP_PACKAGE_NAME_3,
+                        APP_PACKAGE_NAME_4));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.SLEEP, List.of(APP_PACKAGE_NAME_4, APP_PACKAGE_NAME_2));
 
         // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
+        packageInfo1.requestedPermissionsFlags =
                 new int[] {
                     0,
                     0,
@@ -1337,15 +756,16 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
 
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_NUTRITION,
                     HealthPermissions.WRITE_HEART_RATE,
                     HealthPermissions.READ_BLOOD_GLUCOSE
                 };
-        mPackageInfo2.requestedPermissionsFlags =
+        packageInfo2.requestedPermissionsFlags =
                 new int[] {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
@@ -1354,67 +774,59 @@ public class HealthDataCategoryPriorityHelperTest {
                 };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
+                .thenReturn(List.of(packageInfo1, packageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.ACTIVITY)));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of());
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
 
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.BODY_MEASUREMENTS)));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.BODY_MEASUREMENTS))
-                .isEqualTo(List.of());
-
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.SLEEP))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2));
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.ACTIVITY);
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.BODY_MEASUREMENTS);
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.SLEEP, List.of(mAppPackageId2));
     }
 
     @Test
     public void testNewReSyncHealthDataPriorityTable_ifDataForApps_doesNotRemoveApps() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID));
-        priorityList.put(
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
                 HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID_2));
-        setupPriorityList(priorityList);
+                List.of(
+                        APP_PACKAGE_NAME,
+                        APP_PACKAGE_NAME_2,
+                        APP_PACKAGE_NAME_3,
+                        APP_PACKAGE_NAME_4));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.SLEEP, List.of(APP_PACKAGE_NAME_4, APP_PACKAGE_NAME_2));
 
         // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3, APP_PACKAGE_NAME_2));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_3);
 
         // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
+        packageInfo1.requestedPermissionsFlags =
                 new int[] {
                     0,
                     0,
@@ -1422,15 +834,16 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
 
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_NUTRITION,
                     HealthPermissions.WRITE_HEART_RATE,
                     HealthPermissions.READ_BLOOD_GLUCOSE
                 };
-        mPackageInfo2.requestedPermissionsFlags =
+        packageInfo2.requestedPermissionsFlags =
                 new int[] {
                     0,
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
@@ -1439,60 +852,47 @@ public class HealthDataCategoryPriorityHelperTest {
                 };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
+                .thenReturn(List.of(packageInfo1, packageInfo2));
 
-        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(mContext);
-        verify(mTransactionManager, never())
-                .insertOrReplace(argThat(new UpsertRequestMatcher(List.of(APP_PACKAGE_ID))));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.ACTIVITY))
-                .isEqualTo(List.of(APP_PACKAGE_ID));
+        mHealthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable();
 
-        verify(mTransactionManager)
-                .delete(argThat(new DeleteRequestMatcher(HealthDataCategory.BODY_MEASUREMENTS)));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.BODY_MEASUREMENTS))
-                .isEqualTo(List.of());
-
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                                HealthDataCategory.SLEEP))
-                .isEqualTo(List.of(APP_PACKAGE_ID_2));
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.ACTIVITY, List.of(mAppPackageId));
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.BODY_MEASUREMENTS);
+        assertAppIdPriorityOrderIsEqualTo(HealthDataCategory.SLEEP, List.of(mAppPackageId2));
     }
 
     @Test
     public void testMaybeAddInactiveAppsToPriorityList_ifPreferenceNotSet_addsToList() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         when(mPreferenceHelper.getPreference(any())).thenReturn(null);
 
         // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME_3);
 
         // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
+        packageInfo1.requestedPermissionsFlags =
                 new int[] {
                     0,
                     0,
@@ -1500,15 +900,16 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
 
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_NUTRITION,
                     HealthPermissions.WRITE_HEART_RATE,
                     HealthPermissions.READ_BLOOD_GLUCOSE
                 };
-        mPackageInfo2.requestedPermissionsFlags =
+        packageInfo2.requestedPermissionsFlags =
                 new int[] {
                     0,
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
@@ -1517,61 +918,64 @@ public class HealthDataCategoryPriorityHelperTest {
                 };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
+                .thenReturn(List.of(packageInfo1, packageInfo2));
         // Inactive apps {
         //   Activity -> {APP_PACKAGE_NAME, APP_PACKAGE_NAME_2, APP_PACKAGE_NAME_3}
         //   Vitals -> {APP_PACKAGE_NAME, APP_PACKAGE_NAME_3}
 
         // Setup current priority list
-        Map<Integer, List<Long>> priorityList = new HashMap<>();
-        priorityList.put(
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
                 HealthDataCategory.BODY_MEASUREMENTS,
-                List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3, APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_ID_4));
-        priorityList.put(HealthDataCategory.SLEEP, List.of(APP_PACKAGE_ID_4));
-        setupPriorityList(priorityList);
+                List.of(
+                        APP_PACKAGE_NAME,
+                        APP_PACKAGE_NAME_2,
+                        APP_PACKAGE_NAME_3,
+                        APP_PACKAGE_NAME_4));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(APP_PACKAGE_NAME_4));
+        mHealthDataCategoryPriorityHelper.setPriorityOrder(
+                HealthDataCategory.SLEEP, List.of(APP_PACKAGE_NAME_4));
 
-        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(mContext);
-        verifyPriorityUpdate(
-                List.of(APP_PACKAGE_ID_4, APP_PACKAGE_ID, APP_PACKAGE_ID_2, APP_PACKAGE_ID_3),
-                HealthDataCategory.ACTIVITY);
-        verifyPriorityUpdate(List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_3), HealthDataCategory.VITALS);
+        mHealthDataCategoryPriorityHelper
+                .addInactiveAppsWhenFirstMigratingToNewAggregationControl();
+
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.ACTIVITY,
+                List.of(mAppPackageId4, mAppPackageId, mAppPackageId2, mAppPackageId3));
+        assertAppIdPriorityOrderIsEqualTo(
+                HealthDataCategory.VITALS, List.of(mAppPackageId, mAppPackageId3));
     }
 
     @Test
     public void testMaybeAddInactiveAppsToPriorityList_ifPreferenceExists_doesNotAdd() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         when(mPreferenceHelper.getPreference(any())).thenReturn(String.valueOf(true));
-        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(mContext);
-        verify(mPreferenceHelper, never()).insertOrReplacePreference(any(), any());
-        verify(mTransactionManager, never()).insertOrReplace(any());
-    }
 
-    @Test
-    public void testMaybeAddInactiveAppsToPriorityList_ifOldAggregation_doesNotAdd() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
-        mHealthDataCategoryPriorityHelper.maybeAddContributingAppsToPriorityList(mContext);
-        verify(mPreferenceHelper, never()).getPreference(any());
+        // Setup contributor apps
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS), APP_PACKAGE_NAME);
+
+        mHealthDataCategoryPriorityHelper
+                .addInactiveAppsWhenFirstMigratingToNewAggregationControl();
+
         verify(mPreferenceHelper, never()).insertOrReplacePreference(any(), any());
-        verify(mTransactionManager, never()).insertOrReplace(any());
+
+        assertAppIdPriorityOrderIsEmpty(HealthDataCategory.ACTIVITY);
     }
 
     @Test
     public void testAppHasDataInCategory_forAppsWithDataInCategory_returnsTrue() {
-        Map<Integer, Set<String>> recordTypesToContributingPackagesMap = new HashMap<>();
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_BODY_FAT, Set.of(APP_PACKAGE_NAME_4));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributingPackagesMap);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS), APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_STEPS), APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION),
+                APP_PACKAGE_NAME_3);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_BODY_FAT), APP_PACKAGE_NAME_4);
+
         assertThat(
                         mHealthDataCategoryPriorityHelper.appHasDataInCategory(
                                 APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY))
@@ -1596,19 +1000,22 @@ public class HealthDataCategoryPriorityHelperTest {
 
     @Test
     public void testAppHasDataInCategory_forAppsWithoutDataInCategory_returnsFalse() {
-        Map<Integer, Set<String>> recordTypesToContributingPackagesMap = new HashMap<>();
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_HYDRATION, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_HEART_RATE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributingPackagesMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_MENSTRUATION_FLOW,
-                Set.of(APP_PACKAGE_NAME_4, APP_PACKAGE_NAME_3, APP_PACKAGE_NAME_2));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributingPackagesMap);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_NUTRITION), APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION,
+                        RecordTypeIdentifier.RECORD_TYPE_MENSTRUATION_FLOW),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_HYDRATION,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
+                        RecordTypeIdentifier.RECORD_TYPE_MENSTRUATION_FLOW),
+                APP_PACKAGE_NAME_3);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(RecordTypeIdentifier.RECORD_TYPE_MENSTRUATION_FLOW), APP_PACKAGE_NAME_4);
+
         assertThat(
                         mHealthDataCategoryPriorityHelper.appHasDataInCategory(
                                 APP_PACKAGE_NAME_3, HealthDataCategory.ACTIVITY))
@@ -1637,10 +1044,6 @@ public class HealthDataCategoryPriorityHelperTest {
 
     @Test
     public void testAppHasDataInCategory_ifContributingPackagesMapEmpty_returnsFalse() {
-        Map<Integer, Set<String>> recordTypesToContributingPackagesMap = new HashMap<>();
-
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributingPackagesMap);
         assertThat(
                         mHealthDataCategoryPriorityHelper.appHasDataInCategory(
                                 APP_PACKAGE_NAME, HealthDataCategory.SLEEP))
@@ -1673,19 +1076,21 @@ public class HealthDataCategoryPriorityHelperTest {
 
     @Test
     public void testGetDataCategoriesWithDataForPackage_returnsCorrectCategories() {
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME_3);
 
         assertThat(
                         mHealthDataCategoryPriorityHelper.getDataCategoriesWithDataForPackage(
@@ -1702,24 +1107,26 @@ public class HealthDataCategoryPriorityHelperTest {
         assertThat(
                         mHealthDataCategoryPriorityHelper.getDataCategoriesWithDataForPackage(
                                 APP_PACKAGE_NAME_4))
-                .isEqualTo(Set.of());
+                .isEmpty();
     }
 
     @Test
     public void testGetAllContributorApps_returnsJustAppsWithData() {
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME_3);
 
         Map<Integer, Set<String>> expectedResult = new HashMap<>();
         expectedResult.put(
@@ -1728,36 +1135,39 @@ public class HealthDataCategoryPriorityHelperTest {
         expectedResult.put(HealthDataCategory.NUTRITION, Set.of(APP_PACKAGE_NAME_2));
         expectedResult.put(HealthDataCategory.VITALS, Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3));
         assertThat(mHealthDataCategoryPriorityHelper.getAllContributorApps())
-                .isEqualTo(expectedResult);
+                .containsExactlyEntriesIn(expectedResult);
     }
 
     @Test
     public void testGetAllInactiveApps_returnsApps_withDataAndNoWritePermissions() {
         // Setup contributor apps
-        Map<Integer, Set<String>> recordTypesToContributorPackages = new HashMap<>();
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_STEPS,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_DISTANCE, Set.of(APP_PACKAGE_NAME_3));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_NUTRITION, Set.of(APP_PACKAGE_NAME_2));
-        recordTypesToContributorPackages.put(
-                RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
-                Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3));
-        when(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
-                .thenReturn(recordTypesToContributorPackages);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        RecordTypeIdentifier.RECORD_TYPE_NUTRITION),
+                APP_PACKAGE_NAME_2);
+        mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                Set.of(
+                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE),
+                APP_PACKAGE_NAME_3);
 
         // Setup apps with write permissions
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+        PackageInfo packageInfo1 = new PackageInfo();
+        packageInfo1.packageName = APP_PACKAGE_NAME;
+        packageInfo1.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
+        packageInfo1.requestedPermissionsFlags =
                 new int[] {
                     0,
                     0,
@@ -1765,15 +1175,16 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
 
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
+        PackageInfo packageInfo2 = new PackageInfo();
+        packageInfo2.packageName = APP_PACKAGE_NAME_2;
+        packageInfo2.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_NUTRITION,
                     HealthPermissions.WRITE_HEART_RATE,
                     HealthPermissions.READ_BLOOD_GLUCOSE
                 };
-        mPackageInfo2.requestedPermissionsFlags =
+        packageInfo2.requestedPermissionsFlags =
                 new int[] {
                     0,
                     PackageInfo.REQUESTED_PERMISSION_GRANTED,
@@ -1781,207 +1192,71 @@ public class HealthDataCategoryPriorityHelperTest {
                     PackageInfo.REQUESTED_PERMISSION_GRANTED
                 };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
+        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(
+                        eq(APP_PACKAGE_NAME), any(), any()))
+                .thenReturn(packageInfo1);
+        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(
+                        eq(APP_PACKAGE_NAME_2), any(), any()))
+                .thenReturn(packageInfo2);
 
         Map<Integer, Set<String>> expectedResult = new HashMap<>();
         expectedResult.put(
                 HealthDataCategory.ACTIVITY,
                 Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_2, APP_PACKAGE_NAME_3));
         expectedResult.put(HealthDataCategory.VITALS, Set.of(APP_PACKAGE_NAME, APP_PACKAGE_NAME_3));
-        assertThat(mHealthDataCategoryPriorityHelper.getAllInactiveApps(mContext))
-                .isEqualTo(expectedResult);
+        assertThat(mHealthDataCategoryPriorityHelper.getAllInactiveApps())
+                .containsExactlyEntriesIn(expectedResult);
     }
 
-    @Test
-    public void testAppHasWriteHealthPermissionsForCategory_ifWritePermission_returnsTrue() {
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+    private void assertAppIdPriorityOrderIsEqualTo(int type, List<Long> appIds) {
+        assertThat(mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(type))
+                .containsExactlyElementsIn(appIds)
+                .inOrder();
+        // Clear cache and re-read to ensure db contains the same.
+        mHealthDataCategoryPriorityHelper.clearCache();
+        assertThat(mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(type))
+                .containsExactlyElementsIn(appIds)
+                .inOrder();
+    }
+
+    private void assertAppIdPriorityOrderIsEmpty(int type) {
+        assertThat(mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(type)).isEmpty();
+        // Clear cache and re-read to ensure db contains the same.
+        mHealthDataCategoryPriorityHelper.clearCache();
+        assertThat(mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(type)).isEmpty();
+    }
+
+    private void setupPackageInfoWithWritePermissionGranted() {
+        PackageInfo packageInfo = new PackageInfo();
+        packageInfo.packageName = APP_PACKAGE_NAME;
+        packageInfo.requestedPermissions =
                 new String[] {
                     HealthPermissions.WRITE_SLEEP,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_SLEEP,
-                    HealthPermissions.READ_SLEEP,
-                    HealthPermissions.WRITE_HEART_RATE,
-                    HealthPermissions.READ_BLOOD_GLUCOSE
-                };
-        mPackageInfo2.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.appHasWriteHealthPermissionsForCategory(
-                                APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY, mContext))
-                .isTrue();
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.appHasWriteHealthPermissionsForCategory(
-                                APP_PACKAGE_NAME_2, HealthDataCategory.VITALS, mContext))
-                .isTrue();
+        packageInfo.requestedPermissionsFlags =
+                new int[] {0, PackageInfo.REQUESTED_PERMISSION_GRANTED, 0, 0};
+
+        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(any(), any(), any()))
+                .thenReturn(packageInfo);
     }
 
-    @Test
-    public void testAppHasWriteHealthPermissionsForCategory_ifNoWritePermission_returnsFalse() {
-        mPackageInfo1.packageName = APP_PACKAGE_NAME;
-        mPackageInfo1.requestedPermissions =
+    private void setupPackageInfoWithWritePermissionNotGranted() {
+        PackageInfo packageInfo = new PackageInfo();
+        packageInfo.packageName = APP_PACKAGE_NAME;
+        packageInfo.requestedPermissions =
                 new String[] {
-                    HealthPermissions.WRITE_STEPS,
                     HealthPermissions.WRITE_SLEEP,
+                    HealthPermissions.WRITE_STEPS,
                     HealthPermissions.READ_HEART_RATE,
                     HealthPermissions.WRITE_OVULATION_TEST
                 };
-        mPackageInfo1.requestedPermissionsFlags =
-                new int[] {
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
-
-        mPackageInfo2.packageName = APP_PACKAGE_NAME_2;
-        mPackageInfo2.requestedPermissions =
-                new String[] {
-                    HealthPermissions.WRITE_STEPS,
-                    HealthPermissions.READ_SLEEP,
-                    HealthPermissions.WRITE_HEART_RATE,
-                    HealthPermissions.READ_BLOOD_GLUCOSE
-                };
-        mPackageInfo2.requestedPermissionsFlags =
-                new int[] {
-                    0,
-                    0,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
-                    PackageInfo.REQUESTED_PERMISSION_GRANTED
-                };
         when(HealthConnectManager.isHealthPermission(any(), any())).thenReturn(true);
-        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
-                .thenReturn(List.of(mPackageInfo1, mPackageInfo2));
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.appHasWriteHealthPermissionsForCategory(
-                                APP_PACKAGE_NAME, HealthDataCategory.SLEEP, mContext))
-                .isFalse();
-        assertThat(
-                        mHealthDataCategoryPriorityHelper.appHasWriteHealthPermissionsForCategory(
-                                APP_PACKAGE_NAME_2, HealthDataCategory.BODY_MEASUREMENTS, mContext))
-                .isFalse();
-    }
-
-    private void verifyPriorityUpdate(List<Long> priorityOrder, int dataCategory) {
-        verify(mTransactionManager)
-                .insertOrReplace(argThat(new UpsertRequestMatcher(priorityOrder)));
-
-        assertThat(mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(dataCategory))
-                .isEqualTo(priorityOrder);
-    }
-
-    private static final class UpsertRequestMatcher implements ArgumentMatcher<UpsertTableRequest> {
-
-        private final List<Long> mPriorityOrder;
-        private UpsertTableRequest mRequest;
-
-        UpsertRequestMatcher(List<Long> priorityOrder) {
-            mPriorityOrder = priorityOrder;
-        }
-
-        @Override
-        public boolean matches(UpsertTableRequest request) {
-            mRequest = request;
-            return requireNonNull(
-                            request.getContentValues()
-                                    .getAsString(APP_ID_PRIORITY_ORDER_COLUMN_NAME))
-                    .equalsIgnoreCase(flattenLongList(mPriorityOrder));
-        }
-
-        @Override
-        public String toString() {
-            return "Expected Priority Order = ["
-                    + flattenLongList(mPriorityOrder)
-                    + "]"
-                    + ", Actual Priority Order = ["
-                    + requireNonNull(
-                            mRequest.getContentValues()
-                                    .getAsString(APP_ID_PRIORITY_ORDER_COLUMN_NAME))
-                    + "]";
-        }
-    }
-
-    private static final class DeleteRequestMatcher implements ArgumentMatcher<DeleteTableRequest> {
-
-        private final int mDataCategory;
-        private DeleteTableRequest mRequest;
-
-        DeleteRequestMatcher(int dataCategory) {
-            mDataCategory = dataCategory;
-        }
-
-        @Override
-        public boolean matches(DeleteTableRequest request) {
-            mRequest = request;
-            return request != null
-                    && request.getIdColumnName() != null
-                    && request.getIdColumnName().equals(HEALTH_DATA_CATEGORY_COLUMN_NAME)
-                    && request.getIds()
-                            .equals(
-                                    Collections.singletonList(
-                                            StorageUtils.getNormalisedString(
-                                                    String.valueOf(mDataCategory))));
-        }
-
-        @Override
-        public String toString() {
-            return "Expected Delete Request for category = ["
-                    + mDataCategory
-                    + "]"
-                    + ", Actual category = ["
-                    + mRequest.getIds()
-                    + "]";
-        }
-    }
-
-    private void setupPriorityList(Map<Integer, List<Long>> priorityList) {
-        List<Boolean> cursorNext = new ArrayList<>();
-        List<Integer> categories = new ArrayList<>();
-        List<String> priorities = new ArrayList<>();
-
-        for (Map.Entry<Integer, List<Long>> entry : priorityList.entrySet()) {
-            int dataCategory = entry.getKey();
-            List<Long> priorityListForCategory = entry.getValue();
-            String flattened = flattenLongList(priorityListForCategory);
-            cursorNext.add(true);
-            categories.add(dataCategory);
-            priorities.add(flattened);
-        }
-        cursorNext.add(false);
-        when(mCursor.moveToNext())
-                .thenReturn(
-                        cursorNext.get(0),
-                        cursorNext.subList(1, cursorNext.size()).toArray(new Boolean[] {}));
-        when(mCursor.getInt(eq(HEALTH_DATA_CATEGORY_COLUMN_INDEX)))
-                .thenReturn(
-                        categories.get(0),
-                        categories.subList(1, categories.size()).toArray(new Integer[] {}));
-        when(mCursor.getString(APP_ID_PRIORITY_ORDER_COLUMN_INDEX))
-                .thenReturn(
-                        priorities.get(0),
-                        priorities.subList(1, priorities.size()).toArray(new String[] {}));
+        packageInfo.requestedPermissionsFlags = new int[] {0, 0, 0, 0};
+        when(mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(any(), any(), any()))
+                .thenReturn(packageInfo);
     }
 }

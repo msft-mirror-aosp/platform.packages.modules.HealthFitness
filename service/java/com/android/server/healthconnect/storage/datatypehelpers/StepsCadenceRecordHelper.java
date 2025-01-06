@@ -110,7 +110,7 @@ public class StepsCadenceRecordHelper
 
     @Override
     @Nullable
-    public AggregateResult<?> getAggregateResult(
+    public AggregateResult<?> getNoPriorityAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case STEPS_CADENCE_RECORD_RATE_AVG:

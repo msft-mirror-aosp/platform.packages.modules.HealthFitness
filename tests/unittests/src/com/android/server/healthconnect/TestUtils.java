@@ -16,7 +16,10 @@
 
 package com.android.server.healthconnect;
 
+import android.database.DatabaseUtils;
 import android.os.UserHandle;
+
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -71,4 +74,8 @@ public final class TestUtils {
                 15);
     }
 
+    /** Returns the number of rows in the specified table. */
+    public static long queryNumEntries(HealthConnectDatabase database, String tableName) {
+        return DatabaseUtils.queryNumEntries(database.getReadableDatabase(), tableName);
+    }
 }

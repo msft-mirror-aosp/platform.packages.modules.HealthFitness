@@ -36,6 +36,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.RecordIdFilter;
@@ -70,7 +71,6 @@ public final class StorageUtils {
     public static final String TEXT_NULL = "TEXT";
     public static final String INTEGER = "INTEGER";
     public static final String INTEGER_UNIQUE = "INTEGER UNIQUE";
-    public static final String INTEGER_NOT_NULL_UNIQUE = "INTEGER NOT NULL UNIQUE";
     public static final String INTEGER_NOT_NULL = "INTEGER NOT NULL";
     public static final String REAL = "REAL";
     public static final String REAL_NOT_NULL = "REAL NOT NULL";
@@ -274,8 +274,7 @@ public final class StorageUtils {
                 .collect(Collectors.joining(DELIMITER));
     }
 
-    @Nullable
-    public static String getMaxPrimaryKeyQuery(String tableName) {
+    private static String getMaxPrimaryKeyQuery(String tableName) {
         return "SELECT MAX("
                 + PRIMARY_COLUMN_NAME
                 + ") as "
@@ -527,8 +526,8 @@ public final class StorageUtils {
     }
 
     /**
-     * Returns a quoted id if {@code id} is not quoted. Following examples show the expected return
-     * values,
+     * Returns a quoted, escaped id if {@code id} is not quoted. Following examples show the
+     * expected return values,
      *
      * <p>getNormalisedId("id") -> "'id'"
      *
@@ -537,11 +536,21 @@ public final class StorageUtils {
      * <p>getNormalisedId("x'id'") -> "x'id'"
      */
     public static String getNormalisedString(String id) {
-        if (!id.startsWith("'") && !id.startsWith("x'")) {
-            return "'" + id + "'";
+        StringBuilder result = new StringBuilder();
+
+        String innerId;
+        if (id.startsWith("'") && id.endsWith("'")) {
+            innerId = id.substring(1, id.length() - 1);
+        } else if ((id.startsWith("x'") || id.startsWith("X'")) && id.endsWith("'")) {
+            innerId = id.substring(2, id.length() - 1);
+            result.append(id.charAt(0));
+        } else {
+            innerId = id;
         }
 
-        return id;
+        DatabaseUtils.appendEscapedSQLString(result, innerId);
+
+        return result.toString();
     }
 
     /** Checks whether {@code tableName} exists in the {@code database}. */
@@ -554,6 +563,15 @@ public final class StorageUtils {
                 Slog.d(TAG, "Table does not exist: " + tableName);
             }
             return cursor.getCount() > 0;
+        }
+    }
+
+    /** Gets the last id for {@code tableName} exists in the {@code database}. */
+    public static long getLastRowIdFor(SQLiteDatabase database, String tableName) {
+        try (Cursor cursor =
+                database.rawQuery(StorageUtils.getMaxPrimaryKeyQuery(tableName), null)) {
+            cursor.moveToFirst();
+            return cursor.getLong(cursor.getColumnIndex(PRIMARY_COLUMN_NAME));
         }
     }
 

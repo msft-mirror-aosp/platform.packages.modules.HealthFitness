@@ -55,7 +55,7 @@ constructor(@ApplicationContext private val context: Context) :
             headerA11y = headerA11y,
             title = formatValue(record),
             titleA11y = formatA11yValue(record),
-            dataType = getDataType(record),
+            dataType = record::class,
             notes = record.notes?.toString(),
             isClickable = false,
         )

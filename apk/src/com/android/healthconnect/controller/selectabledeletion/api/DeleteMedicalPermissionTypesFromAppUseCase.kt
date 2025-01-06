@@ -19,7 +19,6 @@ import android.health.connect.DeleteMedicalResourcesRequest
 import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import javax.inject.Inject
@@ -40,19 +39,14 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(
-        deletePermissionTypesFromApp: DeletionType.DeleteHealthPermissionTypesFromApp
-    ) {
+    suspend operator fun invoke(packageName: String, dataTypes: Set<MedicalPermissionType>) {
         val deleteRequest = DeleteMedicalResourcesRequest.Builder()
 
-        deletePermissionTypesFromApp.healthPermissionTypes
-            .filterIsInstance<MedicalPermissionType>()
-            .map { permissionType ->
-                deleteRequest.addMedicalResourceType(toMedicalResourceType(permissionType))
-            }
+        dataTypes.map { permissionType ->
+            deleteRequest.addMedicalResourceType(toMedicalResourceType(permissionType))
+        }
 
-        val medicalDataSources =
-            medicalDataSourceReader.fromPackageName(deletePermissionTypesFromApp.packageName)
+        val medicalDataSources = medicalDataSourceReader.fromPackageName(packageName)
         medicalDataSources.forEach { deleteRequest.addDataSourceId(it.id) }
 
         withContext(dispatcher) {

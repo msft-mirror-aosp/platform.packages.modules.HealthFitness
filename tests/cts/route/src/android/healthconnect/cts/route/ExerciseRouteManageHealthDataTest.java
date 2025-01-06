@@ -16,11 +16,11 @@
 
 package android.healthconnect.cts.route;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.ROUTE_WRITER_APP;
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.assertCorrectHealthPermissions;
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.getExerciseSessionWithRoute;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogs;
@@ -51,7 +51,8 @@ public class ExerciseRouteManageHealthDataTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {
@@ -75,7 +76,7 @@ public class ExerciseRouteManageHealthDataTest {
                                         new ReadRecordsRequestUsingFilters.Builder<>(
                                                         ExerciseSessionRecord.class)
                                                 .build()),
-                        MANAGE_HEALTH_DATA);
+                        MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(records).hasSize(1);
         assertThat(records.get(0).hasRoute()).isTrue();
@@ -95,7 +96,7 @@ public class ExerciseRouteManageHealthDataTest {
                                                         ExerciseSessionRecord.class)
                                                 .addId(sessionId)
                                                 .build()),
-                        MANAGE_HEALTH_DATA);
+                        MANAGE_HEALTH_DATA_PERMISSION);
 
         assertThat(records).hasSize(1);
         assertThat(records.get(0).hasRoute()).isTrue();
@@ -116,7 +117,7 @@ public class ExerciseRouteManageHealthDataTest {
         ChangeLogsResponse response =
                 runWithShellPermissionIdentity(
                         () -> getChangeLogs(new ChangeLogsRequest.Builder(token).build()),
-                        MANAGE_HEALTH_DATA);
+                        MANAGE_HEALTH_DATA_PERMISSION);
 
         List<ExerciseSessionRecord> records =
                 response.getUpsertedRecords().stream()

@@ -242,7 +242,12 @@ public class AggregateTableRequest {
         }
     }
 
-    public void onResultsFetched(Cursor cursor, Cursor metaDataCursor) {
+    /**
+     * Fetches the result of the aggregation and returns the packages contributing to the given
+     * aggregation.
+     */
+    public List<String> processResultsAndReturnContributingPackages(
+            Cursor cursor, Cursor metaDataCursor) {
         if (mInternalHealthConnectMappings.isDerivedType(mRecordHelper.getRecordIdentifier())) {
             deriveAggregate(cursor);
         } else if (mInternalHealthConnectMappings.supportsPriority(
@@ -253,7 +258,7 @@ public class AggregateTableRequest {
             processNoPrioritiesRequest(cursor);
         }
 
-        updateResultWithDataOriginPackageNames(metaDataCursor);
+        return updateResultWithDataOriginPackageNames(metaDataCursor);
     }
 
     /** Returns list of app Ids of contributing apps for the record type in the priority order */
@@ -280,7 +285,8 @@ public class AggregateTableRequest {
                 continue;
             }
 
-            if (mAggregationType.getAggregateResultClass() == Long.class) {
+            if (mAggregationType.getAggregateResultClass() == Long.class
+                    || mAggregationType.getAggregateResultClass() == Duration.class) {
                 result =
                         new AggregateResult<>(
                                 aggregator.getResultForGroup(groupNumber).longValue());
@@ -301,7 +307,7 @@ public class AggregateTableRequest {
         while (cursor.moveToNext()) {
             mAggregateResults.put(
                     StorageUtils.getCursorInt(cursor, GROUP_BY_COLUMN_NAME),
-                    mRecordHelper.getAggregateResult(cursor, mAggregationType));
+                    mRecordHelper.getNoPriorityAggregateResult(cursor, mAggregationType));
         }
     }
 
@@ -362,15 +368,30 @@ public class AggregateTableRequest {
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private void updateResultWithDataOriginPackageNames(Cursor metaDataCursor) {
+    private List<String> updateResultWithDataOriginPackageNames(Cursor metaDataCursor) {
         List<Long> packageIds = new ArrayList<>();
+        List<Long> priorityList = getAppIdPriorityList(mRecordHelper.getRecordIdentifier());
+        boolean supportsPriority =
+                (mInternalHealthConnectMappings.supportsPriority(
+                        mRecordHelper.getRecordIdentifier(),
+                        mAggregationType.getAggregateOperationType()));
         while (metaDataCursor.moveToNext()) {
-            packageIds.add(StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME));
+            long packageId = StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME);
+
+            // As there is currently no way for us to tell which sources have been included in
+            // an aggregation, we filter the package names included in the data origins list to
+            // exclude those that are not in the priority list for data types that support
+            // aggregations based on priority, which cannot have been included in the aggregation.
+            // This is a partial fix for b/336783737, which would require a larger refactor to fix
+            // fully.
+            if (!supportsPriority || priorityList.contains(packageId)) {
+                packageIds.add(packageId);
+            }
         }
         List<String> packageNames = mAppInfoHelper.getPackageNames(packageIds);
-
         mAggregateResults.replaceAll(
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));
+        return packageNames;
     }
 
     public List<Pair<Long, Long>> getGroupSplitIntervals() {
@@ -443,8 +464,13 @@ public class AggregateTableRequest {
         cursor.moveToFirst();
         for (double aggregate : derivedAggregateArray) {
             mAggregateResults.put(
-                    index, mRecordHelper.getAggregateResult(cursor, mAggregationType, aggregate));
+                    index,
+                    mRecordHelper.getDerivedAggregateResult(cursor, mAggregationType, aggregate));
             index++;
         }
+    }
+
+    public int getRecordTypeId() {
+        return mRecordHelper.getRecordIdentifier();
     }
 }

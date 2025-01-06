@@ -16,9 +16,7 @@
 package com.android.healthconnect.controller.permissions.request
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
@@ -35,6 +33,7 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
@@ -52,7 +51,6 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
         private const val HEADER = "request_permissions_header"
     }
 
-    private val pageName = PageName.REQUEST_PERMISSIONS_PAGE
     @Inject lateinit var logger: HealthConnectLogger
 
     private val viewModel: RequestPermissionViewModel by activityViewModels()
@@ -76,24 +74,8 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
         viewModel.updateFitnessPermissions(grant)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        logger.setPageId(pageName)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        logger.setPageId(pageName)
-        logger.logPageImpression()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        logger.setPageId(pageName)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    init {
+        this.setPageName(PageName.REQUEST_PERMISSIONS_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -210,7 +192,7 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
         writePermissionCategory.removeAll()
 
         permissionsList
-            .sortedBy {
+            .sortByLocale {
                 requireContext()
                     .getString(
                         FitnessPermissionStrings.fromPermissionType(it.fitnessPermissionType)

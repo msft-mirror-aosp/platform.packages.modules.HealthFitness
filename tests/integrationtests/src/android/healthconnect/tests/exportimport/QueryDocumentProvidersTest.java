@@ -16,7 +16,7 @@
 
 package android.healthconnect.tests.exportimport;
 
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -91,7 +91,8 @@ public final class QueryDocumentProvidersTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() throws Exception {
@@ -369,7 +370,7 @@ public final class QueryDocumentProvidersTest {
                 new AtomicReference<>();
 
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA_PERMISSION);
 
         try {
             manager.queryDocumentProviders(

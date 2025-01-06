@@ -16,9 +16,9 @@
 
 package android.healthconnect.cts.phr.apis;
 
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -26,13 +26,13 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
@@ -77,7 +77,8 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     private HealthConnectManager mManager;
     private PhrCtsTestUtils mUtil;
@@ -110,7 +111,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                     assertThat(receiver.assertAndGetException().getErrorCode())
                             .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
 
         finishMigrationWithShellPermissionIdentity();
     }
@@ -119,8 +120,8 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testQueryAllMedicalResourceTypeInfos_withManagePerm_hasData_succeeds()
             throws Exception {
-        // Create some data sources with data: ds1 contains [immunization, differentImmunization,
-        // allergy], ds2 contains [immunization], and ds3 contains [allergy].
+        // Create some data sources with data: ds1 contains [vaccine, differentVaccine,
+        // allergy], ds2 contains [vaccine], and ds3 contains [allergy].
         MedicalDataSource dataSource1 =
                 mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 =
@@ -176,7 +177,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
                                     new MedicalResourceTypeInfo(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                            MEDICAL_RESOURCE_TYPE_VACCINES,
                                             Set.of(dataSource1, dataSource2)),
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
@@ -197,7 +198,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test
@@ -219,7 +220,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
                                     new MedicalResourceTypeInfo(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
+                                            MEDICAL_RESOURCE_TYPE_VACCINES, Set.of()),
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                                     new MedicalResourceTypeInfo(
@@ -239,7 +240,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test
@@ -262,7 +263,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
                                     new MedicalResourceTypeInfo(
-                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
+                                            MEDICAL_RESOURCE_TYPE_VACCINES, Set.of()),
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                                     new MedicalResourceTypeInfo(
@@ -282,7 +283,7 @@ public class QueryAllMedicalResourceTypeInfosCtsTest {
                                     new MedicalResourceTypeInfo(
                                             MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
                 },
-                MANAGE_HEALTH_DATA);
+                MANAGE_HEALTH_DATA_PERMISSION);
     }
 
     @Test

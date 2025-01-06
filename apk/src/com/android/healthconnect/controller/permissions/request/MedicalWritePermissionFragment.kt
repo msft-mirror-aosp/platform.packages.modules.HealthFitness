@@ -23,8 +23,8 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MedicalWritePermissionPageElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.FooterPreference
@@ -39,10 +39,18 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
         private const val HEADER_PREFERENCE = "request_permissions_header"
         private const val SUPPORTED_PERMS_PREFERENCE = "supported_medical_permissions"
         private const val FOOTER_PREFERENCE = "request_medical_write_footer"
+        private val sampleMedicalPermissionTypes =
+            setOf(
+                MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                MedicalPermissionType.CONDITIONS,
+                MedicalPermissionType.LABORATORY_RESULTS,
+                MedicalPermissionType.MEDICATIONS,
+                MedicalPermissionType.PROCEDURES,
+                MedicalPermissionType.VACCINES,
+                MedicalPermissionType.VITAL_SIGNS,
+            )
     }
 
-    // TODO(b/342159144): Update page name.
-    private val pageName = PageName.UNKNOWN_PAGE
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
@@ -51,12 +59,12 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
 
     private val header: RequestPermissionHeaderPreference by pref(HEADER_PREFERENCE)
 
-    private val supportedMedicalPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(SUPPORTED_PERMS_PREFERENCE)
-    }
+    private val supportedMedicalPreference: HealthPreference by pref(SUPPORTED_PERMS_PREFERENCE)
 
-    private val footer: FooterPreference? by lazy {
-        preferenceScreen.findPreference(FOOTER_PREFERENCE)
+    private val footer: FooterPreference by pref(FOOTER_PREFERENCE)
+
+    init {
+        this.setPageName(PageName.REQUEST_WRITE_MEDICAL_PERMISSION_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -92,46 +100,47 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
     private fun setupScreen(screenState: MedicalScreenState.ShowMedicalWrite) {
         header.bind(appName = screenState.appMetadata.appName, screenState = screenState)
 
-        val allMedicalPermissions =
-            MedicalPermissionType.entries
+        val sampleMedicalPermissions =
+            sampleMedicalPermissionTypes
                 .filterNot { it == MedicalPermissionType.ALL_MEDICAL_DATA }
                 .map { getString(it.upperCaseLabel()) }
                 .sorted()
                 .joinToString("\n")
-        supportedMedicalPreference?.summary = allMedicalPermissions
+        supportedMedicalPreference.summary = sampleMedicalPermissions
+        supportedMedicalPreference.isSelectable = false
 
-        footer?.title = getString(R.string.medical_request_footer)
-        footer?.setLearnMoreText(getString(R.string.medical_request_about_health_records))
-        footer?.setLearnMoreAction { deviceInfoUtils.openHCGetStartedLink(requireActivity()) }
+        footer.title = getString(R.string.medical_request_footer)
+        footer.setLearnMoreText(getString(R.string.medical_request_about_health_records))
+        footer.setLearnMoreAction { deviceInfoUtils.openHCGetStartedLink(requireActivity()) }
 
         setupAllowButton()
-        setupDontAllowButton()
+        setupDoNotAllowButton()
     }
 
     private fun setupAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+        logger.logImpression(MedicalWritePermissionPageElement.ALLOW_WRITE_HEALTH_RECORDS_BUTTON)
         getAllowButton().isEnabled = true
 
         getAllowButton().setOnClickListener {
             viewModel.setMedicalPermissionRequestConcluded(true)
             viewModel.updateMedicalPermissions(true)
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(
+                MedicalWritePermissionPageElement.ALLOW_WRITE_HEALTH_RECORDS_BUTTON
+            )
         }
     }
 
-    private fun setupDontAllowButton() {
-        // TODO(b/342159144): Update visual element.
-        logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
+    private fun setupDoNotAllowButton() {
+        logger.logImpression(MedicalWritePermissionPageElement.CANCEL_WRITE_HEALTH_RECORDS_BUTTON)
 
         getDontAllowButton().setOnClickListener {
             viewModel.setMedicalPermissionRequestConcluded(true)
             viewModel.updateMedicalPermissions(false)
             viewModel.requestMedicalPermissions(getPackageNameExtra())
-            // TODO(b/342159144): Update visual element.
-            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
+            logger.logInteraction(
+                MedicalWritePermissionPageElement.CANCEL_WRITE_HEALTH_RECORDS_BUTTON
+            )
         }
     }
 }

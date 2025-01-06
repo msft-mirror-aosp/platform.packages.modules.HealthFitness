@@ -31,6 +31,7 @@ import org.junit.Assume
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+
 /**
  * These tests are run by statsdatom/healthconnect to log atoms by triggering Health Connect APIs.
  *
@@ -44,7 +45,6 @@ class HealthConnectUiTestHelper {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val mHealthConnectManager: HealthConnectManager? =
         context.getSystemService<HealthConnectManager>(HealthConnectManager::class.java)
-    private val TEST_APP_PACKAGE_NAME = "android.healthconnect.cts.testhelper"
 
     @Before
     fun setUpClass() {
@@ -81,26 +81,27 @@ class HealthConnectUiTestHelper {
         // IoT devices do not have a UI to run these UI tests
         val pm: PackageManager = context.packageManager
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+                !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
     }
 
     @Test
     fun openHomeFragment() {
         TestHelperUtils.insertRecords(
+            mHealthConnectManager,
             listOf(
                 TestHelperUtils.getBloodPressureRecord(),
                 TestHelperUtils.getHeartRateRecord(),
                 TestHelperUtils.getStepsRecord(),
             ),
-            mHealthConnectManager,
         )
         context.launchMainActivity {
             UiTestUtils.skipOnboardingIfAppears()
             UiTestUtils.waitDisplayed(By.text("App permissions"))
             UiTestUtils.scrollDownTo(By.text("Manage data"))
             UiTestUtils.clickOnText("Manage data")
+            UiTestUtils.waitDisplayed(By.text("Auto-delete"))
         }
     }
 }

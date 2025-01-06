@@ -32,10 +32,14 @@ import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.UnspecifiedGoalInternal;
 import android.os.Parcel;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.time.Duration;
 
+@RunWith(AndroidJUnit4.class)
 public class ExerciseCompletionGoalInternalTest {
     @Test
     public void distanceGoal_writeToParcelThenRestore_objectsAreIdentical() {

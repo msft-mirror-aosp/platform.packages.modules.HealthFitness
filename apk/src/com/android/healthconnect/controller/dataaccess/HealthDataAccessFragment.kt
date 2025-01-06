@@ -49,6 +49,7 @@ import com.android.healthconnect.controller.utils.logging.DataAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.AppHeaderPreference
@@ -81,33 +82,20 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
 
     private lateinit var permissionType: FitnessPermissionType
 
-    private val mDataAccessHeader: AppHeaderPreference? by lazy {
-        preferenceScreen.findPreference(DATA_ACCESS_HEADER)
-    }
+    private val mDataAccessHeader: AppHeaderPreference by pref(DATA_ACCESS_HEADER)
 
-    private val mPermissionTypeDescription: TopIntroPreference? by lazy {
-        preferenceScreen.findPreference(PERMISSION_TYPE_DESCRIPTION)
-    }
+    private val mPermissionTypeDescription: TopIntroPreference by pref(PERMISSION_TYPE_DESCRIPTION)
 
-    private val mCanReadSection: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(CAN_READ_SECTION)
-    }
+    private val mCanReadSection: PreferenceGroup by pref(CAN_READ_SECTION)
 
-    private val mCanWriteSection: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(CAN_WRITE_SECTION)
-    }
+    private val mCanWriteSection: PreferenceGroup by pref(CAN_WRITE_SECTION)
 
-    private val mInactiveSection: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(INACTIVE_SECTION)
-    }
+    private val mInactiveSection: PreferenceGroup by pref(INACTIVE_SECTION)
 
-    private val mAllEntriesButton: HealthPreference? by lazy {
-        preferenceScreen.findPreference(ALL_ENTRIES_BUTTON)
-    }
+    private val mAllEntriesButton: HealthPreference by pref(ALL_ENTRIES_BUTTON)
 
-    private val mDeletePermissionTypeData: HealthPreference? by lazy {
-        preferenceScreen.findPreference(DELETE_PERMISSION_TYPE_DATA_BUTTON)
-    }
+    private val mDeletePermissionTypeData: HealthPreference by
+        pref(DELETE_PERMISSION_TYPE_DATA_BUTTON)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -118,48 +106,56 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
         }
 
-        mCanReadSection?.isVisible = false
-        mCanWriteSection?.isVisible = false
-        mInactiveSection?.isVisible = false
+        mCanReadSection.isVisible = false
+        mCanWriteSection.isVisible = false
+        mInactiveSection.isVisible = false
         maybeShowPermissionTypeDescription()
-        mCanReadSection?.title =
+        mCanReadSection.title =
             getString(
-                R.string.can_read, getString(fromPermissionType(permissionType).lowercaseLabel))
-        mCanWriteSection?.title =
+                R.string.can_read,
+                getString(fromPermissionType(permissionType).lowercaseLabel),
+            )
+        mCanWriteSection.title =
             getString(
-                R.string.can_write, getString(fromPermissionType(permissionType).lowercaseLabel))
+                R.string.can_write,
+                getString(fromPermissionType(permissionType).lowercaseLabel),
+            )
         if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
         }
 
-        mAllEntriesButton?.logName = DataAccessElement.SEE_ALL_ENTRIES_BUTTON
-        mAllEntriesButton?.setOnPreferenceClickListener {
+        mAllEntriesButton.logName = DataAccessElement.SEE_ALL_ENTRIES_BUTTON
+        mAllEntriesButton.setOnPreferenceClickListener {
             findNavController()
                 .navigate(
                     R.id.action_healthDataAccess_to_dataEntries,
-                    bundleOf(PERMISSION_TYPE_KEY to permissionType))
+                    bundleOf(PERMISSION_TYPE_KEY to permissionType),
+                )
             true
         }
-        mDeletePermissionTypeData?.logName = DataAccessElement.DELETE_THIS_DATA_BUTTON
-        mDeletePermissionTypeData?.setOnPreferenceClickListener {
+        mDeletePermissionTypeData.logName = DataAccessElement.DELETE_THIS_DATA_BUTTON
+        mDeletePermissionTypeData.setOnPreferenceClickListener {
             val deletionType =
                 DeletionType.DeletionTypeHealthPermissionTypeData(
-                    fitnessPermissionType = permissionType)
+                    fitnessPermissionType = permissionType
+                )
             childFragmentManager.setFragmentResult(
-                START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                START_DELETION_EVENT,
+                bundleOf(DELETION_TYPE to deletionType),
+            )
             true
         }
     }
 
     private fun maybeShowPermissionTypeDescription() {
-        mPermissionTypeDescription?.isVisible = false
+        mPermissionTypeDescription.isVisible = false
         if (permissionType == FitnessPermissionType.EXERCISE) {
-            mPermissionTypeDescription?.isVisible = true
-            mPermissionTypeDescription?.setTitle(R.string.data_access_exercise_description)
+            mPermissionTypeDescription.isVisible = true
+            mPermissionTypeDescription.setTitle(R.string.data_access_exercise_description)
         }
         if (permissionType == FitnessPermissionType.SLEEP) {
-            mPermissionTypeDescription?.isVisible = true
-            mPermissionTypeDescription?.setTitle(R.string.data_access_sleep_description)
+            mPermissionTypeDescription.isVisible = true
+            mPermissionTypeDescription.setTitle(R.string.data_access_sleep_description)
         }
     }
 
@@ -172,8 +168,8 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mDataAccessHeader?.icon = fromFitnessPermissionType(permissionType).icon(requireContext())
-        mDataAccessHeader?.title = getString(fromPermissionType(permissionType).uppercaseLabel)
+        mDataAccessHeader.icon = fromFitnessPermissionType(permissionType).icon(requireContext())
+        mDataAccessHeader.title = getString(fromPermissionType(permissionType).uppercaseLabel)
         viewModel.loadAppMetaDataMap(permissionType)
         viewModel.appMetadataMap.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -205,45 +201,47 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
     }
 
     private fun updateDataAccess(appMetadataMap: Map<AppAccessState, List<AppAccessMetadata>>) {
-        mCanReadSection?.removeAll()
-        mCanWriteSection?.removeAll()
-        mInactiveSection?.removeAll()
+        mCanReadSection.removeAll()
+        mCanWriteSection.removeAll()
+        mInactiveSection.removeAll()
 
         if (appMetadataMap.containsKey(AppAccessState.Read)) {
             if (appMetadataMap[AppAccessState.Read]!!.isEmpty()) {
-                mCanReadSection?.isVisible = false
+                mCanReadSection.isVisible = false
             } else {
-                mCanReadSection?.isVisible = true
+                mCanReadSection.isVisible = true
                 appMetadataMap[AppAccessState.Read]!!.forEach { appMetadata ->
-                    mCanReadSection?.addPreference(createAppPreference(appMetadata))
+                    mCanReadSection.addPreference(createAppPreference(appMetadata))
                 }
             }
         }
         if (appMetadataMap.containsKey(AppAccessState.Write)) {
             if (appMetadataMap[AppAccessState.Write]!!.isEmpty()) {
-                mCanWriteSection?.isVisible = false
+                mCanWriteSection.isVisible = false
             } else {
-                mCanWriteSection?.isVisible = true
+                mCanWriteSection.isVisible = true
                 appMetadataMap[AppAccessState.Write]!!.forEach { appMetadata ->
-                    mCanWriteSection?.addPreference(createAppPreference(appMetadata))
+                    mCanWriteSection.addPreference(createAppPreference(appMetadata))
                 }
             }
         }
         if (appMetadataMap.containsKey(AppAccessState.Inactive)) {
             if (appMetadataMap[AppAccessState.Inactive]!!.isEmpty()) {
-                mInactiveSection?.isVisible = false
+                mInactiveSection.isVisible = false
             } else {
-                mInactiveSection?.isVisible = true
-                mInactiveSection?.addPreference(
+                mInactiveSection.isVisible = true
+                mInactiveSection.addPreference(
                     Preference(requireContext()).also {
                         it.summary =
                             getString(
                                 R.string.inactive_apps_message,
-                                getString(fromPermissionType(permissionType).lowercaseLabel))
-                    })
+                                getString(fromPermissionType(permissionType).lowercaseLabel),
+                            )
+                    }
+                )
                 appMetadataMap[AppAccessState.Inactive]?.forEach { appAccessMetadata ->
                     val appMetadata = appAccessMetadata.appMetadata
-                    mInactiveSection?.addPreference(
+                    mInactiveSection.addPreference(
                         InactiveAppPreference(requireContext()).also {
                             it.title = appMetadata.appName
                             it.icon = appMetadata.icon
@@ -253,11 +251,15 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                                     DeletionType.DeletionTypeHealthPermissionTypeFromApp(
                                         permissionType,
                                         appMetadata.packageName,
-                                        appMetadata.appName)
+                                        appMetadata.appName,
+                                    )
                                 childFragmentManager.setFragmentResult(
-                                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                                    START_DELETION_EVENT,
+                                    bundleOf(DELETION_TYPE to deletionType),
+                                )
                             }
-                        })
+                        }
+                    )
                 }
             }
         }
@@ -289,6 +291,8 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                 navigationId,
                 bundleOf(
                     EXTRA_PACKAGE_NAME to appAccessMetadata.appMetadata.packageName,
-                    Constants.EXTRA_APP_NAME to appAccessMetadata.appMetadata.appName))
+                    Constants.EXTRA_APP_NAME to appAccessMetadata.appMetadata.appName,
+                ),
+            )
     }
 }

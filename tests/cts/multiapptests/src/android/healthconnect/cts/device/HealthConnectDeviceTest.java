@@ -33,10 +33,11 @@ import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecordWithEmptyMetaData;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.PermissionHelper.getGrantedHealthPermissions;
-import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantAllHealthPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.grantHealthPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAndThenGrantHealthPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermissions;
-import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
 import static android.healthconnect.cts.utils.TestUtils.createReadRecordsRequestUsingFilters;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.deleteTestData;
@@ -52,6 +53,7 @@ import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.yesterdayAt;
 
 import static com.android.compatibility.common.util.SystemUtil.eventually;
+import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -60,7 +62,6 @@ import static org.junit.Assert.fail;
 
 import static java.time.Duration.ofMinutes;
 
-import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.health.connect.AggregateRecordsRequest;
@@ -97,7 +98,6 @@ import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -114,14 +114,9 @@ import java.util.stream.Collectors;
 
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectDeviceTest {
-    static final String TAG = "HealthConnectDeviceTest";
     public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 
     public static final String APP_A_DECLARED_PERMISSION = HealthPermissions.READ_STEPS;
-
-    static final long VERSION_CODE = 1;
-    private static final int ASYNC_RETRIES = 3;
-    private static final int ASYNC_RETRY_DELAY_MILLIS = 500;
 
     private static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
@@ -171,19 +166,24 @@ public class HealthConnectDeviceTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() {
         mContext = ApplicationProvider.getApplicationContext();
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
+        grantAllHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_WITH_WRITE_PERMS_ONLY.getPackageName());
     }
 
     @After
     public void tearDown() throws InterruptedException {
         deleteTestData();
         deleteAllStagedRemoteData();
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
+        grantAllHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_WITH_WRITE_PERMS_ONLY.getPackageName());
     }
 
     @Test
@@ -453,20 +453,22 @@ public class HealthConnectDeviceTest {
         List<DataOrigin> dataOriginPrioOrder =
                 List.of(new DataOrigin.Builder().setPackageName(mContext.getPackageName()).build());
 
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-        updateDataOriginPriorityOrder(
-                new UpdateDataOriginPriorityOrderRequest(
-                        dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
         List<String> oldPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+                runWithShellPermissionIdentity(
+                        () -> {
+                            updateDataOriginPriorityOrder(
+                                    new UpdateDataOriginPriorityOrderRequest(
+                                            dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
+
+                            return fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                    .getDataOriginsPriorityOrder()
+                                    .stream()
+                                    .map(DataOrigin::getPackageName)
+                                    .collect(Collectors.toList());
+                        },
+                        MANAGE_HEALTH_DATA);
 
         assertThat(oldPriorityList).contains(mContext.getPackageName());
-        uiAutomation.dropShellPermissionIdentity();
 
         AggregateRecordsResponse<Long> response =
                 TestUtils.getAggregateResponse(
@@ -685,124 +687,107 @@ public class HealthConnectDeviceTest {
     }
 
     @Test
-    public void testGrantingCorrectPermsPutsTheAppInPriorityList() throws InterruptedException {
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+    public void testGrantingCorrectPermsPutsTheAppInPriorityList() {
         List<String> oldPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(DataOrigin::getPackageName)
-                        .toList();
-
-        List<String> healthPerms =
-                getGrantedHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
+                                        .map(DataOrigin::getPackageName)
+                                        .toList(),
+                        MANAGE_HEALTH_DATA);
 
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
-        }
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> newPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(DataOrigin::getPackageName)
-                        .toList();
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
+                                        .map(DataOrigin::getPackageName)
+                                        .toList(),
+                        MANAGE_HEALTH_DATA);
 
         assertThat(newPriorityList).hasSize(oldPriorityList.size() + 1);
         assertThat(newPriorityList).contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
     }
 
     @Test
-    public void testRevokingOnlyOneCorrectPermissionDoesntRemoveAppFromPriorityList()
-            throws InterruptedException {
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
-        List<String> healthPerms =
-                getGrantedHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
-
+    public void testRevokingOnlyOneCorrectPermissionDoesntRemoveAppFromPriorityList() {
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
-        }
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> oldPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
+                                        .map(DataOrigin::getPackageName)
+                                        .collect(Collectors.toList()),
+                        MANAGE_HEALTH_DATA);
 
         assertThat(oldPriorityList).contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        revokePermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), healthPerms.get(0));
+        revokeHealthPermission(
+                APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> newPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
+                                        .map(DataOrigin::getPackageName)
+                                        .collect(Collectors.toList()),
+                        MANAGE_HEALTH_DATA);
 
         assertThat(newPriorityList).contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
-
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), healthPerms.get(0));
     }
 
     @Test
-    public void testRevokingAllCorrectPermissionsRemovesAppFromPriorityList()
-            throws InterruptedException {
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
-        List<String> healthPerms =
-                getGrantedHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
-
+    public void testRevokingAllCorrectPermissionsRemovesAppFromPriorityList() {
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
-        }
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> oldPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
+                                        .map(DataOrigin::getPackageName)
+                                        .collect(Collectors.toList()),
+                        MANAGE_HEALTH_DATA);
 
         assertThat(oldPriorityList).contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        for (String perm : healthPerms) {
-            revokePermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
+        for (String perm :
+                getGrantedHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName())) {
+            revokeHealthPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> newPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
+                                        .map(DataOrigin::getPackageName)
+                                        .collect(Collectors.toList()),
+                        MANAGE_HEALTH_DATA);
 
         assertThat(newPriorityList.contains(APP_A_WITH_READ_WRITE_PERMS.getPackageName()))
                 .isFalse();
-
-        for (String perm : healthPerms) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
-        }
     }
 
     @Test
     public void testSelfRevokePermissions_revokedOnKill() throws Exception {
-        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
+        grantHealthPermission(
+                APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
 
         APP_A_WITH_READ_WRITE_PERMS.selfRevokePermission(APP_A_DECLARED_PERMISSION);
         APP_A_WITH_READ_WRITE_PERMS.kill();
@@ -820,25 +805,12 @@ public class HealthConnectDeviceTest {
     }
 
     @Test
-    public void testAppWithManageHealthDataPermissionCanUpdatePriority()
-            throws InterruptedException {
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
-        List<String> healthPermsA =
-                getGrantedHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
-        List<String> healthPermsB =
-                getGrantedHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
-
+    public void testAppWithManageHealthDataPermissionCanUpdatePriority() {
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
         revokeHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
-        for (String perm : healthPermsA) {
-            grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
-        }
-
-        for (String perm : healthPermsB) {
-            grantPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
-        }
+        grantAllHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        grantAllHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
         List<DataOrigin> dataOriginPrioOrder =
                 List.of(
@@ -849,38 +821,43 @@ public class HealthConnectDeviceTest {
                                 .setPackageName(APP_A_WITH_READ_WRITE_PERMS.getPackageName())
                                 .build());
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-        updateDataOriginPriorityOrder(
-                new UpdateDataOriginPriorityOrderRequest(
-                        dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> newPriorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+                runWithShellPermissionIdentity(
+                        () -> {
+                            updateDataOriginPriorityOrder(
+                                    new UpdateDataOriginPriorityOrderRequest(
+                                            dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
 
-        assertThat(
-                        newPriorityList.equals(
-                                dataOriginPrioOrder.stream()
-                                        .map(dataOrigin -> dataOrigin.getPackageName())
-                                        .collect(Collectors.toList())))
-                .isTrue();
+                            return fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                    .getDataOriginsPriorityOrder()
+                                    .stream()
+                                    .map(DataOrigin::getPackageName)
+                                    .collect(Collectors.toList());
+                        },
+                        MANAGE_HEALTH_DATA);
+
+        assertThat(newPriorityList)
+                .containsExactlyElementsIn(
+                        dataOriginPrioOrder.stream()
+                                .map(DataOrigin::getPackageName)
+                                .collect(Collectors.toList()))
+                .inOrder();
     }
 
     @Test
     public void testAppWithManageHealthDataPermsCanReadAnotherAppEntry() throws Exception {
         StepsRecord record = getStepsRecord(getEmptyMetadata());
         APP_A_WITH_READ_WRITE_PERMS.insertRecords(record);
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
 
         List<StepsRecord> recordsRead =
-                readRecords(
-                        new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build(),
-                        ApplicationProvider.getApplicationContext());
+                runWithShellPermissionIdentity(
+                        () ->
+                                readRecords(
+                                        new ReadRecordsRequestUsingFilters.Builder<>(
+                                                        StepsRecord.class)
+                                                .build(),
+                                        ApplicationProvider.getApplicationContext()),
+                        MANAGE_HEALTH_DATA);
 
         assertThat(recordsRead).hasSize(1);
     }
@@ -889,16 +866,15 @@ public class HealthConnectDeviceTest {
     public void testAppWithManageHealthDataPermsCanDeleteAnotherAppEntry() throws Exception {
         StepsRecord record = getStepsRecord(getEmptyMetadata());
         String recordId = APP_A_WITH_READ_WRITE_PERMS.insertRecords(record).get(0);
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
-        verifyDeleteRecords(List.of(RecordIdFilter.fromId(StepsRecord.class, recordId)));
+        runWithShellPermissionIdentity(
+                () ->
+                        verifyDeleteRecords(
+                                List.of(RecordIdFilter.fromId(StepsRecord.class, recordId))),
+                MANAGE_HEALTH_DATA);
     }
 
     @Test
     public void testToVerifyGetContributorApplicationsInfo() throws Exception {
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
         APP_A_WITH_READ_WRITE_PERMS.insertRecords(TEST_RECORDS);
         APP_B_WITH_READ_WRITE_PERMS.insertRecords(TEST_RECORDS);
 
@@ -907,54 +883,41 @@ public class HealthConnectDeviceTest {
                         APP_A_WITH_READ_WRITE_PERMS.getPackageName(),
                         APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
-        // Contributor information is updated asynchronously, so retry with delay until the update
-        // finishes (or we run out of retries).
-        for (int i = 1; i <= ASYNC_RETRIES; i++) {
-            List<String> appInfoList =
-                    getApplicationInfo().stream().map(AppInfo::getPackageName).toList();
-
-            try {
-                assertThat(appInfoList).containsAtLeastElementsIn(pkgNameList);
-            } catch (AssertionError e) {
-                if (i < ASYNC_RETRIES) {
-                    Thread.sleep(ASYNC_RETRY_DELAY_MILLIS);
-                    continue;
-                }
-
-                throw new AssertionError(e);
-            }
-        }
+        // Contributor information is updated asynchronously.
+        eventually(
+                () -> {
+                    List<String> appInfoList =
+                            runWithShellPermissionIdentity(
+                                    () ->
+                                            getApplicationInfo().stream()
+                                                    .map(AppInfo::getPackageName)
+                                                    .toList(),
+                                    MANAGE_HEALTH_DATA);
+                    assertThat(appInfoList).containsAtLeastElementsIn(pkgNameList);
+                });
     }
 
     @Test
     public void testAggregationOutputForTotalStepsCountWithDataFromTwoAppsHavingDifferentPriority()
             throws Exception {
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
         revokeAndThenGrantHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
         revokeAndThenGrantHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
-        List<DataOrigin> dataOriginPrioOrder =
-                getDataOrigins(
-                        APP_A_WITH_READ_WRITE_PERMS.getPackageName(),
-                        APP_B_WITH_READ_WRITE_PERMS.getPackageName());
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> priorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(DataOrigin::getPackageName)
-                        .toList();
-
-        assertThat(
-                        priorityList.equals(
-                                dataOriginPrioOrder.stream()
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
                                         .map(DataOrigin::getPackageName)
-                                        .toList()))
-                .isTrue();
+                                        .toList(),
+                        MANAGE_HEALTH_DATA);
+
+        assertThat(priorityList)
+                .containsExactly(
+                        APP_A_WITH_READ_WRITE_PERMS.getPackageName(),
+                        APP_B_WITH_READ_WRITE_PERMS.getPackageName())
+                .inOrder();
 
         StepsRecord stepsRecordA =
                 new StepsRecord.Builder(
@@ -985,36 +948,42 @@ public class HealthConnectDeviceTest {
         assertThat(aggregateRecordsRequest.getTimeRangeFilter()).isNotNull();
         assertThat(aggregateRecordsRequest.getDataOriginsFilters()).isNotNull();
 
-        AggregateRecordsResponse<Long> oldResponse = getAggregateResponse(aggregateRecordsRequest);
+        AggregateRecordsResponse<Long> oldResponse =
+                runWithShellPermissionIdentity(
+                        () -> getAggregateResponse(aggregateRecordsRequest), MANAGE_HEALTH_DATA);
         assertThat(oldResponse.get(STEPS_COUNT_TOTAL)).isNotNull();
         assertThat(oldResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(2000);
 
-        dataOriginPrioOrder =
+        List<DataOrigin> dataOriginPrioOrder =
                 getDataOrigins(
                         APP_B_WITH_READ_WRITE_PERMS.getPackageName(),
                         APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-        updateDataOriginPriorityOrder(
-                new UpdateDataOriginPriorityOrderRequest(
-                        dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         priorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(dataOrigin -> dataOrigin.getPackageName())
-                        .collect(Collectors.toList());
+                runWithShellPermissionIdentity(
+                        () -> {
+                            updateDataOriginPriorityOrder(
+                                    new UpdateDataOriginPriorityOrderRequest(
+                                            dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
 
-        assertThat(
-                        priorityList.equals(
-                                dataOriginPrioOrder.stream()
-                                        .map(dataOrigin -> dataOrigin.getPackageName())
-                                        .collect(Collectors.toList())))
-                .isTrue();
+                            return fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                    .getDataOriginsPriorityOrder()
+                                    .stream()
+                                    .map(DataOrigin::getPackageName)
+                                    .collect(Collectors.toList());
+                        },
+                        MANAGE_HEALTH_DATA);
 
-        AggregateRecordsResponse<Long> newResponse = getAggregateResponse(aggregateRecordsRequest);
+        assertThat(priorityList)
+                .containsExactlyElementsIn(
+                        dataOriginPrioOrder.stream()
+                                .map(DataOrigin::getPackageName)
+                                .collect(Collectors.toList()))
+                .inOrder();
+
+        AggregateRecordsResponse<Long> newResponse =
+                runWithShellPermissionIdentity(
+                        () -> getAggregateResponse(aggregateRecordsRequest), MANAGE_HEALTH_DATA);
         assertThat(newResponse.get(STEPS_COUNT_TOTAL)).isNotNull();
         assertThat(newResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(2500);
     }
@@ -1022,30 +991,24 @@ public class HealthConnectDeviceTest {
     @Test
     public void testAggregationOutputForExerciseSessionWithDataFromTwoAppsHavingDifferentPriority()
             throws Exception {
-        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-
         revokeAndThenGrantHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
         revokeAndThenGrantHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
-        List<DataOrigin> dataOriginPrioOrder =
-                getDataOrigins(
-                        APP_A_WITH_READ_WRITE_PERMS.getPackageName(),
-                        APP_B_WITH_READ_WRITE_PERMS.getPackageName());
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         List<String> priorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(DataOrigin::getPackageName)
-                        .toList();
-
-        assertThat(
-                        priorityList.equals(
-                                dataOriginPrioOrder.stream()
+                runWithShellPermissionIdentity(
+                        () ->
+                                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                        .getDataOriginsPriorityOrder()
+                                        .stream()
                                         .map(DataOrigin::getPackageName)
-                                        .toList()))
-                .isTrue();
+                                        .toList(),
+                        MANAGE_HEALTH_DATA);
+
+        assertThat(priorityList)
+                .containsExactly(
+                        APP_A_WITH_READ_WRITE_PERMS.getPackageName(),
+                        APP_B_WITH_READ_WRITE_PERMS.getPackageName())
+                .inOrder();
 
         ExerciseSessionRecord sessionRecordA =
                 new ExerciseSessionRecord.Builder(
@@ -1092,30 +1055,30 @@ public class HealthConnectDeviceTest {
                                 .minus(Duration.between(yesterdayAt("14:00"), yesterdayAt("15:00")))
                                 .toMillis());
 
-        dataOriginPrioOrder =
+        List<DataOrigin> dataOriginPrioOrder =
                 getDataOrigins(
                         APP_B_WITH_READ_WRITE_PERMS.getPackageName(),
                         APP_A_WITH_READ_WRITE_PERMS.getPackageName());
 
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-        updateDataOriginPriorityOrder(
-                new UpdateDataOriginPriorityOrderRequest(
-                        dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
-
-        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
         priorityList =
-                fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
-                        .getDataOriginsPriorityOrder()
-                        .stream()
-                        .map(DataOrigin::getPackageName)
-                        .toList();
+                runWithShellPermissionIdentity(
+                        () -> {
+                            updateDataOriginPriorityOrder(
+                                    new UpdateDataOriginPriorityOrderRequest(
+                                            dataOriginPrioOrder, HealthDataCategory.ACTIVITY));
 
-        assertThat(
-                        priorityList.equals(
-                                dataOriginPrioOrder.stream()
-                                        .map(DataOrigin::getPackageName)
-                                        .toList()))
-                .isTrue();
+                            return fetchDataOriginsPriorityOrder(HealthDataCategory.ACTIVITY)
+                                    .getDataOriginsPriorityOrder()
+                                    .stream()
+                                    .map(DataOrigin::getPackageName)
+                                    .toList();
+                        },
+                        MANAGE_HEALTH_DATA);
+
+        assertThat(priorityList)
+                .containsExactlyElementsIn(
+                        dataOriginPrioOrder.stream().map(DataOrigin::getPackageName).toList())
+                .inOrder();
 
         AggregateRecordsResponse<Long> newResponse = getAggregateResponse(aggregateRecordsRequest);
         assertThat(newResponse.get(EXERCISE_DURATION_TOTAL)).isNotNull();
@@ -1125,10 +1088,6 @@ public class HealthConnectDeviceTest {
 
     @Test
     public void testToVerifyNoPermissionChangeLog() throws Exception {
-        ArrayList<String> recordClassesToRead = new ArrayList();
-        recordClassesToRead.add(HeartRateRecord.class.getName());
-        recordClassesToRead.add(StepsRecord.class.getName());
-
         String changeLogTokenForAppB =
                 APP_B_WITH_READ_WRITE_PERMS.getChangeLogToken(
                         new ChangeLogTokenRequest.Builder()
@@ -1139,9 +1098,6 @@ public class HealthConnectDeviceTest {
                                 .build());
 
         APP_A_WITH_READ_WRITE_PERMS.insertRecords(TEST_RECORDS);
-
-        List<String> healthPerms =
-                getGrantedHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
         revokeHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
@@ -1168,10 +1124,6 @@ public class HealthConnectDeviceTest {
                                                                         .getPackageName()))
                                                 .build()));
         assertThat(e.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
-
-        for (String perm : healthPerms) {
-            grantPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
-        }
     }
 
     private static Pair<Class<? extends Record>, String> insertRecord(

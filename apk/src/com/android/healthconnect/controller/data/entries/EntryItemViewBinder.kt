@@ -23,7 +23,6 @@ import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -56,10 +55,10 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
         val container = view.findViewById<LinearLayout>(R.id.item_data_entry_container)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
-        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
 
         if (isDeletionState) {
+            container.isClickable = true
             container.setOnClickListener {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
@@ -70,10 +69,18 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
                         isDeletionState,
                         checkBox.isChecked,
                     )
+                logger.logInteraction(logNameWithCheckbox)
             }
+        } else {
+            container.isClickable = false
         }
 
         checkBox.isVisible = isDeletionState
+        if (isDeletionState) {
+            logger.logImpression(logNameWithCheckbox)
+        } else {
+            logger.logImpression(logNameWithoutCheckbox)
+        }
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
@@ -84,6 +91,7 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
                     isDeletionState,
                     checkBox.isChecked,
                 )
+            logger.logInteraction(logNameWithCheckbox)
         }
         checkBox.tag = if (isDeletionState) "checkbox" else ""
 

@@ -33,7 +33,6 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_P
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -41,6 +40,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.MedicalResource.MedicalResourceType;
@@ -172,11 +172,21 @@ public class MedicalResourceValidator {
     }
 
     private static String extractResourceId(JSONObject fhirJsonObj) {
+        Object id;
         try {
-            return fhirJsonObj.getString("id");
+            id = fhirJsonObj.get("id");
         } catch (JSONException e) {
             throw new IllegalArgumentException("Resource is missing id field");
         }
+
+        // The FHIR spec expects this to be a string, so throw an error if this is not a json string
+        // to avoid cases where null leads to an id value "null" for example, if we were to use
+        // JSONObject.getString("id") instead.
+        if (!(id instanceof String)) {
+            throw new IllegalArgumentException("Resource id should be a string");
+        }
+
+        return (String) id;
     }
 
     private static String extractResourceType(JSONObject fhirJsonObj, String resourceId) {
@@ -272,7 +282,7 @@ public class MedicalResourceValidator {
                     FHIR_RESOURCE_TYPE_ORGANIZATION:
                 return MEDICAL_RESOURCE_TYPE_VISITS;
             case FHIR_RESOURCE_TYPE_IMMUNIZATION:
-                return MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+                return MEDICAL_RESOURCE_TYPE_VACCINES;
             case FHIR_RESOURCE_TYPE_OBSERVATION:
                 Integer classification = classifyObservation(json);
                 if (classification != null) {

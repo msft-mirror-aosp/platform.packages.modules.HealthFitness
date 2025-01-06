@@ -16,22 +16,25 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS;
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
+import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.healthconnect.cts.utils.TestUtils.getHealthConnectManager;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import android.annotation.SuppressLint;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
-import android.health.connect.HealthPermissions;
 import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.compatibility.common.util.SystemUtil;
 import com.android.compatibility.common.util.ThrowingRunnable;
@@ -41,88 +44,106 @@ import com.google.common.collect.Sets;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public final class PermissionHelper {
 
-    public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+    /** Copy of hidden {@link android.health.connect.HealthPermissions#READ_EXERCISE_ROUTE}. */
     public static final String READ_EXERCISE_ROUTE_PERMISSION =
             "android.permission.health.READ_EXERCISE_ROUTE";
 
-    public static final String READ_EXERCISE_ROUTES =
-            "android.permission.health.READ_EXERCISE_ROUTES";
-    private static final String MANAGE_HEALTH_PERMISSIONS =
-            HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
-    private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
-
-    /** Returns permissions declared in the Manifest of the given package. */
-    public static List<String> getDeclaredHealthPermissions(String pkgName) {
-        final PackageInfo pi = getAppPackageInfo(pkgName);
-        final String[] requestedPermissions = pi.requestedPermissions;
-
-        if (requestedPermissions == null) {
-            return List.of();
-        }
-
-        return Arrays.stream(requestedPermissions)
-                .filter(permission -> permission.startsWith(HEALTH_PERMISSION_PREFIX))
-                .toList();
+    /** Returns valid Health permissions declared in the Manifest of the given package. */
+    public static List<String> getDeclaredHealthPermissions(String packageName) {
+        return List.copyOf(getHealthPermissionFlags(packageName).keySet());
     }
 
-    public static List<String> getGrantedHealthPermissions(String pkgName) {
-        final PackageInfo pi = getAppPackageInfo(pkgName);
-        final String[] requestedPermissions = pi.requestedPermissions;
-        final int[] requestedPermissionsFlags = pi.requestedPermissionsFlags;
-
-        if (requestedPermissions == null) {
-            return List.of();
-        }
-
-        final List<String> permissions = new ArrayList<>();
-
-        for (int i = 0; i < requestedPermissions.length; i++) {
-            if ((requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
-                if (requestedPermissions[i].startsWith(HEALTH_PERMISSION_PREFIX)) {
-                    permissions.add(requestedPermissions[i]);
-                }
+    /** Returns all Health permissions that are granted to the specified package. */
+    public static List<String> getGrantedHealthPermissions(String packageName) {
+        ArrayList<String> permissions = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : getHealthPermissionFlags(packageName).entrySet()) {
+            if ((entry.getValue() & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
+                permissions.add(entry.getKey());
             }
         }
-
         return permissions;
     }
 
-    private static PackageInfo getAppPackageInfo(String pkgName) {
-        final Context targetContext = androidx.test.InstrumentationRegistry.getTargetContext();
-        return runWithShellPermissionIdentity(
-                () ->
-                        targetContext
-                                .getPackageManager()
-                                .getPackageInfo(
-                                        pkgName,
-                                        PackageManager.PackageInfoFlags.of(GET_PERMISSIONS)));
+    /** Grants all health permissions to the app specified by {@code packageName}. */
+    public static void grantAllHealthPermissions(String packageName) {
+        for (Map.Entry<String, Integer> entry : getHealthPermissionFlags(packageName).entrySet()) {
+            if ((entry.getValue() & PackageInfo.REQUESTED_PERMISSION_GRANTED) == 0) {
+                grantHealthPermission(packageName, entry.getKey());
+            }
+        }
     }
 
-    public static void grantPermission(String pkgName, String permission) {
+    private static Map<String, Integer> getHealthPermissionFlags(String packageName) {
+        Context context = ApplicationProvider.getApplicationContext();
+        PackageManager packageManager = context.getPackageManager();
+
+        PackageInfo packageInfo = getAppPackageInfo(packageManager, packageName);
+        String[] requestedPermissions = packageInfo.requestedPermissions;
+        int[] requestedPermissionsFlags = packageInfo.requestedPermissionsFlags;
+
+        if (requestedPermissions == null || requestedPermissionsFlags == null) {
+            return Map.of();
+        }
+
+        HashMap<String, Integer> flags = new HashMap<>();
+        for (int i = 0; i < requestedPermissions.length; i++) {
+            if (HealthConnectManager.isHealthPermission(context, requestedPermissions[i])) {
+                flags.put(requestedPermissions[i], requestedPermissionsFlags[i]);
+            }
+        }
+        return flags;
+    }
+
+    private static PackageInfo getAppPackageInfo(
+            PackageManager packageManager, String packageName) {
+        return runWithShellPermissionIdentity(
+                () ->
+                        packageManager.getPackageInfo(
+                                packageName, PackageManager.PackageInfoFlags.of(GET_PERMISSIONS)));
+    }
+
+    /**
+     * Grants the specified health permission to the app specified by {@code packageName}.
+     *
+     * @see HealthConnectManager#grantHealthPermission(String, String)
+     */
+    @SuppressLint("MissingPermission")
+    public static void grantHealthPermission(String packageName, String permission) {
         HealthConnectManager service = getHealthConnectManager();
         runWithShellPermissionIdentity(
                 () ->
                         service.getClass()
                                 .getMethod("grantHealthPermission", String.class, String.class)
-                                .invoke(service, pkgName, permission),
+                                .invoke(service, packageName, permission),
                 MANAGE_HEALTH_PERMISSIONS);
     }
 
-    /** Grants {@code permissions} to the app with {@code pkgName}. */
-    public static void grantPermissions(String pkgName, Collection<String> permissions) {
+    /**
+     * Grants the specified health permissions to the app specified by {@code packageName}.
+     *
+     * @see HealthConnectManager#grantHealthPermission(String, String)
+     */
+    public static void grantHealthPermissions(String packageName, Collection<String> permissions) {
         for (String permission : permissions) {
-            grantPermission(pkgName, permission);
+            grantHealthPermission(packageName, permission);
         }
     }
 
-    public static void revokePermission(String pkgName, String permission) {
+    /**
+     * Revokes the specified health permission from the app specified by {@code packageName}.
+     *
+     * @see HealthConnectManager#revokeHealthPermission(String, String, String)
+     */
+    @SuppressLint("MissingPermission")
+    public static void revokeHealthPermission(String packageName, String permission) {
         HealthConnectManager service = getHealthConnectManager();
         runWithShellPermissionIdentity(
                 () ->
@@ -132,7 +153,7 @@ public final class PermissionHelper {
                                         String.class,
                                         String.class,
                                         String.class)
-                                .invoke(service, pkgName, permission, null),
+                                .invoke(service, packageName, permission, null),
                 MANAGE_HEALTH_PERMISSIONS);
     }
 
@@ -140,7 +161,8 @@ public final class PermissionHelper {
      * Utility method to call {@link HealthConnectManager#revokeAllHealthPermissions(String,
      * String)}.
      */
-    public static void revokeAllPermissions(String packageName, @Nullable String reason) {
+    @SuppressLint("MissingPermission")
+    public static void revokeAllHealthPermissions(String packageName, @Nullable String reason) {
         HealthConnectManager service = getHealthConnectManager();
         runWithShellPermissionIdentity(
                 () ->
@@ -151,12 +173,13 @@ public final class PermissionHelper {
     }
 
     /**
-     * Same as {@link #revokeAllPermissions(String, String)} but with a delay to wait for grant time
-     * to be updated.
+     * Same as {@link #revokeAllHealthPermissions(String, String)} but with a delay to wait for
+     * grant time to be updated.
      */
-    public static void revokeAllPermissionsWithDelay(String packageName, @Nullable String reason)
-            throws InterruptedException {
-        revokeAllPermissions(packageName, reason);
+    public static void revokeAllHealthPermissionsWithDelay(
+            String packageName, @Nullable String reason) throws InterruptedException {
+        revokeAllHealthPermissions(packageName, reason);
+        // TODO(b/381409385): Replace with wait for grant time update.
         Thread.sleep(500);
     }
 
@@ -167,41 +190,39 @@ public final class PermissionHelper {
         revokeHealthPermissions(packageName);
 
         for (String perm : healthPerms) {
-            grantPermission(packageName, perm);
+            grantHealthPermission(packageName, perm);
         }
     }
 
+    /** Revokes all granted Health permissions from the specified package. */
+    @SuppressLint("MissingPermission")
     public static void revokeHealthPermissions(String packageName) {
-        runWithShellPermissionIdentity(() -> revokeHealthPermissionsPrivileged(packageName));
-    }
+        Context context = ApplicationProvider.getApplicationContext();
+        PackageManager packageManager = context.getPackageManager();
+        UserHandle user = context.getUser();
 
-    private static void revokeHealthPermissionsPrivileged(String packageName)
-            throws PackageManager.NameNotFoundException {
-        final Context targetContext = androidx.test.InstrumentationRegistry.getTargetContext();
-        final PackageManager packageManager = targetContext.getPackageManager();
-        final UserHandle user = targetContext.getUser();
-
-        final PackageInfo packageInfo =
-                packageManager.getPackageInfo(
-                        packageName,
-                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
-
-        final String[] permissions = packageInfo.requestedPermissions;
+        PackageInfo packageInfo = getAppPackageInfo(packageManager, packageName);
+        String[] permissions = packageInfo.requestedPermissions;
         if (permissions == null) {
             return;
         }
 
-        for (String permission : permissions) {
-            if (permission.startsWith(HEALTH_PERMISSION_PREFIX)) {
-                packageManager.revokeRuntimePermission(packageName, permission, user);
-            }
-        }
+        runWithShellPermissionIdentity(
+                () -> {
+                    for (String permission : permissions) {
+                        if (HealthConnectManager.isHealthPermission(context, permission)) {
+                            packageManager.revokeRuntimePermission(packageName, permission, user);
+                        }
+                    }
+                },
+                REVOKE_RUNTIME_PERMISSIONS);
     }
 
     /**
      * Utility method to call {@link
      * HealthConnectManager#getHealthDataHistoricalAccessStartDate(String)}.
      */
+    @SuppressLint("MissingPermission")
     public static Instant getHealthDataHistoricalAccessStartDate(String packageName) {
         HealthConnectManager service = getHealthConnectManager();
         return (Instant)
@@ -238,7 +259,7 @@ public final class PermissionHelper {
     public static <T> T runWithRevokedPermissions(
             ThrowingSupplier<T> supplier, String packageName, String... permissions)
             throws Exception {
-        Context context = androidx.test.InstrumentationRegistry.getTargetContext();
+        Context context = ApplicationProvider.getApplicationContext();
         checkArgument(
                 !context.getPackageName().equals(packageName),
                 "Can not be called on self, only on other apps");
@@ -273,11 +294,5 @@ public final class PermissionHelper {
                     String.format(
                             "pm clear-permission-flags %s %s user-fixed", packageName, permission));
         }
-    }
-
-    /** Kills Health Connect controller. */
-    private static void killHealthConnectController() {
-        SystemUtil.runShellCommandOrThrow(
-                "am force-stop com.google.android.healthconnect.controller");
     }
 }

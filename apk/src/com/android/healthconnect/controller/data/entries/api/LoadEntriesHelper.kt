@@ -83,7 +83,7 @@ constructor(
         data: Class<out Record>,
         timeFilterRange: TimeInstantRangeFilter,
         packageName: String?,
-        ascending: Boolean = true,
+        ascending: Boolean = false,
         pageSize: Int = 1000,
     ): List<Record> {
         val filter =
@@ -116,6 +116,13 @@ constructor(
         return dataTypes
             .map { dataType -> readDataType(dataType, timeFilterRange, input.packageName) }
             .flatten()
+            .sortedByDescending { record ->
+                when (record) {
+                    is InstantRecord -> record.time
+                    is IntervalRecord -> record.startTime
+                    else -> Instant.EPOCH
+                }
+            }
     }
 
     /** Returns a list containing the most recent record from the specified input. */

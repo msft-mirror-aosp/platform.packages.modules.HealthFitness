@@ -28,8 +28,6 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
 
-import androidx.annotation.Nullable;
-
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -61,11 +59,11 @@ public final class ActivityDateHelper extends DatabaseHelper {
     private final TransactionManager mTransactionManager;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    @Nullable private static volatile ActivityDateHelper sActivityDateHelper;
-
-    private ActivityDateHelper(
+    public ActivityDateHelper(
             TransactionManager transactionManager,
-            InternalHealthConnectMappings internalHealthConnectMappings) {
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mTransactionManager = transactionManager;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
@@ -92,7 +90,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
         recordInternals.forEach(
                 (recordInternal) -> upsertTableRequests.add(getUpsertTableRequest(recordInternal)));
 
-        mTransactionManager.insertOrIgnoreOnConflict(upsertTableRequests);
+        mTransactionManager.insertOrIgnoreAllOnConflict(upsertTableRequests);
     }
 
     /** Returns a list of all dates with database writes for the given record types */
@@ -150,7 +148,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
                     db.execSQL(deleteTableRequest.getDeleteCommand());
                     upsertTableRequests.forEach(
                             upsertTableRequest ->
-                                    mTransactionManager.insertOrIgnore(db, upsertTableRequest));
+                                    mTransactionManager.insertOrIgnoreOnConflict(
+                                            db, upsertTableRequest));
                 });
     }
 
@@ -220,22 +219,5 @@ public final class ActivityDateHelper extends DatabaseHelper {
         return getUpsertTableRequest(
                 recordInternal.getRecordType(),
                 ChronoUnit.DAYS.between(LocalDate.EPOCH, recordInternal.getLocalDate()));
-    }
-
-    /**
-     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
-     */
-    public static ActivityDateHelper getInstance() {
-        return getInstance(TransactionManager.getInitialisedInstance());
-    }
-
-    public static synchronized ActivityDateHelper getInstance(
-            TransactionManager transactionManager) {
-        if (sActivityDateHelper == null) {
-            sActivityDateHelper =
-                    new ActivityDateHelper(
-                            transactionManager, InternalHealthConnectMappings.getInstance());
-        }
-        return sActivityDateHelper;
     }
 }
