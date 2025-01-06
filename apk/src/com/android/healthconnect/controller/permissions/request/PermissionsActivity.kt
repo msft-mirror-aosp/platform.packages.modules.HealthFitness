@@ -122,18 +122,21 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
         setContentView(R.layout.activity_permissions)
 
-        val isRequestFromSplitPermission = isRequestFromSplitPermission()
-        if (!isRequestFromSplitPermission &&
-            savedInstanceState == null &&
-            shouldRedirectToOnboardingActivity(this)) {
-            openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
-        }
+        // Some actions don't apply to apps that get health permissions via split-permission.
+        if (!isRequestFromSplitPermission()) {
+            // Check if we need to show onboarding screen.
+            if (savedInstanceState == null &&
+                shouldRedirectToOnboardingActivity(this)) {
+                openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
+            }
 
-        val rationaleIntentDeclared =
-            healthPermissionReader.isRationaleIntentDeclared(getPackageNameExtra())
-        if (!rationaleIntentDeclared) {
-            Log.e(TAG, "App should support rationale intent, finishing!")
-            finish()
+            // Check that app has declared rationale intent.
+            val rationaleIntentDeclared =
+                healthPermissionReader.isRationaleIntentDeclared(getPackageNameExtra())
+            if (!rationaleIntentDeclared) {
+                Log.e(TAG, "App should support rationale intent, finishing!")
+                finish()
+            }
         }
 
         requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
