@@ -840,6 +840,42 @@ public class UpsertMedicalResourcesCtsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_r4BResourceNewExtensionField_succeeds()
+            throws Exception {
+        MedicalDataSource dataSource =
+                mUtil.createDataSource(
+                        new CreateMedicalDataSourceRequest.Builder(
+                                        DATA_SOURCE_FHIR_BASE_URI,
+                                        DATA_SOURCE_DISPLAY_NAME,
+                                        FHIR_VERSION_R4B)
+                                .build());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{
+                            \"url\":
+                                \"http://hl7.org/fhir/StructureDefinition/immunization-procedure\",
+                            \"valueCodeableReference\": {
+                                \"reference\": { \"reference\": \"Procedure/123\" }
+                            }
+                        }]
+                        """);
+        String immunizationResource =
+                new ImmunizationBuilder().set("extension", extensionJson).toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4B, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_dataSourceOwnedByOtherApp_throws() throws Exception {
         // Create data source with different package name
         grantHealthPermission(PHR_FOREGROUND_APP_PKG, WRITE_MEDICAL_DATA);
