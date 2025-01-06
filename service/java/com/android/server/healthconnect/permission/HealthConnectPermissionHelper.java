@@ -438,9 +438,7 @@ public final class HealthConnectPermissionHelper {
     }
 
     private void enforceSupportPermissionsUsageIntent(String packageName, UserHandle userHandle) {
-        // Wear apps are not currently required to support the permission intent.
-        if (Flags.replaceBodySensorPermissionEnabled()
-                && mPackageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+        if (!shouldEnforcePermissionUsageIntent(packageName, userHandle)) {
             return;
         }
 
