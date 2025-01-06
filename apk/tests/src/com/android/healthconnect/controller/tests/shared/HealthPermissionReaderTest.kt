@@ -28,7 +28,7 @@ import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.UNSUPPORTED_TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.WEAR_LEGACY_TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.BODY_SENSORS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.WEAR_TEST_APP_PACKAGE_NAME
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
@@ -282,7 +282,7 @@ class HealthPermissionReaderTest {
             .containsAtLeast(
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_PACKAGE_NAME_2,
-                WEAR_LEGACY_TEST_APP_PACKAGE_NAME, // Test split permissiom from BODY_SENSORS
+                BODY_SENSORS_TEST_APP_PACKAGE_NAME, // Test split permissiom from BODY_SENSORS
                 WEAR_TEST_APP_PACKAGE_NAME,
             )
         // An app is not considered a wear app with health permissions if not requesting a system
