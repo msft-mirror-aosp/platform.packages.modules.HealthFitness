@@ -37,8 +37,8 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppUtils
 import com.android.healthconnect.controller.shared.preference.CardContainerPreference
+import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
-import com.android.healthconnect.controller.shared.preference.buttonPreference
 import com.android.healthconnect.controller.shared.preference.topIntroPreference
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
@@ -274,23 +274,22 @@ class DataSourcesFragment :
         }
 
         appSourcesPreferenceGroup.addPreference(
-            buttonPreference(
-                context = requireContext(),
-                icon = AttributeResolver.getDrawable(requireContext(), R.attr.addIcon),
-                title = getString(R.string.data_sources_add_app),
-                logName = DataSourcesElement.ADD_AN_APP_BUTTON,
-                key = ADD_AN_APP_PREFERENCE_KEY,
-                order =
-                    100 /* Arbitrary number to ensure the button is added at the end of the priority list */,
-                listener = {
+            HealthPreference(requireContext()).also {
+                it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.addIcon)
+                it.title = getString(R.string.data_sources_add_app)
+                it.logName = DataSourcesElement.ADD_AN_APP_BUTTON
+                it.key = ADD_AN_APP_PREFERENCE_KEY
+                it.order = 100 // Arbitrary number to ensure the button is added at the end of the
+                // priority list
+                it.setOnPreferenceClickListener {
                     findNavController()
                         .navigate(
                             R.id.action_dataSourcesFragment_to_addAnAppFragment,
                             bundleOf(CATEGORY_KEY to currentCategorySelection),
                         )
                     true
-                },
-            )
+                }
+            }
         )
     }
 
