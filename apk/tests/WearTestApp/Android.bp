@@ -27,7 +27,7 @@ filegroup {
 }
 
 android_test_helper_app {
-    name: "HealthConnectUITestApp7",
+    name: "HealthConnectUIWearTestApp",
 
     libs: [
         "android.test.base.stubs.system",
