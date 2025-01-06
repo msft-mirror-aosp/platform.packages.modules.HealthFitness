@@ -244,6 +244,17 @@ public final class TestUtils {
      * @param records records to insert
      * @return inserted records
      */
+    public static List<Record> insertRecords(List<? extends Record> records, Duration timeout)
+            throws InterruptedException {
+        return insertRecords(records, ApplicationProvider.getApplicationContext(), timeout);
+    }
+
+    /**
+     * Inserts records to the database.
+     *
+     * @param records records to insert
+     * @return inserted records
+     */
     public static List<Record> insertRecords(Record... records) throws InterruptedException {
         return insertRecords(Arrays.asList(records), ApplicationProvider.getApplicationContext());
     }
@@ -257,11 +268,17 @@ public final class TestUtils {
      */
     public static List<Record> insertRecords(List<? extends Record> records, Context context)
             throws InterruptedException {
+        return insertRecords(records, context, Duration.ofSeconds(TIMEOUT_SECONDS));
+    }
+
+    private static List<Record> insertRecords(
+            List<? extends Record> records, Context context, Duration timeout)
+                    throws InterruptedException {
         HealthConnectReceiver<InsertRecordsResponse> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
                 .insertRecords(
                         unmodifiableList(records), Executors.newSingleThreadExecutor(), receiver);
-        List<Record> returnedRecords = receiver.getResponse().getRecords();
+        List<Record> returnedRecords = receiver.getResponse(timeout).getRecords();
         assertThat(returnedRecords).hasSize(records.size());
         return returnedRecords;
     }
@@ -1375,8 +1392,17 @@ public final class TestUtils {
             return mResponse.get();
         }
 
+        public T getResponse(Duration timeout) throws InterruptedException {
+            verifyNoExceptionOrThrow(timeout);
+            return mResponse.get();
+        }
+
         public void verifyNoExceptionOrThrow() throws InterruptedException {
-            assertThat(mLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            verifyNoExceptionOrThrow(Duration.ofSeconds(TIMEOUT_SECONDS));
+        }
+
+        public void verifyNoExceptionOrThrow(Duration timeout) throws InterruptedException {
+            assertThat(mLatch.await(timeout.toMillis(), TimeUnit.MILLISECONDS)).isTrue();
             if (mException.get() != null) {
                 throw mException.get();
             }
