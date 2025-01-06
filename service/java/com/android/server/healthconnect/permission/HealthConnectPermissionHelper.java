@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.permission;
 
 import static android.Manifest.permission.INTERACT_ACROSS_USERS_FULL;
+import static android.content.pm.PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.annotation.Nullable;
@@ -254,6 +255,92 @@ public final class HealthConnectPermissionHelper {
             throwExceptionIncorrectPermissionState();
         }
         return startDateAccess.get();
+    }
+
+    /** Returns true if we should enforce permission usage intent for this package. */
+    public boolean shouldEnforcePermissionUsageIntent(String packageName, UserHandle userHandle) {
+        // When flag is disabys led, always enforce permission usage intent.
+        if (!Flags.replaceBodySensorPermissionEnabled()) {
+            return true;
+        }
+
+        // The rationale intent is not currently required on Wear devices.
+        if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+            return false;
+        }
+
+        // When flag is enabled, and is requesting split permission, do not enforce
+        // permission usage intent on Phone.
+        PackageInfo packageInfo;
+        try {
+            packageInfo =
+                    PackageInfoUtils.getPackageInfoUnchecked(
+                            packageName,
+                            userHandle,
+                            PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS),
+                            mContext);
+        } catch (IllegalArgumentException e) {
+            // If the package can't be found, default to enforcing the permission usage intent.
+            return true;
+        }
+        Set<String> requestedPermissions = new ArraySet<>(packageInfo.requestedPermissions);
+
+        // The rationale intent is only ignored if the request contains the
+        // upgraded READ_HEART_RATE permission (and no other non-background
+        // health permissions). This covers only the case where the platform
+        // is underneath an app that has no prior HealthConnect integration.
+        // Note: Technically if an app only requested BODY_SENSORS_BACKGROUND, then
+        // it would be upgraded to the READ_HEALTH_DATA_IN_BACKGROUND permission.
+        // However, this permission isn't valuable by itself so requiring the rationale
+        // intent in that case still feels reasonable.
+        if (!requestedPermissions.contains(HealthPermissions.READ_HEART_RATE)) {
+            return true;
+        }
+
+        // If the request contains any other health permissions besides READ_HEART_RATE,
+        // and READ_HEALTH_DATA_IN_BACKGROUND, require the rationale intent.
+        Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(mContext);
+        if (requestedPermissions.stream()
+                .filter(requestedPermission -> healthPermissions.contains(requestedPermission))
+                .anyMatch(requestedPermission ->
+                    !requestedPermission.equals(HealthPermissions.READ_HEART_RATE) &&
+                    !requestedPermission.equals(
+                        HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND))) {
+            return true;
+        }
+
+        // Check the permission flags to see if these permissions are requested
+        // as a result of a split-permission due to a platform upgrade.
+        boolean requestContainsReadHealthDataInBackground =
+                requestedPermissions.contains(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND);
+        List<String> permissionsToCheck =
+                requestContainsReadHealthDataInBackground
+                        ? List.of(
+                                HealthPermissions.READ_HEART_RATE,
+                                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+                        : List.of(HealthPermissions.READ_HEART_RATE);
+        Map<String, Integer> permissionFlags =
+                getHealthPermissionsFlags(packageName, userHandle, permissionsToCheck);
+
+        // If the request contains READ_HEALTH_DATA_IN_BACKGROUND, check that it's
+        // from a split-permission.
+        if (requestContainsReadHealthDataInBackground) {
+            int readHealthDataInBackgroundPermissionFlag =
+                    permissionFlags.getOrDefault(
+                            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND, 0);
+            if (!isFromSplitPermission(readHealthDataInBackgroundPermissionFlag)) {
+                return true;
+            }
+        }
+
+        // Check if READ_HEART_RATE is from a split-permission.
+        int readHeartRatePermissionFlag =
+                permissionFlags.getOrDefault(HealthPermissions.READ_HEART_RATE, 0);
+        return !isFromSplitPermission(readHeartRatePermissionFlag);
+    }
+
+    private static boolean isFromSplitPermission(int permissionFlag) {
+        return (permissionFlag & FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) != 0;
     }
 
     private void throwExceptionIncorrectPermissionState() {
