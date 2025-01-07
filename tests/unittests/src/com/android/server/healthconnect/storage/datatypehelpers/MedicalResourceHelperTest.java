@@ -69,7 +69,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.DeleteMedicalResourcesRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.ReadMedicalResourcesPageRequest;
@@ -131,7 +130,6 @@ public class MedicalResourceHelperTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();

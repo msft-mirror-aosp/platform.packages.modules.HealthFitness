@@ -61,8 +61,6 @@ public class MigrationBroadcastSchedulingTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .spyStatic(MigrationStateManager.class)
-                    .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectThreadScheduler.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();

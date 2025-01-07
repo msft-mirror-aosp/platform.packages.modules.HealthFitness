@@ -76,8 +76,6 @@ public class MigrationStateChangeJobTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(PreferenceHelper.class)
-                    .mockStatic(MigrationStateManager.class)
                     .mockStatic(HealthConnectDailyService.class)
                     .build();
 

@@ -39,7 +39,6 @@ import android.os.UserManager;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,11 +54,7 @@ public class MigratorPackageChangesReceiverTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(PreferenceHelper.class)
-                    .mockStatic(MigrationStateManager.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
+            new ExtendedMockitoRule.Builder(this).setStrictness(Strictness.LENIENT).build();
 
     @Mock MigrationStateManager mMigrationStateManager;
     @Mock private Context mContext;

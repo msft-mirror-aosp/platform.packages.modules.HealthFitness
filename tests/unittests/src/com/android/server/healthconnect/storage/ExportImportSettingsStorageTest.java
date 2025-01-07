@@ -67,7 +67,7 @@ public final class ExportImportSettingsStorageTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
+            new ExtendedMockitoRule.Builder(this).build();
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 

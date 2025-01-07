@@ -26,7 +26,6 @@ import static org.mockito.Mockito.mock;
 
 import android.content.Context;
 import android.health.connect.CreateMedicalDataSourceRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -74,7 +73,6 @@ public class DatabaseStatsCollectorTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();

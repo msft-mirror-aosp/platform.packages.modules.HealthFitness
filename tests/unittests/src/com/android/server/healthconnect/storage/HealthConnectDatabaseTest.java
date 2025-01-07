@@ -35,7 +35,6 @@ import static org.mockito.Mockito.mock;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -84,7 +83,6 @@ public class HealthConnectDatabaseTest {
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .mockStatic(ExportImportLogger.class)
                     .setStrictness(Strictness.LENIENT)
                     .addStaticMockFixtures(EnvironmentFixture::new)
