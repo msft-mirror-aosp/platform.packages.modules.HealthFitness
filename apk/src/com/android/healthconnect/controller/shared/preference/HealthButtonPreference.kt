@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,17 @@ package com.android.healthconnect.controller.shared.preference
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.Preference
-import androidx.preference.Preference.OnPreferenceClickListener
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
+import com.android.settingslib.widget.ButtonPreference
 
-/** A [Preference] that allows logging. */
-open class HealthPreference
+/** A [ButtonPreference] that allows logging and has expressive theming. */
+internal open class HealthButtonPreference
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null) :
-    Preference(context, attrs), ComparablePreference {
+    ButtonPreference(context, attrs), ComparablePreference {
 
     private var logger: HealthConnectLogger = HealthPreferenceUtils.initializeLogger(context)
     var logName: ElementName = UnknownGenericElement.UNKNOWN_HEALTH_PREFERENCE
@@ -36,6 +36,7 @@ constructor(context: Context, attrs: AttributeSet? = null) :
     override fun onAttached() {
         super.onAttached()
         logger.logImpression(logName)
+        this.setButtonStyle(/* type=tonal */ 1, /* size=normal */ 0)
     }
 
     override fun setOnPreferenceClickListener(
