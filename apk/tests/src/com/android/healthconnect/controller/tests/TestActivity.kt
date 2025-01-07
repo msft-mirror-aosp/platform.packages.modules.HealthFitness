@@ -15,9 +15,15 @@
  */
 package com.android.healthconnect.controller.tests
 
+import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import com.android.settingslib.collapsingtoolbar.EdgeToEdgeUtils
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint(FragmentActivity::class)
-class TestActivity : Hilt_TestActivity()
+class TestActivity : Hilt_TestActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EdgeToEdgeUtils.enable(this)
+    }
+}
