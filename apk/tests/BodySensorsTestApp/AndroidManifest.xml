@@ -17,11 +17,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="android.healthconnect.controller.test.app6">
 
-  <!-- Will split to health-related permission READ_HEART_RATE on SDK Baklava. -->
+  <!-- Will split to health-related permission READ_HEART_RATE and -->
+  <!-- READ_HEALTH_DATA_IN_BACKGROUND on SDK Baklava. -->
   <uses-permission android:name="android.permission.BODY_SENSORS"/>
+  <uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND"/>
 
   <application
-      android:label="Wear Legacy Test App">
+      android:label="Body Sensors Test App">
     <uses-library android:name="android.test.runner"/>
 
     <activity android:name=".MainActivity"

@@ -78,6 +78,7 @@ import com.android.healthconnect.controller.permissions.api.HealthPermissionMana
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.request.PermissionsActivity
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
+import com.android.healthconnect.controller.tests.utils.BODY_SENSORS_TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.BODY_SENSORS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -668,16 +669,84 @@ class PermissionsActivityTest {
             permissions, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
         (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
             BODY_SENSORS_TEST_APP_PACKAGE_NAME,
-            mapOf(READ_HEART_RATE to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED),
+            mapOf(READ_HEART_RATE to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED,
+                  READ_HEALTH_DATA_IN_BACKGROUND to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED),
         )
         // Ensure this app has never shown onboarding before.
         showOnboarding(context, true)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
-        // Onboarding not shown (but for now the activity is ended because the
-        // app doesn't support the rationale intent.)
-        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+        onIdle()
+        onView(withId(R.id.onboarding)).check(doesNotExist())
+        onView(withText("Allow")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun requestFitnessPermissions_legacyBodySensors_canGrantPermissions() {
+        val permissions = arrayOf(READ_HEART_RATE)
+        val startActivityIntent = getPermissionScreenIntent(
+            permissions, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME,
+            mapOf(READ_HEART_RATE to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED,
+                  READ_HEALTH_DATA_IN_BACKGROUND to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED),
+        )
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+        onView(withId(androidx.preference.R.id.recycler_view))
+            .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
+        onView(withText("Heart rate")).perform(click())
+        onView(withText("Allow")).perform(click())
+
+        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.result.resultData
+        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
+            .isEqualTo(permissions)
+        val expectedResults = intArrayOf(PERMISSION_GRANTED)
+        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
+            .isEqualTo(expectedResults)
+        assertThat(permissionManager.getGrantedHealthPermissions(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME))
+            .containsExactlyElementsIn(listOf(READ_HEART_RATE))
+    }
+
+    @Test
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun requestFitnessPermissions_legacyBodySensors_canGrantBackgroundPermission() {
+        val permissions = arrayOf(READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND)
+        val startActivityIntent = getPermissionScreenIntent(
+            permissions, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME,
+            mapOf(READ_HEART_RATE to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED,
+                  READ_HEALTH_DATA_IN_BACKGROUND to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED),
+        )
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+        onView(withId(androidx.preference.R.id.recycler_view))
+            .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
+        onView(withText("Heart rate")).perform(click())
+        onView(withText("Allow")).perform(click())
+        onView(withText("Allow $BODY_SENSORS_TEST_APP_NAME to access data in the background?"))
+            .check(matches(isDisplayed()))
+        onView(withText("Allow")).perform(click())
+        onIdle()
+
+        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.result.resultData
+        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
+            .isEqualTo(permissions)
+        val expectedResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
+            .isEqualTo(expectedResults)
+        assertThat(permissionManager.getGrantedHealthPermissions(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME))
+            .containsExactlyElementsIn(
+                listOf(READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND))
     }
 
     @Test

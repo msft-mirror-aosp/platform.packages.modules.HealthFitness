@@ -9,6 +9,7 @@ import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import android.os.Build
+import android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.annotations.RequiresFlagsDisabled
@@ -293,7 +294,7 @@ class HealthPermissionReaderTest {
 
     @Test
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
-    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    @RequiresFlagsEnabled(FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
     fun getSystemHealthPermissions_returnSystemHealthPermissions() = runTest {
         assertThat(permissionReader.getSystemHealthPermissions())
             .containsExactly(

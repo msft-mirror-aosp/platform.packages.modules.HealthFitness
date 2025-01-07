@@ -523,6 +523,7 @@ const val TEST_APP_NAME_2 = "Health Connect test app 2"
 const val TEST_APP_NAME_3 = "Health Connect test app 3"
 const val OLD_APP_NAME = "Old permissions test app"
 const val MEDICAL_APP_NAME = "Medical permissions HC app"
+const val BODY_SENSORS_TEST_APP_NAME = "Body Sensors Test App"
 
 val TEST_APP =
     AppMetadata(packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME, icon = null)
