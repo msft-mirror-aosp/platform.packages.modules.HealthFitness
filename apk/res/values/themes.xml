@@ -38,7 +38,6 @@
         <item name="autoDeleteIcon">@drawable/ic_auto_delete</item>
         <item name="autoDeleteOffIcon">@drawable/ic_auto_delete_off</item>
         <item name="deleteIcon">@drawable/ic_delete</item>
-        <item name="importDataIcon">@drawable/ic_import_data</item>
         <item name="activityCategoryIcon">@drawable/ic_category_activity</item>
         <item name="bodyMeasurementsCategoryIcon">@drawable/ic_category_body_measurements</item>
         <item name="cycleTrackingCategoryIcon">@drawable/ic_category_cycle_tracking</item>
