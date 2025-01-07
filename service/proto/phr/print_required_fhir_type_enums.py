@@ -19,11 +19,15 @@ def extract_and_print_type_enums(profiles_resources_json, profiles_types_json, r
             profiles_resources_json, resources_set).items():
         top_level_fhir_types.update(_get_types_from_structure_definition(
             resource, structure_definition))
+    # This type is used for child definitions, which we don't validate yet.
+    top_level_fhir_types.remove("BackboneElement")
 
     all_required_fhir_types = _get_all_types_and_subtypes_from_type_definitions(
         profiles_types_json, top_level_fhir_types)
     # Add id type manually as the Resource ids use System.String in the spec
     all_required_fhir_types.add("id")
+    # Add Element type manually as this is the type of the primitive type extensions
+    all_required_fhir_types.add("Element")
 
     for i, data_type in enumerate(sorted(all_required_fhir_types, key=str.casefold)):
         print("R4_FHIR_TYPE_" + to_upper_snake_case(data_type) + " = " + str(i + 1) + ";")

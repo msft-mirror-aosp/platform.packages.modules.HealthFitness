@@ -53,7 +53,8 @@ class FhirSpecExtractor:
         """
         r4_resource_spec = fhirspec_pb2.FhirResourceSpec()
 
-        data_types_set = set()
+        # Add Element type manually, as this is the type of primitive type extension fields.
+        data_types_set = {fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_ELEMENT}
 
         for resource, element_definitions in self._resource_to_element_definitions.items():
             resource_type_int = RESOURCE_TYPE_STRING_TO_HC_INT_MAPPING[resource]
@@ -72,7 +73,7 @@ class FhirSpecExtractor:
             profile_types_json, data_types_set)
 
         # Sort list by fhir_type before adding to make sure the script output is deterministic
-        sorted(data_type_configs, key=lambda x: x.fhir_type)
+        data_type_configs = sorted(data_type_configs, key=lambda x: x.fhir_type)
         r4_resource_spec.fhir_data_type_configs.extend(data_type_configs)
 
         return r4_resource_spec
@@ -103,11 +104,9 @@ class FhirSpecExtractor:
 
         for fhir_type in fhir_types_to_extract:
             if fhir_type in [fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RESOURCE,
-                             fhirspec_pb2.R4_FHIR_TYPE_BACKBONE_ELEMENT]:
+                             fhirspec_pb2.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION]:
                 # The Resource type definition does not exist in the profile types file. As we don't
                 # support contained resources yet, we don't need a config for this type for now.
-                # The Backbone element definition also needs special handling, which is not
-                # implemented yet.
                 type_to_data_type_config_map[fhir_type] = fhirspec_pb2.FhirDataType(
                     fhir_type=fhir_type,
                     kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE)
@@ -209,11 +208,12 @@ class FhirSpecExtractor:
                     required_fields.add(field_name)
 
             elif field_parts_length > 2:
-                # This means the field is part of a BackBoneElement. For an example see the
-                # https://hl7.org/fhir/Immunization.html "reaction" field.
-                # TODO: b/377704968 - Extract spec information for BackBoneElements.
-                # BackBoneElements need to be handled separately, as those fields don't have a type
-                # defined, but have the BackBoneElement definition instead.
+                # This means the field is part of type BackBoneElement or Element, which are they
+                # types of child types defined by Resource and Type definitions respectively.
+                # For an example see the https://hl7.org/fhir/Immunization.html "reaction" field.
+                # TODO: b/377704968 - Extract spec information for child types.
+                # They need to be handled separately, as those fields don't have a type defined, but
+                # have a child type definition instead.
                 # Note that the following field contains a double backbone element, which we need to
                 # consider: "MedicationRequest.dispenseRequest.initialFill".
                 # Observation.component.referenceRange" will also need special handling as it
@@ -352,6 +352,12 @@ class FhirSpecExtractor:
         # TODO:b/385115510 - Consider validating targetProfile on "Reference" and "canonical" types.
         #  A Reference field definition for example usually specifies which type of resource can be
         #  referenced (e.g. reference to Encounter).
+
+        # These types are used for child types defined in a resource or complex type. While we
+        # don't handle these types yet, use a placeholder type
+        if type_code in ["Element", "BackboneElement"]:
+            return fhirspec_pb2.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+
 
         # System.String code is used in cases such as Resource.id field, Element.id field,
         # primitive type value field, and Extension.url field.

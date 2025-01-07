@@ -45,6 +45,7 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.NoDataPreference
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.logging.AppDataElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -223,7 +224,7 @@ open class AppDataFragment : Hilt_AppDataFragment() {
             permissionTypesListGroup.addPreference(preferenceCategory)
 
             permissionTypesPerCategory.data
-                .sortedBy { getString(it.upperCaseLabel()) }
+                .sortByLocale { getString(it.upperCaseLabel()) }
                 .forEach { permissionType ->
                     preferenceCategory.addPreference(
                         getPermissionTypePreference(permissionType, permissionType.icon(context))
@@ -239,7 +240,7 @@ open class AppDataFragment : Hilt_AppDataFragment() {
         val populatedFitnessCategories =
             permissionTypesPerCategoryList
                 .filter { it.data.isNotEmpty() && it.category != MEDICAL }
-                .sortedBy { getString(it.category.uppercaseTitle()) }
+                .sortByLocale { getString(it.category.uppercaseTitle()) }
 
         val medicalCategory =
             permissionTypesPerCategoryList.find { it.category == MEDICAL && it.data.isNotEmpty() }

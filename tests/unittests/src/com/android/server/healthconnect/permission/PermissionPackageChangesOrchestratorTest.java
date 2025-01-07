@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -33,14 +34,10 @@ import android.health.connect.HealthDataCategory;
 import android.net.Uri;
 import android.os.Process;
 import android.os.UserHandle;
-import android.platform.test.annotations.RequiresFlagsEnabled;
-import android.platform.test.flag.junit.CheckFlagsRule;
-import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.compatibility.common.util.FeatureUtil;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -57,9 +54,6 @@ import org.mockito.quality.Strictness;
 public class PermissionPackageChangesOrchestratorTest {
     private static final String SELF_PACKAGE_NAME = "com.android.healthconnect.unittests";
     private static final UserHandle CURRENT_USER = Process.myUserHandle();
-
-    @Rule
-    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -92,6 +86,7 @@ public class PermissionPackageChangesOrchestratorTest {
                         mUserHandle,
                         mHealthDataCategoryPriorityHelper);
         setIntentIsPresent(/* isIntentPresent= */ true);
+        setShouldEnforcePermissionUsageIntent(/* shouldEnforce= */ true);
     }
 
     @Test
@@ -104,8 +99,8 @@ public class PermissionPackageChangesOrchestratorTest {
     }
 
     @Test
-    public void testPackageChanged_intentWasRemoved_nonWear_revokesPerms() {
-        assumeFalse(FeatureUtil.isWatch());
+    public void testPackageChanged_intentWasRemoved_shouldEnforceIntent_revokesPerms() {
+        setShouldEnforcePermissionUsageIntent(/* shouldEnforce= */ true);
         setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(mContext, buildPackageIntent(Intent.ACTION_PACKAGE_CHANGED));
         verify(mHelper)
@@ -113,9 +108,8 @@ public class PermissionPackageChangesOrchestratorTest {
     }
 
     @Test
-    @RequiresFlagsEnabled({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
-    public void testPackageChanged_intentWasRemoved_wear_doesNotRevokePerms() {
-        assumeTrue(FeatureUtil.isWatch());
+    public void testPackageChanged_intentWasRemoved_shouldNotEnforceIntent_doesNotRevokePerms() {
+        setShouldEnforcePermissionUsageIntent(/* shouldEnforce= */ false);
         setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(mContext, buildPackageIntent(Intent.ACTION_PACKAGE_CHANGED));
         verify(mHelper, never())
@@ -154,8 +148,8 @@ public class PermissionPackageChangesOrchestratorTest {
     }
 
     @Test
-    public void testPackageReplaced_intentNotSupported_nonWear_revokesPerms() {
-        assumeFalse(FeatureUtil.isWatch());
+    public void testPackageReplaced_intentNotSupported_shouldEnforce_revokesPerms() {
+        setShouldEnforcePermissionUsageIntent(/* shouldEnforce= */ true);
         setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(
                 mContext,
@@ -165,9 +159,8 @@ public class PermissionPackageChangesOrchestratorTest {
     }
 
     @Test
-    @RequiresFlagsEnabled({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
-    public void testPackageReplaced_intentNotSupported_wear_doesNotRevokePerms() {
-        assumeTrue(FeatureUtil.isWatch());
+    public void testPackageReplaced_intentNotSupported_shouldNotEnforce_doesNotRevokePerms() {
+        setShouldEnforcePermissionUsageIntent(/* shouldEnforce= */ false);
         setIntentIsPresent(/* isIntentPresent= */ false);
         mOrchestrator.onReceive(
                 mContext,
@@ -193,5 +186,10 @@ public class PermissionPackageChangesOrchestratorTest {
                 .thenReturn(isIntentPresent);
         when(mTracker.updateStateAndGetIfIntentWasRemoved(SELF_PACKAGE_NAME, CURRENT_USER))
                 .thenReturn(!isIntentPresent);
+    }
+
+    private void setShouldEnforcePermissionUsageIntent(boolean shouldEnforce) {
+        when(mHelper.shouldEnforcePermissionUsageIntent(anyString(), any()))
+            .thenReturn(shouldEnforce);
     }
 }

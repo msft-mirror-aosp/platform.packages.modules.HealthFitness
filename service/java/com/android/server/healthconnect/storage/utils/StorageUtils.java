@@ -36,6 +36,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.RecordIdFilter;
@@ -525,8 +526,8 @@ public final class StorageUtils {
     }
 
     /**
-     * Returns a quoted id if {@code id} is not quoted. Following examples show the expected return
-     * values,
+     * Returns a quoted, escaped id if {@code id} is not quoted. Following examples show the
+     * expected return values,
      *
      * <p>getNormalisedId("id") -> "'id'"
      *
@@ -535,11 +536,21 @@ public final class StorageUtils {
      * <p>getNormalisedId("x'id'") -> "x'id'"
      */
     public static String getNormalisedString(String id) {
-        if (!id.startsWith("'") && !id.startsWith("x'")) {
-            return "'" + id + "'";
+        StringBuilder result = new StringBuilder();
+
+        String innerId;
+        if (id.startsWith("'") && id.endsWith("'")) {
+            innerId = id.substring(1, id.length() - 1);
+        } else if ((id.startsWith("x'") || id.startsWith("X'")) && id.endsWith("'")) {
+            innerId = id.substring(2, id.length() - 1);
+            result.append(id.charAt(0));
+        } else {
+            innerId = id;
         }
 
-        return id;
+        DatabaseUtils.appendEscapedSQLString(result, innerId);
+
+        return result.toString();
     }
 
     /** Checks whether {@code tableName} exists in the {@code database}. */

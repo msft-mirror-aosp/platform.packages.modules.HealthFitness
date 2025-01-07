@@ -33,6 +33,7 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
@@ -191,7 +192,7 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
         writePermissionCategory.removeAll()
 
         permissionsList
-            .sortedBy {
+            .sortByLocale {
                 requireContext()
                     .getString(
                         FitnessPermissionStrings.fromPermissionType(it.fitnessPermissionType)

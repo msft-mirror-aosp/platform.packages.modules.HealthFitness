@@ -19,7 +19,7 @@
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:gravity="center_vertical"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingHorizontal="?android:attr/listPreferredItemPaddingStart"
     android:clipToPadding="false">
 
     <TextView
@@ -28,5 +28,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.TopIntroText"
         android:hyphenationFrequency="normalFast"
-        android:lineBreakWordStyle="phrase" />
+        android:lineBreakWordStyle="phrase"
+        android:textDirection="ltr"
+        android:layoutDirection="ltr"/>
 </LinearLayout>
