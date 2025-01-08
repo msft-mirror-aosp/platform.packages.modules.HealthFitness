@@ -288,8 +288,7 @@ public class WeightRecordTest {
 
         TestUtils.assertRecordNotFound(id1, WeightRecord.class);
         TestUtils.assertRecordNotFound(id2, WeightRecord.class);
-        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
-        // TestUtils.assertRecordFound(id3, WeightRecord.class);
+        TestUtils.assertRecordFound(id3, WeightRecord.class);
     }
 
     @Test

@@ -580,8 +580,7 @@ public class StepsRecordTest {
 
         TestUtils.assertRecordNotFound(id1, StepsRecord.class);
         TestUtils.assertRecordNotFound(id2, StepsRecord.class);
-        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
-        // TestUtils.assertRecordFound(id3, StepsRecord.class);
+        TestUtils.assertRecordFound(id3, StepsRecord.class);
     }
 
     @Test

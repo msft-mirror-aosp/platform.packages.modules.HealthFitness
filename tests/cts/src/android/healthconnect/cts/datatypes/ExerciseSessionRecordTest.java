@@ -480,8 +480,7 @@ public class ExerciseSessionRecordTest {
 
         TestUtils.assertRecordNotFound(id1, ExerciseSessionRecord.class);
         TestUtils.assertRecordNotFound(id2, ExerciseSessionRecord.class);
-        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
-        // TestUtils.assertRecordFound(id3, ExerciseSessionRecord.class);
+        TestUtils.assertRecordFound(id3, ExerciseSessionRecord.class);
     }
 
     @Test
