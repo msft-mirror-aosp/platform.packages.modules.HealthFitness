@@ -166,6 +166,7 @@ class DisconnectHealthPermissionsDialogFragment() :
                 }
                 .create()
         dialog.setCanceledOnTouchOutside(false)
+        isCancelable = false
         return dialog
     }
 

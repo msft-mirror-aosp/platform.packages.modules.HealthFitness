@@ -57,6 +57,7 @@ java_defaults {
         "compatibility-device-util-axt",
         "mockito-kotlin2",
         "platform-parametric-runner-lib",
+        "android.permission.flags-aconfig-java-export",
     ],
     libs: [
         "kotlin-annotations",
@@ -76,8 +77,8 @@ java_defaults {
         ":UnsupportedTestApp",
         ":OldPermissionsTestApp",
         ":MedicalPermissionsTestApp",
-        ":HealthConnectUITestApp6",
-        ":HealthConnectUITestApp7",
+        ":HealthConnectUIBodySensorsTestApp",
+        ":HealthConnectUIWearTestApp",
     ],
     test_config_template: "AndroidTestTemplate.xml",
     visibility: ["//visibility:private"],
