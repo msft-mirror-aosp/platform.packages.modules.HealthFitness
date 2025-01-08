@@ -59,12 +59,20 @@ constructor(
     val alertDialogActive: LiveData<Boolean>
         get() = _alertDialogActive
 
+    private val _alertDialogCheckBoxChecked = MutableLiveData(false)
+    val alertDialogCheckBoxChecked: LiveData<Boolean>
+        get() = _alertDialogCheckBoxChecked
+
     init {
         loadConnectedApps()
     }
 
     fun setAlertDialogStatus(isActive: Boolean) {
         _alertDialogActive.postValue(isActive)
+    }
+
+    fun setAlertDialogCheckBoxChecked(isChecked: Boolean) {
+        _alertDialogCheckBoxChecked.postValue(isChecked)
     }
 
     fun loadConnectedApps() {
