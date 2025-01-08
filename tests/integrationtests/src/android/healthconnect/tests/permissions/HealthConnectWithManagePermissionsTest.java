@@ -16,7 +16,12 @@
 
 package android.healthconnect.tests.permissions;
 
+import static android.Manifest.permission.BODY_SENSORS;
+import static android.Manifest.permission.BODY_SENSORS_BACKGROUND;
+import static android.Manifest.permission.GRANT_RUNTIME_PERMISSIONS;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
+import static android.health.connect.HealthPermissions.READ_HEART_RATE;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
@@ -38,11 +43,17 @@ import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.healthconnect.tests.IntegrationTestUtils;
 import android.os.Build;
+import android.platform.test.annotations.RequiresFlagsDisabled;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 
 import com.android.compatibility.common.util.FeatureUtil;
+import com.android.healthfitness.flags.Flags;
 
 import org.junit.After;
 import org.junit.Before;
@@ -76,6 +87,10 @@ public class HealthConnectWithManagePermissionsTest {
     private static final String DEFAULT_APP_PACKAGE = "android.healthconnect.test.app";
     private static final String NO_USAGE_INTENT_APP_PACKAGE = "android.healthconnect.test.app2";
     private static final String INEXISTENT_APP_PACKAGE = "my.invalid.package.name";
+    private static final String REQUESTING_READ_HEART_RATE_APP_PACKAGE =
+            "android.healthconnect.test.app4";
+    private static final String REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE =
+            "android.healthconnect.test.app5";
     private static final String DEFAULT_PERM = HealthPermissions.READ_ACTIVE_CALORIES_BURNED;
     private static final String DEFAULT_PERM_2 = HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED;
     private static final String UNDECLARED_PERM = HealthPermissions.READ_DISTANCE;
@@ -84,6 +99,10 @@ public class HealthConnectWithManagePermissionsTest {
 
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
+    private PackageManager mPackageManager;
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -94,9 +113,11 @@ public class HealthConnectWithManagePermissionsTest {
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getTargetContext();
-        mHealthConnectManager = runWithShellPermissionIdentity(
-                    () -> mContext.getSystemService(HealthConnectManager.class),
-                    MANAGE_HEALTH_PERMISSIONS);
+        mHealthConnectManager =
+                runWithShellPermissionIdentity(
+                        () -> mContext.getSystemService(HealthConnectManager.class),
+                        MANAGE_HEALTH_PERMISSIONS);
+        mPackageManager = mContext.getPackageManager();
 
         revokePermissionViaPackageManager(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
         revokePermissionViaPackageManager(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
@@ -153,8 +174,9 @@ public class HealthConnectWithManagePermissionsTest {
     }
 
     @Test(expected = SecurityException.class)
-    public void testGrantHealthPermission_usageIntentNotSupported_nonWatch_throwsIllegalArgumentException()
-            throws Exception {
+    public void
+            testGrantHealthPermission_usageIntentNotSupported_nonWatch_throwsIllegalArgumentException()
+                    throws Exception {
         assumeFalse(FeatureUtil.isWatch());
         grantHealthPermission(NO_USAGE_INTENT_APP_PACKAGE, DEFAULT_PERM);
         fail("Expected SecurityException due to undeclared health permissions usage intent.");
@@ -226,6 +248,178 @@ public class HealthConnectWithManagePermissionsTest {
     public void testGrantHealthPermission_nullPackageName_throwsNPE() throws Exception {
         grantHealthPermission(/* packageName= */ null, DEFAULT_PERM);
         fail("Expected NullPointerException due to null package.");
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void testGrantPermission_readHeartRate_isFromSplitPermission_alsoGrantBodySensor()
+            throws Exception {
+        revokePermissionViaPackageManager(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+        assertPermNotGrantedForApp(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+
+        grantHealthPermission(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEART_RATE);
+
+        assertPermGrantedForApp(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEART_RATE);
+        assertPermGrantedForApp(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testGrantPermission_readHealthBackground_isFromSplitPermission_alsoGrantBodySensorBackground()
+                    throws Exception {
+        revokePermissionViaPackageManager(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+        assertPermNotGrantedForApp(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+
+        grantHealthPermission(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEALTH_DATA_IN_BACKGROUND);
+
+        assertPermGrantedForApp(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEALTH_DATA_IN_BACKGROUND);
+        assertPermGrantedForApp(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void testRevokePermission_readHeartRate_isFromSplitPermission_alsoRevokeBodySensor()
+            throws Exception {
+        grantHealthPermission(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEART_RATE);
+
+        revokeHealthPermission(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEART_RATE, /* reason= */ null);
+
+        assertPermNotGrantedForApp(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEART_RATE);
+        assertPermNotGrantedForApp(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testRevokePermission_readHealthBackground_isFromSplitPermission_alsoRevokeBodySensorBackground()
+                    throws Exception {
+        grantHealthPermission(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEALTH_DATA_IN_BACKGROUND);
+
+        revokeHealthPermission(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                /* reason= */ null);
+
+        assertPermNotGrantedForApp(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, READ_HEALTH_DATA_IN_BACKGROUND);
+        assertPermNotGrantedForApp(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void testRevokeAllHealthPermissions_isFromSplitPermission_alsoRevokeBodySensors()
+            throws Exception {
+        grantPermission(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+
+        revokeAllHealthPermissions(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, /* reason= */ null);
+
+        assertPermNotGrantedForApp(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testRevokeAllHealthPermissions_isFromSplitPermission_alsoRevokeBodySensorsBackground()
+                    throws Exception {
+        grantPermission(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+
+        revokeAllHealthPermissions(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, /* reason= */ null);
+
+        assertPermNotGrantedForApp(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsDisabled({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
+    @Test
+    public void testRevokeAllHealthPermissions_flagDisabled_notRevokeBodySensors()
+            throws Exception {
+        grantPermission(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+
+        revokeAllHealthPermissions(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, /* reason= */ null);
+
+        assertPermGrantedForApp(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsDisabled({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
+    @Test
+    public void testRevokeAllHealthPermissions_flagDisabled_notRevokeBodySensorsBackground()
+            throws Exception {
+        grantPermission(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+
+        revokeAllHealthPermissions(REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, /* reason= */ null);
+
+        assertPermGrantedForApp(
+                REQUESTING_BODY_SENSORS_LEGACY_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void testGrantPermission_readHeartRate_notFromSplitPermission_notGrantBodySensor()
+            throws Exception {
+        assertPermNotGrantedForApp(REQUESTING_READ_HEART_RATE_APP_PACKAGE, BODY_SENSORS);
+
+        grantHealthPermission(REQUESTING_READ_HEART_RATE_APP_PACKAGE, READ_HEART_RATE);
+
+        assertPermGrantedForApp(REQUESTING_READ_HEART_RATE_APP_PACKAGE, READ_HEART_RATE);
+        assertPermNotGrantedForApp(REQUESTING_READ_HEART_RATE_APP_PACKAGE, BODY_SENSORS);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled({
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testGrantPermission_readHealthBackground_notFromSplitPermission_notGrantBodySensorBackground()
+                    throws Exception {
+        assertPermNotGrantedForApp(REQUESTING_READ_HEART_RATE_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
+
+        grantHealthPermission(
+                REQUESTING_READ_HEART_RATE_APP_PACKAGE, READ_HEALTH_DATA_IN_BACKGROUND);
+
+        assertPermGrantedForApp(
+                REQUESTING_READ_HEART_RATE_APP_PACKAGE, READ_HEALTH_DATA_IN_BACKGROUND);
+        assertPermNotGrantedForApp(REQUESTING_READ_HEART_RATE_APP_PACKAGE, BODY_SENSORS_BACKGROUND);
     }
 
     @Test
@@ -697,6 +891,22 @@ public class HealthConnectWithManagePermissionsTest {
                         mHealthConnectManager.grantHealthPermission(packageName, permissionName);
                     },
                     MANAGE_HEALTH_PERMISSIONS);
+        } catch (RuntimeException e) {
+            // runWithShellPermissionIdentity wraps and rethrows all exceptions as RuntimeException,
+            // but we need the original RuntimeException if there is one.
+            final Throwable cause = e.getCause();
+            throw cause instanceof RuntimeException ? (RuntimeException) cause : e;
+        }
+    }
+
+    private void grantPermission(String packageName, String permissionName) {
+        try {
+            runWithShellPermissionIdentity(
+                    () -> {
+                        mPackageManager.grantRuntimePermission(
+                                packageName, permissionName, mContext.getUser());
+                    },
+                    GRANT_RUNTIME_PERMISSIONS);
         } catch (RuntimeException e) {
             // runWithShellPermissionIdentity wraps and rethrows all exceptions as RuntimeException,
             // but we need the original RuntimeException if there is one.

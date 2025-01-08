@@ -19,6 +19,8 @@ package com.android.server.healthconnect.permission;
 import static android.Manifest.permission.INTERACT_ACROSS_USERS_FULL;
 import static android.content.pm.PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
+import static android.health.connect.HealthPermissions.READ_HEART_RATE;
 
 import android.annotation.Nullable;
 import android.app.ActivityManager;
@@ -52,6 +54,7 @@ import java.util.Set;
  */
 public final class HealthConnectPermissionHelper {
     private static final Period GRANT_TIME_TO_START_ACCESS_DATE_PERIOD = Period.ofDays(30);
+    private static final String TAG = "HealthConnectPermissionHelper";
     private static final String UNKNOWN_REASON = "Unknown Reason";
 
     private static final int MASK_PERMISSION_FLAGS =
@@ -115,6 +118,18 @@ public final class HealthConnectPermissionHelper {
                     MASK_PERMISSION_FLAGS,
                     PackageManager.FLAG_PERMISSION_USER_SET,
                     checkedUser);
+
+            // If is split permission, automatically grant BODY_SENSORS or BACKGROUND.
+            if ((permissionName.equals(READ_HEART_RATE)
+                            || permissionName.equals(READ_HEALTH_DATA_IN_BACKGROUND))
+                    && Flags.replaceBodySensorPermissionEnabled()
+                    && isPackageRequestingSplitPermission(packageName, user)) {
+                grantRuntimePermissionAndUpdateFlags(
+                        packageName,
+                        user,
+                        toLegacyPermission(permissionName),
+                        PackageManager.FLAG_PERMISSION_USER_SET);
+            }
             mAppInfoHelper.getOrInsertAppInfoId(packageName);
             addToPriorityListIfRequired(packageName, permissionName, user);
         } finally {
@@ -156,6 +171,18 @@ public final class HealthConnectPermissionHelper {
                     MASK_PERMISSION_FLAGS,
                     permissionFlags,
                     checkedUser);
+            // If is from split permission, automatically revoke BODY_SENSORS or BACKGROUND.
+            if ((permissionName.equals(READ_HEART_RATE)
+                            || permissionName.equals(READ_HEALTH_DATA_IN_BACKGROUND))
+                    && Flags.replaceBodySensorPermissionEnabled()
+                    && isPackageRequestingSplitPermission(packageName, user)) {
+                revokeRuntimePermissionAndUpdateFlags(
+                        packageName,
+                        user,
+                        toLegacyPermission(permissionName),
+                        permissionFlags,
+                        reason);
+            }
 
             removeFromPriorityListIfRequired(packageName, permissionName, user);
 
@@ -307,10 +334,12 @@ public final class HealthConnectPermissionHelper {
         Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(mContext);
         if (requestedPermissions.stream()
                 .filter(requestedPermission -> healthPermissions.contains(requestedPermission))
-                .anyMatch(requestedPermission ->
-                    !requestedPermission.equals(HealthPermissions.READ_HEART_RATE) &&
-                    !requestedPermission.equals(
-                        HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND))) {
+                .anyMatch(
+                        requestedPermission ->
+                                !requestedPermission.equals(HealthPermissions.READ_HEART_RATE)
+                                        && !requestedPermission.equals(
+                                                HealthPermissions
+                                                        .READ_HEALTH_DATA_IN_BACKGROUND))) {
             return false;
         }
 
@@ -418,6 +447,22 @@ public final class HealthConnectPermissionHelper {
                     user);
             removeFromPriorityListIfRequired(packageName, perm, user);
         }
+        // If from split permission, automatically deny BODY_SENSORS and BACKGROUND.
+        if (Flags.replaceBodySensorPermissionEnabled()
+                && isPackageRequestingSplitPermission(packageName, user)) {
+            revokeRuntimePermissionAndUpdateFlags(
+                    packageName,
+                    user,
+                    android.Manifest.permission.BODY_SENSORS,
+                    PackageManager.FLAG_PERMISSION_USER_SET,
+                    reason);
+            revokeRuntimePermissionAndUpdateFlags(
+                    packageName,
+                    user,
+                    android.Manifest.permission.BODY_SENSORS_BACKGROUND,
+                    PackageManager.FLAG_PERMISSION_USER_SET,
+                    reason);
+        }
     }
 
     private void revokeRuntimePermission(
@@ -508,5 +553,48 @@ public final class HealthConnectPermissionHelper {
 
             enforceValidHealthPermission(permission);
         }
+    }
+
+    /** Sync permission granted status and flag between BODY_SENSORS and READ_HEART_RATE. */
+    private void grantRuntimePermissionAndUpdateFlags(
+            String packageName, UserHandle user, String legacyPermission, int permissionFlags) {
+        mPackageManager.grantRuntimePermission(packageName, legacyPermission, user);
+        mPackageManager.updatePermissionFlags(
+                legacyPermission, packageName, MASK_PERMISSION_FLAGS, permissionFlags, user);
+    }
+
+    /** Sync permission denied status and flag between BODY_SENSORS and READ_HEART_RATE. */
+    private void revokeRuntimePermissionAndUpdateFlags(
+            String packageName,
+            UserHandle user,
+            String legacyPermission,
+            int permissionFlags,
+            @Nullable String reason) {
+        if (mPackageManager.checkPermission(legacyPermission, packageName)
+                != PackageManager.PERMISSION_DENIED) {
+            mPackageManager.revokeRuntimePermission(packageName, legacyPermission, user, reason);
+        }
+        mPackageManager.updatePermissionFlags(
+                legacyPermission, packageName, MASK_PERMISSION_FLAGS, permissionFlags, user);
+    }
+
+    /**
+     * Returns legacy body sensor permission for split heart rate permission.
+     *
+     * @throws IllegalArgumentException if {@code permissionName} is neither READ_HEART_RATE nor
+     *     READ_HEALTH_DATE_IN_BACKGROUND
+     */
+    private static String toLegacyPermission(String permissionName)
+            throws IllegalArgumentException {
+        if (permissionName.equals(READ_HEART_RATE)) {
+            return android.Manifest.permission.BODY_SENSORS;
+        }
+        if (permissionName.equals(READ_HEALTH_DATA_IN_BACKGROUND)) {
+            return android.Manifest.permission.BODY_SENSORS_BACKGROUND;
+        }
+        throw new IllegalArgumentException(
+                "toLegacyPermission() encounters unexpected permission "
+                        + permissionName
+                        + ", should be one of READ_HEART_RATE and READ_HEALTH_DATA_IN_BACKGROUND");
     }
 }
