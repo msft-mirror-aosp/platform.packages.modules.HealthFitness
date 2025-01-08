@@ -21,7 +21,6 @@ package com.android.healthconnect.controller.tests.dataentries.formatters
 import android.content.Context
 import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.MindfulnessSessionRecord
-import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
@@ -30,7 +29,6 @@ import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.getMetaData
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -46,7 +44,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@EnableFlags(Flags.FLAG_MINDFULNESS)
 @HiltAndroidTest
 class MindfulnessSessionFormatterTest {
     @get:Rule val setFlagsRule = SetFlagsRule()

@@ -229,14 +229,14 @@ fun getAllFitnessDataCategories() =
     else getAllFitnessDataCategoriesLegacy()
 
 fun getAllFitnessDataCategoriesLegacy() =
-    listOfNotNull(
+    listOf(
         HealthDataCategory.ACTIVITY,
         HealthDataCategory.BODY_MEASUREMENTS,
         HealthDataCategory.CYCLE_TRACKING,
         HealthDataCategory.NUTRITION,
         HealthDataCategory.SLEEP,
         HealthDataCategory.VITALS,
-        HealthDataCategory.WELLNESS.takeIf { Flags.mindfulness() },
+        HealthDataCategory.WELLNESS,
     )
 
 /** Denotes that the annotated [Integer] represents a [HealthDataCategory]. */

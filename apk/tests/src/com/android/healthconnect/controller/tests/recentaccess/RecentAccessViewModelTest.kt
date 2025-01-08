@@ -709,7 +709,6 @@ class RecentAccessViewModelTest {
         assertRecentAccessEquality(actual, expected)
     }
 
-    @EnableFlags(Flags.FLAG_MINDFULNESS)
     @Test
     fun loadRecentAccessApps_mindfulness_read() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME
@@ -746,7 +745,6 @@ class RecentAccessViewModelTest {
         assertRecentAccessEquality(actual, expected)
     }
 
-    @EnableFlags(Flags.FLAG_MINDFULNESS)
     @Test
     fun loadRecentAccessApps_mindfulness_upsert() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME
