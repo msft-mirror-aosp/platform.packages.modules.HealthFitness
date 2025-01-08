@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.healthconnect.cts.utils.AssumptionCheckerRule
 import android.healthconnect.cts.utils.TestUtils
-import android.server.wm.WindowManagerStateHelper
 import androidx.test.core.app.ApplicationProvider
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
@@ -44,7 +43,6 @@ open class HealthConnectBaseTest {
         )
 
     protected val context: Context = ApplicationProvider.getApplicationContext()
-    private val wmState = WindowManagerStateHelper()
 
     @Before
     fun setUpClass() {
@@ -61,8 +59,6 @@ open class HealthConnectBaseTest {
             // picker" which may cover another UI elements on freeform window configuration.
             runShellCommandOrThrow("input keyevent 82")
         }
-
-        wmState.waitForNonActivityWindowFocused()
         runShellCommandOrThrow("wm dismiss-keyguard")
 
         val keyguardManager = context.getSystemService(KeyguardManager::class.java)
