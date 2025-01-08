@@ -15,6 +15,7 @@
  */
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.Constants.DEFAULT_INT;
 import static android.health.connect.Constants.DEFAULT_LONG;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
@@ -23,6 +24,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMAR
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
@@ -40,6 +42,8 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.OrderByClause;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -60,6 +64,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "read_access_logs_table";
     private static final int NUM_COLS = 6;
     private static final int TIME_WINDOW_DAYS = 30;
+    @VisibleForTesting static final int PAGE_SIZE = 1000;
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     private static final String READER_APP_ID_COLUMN_NAME = "reader_app_id";
     private static final String WRITER_APP_ID_COLUMN_NAME = "writer_app_id";
@@ -118,14 +123,35 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
     /**
      * Returns a list of all {@link ReadAccessLog} DO NOT CALL WITHOUT FLAGGING UNDER {@link
      * AconfigFlagHelper.isEcosystemMetricsEnabled}.
+     *
+     * @param rowId zero if the table is being read from the start.
      */
-    public List<ReadAccessLog> queryReadAccessLogs() {
-        final ReadTableRequest readTableRequest = new ReadTableRequest(TABLE_NAME);
+    public ReadAccessLogsResponse queryReadAccessLogs(int rowId) {
+        WhereClauses whereClause =
+                new WhereClauses(AND).addWhereGreaterThanOrEqualClause(PRIMARY_COLUMN_NAME, rowId);
+        OrderByClause orderByClause =
+                new OrderByClause().addOrderByClause(PRIMARY_COLUMN_NAME, /* isAscending= */ true);
 
+        // We set limit size to requested PAGE_SIZE plus extra 1 record so that if number of
+        // records queried is more than PAGE_SIZE we know there are more records available to return
+        // for the next read.
+        final ReadTableRequest readTableRequest =
+                new ReadTableRequest(TABLE_NAME)
+                        .setWhereClause(whereClause)
+                        .setOrderBy(orderByClause)
+                        .setLimit(PAGE_SIZE + 1);
+        int nextRowId = DEFAULT_INT;
+        int count = 0;
+        boolean hasMoreRecords = false;
         List<ReadAccessLog> readAccessLogList = new ArrayList<>();
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
                 try {
+                    if (count == PAGE_SIZE) {
+                        hasMoreRecords = true;
+                        break;
+                    }
+                    count++;
                     String readerPackage =
                             mAppInfoHelper.getPackageName(
                                     getCursorLong(cursor, READER_APP_ID_COLUMN_NAME));
@@ -144,13 +170,15 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
                                     /* dataType= */ dataType,
                                     /* readTimeStamp= */ readTimeStamp,
                                     /* isRecordWithinPast30Days= */ isRecordWithinPast30Days));
+                    nextRowId = getCursorInt(cursor, PRIMARY_COLUMN_NAME) + 1;
                 } catch (PackageManager.NameNotFoundException e) {
                     Slog.e(TAG, "encounter null package name while query access logs");
                 }
             }
         }
 
-        return Collections.unmodifiableList(readAccessLogList);
+        return new ReadAccessLogsResponse(
+                Collections.unmodifiableList(readAccessLogList), nextRowId, hasMoreRecords);
     }
 
     /**
@@ -334,6 +362,44 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
                     mDataType,
                     mReadTimeStamp,
                     mIsRecordWithinPast30Days);
+        }
+    }
+
+    public static class ReadAccessLogsResponse {
+        private final List<ReadAccessLog> mReadAccessLogs;
+        private final int mNextRowId;
+        private final boolean mHasMoreRecords;
+
+        public ReadAccessLogsResponse(
+                List<ReadAccessLog> readAccessLogs, int nextRowId, boolean hasMoreRecords) {
+            mReadAccessLogs = readAccessLogs;
+            mNextRowId = nextRowId;
+            mHasMoreRecords = hasMoreRecords;
+        }
+
+        public int getNextRowId() {
+            return mNextRowId;
+        }
+
+        public List<ReadAccessLog> getReadAccessLogs() {
+            return mReadAccessLogs;
+        }
+
+        public boolean hasMoreRecords() {
+            return mHasMoreRecords;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof ReadAccessLogsResponse that)) return false;
+            return Objects.equals(mReadAccessLogs, that.mReadAccessLogs)
+                    && mNextRowId == that.mNextRowId
+                    && mHasMoreRecords == that.mHasMoreRecords;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(mReadAccessLogs, mNextRowId, mHasMoreRecords);
         }
     }
 }

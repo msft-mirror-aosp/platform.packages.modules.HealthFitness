@@ -199,7 +199,7 @@ public class AggregateTransactionRequestTest {
         aggregateTransactionRequest.getAggregateDataResponseParcel();
 
         List<ReadAccessLogsHelper.ReadAccessLog> result =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         ReadAccessLogsHelper.ReadAccessLog log = result.get(0);
         assertThat(log.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(log.getReaderPackage()).isEqualTo(readerPackage);

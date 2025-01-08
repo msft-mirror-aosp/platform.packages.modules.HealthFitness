@@ -307,10 +307,12 @@ public final class HealthConnectPermissionHelper {
         Set<String> healthPermissions = HealthConnectManager.getHealthPermissions(mContext);
         if (requestedPermissions.stream()
                 .filter(requestedPermission -> healthPermissions.contains(requestedPermission))
-                .anyMatch(requestedPermission ->
-                    !requestedPermission.equals(HealthPermissions.READ_HEART_RATE) &&
-                    !requestedPermission.equals(
-                        HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND))) {
+                .anyMatch(
+                        requestedPermission ->
+                                !requestedPermission.equals(HealthPermissions.READ_HEART_RATE)
+                                        && !requestedPermission.equals(
+                                                HealthPermissions
+                                                        .READ_HEALTH_DATA_IN_BACKGROUND))) {
             return false;
         }
 
