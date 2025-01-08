@@ -483,7 +483,7 @@ public class PhrDataFactory {
         FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
         List<MedicalResource> medicalResources = new ArrayList<>();
         for (int i = 0; i < numOfResources; i++) {
-            String fhirResourceId = "id/" + i;
+            String fhirResourceId = "id." + i;
             FhirResource fhirResource =
                     new FhirResource.Builder(
                                     FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
