@@ -504,7 +504,7 @@ abstract class BaseApiTest<T extends Record> {
                                 YESTERDAY_11AM.plusMinutes(55).toInstant()),
                         mRecordFactory.newEmptyRecord(
                                 newEmptyMetadata(),
-                                YESTERDAY_11AM.plusMinutes(50).toInstant(),
+                                YESTERDAY_11AM.plusMinutes(51).toInstant(),
                                 YESTERDAY_11AM.plusMinutes(60).toInstant()),
                         mRecordFactory.newEmptyRecord(
                                 newEmptyMetadata(),
@@ -523,7 +523,6 @@ abstract class BaseApiTest<T extends Record> {
                                                         YESTERDAY_11AM.plusMinutes(50).toInstant())
                                                 .build())
                                 .build());
-
         assertThat(returnedRecords)
                 .containsExactly(
                         withIdAndTestPackageName(recordsToInsert.get(1), recordIds.get(1)),
@@ -579,7 +578,6 @@ abstract class BaseApiTest<T extends Record> {
                                 newEmptyMetadata(),
                                 YESTERDAY_11AM.plusMinutes(40).toInstant(),
                                 YESTERDAY_11AM.plusMinutes(55).toInstant()),
-                        // TODO(b/331350683): this record shouldn't be deleted.
                         mRecordFactory.newEmptyRecord(
                                 newEmptyMetadata(),
                                 YESTERDAY_11AM.plusMinutes(50).toInstant(),
@@ -603,6 +601,7 @@ abstract class BaseApiTest<T extends Record> {
         assertThat(readAllRecords())
                 .containsExactly(
                         withIdAndTestPackageName(recordsToInsert.get(0), recordIds.get(0)),
+                        withIdAndTestPackageName(recordsToInsert.get(4), recordIds.get(4)),
                         withIdAndTestPackageName(recordsToInsert.get(5), recordIds.get(5)));
     }
 
