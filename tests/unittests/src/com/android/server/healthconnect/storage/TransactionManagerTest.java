@@ -577,7 +577,7 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
         assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
@@ -749,7 +749,7 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
         assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
