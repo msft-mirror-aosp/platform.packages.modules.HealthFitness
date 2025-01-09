@@ -16,6 +16,11 @@
 
 package healthconnect.storage;
 
+import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,6 +28,8 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.os.Process;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -42,6 +49,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 
 import org.junit.Before;
@@ -57,11 +65,22 @@ import java.util.List;
 import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
+@EnableFlags({
+    FLAG_ECOSYSTEM_METRICS,
+    FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+    FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+    FLAG_ACTIVITY_INTENSITY_DB
+})
 public class DailyCleanupJobTest {
     private static final String AUTO_DELETE_DURATION_RECORDS_KEY =
             "auto_delete_duration_records_key";
 
-    @Rule
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    ;
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).build();
 
@@ -196,6 +215,7 @@ public class DailyCleanupJobTest {
         Set<String> tableNames = new HashSet<>();
 
         tableNames.add(AccessLogsHelper.getDeleteRequestForAutoDelete().getTableName());
+        tableNames.add(ReadAccessLogsHelper.getDeleteRequestForAutoDelete().getTableName());
 
         return tableNames;
     }
