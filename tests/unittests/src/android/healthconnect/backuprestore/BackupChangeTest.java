@@ -31,7 +31,7 @@ public class BackupChangeTest {
 
     @Test
     public void upsertionChangeParcel_propertiesAreIdentical() {
-        BackupChange original = new BackupChange("uid123", 123, false, new byte[] {1, 2, 3});
+        BackupChange original = new BackupChange("uid123", false, new byte[] {1, 2, 3});
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
@@ -39,7 +39,6 @@ public class BackupChangeTest {
         BackupChange restoredParcel = BackupChange.CREATOR.createFromParcel(parcel);
 
         assertThat(restoredParcel.getUid()).isEqualTo("uid123");
-        assertThat(restoredParcel.getVersion()).isEqualTo(123);
         assertThat(restoredParcel.isDeletion()).isFalse();
         assertThat(restoredParcel.getData()).isEqualTo(new byte[] {1, 2, 3});
         parcel.recycle();
@@ -47,7 +46,7 @@ public class BackupChangeTest {
 
     @Test
     public void deletionChangeParcel_propertiesAreIdentical() {
-        BackupChange original = new BackupChange("uid123", 123, true, null);
+        BackupChange original = new BackupChange("uid123", true, null);
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
@@ -55,7 +54,6 @@ public class BackupChangeTest {
         BackupChange restoredParcel = BackupChange.CREATOR.createFromParcel(parcel);
 
         assertThat(restoredParcel.getUid()).isEqualTo("uid123");
-        assertThat(restoredParcel.getVersion()).isEqualTo(123);
         assertThat(restoredParcel.isDeletion()).isTrue();
         assertThat(restoredParcel.getData()).isNull();
         parcel.recycle();

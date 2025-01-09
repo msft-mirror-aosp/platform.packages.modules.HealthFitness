@@ -19,6 +19,7 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
@@ -228,7 +229,8 @@ public class BackupRestoreDatabaseHelper {
                         nextDataTableName,
                         nextDataTablePageToken,
                         changeLogsTablePageToken);
-        return new GetChangesForBackupResponse(backupChanges, backupChangeTokenRowId);
+        return new GetChangesForBackupResponse(
+                PROTO_VERSION, backupChanges, backupChangeTokenRowId);
     }
 
     private String getChangeLogsPageToken() {
@@ -297,7 +299,8 @@ public class BackupRestoreDatabaseHelper {
                         null,
                         EMPTY_PAGE_TOKEN.encode(),
                         changeLogsResponse.getNextPageToken());
-        return new GetChangesForBackupResponse(backupChanges, backupChangeTokenRowId);
+        return new GetChangesForBackupResponse(
+                PROTO_VERSION, backupChanges, backupChangeTokenRowId);
     }
 
     private List<BackupChange> convertRecordsToBackupChange(List<RecordInternal<?>> records) {
@@ -310,8 +313,6 @@ public class BackupRestoreDatabaseHelper {
                             }
                             return new BackupChange(
                                     record.getUuid().toString(),
-                                    // TODO: b/377648858 - add proper encryption version.
-                                    /* version= */ 0,
                                     /* isDeletion= */ false,
                                     serializeRecordInternal(record));
                         })
@@ -325,8 +326,6 @@ public class BackupRestoreDatabaseHelper {
                         deletedLog ->
                                 new BackupChange(
                                         deletedLog.getDeletedRecordId(),
-                                        // TODO: b/369799948 - add proper encryption version.
-                                        /* version= */ 0,
                                         /* isDeletion= */ true,
                                         null))
                 .toList();
