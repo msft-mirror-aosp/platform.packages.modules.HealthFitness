@@ -100,6 +100,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.testing.fakes.FakeTimeSource;
 
 import org.json.JSONException;
 import org.junit.Before;
