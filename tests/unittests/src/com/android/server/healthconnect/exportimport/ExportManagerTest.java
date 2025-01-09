@@ -166,9 +166,52 @@ public class ExportManagerTest {
     }
 
     @Test
+    @EnableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT
+    })
+    public void testWhenPhrExportImportEnableFlagIsEnabled_tableContentIsExported()
+            throws Exception {
+        /*
+         * When FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT is enabled, regardless whether
+         * FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT is enabled or disabled, PHR data should
+         * still be exported.
+         */
+        MedicalDataSource dataSource =
+                mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
+        mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_data_source_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_indices_table"))
+                .isEqualTo(1);
+
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
+
+        decompressExportedZip();
+        try (HealthConnectDatabase exportedDatabase =
+                new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
+            assertThat(queryNumEntries(exportedDatabase, "medical_data_source_table")).isEqualTo(1);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_table")).isEqualTo(1);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_indices_table"))
+                    .isEqualTo(1);
+        }
+    }
+
+    @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT})
-    public void testWhenPhrExportNotDisabled_tableContentIsExported() throws Exception {
+    @DisableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT
+    })
+    public void
+            testWhenBothPhrExportImportEnableFlagAndDisableFlagAreDisabled_tableContentIsExported()
+                    throws Exception {
+        /*
+         * When FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT is disabled, and if
+         * FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT is also disabled, then PHR data should
+         * still be exported.
+         */
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
         mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
@@ -195,7 +238,15 @@ public class ExportManagerTest {
         Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
         Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT
     })
-    public void testDisableExportForPhr_deletesPhrTablesContent() throws Exception {
+    @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT})
+    public void
+            testPhrExportImportEnableFlagIsDisableAndDisableFlagIsEnabled_deletesPhrTablesContent()
+                    throws Exception {
+        /*
+         * When FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT is disabled, and if
+         * FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT is enabled, then PHR data should
+         * be deleted and not exported.
+         */
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
         mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
