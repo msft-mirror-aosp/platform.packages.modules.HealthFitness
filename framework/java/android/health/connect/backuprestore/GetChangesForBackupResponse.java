@@ -30,18 +30,23 @@ import java.util.Objects;
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class GetChangesForBackupResponse implements Parcelable {
 
+    // Proto version
+    private final int mVersion;
+
     @NonNull private final List<BackupChange> mChanges;
 
     // The changeToken to be used for the next call to resume the backup.
     @NonNull private final String mNextChangeToken;
 
     public GetChangesForBackupResponse(
-            @NonNull List<BackupChange> changes, @NonNull String nextChangeToken) {
+            int version, @NonNull List<BackupChange> changes, @NonNull String nextChangeToken) {
+        mVersion = version;
         mChanges = changes;
         mNextChangeToken = nextChangeToken;
     }
 
     private GetChangesForBackupResponse(Parcel in) {
+        mVersion = in.readInt();
         mChanges = in.createTypedArrayList(BackupChange.CREATOR);
         mNextChangeToken = in.readString();
     }
@@ -50,17 +55,19 @@ public final class GetChangesForBackupResponse implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof GetChangesForBackupResponse that)) return false;
-        return mChanges.equals(that.mChanges) && mNextChangeToken.equals(that.mNextChangeToken);
+        return mVersion == that.mVersion
+                && mChanges.equals(that.mChanges)
+                && mNextChangeToken.equals(that.mNextChangeToken);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mChanges, mNextChangeToken);
+        return Objects.hash(mVersion, mChanges, mNextChangeToken);
     }
 
     @NonNull
     public static final Creator<GetChangesForBackupResponse> CREATOR =
-            new Creator<GetChangesForBackupResponse>() {
+            new Creator<>() {
                 @Override
                 public GetChangesForBackupResponse createFromParcel(Parcel in) {
                     return new GetChangesForBackupResponse(in);
@@ -71,6 +78,10 @@ public final class GetChangesForBackupResponse implements Parcelable {
                     return new GetChangesForBackupResponse[size];
                 }
             };
+
+    public int getVersion() {
+        return mVersion;
+    }
 
     @NonNull
     public List<BackupChange> getChanges() {
@@ -89,6 +100,7 @@ public final class GetChangesForBackupResponse implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(mVersion);
         dest.writeTypedList(mChanges);
         dest.writeString(mNextChangeToken);
     }

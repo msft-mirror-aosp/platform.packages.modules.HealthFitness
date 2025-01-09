@@ -18,6 +18,7 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
@@ -117,7 +118,7 @@ public final class CloudBackupManager {
                 String emptyChangeToken =
                         BackupChangeTokenHelper.getBackupChangeTokenRowId(
                                 mTransactionManager, null, EMPTY_PAGE_TOKEN.encode(), null);
-                return new GetChangesForBackupResponse(List.of(), emptyChangeToken);
+                return new GetChangesForBackupResponse(PROTO_VERSION, List.of(), emptyChangeToken);
             }
             if (backupChangeToken.getDataTableName() != null) {
                 return mDatabaseHelper.getChangesAndTokenFromDataTables(
