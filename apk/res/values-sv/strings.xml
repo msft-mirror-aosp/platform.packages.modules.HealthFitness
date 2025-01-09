@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Träning, sömn, näring med flera"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Hälsojournaler"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"hälsojournaler"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Labbresultat, läkemedel, vacciner osv."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Labbresultat, läkemedel, vacciner med flera"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Tog bort appbehörigheter"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect tog bort behörigheter för <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect tog bort behörigheter för <xliff:g id="APP_DATA_0">%1$s</xliff:g> och <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lagrar din hälso- och träningsdata, så att du enkelt kan synkronisera olika appar på enheten"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lagrar och synkroniserar din hälso- och träningsdata från olika appar.\n\n"<b>"Tränings- och hälsodata,"</b>" inklusive träningspass, steg, kost, sömn med mera\n\n"<b>"Hälsojournaler,"</b>" inklusive vaccinationer, labbresultat med mera"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du"</string>
-    <string name="share_data" msgid="3481932156368883946">"Dela data med dina appar"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Välj vilken data varje app får läs- eller skrivbehörighet till för Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Hantera inställningar och integritet"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Ändra appbehörigheter och hantera din data när som helst"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Tillbaka"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kom igång"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Radera data"</string>

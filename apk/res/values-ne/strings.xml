@@ -196,10 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ह्विलचेयरको ठेलाइ"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"ह्विलचेयरको ठेलाइसम्बन्धी डेटा रिड गर्ने अनुमति दिनुहोस्"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"ह्विलचेयरको ठेलाइसम्बन्धी डेटा राइट गर्ने अनुमति दिनुहोस्"</string>
-    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"क्रियाकलापको इन्टेन्सिटी"</string>
-    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"क्रियाकलापको इन्टेन्सिटी"</string>
-    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"क्रियाकलापको इन्टेन्सिटी रिड गर्नुहोस्"</string>
-    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"क्रियाकलापको इन्टेन्सिटी राइट गर्नुहोस्"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"क्रियाकलापको तीव्रता"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"क्रियाकलापको तीव्रता"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"क्रियाकलापको तीव्रता रिड गर्नुहोस्"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"क्रियाकलापको तीव्रता राइट गर्नुहोस्"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"बेसल मेटाबोलिक रेट"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"बेसल मेटाबोलिक रेट"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"बेसल मेटाबोलिक रेट रिड गर्ने अनुमति दिनुहोस्"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ले तपाईंको स्वास्थ्य र तन्दुरुस्तीसम्बन्धी जानकारी भण्डारण गर्छ र तपाईंलाई आफ्नो डिभाइसमा विभिन्न एपहरू सरल तरिकाले सिंक गर्ने सुविधा दिन्छ"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ले विभिन्न एपहरूमा भएको तपाईंको स्वास्थ्य र तन्दुरुस्तीसम्बन्धी जानकारी भण्डारण र सिंक गर्छ।\n\n"<b>"कसरत सत्र, पाइलाको सङ्ख्या, पोषण र निद्रालगायत"</b>" स्वास्थ्य र तन्दुरुस्तीसम्बन्धी जानकारी\n\n"<b>"खोप तथा ल्याब परीक्षणका नतिजालगायत"</b>" स्वास्थ्य अभिलेखहरू"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"तपाईं Health Connect मार्फत निम्न कार्यहरू गर्न सक्नुहुन्छ:"</string>
-    <string name="share_data" msgid="3481932156368883946">"आफ्ना एपहरूसँग डेटा सेयर गर्नुहोस्"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"हरेक एपलाई कुन कुन डेटा Health Connect मा रिड वा राइट गर्न दिने भन्ने कुरा छनौट गर्नुहोस्"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"आफ्ना सेटिङ मिलाउनुहोस् र गोपनीयता व्यवस्थापन गर्नुहोस्"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"जुनसुकै बेला एपलाई दिइएका अनुमति परिवर्तन गर्नुहोस् र आफ्नो डेटा व्यवस्थापन गर्नुहोस्"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"एपहरूसँग जानकारी सेयर गर्नुहोस्"</b>\n"हरेक एपलाई कुन कुन जानकारी Health Connect मा रिड वा राइट गर्न दिने भन्ने कुरा छनौट गर्नुहोस्"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"आफ्ना सेटिङ मिलाउनुहोस् र गोपनीयता व्यवस्थापन गर्नुहोस्"</b>\n"जुनसुकै बेला एपलाई दिइएका अनुमति परिवर्तन गर्नुहोस् र आफ्नो जानकारी व्यवस्थापन गर्नुहोस्"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"पछाडि जानुहोस्"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"सुरु गर्नुहोस्"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"डेटा मेटाउनुहोस्"</string>

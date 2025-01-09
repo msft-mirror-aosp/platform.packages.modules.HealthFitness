@@ -540,11 +540,9 @@
     <string name="onboarding_title" msgid="8550656211291180188">"ヘルスコネクトを使ってみる"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"ヘルスコネクトを利用すると、健康とフィットネスに関するデータを保存し、デバイス上のさまざまなアプリを簡単に同期することができます"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"ヘルスコネクトは、さまざまなアプリから健康とフィットネスに関するデータを保存、同期します。\n\n"<b>"フィットネスとウェルネスのデータ（"</b>" エクササイズ セッション、歩数、栄養、睡眠など）\n\n"<b>"医療記録（"</b>"ワクチン接種、検査結果など）"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"ヘルスコネクトを使用すると、次のようなことができます"</string>
-    <string name="share_data" msgid="3481932156368883946">"アプリとデータを共有する"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ヘルスコネクトに対して、各アプリが読み取りや書き込みを行えるデータを選択できます"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"設定とプライバシーを管理する"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"アプリの権限の変更やデータの管理をいつでも行えます"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"ヘルスコネクトでできること"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"アプリとデータを共有する"</b>\n"ヘルスコネクトに対して、各アプリが読み取りや書き込みを行えるデータを選択できます"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"設定とプライバシーを管理する"</b>\n"アプリの権限の変更やデータの管理をいつでも行えます"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"戻る"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"使ってみる"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"データを削除します"</string>
@@ -1141,9 +1139,9 @@
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"選択したデータを完全に削除しますか？"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g>のすべてのデータを完全に削除しますか？"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"<xliff:g id="APP_NAME">%s</xliff:g> の選択したデータを完全に削除しますか？"</string>
-    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> のエントリをすべて完全に削除しますか？"</string>
-    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> の週のエントリをすべて完全に削除しますか？"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> のエントリをすべて完全に削除しますか？"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>のエントリをすべて完全に削除しますか？"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>の週のエントリをすべて完全に削除しますか？"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>のエントリをすべて完全に削除しますか？"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>の選択したエントリを完全に削除しますか？"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>の週の選択したエントリを完全に削除しますか？"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>の選択したエントリを完全に削除しますか？"</string>

@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connectএ আপোনাৰ স্বাস্থ্য আৰু শৰীৰচৰ্চা সম্পৰ্কীয় ডেটা ষ্ট’ৰ কৰি আপোনাক আপোনাৰ ডিভাইচত থকা বিভিন্ন এপ্‌সমূহ ছিংক কৰাৰ সহজ উপায় প্ৰদান কৰে"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connectএ বিভিন্ন এপৰ পৰা আপোনাৰ স্বাস্থ্য আৰু শৰীৰচৰ্চা সম্পৰ্কীয় ডেটা ষ্ট’ৰ আৰু ছিংক কৰে।\n\n"<b>"স্বাস্থ্য আৰু কল্যাণমূলক ডেটা পাব পাৰে,"</b>" য’ত ব্যায়ামৰ ছেশ্বন, খোজকঢ়া, পৰিপুষ্টি, শোৱা আৰু অধিক অন্তৰ্ভুক্ত\n\n"<b>"স্বাস্থ্য সম্বন্ধীয় নথি,"</b>" য’ত প্ৰতিষেধক, লেবৰ ফলাফল আৰু অধিক অন্তৰ্ভুক্ত"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"আপুনি Health Connectৰ জৰিয়তে"</string>
-    <string name="share_data" msgid="3481932156368883946">"আপোনাৰ এপ্‌সমূহৰ সৈতে ডেটা শ্বেয়াৰ কৰক"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"প্ৰতিটো এপে Health Connectত কি ডেটা পঢ়িব অথবা লিখিব পাৰিব সেয়া বাছনি কৰক"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"আপোনাৰ ছেটিং আৰু গোপনীয়তা পৰিচালনা কৰক"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"যিকোনো সময়তে এপৰ অনুমতি সলনি কৰক আৰু আপোনাৰ ডেটা পৰিচালনা কৰক"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"উভতি যাওক"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"আৰম্ভ কৰক"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ডেটা মচক"</string>

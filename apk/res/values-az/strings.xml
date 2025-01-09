@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect sağlamlıq və fitnes datanızı saxlayaraq cihazdakı müxtəlif tətbiqləri sinxronlaşdırmaq üçün sadə yol təqdim edir"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect müxtəlif tətbiqlərdən sağlamlıq və fitnes datanızı saxlayır və sinxronlaşdırır.\n\n"<b>"İdman seansları, addımlar, qidalanma, yuxu və s."</b>" daxil olmaqla fitnes və sağlamlıq datası\n\n"<b>"Peyvəndlər, laboratoriya nəticələri və s."</b>" daxil olmaqla sağlamlıq qeydləri"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ilə bunları edə bilərsiniz:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Tətbiqlərinizlə data paylaşın"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Hər bir tətbiqin Health Connect\'də oxuya və ya yaza biləcəyi datanı seçin"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Ayarlarınızı və məxfiliyinizi idarə edin"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"İstənilən vaxt tətbiq icazələrini dəyişdirin və datanızı idarə edin"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Geri qayıdın"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Başlayın"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Datanı silin"</string>

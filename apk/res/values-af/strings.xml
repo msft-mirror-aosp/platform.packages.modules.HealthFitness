@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect stoor jou gesondheid- en fiksheiddata en bied só ’n eenvoudige manier om die verskillende apps op jou toestel te sinkroniseer"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect stoor en sinkroniseer jou data van verskillende apps af.\n\n"<b>"Fiksheid- en welstanddata,"</b>" insluitend oefensessies, treë, voeding, slaap en meer\n\n"<b>"Gesondheidsrekords,"</b>" insluitend entstowwe, laboratoriumuitslae en meer"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Met Health Connect kan jy"</string>
-    <string name="share_data" msgid="3481932156368883946">"Deel data met jou apps"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Kies die data wat elke app in Health Connect kan lees of skryf"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Bestuur jou instellings en privaatheid"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Verander apptoestemmings en bestuur jou data enige tyd"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gaan terug"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Begin hier"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Vee data uit"</string>

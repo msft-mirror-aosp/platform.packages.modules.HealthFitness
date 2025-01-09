@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Sistemoje „Health Connect“ saugomi jūsų sveikatos ir kūno rengybos duomenys ir galite lengvai sinchronizuoti skirtingas programas įrenginyje"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"„Health Connect“ saugo ir sinchronizuoja jūsų sveikatos ir kūno rengybos duomenis iš skirtingų programų.\n\n"<b>"Kūno rengybos ir sveikatingumo duomenys,"</b>" įskaitant mankštos sesijas, žingsnius, mitybą, miegą ir kt.\n\n"<b>"Sveikatos įrašai,"</b>" įskaitant vakcinas, laboratorinių tyrimų rezultatus ir kt."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Naudodami „Health Connect“ galite atlikti toliau nurodytus veiksmus."</string>
-    <string name="share_data" msgid="3481932156368883946">"Duomenų bendrinimas su programomis"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Pasirinkite, kokius duomenis kiekviena programa gali skaityti ar rašyti sistemoje „Health Connect“"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Nustatymų ir privatumo valdymas"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Bet kada keiskite programų leidimus ir tvarkykite duomenis"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Grįžti"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Pradėti"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Ištrinti duomenis"</string>

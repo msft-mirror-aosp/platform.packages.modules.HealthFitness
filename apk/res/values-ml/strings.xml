@@ -52,7 +52,7 @@
     <string name="today_header" msgid="1006837293203834373">"ഇന്ന്"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ഇന്നലെ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"വായിച്ചത്: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"എഴുതിയത്: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"റൈറ്റ് ചെയ്തത്: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"അനുമതികൾ മാനേജ് ചെയ്യുക"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"സമയം: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഉപകരണത്തിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"വ്യത്യസ്ത ആപ്പുകളിൽ നിന്നുള്ള നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‍നസും സംബന്ധിച്ച ഡാറ്റ, Health Connect സംഭരിക്കുകയും സമന്വയിപ്പിക്കുകയും ചെയ്യുന്നു.\n\nവ്യായാമ സെഷനുകൾ, ചുവടുകൾ, പോഷകാഹാരം, ഉറക്കം എന്നിവയും മറ്റും ഉൾപ്പെടെയുള്ള "<b>"ഫിറ്റ്നസ്, വെൽനസ് ഡാറ്റ"</b>\n\n"വാക്‌സിനുകളും ലാബ് ഫലങ്ങളും മറ്റും ഉൾപ്പെടെയുള്ള "<b>"ആരോഗ്യ റെക്കോർഡുകൾ"</b></string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ഉപയോഗിച്ച് ഇനിപ്പറയുന്നവ ചെയ്യാം"</string>
-    <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ഓരോ ആപ്പിനും റീഡ് ചെയ്യാനോ Health Connect-ലേക്ക് റൈറ്റ് ചെയ്യാനോ കഴിയുന്ന ഡാറ്റ തിരഞ്ഞെടുക്കുക"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"നിങ്ങളുടെ ക്രമീകരണവും സ്വകാര്യതയും മാനേജ് ചെയ്യുക"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ആപ്പ് അനുമതികൾ മാറ്റുക, ഏതുസമയത്തും നിങ്ങളുടെ ഡാറ്റ മാനേജ് ചെയ്യുക"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"മടങ്ങുക"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ആരംഭിക്കുക"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ഡാറ്റ ഇല്ലാതാക്കുക"</string>

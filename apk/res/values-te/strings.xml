@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect మీ ఆరోగ్యం, ఫిట్‌నెస్ డేటాను స్టోర్ చేస్తుంది, మీ ఫోన్‌లోని విభిన్న యాప్‌లను సింక్ చేయడానికి మీకు సులభమైన మార్గాన్ని ఇది అందిస్తుంది"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect వేర్వేరు యాప్‌ల నుండి మీ ఆరోగ్యం, ఫిట్‌నెస్ డేటాను స్టోర్ చేస్తుంది, సింక్ చేస్తుంది.\n\nవ్యాయామ సెషన్‌లు, అడుగులు, నిద్ర, ఇంకా మరిన్నింటితో కూడిన"<b>"ఫిట్‌నెస్, సంరక్షణకు సంబంధించిన డేటా"</b>\n\n"వ్యాక్సిన్‌లు, ల్యాబ్ ఫలితాలు, ఇంకా మరిన్నింటితో కూడిన"<b>"ఆరోగ్య సమాచారాలు"</b></string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connectతో మీరు వీటిని చేయవచ్చు"</string>
-    <string name="share_data" msgid="3481932156368883946">"మీ యాప్‌లతో డేటాను షేర్ చేయండి"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ప్రతి ఒక్క యాప్ Health Connectలో ఏ డేటాను రీడ్‌ చేయాలి లేదా రైట్ చేయాలి అన్నది ఎంచుకోండి"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"మీ సెట్టింగ్స్‌ను, గోప్యతను మేనేజ్ చేయండి"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"యాప్ అనుమతులను మార్చి, మీ డేటాను ఎప్పుడైనా మేనేజ్ చేయవచ్చు"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"వెనుకకు వెళ్లండి"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ప్రారంభించండి"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"డేటాను తొలగించండి"</string>

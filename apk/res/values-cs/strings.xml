@@ -540,11 +540,11 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Začínáme se službou Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect bezpečně ukládá údaje o zdraví a kondici, což umožňuje jednoduše synchronizovat různé aplikace v zařízení"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ukládá a synchronizuje údaje o zdraví a kondici z různých aplikací.\n\n"<b>"Údaje o zdraví a kondici,"</b>" včetně záznamů cvičení, počtu kroků, výživy, spánku atd.\n\n"<b>"Zdravotní záznamy,"</b>" včetně očkování, laboratorních výsledků atd."</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"S Health Connect můžete"</string>
-    <string name="share_data" msgid="3481932156368883946">"Sdílení dat s aplikacemi"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Můžete si zvolit, které údaje mohou jednotlivé aplikace číst nebo zapisovat ve službě Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Správa nastavení a ochrany soukromí"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Oprávnění aplikace můžete kdykoliv změnit a data kdykoliv spravovat"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect umožňuje"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Zpět"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Začít"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Smazat data"</string>

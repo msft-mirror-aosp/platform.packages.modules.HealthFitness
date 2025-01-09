@@ -539,12 +539,12 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Ir a Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comeza a usar Saúde conectada"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Saúde conectada almacena os teus datos de saúde e actividade física, e permíteche sincronizar facilmente as distintas aplicacións do dispositivo"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Saúde conectada almacena e sincroniza os teus datos de saúde e actividade física de distintas aplicacións.\n\n"<b>"Datos de actividade física e benestar:"</b>" sesións de exercicio, pasos, nutrición, sono e moito máis\n\n"<b>"Rexistros de información sanitaria:"</b>" vacinas ou resultados de análises, por exemplo"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Saúde conectada almacena e sincroniza os teus datos de saúde e actividade física de distintas aplicacións.\n\n"<b>"Datos de actividade física e benestar:"</b>" Sesións de exercicio, pasos, nutrición, sono e moito máis\n\n"<b>"Rexistros de información sanitaria:"</b>" Vacinas ou resultados de análises, por exemplo"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Saúde conectada podes"</string>
-    <string name="share_data" msgid="3481932156368883946">"Comparte datos coas túas aplicacións"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Decide que datos pode ler ou escribir cada aplicación en Saúde conectada"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Xestiona a túa configuración e privacidade"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Cambia permisos da aplicación e xestiona os teus datos en calquera momento"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atrás"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Comezar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Elimina os datos"</string>

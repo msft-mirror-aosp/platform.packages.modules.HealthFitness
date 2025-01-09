@@ -29,7 +29,7 @@
     <string name="no_data" msgid="1906986019249068659">"데이터 없음"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"앱 권한"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"앱 및 권한 관리"</string>
-    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"앱 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>개에 액세스 권한이 있음"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"앱 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>개 중 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>개에 액세스 권한이 있음"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"앱 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>개 중 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>개에 액세스 권한이 있음"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"앱 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>개에 액세스 권한이 있음"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"앱 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>개에 액세스 권한이 있음"</string>
@@ -37,7 +37,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"없음"</string>
     <string name="entry_details_title" msgid="590184849040247850">"항목 세부정보"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"데이터 둘러보기"</string>
-    <string name="browse_data_subtitle" msgid="7025164374898103993">"데이터와 데이터에 액세스할 수 있는 앱을 확인하세요."</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"데이터 및 데이터에 액세스할 수 있는 앱 확인"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"자동 삭제, 데이터 소스, 백업 및 복원"</string>
     <string name="backup_title" msgid="211503191266235085">"백업"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"데이터 소스 및 우선순위"</string>
@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"운동, 수면, 영양 등"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"건강 기록"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"건강 기록"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"임상 결과, 복용약, 백신 등"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"검사 결과, 복용 약, 백신 등"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"앱 권한 삭제됨"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"헬스 커넥트에서 <xliff:g id="APP_DATA">%s</xliff:g>의 권한을 삭제했습니다."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"헬스 커넥트에서 <xliff:g id="APP_DATA_0">%1$s</xliff:g> 및 <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>의 권한을 삭제했습니다."</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"헬스 커넥트는 건강 및 피트니스 데이터를 저장하여 기기에 설치된 다른 앱과 간편하게 동기화하도록 지원합니다."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"헬스 커넥트는 여러 앱의 건강/피트니스 데이터를 저장하고 동기화합니다.\n\n"<b>"피트니스 및 웰빙 데이터"</b>"(운동 세션, 걸음 수, 영양, 수면 등)\n\n"<b>"건강 기록"</b>"(백신, 검사 결과 등)"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"헬스 커넥트를 사용하면 다음 작업을 할 수 있습니다."</string>
-    <string name="share_data" msgid="3481932156368883946">"앱과 데이터 공유"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"각 앱이 헬스 커넥트에서 읽거나 쓸 수 있는 데이터를 선택하세요."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"설정 및 개인 정보 보호 관리"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"언제든지 앱 권한을 변경하고 데이터를 관리할 수 있습니다."</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"뒤로"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"시작하기"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"데이터 삭제"</string>

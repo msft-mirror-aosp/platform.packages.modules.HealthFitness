@@ -38,7 +38,7 @@
     <string name="entry_details_title" msgid="590184849040247850">"تفاصيل الإدخال"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"تصفّح البيانات"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"الاطّلاع على البيانات والتطبيقات التي يمكنها الوصول إليها"</string>
-    <string name="manage_data_summary" msgid="8537870912521944449">"الحذف التلقائي ومصادر البيانات والاحتفاظ بنسخة احتياطية من البيانات واستعادتها"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"الحذف التلقائي، ومصادر البيانات، والاحتفاظ بنسخة احتياطية من البيانات واستعادتها"</string>
     <string name="backup_title" msgid="211503191266235085">"الاحتفاظ بنسخة احتياطية"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"مصادر البيانات وأولوية التطبيقات"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ضبط الوحدات"</string>
@@ -52,7 +52,7 @@
     <string name="today_header" msgid="1006837293203834373">"اليوم"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"أمس"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"القراءة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"الكتابة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"بإمكانه كتابة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"إدارة الأذونات"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"الوقت: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -325,9 +325,9 @@
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"بيانات اللقاحات"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"بيانات اللقاحات"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"قراءة بيانات اللقاحات"</string>
-    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"النتائج المعملية"</string>
-    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"النتائج المعملية"</string>
-    <string name="laboratory_results_content_description" msgid="7888886103734085841">"قراءة النتائج المعملية"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"نتائج التحاليل الطبية"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"نتائج التحاليل الطبية"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"قراءة نتائج التحاليل الطبية"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"بيانات الأدوية"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"بيانات الأدوية"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"قراءة بيانات الأدوية"</string>
@@ -371,8 +371,8 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"يمكنك الاطّلاع على <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> لمعرفة كيفية معالجة \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" لبياناتك"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"سياسة الخصوصية"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"هل تريد السماح لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى السجلات الصحية؟"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات وكتابتها، مثل البيانات المتعلّقة بالحساسية والنتائج المعملية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
-    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات، مثل البيانات المتعلّقة بالحساسية والنتائج المعملية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات وكتابتها، مثل البيانات المتعلّقة بالحساسية ونتائج التحاليل الطبية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات، مثل البيانات المتعلّقة بالحساسية ونتائج التحاليل الطبية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"لمحة عن السجلات الصحية"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"تشمل البيانات المراد مشاركتها ما يلي:"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"إذا منحت هذا الإذن، سيتمكّن \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" من مشاركة السجلات الصحية مع تطبيق Health Connect."</string>
@@ -418,7 +418,7 @@
     <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"مطلوب التحديث"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"الإعدادات والمساعدة"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"إزالة إمكانية وصول كل التطبيقات للبيانات"</string>
-    <string name="manage_permissions_read_header" msgid="2031153753057983683">"مسموح للتطبيق بقراءة البيانات التالية:"</string>
+    <string name="manage_permissions_read_header" msgid="2031153753057983683">"مسموح له بقراءة البيانات التالية:"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"مسموح له بكتابة البيانات التالية:"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"لم يتم السماح لأي تطبيقات."</string>
     <string name="no_apps_denied" msgid="743327680286446017">"لم يتم رفض أي تطبيقات"</string>
@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"التمارين الرياضية والنوم والتغذية وغيرها"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"السجلّات الصحية"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"السجلّات الصحية"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"نتائج معملية وأدوية ولقاحات وغيرها"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"نتائج التحاليل الطبية والأدوية واللقاحات وغيرها"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"أذونات التطبيقات التي تمت إزالتها"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA">%s</xliff:g>\"."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" و\"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\"."</string>
@@ -539,12 +539,12 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"الانتقال إلى \"متجر Play\""</string>
     <string name="onboarding_title" msgid="8550656211291180188">"بدء استخدام Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على جهازك"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية الواردة من تطبيقات مختلفة ويزامنها.\n\n"<b>"بيانات الصحة واللياقة البدنية،"</b>" بما في ذلك جلسات التمارين الرياضية والخطوات والتغذية والنوم وغير ذلك\n\n"<b>"السجلّات الصحية،"</b>" بما في ذلك اللقاحات والنتائج المعملية وغير ذلك"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية الواردة من تطبيقات مختلفة ويزامنها.\n\n"<b>"بيانات الصحة واللياقة البدنية،"</b>" بما في ذلك جلسات التمارين الرياضية والخطوات والتغذية والنوم وغير ذلك\n\n"<b>"السجلّات الصحية،"</b>" بما في ذلك اللقاحات ونتائج التحاليل الطبية وغير ذلك"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"عند استخدام Health Connect، يمكنك:"</string>
-    <string name="share_data" msgid="3481932156368883946">"مشاركة البيانات مع تطبيقاتك"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"اختَر البيانات التي يمكن لكل تطبيق قراءتها من تطبيق Health Connect أو كتابتها فيه."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"إدارة الإعدادات والخصوصية"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"يمكنك تغيير أذونات التطبيق وإدارة البيانات في أي وقت."</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"الرجوع"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"بدء"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"حذف البيانات"</string>

@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Ejercicio, sueño, nutrición y más"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Registros de salud"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"registros de salud"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Resultados de laboratorio, medicamentos, vacunas y mucho más"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Resultados de laboratorio, medicamentos, vacunas y más"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Apps a las que se les quitaron permisos"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect le quitó permisos a <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect les quitó permisos a <xliff:g id="APP_DATA_0">%1$s</xliff:g> y <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect almacena tus datos de salud y actividad física, lo que te brinda una manera simple de sincronizar las diferentes apps en tu dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect almacena y sincroniza tus datos de salud y actividad física de diferentes apps.\n\n"<b>"Datos de actividad física y bienestar,"</b>" incluidos los de sesiones de ejercicio, pasos, nutrición, sueño y mucho más\n\n"<b>"Registros de salud,"</b>" incluidos los de vacunas, resultados de laboratorio y mucho más"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Health Connect, puedes hacer lo siguiente:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Compartir datos con tus apps"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Elige los datos que cada app puede leer o escribir con Health Connect."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Administra tu configuración y tu privacidad"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Cambia los permisos de la app y administra los datos en cualquier momento."</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atrás"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Comenzar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Borrar datos"</string>
@@ -1143,7 +1143,7 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"¿Quieres borrar de forma permanente los datos de <xliff:g id="APP_NAME">%s</xliff:g> seleccionados?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"¿Quieres borrar de forma permanente todas las entradas del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"¿Quieres borrar de forma permanente todas las entradas de la semana del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"¿Quieres borrar de forma permanente todas las entradas del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"¿Quieres borrar de forma permanente todas las entradas de <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"¿Quieres borrar de forma permanente las entradas seleccionadas del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"¿Quieres borrar de forma permanente las entradas seleccionadas de la semana del <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>

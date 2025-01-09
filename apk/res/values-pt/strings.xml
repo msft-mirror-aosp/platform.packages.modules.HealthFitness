@@ -64,7 +64,7 @@
     <string name="sleep_category_lowercase" msgid="842609634386839011">"sono"</string>
     <string name="vitals_category_uppercase" msgid="8982333138032938623">"Sinais vitais"</string>
     <string name="vitals_category_lowercase" msgid="4664457787866407963">"sinais vitais"</string>
-    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"Monitoramento de ciclo"</string>
+    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"Acompanhamento do ciclo"</string>
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"monitoramento de ciclo"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Nutrição"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"nutrição"</string>
@@ -79,8 +79,8 @@
     <string name="app_priority_button" msgid="3126133977893705098">"Prioridade de apps"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"Excluir dados de <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Todos os apps"</string>
-    <string name="can_read" msgid="4568261079308309564">"Podem ler este dado: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
-    <string name="can_write" msgid="5082414937218423823">"Podem gravar este dado: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_read" msgid="4568261079308309564">"Podem ler os dados de: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_write" msgid="5082414937218423823">"Podem gravar os dados de: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Apps inativos"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"Esses apps não podem mais ler ou gravar <xliff:g id="DATA_TYPE">%s</xliff:g>, mas ainda têm dados armazenados na Conexão Saúde"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Os apps não podem mais ler ou gravar dados de <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, e não há dados de <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> armazenados na plataforma Conexão Saúde"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"O app Conexão Saúde armazena seus dados de saúde e condicionamento físico, oferecendo uma maneira simples de sincronizar os diferentes apps no dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"A plataforma Conexão Saúde armazena e sincroniza seus dados de saúde e condicionamento físico de diferentes apps.\n\n"<b>"Dados de condicionamento físico e bem-estar,"</b>" incluindo sessões de exercícios, passos, nutrição, sono e muito mais\n\n"<b>"Históricos de saúde,"</b>" incluindo vacinas, resultados de laboratório e muito mais"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Com o app Conexão Saúde, é possível:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Compartilhar dados com seus apps"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Escolha os dados que cada app pode ler ou gravar na plataforma Conexão Saúde"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gerenciar suas configurações e privacidade"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Mude as permissões do app e gerencie seus dados a qualquer momento"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Voltar"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Começar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Excluir dados"</string>
@@ -1146,15 +1146,15 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Excluir permanentemente todas as entradas em <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Excluir permanentemente as entradas selecionadas em <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Excluir permanentemente as entradas selecionadas na semana de <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Excluir permanentemente as entradas selecionadas em <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Excluir permanentemente esta entrada?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Excluir permanentemente as entradas selecionadas de <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Excluir permanentemente essa entrada?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Excluir permanentemente todas as entradas do app <xliff:g id="APP_NAME">%1$s</xliff:g> em <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Excluir permanentemente todas as entradas do app <xliff:g id="APP_NAME">%1$s</xliff:g> na semana de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Excluir permanentemente todas as entradas do app <xliff:g id="APP_NAME">%1$s</xliff:g> em <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Excluir permanentemente as entradas selecionadas do app <xliff:g id="APP_NAME">%1$s</xliff:g> em <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Excluir permanentemente as entradas selecionadas do app <xliff:g id="APP_NAME">%1$s</xliff:g> na semana dos dias <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Excluir permanentemente as entradas selecionadas do app <xliff:g id="APP_NAME">%1$s</xliff:g> em <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Excluir permanentemente esta entrada do app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Excluir permanentemente essa entrada do app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Excluir permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> no app <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
     <string name="on" msgid="8266542510798355807">"Ativado"</string>
     <string name="off" msgid="6996623844428550649">"Desativado"</string>
