@@ -273,8 +273,12 @@ class HealthPermissionReaderTest {
             .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
     }
 
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled(
+        FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    )
     @Test
-    @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
     fun getAppsWithHealthPermissions_returnAppsRequestingHealthPermissions_wearDevices() = runTest {
         assumeTrue(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
 
@@ -292,9 +296,9 @@ class HealthPermissionReaderTest {
             .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
     }
 
-    @Test
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
     @RequiresFlagsEnabled(FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    @Test
     fun getSystemHealthPermissions_returnSystemHealthPermissions() = runTest {
         assertThat(permissionReader.getSystemHealthPermissions())
             .containsExactly(
