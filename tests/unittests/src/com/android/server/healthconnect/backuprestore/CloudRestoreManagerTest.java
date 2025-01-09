@@ -20,7 +20,6 @@ import static org.junit.Assert.assertThrows;
 
 import static java.util.Collections.emptyList;
 
-import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.BackupSettings;
 import android.platform.test.flag.junit.SetFlagsRule;
 
@@ -46,7 +45,6 @@ public class CloudRestoreManagerTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
 

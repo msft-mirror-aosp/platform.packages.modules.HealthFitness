@@ -35,7 +35,6 @@ import static org.mockito.Mockito.mock;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.platform.test.annotations.EnableFlags;
@@ -77,7 +76,6 @@ public class ChangeLogsHelperTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();

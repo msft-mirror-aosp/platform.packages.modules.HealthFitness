@@ -34,7 +34,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.migration.notification.MigrationNotificationSender;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -50,10 +49,7 @@ public class MigrationUiStateManagerTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(PreferenceHelper.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
+            new ExtendedMockitoRule.Builder(this).setStrictness(Strictness.LENIENT).build();
 
     @Mock private Context mContext;
     @Mock private MigrationStateManager mMigrationStateManager;

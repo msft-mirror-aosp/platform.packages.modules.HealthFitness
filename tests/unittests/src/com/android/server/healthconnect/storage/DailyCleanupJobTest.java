@@ -50,7 +50,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -64,12 +63,7 @@ public class DailyCleanupJobTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(PreferenceHelper.class)
-                    .mockStatic(TransactionManager.class)
-                    .mockStatic(AppInfoHelper.class)
-                    .mockStatic(ActivityDateHelper.class)
-                    .build();
+            new ExtendedMockitoRule.Builder(this).build();
 
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private TransactionManager mTransactionManager;
@@ -91,8 +85,6 @@ public class DailyCleanupJobTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-
         when(mContext.getUser()).thenReturn(Process.myUserHandle());
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
