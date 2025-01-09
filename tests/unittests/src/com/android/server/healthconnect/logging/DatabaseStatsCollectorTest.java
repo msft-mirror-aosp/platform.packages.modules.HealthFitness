@@ -48,11 +48,11 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
-import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
+import com.android.server.healthconnect.testing.fakes.FakeTimeSource;
 
 import org.junit.Before;
 import org.junit.Rule;

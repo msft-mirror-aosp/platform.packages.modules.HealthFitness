@@ -61,7 +61,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -70,6 +69,7 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
 
 import org.junit.Before;
 import org.junit.Rule;
