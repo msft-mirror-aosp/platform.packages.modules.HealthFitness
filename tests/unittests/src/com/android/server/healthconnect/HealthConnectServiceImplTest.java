@@ -1525,8 +1525,7 @@ public class HealthConnectServiceImplTest {
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
     })
     public void
-            testReadMedicalResourcesByIds_telemetryFlagOnAndHasDataManagementPermission_expectMonthlyTimeStamp()
-                    throws TimeoutException {
+            testReadMedicalResourcesByIds_telemetryFlagOnAndHasDataManagementPermission_expectMonthlyTimeStamp() {
         setUpSuccessfulMocksForPhrTelemetry();
         mFakeTimeSource.setInstant(NOW);
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1536,8 +1535,8 @@ public class HealthConnectServiceImplTest {
                 List.of(getMedicalResourceId()),
                 mReadMedicalResourcesResponseCallback);
 
-        waitForAllScheduledTasksToComplete();
-        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+        verify(mPreferencesManager, timeout(5000).times(1))
+                .setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
     }
 
     @Test
