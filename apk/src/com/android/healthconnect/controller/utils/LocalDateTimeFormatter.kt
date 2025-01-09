@@ -62,22 +62,31 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
             DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_NO_YEAR or DateUtils.FORMAT_NO_MONTH_DAY
     }
 
-    private val timeFormat by lazy { getTimeFormat(context) }
-    private val longDateFormat by lazy { getLongDateFormat(context) }
-    private val shortDateFormat by lazy {
-        val systemFormat = getBestDateTimePattern(Locale.getDefault(), "dMMMM")
-        DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
-    }
+    private val timeFormat: java.text.DateFormat
+        get() = getTimeFormat(context)
+
+    private val longDateFormat: java.text.DateFormat
+        get() = getLongDateFormat(context)
+
+    private val shortDateFormat: DateTimeFormatter
+        get() {
+            val systemFormat = getBestDateTimePattern(Locale.getDefault(), "dMMMM")
+            return DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
+        }
+
     // Example: "Aug 20, 14:06"
-    private val dateAndTime24HourFormat by lazy {
-        val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMd Hm")
-        DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
-    }
+    private val dateAndTime24HourFormat: DateTimeFormatter
+        get() {
+            val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMd Hm")
+            return DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
+        }
+
     // Example: "Aug 20, 2:06PM"
-    private val dateAndTime12HourFormat by lazy {
-        val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMd hm")
-        DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
-    }
+    private val dateAndTime12HourFormat: DateTimeFormatter
+        get() {
+            val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMd hm")
+            return DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
+        }
 
     /** Returns localized time. */
     fun formatTime(instant: Instant): String {
