@@ -16,6 +16,7 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static com.android.server.healthconnect.backuprestore.BackupRestoreDatabaseHelper.MAXIMUM_PAGE_SIZE;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
@@ -25,7 +26,6 @@ import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
 import android.health.connect.backuprestore.BackupChange;
@@ -96,7 +96,6 @@ public class BackupRestoreDatabaseHelperTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
 
@@ -166,12 +165,13 @@ public class BackupRestoreDatabaseHelperTest {
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT),
                 createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
 
-        List<BackupChange> changes =
-                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables().getChanges();
+        GetChangesForBackupResponse response =
+                mBackupRestoreDatabaseHelper.getChangesAndTokenFromDataTables();
+        assertThat(response.getVersion()).isEqualTo(PROTO_VERSION);
 
+        List<BackupChange> changes = response.getChanges();
         assertThat(changes.size()).isEqualTo(2);
         BackupChange stepsRecordBackupChange = changes.get(0);
-        assertThat(stepsRecordBackupChange.getVersion()).isEqualTo(0);
         assertThat(stepsRecordBackupChange.isDeletion()).isEqualTo(false);
         StepsRecordInternal stepsRecord =
                 (StepsRecordInternal)
@@ -184,7 +184,6 @@ public class BackupRestoreDatabaseHelperTest {
         assertThat(stepsRecord.getStartTimeInMillis()).isEqualTo(TEST_START_TIME_IN_MILLIS);
         assertThat(stepsRecord.getEndTimeInMillis()).isEqualTo(TEST_END_TIME_IN_MILLIS);
         BackupChange bloodPressureBackupChange = changes.get(1);
-        assertThat(bloodPressureBackupChange.getVersion()).isEqualTo(0);
         assertThat(stepsRecordBackupChange.isDeletion()).isEqualTo(false);
         BloodPressureRecordInternal bloodPressureRecord =
                 (BloodPressureRecordInternal)
@@ -460,9 +459,9 @@ public class BackupRestoreDatabaseHelperTest {
                 mBackupRestoreDatabaseHelper.getIncrementalChanges(
                         backupChangeToken.getChangeLogsRequestToken());
 
+        assertThat(secondResponse.getVersion()).isEqualTo(PROTO_VERSION);
         assertThat(secondResponse.getChanges().size()).isEqualTo(1);
         BackupChange bloodPressureBackupChange = secondResponse.getChanges().get(0);
-        assertThat(bloodPressureBackupChange.getVersion()).isEqualTo(0);
         BloodPressureRecordInternal bloodPressureRecord =
                 (BloodPressureRecordInternal)
                         mRecordProtoConverter.toRecordInternal(

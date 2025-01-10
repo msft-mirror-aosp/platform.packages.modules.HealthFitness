@@ -41,7 +41,6 @@ import static org.mockito.Mockito.verify;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -113,7 +112,6 @@ public class TransactionManagerTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -577,7 +575,7 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
         assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
@@ -749,7 +747,7 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
         assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);

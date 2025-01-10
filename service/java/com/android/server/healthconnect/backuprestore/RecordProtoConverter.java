@@ -157,6 +157,8 @@ import java.util.UUID;
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class RecordProtoConverter {
 
+    public static final int PROTO_VERSION = 1;
+
     private final Map<Integer, Class<? extends RecordInternal<?>>> mDataTypeClassMap =
             HealthConnectMappings.getInstance().getRecordIdToInternalRecordClassMap();
 

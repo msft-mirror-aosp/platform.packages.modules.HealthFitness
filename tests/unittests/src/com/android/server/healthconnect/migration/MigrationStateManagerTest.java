@@ -105,7 +105,6 @@ public class MigrationStateManagerTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(PreferenceHelper.class)
                     .mockStatic(MigrationStateChangeJob.class)
                     .mockStatic(HexEncoding.class)
                     .setStrictness(Strictness.LENIENT)

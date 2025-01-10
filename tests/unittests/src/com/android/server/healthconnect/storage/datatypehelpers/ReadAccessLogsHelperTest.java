@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper.PAGE_SIZE;
 import static com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper.ReadAccessLog;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
@@ -53,6 +54,7 @@ import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -131,7 +133,8 @@ public class ReadAccessLogsHelperTest {
                             ImmutableList.of(
                                     stepsRecordRecordInternal, bloodPressureRecordRecordInternal));
                 });
-        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+        List<ReadAccessLog> readAccessLogs =
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
 
         assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
     }
@@ -174,7 +177,8 @@ public class ReadAccessLogsHelperTest {
                                     stepsRecordRecordInternalTwo,
                                     bloodPressureRecordRecordInternalTwo));
                 });
-        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+        List<ReadAccessLog> readAccessLogs =
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
 
         assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
     }
@@ -202,7 +206,8 @@ public class ReadAccessLogsHelperTest {
                             /* endTimeStamp= */ endTime,
                             ImmutableList.of(TEST_APP_PACKAGE_WRITER));
                 });
-        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+        List<ReadAccessLog> readAccessLogs =
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
 
         assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
     }
@@ -230,7 +235,8 @@ public class ReadAccessLogsHelperTest {
                             /* endTimeStamp= */ endTime,
                             ImmutableList.of(TEST_APP_PACKAGE_WRITER, TEST_APP_PACKAGE_READER));
                 });
-        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+        List<ReadAccessLog> readAccessLogs =
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
 
         assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
     }
@@ -261,8 +267,101 @@ public class ReadAccessLogsHelperTest {
                                     stepsRecordRecordInternalOne,
                                     bloodPressureRecordRecordInternalTwo));
                 });
-        List<ReadAccessLog> readAccessLogs = mReadAccessLogsHelper.queryReadAccessLogs();
+        List<ReadAccessLog> readAccessLogs =
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
 
         assertThat(readAccessLogs).containsExactlyElementsIn(expectedReadAccessLogs);
+    }
+
+    @Test
+    public void testReadAccessLogsCountLessThanPageLimit() {
+        int count = PAGE_SIZE - 10;
+        RecordInternal<StepsRecord> stepsRecordRecordInternalOne =
+                createStepsRecord(mWriterAppInfoId, 123, Instant.now().toEpochMilli(), 100);
+        long readTimeStamp = Instant.now().toEpochMilli();
+        ReadAccessLog expectedReadAccessLog =
+                new ReadAccessLog(
+                        /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                        /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                        /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        /* readTimeStamp= */ readTimeStamp,
+                        /* isRecordWithinPast30Days= */ true);
+
+        insertReadAccessLogNTimes(stepsRecordRecordInternalOne, count, readTimeStamp);
+        ReadAccessLogsHelper.ReadAccessLogsResponse readAccessLogsResponse =
+                mReadAccessLogsHelper.queryReadAccessLogs(0);
+
+        assertThat(readAccessLogsResponse.getReadAccessLogs())
+                .containsExactlyElementsIn(Collections.nCopies(count, expectedReadAccessLog));
+        assertThat(readAccessLogsResponse.hasMoreRecords()).isFalse();
+        assertThat(readAccessLogsResponse.getNextRowId()).isEqualTo(count + 1);
+    }
+
+    @Test
+    public void testReadAccessLogsCountEqualToPageLimit() {
+        RecordInternal<StepsRecord> stepsRecordRecordInternalOne =
+                createStepsRecord(mWriterAppInfoId, 123, Instant.now().toEpochMilli(), 100);
+        long readTimeStamp = Instant.now().toEpochMilli();
+        ReadAccessLog expectedReadAccessLog =
+                new ReadAccessLog(
+                        /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                        /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                        /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        /* readTimeStamp= */ readTimeStamp,
+                        /* isRecordWithinPast30Days= */ true);
+
+        insertReadAccessLogNTimes(stepsRecordRecordInternalOne, PAGE_SIZE, readTimeStamp);
+        ReadAccessLogsHelper.ReadAccessLogsResponse readAccessLogsResponse =
+                mReadAccessLogsHelper.queryReadAccessLogs(0);
+
+        assertThat(readAccessLogsResponse.getReadAccessLogs())
+                .containsExactlyElementsIn(Collections.nCopies(PAGE_SIZE, expectedReadAccessLog));
+        assertThat(readAccessLogsResponse.hasMoreRecords()).isFalse();
+        assertThat(readAccessLogsResponse.getNextRowId()).isEqualTo(PAGE_SIZE + 1);
+    }
+
+    @Test
+    public void testReadAccessLogsCountGreaterThanPageLimit() {
+        int count = PAGE_SIZE + 10;
+        RecordInternal<StepsRecord> stepsRecordRecordInternalOne =
+                createStepsRecord(mWriterAppInfoId, 123, Instant.now().toEpochMilli(), 100);
+        long readTimeStamp = Instant.now().toEpochMilli();
+        ReadAccessLog expectedReadAccessLog =
+                new ReadAccessLog(
+                        /* readerPackage= */ TEST_APP_PACKAGE_READER,
+                        /* writerPackage= */ TEST_APP_PACKAGE_WRITER,
+                        /* dataType= */ RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        /* readTimeStamp= */ readTimeStamp,
+                        /* isRecordWithinPast30Days= */ true);
+
+        insertReadAccessLogNTimes(stepsRecordRecordInternalOne, count, readTimeStamp);
+        ReadAccessLogsHelper.ReadAccessLogsResponse readAccessLogsResponseOne =
+                mReadAccessLogsHelper.queryReadAccessLogs(0);
+        ReadAccessLogsHelper.ReadAccessLogsResponse readAccessLogsResponseTwo =
+                mReadAccessLogsHelper.queryReadAccessLogs(readAccessLogsResponseOne.getNextRowId());
+
+        assertThat(readAccessLogsResponseOne.getReadAccessLogs())
+                .containsExactlyElementsIn(Collections.nCopies(PAGE_SIZE, expectedReadAccessLog));
+        assertThat(readAccessLogsResponseOne.hasMoreRecords()).isTrue();
+        assertThat(readAccessLogsResponseOne.getNextRowId()).isEqualTo(PAGE_SIZE + 1);
+        assertThat(readAccessLogsResponseTwo.getReadAccessLogs())
+                .containsExactlyElementsIn(
+                        Collections.nCopies(count - PAGE_SIZE, expectedReadAccessLog));
+        assertThat(readAccessLogsResponseTwo.hasMoreRecords()).isFalse();
+        assertThat(readAccessLogsResponseTwo.getNextRowId()).isEqualTo(count + 1);
+    }
+
+    private void insertReadAccessLogNTimes(
+            RecordInternal<?> recordInternal, int count, long readTimeStamp) {
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    for (int i = 0; i < count; i++) {
+                        mReadAccessLogsHelper.recordAccessLogForNonAggregationReads(
+                                db,
+                                TEST_APP_PACKAGE_READER,
+                                /* readTimeStamp= */ readTimeStamp,
+                                ImmutableList.of(recordInternal));
+                    }
+                });
     }
 }

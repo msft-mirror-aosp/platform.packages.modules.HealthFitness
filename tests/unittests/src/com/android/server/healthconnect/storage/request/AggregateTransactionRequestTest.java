@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeRangeFilter;
 import android.health.connect.TimeRangeFilterHelper;
@@ -85,7 +84,6 @@ public class AggregateTransactionRequestTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -199,7 +197,7 @@ public class AggregateTransactionRequestTest {
         aggregateTransactionRequest.getAggregateDataResponseParcel();
 
         List<ReadAccessLogsHelper.ReadAccessLog> result =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         ReadAccessLogsHelper.ReadAccessLog log = result.get(0);
         assertThat(log.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(log.getReaderPackage()).isEqualTo(readerPackage);

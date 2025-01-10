@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect;
+package com.android.server.healthconnect.testing.fakes;
 
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 

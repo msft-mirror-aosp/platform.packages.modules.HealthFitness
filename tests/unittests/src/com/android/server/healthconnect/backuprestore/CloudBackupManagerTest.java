@@ -26,7 +26,6 @@ import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteException;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
@@ -84,7 +83,6 @@ public class CloudBackupManagerTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
 

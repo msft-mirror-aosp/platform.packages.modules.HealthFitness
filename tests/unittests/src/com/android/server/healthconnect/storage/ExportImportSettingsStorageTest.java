@@ -41,8 +41,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -67,7 +67,7 @@ public final class ExportImportSettingsStorageTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
+            new ExtendedMockitoRule.Builder(this).build();
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 

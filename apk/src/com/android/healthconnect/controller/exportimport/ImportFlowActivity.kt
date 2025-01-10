@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
+import com.android.settingslib.collapsingtoolbar.EdgeToEdgeUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Export setup activity for Health Connect. */
@@ -34,7 +35,9 @@ class ImportFlowActivity : Hilt_ImportFlowActivity() {
 
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
         window.addSystemFlags(
-            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
+        )
         setContentView(R.layout.activity_import)
+        EdgeToEdgeUtils.enable(this)
     }
 }

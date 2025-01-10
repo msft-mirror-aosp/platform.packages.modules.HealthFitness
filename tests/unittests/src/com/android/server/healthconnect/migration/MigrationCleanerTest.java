@@ -41,14 +41,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 @RunWith(AndroidJUnit4.class)
 public class MigrationCleanerTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(TransactionManager.class).build();
+            new ExtendedMockitoRule.Builder(this).build();
 
     @Mock private TransactionManager mTransactionManager;
     @Mock private MigrationStateManager mMigrationStateManager;
@@ -62,8 +61,6 @@ public class MigrationCleanerTest {
 
     @Before
     public void before() {
-        MockitoAnnotations.initMocks(this);
-        // needed for now as some classes call it directly and not via constructor.
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(
                                 InstrumentationRegistry.getInstrumentation().getContext())

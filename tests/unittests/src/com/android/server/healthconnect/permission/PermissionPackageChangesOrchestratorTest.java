@@ -18,10 +18,8 @@ package com.android.server.healthconnect.permission;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -38,9 +36,7 @@ import android.os.UserHandle;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import org.junit.Before;
@@ -57,11 +53,7 @@ public class PermissionPackageChangesOrchestratorTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(TransactionManager.class)
-                    .mockStatic(HealthDataCategoryPriorityHelper.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
+            new ExtendedMockitoRule.Builder(this).setStrictness(Strictness.LENIENT).build();
 
     private int mCurrentUid;
     private PermissionPackageChangesOrchestrator mOrchestrator;
@@ -190,6 +182,6 @@ public class PermissionPackageChangesOrchestratorTest {
 
     private void setShouldEnforcePermissionUsageIntent(boolean shouldEnforce) {
         when(mHelper.shouldEnforcePermissionUsageIntent(anyString(), any()))
-            .thenReturn(shouldEnforce);
+                .thenReturn(shouldEnforce);
     }
 }

@@ -23,7 +23,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -57,7 +56,6 @@ public class NoMockDailyCleanupJobTest {
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
