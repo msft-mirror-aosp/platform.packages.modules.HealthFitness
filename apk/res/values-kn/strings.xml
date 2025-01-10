@@ -79,7 +79,7 @@
     <string name="app_priority_button" msgid="3126133977893705098">"ಆ್ಯಪ್ ಆದ್ಯತೆ"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> ಡೇಟಾವನ್ನು ಅಳಿಸಿ"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳು"</string>
-    <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ಅನ್ನು ಓದಬಹುದು"</string>
+    <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>ಯನ್ನು ಓದಬಹುದು"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ಅನ್ನು ಬರೆಯಬಹುದು"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"ನಿಷ್ಕ್ರಿಯ ಆ್ಯಪ್‌ಗಳು"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"ಈ ಆ್ಯಪ್‌ಗಳಿಗೆ ಇನ್ನು ಮುಂದೆ <xliff:g id="DATA_TYPE">%s</xliff:g> ಅನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ, ಆದರೆ ಅವು Health Connect ನಲ್ಲಿ ಈಗಲೂ ಡೇಟಾವನ್ನು ಸಂಗ್ರಹಿಸಿಡುತ್ತವೆ"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ನಿಮ್ಮ ಆರೋಗ್ಯ ಹಾಗೂ ಫಿಟ್‌ನೆಸ್ ಡೇಟಾವನ್ನು ಸಂಗ್ರಹಿಸುತ್ತದೆ, ಅದರಿಂದ ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿರುವ ವಿವಿಧ ಆ್ಯಪ್‌ಗಳನ್ನು ಸಿಂಕ್ ಮಾಡಲು ನಿಮಗೆ ಸರಳವಾದ ಮಾರ್ಗವನ್ನು ಒದಗಿಸುತ್ತದೆ"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ವಿವಿಧ ಆ್ಯಪ್‌ಗಳಿಂದ ನಿಮ್ಮ ಆರೋಗ್ಯ ಮತ್ತು ಫಿಟ್‌ನೆಸ್‌ ಡೇಟಾವನ್ನು ಸಂಗ್ರಹಿಸುತ್ತದೆ ಮತ್ತು ಸಿಂಕ್‌ ಮಾಡುತ್ತದೆ.\n\n"<b>"ವ್ಯಾಯಾಮ ಸೆಶನ್‌ಗಳು, ಹಂತಗಳು, ಪೋಷಣೆ, ನಿದ್ರೆ ಮತ್ತು ಹೆಚ್ಚಿನವುಗಳನ್ನು ಒಳಗೊಂಡಂತೆ,"</b>" ಫಿಟ್‌ನೆಸ್ ಮತ್ತು ವೆಲ್‌ನೆಸ್‌ ಡೇಟಾ\n\n"<b>"ರೋಗನಿರೋಧಕಗಳು, ಲ್ಯಾಬ್‌ ಫಲಿತಾಂಶಗಳು ಮತ್ತು ಹೆಚ್ಚಿನವುಗಳನ್ನು ಒಳಗೊಂಡಂತೆ,"</b>" ಆರೋಗ್ಯಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ರೆಕಾರ್ಡ್‌ಗಳು"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ಮೂಲಕ ನೀವು ಇವುಗಳನ್ನು ಮಾಡಬಹುದು"</string>
-    <string name="share_data" msgid="3481932156368883946">"ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳೊಂದಿಗೆ ಡೇಟಾವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Health Connect ನಲ್ಲಿ ಪ್ರತಿ ಆ್ಯಪ್ ಓದಬಹುದಾದ ಅಥವಾ ಬರೆಯಬಹುದಾದ ಡೇಟಾವನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"ನಿಮ್ಮ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಹಾಗೂ ಗೌಪ್ಯತೆಯನ್ನು ನಿರ್ವಹಿಸಿ"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ಆ್ಯಪ್ ಅನುಮತಿಗಳನ್ನು ಬದಲಾಯಿಸಿ ಹಾಗೂ ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಯಾವಾಗ ಬೇಕಾದರೂ ನಿರ್ವಹಿಸಿ"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ಹಿಂದಿರುಗಿ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ಪ್ರಾರಂಭಿಸಿ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ಡೇಟಾ ಅಳಿಸಿ"</string>

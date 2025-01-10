@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Lietotnē Health Connect tiek glabāti jūsu veselības un fitnesa dati, tādējādi varat vienkāršā veidā sinhronizēt dažādas lietotnes savā ierīcē."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Platformā Health Connect tiek uzglabāti un sinhronizēti jūsu veselības un fitnesa dati no dažādām lietotnēm.\n\n"<b>"Fitnesa un labsajūtas dati,"</b>" tostarp treniņu sesijas, noieto soļu skaits, uztura paradumi, miega ilgums un citi dati.\n\n"<b>"Veselības dati,"</b>" tostarp saistībā ar vakcinācijām, laboratorisko izmeklējumu rezultātiem un citām tēmām."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Izmantojot Health Connect, varat veikt tālāk norādītās darbības."</string>
-    <string name="share_data" msgid="3481932156368883946">"Datu kopīgošana ar lietotnēm"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Izvēlieties, kādus datus katra lietotne var lasīt vai rakstīt platformā Health Connect."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Iestatījumu un konfidencialitātes pārvaldība"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Jebkurā laikā varat mainīt lietotņu atļaujas un pārvaldīt savus datus."</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atpakaļ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Sākt darbu"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Dzēst datus"</string>
@@ -1164,7 +1164,7 @@
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Vienmēr atļaut"</string>
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Piešķirt atlasītās"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Lietotnes izmantošanas laikā"</string>
-    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Liegt visas"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Liegt visu"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt fitnesa un labsajūtas datiem?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> pieprasa piekļuvi šādiem datiem: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nVarat piešķirt visas atļaujas vai pārvaldīt tās atsevišķi."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Vai atļaut lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> piekļūt pie: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>

@@ -47,7 +47,7 @@
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"ડેટાની નિકાસ અને આયાત કરો"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"તાજેતરનો ઍક્સેસ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"કોઈ ઍપ દ્વારા તાજેતરમાં Health Connectનો ઍક્સેસ કરવામાં આવ્યો નથી"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"હાલના બધા ઍક્સેસ જુઓ"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"તાજેતરના બધા ઍક્સેસ જુઓ"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"છેલ્લા 24 કલાકમાં કઈ ઍપ દ્વારા તમારો ડેટા ઍક્સેસ કરવામાં આવ્યો છે, તે જુઓ"</string>
     <string name="today_header" msgid="1006837293203834373">"આજે"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ગઈ કાલે"</string>
@@ -445,7 +445,7 @@
     <string name="permissions_header" msgid="6519976063360071569">"પરવાનગીઓ"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"ફિટનેસ અને સુખાકારી"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"વ્યાયામ, ઊંઘ, પોષણ અને અન્ય"</string>
-    <string name="medical_permissions" msgid="1224097151249321566">"સ્વાસ્થ્ય સંબંધિત માહિતી"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"આરોગ્ય સંબંધિત માહિતી"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"સ્વાસ્થ્ય સંબંધિત માહિતી"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"લેબના પરિણામો, દવાઓ, રસીઓ અને અન્ય"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"કાઢી નાખેલી ઍપ પરવાનગીઓ"</string>
@@ -539,12 +539,12 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store પર જાઓ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect સાથે શરુ કરો"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect તમારો આરોગ્ય અને ફિટનેસ સંબંધિત ડેટા સ્ટોર કરે છે, જેનાથી તમે તમારા ડિવાઇસ પર વિવિધ ઍપ સરળ રીતે સિંક કરી શકો છો"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect અલગ-અલગ ઍપમાંથી આરોગ્ય અને ફિટનેસ સંબંધિત તમારો ડેટા સ્ટોર અને સિંક કરે છે.\n\n"<b>"ફિટનેસ અને સુખાકારી સંબંધિત ડેટા,"</b>" જેમાં વ્યાયામ સત્રો, પગલાં, પોષણ, ઊંઘ અને બીજું ઘણું શામેલ હોય છે\n\n"<b>"સ્વાસ્થ્ય સંબંધિત માહિતી,"</b>" જેમાં રસીઓ, લેબના પરિણામો અને બીજું ઘણું શામેલ હોય છે"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect અલગ-અલગ ઍપમાંથી આરોગ્ય અને ફિટનેસ સંબંધિત તમારો ડેટા સ્ટોર અને સિંક કરે છે.\n\n"<b>"ફિટનેસ અને સુખાકારી સંબંધિત ડેટા,"</b>" જેમાં વ્યાયામ સત્રો, પગલાં, પોષણ, ઊંઘ અને બીજું ઘણું શામેલ હોય છે\n\n"<b>"આરોગ્ય સંબંધિત માહિતી,"</b>" જેમાં રસીઓ, લેબના પરિણામો અને બીજું ઘણું શામેલ હોય છે"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect સાથે તમે આટલું કરી શકો છો"</string>
-    <string name="share_data" msgid="3481932156368883946">"તમારી ઍપ સાથે ડેટા શેર કરો"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"દરેક ઍપ Health Connect પર વાંચી કે લખી શકે તે ડેટા પસંદ કરો"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"તમારા સેટિંગ અને પ્રાઇવસી મેનેજ કરો"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"કોઈપણ સમયે ઍપ પરવાનગીઓમાં ફેરફાર કરો અને તમારો ડેટા મેનેજ કરો"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"પાછા જાઓ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"શરૂ કરો"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ડેટા ડિલીટ કરો"</string>
@@ -643,7 +643,7 @@
     <string name="flow_heavy" msgid="8672261792750634294">"ભારે સ્રાવ"</string>
     <string name="flow_unknown" msgid="1634411759928572900">"ફ્લોનું અજાણ્યું પ્રમાણ"</string>
     <string name="period_day" msgid="3821944462093965882">"માસિકના <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> દિવસમાંથી દિવસ <xliff:g id="DAY">%1$d</xliff:g>"</string>
-    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{માસિક (દિવસ 1)}one{માસિક (દિવસ #)}other{માસિક (દિવસ #)}}"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{માસિક (1 દિવસ)}one{માસિક (# દિવસ)}other{માસિક (# દિવસ)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"સકારાત્મક"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"નકારાત્મક"</string>
     <string name="ovulation_high" msgid="205362931427158291">"ઊંચું"</string>

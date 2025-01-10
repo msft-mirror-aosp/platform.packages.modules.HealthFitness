@@ -79,8 +79,8 @@
     <string name="app_priority_button" msgid="3126133977893705098">"Priorité des applis"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"Supprimer les données \"<xliff:g id="CATEGORY">%s</xliff:g>\""</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Toutes les applis"</string>
-    <string name="can_read" msgid="4568261079308309564">"Peut lire \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
-    <string name="can_write" msgid="5082414937218423823">"Peut modifier \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
+    <string name="can_read" msgid="4568261079308309564">"Autorisation d\'écriture pour : <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_write" msgid="5082414937218423823">"Autorisation d\'écriture pour : <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Applis inactives"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"Ces applis ne peuvent plus lire ni écrire de <xliff:g id="DATA_TYPE">%s</xliff:g>, mais ont toujours des données stockées dans Santé Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Les applis ne peuvent plus lire ni modifier \"<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>\", et aucune donnée \"<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>\" n\'est stockée dans Santé Connect"</string>
@@ -244,7 +244,7 @@
     <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"Saignements intermenstruels"</string>
     <string name="intermenstrual_bleeding_read_content_description" msgid="5970939335115119015">"Lire les données sur les saignements intermenstruels"</string>
     <string name="intermenstrual_bleeding_write_content_description" msgid="1377719923165234099">"Écrire des données sur les saignements intermenstruels"</string>
-    <string name="menstruation_uppercase_label" msgid="9119506748428874832">"Menstruation"</string>
+    <string name="menstruation_uppercase_label" msgid="9119506748428874832">"Menstruations"</string>
     <string name="menstruation_lowercase_label" msgid="8098816978006207242">"menstruation"</string>
     <string name="menstruation_read_content_description" msgid="7710047469771882021">"Lire la menstruation"</string>
     <string name="menstruation_write_content_description" msgid="5142669435897047396">"Modifier la menstruation"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Santé Connect stocke vos données de santé et de remise en forme, et vous permet de synchroniser facilement les différentes applis de votre appareil"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Santé Connect stocke et synchronise vos données de santé et de remise en forme issues de différentes applications.\n\n"<b>"Les données de fitness et bien-être,"</b>" y compris les séances d\'exercice, le nombre de pas, les informations sur la nutrition et le sommeil, etc.\n\n"<b>"Les dossiers médicaux,"</b>" y compris les vaccins, les résultats d\'analyses et plus encore."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Avec Santé Connect, vous pouvez :"</string>
-    <string name="share_data" msgid="3481932156368883946">"Partager des données avec vos applis"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Sélectionnez les données que chaque appli peut lire ou modifier dans Santé Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gérer vos paramètres et votre confidentialité"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Modifiez les autorisations de l\'appli et gérez vos données à tout moment"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Retour"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Commencer"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Supprimer vos données"</string>
@@ -1146,7 +1146,7 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Supprimer définitivement toutes les entrées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Supprimer définitivement les entrées sélectionnées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Supprimer définitivement les entrées sélectionnées pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Supprimer définitivement les entrées sélectionnées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Supprimer définitivement les entrées sélectionnées pour le <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Supprimer définitivement cette entrée ?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Supprimer définitivement les entrées de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> pour<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Supprimer définitivement les entrées de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ?"</string>

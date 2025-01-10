@@ -79,11 +79,11 @@
     <string name="app_priority_button" msgid="3126133977893705098">"Prioritet aplikacija"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"Izbriši podatke koji se odnose na <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Sve aplikacije"</string>
-    <string name="can_read" msgid="4568261079308309564">"Može čitati podatke tipa <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
-    <string name="can_write" msgid="5082414937218423823">"Može bilježiti podatke tipa <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_read" msgid="4568261079308309564">"Može čitati <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_write" msgid="5082414937218423823">"Može bilježiti <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Neaktivne aplikacije"</string>
-    <string name="inactive_apps_message" msgid="8335803540719022910">"Ove aplikacije više ne mogu čitati ni bilježiti vrstu podataka: <xliff:g id="DATA_TYPE">%s</xliff:g>, no i dalje imaju pohranjene podatke na Health Connectu"</string>
-    <string name="data_access_empty_message" msgid="9084350402254264452">"Aplikacije više ne mogu čitati niti bilježiti podatke za <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, a u Health Connectu nisu pohranjeni podaci za <xliff:g id="DATA_TYPE_2">%2$s</xliff:g>"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Ove aplikacije više ne mogu čitati ni bilježiti <xliff:g id="DATA_TYPE">%s</xliff:g>, no i dalje imaju pohranjene te podatke na Health Connectu"</string>
+    <string name="data_access_empty_message" msgid="9084350402254264452">"Aplikacije više ne mogu čitati niti bilježiti <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, a u Health Connectu nisu pohranjeni podaci za <xliff:g id="DATA_TYPE_2">%2$s</xliff:g>"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Ovi podaci uključuju informacije kao što su aktivno vrijeme, vrsta vježbe, krugovi, ponavljanja, sesije ili plivački zamasi"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Ovi podaci uključuju informacije kao što su faze spavanja i sesije spavanja"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Pogledajte sve unose"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect sprema podatke o vašem zdravlju i fitnessu i pruža vam jednostavan način za sinkronizaciju različitih aplikacija na uređaju"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect pohranjuje i sinkronizira vaše podatke o zdravlju i fitnessu iz različitih aplikacija.\n\n"<b>"Podaci o fitnessu i zdravlju,"</b>" uključujući sesije vježbanja, korake, prehranu, spavanje i drugo\n\n"<b>"Podaci o zdravstvenom stanju,"</b>" uključujući cjepiva, laboratorijske nalaze i drugo"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect omogućuje vam sljedeće:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Dijelite podatke s aplikacijama"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Odaberite podatke koje svaka aplikacija može čitati ili bilježiti u Health Connectu"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Upravljajte postavkama i privatnošću"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Promijenite dopuštenja aplikacije i upravljajte svojim podacima"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Natrag"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Započnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Izbriši podatke"</string>

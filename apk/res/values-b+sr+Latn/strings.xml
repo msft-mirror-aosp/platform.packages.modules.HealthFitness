@@ -540,11 +540,11 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Započnite sa Povezivanjem zdravlja"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Povezivanje zdravlja čuva vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizujete različite aplikacije na uređaju"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Povezivanje zdravlja čuva i sinhronizuje podatke o zdravlju i fitnesu iz različitih aplikacija.\n\n"<b>"Podaci o fitnesu i zdravlju,"</b>" uključujući sesije vežbanja, broj koraka, ishranu, spavanje i drugo\n\n"<b>"Zdravstvena evidencija,"</b>" uključujući vakcinacije, laboratorijske rezultate i drugo"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Pomoću Povezivanja zdravlja možete:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Delite podatke sa aplikacijama"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Odaberite podatke koje svaka aplikacije može da čita i upisuje u Povezivanje zdravlja"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Upravljajte podešavanjima i privatnošću"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Promenite dozvole za aplikacije i upravljajte podacima bilo kada"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Pomoću Povezivanja zdravlja:"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazad"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Započnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Brisanje podataka"</string>

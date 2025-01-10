@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í tækinu þínu á einfaldan hátt"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Heilsutenging vistar og samstillir heilsu- og hreystigögnin þín úr mismunandi forritum.\n\n"<b>"Heilsu- og hreystigögn,"</b>" þ.m.t. æfingalotur, skref, næring, svefn og fleira\n\n"<b>"Heilsufarsgögn,"</b>" þ.m.t. bólusetningar, rannsóknarniðurstöður og fleira"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Með Heilsutengingu er hægt að"</string>
-    <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Veldu hvaða gögn hvert forrit getur lesið eða skrifað yfir í Heilsutengingu"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Stjórnaðu stillingum og persónuvernd"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Breyttu heimildum forrita og stjórnaðu gögnunum þínum hvenær sem er"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Til baka"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Byrja"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Eyða gögnum"</string>

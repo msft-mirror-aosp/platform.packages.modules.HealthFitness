@@ -444,10 +444,10 @@
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorizzazioni aggiuntive rimosse per questa app"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Autorizzazioni"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitness e benessere"</string>
-    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Allenamento, sonno, nutrizione e altro"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Allenamento, sonno, alimentazione e altro"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Riepiloghi salute"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"riepiloghi salute"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Risultati lab, farmaci, vaccini e altro"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Risultati esami, farmaci, vaccini e altro"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorizzazioni app rimosse"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Connessione Salute ha rimosso le autorizzazioni per <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Connessione Salute ha rimosso le autorizzazioni per <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Connessione Salute archivia i dati relativi alla salute e all\'attività fisica e ti consente di sincronizzare facilmente le varie app installate sul dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Connessione Salute archivia e sincronizza i dati relativi alla salute e all\'attività fisica di diverse app.\n\n"<b>"Dati su fitness e benessere,"</b>" tra cui sessioni di allenamento, passi, alimentazione, sonno e altro ancora\n\n"<b>"Riepiloghi salute,"</b>" tra cui vaccini, risultati di laboratorio e altro ancora"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Connessione Salute"</string>
-    <string name="share_data" msgid="3481932156368883946">"Condividi i dati con le tue app"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Scegli i dati che ciascuna app può leggere o scrivere su Connessione Salute"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gestisci le impostazioni e la privacy"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Modifica le autorizzazioni dell\'app e gestisci i tuoi dati in qualsiasi momento"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Indietro"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Inizia"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Elimina dati"</string>
@@ -1143,7 +1143,7 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Eliminare definitivamente i dati selezionati dell\'app <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Eliminare definitivamente tutte le voci per il giorno <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Eliminare definitivamente tutte le voci per la settimana <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Eliminare definitivamente tutte le voci per il giorno <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Eliminare definitivamente tutte le voci di <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Eliminare definitivamente le voci selezionate per il giorno <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Eliminare definitivamente le voci selezionate per la settimana <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Eliminare definitivamente le voci selezionate per <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>

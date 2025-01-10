@@ -52,7 +52,7 @@
     <string name="today_header" msgid="1006837293203834373">"I dag"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"I går"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Læst: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"Skrevet: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Skrive: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrer tilladelser"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tidspunkt: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -539,12 +539,12 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Gå til Play Butik"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Kom godt i gang med Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect opbevarer dine sundheds- og træningsdata, så du nemt kan synkronisere forskellige apps på din enhed"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect gemmer og synkroniserer dine sundheds- og træningsdata fra forskellige apps.\n\n"<b>"Trænings- og helbredsdata,"</b>" herunder træningspas, skridt, ernæring, søvn m.m.\n\n"<b>"Sundhedsoplysninger,"</b>" herunder vaccinationer, prøvesvar m.m."</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect gemmer og synkroniserer dine sundheds- og træningsdata fra forskellige apps.\n\n"<b>"Trænings- og sundhedsdata,"</b>" herunder træningspas, skridt, ernæring, søvn m.m.\n\n"<b>"Sundhedsoplysninger,"</b>" herunder vaccinationer, prøvesvar m.m."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du gøre følgende"</string>
-    <string name="share_data" msgid="3481932156368883946">"Del data med dine apps"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Vælg, hvilke data appen skal kunne læse eller skrive til Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Administrer indstillinger og privatliv"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Du kan til enhver tid ændre apptilladelser og administrere dine data"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gå tilbage"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kom godt i gang"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Slet data"</string>
@@ -1162,7 +1162,7 @@
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Tilgået i går kl. <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Tilgået <xliff:g id="TIME_DATE_0">%1$s</xliff:g> kl. <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Tillad altid"</string>
-    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Udvalgte tilladelser"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Tillad valgte"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Mens appen bruges"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Afvis alle"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til trænings- og helbredsdata?"</string>

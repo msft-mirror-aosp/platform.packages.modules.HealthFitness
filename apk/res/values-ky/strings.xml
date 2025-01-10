@@ -539,12 +539,12 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store\'го өтүү"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'ти колдонуп баштоо"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect кызматы ден соолук жана дене-бойду чыңдоо маалыматын сактап, аларды түзмөктөгү башка колдонмолор менен шайкештирет"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ар кайсы колдонмолордон алынган ден соолук жана спорт маалыматтарын сактап жана шайкештирет.\n\n"<b>"Дене-бойду чыңдоо маалыматы,"</b>" анын ичинде машыгуу сеанстары, кадамдар, тамактануу, уйку жана башкалар\n\n"<b>"Ден соолук жөнүндө маалымат,"</b>" анын ичинде эмдөөлөр, лаборатоциялык натыйжалар жана башкалар"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ар кайсы колдонмолордон алынган ден соолук жана спорт маалыматтарын сактап жана шайкештирет.\n\n"<b>"Дене-бойду чыңдоо маалыматы,"</b>" анын ичинде машыгуу сеанстары, кадамдар, тамактануу, уйку жана башкалар\n\n"<b>"Ден соолук жөнүндө маалымат,"</b>" анын ичинде эмдөөлөр, лабораториялык натыйжалар жана башкалар"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect менен төмөнкүлөрдү аткара аласыз:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Колдонмолор менен ар кандай нерселерди бөлүшүү"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Ар бир колдонмо Health Connect кызматында кандай маалыматты окуп, сактай ала турганын тандайсыз"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Параметрлерди жана купуялыкты тескөө"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Колдонмонун уруксаттарын каалаган убакта өзгөртүп, алардагы нерселерди тескейсиз"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Артка кайтуу"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Баштадык"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Колдонмодогу нерселер өчүрүлөт"</string>
@@ -1152,7 +1152,7 @@
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Тандалган апта (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) киргизилген <xliff:g id="APP_NAME">%1$s</xliff:g> маалыматы биротоло өчүрүлсүнбү?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Тандалган ай (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) киргизилген <xliff:g id="APP_NAME">%1$s</xliff:g> маалыматы биротоло өчүрүлсүнбү?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Белгилүү бир күн (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) боюнча тандалган <xliff:g id="APP_NAME">%1$s</xliff:g> маалыматы биротоло өчүрүлсүнбү?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Белгилүү бир апта (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) боюнча тандалган <xliff:g id="APP_NAME">%1$s</xliff:g> маалыматы биротоло өчүрүлсүнбү?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Бир апта (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) боюнча тандалган <xliff:g id="APP_NAME">%1$s</xliff:g> маалыматы өчүрүлсүнбү?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Белгилүү бир ай (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) боюнча тандалган <xliff:g id="APP_NAME">%1$s</xliff:g> маалыматы биротоло өчүрүлсүнбү?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"<xliff:g id="APP_NAME">%s</xliff:g> маалыматын биротоло өчүрөсүзбү?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> колдонмосундагы <xliff:g id="DATA_TYPE">%1$s</xliff:g> биротоло өчүрүлсүнбү?"</string>

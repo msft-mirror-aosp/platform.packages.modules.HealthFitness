@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect រក្សាទុក​ទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នក ដោយផ្តល់ឱ្យ​អ្នកនូវ​វិធីសាមញ្ញ​ក្នុងការធ្វើសមកាលកម្ម​កម្មវិធីផ្សេងៗ​នៅលើឧបករណ៍​របស់អ្នក"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect រក្សាទុក និងធ្វើសមកាលកម្មទិន្នន័យសុខភាព និង​សម្បទារបស់អ្នកពីកម្មវិធីផ្សេងៗ។\n\n"<b>"ទិន្នន័យសម្បទា និងសុខុមាលភាព"</b>"រួមមានវគ្គហាត់ប្រាណ ជំហាន អាហារូបត្ថម្ភ ដំណេក និងអ្វីៗជាច្រើនទៀត\n\n"<b>"កំណត់ត្រាសុខភាព"</b>" រួមទាំង​វ៉ាក់សាំង លទ្ធផលពី​មន្ទីរពិសោធន៍ និង​អ្វីៗជាច្រើនទៀត"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"តាមរយៈការប្រើ Health Connect អ្នកអាច"</string>
-    <string name="share_data" msgid="3481932156368883946">"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ជ្រើសរើសទិន្នន័យដែលកម្មវិធីនីមួយៗអាចអាន ឬសរសេរទៅកាន់ Health Connect បាន"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"គ្រប់គ្រងការកំណត់ និងឯកជនភាពរបស់អ្នក"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ផ្លាស់ប្ដូរការអនុញ្ញាតកម្មវិធី និងគ្រប់គ្រងទិន្នន័យរបស់អ្នកបានគ្រប់ពេល"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ថយ​ក្រោយ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ចាប់ផ្ដើម"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"លុប​​ទិន្នន័យ"</string>

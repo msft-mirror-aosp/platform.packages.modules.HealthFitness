@@ -437,14 +437,14 @@
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Pour gérer les autres autorisations Android qui peuvent être accordées à cette appli, accédez à Paramètres, puis touchez Applis"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lire la politique de confidentialité"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Dernier accès : au cours des dernières 24 heures"</string>
-    <string name="app_access_title" msgid="7137018424885371763">"Accès des applis"</string>
+    <string name="app_access_title" msgid="7137018424885371763">"Accès de l\'appli"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aucune appli compatible n\'est actuellement installée"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accès supplémentaire"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"Données passées, données en arrière-plan"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorisations supplémentaires retirées pour cette appli"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Autorisations"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Mise en forme et bien-être"</string>
-    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercice, sommeil, alimentation et autres"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercice, sommeil, alimentation et autres données"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Dossiers médicaux"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"dossiers médicaux"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"Résultats de laboratoire, médicaments, vaccins et autres données"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Connexion santé stocke vos données de santé et d\'activité physique, et vous offre un moyen simple de synchroniser les différentes applis de votre appareil"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Connexion santé stocke et synchronise vos données relatives à la santé et à l\'activité physique à partir de différentes applis.\n\n"<b>"Les données relatives à l\'activité physique et au bien-être,"</b>" y compris les séances d\'exercice, le nombre de pas, la nutrition, le sommeil et d\'autres données\n\n"<b>"Les dossiers médicaux,"</b>" y compris les vaccins, les résultats de laboratoire et d\'autres données"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Avec Connexion santé vous pouvez"</string>
-    <string name="share_data" msgid="3481932156368883946">"Partager des données avec vos applis"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Choisissez les données que chaque appli peut lire ou écrire dans Connexion santé"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gérer vos paramètres et votre confidentialité"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Modifiez les autorisations des applis et gérez vos données en tout temps"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Partagez des données avec vos applis"</b>\n"Choisissez les données que chaque appli peut lire ou écrire dans Connexion santé"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gérez vos paramètres et votre confidentialité"</b>\n"Modifiez les autorisations des applis et gérez vos données en tout temps"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Retour"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Faire vos premiers pas"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Supprimer les données"</string>
@@ -1144,7 +1142,7 @@
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Supprimer définitivement toutes les entrées pour le <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Supprimer définitivement toutes les entrées pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Supprimer définitivement toutes les entrées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Supprimer définitivement les entrées sélectionnées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Supprimer définitivement les entrées sélectionnées pour le <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Supprimer définitivement les entrées sélectionnées pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Supprimer définitivement les entrées sélectionnées pour <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Supprimer définitivement cette entrée?"</string>

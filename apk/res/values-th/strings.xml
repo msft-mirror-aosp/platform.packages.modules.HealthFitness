@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย พร้อมให้คุณซิงค์แอปต่างๆ ในอุปกรณ์ได้โดยง่าย"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect จะจัดเก็บและซิงค์ข้อมูลสุขภาพและการออกกำลังกายจากแอปต่างๆ\n\n"<b>"ข้อมูลการออกกำลังกายและสุขภาวะ"</b>" รวมถึงเซสชันการออกกำลังกาย จำนวนก้าว โภชนาการ การนอนหลับ และอื่นๆ\n\n"<b>"บันทึกข้อมูลสุขภาพ"</b>" รวมถึงวัคซีน ผลตรวจ และอื่นๆ"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ช่วยให้คุณทำสิ่งต่อไปนี้ได้"</string>
-    <string name="share_data" msgid="3481932156368883946">"แชร์ข้อมูลกับแอปต่างๆ"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"เลือกข้อมูลที่แต่ละแอปจะอ่านหรือเขียนลงใน Health Connect ได้"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"จัดการการตั้งค่าและความเป็นส่วนตัว"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"เปลี่ยนสิทธิ์ของแอปและจัดการข้อมูลได้ทุกเมื่อ"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ย้อนกลับ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"เริ่มต้นใช้งาน"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ลบข้อมูล"</string>
@@ -1143,17 +1143,17 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"ลบข้อมูล <xliff:g id="APP_NAME">%s</xliff:g> ที่เลือกอย่างถาวรใช่ไหม"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"ลบรายการทั้งหมดสำหรับวันที่ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> อย่างถาวรใช่ไหม"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"ลบรายการทั้งหมดสำหรับสัปดาห์วันที่ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> อย่างถาวรใช่ไหม"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"ลบรายการทั้งหมดสำหรับเดือน<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> อย่างถาวรใช่ไหม"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"ลบรายการทั้งหมดสำหรับเดือน<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>อย่างถาวรใช่ไหม"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"ลบรายการที่เลือกสำหรับวันที่ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> อย่างถาวรใช่ไหม"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"ลบรายการที่เลือกสำหรับสัปดาห์วันที่ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> อย่างถาวรใช่ไหม"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"ลบรายการที่เลือกสำหรับเดือน<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> อย่างถาวรใช่ไหม"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"ลบรายการที่เลือกสำหรับเดือน<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>อย่างถาวรใช่ไหม"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"ลบรายการนี้อย่างถาวรใช่ไหม"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"ลบรายการ <xliff:g id="APP_NAME">%1$s</xliff:g> ทั้งหมดสำหรับวันที่ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> อย่างถาวรใช่ไหม"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"ลบรายการ <xliff:g id="APP_NAME">%1$s</xliff:g> ทั้งหมดสำหรับสัปดาห์วันที่ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> อย่างถาวรใช่ไหม"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"ลบรายการ <xliff:g id="APP_NAME">%1$s</xliff:g> ทั้งหมดสำหรับเดือน<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> อย่างถาวรใช่ไหม"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"ลบรายการ <xliff:g id="APP_NAME">%1$s</xliff:g> ที่เลือกสำหรับวันที่ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> อย่างถาวรใช่ไหม"</string>
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"ลบรายการ <xliff:g id="APP_NAME">%1$s</xliff:g> ที่เลือกสำหรับสัปดาห์วันที่ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> อย่างถาวรใช่ไหม"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"ลบรายการ <xliff:g id="APP_NAME">%1$s</xliff:g> ที่เลือกสำหรับเดือน<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> อย่างถาวรใช่ไหม"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"ลบรายการ <xliff:g id="APP_NAME">%1$s</xliff:g> ที่เลือกสำหรับเดือน<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>อย่างถาวรใช่ไหม"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ลบรายการ <xliff:g id="APP_NAME">%s</xliff:g> นี้อย่างถาวรใช่ไหม"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"ลบข้อมูล<xliff:g id="DATA_TYPE">%1$s</xliff:g>ของ <xliff:g id="APP_NAME">%2$s</xliff:g> อย่างถาวรใช่ไหม"</string>
     <string name="on" msgid="8266542510798355807">"เปิด"</string>

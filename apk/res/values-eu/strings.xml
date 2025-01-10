@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect-ek osasunari eta fitnessari buruzko datuak gordetzen ditu eta gailuko aplikazioak erraz sinkronizatzeko aukera eskaintzen du"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect-ek osasunari eta fitnessari buruzko datuak gordetzen eta sinkronizatzen ditu zenbait aplikaziotatik.\n\n"<b>"fitnessari eta ongizateari buruzko datuak"</b>" (adibidez, ariketa-saioak, pausoak, elikadura, loa eta abar)\n\n"<b>"historia klinikoa"</b>" (adibidez, txertoak, laborategiko emaitzak eta abar)"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect-ekin hauek egin ditzakezu:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Partekatu datuak zure aplikazioekin"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Aukeratu aplikazio bakoitzak Health Connect-en irakurri edo idatz ditzakeen datuak"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Kudeatu ezarpenak eta pribatutasuna"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Aldatu aplikazio-baimenak eta kudeatu datuak edonoiz"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Egin atzera"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Hasi erabiltzen"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Ezabatu datuak"</string>
@@ -1143,17 +1143,17 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"<xliff:g id="APP_NAME">%s</xliff:g> aplikazioaren hautatutako datuak betiko ezabatu nahi dituzu?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> datako sarrera guztiak betiko ezabatu nahi dituzu?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> asteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> hilabeteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Betiko ezabatu nahi dituzu sarrera guztiak (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>)?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> datako hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> asteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> hilabeteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Betiko ezabatu nahi dituzu hautatutako sarrerak (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>)?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Betiko ezabatu nahi duzu sarrera?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> datako sarrera guztiak betiko ezabatu nahi dituzu?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> asteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
-    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> hilabeteko sarrera guztiak betiko ezabatu nahi dituzu?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Betiko ezabatu nahi dituzu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren sarrera guztiak (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>)?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> datako hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> asteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> hilabeteko hautatutako sarrerak betiko ezabatu nahi dituzu?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Betiko ezabatu nahi dituzu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioaren hautatutako sarrerak (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>)?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"<xliff:g id="APP_NAME">%s</xliff:g> aplikazioaren sarrera hau betiko ezabatu nahi duzu?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> aplikazioak honi buruz dituen datuak (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) ezabatu nahi dituzu?"</string>
     <string name="on" msgid="8266542510798355807">"Aktibatuta"</string>

@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"A Saúde Connect armazena os seus dados de saúde e fitness, oferecendo-lhe uma forma simples de sincronizar as diferentes apps no seu dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"A Saúde Connect armazena e sincroniza os seus dados de saúde e fitness de diferentes apps.\n\n"<b>"Dados de fitness e bem-estar,"</b>" incluindo sessões de exercício, passos, nutrição, sono e muito mais\n\n"<b>"Registos de saúde,"</b>" incluindo vacinas, resultados laboratoriais e muito mais"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Com a Saúde Connect, pode"</string>
-    <string name="share_data" msgid="3481932156368883946">"Partilhar dados com as suas apps"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Escolha os dados que cada app pode ler ou escrever na Saúde Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gerir as definições e a privacidade"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Altere as autorizações da app e faça a gestão dos seus dados em qualquer altura"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Partilhe dados com as suas apps"</b>\n"Escolha os dados que cada app pode ler ou escrever na Saúde Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Faça a gestão das suas definições e privacidade"</b>\n"Altere as autorizações da app e faça a gestão dos seus dados em qualquer altura"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Voltar"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Começar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Apagar dados"</string>

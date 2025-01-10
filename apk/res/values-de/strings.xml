@@ -444,7 +444,7 @@
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Zusätzliche Berechtigungen für diese App entfernt"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Berechtigungen"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitness und Wohlbefinden"</string>
-    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Sport, Schlaf, Ernährung und mehr"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Bewegung, Schlaf, Ernährung und mehr"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Gesundheitsdaten"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"Gesundheitsdaten"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"Laborergebnisse, Medikamente, Impfungen usw."</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Dank Health Connect werden deine Gesundheits- und Fitnessdaten gespeichert und lassen sich einfach mit verschiedenen Apps auf deinem Gerät synchronisieren"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect speichert und synchronisiert deine Gesundheits- und Fitnessdaten aus verschiedenen Apps.\n\n"<b>"Fitness- und Wellnessdaten,"</b>" unter anderem zu Trainingseinheiten, Schritten, Ernährung und Schlaf\n\n"<b>"Gesundheitsdaten,"</b>" unter anderem zu Impfungen und Laborergebnissen"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Mit Health Connect kannst du Folgendes tun:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Daten für deine Apps freigeben"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Du legst fest, welche Daten Apps bei Health Connect lesen oder schreiben können"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Einstellungen und Datenschutz verwalten"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Du kannst jederzeit App-Berechtigungen ändern und Daten verwalten"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Zurück"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Jetzt starten"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Daten löschen"</string>
