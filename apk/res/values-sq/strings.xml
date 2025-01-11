@@ -540,11 +540,11 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Fillo me Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ruan të dhënat e tua të shëndetit dhe të fitnesit, duke të ofruar një mënyrë të thjeshtë për të sinkronizuar aplikacione të ndryshme në pajisjen tënde"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ruan dhe sinkronizon të dhënat e tua të shëndetit dhe fitnesit nga aplikacione të ndryshme.\n\n"<b>"Të dhënat e fitnesit dhe mirëqenies,"</b>" duke përfshirë seancat e stërvitjes, hapat, të ushqyerit, gjumin etj.\n\n"<b>"Të dhënat shëndetësore,"</b>" duke përfshirë vaksinat, rezultatet laboratorike etj."</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Me Health Connect mund"</string>
-    <string name="share_data" msgid="3481932156368883946">"Ndaj të dhënat me aplikacionet e tua"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Zgjidh të dhënat që çdo aplikacion mund të lexojë ose të shkruajë në Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Menaxho cilësimet dhe privatësinë tënde"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Ndrysho lejet e aplikacionit dhe menaxho të dhënat e tua në çdo kohë"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Me Health Connect bëj si më poshtë"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Kthehu prapa"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Fillo"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Fshi të dhënat"</string>
@@ -1143,7 +1143,7 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Të fshihen përgjithmonë të dhënat e zgjedhura të <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Të fshihen përgjithmonë të gjitha hyrjet për <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Të fshihen përgjithmonë të gjitha hyrjet për javën <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Të fshihen përgjithmonë të gjitha hyrjet për <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Të fshihen përgjithmonë të gjitha hyrjet për muajin <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Të fshihen përgjithmonë hyrjet e zgjedhura për <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Të fshihen përgjithmonë hyrjet e zgjedhura për javën <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Të fshihen përgjithmonë hyrjet e zgjedhura për muajin <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>

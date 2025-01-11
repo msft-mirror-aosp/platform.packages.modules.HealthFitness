@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Сервіс Health Connect зберігає ваші дані про здоров’я і фізичну активність, а також дає змогу легко синхронізувати їх із різними додатками на вашому пристрої"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect зберігає і синхронізує дані про здоров’я та фізичну активність із різних додатків.\n\n"<b>"Дані про здоров’я і фізичну активність,"</b>" зокрема про тренування, кількість кроків, харчування, сон тощо\n\n"<b>"Медичні дані,"</b>" зокрема відомості про вакцини, результати аналізів тощо"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Сервіс Health Connect надає вам перелічені нижче можливості"</string>
-    <string name="share_data" msgid="3481932156368883946">"Діліться даними з додатками"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Виберіть дані, які кожен додаток зможе читати або записувати в Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Керуйте налаштуваннями та конфіденційністю"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Змінюйте дозволи для додатків і керуйте даними будь-коли"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Почати"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Видалити дані"</string>

@@ -29,7 +29,7 @@
     <string name="no_data" msgid="1906986019249068659">"Ni podatkov"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Dovoljenja za aplikacije"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Upravljanje aplikacij in dovoljenj"</string>
-    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od toliko aplikacij: <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikacij"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Dostop ima toliko aplikacij: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>."</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Dostop ima toliko aplikacij: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>."</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija."</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect shranjuje vaše podatke o zdravju in telesni pripravljenosti ter vam omogoča, da na preprost način sinhronizirate različne aplikacije v napravi."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect shranjuje in sinhronizira podatke o zdravju in telesni pripravljenosti iz različnih aplikacij.\n\n"<b>"Podatke o telesni pripravljenosti in počutju,"</b>" vključno s treningi, koraki, prehrano, spanjem in drugimi podatki.\n\n"<b>"Zdravstvene evidence,"</b>" vključno s cepivi, laboratorijskimi izvidi in drugimi podatki."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect vam omogoča naslednje:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Deljenje podatkov z aplikacijami"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Izberite, katere podatke lahko aplikacije berejo ali zapisujejo v storitvi Health Connect."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Upravljanje nastavitev in zasebnosti"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Kadar koli spremenite dovoljenja za aplikacije in upravljajte svoje podatke."</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazaj"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Začnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Izbriši podatke"</string>

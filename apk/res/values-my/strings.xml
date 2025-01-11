@@ -79,8 +79,8 @@
     <string name="app_priority_button" msgid="3126133977893705098">"ဦးစားပေးအက်ပ်"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> ဒေတာကို ဖျက်ရန်"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"အက်ပ်အားလုံး"</string>
-    <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ဖတ်နိုင်သည်"</string>
-    <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ရေးနိုင်သည်"</string>
+    <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ကို ဖတ်နိုင်သည်"</string>
+    <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ကို ရေးနိုင်သည်"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"အသုံးမပြုသော အက်ပ်များ"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"ဤအက်ပ်များက <xliff:g id="DATA_TYPE">%s</xliff:g> ကို မဖတ်နိုင် (သို့) မရေးနိုင်တော့သော်လည်း Health Connect တွင် ဒေတာများ သိမ်းထားသေးသည်"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"အက်ပ်များသည် <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> ကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည်မဟုတ်ပါ။ Health Connect တွင် <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> ဒေတာများ သိမ်းထားခြင်းမရှိပါ"</string>
@@ -196,10 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ဘီးတပ်ခုံတွန်းသည့် အရေအတွက်"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"ဘီးတပ်ခုံတွန်းသည့် အရေအတွက်ကို ဖတ်ရန်"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"ဘီးတပ်ခုံ တွန်းသည့်အရေအတွက်ကို ရေးရန်"</string>
-    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"လှုပ်ရှားမှုပြင်းထန်ခြင်း"</string>
-    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"လှုပ်ရှားမှုပြင်းထန်ခြင်း"</string>
-    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"လှုပ်ရှားမှုပြင်းထန်ခြင်းကို ဖတ်ရန်"</string>
-    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"လှုပ်ရှားမှုပြင်းထန်ခြင်းကို ရေးရန်"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"လှုပ်ရှားမှု၏ပြင်းအား"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"လှုပ်ရှားမှု၏ပြင်းအား"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"လှုပ်ရှားမှု၏ပြင်းအားကို ဖတ်ရန်"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"လှုပ်ရှားမှု၏ပြင်းအားကို ရေးရန်"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"နားနေစဉ် ဇီဝတွင်း ဖြစ်ပျက်မှုနှုန်း"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"နားနေစဉ် ဇီဝတွင်း ဖြစ်ပျက်မှုနှုန်း"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"နားနေစဉ် ဇီဝတွင်း ဖြစ်ပျက်မှုနှုန်းကို ဖတ်ရန်"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect သည် သင့်စက်ပေါ်ရှိ အက်ပ်အမျိုးမျိုး ရိုးရှင်းစွာစင့်ခ်လုပ်နည်းကို ပေးပြီး သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းသည်"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect သည် အခြားအက်ပ်များမှ သင့်ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး စင့်ခ်လုပ်သည်။\n\nလေ့ကျင့်ခန်း စက်ရှင်များ၊ ခြေလှမ်းများ၊ အာဟာရ၊ အိပ်ခြင်း စသည်တို့အပါအဝင် "<b>"ကျန်းမာကြံ့ခိုင်ရေးဒေတာ"</b>\n\n"ကာကွယ်ဆေး၊ ဓာတ်ခွဲခန်းရလဒ် စသည်တို့အပါအဝင် "<b>"ကျန်းမာရေး မှတ်တမ်းများ"</b></string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ဖြင့် သင်လုပ်နိုင်သည်များ"</string>
-    <string name="share_data" msgid="3481932156368883946">"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Health Connect တွင် အက်ပ်တစ်ခုစီက ဖတ်နိုင် (သို့) ရေးနိုင်မည့် ဒေတာကို သင်ရွေးနိုင်သည်"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"သင့်ဆက်တင်များနှင့် ကိုယ်ရေးအချက်အလက်လုံခြုံမှုကို စီမံရန်"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"အက်ပ်ခွင့်ပြုချက်များပြောင်းပြီး သင့်ဒေတာကို အချိန်မရွေးစီမံနိုင်သည်"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"နောက်သို့"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"စတင်ရန်"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ဒေတာဖျက်ရန်"</string>

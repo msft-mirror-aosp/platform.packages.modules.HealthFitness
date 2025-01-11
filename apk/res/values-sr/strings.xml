@@ -540,11 +540,11 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Започните са Повезивањем здравља"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Повезивање здравља чува ваше податке о здрављу и фитнесу и пружа вам једноставан начин да синхронизујете различите апликације на уређају"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Повезивање здравља чува и синхронизује податке о здрављу и фитнесу из различитих апликација.\n\n"<b>"Подаци о фитнесу и здрављу,"</b>" укључујући сесије вежбања, број корака, исхрану, спавање и друго\n\n"<b>"Здравствена евиденција,"</b>" укључујући вакцинације, лабораторијске резултате и друго"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Помоћу Повезивања здравља можете:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Делите податке са апликацијама"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Одаберите податке које свака апликације може да чита и уписује у Повезивање здравља"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Управљајте подешавањима и приватношћу"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Промените дозволе за апликације и управљајте подацима било када"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Помоћу Повезивања здравља:"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Започните"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Брисање података"</string>

@@ -29,7 +29,7 @@
     <string name="no_data" msgid="1906986019249068659">"କୌଣସି ଡାଟା ନାହିଁ"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"ଆପ ଅନୁମତି"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"ଆପଣଙ୍କ ଆପ୍ସ ଏବଂ ଅନୁମତିଗୁଡ଼ିକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
-    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>ଟିରୁ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପର ଆକ୍ସେସ୍ ଅଛି"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>ରୁ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ଆପର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>ଟିରୁ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପର ଆକ୍ସେସ ଅଛି"</string>
@@ -79,8 +79,8 @@
     <string name="app_priority_button" msgid="3126133977893705098">"ଆପ ପ୍ରାଥମିକତା"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"ସମସ୍ତ ଆପ୍ସ"</string>
-    <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ପଢ଼ିପାରିବ"</string>
-    <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ଲେଖିପାରିବ"</string>
+    <string name="can_read" msgid="4568261079308309564">"ଏହି ଆପ <xliff:g id="PERMISSION_TYPE">%s</xliff:g> ଡାଟା ସହ ପଢ଼ିପାରିବ"</string>
+    <string name="can_write" msgid="5082414937218423823">"ଏହି ଆପ <xliff:g id="PERMISSION_TYPE">%s</xliff:g> ଡାଟା ସହ ଲେଖିପାରିବ"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"ନିଷ୍କ୍ରିୟ ଆପ୍ସ"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"ଏହି ଆପ୍ସ <xliff:g id="DATA_TYPE">%s</xliff:g>କୁ ଆଉ ପଢ଼ିପାରିବ ନାହିଁ ବା ଲେଖିପାରିବ ନାହିଁ, କିନ୍ତୁ ଏବେ ବି ଷ୍ଟୋର କରାଯାଇଥିବା ଡାଟା Health Connectରେ ଅଛି"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"ଆପ୍ସ <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>କୁ ଆଉ ପଢ଼ିପାରିବ କିମ୍ବା ଲେଖିପାରିବ ନାହିଁ ଏବଂ Health Connectରେ କୌଣସି <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> ଡାଟା ଷ୍ଟୋର କରାଯାଇନାହିଁ"</string>
@@ -444,7 +444,7 @@
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ଏହି ଆପ ପାଇଁ ଅତିରିକ୍ତ ଅନୁମତିକୁ କାଢ଼ି ଦିଆଯାଇଛି"</string>
     <string name="permissions_header" msgid="6519976063360071569">"ଅନୁମତି"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"ଫିଟନେସ ଏବଂ ସୁସ୍ଥତା"</string>
-    <string name="fitness_permissions_summary" msgid="6476469281589015459">"ବ୍ୟାୟାମ, ଶୋଇବା, ନ୍ୟୁଟ୍ରିସନ ଓ ଅନ୍ୟାନ୍ୟ"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"ବ୍ୟାୟାମ, ଶୋଇବା, ନ୍ୟୁଟ୍ରିସନ ଓ ଅନ୍ୟ"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"ସ୍ୱାସ୍ଥ୍ୟ ରେକର୍ଡ"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"ସ୍ୱାସ୍ଥ୍ୟ ରେକର୍ଡ"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"ଲେବ ଫଳାଫଳ, ଔଷଧ, ଟୀକା ଓ ଅନ୍ୟାନ୍ୟ"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର କରେ, ଯାହା ଆପଣଙ୍କ ଡିଭାଇସରେ ବିଭିନ୍ନ ଆପ୍ସ ସିଙ୍କ କରିବାକୁ ଆପଣଙ୍କୁ ଏକ ସହଜ ଉପାୟ ଦେଇଥାଏ"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ବିଭିନ୍ନ ଆପ୍ସରୁ ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର ଓ ସିଙ୍କ କରେ।\n\n"<b>"ବ୍ୟାୟାମ ସେସନ, ଷ୍ଟେପ, ନ୍ୟୁଟ୍ରିସନ, ଶୋଇବା ଏବଂ ଆହୁରି ଅନେକ କିଛି ସମେତ"</b>" ଫିଟନେସ ଏବଂ ସୁସ୍ଥତା ଡାଟା\n\n"<b>"ଟୀକା, ଲେବ ଫଳାଫଳ ଏବଂ ଆହୁରି ଅନେକ କିଛି ସମେତ"</b>" ସ୍ୱାସ୍ଥ୍ୟ ରେକର୍ଡଗୁଡ଼ିକ"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ସହିତ ଆପଣ"</string>
-    <string name="share_data" msgid="3481932156368883946">"ଆପଣଙ୍କ ଆପ୍ସ ସହ ଡାଟା ସେୟାର କରନ୍ତୁ"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ପ୍ରତ୍ୟେକ ଆପ Health Connectରୁ କେଉଁ ଡାଟା ପଢ଼ିପାରିବ କିମ୍ବା ଲେଖିପାରିବ ତାହା ବାଛନ୍ତୁ"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"ଆପଣଙ୍କ ସେଟିଂସ ଏବଂ ଗୋପନୀୟତାକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ଯେ କୌଣସି ସମୟରେ ଆପ ଅନୁମତିଗୁଡ଼ିକୁ ପରିବର୍ତ୍ତନ କରି ଆପଣଙ୍କ ଡାଟାକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>

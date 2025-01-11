@@ -196,8 +196,8 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"անվասայլակի հրումներ"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Կարդալ անվասայլակի հրումների մասին տվյալները"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Գրանցել անվասայլակի հրումների մասին տվյալները"</string>
-    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Պարապմունքների ինտենսիվությունը"</string>
-    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"պարապմունքների ինտենսիվությունը"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Մարզումների ինտենսիվությունը"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"մարզումների ինտենսիվությունը"</string>
     <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Պարապմունքների ինտենսիվության մասին տվյալների ընթերցում"</string>
     <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Պարապմունքների ինտենսիվության մասին տվյալների գրանցում"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Հիմնական նյութափոխանակության ինտենսիվություն"</string>
@@ -260,7 +260,7 @@
     <string name="spotting_lowercase_label" msgid="4361141146039580583">"արտազատում"</string>
     <string name="spotting_read_content_description" msgid="5422420770022357631">"Կարդալ արտազատման մասին տվյալները"</string>
     <string name="spotting_write_content_description" msgid="9049462631184362964">"Գրանցել արտազատման մասին տվյալները"</string>
-    <string name="hydration_uppercase_label" msgid="1196083392597480565">"Հեղուկի մակարդակ"</string>
+    <string name="hydration_uppercase_label" msgid="1196083392597480565">"Հեղուկի մակարդակը օրգանիզմում"</string>
     <string name="hydration_lowercase_label" msgid="7793261552870970551">"հեղուկի մակարդակ"</string>
     <string name="hydration_read_content_description" msgid="3255941233933808082">"Կարդալ օրգանիզմում հեղուկի մակարդակի մասին տվյալները"</string>
     <string name="hydration_write_content_description" msgid="7549819425875969941">"Գրանցել օրգանիզմում հեղուկի մակարդակի մասին տվյալները"</string>
@@ -540,11 +540,11 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Ներկայացնում ենք Health Connect-ը"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect-ը պահում է ձեր առողջության և ֆիզիկական ակտիվության տվյալները և համաժամացնում տարբեր հավելվածների աշխատանքը ձեր սարքում"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect-ը տարբեր հավելվածներից պահում և համաժամացնում է ձեր առողջության և ֆիզիկական ակտիվության տվյալները։\n\n"<b>"Ֆիթնեսի և առողջության տվյալներ"</b>", այդ թվում՝ մարզումների, քայլերի, սննդի, քնի և այլ բաների մասին\n\n"<b>"Առողջության մասին տեղեկություններ"</b>", այդ թվում՝ պատվաստանյութերի, լաբորատոր արդյունքների և այլ բաների մասին"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect-ի միջոցով դուք կարող եք՝"</string>
-    <string name="share_data" msgid="3481932156368883946">"Կիսվեք տվյալներով հավելվածների հետ"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Ընտրեք տվյալները, որոնք յուրաքանչյուր հավելված կարող է կարդալ և գրանցել Health Connect-ում"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Կառավարեք կարգավորումները և գաղտնիությունը"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Փոխեք հավելվածի թույլտվությունները և կառավարեք ձեր տվյալները"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect-ի միջոցով՝"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Հետ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Սկսել"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Ջնջել տվյալները"</string>
@@ -1143,17 +1143,17 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%s</xliff:g> հավելվածի ընտրված տվյալները"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>ի բոլոր գրառումները"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ընտրված գրառումները"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Ընդմիշտ ջնջե՞լ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Ընդմիշտ ջնջե՞լ այս գրառումը"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
-    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի բոլոր գրառումները"</string>
-    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ի բոլոր գրառումները"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ընտրված գրառումները"</string>
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ժամանակահատվածի ընտրված գրառումները"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածում <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ի ընտրված գրառումները"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Ընդմիշտ ջնջե՞լ <xliff:g id="APP_NAME">%s</xliff:g> հավելվածում կատարած այս գրառումը"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Ընդմիշտ ջնջե՞լ ընտրված տվյալները (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) <xliff:g id="APP_NAME">%2$s</xliff:g> հավելվածի համար"</string>
     <string name="on" msgid="8266542510798355807">"Միացված է"</string>

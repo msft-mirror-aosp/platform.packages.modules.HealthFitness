@@ -45,7 +45,7 @@
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferencias"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Gestionar datos"</string>
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Exporta e importa datos"</string>
-    <string name="recent_access_header" msgid="7623497371790225888">"Acceso reciente"</string>
+    <string name="recent_access_header" msgid="7623497371790225888">"Accesos recientes"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Ninguna aplicación ha accedido a Salud conectada recientemente"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Ver todos los accesos recientes"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Consulta qué aplicaciones han accedido a tus datos en las últimas 24 horas"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Salud conectada almacena tus datos de salud y actividad física, y te ofrece una forma sencilla de sincronizar las diferentes aplicaciones de tu dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Salud conectada almacena y sincroniza tus datos de salud y actividad física de diferentes aplicaciones.\n\n"<b>"Datos de actividad física y bienestar,"</b>" como sesiones de ejercicio, pasos, nutrición y sueño \n\n"<b>"Registros de salud,"</b>" como vacunas y resultados de analíticas"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Salud conectada, puedes hacer lo siguiente:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Comparte datos con tus aplicaciones"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Elige los datos que cada aplicación puede leer o escribir en Salud conectada"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gestiona tu configuración y privacidad"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Cambia los permisos de las aplicaciones y gestiona tus datos en cualquier momento"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atrás"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Empezar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Eliminar datos"</string>
@@ -1182,7 +1182,7 @@
     <string name="allowed" msgid="4158456017482263737">"Permitida"</string>
     <string name="not_allowed" msgid="6092523505093372147">"No permitida"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"Las aplicaciones con este permiso pueden acceder a los datos de <xliff:g id="DATA_TYPE">%s</xliff:g> de los sensores de tu dispositivo."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quitar el acceso a <xliff:g id="DATA_TYPE">%s</xliff:g> de todas las aplicaciones de tu reloj?"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quitar el acceso de todas las aplicaciones de tu reloj a <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificación"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Marca de cierre"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Actualmente, <xliff:g id="APP_NAME">%1$s</xliff:g> puede acceder a los datos de actividad física y bienestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>

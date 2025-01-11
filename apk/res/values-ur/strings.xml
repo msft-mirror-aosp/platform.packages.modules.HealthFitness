@@ -537,14 +537,14 @@
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"کوئی ایپ دستیاب نہیں۔ کلاؤڈ اسٹوریج ایپس کو یہاں دیکھنے کے لیے انسٹال کریں"</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"مزید اختیارات کے لئے، کلاؤڈ اسٹوریج ایپس کو یہاں دیکھنے کے لیے انسٹال کریں"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"‫Play اسٹور پر جائیں"</string>
-    <string name="onboarding_title" msgid="8550656211291180188">"Health Connect کے ساتھ شروع کریں"</string>
+    <string name="onboarding_title" msgid="8550656211291180188">"‫Health Connect کے ساتھ شروع کریں"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے آلہ پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"‫Health Connect مختلف ایپس کے آپ کی صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے اور مطابقت پذیر بناتی ہے۔\n\n"<b>"صحت اور فلاح و بہبود کا ڈیٹا،"</b>" بشمول ورزش کے سیشنز، قدموں کی تعداد، غذائیت اور نیند وغیرہ\n\n"<b>"صحت کے ریکارڈز،"</b>" بشمول ویکسینز اور لیب کے نتائج وغیرہ"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"‫Health Connect کے ساتھ آپ درج ذیل چیزیں کر سکتے ہیں"</string>
-    <string name="share_data" msgid="3481932156368883946">"اپنی ایپس کے ساتھ ڈیٹا کا اشتراک کریں"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"وہ ڈیٹا منتخب کریں جسے ہر ایپ Health Connect پر پڑھ یا لکھ سکتی ہے"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"اپنی ترتیبات اور رازداری کا نظم کریں"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ایپ کی اجازتیں تبدیل کریں اور کسی بھی وقت اپنے ڈیٹا کا نظم کریں"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"واپس جائیں"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"شروع کریں"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ڈیٹا حذف کریں"</string>
@@ -791,7 +791,7 @@
     <string name="mindfulness_type_other" msgid="793524328911038908">"دیگر"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"غیر رہنما شدہ سیشن"</string>
     <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"معتدل"</string>
-    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"مضبوط"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"شدید"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> منٹ"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> گھنٹے <xliff:g id="MIN">%2$s</xliff:g> منٹ"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> گھنٹہ"</string>

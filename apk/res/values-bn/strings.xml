@@ -52,7 +52,7 @@
     <string name="today_header" msgid="1006837293203834373">"আজ"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"গতকাল"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"পড়ুন: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"লিখুন: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"লেখা: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"অনুমতি ম্যানেজ করুন"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"সময়: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect আপনার স্বাস্থ্য ও ফিটনেস সম্পর্কিত ডেটা সেভ করে, যার ফলে আপনি সহজেই বিভিন্ন অ্যাপ আপনার ডিভাইসে সিঙ্ক করে নিতে পারেন"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect বিভিন্ন অ্যাপ থেকে আপনার স্বাস্থ্য ও ফিটনেস সম্পর্কিত ডেটা সেভ ও সিঙ্ক করে।\n\n"<b>"ফিটনেস এবং সুস্থতা সংক্রান্ত ডেটা,"</b>" এর মধ্যে ব্যায়ামের সেশন, কতটা হেঁটেছেন, পুষ্টি, ঘুম ও আরও অনেক কিছু অন্তর্ভুক্ত\n\n"<b>"স্বাস্থ্য বিষয়ক রেকর্ড,"</b>" এর মধ্যে ভ্যাকসিন, ল্যাবের ফলাফল ও আরও অনেক কিছু অন্তর্ভুক্ত"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect -এর মাধ্যমে আপনি এগুলি করতে পারবেন"</string>
-    <string name="share_data" msgid="3481932156368883946">"অ্যাপের সাথে ডেটা শেয়ার করুন"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"প্রতিটি অ্যাপ, Health Connect-এর যেসব ডেটা দেখতে ও এডিট করতে পারবে সেগুলি বেছে নিন"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"আপনার সেটিংস ও গোপনীয়তা ম্যানেজ করুন"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"যেকোনও সময় অ্যাপকে দেওয়া অনুমতি পরিবর্তন ও আপনার ডেটা ম্যানেজ করুন"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ফিরে যান"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"শুরু করুন"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ডেটা মুছে দিন"</string>

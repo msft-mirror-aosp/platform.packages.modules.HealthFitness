@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect menyimpan data kesehatan dan kebugaran Anda, yang memberi Anda cara sederhana untuk menyinkronkan berbagai aplikasi di perangkat"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect menyimpan dan menyinkronkan data kesehatan dan kebugaran Anda dari berbagai aplikasi.\n\n"<b>"Data kebugaran dan kesehatan,"</b>" termasuk sesi olahraga, langkah, nutrisi, tidur, dan lainnya\n\n"<b>"Catatan kesehatan,"</b>" termasuk vaksinasi, hasil laboratorium, dan lainnya"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Dengan Health Connect, Anda dapat"</string>
-    <string name="share_data" msgid="3481932156368883946">"Berbagi data dengan aplikasi lainnya"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Pilih data yang dapat dibaca atau ditulis ke Health Connect oleh setiap aplikasi"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Kelola setelan dan privasi"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Ubah izin aplikasi dan kelola data Anda kapan saja"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Kembali"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Mulai"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Hapus data"</string>

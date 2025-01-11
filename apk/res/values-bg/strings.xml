@@ -445,7 +445,7 @@
     <string name="permissions_header" msgid="6519976063360071569">"Разрешения"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Физическа активност и благосъстояние"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Упражнения, сън, хранене и др."</string>
-    <string name="medical_permissions" msgid="1224097151249321566">"Здравни досиета"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Здравни картони"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"здравни досиета"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"Лаб. резултати, лекарства, ваксини и др."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Премахнати разрешения за приложенията"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на устройството си"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect съхранява и синхронизира данните за здравето и физическата ви активност от различни приложения.\n\n"<b>"Данните за физическата активност и благосъстоянието,"</b>" включително сесиите с упражнения, крачките, храненето, съня и др.\n\n"<b>"Здравните картони,"</b>" включително ваксини, лабораторни резултати и др."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"С Health Connect можете да правите следното"</string>
-    <string name="share_data" msgid="3481932156368883946">"Споделяне на данни с приложенията ви"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Изберете типовете данни, които отделните приложения да четат или записват в Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Настройки и поверителност"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Променяйте разрешенията за приложението и управлявайте данните си"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Начало"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Изтриване на данните"</string>
@@ -790,8 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Музика"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Друго"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Без напътствия"</string>
-    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Средно"</string>
-    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Интензивно"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Средна"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Интензивна"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> мин"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ч и <xliff:g id="MIN">%2$s</xliff:g> мин"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ч"</string>

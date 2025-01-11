@@ -540,11 +540,11 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Comença amb Salut connectada"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Salut connectada emmagatzema les teves dades de salut i fitnes, i t\'ofereix una manera senzilla de sincronitzar les diverses aplicacions del dispositiu"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Salut connectada emmagatzema i sincronitza les teves dades de salut i fitnes de diverses aplicacions.\n\n"<b>"Dades de salut i benestar"</b>", com ara sessions d\'exercici, passos, nutrició, son i més\n\n"<b>"Registres de salut"</b>", com ara vacunes, analítiques i més"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Amb Salut connectada, pots"</string>
-    <string name="share_data" msgid="3481932156368883946">"Comparteix dades amb les aplicacions"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Tria les dades que cada aplicació pot llegir o escriure a Salut connectada"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gestiona la configuració i la privadesa"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Canvia els permisos de l\'aplicació i gestiona les teves dades en qualsevol moment"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Amb Salut connectada"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Torna"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Comença"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Suprimeix les dades"</string>

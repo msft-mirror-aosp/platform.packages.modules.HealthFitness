@@ -445,7 +445,7 @@
     <string name="permissions_header" msgid="6519976063360071569">"அனுமதிகள்"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"உடற்பயிற்சியும் ஆரோக்கியமும்"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"உடற்பயிற்சி, உறக்கம், ஊட்டச்சத்து &amp; பிற"</string>
-    <string name="medical_permissions" msgid="1224097151249321566">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள்"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"உடல்நலம் குறித்த தகவல்கள்"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள்"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"ஆய்வக முடிவு, மருந்து, தடுப்பூசி &amp; பிற"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"அகற்றப்பட்ட ஆப்ஸ் அனுமதிகள்"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி குறித்த தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் சாதனத்திலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect வெவ்வேறு ஆப்ஸிலிருந்து ஆரோக்கியம் மற்றும் உடற்பயிற்சி குறித்த தரவைச் சேமித்து ஒத்திசைக்கிறது.\n\n"<b>"உடற்பயிற்சி மற்றும் ஆரோக்கியம் குறித்த தரவு,"</b>" இதில் உடற்பயிற்சி அமர்வுகள், காலடிகள், ஊட்டச்சத்து, உறக்கம் மற்றும் பல அடங்கும்\n\n"<b>"உடல்நலம் குறித்த சுருக்கமான தகவல்கள்,"</b>" இதில் தடுப்பூசிகள், ஆய்வக முடிவுகள் மற்றும் பல அடங்கும்"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect மூலம் இவற்றைச் செய்யலாம்:"</string>
-    <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ஒவ்வொரு ஆப்ஸும் Health Connectடில் வாசிக்க/எழுத வேண்டிய தரவை நீங்கள் தேர்வுசெய்யலாம்."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"உங்கள் அமைப்புகளையும் தனியுரிமையையும் நிர்வகித்தல்"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"எப்போது வேண்டுமானாலும் ஆப்ஸ் அனுமதிகளை மாற்றலாம் உங்கள் தரவை நிர்வகிக்கலாம்"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"பின்செல்"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"தொடங்குக"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"தரவை நீக்கும்"</string>

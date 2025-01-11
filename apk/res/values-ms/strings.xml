@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect menyimpan data kesihatan dan kecergasan anda, menyediakan cara yang mudah untuk menyegerakkan pelbagai apl pada peranti anda"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect menyimpan dan menyegerakkan data kesihatan dan kecergasan anda daripada apl yang berbeza.\n\n"<b>"Data kecergasan dan kesejahteraan,"</b>" termasuk sesi senaman, langkah, nutrisi, tidur dan banyak lagi\n\n"<b>"Rekod kesihatan,"</b>" termasuk vaksin, keputusan makmal dan banyak lagi"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Dengan Health Connect, anda boleh"</string>
-    <string name="share_data" msgid="3481932156368883946">"Kongsi data dengan apl anda"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Pilih data yang boleh dibaca atau ditulis oleh setiap apl pada Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Urus tetapan dan privasi anda"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Tukar kebenaran apl dan urus data anda pada bila-bila masa"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Kembali"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Mulakan"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Padamkan data"</string>

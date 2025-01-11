@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"የጤና አገናኝ የእርስዎን የጤና እና አካል ብቃት ውሂብ ያከማቻል፣ ይህም በመሣሪያዎ ላይ ያሉ የተለያዩ መተግበሪያዎችን ለማስመር ቀላል መንገድ ይሰጥዎታል"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"የጤና አገናኝ የጤና እና አካል ብቃት ውሂብዎን ከተለያዩ መተግበሪያዎች ያከማቻል እና ያሰምራል።\n\n"<b>"የልምምድ ክፍለ-ጊዜዎች፣ እርምጃዎች፣ አመጋገብ፣ እንቅልፍ እና ሌሎችንም ጨምሮ"</b>"የአካል ብቃት እና ጤናማነት ውሂብ\n\n"<b>"ክትባቶች፣ የቤተ ሙከራ ውጤቶች እና ሌሎችንም ጨምሮ"</b>"የጤና መዝገቦች"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"በጤና አገናኝ የሚከተሉትን ማድረግ ይችላሉ"</string>
-    <string name="share_data" msgid="3481932156368883946">"በመተግበሪያዎችዎ ውሂብን ያጋሩ"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"እያንዳንዱ መተግበሪያ በጤና አገናኝ ላይ ማንበብ ወይም መጻፍ የሚችለውን ውሂብ ይምረጡ"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"የእርስዎን ቅንብሮች እና ግላዊነት ያስተዳድሩ"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"በማንኛውም ጊዜ የመተግበሪያ ፈቃዶችን ይለውጡ እና ውሂብዎን ያስተዳድሩ"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ተመለስ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ይጀምሩ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ውሂብን ይሰርዙ"</string>

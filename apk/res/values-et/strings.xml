@@ -296,7 +296,7 @@
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"pulsi varieeruvus"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Pulsi varieeruvuse lugemine"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Pulsi varieeruvuse kirjutamine"</string>
-    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Hapnikuküllastatus"</string>
+    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Hapniku­küllastatus"</string>
     <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"hapnikuküllastatus"</string>
     <string name="oxygen_saturation_read_content_description" msgid="4756434113425028212">"Hapnikuküllastatuse lugemine"</string>
     <string name="oxygen_saturation_write_content_description" msgid="7189901097196830875">"Hapnikuküllastatuse kirjutamine"</string>
@@ -308,7 +308,7 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"pulss puhkamisel"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Puhkamisaegse pulsi lugemine"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Puhkamisaegse pulsi kirjutamine"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Nahatemperatuur"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Naha­temperatuur"</string>
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"nahatemperatuur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Saate lugeda naha temperatuuri"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Saate kirjutada välja naha temperatuuri"</string>
@@ -427,7 +427,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Eemalda kõik"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Rakenduse haldamine"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Kuva rakenduse andmed"</string>
-    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Eemaldage sellele rakendusele juurdepääs"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Eemaldage selle rakenduse juurdepääs"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Kustuta rakenduse andmed"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Inaktiivsed rakendused"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Nendel rakendustel pole enam juurdepääsu, kuid nende andmed on endiselt Health Connecti salvestatud."</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect talletab teie tervise- ja treeninguandmeid, pakkudes teile lihtsat viisi seadmes eri rakenduste sünkroonimiseks"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect talletab ja sünkroonib teie tervise- ja treeninguandmed eri rakendustest.\n\n"<b>"Treeningu- ja heaoluandmed,"</b>" sh treeningseansid, sammude arv, toitumine, uni ja muud\n\n"<b>"Terviseandmed,"</b>" sh vaktsiinid, laboritulemused ja muud"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connectiga saate teha järgmist."</string>
-    <string name="share_data" msgid="3481932156368883946">"Jagage oma rakendustega andmeid"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Valige, milliseid andmeid iga rakendus lugeda või Health Connecti kirjutada saab."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Hallake oma seadeid ja privaatsust"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Muutke mis tahes ajal rakenduste lube ja hallake oma andmeid."</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Mine tagasi"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Alustage"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Kustuta andmed"</string>
@@ -1167,7 +1167,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Keeldu kõigist"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs treeningu- ja heaoluandmetele?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> taotleb juurdepääsu järgmisele: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nValige, kas lubada kõik või juhtida neid ükshaaval."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs seadmele <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs andmetüübile <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Vormisolek ja heaolu"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"kogu aeg"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"kasutamise ajal"</string>
@@ -1177,16 +1177,16 @@
     <string name="allowed_to_access" msgid="4179317387300812335">"Lubatud juurde pääseda"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Lubatud lugeda"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Need load annavad rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääsu teie seadme andurite andmetele."</string>
-    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> rakendust on lubatud"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> rakendus(t) <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>-st on lubatud"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"Ükski rakendus ei taotle"</string>
     <string name="allowed" msgid="4158456017482263737">"Lubatud"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Pole lubatud"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"Selle õigusega rakendustel on teie seadme andurite kaudu juurdepääs andmetele <xliff:g id="DATA_TYPE">%s</xliff:g>."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Kas eemaldada andmete <xliff:g id="DATA_TYPE">%s</xliff:g> juurdepääs kõigile kellas olevatele rakendustele?"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Selle õigusega rakendustel on teie seadme andurite kaudu juurdepääs andmetüübile <xliff:g id="DATA_TYPE">%s</xliff:g>."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Kas eemaldada kõigi kellas olevate rakenduste juurdepääs andmetüübile <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Märge"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Rist"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Praegu pääseb <xliff:g id="APP_NAME">%1$s</xliff:g> juurde kõikidele teie treeningu- ja heaoluandmetele <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> kogu aeg juurdepääs treeningu- ja heaoluandmetele?"</string>
-    <string name="current_access" msgid="1457167070428176139">"Rakendusel <xliff:g id="APP_NAME">%1$s</xliff:g> on juurdepääs andmetele <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Hallake treeningu ja heaoluga seotud lubasid"</string>
+    <string name="current_access" msgid="1457167070428176139">"Rakendusel <xliff:g id="APP_NAME">%1$s</xliff:g> on juurdepääs andmetele <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Treeningu ja heaoluga seotud lubade haldamine"</string>
 </resources>

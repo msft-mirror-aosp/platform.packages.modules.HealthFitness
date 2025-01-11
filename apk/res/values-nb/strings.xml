@@ -48,7 +48,7 @@
     <string name="recent_access_header" msgid="7623497371790225888">"Nylig tilgang"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Ingen apper har nylig brukt Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Se all nylig tilgang"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"Se hvilke apper som har lest dataene dine i løpet av de siste 24 timene"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"Se hvilke apper som har lest dataene dine de siste 24 timene"</string>
     <string name="today_header" msgid="1006837293203834373">"I dag"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"I går"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lest: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -184,8 +184,8 @@
     <string name="steps_lowercase_label" msgid="706153549312838582">"skritt"</string>
     <string name="steps_read_content_description" msgid="7839297670092769964">"Les skritt"</string>
     <string name="steps_write_content_description" msgid="6360223825799711659">"Skriv skritt"</string>
-    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"Totalt antall forbrente kalorier"</string>
-    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"totalt antall forbrente kalorier"</string>
+    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"Sum forbrente kalorier"</string>
+    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"sum forbrente kalorier"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Les totalt antall forbrente kalorier"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Skriv totalt antall forbrente kalorier"</string>
     <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Maksimalt oksygenopptak"</string>
@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lagrer helse- og treningsdataene dine, slik at du enkelt kan synkronisere de forskjellige appene på enheten"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lagrer og synkroniserer helse- og treningsdataene dine fra forskjellige apper.\n\n"<b>"Trenings- og velværedata,"</b>" inkludert treningsøkter, skritt, ernæring, søvn med mer\n\n"<b>"Helsejournaler,"</b>" inkludert vaksiner, laboratorieresultater med mer"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du"</string>
-    <string name="share_data" msgid="3481932156368883946">"Del data med appene"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Velg dataene hver app kan lese eller skrive til Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Innstillinger og personvern"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Endre apptillatelser og administrer dataene dine når som helst"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gå tilbake"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kom i gang"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Slett data"</string>

@@ -48,11 +48,11 @@
     <string name="recent_access_header" msgid="7623497371790225888">"Nedávny prístup"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Dáta o zdraví v poslednom čase nepoužili žiadne aplikácie"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Zobraziť všetky nedávne prístupy"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"Zistite, ktoré aplikácie získali prístup k vašim údajom za posledných 24 hodín."</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"Zobrazte si, ktoré aplikácie použili vaše údaje v posledných 24 hodinách."</string>
     <string name="today_header" msgid="1006837293203834373">"Dnes"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Včera"</string>
-    <string name="read_data_access_label" msgid="8968758932021241976">"Číta: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"Zapisuje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Čítanie: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Zápis: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Spravovať povolenia"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Čas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -537,14 +537,14 @@
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"Nie sú k dispozícii žiadne aplikácie. Nainštalujte si aplikácie cloudového priestoru, budú sa zobrazovať tu."</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"Ak chcete získať ďalšie možnosti, nainštalujte si aplikácie cloudového priestoru, aby sa tu zobrazovali"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Prejsť do Obchodu Play"</string>
-    <string name="onboarding_title" msgid="8550656211291180188">"Začíname s Dátami o zdraví"</string>
+    <string name="onboarding_title" msgid="8550656211291180188">"Začíname s aplikáciou Dáta o zdraví"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii a umožňujú vám jednoducho synchronizovať rôzne aplikácie v zariadení"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii z rôznych aplikácií a synchronizujú ich v týchto aplikáciách.\n\n"<b>"Údaje o kondícii a celkovej pohode"</b>" vrátane relácií cvičení, krokov, výživy, spánku a ďalších.\n\n"<b>"Zdravotné záznamy"</b>" vrátane údajov o očkovaniach, laboratórnych výsledkov a ďalších."</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Pomocou Dát o zdraví môžete"</string>
-    <string name="share_data" msgid="3481932156368883946">"Zdieľanie údajov s aplikáciami"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Vyberte, ktoré údaje budú môcť jednotlivé aplikácie v Dátach o zdraví čítať alebo zapisovať"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Správa nastavení a ochrany súkromia"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Kedykoľvek môžete zmeniť povolenia aplikácie a spravovať svoje údaje"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii z rôznych aplikácií a synchronizujú ich v týchto aplikáciách.\n\n"<b>"Údaje o kondícii a kvalite života"</b>" vrátane cvičení, krokov, výživy, spánku a ďalších\n\n"<b>"Zdravotné záznamy"</b>" vrátane údajov o očkovaniach, laboratórnych výsledkov a ďalších"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Možnosti aplikácie Dáta o zdraví"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Prejsť späť"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Začíname"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Odstránenie údajov"</string>
@@ -1144,7 +1144,7 @@
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Chcete natrvalo odstrániť všetky záznamy z dňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Chcete natrvalo odstrániť všetky záznamy z týždňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Chcete natrvalo odstrániť všetky záznamy z mesiaca <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Chcete natrvalo odstrániť vybrané záznamy z dňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Chcete natrvalo odstrániť vybrané záznamy z <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Chcete natrvalo odstrániť vybrané záznamy z týždňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Chcete natrvalo odstrániť vybrané záznamy z mesiaca <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Chcete tento záznam natrvalo odstrániť?"</string>

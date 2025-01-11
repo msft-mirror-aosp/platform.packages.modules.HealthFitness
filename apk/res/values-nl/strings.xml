@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect slaat je gezondheids- en fitnessgegevens op zodat je de verschillende apps op je apparaat makkelijk kunt synchroniseren"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect slaat je gezondheids- en fitnessgegevens uit verschillende apps op en synchroniseert deze.\n\n"<b>"Fitness- en welzijnsgegevens,"</b>" waaronder trainingssessies, stappen, voeding en slaap\n\n"<b>"Medische dossiers,"</b>" waaronder vaccinaties, labresultaten en meer"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Met Health Connect kun je het volgende doen"</string>
-    <string name="share_data" msgid="3481932156368883946">"Gegevens delen met je apps"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Kies de gegevens die elke app mag lezen in of sturen naar Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Je instellingen en privacy beheren"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Wijzig app-rechten en beheer je gegevens wanneer je maar wilt"</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Terug"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Aan de slag"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Gegevens verwijderen"</string>
@@ -947,7 +947,7 @@
     <string name="feet_inches_format" msgid="768610500549967860">"<xliff:g id="FT">%1$s</xliff:g><xliff:g id="IN">%2$s</xliff:g>⁠"</string>
     <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>"</string>
     <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 calorie}other{# calorieën}}"</string>
-    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 cal.}other{# cal.}}"</string>
+    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 cal}other{# cal}}"</string>
     <string name="kj" msgid="2742876437259085714">"{count,plural, =1{1 kJ}other{# kJ}}"</string>
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 kilojoule}other{# kilojoules}}"</string>
     <string name="percent" formatted="false" msgid="9199428244800776575">"{value,plural, =1{1%}other{#%}}"</string>

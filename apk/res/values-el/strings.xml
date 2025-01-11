@@ -541,10 +541,10 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Το Health Connect αποθηκεύει τα δεδομένα υγείας και φυσικής κατάστασής σας, προσφέροντας έναν απλό τρόπο συγχρονισμού των διαφορετικών εφαρμογών στη συσκευή σας"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Το Health Connect αποθηκεύει και συγχρονίζει τα δεδομένα υγείας και φυσικής κατάστασης από διαφορετικές εφαρμογές.\n\n"<b>"Δεδομένα φυσικής κατάστασης και ευεξίας,"</b>" όπως οι δραστηριότητες άσκησης, τα βήματα, η διατροφή, ο ύπνος και άλλα\n\n"<b>"Ιατρικοί φάκελοι,"</b>" όπως τα εμβόλια, τα αποτελέσματα εργαστηριακών εξετάσεων και άλλα"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Με το Health Connect, μπορείτε να κάνετε τα εξής"</string>
-    <string name="share_data" msgid="3481932156368883946">"Μοιραστείτε δεδομένα με τις εφαρμογές σας"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Επιλέξτε τα δεδομένα που μπορεί να διαβάσει ή να εγγράψει κάθε εφαρμογή στο Health Connect."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Διαχειριστείτε τις ρυθμίσεις και το απόρρητό σας"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Αλλάξτε τις άδειες εφαρμογών και διαχειριστείτε τα δεδομένα σας ανά πάσα στιγμή."</string>
+    <!-- no translation found for share_data_text (6898398345784931678) -->
+    <skip />
+    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
+    <skip />
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Επιστροφή"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Έναρξη"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Διαγραφή δεδομένων"</string>
@@ -1143,7 +1143,7 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Οριστική διαγραφή των επιλεγμένων δεδομένων της εφαρμογής <xliff:g id="APP_NAME">%s</xliff:g>;"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Οριστική διαγραφή όλων των καταχωρίσεων για την ημέρα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Οριστική διαγραφή όλων των καταχωρίσεων για την εβδομάδα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Οριστική διαγραφή όλων των καταχωρίσεων για τον μήνα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Οριστική διαγραφή όλων των καταχωρίσεων του <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων για την ημέρα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων για την εβδομάδα <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Οριστική διαγραφή των επιλεγμένων καταχωρίσεων του <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>;"</string>
