@@ -62,6 +62,10 @@
     <string name="separator" description="Separator (comma and whitespace in English) for a potentially long list of data type names listed in data access entry, as in 'Write: Steps, Distance, Calories'. [CHAR_LIMIT=NONE]">,\u0020</string>
     <string name="manage_permissions" description="Text for floating action button that takes users from Recent Access apps to the App permissions screen [CHAR LIMIT=40]">Manage permissions</string>
     <string name="recent_access_time_content_descritption" description="Content description for time section of recent access preference providing better context for accessibility talk back. [CHAR_LIMIT=NONE]">Time: <xliff:g example="13:05" id="recent_access_time">%1$s</xliff:g></string>
+
+    <string name="recent_access_empty_state_title" description="Title of section shown when no apps have recently accessed health data [CHAR_LIMIT=NONE]">No recent access</string>
+    <string name="recent_access_empty_state_description" description="Description of section shown when no apps have recently accessed health data [CHAR_LIMIT=NONE]">Apps which have recently accessed your data will automatically show here</string>
+    <string name="recent_access_view_all_button" description="Label on a button leading to another screen showing all the writes and reads performed by connected apps in the last 24 hours. [CHAR LIMIT=50]">View all</string>
     <!--endregion-->
 
     <!--region Data categories  -->

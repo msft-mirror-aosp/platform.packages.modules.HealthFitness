@@ -64,7 +64,7 @@ fun buttonPreference(
     logName: ElementName?,
     key: String?,
     order: Int?,
-    listener: OnPreferenceClickListener?,
+    listener: (() -> Unit)?,
 ): Preference {
     return if (SettingsThemeHelper.isExpressiveTheme(context)) {
         HealthButtonPreference(context).also { preference ->
@@ -73,7 +73,7 @@ fun buttonPreference(
             logName?.let { preference.logName = it }
             key?.let { preference.key = it }
             order?.let { preference.order = it }
-            listener?.let { preference.onPreferenceClickListener = it }
+            listener?.let { (preference).setOnClickListener { it() } }
         }
     } else {
         HealthPreference(context).also { preference ->
@@ -82,7 +82,12 @@ fun buttonPreference(
             logName?.let { preference.logName = it }
             key?.let { preference.key = it }
             order?.let { preference.order = it }
-            listener?.let { preference.onPreferenceClickListener = it }
+            listener?.let {
+                preference.onPreferenceClickListener = OnPreferenceClickListener {
+                    it()
+                    true
+                }
+            }
         }
     }
 }

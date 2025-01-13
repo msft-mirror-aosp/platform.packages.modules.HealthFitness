@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.shared.preference
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.preference.Preference
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.utils.logging.ElementName
@@ -39,11 +40,9 @@ constructor(context: Context, attrs: AttributeSet? = null) :
         this.setButtonStyle(/* type=tonal */ 1, /* size=normal */ 0)
     }
 
-    override fun setOnPreferenceClickListener(
-        onPreferenceClickListener: OnPreferenceClickListener?
-    ) {
-        super.setOnPreferenceClickListener(
-            HealthPreferenceUtils.loggingListener(logger, logName, onPreferenceClickListener)
+    override fun setOnClickListener(listener: View.OnClickListener?) {
+        super.setOnClickListener(
+            HealthPreferenceUtils.loggingButtonClickListener(logger, logName, listener)
         )
     }
 

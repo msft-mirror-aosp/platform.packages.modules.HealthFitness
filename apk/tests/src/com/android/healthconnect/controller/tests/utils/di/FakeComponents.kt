@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.utils.di
 
+import android.content.Context
 import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
@@ -65,6 +66,7 @@ import com.android.healthconnect.controller.permissions.shared.IQueryRecentAcces
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.recentaccess.ILoadRecentAccessUseCase
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
+import com.android.healthconnect.controller.shared.IExpressiveThemingHelper
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.IGetContributorAppInfoUseCase
@@ -635,5 +637,17 @@ class FakeLoadImportStatusUseCase : ILoadImportStatusUseCase {
 
     override suspend fun invoke(): ExportImportUseCaseResult<ImportUiState> {
         return ExportImportUseCaseResult.Success(importState)
+    }
+}
+
+class FakeExpressiveTheming : IExpressiveThemingHelper {
+    private var isExpressiveTheme = false
+
+    override fun isExpressiveTheme(context: Context): Boolean {
+        return this.isExpressiveTheme
+    }
+
+    fun setIsExpressiveTheme(isExpressive: Boolean) {
+        this.isExpressiveTheme = isExpressive
     }
 }
