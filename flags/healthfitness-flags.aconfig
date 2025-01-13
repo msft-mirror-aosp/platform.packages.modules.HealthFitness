@@ -465,3 +465,11 @@ flag {
     is_exported: true
 }
 
+flag {
+    name: "single_user_permission_intent_tracker"
+    namespace: "health_fitness_aconfig"
+    description: "Make changes to the HealthPermissionIntentAppsTracker to make it per user instead of handling all users in one class."
+    bug: "389614387"
+    is_fixed_read_only: true
+    is_exported: true
+}
