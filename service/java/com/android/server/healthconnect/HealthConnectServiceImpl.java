@@ -397,7 +397,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mExportImportSettingsStorage,
                                 mReadAccessLogsHelper)
                         : null;
-        mCloudRestoreManager = Flags.cloudBackupAndRestore() ? new CloudRestoreManager() : null;
+        mCloudRestoreManager =
+                Flags.cloudBackupAndRestore()
+                        ? new CloudRestoreManager(
+                                transactionManager, deviceInfoHelper, appInfoHelper)
+                        : null;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {

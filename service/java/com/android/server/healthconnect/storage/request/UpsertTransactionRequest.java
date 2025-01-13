@@ -63,7 +63,7 @@ public class UpsertTransactionRequest {
     /** Create an upsert request for insert API calls. */
     public static UpsertTransactionRequest createForInsert(
             String packageName,
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             ArrayMap<String, Boolean> extraPermsStateMap) {
@@ -87,7 +87,7 @@ public class UpsertTransactionRequest {
     /** Create an upsert request for update API calls. */
     public static UpsertTransactionRequest createForUpdate(
             String packageName,
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             ArrayMap<String, Boolean> extraPermsStateMap) {
@@ -111,7 +111,7 @@ public class UpsertTransactionRequest {
 
     /** Create an upsert request for restore operation. */
     public static UpsertTransactionRequest createForRestore(
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper) {
         // Ensure each record has a record id set.
@@ -131,7 +131,7 @@ public class UpsertTransactionRequest {
 
     private UpsertTransactionRequest(
             @Nullable String packageName,
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             boolean isInsertRequest,
