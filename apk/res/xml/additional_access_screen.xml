@@ -18,10 +18,8 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <com.android.settingslib.widget.AppHeaderPreference
-        android:key="manage_app_permission_header" />
-
+        android:key="app_header_preference" />
     <com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
         android:key="key_history_read"
         android:title="@string/history_read_combined_request_title"

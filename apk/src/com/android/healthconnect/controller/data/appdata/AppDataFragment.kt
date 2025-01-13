@@ -45,6 +45,7 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.NoDataPreference
+import com.android.healthconnect.controller.shared.preference.addIntroOrAppHeaderPreference
 import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.logging.AppDataElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -53,7 +54,6 @@ import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
-import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -70,7 +70,6 @@ open class AppDataFragment : Hilt_AppDataFragment() {
         private const val KEY_PERMISSION_TYPES = "key_permission_types"
         private const val KEY_NO_DATA = "no_data_preference"
         private const val KEY_FOOTER = "key_footer"
-        private const val KEY_HEADER = "key_header"
     }
 
     init {
@@ -85,7 +84,6 @@ open class AppDataFragment : Hilt_AppDataFragment() {
     private val viewModel: AppDataViewModel by viewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
 
-    private val headerPreference: AppHeaderPreference by pref(KEY_HEADER)
     private val selectAllCheckboxPreference: SelectAllCheckboxPreference by pref(KEY_SELECT_ALL)
     private val permissionTypesListGroup: PreferenceCategory by pref(KEY_PERMISSION_TYPES)
 
@@ -162,10 +160,7 @@ open class AppDataFragment : Hilt_AppDataFragment() {
         viewModel.loadAppData(packageName)
 
         viewModel.appInfo.observe(viewLifecycleOwner) { appMetadata ->
-            headerPreference.apply {
-                icon = appMetadata.icon
-                title = appMetadata.appName
-            }
+            addIntroOrAppHeaderPreference(preferenceScreen, requireContext(), appMetadata)
             footerPreference.title =
                 getString(R.string.app_data_no_data_footer, appMetadata.appName)
         }

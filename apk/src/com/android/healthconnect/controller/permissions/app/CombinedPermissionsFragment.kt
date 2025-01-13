@@ -37,6 +37,7 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.addIntroOrAppHeaderPreference
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.CombinedAppAccessElement
@@ -44,7 +45,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -57,7 +57,6 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     companion object {
-        private const val PERMISSION_HEADER = "manage_app_permission_header"
         private const val MANAGE_PERMISSIONS_PREFERENCE_KEY = "manage_permissions"
         private const val MANAGE_APP_PREFERENCE_KEY = "manage_app"
         private const val FOOTER_KEY = "connected_app_footer"
@@ -73,7 +72,6 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     private var appName = ""
     private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
     private val additionalAccessViewModel: AdditionalAccessViewModel by activityViewModels()
-    private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
     private val managePermissionsCategory: PreferenceGroup by
         pref(MANAGE_PERMISSIONS_PREFERENCE_KEY)
     private val manageAppCategory: PreferenceGroup by pref(MANAGE_APP_PREFERENCE_KEY)
@@ -140,11 +138,17 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
     private fun setupHeader() {
         appPermissionViewModel.appInfo.observe(viewLifecycleOwner) { appMetadata ->
-            header.apply {
-                icon = appMetadata.icon
-                title = appMetadata.appName
-            }
+            addIntroOrAppHeaderPreference(preferenceScreen, requireContext(), appMetadata)
+            // To prevent flickering, only show the other preferences once the header is added.
+            // TODO(b/394567790): Add loading screen instead.
+            showHiddenPreferences()
         }
+    }
+
+    private fun showHiddenPreferences() {
+        managePermissionsCategory.isVisible = true
+        manageAppCategory.isVisible = true
+        connectedAppFooter.isVisible = true
     }
 
     private fun setupManagePermissionsPreferenceCategory() {

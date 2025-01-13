@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.shared.preference.addIntroOrAppHeaderPreference
 import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
@@ -51,7 +52,6 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -85,7 +85,6 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
     private val readPermissionCategory: PreferenceGroup by pref(READ_CATEGORY)
     private val writePermissionCategory: PreferenceGroup by pref(WRITE_CATEGORY)
     private val manageAppCategory: PreferenceGroup by pref(MANAGE_APP_CATEGORY)
-    private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
     private val footer: FooterPreference by pref(FOOTER)
     private val onSwitchChangeListener = OnCheckedChangeListener { switchView, isChecked ->
         if (isChecked) {
@@ -203,11 +202,15 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
             appName = appMetadata.appName
             setupAllowAllPreference()
             setupFooter(appMetadata.appName)
-            header.apply {
-                icon = appMetadata.icon
-                title = appMetadata.appName
-            }
+            addIntroOrAppHeaderPreference(preferenceScreen, requireContext(), appMetadata)
+            // To prevent flickering, only show the other preferences once the header is added.
+            // TODO(b/394567790): Add loading screen instead.
+            showHiddenPreferences()
         }
+    }
+
+    private fun showHiddenPreferences() {
+        allowAllPreference.isVisible = true
     }
 
     private fun setupFooter(appName: String) {
@@ -321,6 +324,7 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
     }
 
     private fun updateFooter(isAtLeastOneGranted: Boolean, appName: String) {
+        footer.isVisible = true
         footer.title = getString(R.string.manage_permissions_rationale, appName)
         if (healthPermissionReader.isRationaleIntentDeclared(packageName)) {
             footer.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
@@ -336,7 +340,6 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
         private const val ALLOW_ALL_PREFERENCE = "allow_all_preference"
         private const val READ_CATEGORY = "read_permission_category"
         private const val WRITE_CATEGORY = "write_permission_category"
-        private const val PERMISSION_HEADER = "manage_app_permission_header"
         private const val MANAGE_APP_CATEGORY = "manage_app_category"
         private const val KEY_ADDITIONAL_ACCESS = "additional_access"
         private const val FOOTER = "manage_app_permission_footer"

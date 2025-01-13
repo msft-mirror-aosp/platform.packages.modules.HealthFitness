@@ -14,18 +14,19 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.android.settingslib.widget.AppHeaderPreference
-        android:key="manage_app_permission_header" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<com.android.settingslib.widget.AppHeaderPreference
+        android:key="app_header_preference" />
     <PreferenceCategory
         android:key="manage_permissions"
-        android:title="@string/permissions_header">
-    </PreferenceCategory>
+        android:title="@string/permissions_header"
+        app:isPreferenceVisible="false" />
     <PreferenceCategory
         android:key="manage_app"
-        android:title="@string/manage_permissions_manage_app_header">
-    </PreferenceCategory>
+        android:title="@string/manage_permissions_manage_app_header"
+        app:isPreferenceVisible="false" />
     <com.android.settingslib.widget.FooterPreference
         android:key="connected_app_footer"
-        />
+        app:isPreferenceVisible="false" />
 </PreferenceScreen>

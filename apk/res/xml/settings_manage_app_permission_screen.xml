@@ -15,10 +15,12 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.android.settingslib.widget.AppHeaderPreference android:key="manage_app_permission_header" />
+    <com.android.settingslib.widget.AppHeaderPreference
+        android:key="app_header_preference" />
     <com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
         android:key="allow_all_preference"
-        android:title="@string/request_permissions_allow_all" />
+        android:title="@string/request_permissions_allow_all"
+        app:isPreferenceVisible="false" />
     <PreferenceCategory
         android:key="read_permission_category"
         android:title="@string/manage_permissions_read_header"
@@ -35,5 +37,5 @@
 
     <com.android.settingslib.widget.FooterPreference
         android:key="manage_app_permission_footer"
-    />
+        app:isPreferenceVisible="false" />
 </PreferenceScreen>

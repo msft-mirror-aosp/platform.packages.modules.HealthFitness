@@ -51,6 +51,7 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.shared.preference.addIntroOrAppHeaderPreference
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.LocaleSorter.sortByLocale
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
@@ -59,7 +60,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -72,7 +72,6 @@ import javax.inject.Inject
 class FitnessAppFragment : Hilt_FitnessAppFragment() {
 
     companion object {
-        private const val PERMISSION_HEADER = "manage_app_permission_header"
         private const val ALLOW_ALL_PREFERENCE = "allow_all_preference"
         private const val READ_CATEGORY = "read_permission_category"
         private const val WRITE_CATEGORY = "write_permission_category"
@@ -102,7 +101,6 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
     private val permissionMap: MutableMap<FitnessPermission, HealthSwitchPreference> =
         mutableMapOf()
 
-    private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
     private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
     private val readPermissionCategory: PreferenceGroup by pref(READ_CATEGORY)
     private val writePermissionCategory: PreferenceGroup by pref(WRITE_CATEGORY)
@@ -202,9 +200,9 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
             }
         }
 
+        setupHeader()
         setupAllowAllPreference()
         setupManageDataPreferenceCategory()
-        setupHeader()
         setupFooter()
     }
 
@@ -214,11 +212,18 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
 
     private fun setupHeader() {
         appPermissionViewModel.appInfo.observe(viewLifecycleOwner) { appMetadata ->
-            header.apply {
-                icon = appMetadata.icon
-                title = appMetadata.appName
-            }
+            addIntroOrAppHeaderPreference(preferenceScreen, requireContext(), appMetadata)
+            // To prevent flickering, only show the other preferences once the header is added.
+            // TODO(b/394567790): Add loading screen instead.
+            showHiddenPreferences()
         }
+    }
+
+    private fun showHiddenPreferences() {
+        allowAllPreference.isVisible = true
+        readPermissionCategory.isVisible = true
+        writePermissionCategory.isVisible = true
+        connectedAppFooter.isVisible = true
     }
 
     private fun setupManageDataPreferenceCategory() {
@@ -261,10 +266,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                     findNavController()
                         .navigate(
                             R.id.action_fitnessApp_to_appData,
-                            bundleOf(
-                                EXTRA_PACKAGE_NAME to packageName,
-                                EXTRA_APP_NAME to appName,
-                            ),
+                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
                         )
                     true
                 }
