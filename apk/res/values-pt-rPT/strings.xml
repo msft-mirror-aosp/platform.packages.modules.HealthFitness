@@ -27,7 +27,7 @@
     <string name="all_categories_title" msgid="1446410643217937926">"Todas as categorias"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Ver todas as categorias"</string>
     <string name="no_data" msgid="1906986019249068659">"Sem dados"</string>
-    <string name="connected_apps_title" msgid="279942692804743223">"Autorizações das apps"</string>
+    <string name="connected_apps_title" msgid="279942692804743223">"Permissões das apps"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Faça a gestão das suas apps e autorizações"</string>
     <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps tem(êm) acesso"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps têm acesso"</string>
@@ -411,14 +411,14 @@
     <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Campo <xliff:g id="FIELD">%2$s</xliff:g> Valor"</string>
     <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
     <string name="raw_fhir_content_description" msgid="1491420802097635439">"Código-fonte detalhado: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
-    <string name="health_permission_header_description" msgid="7497601695462373927">"As apps com esta autorização podem ler e escrever os seus dados de saúde e fitness."</string>
+    <string name="health_permission_header_description" msgid="7497601695462373927">"As apps com esta permissão podem ler e escrever os seus dados de saúde e fitness."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Defina que apps podem aceder aos dados armazenados na Saúde Connect. Toque numa app para rever os dados que a app pode ler ou escrever."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Acesso permitido"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Acesso não permitido"</string>
     <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Precisa de ser atualizada"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Definições e ajuda"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Remover acesso de todas as apps"</string>
-    <string name="manage_permissions_read_header" msgid="2031153753057983683">"Com autorização para ler"</string>
+    <string name="manage_permissions_read_header" msgid="2031153753057983683">"Com permissão para ler"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"Com autorização para escrever"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"Nenhuma app permitida"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Nenhuma app recusada"</string>
@@ -1164,7 +1164,7 @@
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Durante a utilização da app"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Recusar tudo"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Permitir que a app <xliff:g id="APP_NAME">%1$s</xliff:g> aceda a dados de fitness e bem-estar?"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"A app <xliff:g id="APP_NAME">%1$s</xliff:g> está a pedir acesso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nEscolha permitir tudo ou controlar cada autorização individualmente."</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"A app <xliff:g id="APP_NAME">%1$s</xliff:g> está a pedir acesso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nEscolha permitir tudo ou controlar cada permissão individualmente."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Permitir que a app <xliff:g id="APP_NAME">%1$s</xliff:g> aceda a <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitness e bem-estar"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"sempre"</string>
@@ -1172,19 +1172,19 @@
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Sempre"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Durante a utilização"</string>
     <string name="view_permissions_mode" msgid="5954826327563393399">"A app <xliff:g id="APP_NAME">%1$s</xliff:g> pode aceder a todos os seus dados de fitness e bem-estar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
-    <string name="allowed_to_access" msgid="4179317387300812335">"Com autorização para aceder"</string>
-    <string name="allowed_to_read" msgid="2775365229411407406">"Com autorização para ler"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Com permissão para aceder"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Com permissão para ler"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Estas autorizações dão à app <xliff:g id="APP_NAME">%1$s</xliff:g> acesso aos dados dos sensores do seu dispositivo."</string>
-    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> apps autorizadas"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> apps permitidas"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"Nenhuma app a pedir"</string>
-    <string name="allowed" msgid="4158456017482263737">"Autorizada"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"Não autorizada"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"As apps com esta autorização podem aceder aos dados de <xliff:g id="DATA_TYPE">%s</xliff:g> dos sensores do seu dispositivo."</string>
+    <string name="allowed" msgid="4158456017482263737">"Com permissão"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Sem permissão"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"As apps com esta permissão podem aceder aos dados de <xliff:g id="DATA_TYPE">%s</xliff:g> dos sensores do seu dispositivo."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Remover o acesso aos dados de <xliff:g id="DATA_TYPE">%s</xliff:g> para todas as apps no relógio?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificação"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Marca de cruz"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Atualmente, a app <xliff:g id="APP_NAME">%1$s</xliff:g> pode aceder a dados de fitness e bem-estar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Permitir que a app <xliff:g id="APP_NAME">%1$s</xliff:g> aceda sempre a dados de fitness e bem-estar?"</string>
     <string name="current_access" msgid="1457167070428176139">"A app <xliff:g id="APP_NAME">%1$s</xliff:g> tem acesso a dados de <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gerir autorizações de fitness e bem-estar"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gerir permissões de fitness e bem-estar"</string>
 </resources>

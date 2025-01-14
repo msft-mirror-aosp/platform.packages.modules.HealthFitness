@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect кызматы ден соолук жана дене-бойду чыңдоо маалыматын сактап, аларды түзмөктөгү башка колдонмолор менен шайкештирет"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ар кайсы колдонмолордон алынган ден соолук жана спорт маалыматтарын сактап жана шайкештирет.\n\n"<b>"Дене-бойду чыңдоо маалыматы,"</b>" анын ичинде машыгуу сеанстары, кадамдар, тамактануу, уйку жана башкалар\n\n"<b>"Ден соолук жөнүндө маалымат,"</b>" анын ичинде эмдөөлөр, лабораториялык натыйжалар жана башкалар"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect менен төмөнкүлөрдү аткара аласыз:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Колдонмолоруңуз менен маалымат бөлүшүңүз"</b>\n"Ар бир колдонмо Health Connect кызматында кандай маалыматты окуп, сактай ала турганын тандайсыз"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Параметрлериңизди жана купуялыгыңызды тескеңиз"</b>\n"Колдонмонун уруксаттарын каалаган убакта өзгөртүп, алардагы нерселерди тескейсиз"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Артка кайтуу"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Баштадык"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Колдонмодогу нерселер өчүрүлөт"</string>

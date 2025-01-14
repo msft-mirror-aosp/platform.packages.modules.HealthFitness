@@ -319,8 +319,8 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"ॲलर्जी"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"ॲलर्जी"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"ॲलर्जीशी संबंधित डेटा वाचा"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"नियम"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"नियम"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"आरोग्यासंबंधित समस्या"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"आरोग्यासंबंधित समस्या"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"अटी वाचा"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"लसी"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"लसी"</string>
@@ -340,14 +340,14 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"गर्भधारणा"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"गर्भधारणा"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"गर्भधारणेशी संबंधित वाचा"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"प्रक्रिया"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"प्रक्रिया"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"वैद्यकीय उपचार"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"वैद्यकीय उपचार"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"प्रक्रियेशी संबंधित वाचा"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"सामाजिक इतिहास"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"सामाजिक इतिहास"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"सामाजिक इतिहासाशी संबंधित वाचा"</string>
-    <string name="visits_uppercase_label" msgid="8532619758336375886">"भेटी"</string>
-    <string name="visits_lowercase_label" msgid="2545887061364564151">"भेटी"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"वैद्यकीय व्यावसायिकाच्या भेटी"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"वैद्यकीय व्यावसायिकाच्या भेटी"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"भेटी वाचा"</string>
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"महत्त्वाची लक्षणे"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"महत्त्वाची लक्षणे"</string>
@@ -368,14 +368,14 @@
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"तुम्ही रीड अ‍ॅक्सेस दिल्यास, हे अ‍ॅप नवीन आणि मागील डेटा रीड करू शकेल"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला Health Connect अ‍ॅक्सेस करण्याची परवानगी द्यायची आहे का?"</string>
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"<xliff:g id="APP_NAME">%1$s</xliff:g> आरोग्य आणि फिटनेससंबंधित डेटा अ‍ॅक्सेस करण्याची अनुमती द्यायची आहे का?"</string>
-    <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="APP_NAME">%1$s</xliff:g> तुमचा डेटा कसा हाताळते हे तुम्ही <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> मध्ये जाणून घेऊ शकता"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="APP_NAME">%1$s</xliff:g> तुमचा डेटा कसा हाताळते हे तुम्ही त्यांच्या <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> मध्ये जाणून घेऊ शकता"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"गोपनीयता धोरण"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला तुमची आरोग्यविषयक माहिती ॲक्सेस करण्याची अनुमती द्यायची आहे का?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"तुम्ही अनुमती दिल्यास, अ‍ॅप हे ॲलर्जी, लॅबमधील परिणाम, लसी आणि आणखी बरेच काही यांसारखा डेटा वाचू आणि लिहू शकतो\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"तुम्ही अनुमती दिल्यास, अ‍ॅप हे ॲलर्जी, लॅबमधील परिणाम, लसी आणि आणखी बरेच काही यांसारखा डेटा रीड आणि राइट करू शकते\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"तुम्ही अनुमती दिल्यास, अ‍ॅप हे ॲलर्जी, लॅबमधील परिणाम, लसी आणि आणखी बरेच काही यांसारखा डेटा वाचू शकतो\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"आरोग्यविषयक माहितीबद्दल"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"शेअर केल्या जाणाऱ्या डेटामध्ये याचा समावेश असतो"</string>
-    <string name="medical_request_summary" msgid="7281321524805015510">"तुम्ही अनुमती दिल्यास, <xliff:g id="APP_NAME">%1$s</xliff:g> तुमची आरोग्यविषयक माहिती Health Connect सह शेअर करू शकतो."</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"तुम्ही अनुमती दिल्यास, <xliff:g id="APP_NAME">%1$s</xliff:g> तुमची आरोग्यविषयक माहिती Health Connect सह शेअर करू शकते."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"तुमची आरोग्यविषयक माहिती एकाच ठिकाणी ठेवण्यासाठी तुमच्या वेगवेगळ्या अ‍ॅप्स आणि स्रोतांमधून ती सिंक करा"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"सर्व परवानग्या काढून टाकायच्या का?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"सर्व काढून टाका"</string>
@@ -423,7 +423,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"कोणत्याही अ‍ॅप्सना अनुमती दिलेली नाही"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"कोणतीही अ‍ॅप्स नाकारलेली नाहीत"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"सर्व अ‍ॅप्सचा अ‍ॅक्सेस काढून टाकायचा आहे का?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"तुमच्या कोणत्याही अ‍ॅप्सना Health Connect वरील नवीन डेटा अ‍ॅक्सेस करता येणार नाही किंवा जोडता येणार नाही. यामुळे सध्याचा कोणताही डेटा हटवला जात नाही.\n\nयामुळे स्थान, कॅमेरा किंवा मायक्रोफोन यांसारख्या या अ‍ॅपला असलेल्या इतर परवानग्यांवर परिणाम होत नाही."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"तुमच्या कोणत्याही अ‍ॅप्सना Health Connect वरील नवीन डेटा अ‍ॅक्सेस करता येणार नाही किंवा जोडता येणार नाही. यामुळे कोणताही सद्य डेटा हटवला जात नाही.\n\nयामुळे स्थान, कॅमेरा किंवा मायक्रोफोन यांसारख्या या अ‍ॅपला असलेल्या इतर परवानग्यांवर परिणाम होत नाही."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"सर्व काढून टाका"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"अ‍ॅप व्यवस्थापित करा"</string>
     <string name="see_app_data" msgid="3951030076195119476">"अ‍ॅप डेटा पहा"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect हे तुमचा आरोग्य आणि फिटनेससंबंधी डेटा स्टोअर करते व तुम्हाला तुमच्या डिव्हाइसवरील वेगवेगळी अ‍ॅप्स सिंक करण्याचा सोपा मार्ग देते"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect हे विविध ॲप्समधील तुमचा आरोग्य आणि फिटनेससंबंधित डेटा स्टोअर करून सिंक करते.\n\n"<b>"फिटनेस आणि स्वास्थ्यासंबंधित डेटा"</b>" व्यायामाची सेशन, पावले, पोषण, झोप आणि आणखी बऱ्याच गोष्टी\n\n"<b>"आरोग्यविषयक माहिती"</b>" लसी, लॅबमधील परिणाम आणि आणखी बरेच काही"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect वापरून तुम्ही पुढील गोष्टी करू शकता"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"तुमच्या अ‍ॅप्ससह डेटा शेअर करा"</b>\n"प्रत्येक अ‍ॅप हे Health Connect वर कोणता डेटा रीड किंवा राइट करू शकते हे निवडा"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"तुमची सेटिंग्ज आणि गोपनीयता व्यवस्थापित करा"</b>\n"अ‍ॅप परवानग्या बदला आणि तुमचा डेटा कधीही व्यवस्थापित करा"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"मागे जा"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"सुरुवात करा"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"डेटा हटवा"</string>

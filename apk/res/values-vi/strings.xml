@@ -20,7 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Quản lý quyền truy cập của ứng dụng vào dữ liệu sức khoẻ"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Quyền truy cập và dữ liệu"</string>
-    <string name="home_subtitle" msgid="2154213430054477787">"Quản lý dữ liệu về sức khoẻ và hoạt động thể dục trên thiết bị của bạn, đồng thời kiểm soát ứng dụng nào có thể truy cập vào dữ liệu đó"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"Quản lý dữ liệu về sức khoẻ và thể dục trên thiết bị của bạn, đồng thời kiểm soát ứng dụng nào có thể truy cập vào dữ liệu đó"</string>
     <string name="data_title" msgid="4456619761533380816">"Dữ liệu và quyền truy cập"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Duyệt xem hồ sơ sức khoẻ"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Xem hồ sơ sức khoẻ và các ứng dụng có thể truy cập vào hồ sơ đó"</string>
@@ -334,18 +334,18 @@
     <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Thông tin cá nhân"</string>
     <string name="personal_details_lowercase_label" msgid="1907848447611775151">"thông tin cá nhân"</string>
     <string name="personal_details_content_description" msgid="3191211304673909831">"Đọc thông tin cá nhân"</string>
-    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Thông tin về chuyên gia"</string>
-    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"thông tin về chuyên gia"</string>
-    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Đọc thông tin về chuyên gia"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Thông tin về nhân viên y tế"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"thông tin về nhân viên y tế"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Đọc thông tin về nhân viên y tế"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Thai kỳ"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"thai kỳ"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Đọc dữ liệu về thai kỳ"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Thủ thuật y tế"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"thủ thuật y tế"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Đọc dữ liệu về thủ thuật y tế"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Hoạt động trên mạng xã hội"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"hoạt động trên mạng xã hội"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"Đọc dữ liệu về hoạt động trên mạng xã hội"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Tiền sử xã hội"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"tiền sử xã hội"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Đọc dữ liệu về tiền sử xã hội"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Hoạt động thăm khám"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"hoạt động thăm khám"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Đọc dữ liệu về hoạt động thăm khám"</string>
@@ -423,7 +423,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"Chưa cho phép ứng dụng nào"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Chưa từ chối ứng dụng nào"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Xoá quyền truy cập của mọi ứng dụng?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Bạn chưa có ứng dụng nào truy cập hoặc thêm được dữ liệu mới vào Health Connect. Điều này không xoá bất kỳ dữ liệu nào hiện có.\n\nĐiều này không ảnh hưởng đến các quyền khác mà ứng dụng có thể có, chẳng hạn như quyền đối với thông tin vị trí, máy ảnh hoặc micrô."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Không ứng dụng nào của bạn sẽ có thể truy cập hoặc thêm dữ liệu mới vào Health Connect. Thao tác này sẽ không xoá bất kỳ dữ liệu hiện có nào.\n\nThao tác này không ảnh hưởng đến các quyền khác mà ứng dụng có thể có, chẳng hạn như quyền đối với thông tin vị trí, camera hoặc micrô."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Xoá tất cả"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Quản lý ứng dụng"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Xem dữ liệu ứng dụng"</string>
@@ -538,13 +538,11 @@
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"Để có thêm lựa chọn, hãy cài đặt các ứng dụng bộ nhớ trên đám mây nếu bạn muốn thấy các ứng dụng đó tại đây"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Chuyển tới Cửa hàng Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Làm quen với Health Connect"</string>
-    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên thiết bị"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lưu trữ dữ liệu về sức khoẻ và thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên thiết bị"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lưu trữ và đồng bộ hoá dữ liệu về sức khoẻ và thể dục của bạn từ nhiều ứng dụng.\n\n"<b>"Dữ liệu về sức khoẻ và thể dục,"</b>" bao gồm dữ liệu về buổi tập thể dục, số bước, chế độ dinh dưỡng, giấc ngủ và nhiều dữ liệu khác\n\n"<b>"Hồ sơ sức khoẻ,"</b>" bao gồm dữ liệu về vắc-xin, kết quả xét nghiệm và nhiều dữ liệu khác"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Với Health Connect, bạn có thể"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Chia sẻ dữ liệu với các ứng dụng của bạn"</b>\n"Chọn dữ liệu mà mỗi ứng dụng có thể đọc hoặc ghi vào Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Quản lý các chế độ cài đặt và quyền riêng tư"</b>\n"Thay đổi quyền cho ứng dụng và quản lý dữ liệu của bạn bất cứ lúc nào"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Quay lại"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Bắt đầu"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Xoá dữ liệu"</string>
@@ -1115,7 +1113,7 @@
     <string name="tab_entries" msgid="3402700951602029493">"Mục nhập"</string>
     <string name="tab_access" msgid="7818197975407243701">"Quyền truy cập"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Bắt đầu sử dụng Health Connect"</string>
-    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Hãy đồng bộ hoá những ứng dụng đầu tiên của bạn để chia sẻ dữ liệu về sức khoẻ và hoạt động thể dục giữa những ứng dụng đó"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Hãy đồng bộ hoá những ứng dụng đầu tiên của bạn để chia sẻ dữ liệu về sức khoẻ và thể dục giữa những ứng dụng đó"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Thiết lập"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Kết nối với các ứng dụng khác"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Bắt đầu chia sẻ dữ liệu giữa <xliff:g id="APP_NAME">%s</xliff:g> và các ứng dụng sức khoẻ trên điện thoại của bạn"</string>

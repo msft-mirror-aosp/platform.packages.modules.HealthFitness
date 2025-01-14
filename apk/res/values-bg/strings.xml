@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Разрешаване на <xliff:g id="APP_NAME">%1$s</xliff:g> да чете"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Разрешаване на <xliff:g id="APP_NAME">%1$s</xliff:g> да записва"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Разрешаване"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Разреш. на всичко"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Разреш. на всички"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Забраняване"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Изберете данните, които искате да чете или записва това приложение в Health Connect"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Изберете данните, които искате да чете това приложение от Health Connect"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на устройството си"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect съхранява и синхронизира данните за здравето и физическата ви активност от различни приложения.\n\n"<b>"Данните за физическата активност и благосъстоянието,"</b>" включително сесиите с упражнения, крачките, храненето, съня и др.\n\n"<b>"Здравните картони,"</b>" включително ваксини, лабораторни резултати и др."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"С Health Connect можете да правите следното"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Споделяйте данни с приложенията си"</b>\n"Изберете данните, които всяко приложение може да чете и записва в Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Управлявайте настройките и поверителността си"</b>\n"Променяйте разрешенията за приложението и управлявайте данните си по всяко време"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Начало"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Изтриване на данните"</string>

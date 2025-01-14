@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Приложение \"Здоровье и спорт\" надежно хранит ваши данные о физической активности и здоровье, а также синхронизирует работу разных приложений на устройстве."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Платформа \"Здоровье и спорт\" позволяет хранить и синхронизировать данные о здоровье и физической активности из разных приложений:\n\n"<b>"Информацию о самочувствии и физической активности,"</b>" в том числе о занятиях спортом, количестве пройденных шагов, питании, сне и не только.\n\n"<b>"Информацию о здоровье,"</b>" включая данные о прививках, результаты анализов и многое другое."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Благодаря платформе \"Здоровье и спорт\" вы можете:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Делиться данными с приложениями"</b>\n"Выбирайте, какую информацию каждое приложение сможет читать и сохранять в сервисе \"Здоровье и спорт\"."</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Управлять настройками и конфиденциальностью"</b>\n"Настраивайте разрешения для приложений и управляйте своими данными."</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Начать"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Удалить данные"</string>
@@ -1163,11 +1161,11 @@
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Последний доступ: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Разрешить в любом режиме"</string>
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Разрешить выбранные"</string>
-    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"В самом приложении при его использовании"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"При использовании приложения"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Отклонить все"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Открыть приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным о самочувствии и физической активности?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" запрашивает доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nВы можете предоставить сразу все разрешения или настроить их по отдельности."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным \"<xliff:g id="DATA_TYPE">%2$s</xliff:g>\"?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным этой категории: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическая активность и самочувствие"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"всегда"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"при использовании приложения"</string>
@@ -1188,5 +1186,5 @@
     <string name="current_allow_mode" msgid="6716206063077569218">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ к вашим данным о физической активности и самочувствии <xliff:g id="ALLOW_MODE">%2$s</xliff:g>."</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" постоянный доступ к данным о самочувствии и физической активности?"</string>
     <string name="current_access" msgid="1457167070428176139">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Настройки доступа к данным о физической активности и самочувствии"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Доступ к данным об активности и самочувствии"</string>
 </resources>

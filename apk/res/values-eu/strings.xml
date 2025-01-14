@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect-ek osasunari eta fitnessari buruzko datuak gordetzen ditu eta gailuko aplikazioak erraz sinkronizatzeko aukera eskaintzen du"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect-ek osasunari eta fitnessari buruzko datuak gordetzen eta sinkronizatzen ditu zenbait aplikaziotatik.\n\n"<b>"fitnessari eta ongizateari buruzko datuak"</b>" (adibidez, ariketa-saioak, pausoak, elikadura, loa eta abar)\n\n"<b>"historia klinikoa"</b>" (adibidez, txertoak, laborategiko emaitzak eta abar)"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect-ekin hauek egin ditzakezu:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Partekatu datuak zure aplikazioekin"</b>\n"Aukeratu aplikazio bakoitzak Health Connect-en irakurri edo idatz ditzakeen datuak"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Kudeatu ezarpenak eta pribatutasuna"</b>\n"Aldatu aplikazio-baimenak eta kudeatu datuak edonoiz"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Egin atzera"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Hasi erabiltzen"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Ezabatu datuak"</string>
@@ -1181,8 +1179,8 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"Ez dago baimena eskatzen ari den aplikaziorik"</string>
     <string name="allowed" msgid="4158456017482263737">"Baimena dauka"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Ez dauka baimenik"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"Baimen hau duten aplikazioek <xliff:g id="DATA_TYPE">%s</xliff:g> motako datuak atzi ditzakete gailuaren sentsoreetatik."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Erlojuko aplikazio guztiei <xliff:g id="DATA_TYPE">%s</xliff:g> motako datuak atzitzeko baimena kendu nahi diezu?"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Baimen hau duten aplikazioek datu mota hau atzi dezakete gailuaren sentsoreetatik: <xliff:g id="DATA_TYPE">%s</xliff:g>."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Erlojuko aplikazio guztiei datu mota hau atzitzeko baimena kendu nahi diezu: <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Hautamarka"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Gurutzea"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Une honetan, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak fitnessari eta ongizateari buruzko datuak atzi ditzake <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>

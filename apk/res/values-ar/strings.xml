@@ -29,7 +29,7 @@
     <string name="no_data" msgid="1906986019249068659">"ما مِن بيانات"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"أذونات التطبيقات"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"إدارة التطبيقات والأذونات"</string>
-    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"تم منح الإذن إلى <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من إجمالي <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> تطبيق"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"التطبيقات التي لديها إذن: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من أصل <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من إجمالي <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"يملك تطبيق واحد (<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>) الإذن بالوصول"</string>
@@ -47,8 +47,8 @@
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"يتيح تصدير البيانات واستيرادها"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"التطبيقات التي وصلت مؤخرًا إلى البيانات الصحية"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"لم تستخدم أي تطبيقات Health Connect مؤخرًا."</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"الاطّلاع على كل عمليات الوصول الحديثة"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"معرفة التطبيقات التي وصلت إلى بياناتك الصحية في آخر 24 ساعة."</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"عرض كل هذه التطبيقات"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"إليك التطبيقات التي وصلت إلى بياناتك الصحية في آخر 24 ساعة:"</string>
     <string name="today_header" msgid="1006837293203834373">"اليوم"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"أمس"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"القراءة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -1162,7 +1162,7 @@
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"آخر استخدام للإذن أمس: ‎<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"آخر استخدام للإذن في ‎<xliff:g id="TIME_DATE_0">%1$s</xliff:g>: ‏<xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"السماح طوال الوقت"</string>
-    <string name="request_permissions_allow_selected" msgid="218527615680495438">"تم اختيار \"سماح\""</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"السماح بالأذونات المحدّدة"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"أثناء استخدام التطبيق"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"رفض الكل"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"هل تريد السماح لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى بيانات الصحة واللياقة البدنية؟"</string>
@@ -1175,18 +1175,18 @@
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"أثناء استخدام التطبيق"</string>
     <string name="view_permissions_mode" msgid="5954826327563393399">"يمكن لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الوصول إلى جميع بيانات الصحة واللياقة البدنية <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"مسموح له بالوصول إلى البيانات"</string>
-    <string name="allowed_to_read" msgid="2775365229411407406">"مسموح له بقراءة البيانات"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"مسموح له بقراءة التالي"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"تمنح هذه الأذونات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إمكانية الوصول إلى بيانات أدوات الاستشعار في جهازك."</string>
-    <string name="allowed_apps_count" msgid="2289260267605628310">"تم السماح بالوصول إلى البيانات لعدد من التطبيقات يبلغ <xliff:g id="NUMBER_0">%1$d</xliff:g> من أصل <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"عدد التطبيقات المسموح لها: <xliff:g id="NUMBER_0">%1$d</xliff:g> من أصل <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"ما مِن تطبيقات تطلب هذا الإذن"</string>
-    <string name="allowed" msgid="4158456017482263737">"مسموح له"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"غير مسموح له"</string>
+    <string name="allowed" msgid="4158456017482263737">"التطيقات المسموح لها"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"التطبيقات غير الحاصلة على إذن"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"يمكن للتطبيقات التي لديها هذا الإذن الوصول إلى بيانات <xliff:g id="DATA_TYPE">%s</xliff:g> من أدوات الاستشعار في جهازك."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"هل تريد إزالة إذن الوصول إلى بيانات <xliff:g id="DATA_TYPE">%s</xliff:g> لجميع التطبيقات على ساعتك؟"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"علامة اختيار"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"علامة خطأ"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"يمكن لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" حاليًا الوصول إلى بيانات الصحة واللياقة البدنية <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"هل تريد السماح لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى بيانات الصحة واللياقة البدنية في كل الأوقات؟"</string>
-    <string name="current_access" msgid="1457167070428176139">"لدى \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذن بالوصول إلى <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="current_access" msgid="1457167070428176139">"لدى \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذن بالوصول إلى بيانات <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"إدارة أذونات الصحة واللياقة البدنية"</string>
 </resources>

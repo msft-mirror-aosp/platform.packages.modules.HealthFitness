@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect tallentaa terveys‑ ja kuntodatasi ja tarjoaa helpon tavan synkronoida eri sovelluksia laitteellasi"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect tallentaa ja synkronoi terveys- ja kuntoiludataa eri sovelluksista.\n\n"<b>"Kuntoilu- ja hyvinvointidata,"</b>" esim. treenit, askeleet, ravinto ja uni\n\n"<b>"Terveystiedot,"</b>" esim. rokotukset ja laboratoriotulokset"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connectilla voit tehdä seuraavia asioita"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Jaa dataa sovelluksillesi"</b>\n"Valitse, mitä dataa kukin sovellus voi lukea tai kirjoittaa Health Connectiin"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Tee asetus- ja yksityisyysvalinnat"</b>\n"Muuta sovelluslupia ja ylläpidä dataa milloin vain"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Takaisin"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Aloita"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Poista data"</string>

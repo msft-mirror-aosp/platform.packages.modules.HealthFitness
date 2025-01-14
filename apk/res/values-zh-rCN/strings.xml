@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"“健康数据共享”会存储您的健康与健身数据，让您可以轻松同步设备上各应用的数据"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"“健康数据共享”会存储和同步来自不同应用的健康和健身数据。\n\n"<b>"健身与健康数据，"</b>"包括锻炼时段、步数、营养、睡眠等\n\n"<b>"健康记录，"</b>"包括疫苗接种、化验结果等"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"借助“健康数据共享”，您可以"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"与您的应用分享数据"</b>\n"选择每个应用可以从“健康数据共享”读取或向其中写入的数据"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"管理设置和隐私"</b>\n"随时更改应用权限并管理您的数据"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"返回"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"开始使用"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"删除数据"</string>
@@ -1112,7 +1110,7 @@
     <string name="last_week_header" msgid="5194448963146719382">"上周"</string>
     <string name="this_month_header" msgid="2452395268894677189">"本月"</string>
     <string name="last_month_header" msgid="1359164797239191253">"上个月"</string>
-    <string name="tab_entries" msgid="3402700951602029493">"条目"</string>
+    <string name="tab_entries" msgid="3402700951602029493">"数据记录"</string>
     <string name="tab_access" msgid="7818197975407243701">"访问权限"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"开始使用“健康数据共享”"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"同步您的首批应用，以便在它们之间共享健康与健身数据"</string>
@@ -1179,7 +1177,7 @@
     <string name="give_permission_prompt" msgid="5788144216023065504">"有了这些权限，“<xliff:g id="APP_NAME">%1$s</xliff:g>”便可访问设备传感器中的数据。"</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"已允许 <xliff:g id="NUMBER_0">%1$d</xliff:g> 个应用（共 <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> 个）"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"没有应用请求权限"</string>
-    <string name="allowed" msgid="4158456017482263737">"允许"</string>
+    <string name="allowed" msgid="4158456017482263737">"已允许"</string>
     <string name="not_allowed" msgid="6092523505093372147">"不允许"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"具有此权限的应用可以访问设备传感器中的<xliff:g id="DATA_TYPE">%s</xliff:g>数据。"</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"要为手表上的所有应用撤消“<xliff:g id="DATA_TYPE">%s</xliff:g>”访问权限吗？"</string>

@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"Minulé dáta, dáta na pozadí"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Tejto aplikácii boli odstránené ďalšie povolenia"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Povolenia"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"Kondícia a kvalita života"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Kondícia a zdravie"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Cvičenie, spánok, výživa a podobne"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Zdravotné záznamy"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"zdravotné záznamy"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii a umožňujú vám jednoducho synchronizovať rôzne aplikácie v zariadení"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii z rôznych aplikácií a synchronizujú ich v týchto aplikáciách.\n\n"<b>"Údaje o kondícii a kvalite života"</b>" vrátane cvičení, krokov, výživy, spánku a ďalších\n\n"<b>"Zdravotné záznamy"</b>" vrátane údajov o očkovaniach, laboratórnych výsledkov a ďalších"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Možnosti aplikácie Dáta o zdraví"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Zdieľajte údaje so svojimi aplikáciami"</b>\n"Vyberte, ktoré údaje budú môcť jednotlivé aplikácie v Dátach o zdraví čítať alebo zapisovať"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Spravujte svoje nastavenia a ochranu súkromia"</b>\n"Keďkoľvek môžete zmeniť povolenia aplikácie a spravovať svoje údaje"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Prejsť späť"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Začíname"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Odstránenie údajov"</string>
@@ -1168,12 +1166,12 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k údajom o kondícii a zdraví?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> žiada o prístup k údajom typu <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nUdeľte všetky povolenia alebo ich ovládajte individuálne."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Chcete povoliť aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k údajom typu <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"Kondícia a kvalita života"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Kondícia a zdravie"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"po celý čas"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"počas používania"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Po celý čas"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Počas používania"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> má prístup k všetkým vašim údajom o kondícii a kvalite života <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> má prístup k všetkým vašim údajom o kondícii a zdraví <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Má povolený prístup"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Má povolené čítať"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Tieto povolenia poskytujú aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k údajom zo senzorov vášho zariadenia."</string>
