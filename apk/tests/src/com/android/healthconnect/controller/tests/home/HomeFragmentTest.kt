@@ -831,75 +831,8 @@ class HomeFragmentTest {
 
     // region Import/Export tests
     @Test
-    @DisableFlags(Flags.FLAG_EXPORT_IMPORT, Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsDisabled_doesNotShowExportFileAccessErrorBanner() {
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(
-                listOf(
-                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
-                )
-            )
-        }
-        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
-            MutableLiveData(
-                ScheduledExportUiStatus.WithData(
-                    ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                    )
-                )
-            )
-        }
-        launchFragment<HomeFragment>(Bundle()) {
-            navHostController.setGraph(R.navigation.nav_graph)
-            Navigation.setViewNavController(this.requireView(), navHostController)
-        }
-
-        onView(withText("Couldn't export data")).check(doesNotExist())
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_EXPORT_IMPORT, Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsDisabled_doesNotShowManageDataSummary() {
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(
-                listOf(
-                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
-                )
-            )
-        }
-        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
-            MutableLiveData(
-                ScheduledExportUiStatus.WithData(
-                    ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                    )
-                )
-            )
-        }
-        launchFragment<HomeFragment>(Bundle()) {
-            navHostController.setGraph(R.navigation.nav_graph)
-            Navigation.setViewNavController(this.requireView(), navHostController)
-        }
-
-        onView(withText("Auto-delete, data sources, backup and restore")).check(doesNotExist())
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsEnabled_noError_exportFileAccessErrorBannerIsNotShown() {
+    fun lastExportWithoutError_exportFileAccessErrorBannerIsNotShown() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -932,9 +865,8 @@ class HomeFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsEnabled_lastFailedExportTimeIsNull_exportFileAccessErrorBannerIsNotShown() {
+    fun lastFailedExportTimeIsNull_exportFileAccessErrorBannerIsNotShown() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -967,9 +899,8 @@ class HomeFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsEnabled_withUnknownErrorAndDate_showsExportErrorBanner() {
+    fun lastExportWithUnknownErrorAndDate_showsExportErrorBanner() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -1009,9 +940,8 @@ class HomeFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsEnabled_showsManageDataSummary() {
+    fun showsManageDataSummary() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -1046,9 +976,8 @@ class HomeFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsEnabled_withLostFileAccessErrorAndDate_showsExportErrorBanner() {
+    fun lastExportWithLostFileAccessErrorAndDate_showsExportErrorBanner() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -1090,9 +1019,8 @@ class HomeFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenExportImportFlagIsEnabled_withValidErrorTypeAndDate_showsExportErrorBanner_clicksSetupAndNavigatesToExportFlow() {
+    fun lastExportWithValidErrorTypeAndDate_showsExportErrorBanner_clicksSetupAndNavigatesToExportFlow() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
