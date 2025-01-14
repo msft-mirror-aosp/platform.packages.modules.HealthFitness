@@ -56,7 +56,7 @@ public final class CloudBackupManager {
     private static final String TAG = "CloudBackupManager";
 
     private final TransactionManager mTransactionManager;
-    private final BackupRestoreDatabaseHelper mDatabaseHelper;
+    private final BackupDatabaseHelper mDatabaseHelper;
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
@@ -79,7 +79,7 @@ public final class CloudBackupManager {
         mPreferenceHelper = preferenceHelper;
         mExportImportSettingsStorage = exportImportSettingsStorage;
         mDatabaseHelper =
-                new BackupRestoreDatabaseHelper(
+                new BackupDatabaseHelper(
                         transactionManager,
                         appInfoHelper,
                         accessLogsHelper,

@@ -17,7 +17,7 @@ package com.android.server.healthconnect.backuprestore;
 
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
-import static com.android.server.healthconnect.backuprestore.BackupRestoreDatabaseHelper.MAXIMUM_PAGE_SIZE;
+import static com.android.server.healthconnect.backuprestore.BackupDatabaseHelper.MAXIMUM_PAGE_SIZE;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
