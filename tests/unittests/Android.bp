@@ -17,18 +17,6 @@ package {
     default_team: "trendy_team_android_health",
 }
 
-android_library {
-    name: "HealthConnectTestUtils",
-    srcs: [
-        "src/com/android/server/healthconnect/testing/**/*.java",
-    ],
-    sdk_version: "module_current",
-    min_sdk_version: "34",
-    static_libs: [
-        "service-healthfitness.impl",
-    ],
-}
-
 android_test {
     name: "HealthFitnessUnitTests",
     min_sdk_version: "34",
@@ -38,10 +26,6 @@ android_test {
     srcs: [
         "src/**/*.java",
     ],
-    exclude_srcs: [
-        "src/com/android/server/healthconnect/testing/**/*.java",
-    ],
-
     test_suites: [
         "mts-healthfitness",
         "general-tests",
@@ -57,7 +41,6 @@ android_test {
         ":generate-fhir-spec-r4-binarypb",
     ],
     static_libs: [
-        "HealthConnectTestUtils",
         "TestParameterInjector",
         "service-healthfitness.impl",
         "framework-healthfitness.impl",

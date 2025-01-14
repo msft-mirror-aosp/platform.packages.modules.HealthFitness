@@ -45,6 +45,8 @@ import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 
 import com.google.common.truth.Truth;
 

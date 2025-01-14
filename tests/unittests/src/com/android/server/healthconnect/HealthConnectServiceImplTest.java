@@ -167,6 +167,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceH
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.testing.fakes.FakeTimeSource;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 
 import org.junit.After;
 import org.junit.Before;

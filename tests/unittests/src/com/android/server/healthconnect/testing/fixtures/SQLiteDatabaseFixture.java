@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect;
+package com.android.server.healthconnect.testing.fixtures;
 
 import static com.android.dx.mockito.inline.extended.ExtendedMockito.doAnswer;
 
