@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 
 import android.annotation.FlaggedApi;
 import android.health.connect.backuprestore.BackupChange;
@@ -45,7 +46,7 @@ public class CloudRestoreManager {
 
     /** Checks whether data with a certain version could be restored. */
     public boolean canRestore(int dataVersion) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return dataVersion <= PROTO_VERSION;
     }
 
     /** Restores backup data changes. */

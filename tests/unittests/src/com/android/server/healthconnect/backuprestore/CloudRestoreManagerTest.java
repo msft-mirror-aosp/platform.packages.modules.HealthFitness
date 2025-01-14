@@ -16,6 +16,10 @@
 
 package healthconnect.backuprestore;
 
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
+
+import static com.google.common.truth.Truth.assertThat;
+
 import static org.junit.Assert.assertThrows;
 
 import static java.util.Collections.emptyList;
@@ -64,10 +68,10 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void canRestore_unsupportedOperationExceptionThrown() {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> mCloudRestoreManager.canRestore(/* dataVersion= */ 1));
+    public void canRestore() {
+        assertThat(mCloudRestoreManager.canRestore(PROTO_VERSION - 1)).isTrue();
+        assertThat(mCloudRestoreManager.canRestore(PROTO_VERSION)).isTrue();
+        assertThat(mCloudRestoreManager.canRestore(PROTO_VERSION + 1)).isFalse();
     }
 
     @Test
