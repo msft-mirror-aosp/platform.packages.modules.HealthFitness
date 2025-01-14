@@ -16,11 +16,11 @@
 
 package com.android.server.healthconnect.backuprestore;
 
-import static com.android.server.healthconnect.TestUtils.queryNumEntries;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.GRANT_TIME_FILE_NAME;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.STAGED_DATABASE_DIR;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.STAGED_DATABASE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.TestUtils.queryNumEntries;
 
 import static com.google.common.truth.Truth.assertThat;
 

@@ -33,7 +33,6 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.createAllergyMe
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.createVaccineMedicalResource;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static com.android.server.healthconnect.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
 import static com.android.server.healthconnect.storage.PhrTestUtils.makeUpsertRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DATA_SOURCE_UUID_COLUMN_NAME;
@@ -52,6 +51,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getHexString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.toUuids;
+import static com.android.server.healthconnect.testing.TestUtils.TEST_USER;
 
 import static com.google.common.truth.Truth.assertThat;
 

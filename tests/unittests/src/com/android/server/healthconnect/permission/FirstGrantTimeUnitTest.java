@@ -16,9 +16,9 @@
 
 package com.android.server.healthconnect.permission;
 
-import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_CURRENT;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_STAGED;
+import static com.android.server.healthconnect.testing.TestUtils.waitForAllScheduledTasksToComplete;
 
 import static com.google.common.truth.Truth.assertThat;
 

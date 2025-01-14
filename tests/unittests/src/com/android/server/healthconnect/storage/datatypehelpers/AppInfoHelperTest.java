@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
+import static com.android.server.healthconnect.testing.TestUtils.TEST_USER;
 
 import static com.google.common.truth.Truth.assertThat;
 
