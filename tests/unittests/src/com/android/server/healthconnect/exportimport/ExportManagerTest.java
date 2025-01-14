@@ -59,8 +59,6 @@ import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStatic;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStaticClasses;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -73,6 +71,8 @@ import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 
 import org.junit.After;
 import org.junit.Before;

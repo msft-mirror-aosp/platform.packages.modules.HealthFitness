@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect;
+package com.android.server.healthconnect.testing.fixtures;
 
 import static org.mockito.Mockito.when;
 
