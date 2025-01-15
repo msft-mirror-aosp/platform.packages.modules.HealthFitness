@@ -85,9 +85,7 @@ class AutoDeleteFragmentTest {
                 )
             )
             .check(matches(isDisplayed()))
-        // Need to provide id as well, otherwise both TextView and TextLinkView are found.
-        onView(allOf(withText("Learn more about auto-delete"), withId(R.id.header_link)))
-            .check(matches(isDisplayed()))
+        onView(allOf(withText("Learn more about auto-delete"))).check(matches(isDisplayed()))
         onView(withText("Auto-delete data")).check(matches(isDisplayed()))
         onView(withText("After 3 months")).check(matches(isDisplayed()))
         onView(withText("After 18 months")).check(matches(isDisplayed()))
@@ -229,8 +227,6 @@ class AutoDeleteFragmentTest {
         }
         launchFragment<AutoDeleteFragment>(Bundle())
 
-        // Need to provide id as well, otherwise both TextView and TextLinkView are found.
-        onView(allOf(withText("Learn more about auto-delete"), withId(R.id.header_link)))
-            .perform(click())
+        onView(allOf(withText("Learn more about auto-delete"))).perform(click())
     }
 }
