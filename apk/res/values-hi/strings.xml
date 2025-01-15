@@ -308,7 +308,7 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"आराम करते समय धड़कन की दर का डेटा"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"आराम करते समय धड़कन की दर का डेटा पढ़ने की अनुमति दें"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"आराम करते समय धड़कन की दर का डेटा सेव करने की अनुमति दें"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"त्वचा का तापमान"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"त्वचा के तापमान का डेटा"</string>
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"त्वचा का तापमान"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"त्वचा के तापमान से जुड़ी जानकारी देखें"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"त्वचा के तापमान से जुड़ी जानकारी में बदलाव करें"</string>
@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” को डेटा पढ़ने की अनुमति दें"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” को डेटा में बदलाव करने की अनुमति दें"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"अनुमति दें"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"सभी को अनुमति दें"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"सभी के लिए अनुमति दें"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"अनुमति न दें"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"चुनें कि इस ऐप्लिकेशन को, Health Connect में कौनसा डेटा देखने या सेव करने की अनुमति देनी है"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"चुनें कि इस ऐप्लिकेशन को, Health Connect में कौनसा डेटा देखने की अनुमति देनी है"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect में, आपकी सेहत और फ़िटनेस से जुड़ा डेटा सेव किया जाता है. इससे अपने डिवाइस में अलग-अलग ऐप्लिकेशन को आसानी से सिंक करने में मदद मिलती है"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect, अलग-अलग ऐप्लिकेशन से सेहत और फ़िटनेस से जुड़ा आपका डेटा सेव और सिंक करता है.\n\n"<b>"फ़िटनेस और सेहत का डेटा,"</b>" जिसमें कसरत के सेशन, कदमों की संख्या, पोषण, नींद वगैरह का डेटा शामिल है\n\n"<b>"सेहत का डेटा,"</b>" जिसमें टीकाकरण की जानकारी, लैब के नतीजे वगैरह शामिल हैं"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect की मदद से ये काम किए जा सकते हैं"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"ऐप्लिकेशन के साथ डेटा शेयर करें"</b>\n"ऐप्लिकेशन के लिए, यह चुनें कि Health Connect में मौजूद कौनसा डेटा पढ़ने या सेव करने की अनुमति देनी है"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"सेटिंग और निजता को मैनेज करें"</b>\n" किसी भी समय, ऐप्लिकेशन को दी गई अनुमतियों में बदलाव करें और अपना डेटा मैनेज करें"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"वापस जाएं"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"शुरू करें"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"डेटा मिटाएं"</string>
@@ -1164,10 +1162,10 @@
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"हमेशा के लिए अनुमति दें"</string>
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"कुछ अनुमतियां दें"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"ऐप्लिकेशन का इस्तेमाल करते समय"</string>
-    <string name="request_permissions_deny_all" msgid="4123735770293545320">"कोई भी अनुमति न दें"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को फ़िटनेस और सेहत का डेटा ऐक्सेस करने की अनुमति देनी है?"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ने <xliff:g id="DATA_TYPES">%2$s</xliff:g> को ऐक्सेस करने का अनुरोध किया है.\n\nसभी अनुमतियां दें या अपने हिसाब से अलग-अलग अनुमतियां दें."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को <xliff:g id="DATA_TYPE">%2$s</xliff:g> के ऐक्सेस की अनुमति देनी है?"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"किसी के लिए भी अनुमति न दें"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को फ़िटनेस और तंदरुस्ती का डेटा ऐक्सेस करने की अनुमति देनी है?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ने <xliff:g id="DATA_TYPES">%2$s</xliff:g> ऐक्सेस करने का अनुरोध किया है.\n\nसभी के लिए अनुमति दें या अपने हिसाब से अलग-अलग डेटा के लिए अनुमति दें."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को <xliff:g id="DATA_TYPE">%2$s</xliff:g> ऐक्सेस करने की अनुमति देनी है?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"फ़िटनेस और सेहत से जुड़ी अनुमतियां"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"हमेशा"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"इस्तेमाल करते समय"</string>
@@ -1181,7 +1179,7 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"किसी भी ऐप्लिकेशन ने अनुमति देने का अनुरोध नहीं किया है"</string>
     <string name="allowed" msgid="4158456017482263737">"अनुमति है"</string>
     <string name="not_allowed" msgid="6092523505093372147">"अनुमति नहीं है"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"जिन ऐप्लिकेशन के पास यह अनुमति है वे आपके डिवाइस के सेंसर से, <xliff:g id="DATA_TYPE">%s</xliff:g> का डेटा ऐक्सेस कर सकते हैं."</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"जिन ऐप्लिकेशन के पास यह अनुमति है वे आपके डिवाइस के सेंसर से, <xliff:g id="DATA_TYPE">%s</xliff:g> ऐक्सेस कर सकते हैं."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"क्या आपको अपनी स्मार्ट वॉच पर मौजूद सभी ऐप्लिकेशन के लिए, <xliff:g id="DATA_TYPE">%s</xliff:g> का ऐक्सेस हटाना है?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"सही का निशान"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"गलत का निशान"</string>

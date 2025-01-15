@@ -79,8 +79,8 @@
     <string name="app_priority_button" msgid="3126133977893705098">"Prioritat d\'aplicacions"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"Suprimeix les dades de: <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Totes les aplicacions"</string>
-    <string name="can_read" msgid="4568261079308309564">"Pot llegir <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
-    <string name="can_write" msgid="5082414937218423823">"Pot escriure <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_read" msgid="4568261079308309564">"Pot llegir dades de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_write" msgid="5082414937218423823">"Pot escriure dades de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Aplicacions inactives"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"Aquestes aplicacions ja no poden llegir ni escriure <xliff:g id="DATA_TYPE">%s</xliff:g>, però encara tenen dades emmagatzemades a Salut connectada"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Les aplicacions ja no poden llegir o escriure <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> i no hi ha cap dada de <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> emmagatzemada a Salut connectada"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Salut connectada emmagatzema les teves dades de salut i fitnes, i t\'ofereix una manera senzilla de sincronitzar les diverses aplicacions del dispositiu"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Salut connectada emmagatzema i sincronitza les teves dades de salut i fitnes de diverses aplicacions.\n\n"<b>"Dades de salut i benestar"</b>", com ara sessions d\'exercici, passos, nutrició, son i més\n\n"<b>"Registres de salut"</b>", com ara vacunes, analítiques i més"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Amb Salut connectada"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Comparteix dades amb les teves aplicacions"</b>\n"Tria les dades que cada aplicació pot llegir o escriure a Salut connectada"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gestiona la teva configuració i la teva privadesa"</b>\n"Canvia els permisos de l\'aplicació i gestiona les teves dades en qualsevol moment"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Torna"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Comença"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Suprimeix les dades"</string>
@@ -1113,7 +1111,7 @@
     <string name="this_month_header" msgid="2452395268894677189">"Aquest mes"</string>
     <string name="last_month_header" msgid="1359164797239191253">"El mes passat"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Entrades"</string>
-    <string name="tab_access" msgid="7818197975407243701">"Accedeix"</string>
+    <string name="tab_access" msgid="7818197975407243701">"Accés"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Començar a utilitzar Salut connectada"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincronitza les teves primeres aplicacions perquè comparteixin dades de salut i fitnes entre elles"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configura"</string>
@@ -1186,7 +1184,7 @@
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificació"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Creu"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Actualment, <xliff:g id="APP_NAME">%1$s</xliff:g> pot accedir a les dades de fitnes i benestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
-    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades de fitnes i benestar sempre?"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi sempre a les dades de fitnes i benestar?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> té accés a <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gestiona els permisos de fitnes i benestar"</string>
 </resources>

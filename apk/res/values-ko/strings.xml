@@ -23,7 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"기기에서 건강 및 피트니스 데이터를 관리하고 이러한 데이터에 액세스할 수 있는 앱을 제어하세요."</string>
     <string name="data_title" msgid="4456619761533380816">"데이터 및 액세스"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"건강 기록 살펴보기"</string>
-    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"건강 기록 및 건강 기록에 액세스할 수 있는 앱을 확인합니다."</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"건강 기록 및 건강 기록에 액세스할 수 있는 앱 확인"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"모든 카테고리"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"모든 카테고리 보기"</string>
     <string name="no_data" msgid="1906986019249068659">"데이터 없음"</string>
@@ -320,12 +320,12 @@
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"알레르기"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"알레르기 데이터 읽기"</string>
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"조건"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"조건"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"컨디션"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"조건 읽기"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"백신"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"백신"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"백신 데이터 읽기"</string>
-    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"실험실 결과"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"검사 결과"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"실험실 결과"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"실험실 결과 읽기"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"복용약"</string>
@@ -371,7 +371,7 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>에서 <xliff:g id="APP_NAME">%1$s</xliff:g>의 데이터 처리 방식을 알아볼 수 있습니다."</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"개인정보처리방침"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 건강 기록에 액세스하도록 허용하시겠습니까?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"액세스 권한을 부여하면 앱에서 알레르기, 임상 결과, 백신 등과 같은 데이터를 읽고 쓸 수 있습니다\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"액세스 권한을 부여하면 앱에서 알레르기, 검사 결과, 백신 등과 같은 데이터를 읽고 쓸 수 있습니다\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"액세스 권한을 부여하면 앱에서 알레르기, 임상 결과, 백신 등과 같은 데이터를 읽을 수 있습니다\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"건강 기록에 관한 정보"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"공유할 데이터에 포함되는 항목"</string>
@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"과거 데이터, 백그라운드 데이터"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"이 앱의 추가 권한이 삭제되었습니다."</string>
     <string name="permissions_header" msgid="6519976063360071569">"권한"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"피트니스 및 웰빙"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"피트니스 및 웰니스"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"운동, 수면, 영양 등"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"건강 기록"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"건강 기록"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"헬스 커넥트는 건강 및 피트니스 데이터를 저장하여 기기에 설치된 다른 앱과 간편하게 동기화하도록 지원합니다."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"헬스 커넥트는 여러 앱의 건강/피트니스 데이터를 저장하고 동기화합니다.\n\n"<b>"피트니스 및 웰빙 데이터"</b>"(운동 세션, 걸음 수, 영양, 수면 등)\n\n"<b>"건강 기록"</b>"(백신, 검사 결과 등)"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"헬스 커넥트를 사용하면 다음 작업을 할 수 있습니다."</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"앱과 데이터 공유"</b>\n"각 앱이 헬스 커넥트에서 읽거나 쓸 수 있는 데이터를 선택합니다."</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"설정 및 개인 정보 보호 관리"</b>\n"언제든지 앱 권한을 변경하고 데이터를 관리할 수 있습니다."</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"뒤로"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"시작하기"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"데이터 삭제"</string>
@@ -1168,7 +1166,7 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 피트니스 및 웰니스 데이터에 액세스하도록 허용하시겠습니까?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 <xliff:g id="DATA_TYPES">%2$s</xliff:g>에 대한 액세스 권한을 요청합니다.\n\n모두 허용하도록 선택하거나, 권한을 개별적으로 제어하세요"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 <xliff:g id="DATA_TYPE">%2$s</xliff:g>에 액세스하도록 허용하시겠습니까?"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"피트니스 및 웰빙"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"피트니스 및 웰니스"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"항상"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"사용 중일 때"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"항상"</string>

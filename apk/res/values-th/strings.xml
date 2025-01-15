@@ -346,8 +346,8 @@
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"ภาวะสังคม"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"ภาวะสังคม"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"อ่านข้อมูลภาวะสังคม"</string>
-    <string name="visits_uppercase_label" msgid="8532619758336375886">"ไปพบแพทย์"</string>
-    <string name="visits_lowercase_label" msgid="2545887061364564151">"ไปพบแพทย์"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"การไปพบแพทย์"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"การไปพบแพทย์"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"อ่านข้อมูลเกี่ยวกับการไปพบแพทย์"</string>
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"สัญญาณชีพ"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"สัญญาณชีพ"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย พร้อมให้คุณซิงค์แอปต่างๆ ในอุปกรณ์ได้โดยง่าย"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect จะจัดเก็บและซิงค์ข้อมูลสุขภาพและการออกกำลังกายจากแอปต่างๆ\n\n"<b>"ข้อมูลการออกกำลังกายและสุขภาวะ"</b>" รวมถึงเซสชันการออกกำลังกาย จำนวนก้าว โภชนาการ การนอนหลับ และอื่นๆ\n\n"<b>"บันทึกข้อมูลสุขภาพ"</b>" รวมถึงวัคซีน ผลตรวจ และอื่นๆ"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ช่วยให้คุณทำสิ่งต่อไปนี้ได้"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"แชร์ข้อมูลกับแอปต่างๆ"</b>\n"เลือกข้อมูลที่แต่ละแอปจะอ่านหรือเขียนลงใน Health Connect ได้"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"จัดการการตั้งค่าและความเป็นส่วนตัว"</b>\n"เปลี่ยนสิทธิ์ของแอปและจัดการข้อมูลได้ทุกเมื่อ"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ย้อนกลับ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"เริ่มต้นใช้งาน"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ลบข้อมูล"</string>
@@ -1166,7 +1164,7 @@
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"ขณะใช้แอป"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"ปฏิเสธทั้งหมด"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลการออกกำลังกายและสุขภาวะไหม"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ขอสิทธิ์เข้าถึง <xliff:g id="DATA_TYPES">%2$s</xliff:g>\n\nเลือกว่าจะอนุญาตทั้งหมดหรือควบคุมทีละรายการ"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ขอสิทธิ์เข้าถึง<xliff:g id="DATA_TYPES">%2$s</xliff:g>\n\nเลือกว่าจะอนุญาตทั้งหมดหรือควบคุมทีละรายการ"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึง<xliff:g id="DATA_TYPE">%2$s</xliff:g>ไหม"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"การออกกำลังกายและสุขภาวะ"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"ตลอดเวลา"</string>

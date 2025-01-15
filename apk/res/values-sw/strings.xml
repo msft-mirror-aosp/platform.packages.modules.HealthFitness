@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect huhifadhi data yako ya afya na siha, hali inayorahisisha mchakato wa kusawazisha programu tofauti kwenye kifaa chako"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect huhifadhi na kusawazisha data yako ya afya na siha kutoka kwenye programu tofauti.\n\n"<b>"Data ya siha,"</b>" ikiwa ni pamoja na vipindi vya mazoezi ya mwili, hatua, lishe, kulala na mengine mengi\n\n"<b>"Rekodi za afya,"</b>" ikiwa ni pamoja na chanjo, matokeo ya maabara na mengine mengi"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Ukiwa na Health Connect unaweza"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Ruhusu programu zako zifikie data"</b>\n"Chagua data ambayo kila programu inaweza kusoma au kuandika kwenye Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Dhibiti mipangilio na faragha yako"</b>\n"Badilisha ruhusa za programu na udhibiti data yako wakati wowote"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Rudi nyuma"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Anza"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Futa data"</string>
@@ -1165,7 +1163,7 @@
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Ruhusu ulizochagua"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Unapotumia programu"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Kataa zote"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya mazoezi na siha?"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya siha na afya?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> inaomba ruhusa ya kufikia data ya <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChagua kuruhusu zote au udhibiti kila ruhusa kivyake."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Siha na afya"</string>

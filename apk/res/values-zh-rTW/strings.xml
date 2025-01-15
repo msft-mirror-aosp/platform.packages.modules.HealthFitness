@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"過去的資料、背景資料"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"這個應用程式的其他權限已移除"</string>
     <string name="permissions_header" msgid="6519976063360071569">"權限"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"健身與保健"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"健身與健康"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"運動、睡眠、營養等等"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"健康記錄"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"健康記錄"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"「健康資料同步」會儲存健康與健身資料，方便你在裝置上同步不同應用程式的資料"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"「健康資料同步」會儲存及同步來自不同應用程式的健康與健身資料。\n\n"<b>"健身與健康資料"</b>"：包括運動時段、步數、營養、睡眠等等\n\n"<b>"健康記錄"</b>"：包括疫苗接種、檢驗結果等等"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"你可以使用「健康資料同步」執行下列操作："</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"與應用程式共用資料"</b>\n"選擇每個應用程式可從「健康資料同步」讀取或寫入的資料"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"管理設定和隱私權"</b>\n"隨時變更應用程式權限及管理資料"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"返回"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"開始使用"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"刪除資料"</string>
@@ -1185,7 +1183,7 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"要移除手錶上所有應用程式的<xliff:g id="DATA_TYPE">%s</xliff:g>存取權嗎？"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"勾號"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"叉號"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"目前，「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以存取健身與健康資料 <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"目前，<xliff:g id="ALLOW_MODE">%2$s</xliff:g>「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身與健康資料"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」隨時存取健身與健康資料嗎？"</string>
     <string name="current_access" msgid="1457167070428176139">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以存取<xliff:g id="DATA_TYPES">%2$s</xliff:g>。"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"管理健身與健康權限"</string>

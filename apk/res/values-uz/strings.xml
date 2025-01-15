@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect salomatlik va fitnes maʼlumotlaringizni xavfsiz saqlaydi va qurilmadagi boshqa ilovalarga oson sinxronlash imkonini beradi"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect salomatlik va fitnes axborotlaringizni turli ilovalardan saqlaydi va sinxronlaydi.\n\n"<b>"Fitnes va salomatlik maʼlumotlari,"</b>" jumladan, mashq seanslari, qadamlar, ovqatlanish, uyqu va boshqa maʼlumotlar\n\n"<b>"Tibbiy qaydlar,"</b>" jumladan, vaksinalar, laboratoriya natijalari va boshqalar"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect yordamida siz quyidagilarni bajara olasiz:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Maʼlumotlaringizni ilovalarga ulashish"</b>\n"Har bir ilova Health Connect xizmatining qaysi axborotlarni oʻqishi va yozishini tanlang"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Sozlamalaringiz va maxfiylikni boshqarish"</b>\n"Istalgan payt ilova ruxsatlarini oʻzgartirib, maʼlumotlaringizni boshqaring"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Orqaga"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Boshlash"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Maʼlumotlarni oʻchirib tashlash"</string>
@@ -1170,9 +1168,9 @@
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga <xliff:g id="DATA_TYPE">%2$s</xliff:g> qurilmasidan foydalanishga ruxsat berilsinmi?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes va salomatlik"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"doimiy"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ilova ishlatilganda"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ishlatilayotganda"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Doimiy"</string>
-    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Ilova ishlatilganda"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Ishlatilayotganda"</string>
     <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi salomatlik va fitnes maʼlumotlaridan <xliff:g id="ALLOW_MODE">%2$s</xliff:g> foydalanishi mumkin"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Ruxsat berilgan"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Oʻqishga ruxsat berilgan"</string>

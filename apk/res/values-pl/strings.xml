@@ -136,7 +136,7 @@
     <string name="history_read_access_description" msgid="800722432229526128">"Zezwól tej aplikacji na dostęp do danych z Health Connect dodanych przed <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Zezwól tej aplikacji na dostęp do wszystkich wcześniejszych danych z Health Connect"</string>
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Obecnie nie są odczytywane żadne dane o aktywności fizycznej, ponieważ aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie ma uprawnień do ich odczytu"</string>
-    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> może już uzyskać dostęp do Twoich wcześniejszych danych o stanie zdrowia. Aby to zmienić, wyłącz uprawnienia dostępu do tego typu danych w przypadku tej aplikacji."</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> ma już dostęp do Twoich wcześniejszych danych o stanie zdrowia. Aby to zmienić, wyłącz uprawnienia dostępu do tego typu danych dla tej aplikacji."</string>
     <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Zarządzaj dostępem do danych o stanie zdrowia"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Aby przyznać tej aplikacji dostęp w tle lub dostęp do wcześniejszych danych, włącz co najmniej 1 uprawnienie do odczytu"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Aby przyznać tej aplikacji dostęp w tle, włącz co najmniej 1 uprawnienie do odczytu"</string>
@@ -340,8 +340,8 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Ciąża"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ciąża"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Odczytaj dane o ciąży"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procedury"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"procedury"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Zabiegi"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"zabiegi"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Odczytaj procedury"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"Historia danych związanych ze stylem życia"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"historia danych związanych ze stylem życia"</string>
@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na odczytywanie"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na zapisywanie"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Zezwól"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Zezwalaj na wszystko"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Zezwól na wszystkie"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Nie zezwalaj"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Wybierz, które dane aplikacja będzie mogła odczytywać lub zapisywać w Health Connect"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Wybierz, które dane aplikacja będzie mogła odczytywać w Health Connect"</string>
@@ -539,12 +539,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Otwórz Sklep Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Pierwsze kroki w Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect przechowuje Twoje dane o zdrowiu i aktywności fizycznej i jest prostym sposobem na synchronizację danych z różnych aplikacji na urządzeniu"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect przechowuje i synchronizuje Twoje dane o zdrowiu i aktywności fizycznej z różnych aplikacji.\n\n"<b>"Dane o zdrowiu i aktywności fizycznej"</b>", w tym sesje ćwiczeń, liczba kroków, informacje o odżywianiu i śnie oraz inne dane\n\n"<b>"Dane o stanie zdrowia"</b>", w tym szczepienia, wyniki badań laboratoryjnych oraz inne dane"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Co możesz zrobić dzięki Health Connect:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect przechowuje i synchronizuje Twoje dane o zdrowiu i aktywności fizycznej z różnych aplikacji.\n\n"<b>"Dane o aktywności fizycznej i samopoczuciu"</b>", w tym sesje ćwiczeń, liczba kroków, informacje o odżywianiu i śnie oraz inne dane\n\n"<b>"Dane o stanie zdrowia"</b>", w tym szczepienia, wyniki badań laboratoryjnych oraz inne dane"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Możliwości, jakie daje Health Connect:"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Udostępniaj dane aplikacjom"</b>\n"Wybierz dane, jakie każda aplikacja będzie mogła odczytywać i zapisywać w Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Zarządzaj ustawieniami i prywatnością"</b>\n"Zmieniaj uprawnienia aplikacji i zarządzaj danymi w dowolnej chwili"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Wróć"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Rozpocznij"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Usuń dane"</string>
@@ -1162,11 +1160,11 @@
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Ostatni dostęp wczoraj, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Ostatni dostęp <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Zawsze zezwalaj"</string>
-    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Zaakceptuj wybrane"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Zezwól na wybrane"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Podczas używania aplikacji"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Odrzuć wszystkie"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do danych dotyczących aktywności fizycznej i samopoczucia?"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> prosi o dostęp do: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nMożesz zezwolić na wszystkie te działania lub kontrolować je pojedynczo."</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> prosi o dostęp do tych danych: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nMożesz zezwolić na wszystkie te działania lub kontrolować je pojedynczo."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do tych danych: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitness i dbanie o zdrowie"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"przez cały czas"</string>
@@ -1175,18 +1173,18 @@
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Podczas używania"</string>
     <string name="view_permissions_mode" msgid="5954826327563393399">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> może mieć dostęp do wszystkich Twoich danych dotyczących aktywności fizycznej i samopoczucia <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Dozwolony dostęp"</string>
-    <string name="allowed_to_read" msgid="2775365229411407406">"Dozwolony odczyt"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Ma dostęp do odczytu"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Dzięki tym uprawnieniom <xliff:g id="APP_NAME">%1$s</xliff:g> ma dostęp do danych z czujników Twojego urządzenia."</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"Przyznano dostęp <xliff:g id="NUMBER_0">%1$d</xliff:g> z <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplikacji"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"Brak aplikacji proszących o dostęp"</string>
-    <string name="allowed" msgid="4158456017482263737">"Dozwolone"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"Niedozwolone"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"Aplikacje z tymi uprawnieniami mają dostęp do danych (<xliff:g id="DATA_TYPE">%s</xliff:g>) z czujników na urządzeniu."</string>
+    <string name="allowed" msgid="4158456017482263737">"Ma dostęp"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Nie ma dostępu"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Aplikacje z tymi uprawnieniami mają dostęp do danych (<xliff:g id="DATA_TYPE">%s</xliff:g>) z czujników Twojego urządzenia."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Usunąć dostęp do danych (<xliff:g id="DATA_TYPE">%s</xliff:g>) dla wszystkich aplikacji na zegarku?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Znacznik wyboru"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Krzyżyk"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Obecnie <xliff:g id="APP_NAME">%1$s</xliff:g> ma dostęp do danych dotyczących aktywności fizycznej i samopoczucia <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na stały dostęp do danych dotyczących aktywności fizycznej i samopoczucia?"</string>
-    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ma dostęp do tych danych: <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ma dostęp do tych danych: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Zarządzaj uprawnieniami dotyczącymi aktywności fizycznej i samopoczucia"</string>
 </resources>

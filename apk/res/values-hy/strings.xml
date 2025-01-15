@@ -52,7 +52,7 @@
     <string name="today_header" msgid="1006837293203834373">"Այսօր"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Երեկ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Կարդալ՝ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"Գրանցել՝ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Գրանցում՝ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Կառավարել թույլտվությունները"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Ժամանակը՝ <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -353,7 +353,7 @@
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"կենսական ցուցանիշներ"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Կենսական ցուցանիշների ընթերցում"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Գիտակցականություն"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"գիտակցականություն"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"գիտակցականութ­յուն"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Կարդալ գիտակցականության ժամանակաշրջանի տվյալները"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Գրանցել գիտակցականության ժամանակաշրջանի տվյալները"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Թույլատրել <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին կարդալ"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect-ը պահում է ձեր առողջության և ֆիզիկական ակտիվության տվյալները և համաժամացնում տարբեր հավելվածների աշխատանքը ձեր սարքում"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect-ը տարբեր հավելվածներից պահում և համաժամացնում է ձեր առողջության և ֆիզիկական ակտիվության տվյալները։\n\n"<b>"Ֆիթնեսի և առողջության տվյալներ"</b>", այդ թվում՝ մարզումների, քայլերի, սննդի, քնի և այլ բաների մասին\n\n"<b>"Առողջության մասին տեղեկություններ"</b>", այդ թվում՝ պատվաստանյութերի, լաբորատոր արդյունքների և այլ բաների մասին"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect-ի միջոցով՝"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Կիսվեք տվյալներով հավելվածների հետ"</b>\n"Ընտրեք տվյալները, որոնք յուրաքանչյուր հավելված կարող է կարդալ և գրանցել Health Connect-ում"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Կառավարեք կարգավորումները և գաղտնիությունը"</b>\n"Փոխեք հավելվածի թույլտվությունները և կառավարեք ձեր տվյալները"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Հետ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Սկսել"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Ջնջել տվյալները"</string>
@@ -1173,7 +1171,7 @@
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"օգտագործման ժամանակ"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Միշտ"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Օգտագործման ժամանակ"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g>-ին <xliff:g id="ALLOW_MODE">%2$s</xliff:g> հասանելի են ֆիթնեսի և առողջության վերաբերյալ ձեր բոլոր տվյսլները"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g>-ին <xliff:g id="ALLOW_MODE">%2$s</xliff:g> հասանելի են ֆիթնեսի և առողջության վերաբերյալ ձեր բոլոր տվյալները"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Դիտելու թույլտվություն"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Կարդալու թույլտվություն"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Այս թույլտվություններով <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը կարող է դիտել տվյալները ձեր սարքի սենսորներից։"</string>

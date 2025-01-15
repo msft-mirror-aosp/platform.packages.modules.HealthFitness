@@ -61,12 +61,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Performs various operations on the Health Connect database for cloud backup and restore.
+ * Performs various operations on the Health Connect database for cloud backup.
  *
  * @hide
  */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
-public class BackupRestoreDatabaseHelper {
+public class BackupDatabaseHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
     private final AccessLogsHelper mAccessLogsHelper;
@@ -82,7 +82,7 @@ public class BackupRestoreDatabaseHelper {
     @VisibleForTesting static final int MAXIMUM_PAGE_SIZE = 5000;
     private static final String TAG = "BackupRestoreDatabaseHelper";
 
-    public BackupRestoreDatabaseHelper(
+    public BackupDatabaseHelper(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,

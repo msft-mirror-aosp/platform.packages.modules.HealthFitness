@@ -367,7 +367,7 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Se o app tiver permissão de leitura, ele poderá acessar dados novos e dos últimos 30 dias"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Se o app tiver permissão de leitura, ele poderá acessar dados novos e antigos"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse a plataforma Conexão Saúde?"</string>
-    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados de condicionamento físico e bem-estar?"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados de fitness e bem-estar?"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Leia a <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> do app <xliff:g id="APP_NAME">%1$s</xliff:g> para saber como ele trata seus dados"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privacidade"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse seus históricos de saúde?"</string>
@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"Dados anteriores, dados em segundo plano"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Outras permissões foram removidas desse app"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permissões"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"Condicionamento físico e bem-estar"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitness e bem-estar"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercício, sono, nutrição e outros"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Históricos de saúde"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"históricos de saúde"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"O app Conexão Saúde armazena seus dados de saúde e condicionamento físico, oferecendo uma maneira simples de sincronizar os diferentes apps no dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"A plataforma Conexão Saúde armazena e sincroniza seus dados de saúde e condicionamento físico de diferentes apps.\n\n"<b>"Dados de condicionamento físico e bem-estar,"</b>" incluindo sessões de exercícios, passos, nutrição, sono e muito mais\n\n"<b>"Históricos de saúde,"</b>" incluindo vacinas, resultados de laboratório e muito mais"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Com o app Conexão Saúde, é possível:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Compartilhe dados com seus apps"</b>\n"Escolha os dados que cada app pode ler ou gravar na plataforma Conexão Saúde"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gerencie suas configurações e privacidade"</b>\n"Mude as permissões do app e gerencie seus dados a qualquer momento"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Voltar"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Começar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Excluir dados"</string>
@@ -1162,31 +1160,31 @@
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Último acesso: ontem, <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Último acesso: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Permitir o tempo todo"</string>
-    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Permitir seleção"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Permitir escolhidos"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Durante o uso do app"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Negar tudo"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados de condicionamento físico e bem-estar?"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> está solicitando acesso a dados de <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nVocê pode permitir o acesso a todos ou controlar individualmente."</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados de fitness e bem-estar?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> está pedindo acesso a dados de <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nVocê pode permitir o acesso a todos ou controlar individualmente."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados de <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"Condicionamento físico e bem-estar"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitness e bem-estar"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"o tempo todo"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"durante o uso"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"O tempo todo"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Durante o uso"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"O app <xliff:g id="APP_NAME">%1$s</xliff:g> pode acessar todos os seus dados de condicionamento físico e bem-estar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"O app <xliff:g id="APP_NAME">%1$s</xliff:g> pode acessar todos os seus dados de fitness e bem-estar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Com permissão de acesso"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Com permissão de leitura"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Essas permissões dão ao app <xliff:g id="APP_NAME">%1$s</xliff:g> acesso aos dados dos sensores do dispositivo."</string>
-    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> apps permitidos"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> app(s) permitido(s)"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"Nenhum app solicitando"</string>
-    <string name="allowed" msgid="4158456017482263737">"Permitido"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"Não permitido"</string>
+    <string name="allowed" msgid="4158456017482263737">"Permitidos"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Não permitidos"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"Apps com essa permissão podem acessar dados de <xliff:g id="DATA_TYPE">%s</xliff:g> dos sensores do dispositivo."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Remover o acesso aos dados de <xliff:g id="DATA_TYPE">%s</xliff:g> para todos os apps no seu relógio?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de seleção"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Sinal de X"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"No momento, o app <xliff:g id="APP_NAME">%1$s</xliff:g> pode acessar dados de condicionamento físico e bem-estar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
-    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados de condicionamento físico e bem-estar o tempo todo?"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"No momento, o app <xliff:g id="APP_NAME">%1$s</xliff:g> pode acessar dados de fitness e bem-estar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados de fitness e bem-estar o tempo todo?"</string>
     <string name="current_access" msgid="1457167070428176139">"O app <xliff:g id="APP_NAME">%1$s</xliff:g> tem acesso aos dados de <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gerenciar permissões de condicionamento físico e bem-estar"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gerenciar permissões de fitness e bem-estar"</string>
 </resources>

@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect আপনার স্বাস্থ্য ও ফিটনেস সম্পর্কিত ডেটা সেভ করে, যার ফলে আপনি সহজেই বিভিন্ন অ্যাপ আপনার ডিভাইসে সিঙ্ক করে নিতে পারেন"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect বিভিন্ন অ্যাপ থেকে আপনার স্বাস্থ্য ও ফিটনেস সম্পর্কিত ডেটা সেভ ও সিঙ্ক করে।\n\n"<b>"ফিটনেস এবং সুস্থতা সংক্রান্ত ডেটা,"</b>" এর মধ্যে ব্যায়ামের সেশন, কতটা হেঁটেছেন, পুষ্টি, ঘুম ও আরও অনেক কিছু অন্তর্ভুক্ত\n\n"<b>"স্বাস্থ্য বিষয়ক রেকর্ড,"</b>" এর মধ্যে ভ্যাকসিন, ল্যাবের ফলাফল ও আরও অনেক কিছু অন্তর্ভুক্ত"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect -এর মাধ্যমে আপনি এগুলি করতে পারবেন"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"আপনার অ্যাপের মাধ্যমে ডেটা শেয়ার করুন"</b>\n"প্রতিটি অ্যাপ, Health Connect-এর যেসব ডেটা দেখতে ও এডিট করতে পারবে সেগুলি বেছে নিন"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"আপনার সেটিংস ও গোপনীয়তা ম্যানেজ করুন"</b>\n"যেকোনও সময় অ্যাপকে দেওয়া অনুমতি পরিবর্তন ও আপনার ডেটা ম্যানেজ করুন"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ফিরে যান"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"শুরু করুন"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ডেটা মুছে দিন"</string>
@@ -1165,7 +1163,7 @@
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"বেছে নেওয়া অনুমতিগুলি দিন"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"অ্যাপ ব্যবহার করার সময়"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"কোনও অনুমতি দেবেন না"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> অ্যাপকে ফিটনেস ও ওয়েলনেস সংক্রান্ত ডেটা অ্যাক্সেস করার অনুমতি দিতে চান?"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> অ্যাপকে ফিটনেস ও সুস্থতা সংক্রান্ত ডেটা অ্যাক্সেস করার অনুমতি দিতে চান?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g>, <xliff:g id="DATA_TYPES">%2$s</xliff:g> অ্যাক্সেস করার অনুমতি চাইছে।\n\nসব অনুমতি দিতে অথবা আলাদাভাবে নিয়ন্ত্রণ করার জন্য বেছে নিন।"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="DATA_TYPE">%2$s</xliff:g> অ্যাক্সেস করতে <xliff:g id="APP_NAME">%1$s</xliff:g>-কে অনুমতি দিতে চান?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"ফিটনেস ও সুস্থতা"</string>
@@ -1173,7 +1171,7 @@
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"শুধু ব্যবহারের সময়"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"সব সময়ের জন্য"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"শুধু ব্যবহারের সময়"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> আপনার সব ফিটনেস ও ওয়েলনেস ডেটা অ্যাক্সেস করতে পারবে <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> আপনার সব ফিটনেস ও সুস্থতা সম্পর্কিত ডেটা অ্যাক্সেস করতে পারবে <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"অ্যাক্সেসের অনুমতি আছে"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"পড়ার অনুমতি দেওয়া হয়েছে"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"এইসব অনুমতি আপনার ডিভাইস সেন্সর থেকে ডেটাতে <xliff:g id="APP_NAME">%1$s</xliff:g> অ্যাপকে অ্যাক্সেস করতে দেয়।"</string>
