@@ -26,8 +26,8 @@ import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createBloodPressureRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -74,13 +74,13 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

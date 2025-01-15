@@ -55,20 +55,21 @@ public final class HealthConnectThreadScheduler {
 
     // Executor to run HC background tasks
     @VisibleForTesting
-    static volatile ThreadPoolExecutor sBackgroundThreadExecutor = createBackgroundExecutor();
+    public static volatile ThreadPoolExecutor sBackgroundThreadExecutor =
+            createBackgroundExecutor();
 
     // Executor to run HC background tasks
     @VisibleForTesting
-    static volatile ThreadPoolExecutor sInternalBackgroundExecutor =
+    public static volatile ThreadPoolExecutor sInternalBackgroundExecutor =
             createInternalBackgroundExecutor();
 
     // Executor to run HC tasks for clients
     @VisibleForTesting
-    static volatile ThreadPoolExecutor sForegroundExecutor = createForegroundExecutor();
+    public static volatile ThreadPoolExecutor sForegroundExecutor = createForegroundExecutor();
 
     // Executor to run HC controller tasks
     @VisibleForTesting
-    static volatile ThreadPoolExecutor sControllerExecutor = createControllerExecutor();
+    public static volatile ThreadPoolExecutor sControllerExecutor = createControllerExecutor();
 
     public static void resetThreadPools() {
         sInternalBackgroundExecutor = createInternalBackgroundExecutor();

@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
+import static com.android.server.healthconnect.testing.TestUtils.TEST_USER;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -43,6 +43,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.After;
 import org.junit.Before;

@@ -18,7 +18,7 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.backuprestore.BackupDatabaseHelper.MAXIMUM_PAGE_SIZE;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -53,11 +53,11 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;

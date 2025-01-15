@@ -21,8 +21,8 @@ import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.BloodPressureRecordHelper.BLOOD_PRESSURE_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper.STEPS_TABLE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createBloodPressureRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -56,6 +56,7 @@ import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect.storage.datatypehelpers;
+package com.android.server.healthconnect.testing.storage;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.DELETE;
@@ -47,6 +47,9 @@ import android.util.ArrayMap;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
