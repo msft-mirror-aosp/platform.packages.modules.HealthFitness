@@ -144,6 +144,10 @@ android_app_certificate {
 android_library {
     name: "HealthConnectLibrary",
     srcs: [":healthConnectController-sources"],
+    visibility: [
+        ":__subpackages__",
+        "//vendor:__subpackages__",
+    ],
     sdk_version: "module_current",
     min_sdk_version: "34",
     libs: [
