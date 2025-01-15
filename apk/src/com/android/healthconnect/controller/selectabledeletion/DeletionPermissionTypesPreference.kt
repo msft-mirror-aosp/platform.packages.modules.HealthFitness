@@ -78,7 +78,7 @@ class DeletionPermissionTypesPreference(
         widgetFrameParent?.setPaddingRelative(
             widgetFrameParent.paddingStart,
             widgetFrameParent.paddingTop,
-            /* end = */ 0,
+            widgetFrameParent.paddingEnd,
             widgetFrameParent.paddingBottom,
         )
     }
