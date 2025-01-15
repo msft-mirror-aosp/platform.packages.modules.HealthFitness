@@ -23,7 +23,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
 import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
-import static com.android.healthfitness.flags.Flags.exportImport;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.APP_ID_PRIORITY_ORDER_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.PRIORITY_TABLE_NAME;
@@ -211,10 +210,8 @@ public final class DatabaseMerger {
         Slog.i(TAG, "Syncing app info records after restored data merge");
         mAppInfoHelper.syncAppInfoRecordTypesUsed();
 
-        if (exportImport()) {
-            Slog.i(TAG, "Merging priority list");
-            mergePriorityList(stagedDatabase, stagedPackageNamesByAppIds);
-        }
+        Slog.i(TAG, "Merging priority list");
+        mergePriorityList(stagedDatabase, stagedPackageNamesByAppIds);
 
         Slog.i(TAG, "Merging done");
     }

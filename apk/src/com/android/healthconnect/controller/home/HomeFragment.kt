@@ -67,7 +67,6 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
-import com.android.healthfitness.flags.Flags.exportImport
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
 import com.android.healthfitness.flags.Flags.personalHealthRecordLockScreenBanner
@@ -170,9 +169,8 @@ class HomeFragment : Hilt_HomeFragment() {
             findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
             true
         }
-        if (exportImport()) {
-            mManageDataPreference.summary = getString(R.string.manage_data_summary)
-        }
+
+        mManageDataPreference.summary = getString(R.string.manage_data_summary)
 
         if (isPersonalHealthRecordEnabled()) {
             mBrowseMedicalDataPreference.setOnPreferenceClickListener {
@@ -197,9 +195,7 @@ class HomeFragment : Hilt_HomeFragment() {
         super.onResume()
         recentAccessViewModel.loadRecentAccessApps(maxNumEntries = 3)
         homeViewModel.loadConnectedApps()
-        if (exportImport()) {
-            exportStatusViewModel.loadScheduledExportStatus()
-        }
+        exportStatusViewModel.loadScheduledExportStatus()
         if (isPersonalHealthRecordEnabled()) {
             homeViewModel.loadHasAnyMedicalData()
             if (isLockScreenBannerAvailable) {
@@ -239,20 +235,18 @@ class HomeFragment : Hilt_HomeFragment() {
                 }
             }
         }
-
-        if (exportImport()) {
-            exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
-                scheduledExportUiStatus ->
-                when (scheduledExportUiStatus) {
-                    is ScheduledExportUiStatus.WithData -> {
-                        maybeShowExportErrorBanner(scheduledExportUiStatus.scheduledExportUiState)
-                    }
-                    else -> {
-                        // do nothing
-                    }
+        exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
+            scheduledExportUiStatus ->
+            when (scheduledExportUiStatus) {
+                is ScheduledExportUiStatus.WithData -> {
+                    maybeShowExportErrorBanner(scheduledExportUiStatus.scheduledExportUiState)
+                }
+                else -> {
+                    // do nothing
                 }
             }
         }
+
         if (isPersonalHealthRecordEnabled()) {
             homeViewModel.loadHasAnyMedicalData()
             homeViewModel.hasAnyMedicalData.observe(viewLifecycleOwner) { hasAnyMedicalData ->
