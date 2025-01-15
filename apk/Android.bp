@@ -181,6 +181,7 @@ android_library {
         "SettingsLibMainSwitchPreference",
         "SettingsLibAppPreference",
         "SettingsLibActivityEmbedding",
+        "SettingsLibSelectorWithWidgetPreference",
         "SettingsLibSettingsSpinner",
         "androidx.core_core",
         "hilt_android",

@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteFragment
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange
 import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
+import com.android.healthconnect.controller.tests.utils.checkBoxOf
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.utils.logging.AutoDeleteElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -122,7 +123,7 @@ class AutoDeleteFragmentTest {
             MutableLiveData(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)
         }
         launchFragment<AutoDeleteFragment>(Bundle())
-        onView(withId(R.id.radio_button_never)).check(matches(isChecked()))
+        onView(checkBoxOf("Never")).check(matches(isChecked()))
     }
 
     @Test
@@ -143,7 +144,8 @@ class AutoDeleteFragmentTest {
         }
         launchFragment<AutoDeleteFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_3_months)).perform(click())
+        onView(withText("After 3 months")).perform(click())
+        verify(healthConnectLogger).logInteraction(AutoDeleteElement.AUTO_DELETE_3_MONTHS_BUTTON)
         onView(withText("Auto-delete data after 3 months?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
@@ -167,7 +169,7 @@ class AutoDeleteFragmentTest {
         verify(healthConnectLogger)
             .logInteraction(AutoDeleteElement.AUTO_DELETE_DIALOG_CONFIRM_BUTTON)
 
-        onView(withId(R.id.radio_button_3_months)).check(matches(isChecked()))
+        onView(checkBoxOf("After 3 months")).check(matches(isChecked()))
     }
 
     @Test
@@ -188,7 +190,8 @@ class AutoDeleteFragmentTest {
         }
         launchFragment<AutoDeleteFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_18_months)).perform(click())
+        onView(withText("After 18 months")).perform(click())
+        verify(healthConnectLogger).logInteraction(AutoDeleteElement.AUTO_DELETE_18_MONTHS_BUTTON)
         onView(withText("Auto-delete data after 18 months?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
@@ -212,7 +215,7 @@ class AutoDeleteFragmentTest {
         verify(healthConnectLogger)
             .logInteraction(AutoDeleteElement.AUTO_DELETE_DIALOG_CONFIRM_BUTTON)
 
-        onView(withId(R.id.radio_button_18_months)).check(matches(isChecked()))
+        onView(checkBoxOf("After 18 months")).check(matches(isChecked()))
     }
 
     @Test

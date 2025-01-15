@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2022 The Android Open Source Project
+/*
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -17,12 +17,15 @@ package com.android.healthconnect.controller.tests.utils
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.hasSibling
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
@@ -58,6 +61,24 @@ fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?> {
             return matcher.matches(view) && currentIndex++ == index
         }
     }
+}
+
+/**
+ * A custom matcher to find a CheckBox based on its sibling TextView's text.
+ *
+ * It is specifically useful for matching a CheckBox in a `SelectorWithWidgetPreference` layout,
+ * where the CheckBox and the associated TextView are side by side within separate LinearLayouts.
+ *
+ * @param keyText The text of the associated TextView to locate the CheckBox.
+ * @return A Matcher for the CheckBox that matches the given text of the sibling TextView.
+ */
+fun checkBoxOf(keyText: String): Matcher<View> {
+    return allOf(
+        withId(android.R.id.checkbox),
+        isDescendantOfA(
+            allOf(withId(android.R.id.widget_frame), hasSibling(hasDescendant(withText(keyText))))
+        ),
+    )
 }
 
 fun atPosition(position: Int, itemMatcher: Matcher<View?>): Matcher<View?> {
