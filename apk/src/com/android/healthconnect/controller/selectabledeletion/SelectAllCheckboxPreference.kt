@@ -57,7 +57,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : HealthPreference(co
         widgetFrameParent?.setPaddingRelative(
             widgetFrameParent.paddingStart,
             widgetFrameParent.paddingTop,
-            /* end = */ 0,
+            widgetFrameParent.paddingEnd,
             widgetFrameParent.paddingBottom,
         )
     }
