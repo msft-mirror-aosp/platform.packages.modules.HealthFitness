@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Lietotnē Health Connect tiek glabāti jūsu veselības un fitnesa dati, tādējādi varat vienkāršā veidā sinhronizēt dažādas lietotnes savā ierīcē."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Platformā Health Connect tiek uzglabāti un sinhronizēti jūsu veselības un fitnesa dati no dažādām lietotnēm.\n\n"<b>"Fitnesa un labsajūtas dati,"</b>" tostarp treniņu sesijas, noieto soļu skaits, uztura paradumi, miega ilgums un citi dati.\n\n"<b>"Veselības dati,"</b>" tostarp saistībā ar vakcinācijām, laboratorisko izmeklējumu rezultātiem un citām tēmām."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Izmantojot Health Connect, varat veikt tālāk norādītās darbības."</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Datu kopīgošana ar lietotnēm"</b>\n"Izvēlieties, kādus datus katra lietotne var lasīt vai rakstīt lietotnē Health Connect."</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Iestatījumu un konfidencialitātes pārvaldība"</b>\n"Varat jebkurā laikā mainīt lietotņu atļaujas un pārvaldīt savus datus."</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atpakaļ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Sākt darbu"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Dzēst datus"</string>

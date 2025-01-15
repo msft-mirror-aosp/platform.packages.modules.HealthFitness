@@ -48,7 +48,7 @@
     <string name="recent_access_header" msgid="7623497371790225888">"हालसालै डेटा एक्सेस गर्ने एपहरू"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"कुनै पनि एपले हालसालै Health Connect प्रयोग गरेको छैन"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"हालसालै डेटा रिड र राइट गरेका सबै एपहरू हेर्नुहोस्"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"विगत २४ घण्टामा कुन कुन एपले तपाईंको डेटा प्रयोग गरे भन्ने कुरा हेर्नुहोस्"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"विगत २४ घण्टामा कुन कुन एपले तपाईंको डेटा एक्सेस गरे भन्ने कुरा हेर्नुहोस्"</string>
     <string name="today_header" msgid="1006837293203834373">"आज"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"हिजो"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"रिड एक्सेस: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -340,9 +340,9 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"गर्भावस्थासम्बन्धी जानकारी"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"गर्भावस्थासम्बन्धी जानकारी"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"गर्भावस्थासम्बन्धी जानकारी रिड गर्नुहोस्"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"प्रक्रियासम्बन्धी जानकारी"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"प्रक्रियासम्बन्धी जानकारी"</string>
-    <string name="procedures_content_description" msgid="1086900373141440005">"प्रक्रियासम्बन्धी जानकारी रिड गर्नुहोस्"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"शल्यक्रियासम्बन्धी जानकारी"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"शल्यक्रियासम्बन्धी जानकारी"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"शल्यक्रियासम्बन्धी जानकारी रिड गर्ने अनुमति दिनुहोस्"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"व्यक्तिगत जीवनसम्बन्धी विगतका जानकारी"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"सामाजिक सञ्जालसम्बन्धी जानकारी"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"सामाजिक सञ्जालसम्बन्धी जानकारीको हिस्ट्री रिड गर्नुहोस्"</string>
@@ -1165,7 +1165,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"सबै अस्वीकार गर्नुहोस्"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई व्यायाम तथा तन्दुरुस्तीसम्बन्धी डेटा एक्सेस गर्न दिने हो?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले <xliff:g id="DATA_TYPES">%2$s</xliff:g> एक्सेस गर्ने अनुमति मागिरहेको छ।\n\nसबै डेटा एक्सेस गर्ने अनुमति दिनुहोस् वा तिनीहरूलाई एक एक गरी नियन्त्रण गर्नुहोस्।"</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई <xliff:g id="DATA_TYPE">%2$s</xliff:g> प्रयोग गर्ने अनुमति दिने हो?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई <xliff:g id="DATA_TYPE">%2$s</xliff:g> एक्सेस गर्ने अनुमति दिने हो?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"तन्दुरुस्ती तथा आरोग्य"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"सधैँ"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"प्रयोग गर्दै गर्दा"</string>
@@ -1179,7 +1179,7 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"कुनै पनि एपले अनुमति मागिरहेको छैन"</string>
     <string name="allowed" msgid="4158456017482263737">"अनुमति दिइएको छ"</string>
     <string name="not_allowed" msgid="6092523505093372147">"अनुमति दिइएको छैन"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"यो अनुमति पाएका एपहरू तपाईंको डिभाइसका सेन्सरहरूबाट लिइएको <xliff:g id="DATA_TYPE">%s</xliff:g> सँग सम्बन्धित जानकारी एक्सेस गर्न सक्छन्।"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"यो अनुमति पाएका एपहरू तपाईंको डिभाइसका सेन्सरहरूबाट लिइएको <xliff:g id="DATA_TYPE">%s</xliff:g>सँग सम्बन्धित जानकारी एक्सेस गर्न सक्छन्।"</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"आफ्नो स्मार्ट वाचमा भएका सबै एपहरूका हकमा <xliff:g id="DATA_TYPE">%s</xliff:g> को एक्सेस हटाउने हो?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"जाँच चिन्ह"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"क्रस चिन्ह"</string>

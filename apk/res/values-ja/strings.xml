@@ -358,7 +358,7 @@
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"マインドフルネスを書き込む"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」に読み取りを許可する"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」に書き込みを許可する"</string>
-    <string name="request_permissions_allow" msgid="4201324235711040631">"許可"</string>
+    <string name="request_permissions_allow" msgid="4201324235711040631">"許可する"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"すべて許可"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"許可しない"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"このアプリにヘルスコネクトでの読み取りまたは書き込みを許可するデータを選択できます"</string>
@@ -367,7 +367,7 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"読み取りアクセス権を付与すると、このアプリは新規データと過去 30 日間のデータを読み取れるようになります"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"読み取りアクセス権を付与すると、このアプリは新規データと過去のデータを読み取れるようになります"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> にヘルスコネクトへのアクセスを許可しますか？"</string>
-    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"<xliff:g id="APP_NAME">%1$s</xliff:g>に、フィットネスとウェルネスに関するデータへのアクセスを許可しますか？"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"<xliff:g id="APP_NAME">%1$s</xliff:g> にフィットネスとウェルネスに関するデータへのアクセスを許可しますか？"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="APP_NAME">%1$s</xliff:g> によるユーザーデータの取り扱いについては、<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>をご覧ください"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"プライバシー ポリシー"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g> に医療記録へのアクセスを許可しますか？"</string>
@@ -1160,13 +1160,13 @@
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"昨日の <xliff:g id="TIME_DATE">%1$s</xliff:g> にアクセス"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"<xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g> にアクセス"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"常に許可"</string>
-    <string name="request_permissions_allow_selected" msgid="218527615680495438">"選択された権限を許可する"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"選択された権限を許可"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"アプリの使用時のみ"</string>
-    <string name="request_permissions_deny_all" msgid="4123735770293545320">"すべて拒否する"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"フィットネスとウェルネスに関するデータへのアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に許可しますか？"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"すべて拒否"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> にフィットネスとウェルネスに関するデータへのアクセスを許可しますか？"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> が<xliff:g id="DATA_TYPES">%2$s</xliff:g>へのアクセスをリクエストしています。\n\nすべて許可するか、個別に許可するかを選択してください。"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> に<xliff:g id="DATA_TYPE">%2$s</xliff:g>へのアクセスを許可しますか？"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"フィットネスとウェルネス"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"フィットネスとウ⁠ェ⁠ル⁠ネ⁠ス"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"常時"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"使用中"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"常時"</string>
@@ -1177,14 +1177,14 @@
     <string name="give_permission_prompt" msgid="5788144216023065504">"これらの権限により、<xliff:g id="APP_NAME">%1$s</xliff:g> はデバイスのセンサーからデータにアクセスできるようになります。"</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g> 個のアプリを許可"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"リクエストしているアプリはありません"</string>
-    <string name="allowed" msgid="4158456017482263737">"許可"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"許可しない"</string>
+    <string name="allowed" msgid="4158456017482263737">"許可されているアプリ"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"許可されていないアプリ"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"この権限があるアプリは、デバイスのセンサーから<xliff:g id="DATA_TYPE">%s</xliff:g>のデータにアクセスできます。"</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"スマートウォッチのすべてのアプリから<xliff:g id="DATA_TYPE">%s</xliff:g>のアクセス権を削除しますか？"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"スマートウォッチのすべてのアプリから<xliff:g id="DATA_TYPE">%s</xliff:g>へのアクセス権を削除しますか？"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"チェックマーク"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"バツマーク"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"現在、<xliff:g id="APP_NAME">%1$s</xliff:g> はフィットネスとウェルネスに関するデータにアクセスできます（<xliff:g id="ALLOW_MODE">%2$s</xliff:g>）"</string>
-    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"フィットネスとウェルネスに関するデータへのアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に常に許可しますか？"</string>
-    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> は<xliff:g id="DATA_TYPES">%2$s</xliff:g>へのアクセスが可能です。"</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"フィットネスとウェルネスに関する権限を管理"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"<xliff:g id="APP_NAME">%1$s</xliff:g> にフィットネスとウェルネスに関するデータへのアクセスを常に許可しますか？"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> は<xliff:g id="DATA_TYPES">%2$s</xliff:g>にアクセスできます。"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"フィットネスとウェルネスに関する権限を管⁠理"</string>
 </resources>

@@ -48,7 +48,7 @@
     <string name="recent_access_header" msgid="7623497371790225888">"Hiljutine juurdepääs"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Rakendusele Health Connect pole hiljuti ükski rakendus juurde pääsenud"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Kuva kõik hiljutised juurdepääsemised"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"Vaadake, millised rakendused on teie andmetele viimase 24 tunni jooksul juurde pääsenud"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"Vaadake, millised rakendused on teie andmetele viimase 24 tunni jooksul juurde pääsenud."</string>
     <string name="today_header" msgid="1006837293203834373">"Täna"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Eile"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lugemine: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -136,11 +136,11 @@
     <string name="history_read_access_description" msgid="800722432229526128">"Lubage sellel rakendusel pääseda juurde Health Connecti andmetele, mis on lisatud enne kuupäeva <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Lubage sellel rakendusel pääseda juurde kõigile varasematele Health Connecti andmetele"</string>
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Treeninguandmeid ei loeta praegu, kuna rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> jaoks pole lugemise load sisse lülitatud"</string>
-    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> pääseb juba juurde teie varasematele terviseandmetele. Selle muutmiseks lülitage selle rakenduse puhul terviseandmete load välja"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> pääseb juba juurde teie varasematele terviseandmetele. Selle muutmiseks lülitage selle rakenduse puhul terviseandmete load välja."</string>
     <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Terviseandmete lubade haldamine"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Andke vähemalt üks lugemise luba, et juurdepääs taustale või varasematele andmetele selle rakenduse jaoks sisse lülitada"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Andke vähemalt üks lugemise luba, et juurdepääs taustale selle rakenduse jaoks sisse lülitada"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Andke vähemalt üks lugemise luba, et juurdepääs varasematele andmetele selle rakenduse jaoks sisse lülitada"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Andke vähemalt üks lugemise luba, et juurdepääs taustale või varasematele andmetele selle rakenduse jaoks sisse lülitada."</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Andke vähemalt üks lugemise luba, et juurdepääs taustale selle rakenduse jaoks sisse lülitada."</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Andke vähemalt üks lugemise luba, et juurdepääs varasematele andmetele selle rakenduse jaoks sisse lülitada."</string>
     <string name="historic_access_description" msgid="3309195636349468633">"Lubage sellel rakendusel pääseda juurde kõigile varasematele Health Connecti andmetele"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Lubage sellel rakendusel pääseda juurde Health Connecti andmetele, kui te rakendust ei kasuta"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktiivse tegevuse käigus põletatud kalorite arv"</string>
@@ -361,22 +361,22 @@
     <string name="request_permissions_allow" msgid="4201324235711040631">"Luba"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Luba kõik"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ära luba"</string>
-    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Valige andmed, mida soovite lubada sellel rakendusel Health Connectist lugeda või sinna kirjutada"</string>
-    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Valige andmed, mida soovite lubada sellel rakendusel Health Connectist lugeda"</string>
-    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Valige andmed, mida soovite lubada sellel rakendusel Health Connecti kirjutada"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Valige andmed, mida soovite lubada sellel rakendusel Health Connectist lugeda või sinna kirjutada."</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Valige andmed, mida soovite lubada sellel rakendusel Health Connectist lugeda."</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Valige andmed, mida soovite lubada sellel rakendusel Health Connecti kirjutada."</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Kui annate lugemisõiguse, võib rakendus lugeda uusi andmeid ja viimase 30 päeva andmeid"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Kui annate lugemisõiguse, võib rakendus lugeda uusi ja varasemaid andmeid"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Kas lubate rakendusel <xliff:g id="APP_NAME">%1$s</xliff:g> Health Connectile juurde pääseda?"</string>
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs treeningu- ja heaoluandmetele?"</string>
-    <string name="request_permissions_rationale" msgid="2642076968583316986">"Teavet selle kohta, kuidas <xliff:g id="APP_NAME">%1$s</xliff:g> teie andmeid töötleb, leiate dokumendist <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Teavet selle kohta, kuidas <xliff:g id="APP_NAME">%1$s</xliff:g> teie andmeid töötleb, leiate <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>."</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privaatsuseeskirjadest"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs teie terviseandmetele?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Kui annate juurdepääsu, saab see rakendus lugeda ning kirjutada andmeid, näiteks teavet allergiate, laboritulemuste, vaktsiinide ja muu kohta\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
-    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Kui annate juurdepääsu, saab see rakendus lugeda andmeid, näiteks teavet allergiate, laboritulemuste, vaktsiinide ja muu kohta\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Kui annate juurdepääsu, saab see rakendus lugeda ning kirjutada andmeid, näiteks teavet allergiate, laboritulemuste, vaktsiinide ja muu kohta.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Kui annate juurdepääsu, saab see rakendus lugeda andmeid, näiteks teavet allergiate, laboritulemuste, vaktsiinide ja muu kohta.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Teave terviseandmete kohta"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Jagatavad andmed hõlmavad"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Kui lubate, saab <xliff:g id="APP_NAME">%1$s</xliff:g> teie terviseandmeid Health Connectiga jagada."</string>
-    <string name="medical_request_footer" msgid="6533749932770903089">"Sünkroonige oma eri rakendustest ja allikatest pärit terviseandmed, et neid ühes kohas hoida"</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Sünkroonige oma eri rakendustest ja allikatest pärit terviseandmed, et neid ühes kohas hoida."</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Kas eemaldada kõik load?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Eemalda kõik"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ei saa edaspidi Health Connecti andmeid lugeda ega kirjutada.\n\nSee ei mõjuta rakenduse teisi lubasid, näiteks kaamerale, mikrofonile ja asukohale juurdepääsemise lubasid."</string>
@@ -423,7 +423,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"Ükski rakendus pole lubatud"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Ükski rakendus pole keelatud"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Kas eemaldada kõigi rakenduste juurdepääs?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Ükski teie rakendus ei pääse Health Connecti andmetele juurde ega saa uusi andmeid lisada. Olemasolevaid andmeid see ei kustuta.\n\nSee ei mõjuta muid selle rakenduse õiguseid, nagu asukoha, kaamera või mikrofoni kasutamise luba."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Ükski teie rakendus ei pääse Health Connecti andmetele juurde ega saa uusi andmeid lisada. Olemasolevaid andmeid see ei kustuta.\n\nSee ei mõjuta muid selle rakenduse õigusi, nagu asukoha, kaamera või mikrofoni kasutamise luba."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Eemalda kõik"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Rakenduse haldamine"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Kuva rakenduse andmed"</string>
@@ -432,9 +432,9 @@
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Inaktiivsed rakendused"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Nendel rakendustel pole enam juurdepääsu, kuid nende andmed on endiselt Health Connecti salvestatud."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> saab lugeda andmeid, mis lisati pärast kuupäeva <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"Kui soovite hallata muid Androidi lube, mis sellele rakendusele antud on, tehke valikud Seaded &gt; Rakendused"</string>
-    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Teavet selle kohta, kuidas <xliff:g id="APP_NAME">%1$s</xliff:g> teie andmeid töötleb, leiate arendaja privaatsuseeskirjadest"</string>
-    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Kui soovite hallata muid Androidi lube, mis sellele rakendusele antud on, avage Seaded ja seejärel puudutage valikut Rakendused"</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"Kui soovite hallata muid Androidi lube, mis sellele rakendusele antud on, tehke valikud Seaded &gt; Rakendused."</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Teavet selle kohta, kuidas <xliff:g id="APP_NAME">%1$s</xliff:g> teie andmeid töötleb, leiate arendaja privaatsuseeskirjadest."</string>
+    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Kui soovite hallata muid Androidi lube, mis sellele rakendusele antud on, avage Seaded ja seejärel puudutage valikut Rakendused."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lugege privaatsuseeskirju"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Pääseti juurde viimase 24 tunni jooksul"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Rakenduste juurdepääs"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect talletab teie tervise- ja treeninguandmeid, pakkudes teile lihtsat viisi seadmes eri rakenduste sünkroonimiseks"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect talletab ja sünkroonib teie tervise- ja treeninguandmed eri rakendustest.\n\n"<b>"Treeningu- ja heaoluandmed,"</b>" sh treeningseansid, sammude arv, toitumine, uni ja muud\n\n"<b>"Terviseandmed,"</b>" sh vaktsiinid, laboritulemused ja muud"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connectiga saate teha järgmist."</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Andmete jagamine rakendustega"</b>\n"Valige, milliseid andmeid iga rakendus lugeda või Health Connecti kirjutada saab"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Seadete ja privaatsuse haldamine"</b>\n"Muutke mis tahes ajal rakenduste lube ja hallake oma andmeid"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Mine tagasi"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Alustage"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Kustuta andmed"</string>
@@ -1124,7 +1122,7 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Leidke veel rakendusi, mida rakendusega <xliff:g id="APP_NAME">%s</xliff:g> Health Connecti kaudu sünkroonida"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Kuva rakenduste poes"</string>
     <string name="lock_screen_banner_title" msgid="5384381892985739755">"Ekraaniluku seadistamine"</string>
-    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Terviseandmete turvalisuse suurendamiseks määrake selle seadme jaoks PIN-kood, muster või parool"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Terviseandmete turvalisuse suurendamiseks määrake selle seadme jaoks PIN-kood, muster või parool."</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"Ekraaniluku seadistamine"</string>
     <string name="select_all" msgid="837499881590001166">"Vali kõik"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Ühendatud rakendused ei saa enam neid andmeid rakendusest Health Connect lugeda."</string>

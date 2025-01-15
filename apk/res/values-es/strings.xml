@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Salud conectada almacena tus datos de salud y actividad física, y te ofrece una forma sencilla de sincronizar las diferentes aplicaciones de tu dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Salud conectada almacena y sincroniza tus datos de salud y actividad física de diferentes aplicaciones.\n\n"<b>"Datos de actividad física y bienestar,"</b>" como sesiones de ejercicio, pasos, nutrición y sueño \n\n"<b>"Registros de salud,"</b>" como vacunas y resultados de analíticas"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Salud conectada, puedes hacer lo siguiente:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Comparte datos con tus aplicaciones"</b>\n"Elige los datos que cada aplicación puede leer o escribir en Salud conectada"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gestiona tus ajustes y tu privacidad"</b>\n"Cambia los permisos de las aplicaciones y gestiona tus datos en cualquier momento"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atrás"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Empezar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Eliminar datos"</string>
@@ -1179,8 +1177,8 @@
     <string name="give_permission_prompt" msgid="5788144216023065504">"Estos permisos dan a <xliff:g id="APP_NAME">%1$s</xliff:g> acceso a los datos de los sensores de tu dispositivo."</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplicaciones permitidas"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"No hay aplicaciones que lo soliciten"</string>
-    <string name="allowed" msgid="4158456017482263737">"Permitida"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"No permitida"</string>
+    <string name="allowed" msgid="4158456017482263737">"Permitidas"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"No permitidas"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"Las aplicaciones con este permiso pueden acceder a los datos de <xliff:g id="DATA_TYPE">%s</xliff:g> de los sensores de tu dispositivo."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quitar el acceso de todas las aplicaciones de tu reloj a <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificación"</string>

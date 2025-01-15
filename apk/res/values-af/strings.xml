@@ -296,8 +296,8 @@
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"polsslagveranderlikheid"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Lees polsslagveranderlikheid"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Skryf polsslagveranderlikheid"</string>
-    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Suurstofsaturasie"</string>
-    <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"suurstofsaturasie"</string>
+    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Suurstof-saturasie"</string>
+    <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"suurstof-saturasie"</string>
     <string name="oxygen_saturation_read_content_description" msgid="4756434113425028212">"Lees suurstofsaturasie"</string>
     <string name="oxygen_saturation_write_content_description" msgid="7189901097196830875">"Skryf suurstofsaturasie"</string>
     <string name="respiratory_rate_uppercase_label" msgid="4609498171205294389">"Asemhalingtempo"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect stoor jou gesondheid- en fiksheiddata en bied só ’n eenvoudige manier om die verskillende apps op jou toestel te sinkroniseer"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect stoor en sinkroniseer jou data van verskillende apps af.\n\n"<b>"Fiksheid- en welstanddata,"</b>" insluitend oefensessies, treë, voeding, slaap en meer\n\n"<b>"Gesondheidsrekords,"</b>" insluitend entstowwe, laboratoriumuitslae en meer"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Met Health Connect kan jy"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Deel data met jou apps"</b>\n"Kies die data wat elke app in Health Connect kan lees of skryf"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Bestuur jou instellings en privaatheid"</b>\n"Verander apptoestemmings en bestuur jou data enige tyd"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gaan terug"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Begin hier"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Vee data uit"</string>
@@ -1163,7 +1161,7 @@
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Ingegaan <xliff:g id="TIME_DATE_0">%1$s</xliff:g><xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Laat heeltyd toe"</string>
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Laat toe indien gekies"</string>
-    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Terwyl die app gebruik is"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Terwyl die app gebruik word"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Weier almal"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Laat <xliff:g id="APP_NAME">%1$s</xliff:g> toe om toegang tot fiksheid- en welstanddata te kry?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> versoek toegang tot <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nKies om alles toe te laat of hulle individueel te beheer."</string>

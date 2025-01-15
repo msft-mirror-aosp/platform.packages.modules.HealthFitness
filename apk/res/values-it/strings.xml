@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Consenti lettura all\'app \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Consenti scrittura all\'app \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Consenti"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Consenti tutte"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Consenti tutto"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Non consentire"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Scegli i dati da far leggere o scrivere a questa app in Connessione Salute"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Scegli i dati da far leggere a questa app in Connessione Salute"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Connessione Salute archivia i dati relativi alla salute e all\'attività fisica e ti consente di sincronizzare facilmente le varie app installate sul dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Connessione Salute archivia e sincronizza i dati relativi alla salute e all\'attività fisica di diverse app.\n\n"<b>"Dati su fitness e benessere,"</b>" tra cui sessioni di allenamento, passi, alimentazione, sonno e altro ancora\n\n"<b>"Riepiloghi salute,"</b>" tra cui vaccini, risultati di laboratorio e altro ancora"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Connessione Salute"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Condividi i dati con le tue app"</b>\n"Scegli i dati che ciascuna app può leggere o scrivere su Connessione Salute"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gestisci le impostazioni e la privacy"</b>\n"Modifica le autorizzazioni app e gestisci i tuoi dati in qualsiasi momento"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Indietro"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Inizia"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Elimina dati"</string>
@@ -1027,7 +1025,7 @@
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Puoi gestire l\'accesso delle app ai percorsi per l\'esercizio fisico nelle impostazioni di Connessione Salute"</string>
     <string name="request_route_allow" msgid="4427372851821847274">"Consenti questo percorso"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Consenti tutti i percorsi"</string>
-    <string name="request_route_dont_allow" msgid="1186236234664957228">"Non consentire"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Non autorizzare"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Consenti sempre"</string>
     <string name="route_permissions_label" msgid="6293377940884373190">"Accedi ai percorsi degli allenamenti"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Consenti all\'app <xliff:g id="APP_NAME">%1$s</xliff:g> di accedere ai percorsi degli allenamenti"</string>
@@ -1161,7 +1159,7 @@
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Ultimo accesso: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Ultimo accesso ieri: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Ultimo accesso: <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
-    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Consenti sempre"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Autorizza sempre"</string>
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Consenti selezionate"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Mentre usi l\'app"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Nega tutto"</string>
@@ -1181,7 +1179,7 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"Nessuna app richiede l\'autorizzazione"</string>
     <string name="allowed" msgid="4158456017482263737">"Autorizzata"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Non autorizzata"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"Le app con questa autorizzazione possono accedere ai dati <xliff:g id="DATA_TYPE">%s</xliff:g> dei sensori del tuo dispositivo."</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Le app con questa autorizzazione possono accedere ai dati di <xliff:g id="DATA_TYPE">%s</xliff:g> dei sensori del tuo dispositivo."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Rimuovere l\'accesso a <xliff:g id="DATA_TYPE">%s</xliff:g> per tutte le app sull\'orologio?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Segno di spunta"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Croce"</string>

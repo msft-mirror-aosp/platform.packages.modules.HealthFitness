@@ -325,8 +325,8 @@
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaksiner"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaksiner"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"Lesing av vaksiner"</string>
-    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratorieresultater"</string>
-    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratorieresultater"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Labresultater"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"labresultater"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Lesing av laboratorieresultater"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Medisiner"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"medisiner"</string>
@@ -368,13 +368,13 @@
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Hvis du gir lesetilgang, kan appen lese nye og tidligere data"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vil du gi <xliff:g id="APP_NAME">%1$s</xliff:g> tilgang til Health Connect?"</string>
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Vil du la <xliff:g id="APP_NAME">%1$s</xliff:g> bruke trenings- og velværedata?"</string>
-    <string name="request_permissions_rationale" msgid="2642076968583316986">"Du kan finne ut hvordan <xliff:g id="APP_NAME">%1$s</xliff:g> håndterer dataene dine, i <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Se hvordan <xliff:g id="APP_NAME">%1$s</xliff:g> håndterer dataene dine, i deres <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"personvernregler"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Vil du gi <xliff:g id="APP_NAME">%1$s</xliff:g> tilgang til helsejournalene dine?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Hvis du gir tilgang, kan appen lese og skrive data som allergier, laboratorieresultater, vaksiner med mer\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
-    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Hvis du gir tilgang, kan appen lese data som allergier, laboratorieresultater, vaksiner med mer\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Hvis du gir tilgang, kan appen lese og skrive data som allergier, labresultater, vaksiner med mer\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Hvis du gir tilgang, kan appen lese data som allergier, labresultater, vaksiner med mer\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Om helsejournaler"</string>
-    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Dataene som skal deles, inkluderer"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Data som kan deles, inkluderer"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Hvis du tillater det, kan <xliff:g id="APP_NAME">%1$s</xliff:g> dele helsejournaldataene dine med Health Connect."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Synkroniser helsejournalene fra de ulike appene og kildene dine for å holde dem på ett sted"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vil du fjerne alle tillatelsene?"</string>
@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Trening, søvn, ernæring og annet"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Helsejournaler"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"helsejournaler"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Lab.-resultater/medisiner/vaksiner m.m."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Labresultater, medisiner, vaksiner m.m."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Fjernet apptillatelser"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect fjernet tillatelser for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect fjernet tillatelser for <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lagrer helse- og treningsdataene dine, slik at du enkelt kan synkronisere de forskjellige appene på enheten"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lagrer og synkroniserer helse- og treningsdataene dine fra forskjellige apper.\n\n"<b>"Trenings- og velværedata,"</b>" inkludert treningsøkter, skritt, ernæring, søvn med mer\n\n"<b>"Helsejournaler,"</b>" inkludert vaksiner, laboratorieresultater med mer"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Del data med appene dine"</b>\n"Velg dataene hver app kan lese eller skrive til Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Administrer innstillingene dine og personvernet ditt"</b>\n"Endre apptillatelser og administrer dataene dine når som helst"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gå tilbake"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kom i gang"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Slett data"</string>

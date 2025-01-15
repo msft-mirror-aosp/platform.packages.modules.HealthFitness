@@ -107,13 +107,13 @@
     <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"<xliff:g id="APP_NAME">%1$s</xliff:g> anmoder også om adgang til disse Health Connect-indstillinger"</string>
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Adgang til alle data i baggrunden"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Adgang til sundhedsoplysninger i baggrunden"</string>
-    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Adgang til trænings- og helbredsdata i baggrunden"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Adgang til trænings- og sundhedsdata i baggrunden"</string>
     <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Giv denne app adgang til trænings- og helbredsdata samt sundhedsoplysninger, når du ikke bruger appen"</string>
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Giv denne app adgang til disse data, når du ikke bruger appen"</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Giv denne app adgang til disse data, når du ikke bruger appen"</string>
     <string name="background_read_combined_request_title" msgid="4184649296697480520">"Adgang til data i baggrunden"</string>
     <string name="background_read_combined_request_description" msgid="2423480522986545286">"Giv denne app tilladelse til at tilgå Health Connect-data, når du ikke bruger appen"</string>
-    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Adgang til tidligere trænings- og helbredsdata"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Adgang til tidligere trænings- og sundhedsdata"</string>
     <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Giv denne app adgang til data, der er tilføjet før <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Giv denne app adgang til alle tidligere data"</string>
     <string name="history_read_combined_request_title" msgid="9023811767370482028">"Adgang til gamle data"</string>
@@ -123,13 +123,13 @@
     <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Læs mere om tilladelser"</string>
     <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Adgang til alle data i baggrunden"</string>
     <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Adgang til sundhedsoplysninger i baggrunden"</string>
-    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Adgang til trænings- og helbredsdata i baggrunden"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Adgang til trænings- og sundhedsdata i baggrunden"</string>
     <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Giv denne app adgang til trænings- og helbredsdata samt sundhedsoplysninger, når du ikke bruger appen"</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Giv denne app adgang til disse data, når du ikke bruger appen"</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Giv denne app adgang til disse data, når du ikke bruger appen"</string>
     <string name="background_read_access_title" msgid="4184498185599147117">"Adgang til data i baggrunden"</string>
     <string name="background_read_access_description" msgid="2360433029368320323">"Giv denne app tilladelse til at tilgå Health Connect-data, når du ikke bruger appen"</string>
-    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Adgang til tidligere trænings- og helbredsdata"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Adgang til tidligere trænings- og sundhedsdata"</string>
     <string name="history_read_medical_access_description" msgid="5615959269427106141">"Giv denne app adgang til data, der er tilføjet før <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Giv denne app adgang til alle tidligere data"</string>
     <string name="history_read_access_title" msgid="870048398702887144">"Adgang til gamle data"</string>
@@ -319,8 +319,8 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergier"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergier"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Læs allergier"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Tilstande"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"tilstande"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Sygdomme"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"sygdomme"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Læs tilstande"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaccinationer"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vaccinationer"</string>
@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"Tidligere data, baggrundsdata"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Yderligere tilladelser for denne app er fjernet"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Tilladelser"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"Fitness og wellness"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitness og sundhed"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Træning, søvn, ernæring m.m."</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Sundhedsoplysninger"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"sundhedsoplysninger"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect opbevarer dine sundheds- og træningsdata, så du nemt kan synkronisere forskellige apps på din enhed"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect gemmer og synkroniserer dine sundheds- og træningsdata fra forskellige apps.\n\n"<b>"Trænings- og sundhedsdata,"</b>" herunder træningspas, skridt, ernæring, søvn m.m.\n\n"<b>"Sundhedsoplysninger,"</b>" herunder vaccinationer, prøvesvar m.m."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du gøre følgende"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Del data med dine apps"</b>\n"Vælg, hvilke data hver app kan læse eller skrive til Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Administrer indstillinger og privatliv"</b>\n"Du kan til enhver tid ændre apptilladelser og administrere dine data"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gå tilbage"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kom godt i gang"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Slet data"</string>

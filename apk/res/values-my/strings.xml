@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect သည် သင့်စက်ပေါ်ရှိ အက်ပ်အမျိုးမျိုး ရိုးရှင်းစွာစင့်ခ်လုပ်နည်းကို ပေးပြီး သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းသည်"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect သည် အခြားအက်ပ်များမှ သင့်ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး စင့်ခ်လုပ်သည်။\n\nလေ့ကျင့်ခန်း စက်ရှင်များ၊ ခြေလှမ်းများ၊ အာဟာရ၊ အိပ်ခြင်း စသည်တို့အပါအဝင် "<b>"ကျန်းမာကြံ့ခိုင်ရေးဒေတာ"</b>\n\n"ကာကွယ်ဆေး၊ ဓာတ်ခွဲခန်းရလဒ် စသည်တို့အပါအဝင် "<b>"ကျန်းမာရေး မှတ်တမ်းများ"</b></string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ဖြင့် သင်လုပ်နိုင်သည်များ"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</b>\n"Health Connect တွင် အက်ပ်တစ်ခုစီ ဖတ်နိုင် (သို့) ရေးနိုင်သည့် ဒေတာကို သင်ရွေးနိုင်သည်"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"သင့်ဆက်တင်များနှင့် ကိုယ်ရေးအချက်အလက်လုံခြုံမှုကို စီမံရန်"</b>\n"အက်ပ်ခွင့်ပြုချက်များပြောင်းပြီး သင့်ဒေတာကို အချိန်မရွေးစီမံနိုင်သည်"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"နောက်သို့"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"စတင်ရန်"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ဒေတာဖျက်ရန်"</string>
@@ -1185,7 +1183,7 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"သင့်လက်ပတ်နာရီရှိ အက်ပ်အားလုံးအတွက် <xliff:g id="DATA_TYPE">%s</xliff:g> သုံးခွင့် ဖယ်ရှားမလား။"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"အမှန်ခြစ်"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"ကြက်ခြေခတ် အမှတ်အသား"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"လက်ရှိတွင် <xliff:g id="APP_NAME">%1$s</xliff:g> သည် ကျန်းမာကြံ့ခိုင်ရေးဒေတာများ သုံးခွင့်ရှိသည် <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"လက်ရှိတွင် <xliff:g id="APP_NAME">%1$s</xliff:g> သည် ကျန်းမာကြံ့ခိုင်ရေးဒေတာများ <xliff:g id="ALLOW_MODE">%2$s</xliff:g> သုံးခွင့်ရှိသည်"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"<xliff:g id="APP_NAME">%1$s</xliff:g> ကို ကျန်းမာကြံ့ခိုင်ရေးဒေတာများ အချိန်တိုင်းသုံးခွင့်ပြုမလား။"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် <xliff:g id="DATA_TYPES">%2$s</xliff:g> တို့သုံးခွင့်ရှိသည်။"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"ကျန်းမာကြံ့ခိုင်ရေးခွင့်ပြုချက်များ စီမံရန်"</string>

@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Дазвольце праграме “<xliff:g id="APP_NAME">%1$s</xliff:g>” счытваць даныя"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Дазвольце праграме “<xliff:g id="APP_NAME">%1$s</xliff:g>” запісваць даныя"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Дазволіць"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дазволіць усё"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дазволіць усе"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Не дазваляць"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Выберыце, якія даныя зможа счытваць ці запісваць гэта праграма ў платформе \"Здароўе і спорт\""</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Выберыце, якія даныя зможа счытваць гэта праграма з платформы \"Здароўе і спорт\""</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на прыладзе"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Праграма \"Здароўе і спорт\" захоўвае і сінхранізуе вашы даныя пра здароўе і фізічную актыўнасць з розных праграм.\n\n"<b>"Даныя пра здароўе і фізічны стан"</b>", у тым ліку сеансы трэніровак, даныя сну і іншае.\n\n"<b>"Інфармацыю пра стан здароўя"</b>", у тым ліку пра вакцыны, вынікі аналізаў і іншае."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Праграма \"Здароўе і спорт\" дазваляе рабіць наступнае:"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Абагульванне даных з праграмамі"</b>\n"Выбірайце, якія даныя іншыя праграмы змогуць счытваць і запісваць у сэрвісе \"Здароўе і спорт\""</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Кіраванне наладамі і прыватнасцю"</b>\n"Вы можаце ў любы час змяняць дазволы праграм і кіраваць сваімі данымі"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Пачаць"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Выдаліць даныя"</string>

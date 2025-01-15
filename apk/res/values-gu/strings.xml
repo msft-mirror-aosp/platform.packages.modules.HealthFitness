@@ -108,7 +108,7 @@
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"બૅકગ્રાઉન્ડમાં તમામ ડેટા ઍક્સેસ કરો"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"બૅકગ્રાઉન્ડમાં સ્વાસ્થ્ય સંબંધિત માહિતી ઍક્સેસ કરો"</string>
     <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"બૅકગ્રાઉન્ડમાં ફિટનેસ અને સુખાકારી સંબંધિત ડેટા ઍક્સેસ કરો"</string>
-    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"જ્યારે તમે ઍપનો ઉપયોગ કરી રહ્યાં ન હો, ત્યારે આ ઍપને ફિટનેસ અને સુખાકારી સંબંધિત ડેટા તેમજ સ્વાસ્થ્ય સંબંધિત માહિતી ઍક્સેસ કરવાની મંજૂરી આપો"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"જ્યારે તમે ઍપનો ઉપયોગ ન કરી રહ્યાં હો, ત્યારે આ ઍપને ફિટનેસ અને સુખાકારી સંબંધિત ડેટા તેમજ સ્વાસ્થ્ય સંબંધિત માહિતી ઍક્સેસ કરવાની મંજૂરી આપો"</string>
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"જ્યારે તમે ઍપનો ઉપયોગ ન કરી રહ્યાં હો, ત્યારે આ ઍપને આ ડેટા ઍક્સેસ કરવાની મંજૂરી આપો"</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"જ્યારે તમે ઍપનો ઉપયોગ ન કરી રહ્યાં હો, ત્યારે આ ઍપને આ ડેટા ઍક્સેસ કરવાની મંજૂરી આપો"</string>
     <string name="background_read_combined_request_title" msgid="4184649296697480520">"બૅકગ્રાઉન્ડમાં ડેટા ઍક્સેસ કરો"</string>
@@ -423,7 +423,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"કોઈ ઍપને મંજૂરી નથી"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"કોઈ ઍપ નકારવામાં આવી નથી"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"બધી ઍપ માટેનો ઍક્સેસ કાઢી નાખીએ?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"તમારી કોઈપણ ઍપ Health Connectમાં નવો ડેટા ઍક્સેસ કરી કે ઉમેરી શકશે નહીં. આનાથી હાલનો કોઈપણ ડેટા ડિલીટ થતો નથી.\n\nઆનાથી ઍપ ધરાવતી હોઈ શકે એવી, જેમ કે લોકેશન, કૅમેરા કે માઇક્રોફોનની પરવાનગીઓ પર કોઈ અસર પડશે નહીં."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"તમારી કોઈપણ ઍપ Health Connectમાં નવો ડેટા ઍક્સેસ કરી કે ઉમેરી શકશે નહીં. આનાથી હાલનો કોઈપણ ડેટા ડિલીટ થતો નથી.\n\nઆનાથી આ ઍપ પાસે હોય એવી અન્ય પરવાનગીઓ, જેમ કે લોકેશન, કૅમેરા કે માઇક્રોફોન પર કોઈ અસર પડશે નહીં."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"બધી કાઢી નાખો"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"ઍપ મેનેજ કરો"</string>
     <string name="see_app_data" msgid="3951030076195119476">"ઍપનો ડેટા જુઓ"</string>
@@ -541,10 +541,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect તમારો આરોગ્ય અને ફિટનેસ સંબંધિત ડેટા સ્ટોર કરે છે, જેનાથી તમે તમારા ડિવાઇસ પર વિવિધ ઍપ સરળ રીતે સિંક કરી શકો છો"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect અલગ-અલગ ઍપમાંથી આરોગ્ય અને ફિટનેસ સંબંધિત તમારો ડેટા સ્ટોર અને સિંક કરે છે.\n\n"<b>"ફિટનેસ અને સુખાકારી સંબંધિત ડેટા,"</b>" જેમાં વ્યાયામ સત્રો, પગલાં, પોષણ, ઊંઘ અને બીજું ઘણું શામેલ હોય છે\n\n"<b>"આરોગ્ય સંબંધિત માહિતી,"</b>" જેમાં રસીઓ, લેબના પરિણામો અને બીજું ઘણું શામેલ હોય છે"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect સાથે તમે આટલું કરી શકો છો"</string>
-    <!-- no translation found for share_data_text (6898398345784931678) -->
-    <skip />
-    <!-- no translation found for manage_your_settings_text (8425779735541136878) -->
-    <skip />
+    <string name="share_data_text" msgid="6898398345784931678"><b>"તમારી ઍપ સાથે ડેટા શેર કરો"</b>\n"દરેક ઍપ Health Connect પર વાંચી કે લખી શકે તે ડેટા પસંદ કરો"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"તમારું સેટિંગ અને પ્રાઇવસી મેનેજ કરો"</b>\n"કોઈપણ સમયે ઍપ પરવાનગીઓમાં ફેરફાર કરો અને તમારો ડેટા મેનેજ કરો"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"પાછા જાઓ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"શરૂ કરો"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ડેટા ડિલીટ કરો"</string>
@@ -1173,7 +1171,7 @@
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ઉપયોગ કરતી વખતે"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"હંમેશાં"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"ઉપયોગ કરતી વખતે"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> તમારા આરોગ્ય અને સુખાકારીનો બધો ડેટા <xliff:g id="ALLOW_MODE">%2$s</xliff:g>માં ઍક્સેસ કરી શકે છે"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g>, તમારા આરોગ્ય અને સુખાકારી સંબંધિત સંપૂર્ણ ડેટાને <xliff:g id="ALLOW_MODE">%2$s</xliff:g> ઍક્સેસ કરી શકે છે"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"ઍક્સેસ કરવાની મંજૂરી છે"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"વાંચવાની મંજૂરી છે"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"આ પરવાનગીઓ <xliff:g id="APP_NAME">%1$s</xliff:g>ને તમારા ડિવાઇસ સેન્સરમાંના ડેટાનો ઍક્સેસ આપે છે."</string>
@@ -1181,7 +1179,7 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"કોઈ ઍપ વિનંતી કરી રહી નથી"</string>
     <string name="allowed" msgid="4158456017482263737">"આ ઍપને મંજૂરી છે"</string>
     <string name="not_allowed" msgid="6092523505093372147">"આ ઍપને મંજૂરી નથી"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"આ પરવાનગી ધરાવતી ઍપ તમારા ડિવાઇસ સેન્સરમાંથી <xliff:g id="DATA_TYPE">%s</xliff:g> ડેટાને ઍક્સેસ કરી શકે છે."</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"આ પરવાનગી ધરાવતી ઍપ તમારા ડિવાઇસના સેન્સરમાંથી <xliff:g id="DATA_TYPE">%s</xliff:g> સંબંધિત ડેટાને ઍક્સેસ કરી શકે છે."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"તમારી વૉચ પર બધી ઍપ માટે <xliff:g id="DATA_TYPE">%s</xliff:g>નો ઍક્સેસ કાઢી નાખીએ?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"ચેક માર્ક"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"ક્રૉસ માર્ક"</string>
