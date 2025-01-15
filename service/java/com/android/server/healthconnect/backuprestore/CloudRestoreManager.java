@@ -22,9 +22,18 @@ import static com.android.server.healthconnect.backuprestore.RecordProtoConverte
 import android.annotation.FlaggedApi;
 import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.BackupSettings;
+import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
+import com.android.server.healthconnect.proto.backuprestore.BackupData;
+import com.android.server.healthconnect.proto.backuprestore.Record;
+import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages Cloud Restore operations.
@@ -36,7 +45,20 @@ public class CloudRestoreManager {
 
     private static final String TAG = "CloudRestoreManager";
 
-    public CloudRestoreManager() {}
+    private final TransactionManager mTransactionManager;
+    private final DeviceInfoHelper mDeviceInfoHelper;
+    private final AppInfoHelper mAppInfoHelper;
+    private final RecordProtoConverter mRecordProtoConverter;
+
+    public CloudRestoreManager(
+            TransactionManager transactionManager,
+            DeviceInfoHelper deviceInfoHelper,
+            AppInfoHelper appInfoHelper) {
+        mTransactionManager = transactionManager;
+        mDeviceInfoHelper = deviceInfoHelper;
+        mAppInfoHelper = appInfoHelper;
+        mRecordProtoConverter = new RecordProtoConverter();
+    }
 
     /** Takes the serialized user settings and overwrites existing settings. */
     public void pushSettingsForRestore(BackupSettings newSettings) {
@@ -51,6 +73,36 @@ public class CloudRestoreManager {
 
     /** Restores backup data changes. */
     public void pushChangesForRestore(List<BackupChange> changes) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        List<Record> records =
+                changes.stream()
+                        .filter(change -> !change.isDeletion())
+                        .map(this::toRecord)
+                        .toList();
+        records.stream()
+                .collect(Collectors.toMap(Record::getPackageName, Record::getAppName, (a, b) -> b))
+                .forEach(mAppInfoHelper::addOrUpdateAppInfoIfNoAppInfoEntryExists);
+        UpsertTransactionRequest request =
+                UpsertTransactionRequest.createForRestore(
+                        records.stream().map(this::toRecordInternal).toList(),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        mTransactionManager.insertAllRecords(mAppInfoHelper, null, request);
+        mAppInfoHelper.syncAppInfoRecordTypesUsed();
+    }
+
+    private Record toRecord(BackupChange backupChange) {
+        try {
+            return BackupData.parseFrom(backupChange.getData()).getRecord();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private RecordInternal<?> toRecordInternal(Record record) {
+        try {
+            return mRecordProtoConverter.toRecordInternal(record);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }
