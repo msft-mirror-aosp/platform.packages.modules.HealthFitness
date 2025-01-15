@@ -29,5 +29,5 @@
     <string name="grant_dialog_button_allow_always" msgid="5216642447029937725">"항상"</string>
     <string name="grant_dialog_button_allow_foreground" msgid="2911675370133933600">"앱을 사용 중일 때"</string>
     <string name="grant_dialog_button_allow_background" msgid="7827419162341440169">"항상"</string>
-    <string name="permgrouplab_health" msgid="6793578181776346442">"피트니스 및 웰빙"</string>
+    <string name="permgrouplab_health" msgid="6793578181776346442">"피트니스 및 웰니스"</string>
 </resources>

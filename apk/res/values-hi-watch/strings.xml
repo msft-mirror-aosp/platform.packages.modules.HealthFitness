@@ -29,5 +29,5 @@
     <string name="grant_dialog_button_allow_always" msgid="5216642447029937725">"हर समय"</string>
     <string name="grant_dialog_button_allow_foreground" msgid="2911675370133933600">"ऐप इस्तेमाल करते समय"</string>
     <string name="grant_dialog_button_allow_background" msgid="7827419162341440169">"हर समय"</string>
-    <string name="permgrouplab_health" msgid="6793578181776346442">"फ़िटनेस और सेहत"</string>
+    <string name="permgrouplab_health" msgid="6793578181776346442">"फ़िटनेस और तंदरुस्ती"</string>
 </resources>
