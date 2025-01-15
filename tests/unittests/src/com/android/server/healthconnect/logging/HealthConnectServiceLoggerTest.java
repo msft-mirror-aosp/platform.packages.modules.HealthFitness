@@ -41,6 +41,7 @@ import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_B
 
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 
@@ -77,7 +78,7 @@ public class HealthConnectServiceLoggerTest {
                 () ->
                         HealthFitnessStatsLog.write(
                                 anyInt(), anyInt(), anyInt(), anyInt(), anyLong(), anyInt(),
-                                anyInt(), anyInt()),
+                                anyInt(), anyInt(), anyString()),
                 times(0));
     }
 
@@ -97,7 +98,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -120,7 +122,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_15_MIN_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -143,7 +146,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -166,7 +170,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -189,7 +194,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -212,7 +218,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_15_MIN_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -235,7 +242,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -258,7 +266,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.BACKGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -281,7 +290,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.FOREGROUND_24_HRS_BW_3000_TO_4000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -304,7 +314,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -327,7 +338,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -350,7 +362,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(10),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -375,7 +388,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(10),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -400,7 +414,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(10),
                                 eq(RateLimitingRanges.BACKGROUND_15_MIN_ABOVE_3000),
-                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED)),
+                                eq(CALLER_FOREGROUND_STATE_UNSPECIFIED),
+                                anyString()),
                 times(1));
     }
 
@@ -422,7 +437,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_FOREGROUND)));
+                                eq(CALLER_FOREGROUND_STATE_FOREGROUND),
+                                anyString()));
     }
 
     @Test
@@ -443,7 +459,8 @@ public class HealthConnectServiceLoggerTest {
                                 anyLong(),
                                 eq(0),
                                 eq(RateLimitingRanges.NOT_USED),
-                                eq(CALLER_FOREGROUND_STATE_BACKGROUND)));
+                                eq(CALLER_FOREGROUND_STATE_BACKGROUND),
+                                anyString()));
     }
 
     private static final class RateLimitingRanges {
