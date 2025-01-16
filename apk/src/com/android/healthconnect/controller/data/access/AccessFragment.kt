@@ -22,7 +22,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
@@ -31,7 +30,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
-import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
@@ -57,7 +55,8 @@ class AccessFragment : Hilt_AccessFragment() {
         private const val INACTIVE_SECTION = "inactive"
         private const val NO_DATA = "no_data_preference"
         private const val DELETION_TAG = "DeletionTag"
-        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY = "START_DELETION_ENTRIES_AND_ACCESS_KEY"
+        private const val START_DELETION_ENTRIES_AND_ACCESS_KEY =
+            "START_DELETION_ENTRIES_AND_ACCESS_KEY"
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -164,15 +163,11 @@ class AccessFragment : Hilt_AccessFragment() {
                 mInactiveSection.isVisible = false
             } else {
                 mInactiveSection.isVisible = true
-                mInactiveSection.addPreference(
-                    Preference(requireContext()).also {
-                        it.summary =
-                            getString(
-                                R.string.inactive_apps_message,
-                                getString(permissionType.lowerCaseLabel()),
-                            )
-                    }
-                )
+                mInactiveSection.summary =
+                    getString(
+                        R.string.inactive_apps_message,
+                        getString(permissionType.lowerCaseLabel()),
+                    )
                 appMetadataMap[AppAccessState.Inactive]?.forEach { appAccessMetadata ->
                     val appMetadata = appAccessMetadata.appMetadata
                     mInactiveSection.addPreference(
