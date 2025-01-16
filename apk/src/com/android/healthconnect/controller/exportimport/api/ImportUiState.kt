@@ -17,11 +17,12 @@
 package com.android.healthconnect.controller.exportimport.api
 
 /** Internal class representing the [ImportStatus] received from the HealthConnectManager. */
-data class ImportUiState(val dataImportError: DataImportError, val isImportOngoing: Boolean) {
-    enum class DataImportError {
+data class ImportUiState(val dataImportState: DataImportState) {
+    enum class DataImportState {
         DATA_IMPORT_ERROR_UNKNOWN,
         DATA_IMPORT_ERROR_NONE,
         DATA_IMPORT_ERROR_WRONG_FILE,
         DATA_IMPORT_ERROR_VERSION_MISMATCH,
+        DATA_IMPORT_STARTED,
     }
 }

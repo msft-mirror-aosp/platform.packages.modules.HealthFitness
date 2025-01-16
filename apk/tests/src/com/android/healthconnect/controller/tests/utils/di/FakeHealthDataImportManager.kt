@@ -27,15 +27,7 @@ class FakeHealthDataImportManager : HealthDataImportManager {
     companion object {
         private val DEFAULT_IMPORT_STATUS =
             ImportStatus(
-                ImportStatus.DATA_IMPORT_ERROR_NONE,
-                /** isImportOngoing= */
-                false)
-
-        private val IN_PROGRESS_IMPORT_STATUS =
-            ImportStatus(
-                ImportStatus.DATA_IMPORT_ERROR_NONE,
-                /** isImportOngoing= */
-                true)
+                ImportStatus.DATA_IMPORT_ERROR_NONE)
     }
 
     private var importStatus: ImportStatus = DEFAULT_IMPORT_STATUS

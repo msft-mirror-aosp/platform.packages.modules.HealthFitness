@@ -30,29 +30,32 @@ public class ImportStatusTest {
     @Test
     public void testDeserialize() {
         ImportStatus importStatus =
-                new ImportStatus(ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH, false);
+                new ImportStatus(ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH);
 
         Parcel statusParcel = writeToParcel(importStatus);
         statusParcel.setDataPosition(0);
         ImportStatus deserializedStatus = statusParcel.readTypedObject(ImportStatus.CREATOR);
 
-        assertThat(deserializedStatus.getDataImportError())
+        assertThat(deserializedStatus.getDataImportState())
                 .isEqualTo(ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH);
-        assertThat(deserializedStatus.isImportOngoing()).isEqualTo(false);
     }
 
     @Test
     public void testDeserialize_noSuccessfulImport() {
-        ImportStatus importStatus =
-                new ImportStatus(ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE, true);
+        ImportStatus importStatus = new ImportStatus(ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE);
 
         Parcel statusParcel = writeToParcel(importStatus);
         statusParcel.setDataPosition(0);
         ImportStatus deserializedStatus = statusParcel.readTypedObject(ImportStatus.CREATOR);
 
-        assertThat(deserializedStatus.getDataImportError())
+        assertThat(deserializedStatus.getDataImportState())
                 .isEqualTo(ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE);
-        assertThat(deserializedStatus.isImportOngoing()).isEqualTo(true);
+    }
+
+    @Test
+    public void testIsImportOngoing() {
+        ImportStatus importStatus = new ImportStatus(ImportStatus.DATA_IMPORT_STARTED);
+        assertThat(importStatus.isImportOngoing()).isEqualTo(true);
     }
 
     private static Parcel writeToParcel(ImportStatus importStatus) {

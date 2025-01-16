@@ -66,10 +66,7 @@ class ImportStatusViewModelTest {
         val testObserver = TestObserver<ImportUiStatus>()
         viewModel.storedImportStatus.observeForever(testObserver)
         val importUiState =
-            ImportUiState(
-                ImportUiState.DataImportError.DATA_IMPORT_ERROR_VERSION_MISMATCH,
-                /** isImportOngoing= */
-                false)
+            ImportUiState(ImportUiState.DataImportState.DATA_IMPORT_ERROR_VERSION_MISMATCH)
         loadImportStatusUseCase.updateExportStatus(importUiState)
 
         viewModel.loadImportStatus()

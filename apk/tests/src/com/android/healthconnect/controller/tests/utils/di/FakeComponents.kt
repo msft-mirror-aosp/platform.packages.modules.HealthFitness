@@ -608,11 +608,7 @@ class FakeTriggerImportUseCase : ITriggerImportUseCase {
     private var lastImportCompletionInstant: Instant? = null
 
     private var importState: ImportUiState =
-        ImportUiState(
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-            /** isImportOngoing= */
-            false,
-        )
+        ImportUiState(ImportUiState.DataImportState.DATA_IMPORT_ERROR_NONE)
 
     fun reset() {
         lastImportCompletionInstant = null
@@ -629,19 +625,11 @@ class FakeTriggerImportUseCase : ITriggerImportUseCase {
 
 class FakeLoadImportStatusUseCase : ILoadImportStatusUseCase {
     private var importState: ImportUiState =
-        ImportUiState(
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-            /** isImportOngoing= */
-            false,
-        )
+        ImportUiState(ImportUiState.DataImportState.DATA_IMPORT_ERROR_NONE)
 
     fun reset() {
         importState =
-            ImportUiState(
-                ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-                /** isImportOngoing= */
-                false,
-            )
+            ImportUiState(ImportUiState.DataImportState.DATA_IMPORT_ERROR_NONE)
     }
 
     fun updateExportStatus(importState: ImportUiState) {

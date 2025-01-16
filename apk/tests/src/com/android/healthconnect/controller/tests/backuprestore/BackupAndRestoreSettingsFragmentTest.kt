@@ -176,8 +176,7 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        dataImportError = ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-                        isImportOngoing = false,
+                        dataImportState = ImportUiState.DataImportState.DATA_IMPORT_ERROR_NONE,
                     )
                 )
             )
@@ -718,9 +717,8 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        dataImportError =
-                            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
-                        isImportOngoing = false,
+                        dataImportState =
+                            ImportUiState.DataImportState.DATA_IMPORT_ERROR_WRONG_FILE,
                     )
                 )
             )
@@ -750,9 +748,8 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_VERSION_MISMATCH,
+                        ImportUiState.DataImportState.DATA_IMPORT_ERROR_VERSION_MISMATCH,
                         /** isImportOngoing= */
-                        false,
                     )
                 )
             )
@@ -782,9 +779,8 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_UNKNOWN,
+                        ImportUiState.DataImportState.DATA_IMPORT_ERROR_UNKNOWN,
                         /** isImportOngoing= */
-                        false,
                     )
                 )
             )
@@ -810,8 +806,7 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        dataImportError = ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-                        isImportOngoing = false,
+                        dataImportState = ImportUiState.DataImportState.DATA_IMPORT_ERROR_NONE,
                     )
                 )
             )
