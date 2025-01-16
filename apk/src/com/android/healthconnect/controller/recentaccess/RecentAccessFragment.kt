@@ -90,7 +90,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
         fab = contentParent.findViewById(R.id.extended_fab)
         fab.isVisible = true
 
-        recyclerView = rootView?.findViewById(androidx.preference.R.id.recycler_view)
+        recyclerView = rootView.findViewById(androidx.preference.R.id.recycler_view)
         val bottomPadding =
             resources.getDimensionPixelSize(R.dimen.recent_access_fab_bottom_padding)
         recyclerView?.setPadding(0, 0, 0, bottomPadding)
@@ -135,22 +135,22 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
     }
 
     private fun updateRecentApps(recentAppsList: List<RecentAccessEntry>) {
-        mRecentAccessTodayPreferenceGroup?.removeAll()
-        mRecentAccessYesterdayPreferenceGroup?.removeAll()
-        mRecentAccessNoDataPreference?.isVisible = false
+        mRecentAccessTodayPreferenceGroup.removeAll()
+        mRecentAccessYesterdayPreferenceGroup.removeAll()
+        mRecentAccessNoDataPreference.isVisible = false
 
         if (recentAppsList.isEmpty()) {
-            mRecentAccessYesterdayPreferenceGroup?.isVisible = false
-            mRecentAccessTodayPreferenceGroup?.isVisible = false
-            mRecentAccessNoDataPreference?.isVisible = true
-            mRecentAccessNoDataPreference?.isSelectable = false
+            mRecentAccessYesterdayPreferenceGroup.isVisible = false
+            mRecentAccessTodayPreferenceGroup.isVisible = false
+            mRecentAccessNoDataPreference.isVisible = true
+            mRecentAccessNoDataPreference.isSelectable = false
             fab.isVisible = false
         } else {
             // if the first entry is yesterday, we don't need the 'Today' section
-            mRecentAccessTodayPreferenceGroup?.isVisible = recentAppsList[0].isToday
+            mRecentAccessTodayPreferenceGroup.isVisible = recentAppsList[0].isToday
 
             // if the last entry is today, we don't need the 'Yesterday' section
-            mRecentAccessYesterdayPreferenceGroup?.isVisible = !recentAppsList.last().isToday
+            mRecentAccessYesterdayPreferenceGroup.isVisible = !recentAppsList.last().isToday
 
             fab.setOnClickListener {
                 logger.logInteraction(RecentAccessElement.MANAGE_PERMISSIONS_FAB)
@@ -181,16 +181,16 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                     }
 
                 if (recentApp.isToday) {
-                    mRecentAccessTodayPreferenceGroup?.addPreference(newPreference)
+                    mRecentAccessTodayPreferenceGroup.addPreference(newPreference)
                     if (!isLastUsage) {
-                        mRecentAccessTodayPreferenceGroup?.addPreference(
+                        mRecentAccessTodayPreferenceGroup.addPreference(
                             DividerPreference(requireContext())
                         )
                     }
                 } else {
-                    mRecentAccessYesterdayPreferenceGroup?.addPreference(newPreference)
+                    mRecentAccessYesterdayPreferenceGroup.addPreference(newPreference)
                     if (!isLastUsage) {
-                        mRecentAccessYesterdayPreferenceGroup?.addPreference(
+                        mRecentAccessYesterdayPreferenceGroup.addPreference(
                             DividerPreference(requireContext())
                         )
                     }
