@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.exportImport;
 import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
 
 import android.app.job.JobInfo;
@@ -152,7 +151,7 @@ public class ExportImportJobs {
             PersistableBundle extras,
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage) {
-        if (!exportImport() || exportImportSettingsStorage.getScheduledExportPeriodInDays() <= 0) {
+        if (exportImportSettingsStorage.getScheduledExportPeriodInDays() <= 0) {
             // If there is no need to run the export, it counts like a success regarding job
             // reschedule.
             return true;

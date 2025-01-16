@@ -16,9 +16,6 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
-
-import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.content.Context;
 
@@ -66,7 +63,6 @@ public class ExportImportNotificationSender {
     public static final int NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE = 7;
 
     /** @hide */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
         NOTIFICATION_TYPE_IMPORT_IN_PROGRESS,

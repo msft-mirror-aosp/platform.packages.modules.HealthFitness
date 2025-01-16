@@ -18,7 +18,7 @@ package com.android.server.healthconnect.storage;
 
 import static android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createExerciseSessionRecordWithRoute;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createExerciseSessionRecordWithRoute;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -43,10 +43,10 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import com.google.common.collect.ImmutableMap;
 

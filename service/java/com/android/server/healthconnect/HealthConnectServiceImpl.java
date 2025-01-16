@@ -370,20 +370,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
                         mPermissionManager, mContext, internalHealthConnectMappings);
-        if (Flags.exportImport()) {
-            Clock clockForLogging = Flags.exportImportFastFollow() ? Clock.systemUTC() : null;
-            mImportManager =
-                    new ImportManager(
-                            mAppInfoHelper,
-                            mContext,
-                            mExportImportSettingsStorage,
-                            mTransactionManager,
-                            mDeviceInfoHelper,
-                            mHealthDataCategoryPriorityHelper,
-                            clockForLogging);
-        } else {
-            mImportManager = null;
-        }
+        Clock clockForLogging = Flags.exportImportFastFollow() ? Clock.systemUTC() : null;
+        mImportManager =
+                new ImportManager(
+                        mAppInfoHelper,
+                        mContext,
+                        mExportImportSettingsStorage,
+                        mTransactionManager,
+                        mDeviceInfoHelper,
+                        mHealthDataCategoryPriorityHelper,
+                        clockForLogging);
+
         mCloudBackupManager =
                 Flags.cloudBackupAndRestore()
                         ? new CloudBackupManager(
@@ -400,7 +397,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mExportImportSettingsStorage,
                                 mReadAccessLogsHelper)
                         : null;
-        mCloudRestoreManager = Flags.cloudBackupAndRestore() ? new CloudRestoreManager() : null;
+        mCloudRestoreManager =
+                Flags.cloudBackupAndRestore()
+                        ? new CloudRestoreManager(
+                                transactionManager, deviceInfoHelper, appInfoHelper)
+                        : null;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {

@@ -19,6 +19,7 @@ package android.healthconnect.cts.ui
 import android.health.connect.datatypes.Record
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.ActivityLauncher.launchRequestPermissionActivity
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findDesc
 import android.healthconnect.cts.lib.UiTestUtils.findDescAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findObject
@@ -192,7 +193,7 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
 
         context.launchMainActivity {
             scrollDownToAndClick(By.text("App permissions"))
-            findTextAndClick(APP_WITH_READ_WRITE_PERMISSIONS_LABEL)
+            clickOnTextAndWaitForNewWindow(APP_WITH_READ_WRITE_PERMISSIONS_LABEL)
             if (AconfigFlagHelper.isPersonalHealthRecordEnabled()) {
                 findTextAndClick("Fitness and wellness")
             }

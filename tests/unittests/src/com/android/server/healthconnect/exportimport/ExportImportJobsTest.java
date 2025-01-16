@@ -217,8 +217,7 @@ public class ExportImportJobsTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
-    public void executePeriodicExportJob_withPeriodZero_doesNotrunExport() {
+    public void executePeriodicExportJob_withPeriodZero_doesNotRunExport() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
 
@@ -233,7 +232,6 @@ public class ExportImportJobsTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_withPeriodZero_returnsTrue() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
@@ -250,7 +248,6 @@ public class ExportImportJobsTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_withPeriodGreaterThanZero_runsExport() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
@@ -266,7 +263,6 @@ public class ExportImportJobsTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_successfulExport_returnsTrue() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
@@ -285,7 +281,6 @@ public class ExportImportJobsTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_failedExport_returnsFalse() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
@@ -303,7 +298,6 @@ public class ExportImportJobsTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_successfulFirstExport_reschedulesJob() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
