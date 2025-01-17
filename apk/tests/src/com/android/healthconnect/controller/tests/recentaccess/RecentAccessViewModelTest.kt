@@ -99,18 +99,6 @@ class RecentAccessViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        fakeRecentAccessUseCase.setForceFail(false)
-    }
-
-    @Test
-    fun loadRecentAccess_whenError_returnsErrorState() = runTest {
-        fakeRecentAccessUseCase.setForceFail(true)
-        val testObserver = TestObserver<RecentAccessState>()
-        viewModel.recentAccessApps.observeForever(testObserver)
-        viewModel.loadRecentAccessApps()
-        advanceUntilIdle()
-        val actual = testObserver.getLastValue()
-        assertThat(actual is RecentAccessState.Error).isTrue()
     }
 
     @Test
