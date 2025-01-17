@@ -642,7 +642,8 @@ public class HealthConnectServiceLogger {
                 mDuration,
                 mNumberOfRecords,
                 mRateLimit,
-                mCallerForegroundState);
+                mCallerForegroundState,
+                "placeholder_package_name");
 
         // For private logging, max 6 data types per request are being logged
         // rest will be ignored
