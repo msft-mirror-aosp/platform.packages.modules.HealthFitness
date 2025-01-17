@@ -460,23 +460,6 @@ class HomeFragmentTest {
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun legacyWhenRecentAccessAppsError_showsError() {
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.Error)
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(listOf<ConnectedAppMetadata>())
-        }
-
-        launchFragment<HomeFragment>(Bundle())
-
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("Could not load recent access")).check(matches(isDisplayed()))
-        onView(withText("See all recent access")).check(doesNotExist())
-    }
-
-    @Test
     @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
     fun oldIA_withNoRecentAccessApps() {
         whenever(recentAccessViewModel.recentAccessApps).then {
@@ -1518,10 +1501,7 @@ class HomeFragmentTest {
     // region Expressive display tests
     @Test
     // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM, codeName = "VanillaIceCream")
     @DisableFlags(Flags.FLAG_ONBOARDING)
     fun expressiveViewAllRecentAccess_navigatesToRecentAccess() {
         (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(true)
@@ -1534,10 +1514,7 @@ class HomeFragmentTest {
 
     @Test
     // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM, codeName = "VanillaIceCream")
     @DisableFlags(Flags.FLAG_ONBOARDING)
     fun expressiveWhenRecentAccessApps_in12HourFormat_showsCorrectTime() {
         (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(true)
@@ -1579,10 +1556,7 @@ class HomeFragmentTest {
 
     @Test
     // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM, codeName = "VanillaIceCream")
     @DisableFlags(Flags.FLAG_ONBOARDING)
     fun expressive_withNoRecentAccessApps() {
         (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(true)
@@ -1608,34 +1582,6 @@ class HomeFragmentTest {
         onView(withText("Manage data")).check(matches(isDisplayed()))
 
         onView(withText("Recent access")).check(doesNotExist())
-        onView(withText("No apps recently accessed Health\u00A0Connect")).check(doesNotExist())
-    }
-
-    @Test
-    // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
-    @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun expressive_withErrorInRecentAccessApps() {
-        (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(true)
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.Error)
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(
-                listOf(
-                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
-                )
-            )
-        }
-        launchFragment<HomeFragment>(Bundle())
-
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("Could not load recent access")).check(matches(isDisplayed()))
-
         onView(withText("No apps recently accessed Health\u00A0Connect")).check(doesNotExist())
     }
 

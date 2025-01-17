@@ -76,26 +76,13 @@ import java.time.LocalDate
 
 class FakeRecentAccessUseCase : ILoadRecentAccessUseCase {
     private var list: List<AccessLog> = emptyList()
-    private var forceFail = false
 
     fun updateList(list: List<AccessLog>) {
         this.list = list
     }
 
-    override suspend fun execute(input: Unit): List<AccessLog> {
+    override suspend fun invoke(): List<AccessLog> {
         return list
-    }
-
-    override suspend fun invoke(input: Unit): UseCaseResults<List<AccessLog>> {
-        return if (forceFail) {
-            UseCaseResults.Failed(IllegalStateException("Force fail recent access."))
-        } else {
-            UseCaseResults.Success(list)
-        }
-    }
-
-    fun setForceFail(forceFail: Boolean) {
-        this.forceFail = forceFail
     }
 }
 
