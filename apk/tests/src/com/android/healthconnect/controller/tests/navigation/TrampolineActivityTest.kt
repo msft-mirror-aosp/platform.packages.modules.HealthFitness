@@ -37,6 +37,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -76,6 +77,7 @@ import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthfitness.flags.Flags
+import com.android.settingslib.widget.SettingsThemeHelper
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -248,7 +250,12 @@ class TrampolineActivityTest {
         launchActivityForResult<TrampolineActivity>(createStartIntent(ACTION_HEALTH_HOME_SETTINGS))
 
         onIdle()
-        onView(withText("Recent access")).check(matches(isDisplayed()))
+        // TODO (b/390212615) update once we can use settings flag
+        if (SettingsThemeHelper.isExpressiveTheme(context)) {
+            onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        } else {
+            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        }
         onView(withText("Permissions and data")).check(matches(isDisplayed()))
     }
 

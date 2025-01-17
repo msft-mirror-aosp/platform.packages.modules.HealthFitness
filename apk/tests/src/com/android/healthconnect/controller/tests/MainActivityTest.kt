@@ -27,6 +27,7 @@ import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.settingslib.widget.SettingsThemeHelper
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -103,7 +104,12 @@ class MainActivityTest {
 
         launchActivityForResult<MainActivity>(startActivityIntent)
 
-        onView(withText("Recent access")).check(matches(isDisplayed()))
+        // TODO (b/390212615) update once we can use settings flag
+        if (SettingsThemeHelper.isExpressiveTheme(context)) {
+            onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        } else {
+            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        }
         onView(withText("Permissions and data")).check(matches(isDisplayed()))
     }
 
@@ -199,7 +205,12 @@ class MainActivityTest {
         launchActivityForResult<MainActivity>(startActivityIntent)
 
         onView(withText("Resume integration")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        // TODO (b/390212615) update once we can use settings flag
+        if (SettingsThemeHelper.isExpressiveTheme(context)) {
+            onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        } else {
+            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        }
         onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
@@ -233,7 +244,12 @@ class MainActivityTest {
         launchActivityForResult<MainActivity>(startActivityIntent)
 
         onView(withText("Resume integration")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        // TODO (b/390212615) update once we can use settings flag
+        if (SettingsThemeHelper.isExpressiveTheme(context)) {
+            onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        } else {
+            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        }
         onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
@@ -267,7 +283,12 @@ class MainActivityTest {
         launchActivityForResult<MainActivity>(startActivityIntent)
 
         onView(withText("Resume integration")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        // TODO (b/390212615) update once we can use settings flag
+        if (SettingsThemeHelper.isExpressiveTheme(context)) {
+            onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        } else {
+            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        }
         onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 

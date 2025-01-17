@@ -13,12 +13,19 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.android.settingslib.widget.TopIntroPreference
         android:key="health_connect_top_intro"
         android:title="@string/home_subtitle"
         android:order="0"
         />
+    <com.android.settingslib.widget.ZeroStatePreference
+        android:key="no_recent_access"
+        android:title="@string/recent_access_empty_state_title"
+        android:icon="?attr/accessHistoryIcon"
+        android:summary="@string/recent_access_empty_state_description"
+        app:isPreferenceVisible="false"/>
     <PreferenceCategory
         android:key="recent_access"
         android:title="@string/recent_access_header"

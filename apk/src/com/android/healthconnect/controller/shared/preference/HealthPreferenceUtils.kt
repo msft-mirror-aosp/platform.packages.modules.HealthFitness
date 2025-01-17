@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.shared.preference
 
 import android.content.Context
+import android.view.View
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
 import com.android.healthconnect.controller.utils.logging.ElementName
@@ -33,7 +34,7 @@ internal object HealthPreferenceUtils {
         return hiltEntryPoint.logger()
     }
 
-    fun loggingListener(
+    fun loggingPreferenceClickListener(
         logger: HealthConnectLogger,
         logName: ElementName,
         onPreferenceClickListener: OnPreferenceClickListener?,
@@ -41,6 +42,16 @@ internal object HealthPreferenceUtils {
         logger.logInteraction(logName)
         onPreferenceClickListener?.onPreferenceClick(it) ?: false
     }
+
+    fun loggingButtonClickListener(
+        logger: HealthConnectLogger,
+        logName: ElementName,
+        onClickListener: View.OnClickListener?,
+    ): View.OnClickListener =
+        View.OnClickListener {
+            logger.logInteraction(logName)
+            onClickListener?.onClick(it)
+        }
 
     fun isSameItem(preference1: Preference, preference2: Preference): Boolean {
         return preference1 === preference2

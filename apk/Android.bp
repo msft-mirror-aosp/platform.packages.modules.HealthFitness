@@ -183,6 +183,7 @@ android_library {
         "SettingsLibActivityEmbedding",
         "SettingsLibSelectorWithWidgetPreference",
         "SettingsLibSettingsSpinner",
+        "SettingsLibZeroStatePreference",
         "androidx.core_core",
         "hilt_android",
         "healthfitness-ui-statsd",
