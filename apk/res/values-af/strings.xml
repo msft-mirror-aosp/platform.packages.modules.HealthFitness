@@ -540,7 +540,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Kom aan die gang met Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect stoor jou gesondheid- en fiksheiddata en bied só ’n eenvoudige manier om die verskillende apps op jou toestel te sinkroniseer"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect stoor en sinkroniseer jou data van verskillende apps af.\n\n"<b>"Fiksheid- en welstanddata,"</b>" insluitend oefensessies, treë, voeding, slaap en meer\n\n"<b>"Gesondheidsrekords,"</b>" insluitend entstowwe, laboratoriumuitslae en meer"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Met Health Connect kan jy"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Doen die volgende met Health Connect"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"Deel data met jou apps"</b>\n"Kies die data wat elke app in Health Connect kan lees of skryf"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Bestuur jou instellings en privaatheid"</b>\n"Verander apptoestemmings en bestuur jou data enige tyd"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gaan terug"</string>

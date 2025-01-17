@@ -352,8 +352,8 @@
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"ສັນຍານຊີບ"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"ສັນຍານຊີບ"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"ອ່ານສັນຍານຊີບ"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ສະຕິຊອບ"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ສະຕິຊອບ"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ການຈະເລີນສະຕິ"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ການຈະເລີນສະຕິ"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"ອ່ານຂໍ້ມູນສະຕິຊອບ"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"ຂຽນຂໍ້ມູນສະຕິຊອບ"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"ອະນຸຍາດໃຫ້ “<xliff:g id="APP_NAME">%1$s</xliff:g>” ອ່ານ"</string>

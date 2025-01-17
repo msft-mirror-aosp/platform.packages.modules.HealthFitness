@@ -312,14 +312,14 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"température cutanée"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lire la température cutanée"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Indiquer la température cutanée"</string>
-    <string name="browse_health_records_intro" msgid="1611488691642390523">"Cela inclut tous les dossiers médicaux synchronisés et ajoutés à Santé Connect. Il ne s\'agit pas nécessairement de votre dossier médical complet et celui-ci ne contient aucune description de vos dossiers médicaux."</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Cela inclut tous les dossiers médicaux synchronisés et ajoutés à Santé Connect. Il ne s\'agit pas nécessairement de votre dossier médical complet, et aucune description de vos dossiers médicaux n\'est incluse."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Tous les dossiers médicaux"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"tous les dossiers médicaux"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Écrire tous les dossiers médicaux"</string>
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergies"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergies"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Lire les allergies"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Conditions"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Problèmes de santé"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"conditions"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Lire les conditions"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaccins"</string>
@@ -328,8 +328,8 @@
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Résultats d\'analyses"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"résultats d\'analyses"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Lire les résultats d\'analyses"</string>
-    <string name="medications_uppercase_label" msgid="4783281053427990225">"Médicaments"</string>
-    <string name="medications_lowercase_label" msgid="7808038774503092207">"médicaments"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Traitements"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"traitements"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Lire les données des médicaments"</string>
     <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Informations personnelles"</string>
     <string name="personal_details_lowercase_label" msgid="1907848447611775151">"informations personnelles"</string>
@@ -340,10 +340,10 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Grossesse"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"grossesse"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Lire la grossesse"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procédures"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"procédures"</string>
-    <string name="procedures_content_description" msgid="1086900373141440005">"Lire les procédures"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Historique social"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Opérations"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"opérations"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Consulter les données relatives aux opérations"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Antécédents sociaux"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"historique social"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Lire l\'historique social"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Consultations"</string>
@@ -361,7 +361,7 @@
     <string name="request_permissions_allow" msgid="4201324235711040631">"Autoriser"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Tout autoriser"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ne pas autoriser"</string>
-    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Sélectionnez les données que vous voulez autoriser cette appli à lire ou à écrire dans Santé Connect."</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Sélectionnez les données que vous voulez autoriser cette appli à consulter ou à ajouter dans Santé Connect."</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Sélectionnez les données que vous voulez autoriser cette appli à lire dans Santé Connect."</string>
     <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Sélectionnez les données que vous voulez autoriser cette appli à écrire dans Santé Connect."</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si vous lui donnez accès en lecture, l\'appli pourra lire les nouvelles données et celles des 30 derniers jours."</string>
@@ -371,7 +371,7 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Consultez les <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> de l\'application <xliff:g id="APP_NAME">%1$s</xliff:g> pour découvrir comment elle gère vos données"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"règles de confidentialité"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à votre dossier médical ?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si vous lui accordez l\'accès, l\'application pourra lire et écrire des données sur les allergies, les résultats d\'analyses, les vaccins, etc.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si vous lui accordez l\'accès, l\'application pourra consulter et ajouter des données sur les allergies, les résultats d\'analyses, les vaccins, etc.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Si vous lui accordez l\'accès, l\'application pourra lire les données sur les allergies, les résultats d\'analyses, les vaccins, etc.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"À propos du dossier médical"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Types de données à partager"</string>
@@ -422,7 +422,7 @@
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"Modification autorisée"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"Aucune appli autorisée"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Aucune appli non autorisée"</string>
-    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Retirer l\'accès à toutes les applis ?"</string>
+    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Supprimer l\'accès pour toutes les applis ?"</string>
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Aucune de vos applis ne pourra accéder à vos données ni en ajouter dans Santé Connect. Les données existantes ne seront pas supprimées.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Tout supprimer"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Gérer l\'appli"</string>
@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercice, sommeil, nutrition et autres"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Dossiers médicaux"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"dossiers médicaux"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Résultats d\'analyses, médicaments, vaccins, etc."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Résultats d\'analyses, traitements, vaccins, etc."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorisations d\'applis retirées"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Santé Connect a retiré les autorisations de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Santé Connect a retiré les autorisations de <xliff:g id="APP_DATA_0">%1$s</xliff:g> et <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -541,7 +541,7 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Santé Connect stocke vos données de santé et de remise en forme, et vous permet de synchroniser facilement les différentes applis de votre appareil"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Santé Connect stocke et synchronise vos données de santé et de remise en forme issues de différentes applications.\n\n"<b>"Les données de fitness et bien-être,"</b>" y compris les séances d\'exercice, le nombre de pas, les informations sur la nutrition et le sommeil, etc.\n\n"<b>"Les dossiers médicaux,"</b>" y compris les vaccins, les résultats d\'analyses et plus encore."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Avec Santé Connect, vous pouvez :"</string>
-    <string name="share_data_text" msgid="6898398345784931678"><b>"Partager des données avec vos applis"</b>\n"Sélectionnez les données que chaque appli peut lire ou modifier dans Santé Connect"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Partager des données avec vos applis"</b>\n"Choisissez quels données chaque appli peut consulter ou modifier dans Santé Connect"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gérer vos paramètres et votre confidentialité"</b>\n"Modifiez les autorisations de l\'application et gérez vos données à tout moment"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Retour"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Commencer"</string>

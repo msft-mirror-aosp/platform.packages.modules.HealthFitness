@@ -138,7 +138,7 @@
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"<xliff:g id="APP_NAME">%1$s</xliff:g>には読み取り権限がないため、現在読み取られているフィットネス データはありません"</string>
     <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> は医療記録の過去のデータにアクセスできるようになっています。この設定を変更するには、このアプリの医療記録の権限を OFF にしてください"</string>
     <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"医療記録の権限を管理"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"このアプリによるバックグラウンドでのアクセスまたは過去のデータのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"このアプリによるバックグラウンドでのアクセスまたは過去のデータへのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"このアプリによるバックグラウンドでのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"このアプリによる過去のデータのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
     <string name="historic_access_description" msgid="3309195636349468633">"このアプリに過去のすべてのヘルスコネクト データへのアクセスを許可します"</string>
@@ -312,12 +312,12 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"皮膚温"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"皮膚温を読み取る"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"皮膚温を書き込む"</string>
-    <string name="browse_health_records_intro" msgid="1611488691642390523">"ヘルスコネクトに同期・追加されたすべての健康記録が含まれます。これは必ずしも医療記録とは限らず、健康記録の医学的説明は含まれません。"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"ヘルスコネクトに同期・追加された健康記録がすべて含まれています。ただし、あらゆる医療記録を網羅しているとは限らず、健康記録の医学的説明も含まれていません。"</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"すべての医療記録"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"すべての医療記録"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"医療記録の書き込み"</string>
-    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"アレルギー不耐性"</string>
-    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"アレルギー不耐性"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"アレルギー"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"アレルギー"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"アレルギー不耐性データの読み取り"</string>
     <string name="conditions_uppercase_label" msgid="5260404343402770877">"健康状態"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"健康状態"</string>
@@ -375,7 +375,7 @@
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"アクセス権を付与すると、このアプリはアレルギー、検査結果、ワクチン接種などのデータを読み取れるようになります\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"医療記録について"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"共有するデータには以下が含まれます"</string>
-    <string name="medical_request_summary" msgid="7281321524805015510">"許可すると、<xliff:g id="APP_NAME">%1$s</xliff:g>は医療記録をヘルスコネクトと共有できるようになります。"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"許可すると、<xliff:g id="APP_NAME">%1$s</xliff:g> は医療記録をヘルスコネクトと共有できるようになります。"</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"さまざまなアプリやソースの医療記録を同期して 1 か所で管理できます"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"すべての権限を削除しますか？"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"すべて削除"</string>
@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"エクササイズ、睡眠、栄養、その他"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"医療記録"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"医療記録"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"検査結果、投薬、ワクチン接種、その他"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"検査結果、服薬情報、ワクチン接種、その他"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"アプリの権限を削除しました"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"ヘルスコネクトにより、<xliff:g id="APP_DATA">%s</xliff:g> に対する権限が削除されました"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"ヘルスコネクトにより、<xliff:g id="APP_DATA_0">%1$s</xliff:g> と <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> の権限が削除されました"</string>

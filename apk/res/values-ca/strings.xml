@@ -38,7 +38,7 @@
     <string name="entry_details_title" msgid="590184849040247850">"Detalls de l\'entrada"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"Navega per les dades"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"Consulta les dades i quines aplicacions hi poden accedir"</string>
-    <string name="manage_data_summary" msgid="8537870912521944449">"Supressió automàtica, font de dades, còpia de seguretat i restaurar"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Supressió automàtica, font de dades, còpia de seguretat i restauració"</string>
     <string name="backup_title" msgid="211503191266235085">"Còpia de seguretat"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Fonts de dades i prioritat"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Defineix les unitats"</string>
@@ -319,8 +319,8 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Al·lèrgies"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"al·lèrgies"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Llegir les al·lèrgies"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Condicions"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"condicions"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Problemes de salut"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"problemes de salut"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Llegir les condicions"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vacunes"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vacunes"</string>
@@ -374,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si li dones accés, l\'aplicació podrà llegir i escriure dades, com ara al·lèrgies, analítiques, vacunes i més\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Si li dones accés, l\'aplicació podrà llegir dades, com ara al·lèrgies, analítiques, vacunes i més\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Sobre els registres de salut"</string>
-    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Les dades per compartir inclouen"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Les dades que es compartiran inclouen"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Si ho permets, <xliff:g id="APP_NAME">%1$s</xliff:g> podrà compartir els teus registres de salut amb Salut connectada."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Sincronitza els teus registres de salut de diferents aplicacions i fonts per tenir-los en un sol lloc"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vols suprimir tots els permisos?"</string>

@@ -356,7 +356,7 @@
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"uważność"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Odczytuj dane o uważności"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Zapisuj dane o uważności"</string>
-    <string name="read_permission_category" msgid="6002099618259628632">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na odczytywanie"</string>
+    <string name="read_permission_category" msgid="6002099618259628632">"Zezwól aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do odczytu"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na zapisywanie"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Zezwól"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Zezwól na wszystkie"</string>
@@ -368,10 +368,10 @@
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Jeśli przyznasz uprawnienia do odczytu, aplikacja będzie mogła odczytywać nowe i wcześniejsze dane"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do Health Connect?"</string>
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do danych dotyczących aktywności fizycznej i samopoczucia?"</string>
-    <string name="request_permissions_rationale" msgid="2642076968583316986">"Aby dowiedzieć się, jak aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> wykorzystuje Twoje dane, zajrzyj do dokumentu <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Aby dowiedzieć się, jak aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> wykorzystuje Twoje dane, zapoznaj się z dokumentem <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"polityka prywatności"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do Twoich danych o stanie zdrowia?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Jeśli przyznasz dostęp, aplikacja będzie mogła odczytywać i zapisywać dane, takie jak informacje o alergiach i szczepieniach oraz wyniki badań laboratoryjnych i nie tylko\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Jeśli przyznasz dostęp, aplikacja będzie mogła odczytywać i zapisywać dane, na przykład informacje o alergiach i szczepieniach czy wyniki badań laboratoryjnych\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Jeśli przyznasz dostęp, aplikacja będzie mogła odczytywać dane, takie jak informacje o alergiach i szczepieniach oraz wyniki badań laboratoryjnych i nie tylko\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Informacje o danych o stanie zdrowia"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Dane objęte udostępnianiem"</string>

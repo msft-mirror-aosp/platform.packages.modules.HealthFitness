@@ -22,7 +22,7 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Ruxsatlar va maʼlumotlar"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Qurilmadagi jismoniy va salomatlik maʼlumotlarini tekshirish va boshqarish hamda buni koʻrishga qaysi ilovalarga ruxsat berilishi"</string>
     <string name="data_title" msgid="4456619761533380816">"Maʼlumotlar va ruxsat"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"Salomatlik qaydlarini varaqlash"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Salomatlik qaydlari"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Salomatlik axboroti va ularga ruxsati bor ilovalar"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Barcha turkumlar"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Barcha turkumlarni ochish"</string>
@@ -319,7 +319,7 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergiyalar"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergiyalar"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Allergiyalarni oʻqish"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Shartlar"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Kasalliklar"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"shartlar"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Shartlarni oʻqish"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaksinalar"</string>
@@ -334,8 +334,8 @@
     <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Shaxsiy maʼlumotlar"</string>
     <string name="personal_details_lowercase_label" msgid="1907848447611775151">"shaxsiy maʼlumotlar"</string>
     <string name="personal_details_content_description" msgid="3191211304673909831">"Shaxsiy maʼlumotlarni oʻqish"</string>
-    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Amaliyotchi tafsilotlari"</string>
-    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"amaliyotchi tafsilotlari"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Mutaxassislar tafsilotlari"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"mutaxassislar tafsilotlari"</string>
     <string name="practitioner_details_content_description" msgid="8775396516928504185">"Amaliyotchi tafsilotlarini oʻqish"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Homiladorlik"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"homiladorlik"</string>
@@ -343,8 +343,8 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Muolajalar"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"muolajalar"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Muolajalar axborotini oʻqish"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Ijtimoiy anamnez"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"ijtimoiy anamnez"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Ijtimoiy hayot tarixi"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"ijtimoiy hayot tarixi"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Ijtimoiy anamnez axborotini oʻqish"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Tashriflar"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"tashriflar"</string>

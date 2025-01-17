@@ -137,7 +137,7 @@
     <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Autorisez cette appli à accéder à toutes les données antérieures de Connexion santé"</string>
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Aucune donnée d\'activité physique n\'est actuellement lue, car aucune autorisation de lecture n\'est activée pour <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> peut déjà accéder aux données passées de vos dossiers médicaux. Pour modifier cela, désactivez les autorisations du dossier médical pour cette appli"</string>
-    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Gérer les autorisations de dossier médical"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Gérer les autorisations d\'accès au dossier médical"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activez au moins une autorisation de lecture afin de permettre l\'accès en arrière-plan ou aux données antérieures pour cette appli"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Activez au moins une autorisation de lecture afin de permettre l\'accès en arrière-plan pour cette appli"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Activez au moins une autorisation de lecture afin de permettre l\'accès aux données antérieures pour cette appli"</string>
@@ -361,7 +361,7 @@
     <string name="request_permissions_allow" msgid="4201324235711040631">"Autoriser"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Tout autoriser"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ne pas autoriser"</string>
-    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Choisissez les données que vous voulez que cette appli puisse lire ou écrire dans Connexion santé"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Choisissez les données que vous voulez que cette appli puisse consulter ou modifier dans Connexion santé"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Choisissez les données que vous voulez que l\'appli puisse lire dans Connexion santé"</string>
     <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Choisissez les données que vous voulez que cette appli puisse écrire dans Connexion santé"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Lorsque vous accordez l\'accès à la lecture des données, l\'appli peut lire les nouvelles données et celles des 30 derniers jours"</string>
@@ -371,7 +371,7 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Vous pouvez découvrir comment <xliff:g id="APP_NAME">%1$s</xliff:g> traite vos données en consultant sa <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"politique de confidentialité"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à vos dossiers médicaux?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si vous donnez l\'accès, l\'appli pourra lire et écrire des données telles que celles concernant les allergies, les résultats de laboratoire, les vaccins et plus\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si vous donnez l\'accès, l\'appli pourra consulter et modifier des données telles que celles concernant les allergies, les résultats de laboratoire, les vaccins et plus\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Si vous donnez l\'accès, l\'appli pourra lire des données telles que celles concernant les allergies, les résultats de laboratoire, les vaccins et plus\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"À propos des dossiers médicaux"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Les données à partager comprennent"</string>
@@ -422,7 +422,7 @@
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"Écriture autorisée"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"Aucune appli autorisée"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Aucune appli refusée"</string>
-    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Retirer l\'accès pour toutes les applis?"</string>
+    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Supprimer l\'accès pour toutes les applis?"</string>
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Aucune de vos applis ne pourra accéder aux données stockées dans Connexion santé ni en ajouter de nouvelles. Les données existantes ne seront pas supprimées.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette appli, comme celles relatives à la position, à l\'appareil photo ou au microphone."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Tout retirer"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Gérer l\'appli"</string>
@@ -440,7 +440,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accès de l\'appli"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aucune appli compatible n\'est actuellement installée"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accès supplémentaire"</string>
-    <string name="additional_access_summary" msgid="1076197455435130191">"Données passées, données en arrière-plan"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Données antérieures, données en arrière-plan"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorisations supplémentaires retirées pour cette appli"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Autorisations"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Mise en forme et bien-être"</string>
@@ -541,7 +541,7 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Connexion santé stocke vos données de santé et d\'activité physique, et vous offre un moyen simple de synchroniser les différentes applis de votre appareil"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Connexion santé stocke et synchronise vos données relatives à la santé et à l\'activité physique à partir de différentes applis.\n\n"<b>"Les données relatives à l\'activité physique et au bien-être,"</b>" y compris les séances d\'exercice, le nombre de pas, la nutrition, le sommeil et d\'autres données\n\n"<b>"Les dossiers médicaux,"</b>" y compris les vaccins, les résultats de laboratoire et d\'autres données"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Avec Connexion santé vous pouvez"</string>
-    <string name="share_data_text" msgid="6898398345784931678"><b>"Partagez des données avec vos applis"</b>\n"Choisissez les données que chaque appli peut lire ou écrire dans Connexion santé"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Partagez des données avec vos applis"</b>\n"Choisissez les données que chaque appli peut consulter ou modifier dans Connexion santé"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gérez vos paramètres et votre confidentialité"</b>\n"Modifiez les autorisations des applis et gérez vos données en tout temps"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Retour"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Faire vos premiers pas"</string>

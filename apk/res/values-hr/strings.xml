@@ -51,8 +51,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Pogledajte koje su aplikacije pristupile vašim podacima u posljednja 24 sata"</string>
     <string name="today_header" msgid="1006837293203834373">"Danas"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Jučer"</string>
-    <string name="read_data_access_label" msgid="8968758932021241976">"Čitanje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"Bilježenje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Čita: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Bilježi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljajte dopuštenjima"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Vrijeme: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -343,9 +343,9 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Postupci"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"postupci"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Čitanje podataka o postupcima"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Povijest društvenih mreža"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"povijest društvenih mreža"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"Čitanje podataka o povijesti društvenih mreža"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Socijalna anamneza"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"socijalna anamneza"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Čitanje podataka o socijalnoj anamnezi"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Posjeti"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"posjeti"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Čitanje podataka o posjetima"</string>
@@ -356,7 +356,7 @@
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"usredotočena svjesnost"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čitanje podataka sesije usredotočene svjesnosti"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Pisanje podataka sesije usredotočene svjesnosti"</string>
-    <string name="read_permission_category" msgid="6002099618259628632">"Dopusti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da očita"</string>
+    <string name="read_permission_category" msgid="6002099618259628632">"Dopusti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da čita"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Dopusti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da zapiše"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Dopusti"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Dopusti sve"</string>
@@ -1122,7 +1122,7 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Pronađite više aplikacija za sinkronizaciju s aplikacijom <xliff:g id="APP_NAME">%s</xliff:g> putem aplikacije Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Prikaži u trgovini aplikacija"</string>
     <string name="lock_screen_banner_title" msgid="5384381892985739755">"Postavite zaključavanje zaslona"</string>
-    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Za dodatnu sigurnost za svoje zdravstvene podatke postavite PIN, uzorak ili zaporku za ovaj uređaj"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Da biste dodatno zaštitili svoje zdravstvene podatke, postavite PIN, uzorak ili zaporku za ovaj uređaj"</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"Postavi zaključavanje zaslona"</string>
     <string name="select_all" msgid="837499881590001166">"Odaberi sve"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Povezane aplikacije više neće moći čitati te podatke iz Health Connecta"</string>
