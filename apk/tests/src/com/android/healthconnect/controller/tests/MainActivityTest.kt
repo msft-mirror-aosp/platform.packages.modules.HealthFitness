@@ -23,6 +23,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
+import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.showOnboarding
@@ -49,6 +50,9 @@ class MainActivityTest {
     @BindValue
     val exportStatusViewModel: ExportStatusViewModel =
         Mockito.mock(ExportStatusViewModel::class.java)
+    @BindValue
+    val recentAccessViewModel: RecentAccessViewModel =
+        Mockito.mock(RecentAccessViewModel::class.java)
     @BindValue
     val healthConnectLogger: HealthConnectLogger = Mockito.mock(HealthConnectLogger::class.java)
 
@@ -91,6 +95,9 @@ class MainActivityTest {
                 )
             )
         }
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData(RecentAccessViewModel.RecentAccessState.WithData(listOf()))
+        }
         setPreferenceSeen(context, Constants.SEE_MORE_COMPATIBLE_APPS_BANNER_SEEN, true)
         setPreferenceSeen(context, Constants.START_USING_HC_BANNER_SEEN, true)
         setPreferenceSeen(context, Constants.CONNECT_MORE_APPS_BANNER_SEEN, true)
@@ -108,9 +115,11 @@ class MainActivityTest {
         if (SettingsThemeHelper.isExpressiveTheme(context)) {
             onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
         } else {
-            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withText("No apps recently accessed Health\u00A0Connect"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
         }
-        onView(withText("Permissions and data")).check(matches(isDisplayed()))
+        onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -209,7 +218,9 @@ class MainActivityTest {
         if (SettingsThemeHelper.isExpressiveTheme(context)) {
             onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
         } else {
-            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withText("No apps recently accessed Health\u00A0Connect"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
         }
         onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
@@ -248,7 +259,9 @@ class MainActivityTest {
         if (SettingsThemeHelper.isExpressiveTheme(context)) {
             onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
         } else {
-            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withText("No apps recently accessed Health\u00A0Connect"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
         }
         onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
@@ -287,7 +300,9 @@ class MainActivityTest {
         if (SettingsThemeHelper.isExpressiveTheme(context)) {
             onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
         } else {
-            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withText("No apps recently accessed Health\u00A0Connect"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
         }
         onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }

@@ -34,6 +34,7 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+import com.android.settingslib.widget.theme.flags.Flags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
@@ -128,7 +129,8 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun homeFragment_recentAccessShownOnHomeScreen() {
+    @RequiresFlagsDisabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_legacyRecentAccessShownOnHomeScreen() {
         context.launchMainActivity {
             scrollDownToAndFindTextContains("CtsHealthConnectTest")
             scrollDownToAndFindText("See all recent access")
@@ -136,10 +138,32 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun homeFragment_navigatesToRecentAccess() {
+    @RequiresFlagsEnabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_expressiveRecentAccessShownOnHomeScreen() {
+        context.launchMainActivity {
+            scrollDownToAndFindTextContains("CtsHealthConnectTest")
+            scrollDownToAndFindText("View all")
+        }
+    }
+
+    @Test
+    @RequiresFlagsDisabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_navigatesToLegacyRecentAccess() {
         context.launchMainActivity {
             scrollDownToAndFindText("See all recent access")
             clickOnTextAndWaitForNewWindow("See all recent access")
+
+            scrollDownToAndFindText("Today")
+            scrollDownToAndFindTextContains("CtsHealthConnectTest")
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_navigatesToExpressiveRecentAccess() {
+        context.launchMainActivity {
+            scrollDownToAndFindText("View all")
+            clickOnTextAndWaitForNewWindow("View all")
 
             scrollDownToAndFindText("Today")
             scrollDownToAndFindTextContains("CtsHealthConnectTest")

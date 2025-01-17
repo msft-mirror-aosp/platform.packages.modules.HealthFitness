@@ -18,9 +18,10 @@ package com.android.healthconnect.controller.recentaccess
 
 import android.health.connect.HealthConnectManager
 import android.health.connect.accesslog.AccessLog
-import android.util.Log
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.service.IoDispatcher
+import com.android.healthconnect.controller.shared.usecase.BaseUseCase
+import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.utils.TimeSource
 import java.time.Duration
 import java.time.Instant
@@ -28,7 +29,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 
 @Singleton
 class LoadRecentAccessUseCase
@@ -36,36 +36,32 @@ class LoadRecentAccessUseCase
 constructor(
     private val manager: HealthConnectManager,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val timeSource: TimeSource
-) : ILoadRecentAccessUseCase {
+    private val timeSource: TimeSource,
+) : ILoadRecentAccessUseCase, BaseUseCase<Unit, List<AccessLog>>(dispatcher) {
 
     companion object {
         private const val TAG = "LoadRecentAccessUseCase"
     }
 
     /** Returns a list of apps that have recently accessed Health Connect */
-    override suspend fun invoke(): List<AccessLog> =
-        withContext(dispatcher) {
-            val accessLogs =
-                try {
-                    suspendCancellableCoroutine<List<AccessLog>> { continuation ->
-                        manager.queryAccessLogs(Runnable::run, continuation.asOutcomeReceiver())
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Load error ", e)
-                    listOf()
-                }
+    override suspend fun execute(input: Unit): List<AccessLog> {
+        val accessLogs =
+            suspendCancellableCoroutine<List<AccessLog>> { continuation ->
+                manager.queryAccessLogs(Runnable::run, continuation.asOutcomeReceiver())
+            }
 
-            val instant24Hours =
-                Instant.ofEpochMilli(timeSource.currentTimeMillis()).minus(Duration.ofDays(1))
+        val instant24Hours =
+            Instant.ofEpochMilli(timeSource.currentTimeMillis()).minus(Duration.ofDays(1))
 
-            // only need the last 24 hours of access logs
-            accessLogs
-                .filter { accessLog -> accessLog.accessTime.isAfter(instant24Hours) }
-                .sortedByDescending { it.accessTime }
-        }
+        // only need the last 24 hours of access logs
+        return accessLogs
+            .filter { accessLog -> accessLog.accessTime.isAfter(instant24Hours) }
+            .sortedByDescending { it.accessTime }
+    }
 }
 
 interface ILoadRecentAccessUseCase {
-    suspend fun invoke(): List<AccessLog>
+    suspend fun invoke(input: Unit): UseCaseResults<List<AccessLog>>
+
+    suspend fun execute(input: Unit): List<AccessLog>
 }
