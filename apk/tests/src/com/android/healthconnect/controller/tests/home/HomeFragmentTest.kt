@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.tests.home
 import android.Manifest
 import android.content.Context
 import android.health.connect.HealthDataCategory
+import android.os.Build
 import android.os.Bundle
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
@@ -27,6 +28,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -39,6 +41,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
@@ -56,7 +59,9 @@ import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
 import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.shared.ExpressiveThemingModule
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
+import com.android.healthconnect.controller.shared.IExpressiveThemingHelper
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
@@ -66,12 +71,12 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
+import com.android.healthconnect.controller.tests.utils.di.FakeExpressiveTheming
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
-import com.android.healthconnect.controller.utils.KeyguardManagerUtil
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -103,7 +108,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
-@UninstallModules(DeviceInfoUtilsModule::class)
+@UninstallModules(DeviceInfoUtilsModule::class, ExpressiveThemingModule::class)
 class HomeFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -111,6 +116,8 @@ class HomeFragmentTest {
     private lateinit var context: Context
 
     @BindValue val homeViewModel: HomeViewModel = Mockito.mock(HomeViewModel::class.java)
+    // TODO (b/390212615) update once we can use settings flag
+    @BindValue val expressiveThemingHelper: IExpressiveThemingHelper = FakeExpressiveTheming()
 
     @BindValue
     val recentAccessViewModel: RecentAccessViewModel =
@@ -130,8 +137,6 @@ class HomeFragmentTest {
 
     private lateinit var navHostController: TestNavHostController
     @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
-    @BindValue
-    val keyguardManagerUtils: KeyguardManagerUtil = Mockito.mock(KeyguardManagerUtil::class.java)
 
     companion object {
         private const val TEST_EXPORT_FREQUENCY_IN_DAYS = 1
@@ -197,6 +202,7 @@ class HomeFragmentTest {
         // enable animations
         toggleAnimation(true)
         reset(healthConnectLogger)
+        (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(false)
     }
 
     // region Navigation tests
@@ -233,7 +239,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun seeAllRecentAccess_navigatesToRecentAccess() {
+    fun legacySeeAllRecentAccess_navigatesToRecentAccess() {
         setupFragmentForNavigation()
         onView(withText("See all recent access")).check(matches(isDisplayed()))
         onView(withText("See all recent access")).perform(click())
@@ -371,7 +377,7 @@ class HomeFragmentTest {
     // region Display tests
     @Test
     @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
-    fun whenRecentAccessApps_showsRecentAccessApps() {
+    fun legacyWhenRecentAccessApps_showsRecentAccessApps() {
         val recentApp =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -399,7 +405,6 @@ class HomeFragmentTest {
         }
 
         launchFragment<HomeFragment>(Bundle())
-
         onView(
                 withText(
                     "Manage the health and fitness data on your device, and control which apps can access it"
@@ -407,7 +412,6 @@ class HomeFragmentTest {
             )
             .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
-        onView(withText("None")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
 
@@ -419,7 +423,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun whenRecentAccessApps_in12HourFormat_showsCorrectTime() {
+    fun legacyWhenRecentAccessApps_in12HourFormat_showsCorrectTime() {
         val recentApp =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -485,6 +489,36 @@ class HomeFragmentTest {
         onView(withText("Recent access")).check(matches(isDisplayed()))
         onView(withText("No apps recently accessed Health\u00A0Connect"))
             .check(matches(isDisplayed()))
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_ONBOARDING)
+    fun newIA_withNoRecentAccessApps() {
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
+                )
+            )
+        }
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("App permissions")).check(matches(isDisplayed()))
+        onView(withText("2 apps have access")).check(matches(isDisplayed()))
+        onView(withText("Data and access")).check(matches(isDisplayed()))
+        onView(withText("Manage data")).check(matches(isDisplayed()))
+
+        onView(withText("Recent access")).check(matches(isDisplayed()))
+        onView(withText("No apps recently accessed Health\u00A0Connect"))
+            .check(matches(isDisplayed()))
+
+        onView(withText("No recent access")).check(doesNotExist())
+        onView(withText("Apps which have recently accessed your data will automatically show here"))
+            .check(doesNotExist())
     }
 
     @Test
@@ -1460,6 +1494,95 @@ class HomeFragmentTest {
             .logInteraction(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON)
 
         onView(withText("Set screen lock")).check(doesNotExist())
+    }
+
+    // endregion
+
+    // region Expressive display tests
+    @Test
+    // TODO (b/390418465) update this to B when the flag condition changes
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM, codeName = "VanillaIceCream")
+    @DisableFlags(Flags.FLAG_ONBOARDING)
+    fun expressiveViewAllRecentAccess_navigatesToRecentAccess() {
+        (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(true)
+        setupFragmentForNavigation()
+        onIdle()
+        onView(withText("View all")).check(matches(isDisplayed()))
+        onView(withText("View all")).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.recentAccessFragment)
+    }
+
+    @Test
+    // TODO (b/390418465) update this to B when the flag condition changes
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM, codeName = "VanillaIceCream")
+    @DisableFlags(Flags.FLAG_ONBOARDING)
+    fun expressiveWhenRecentAccessApps_in12HourFormat_showsCorrectTime() {
+        (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(true)
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                isInactive = false,
+                dataTypesWritten =
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
+                dataTypesRead =
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+            )
+
+        timeSource.setIs24Hour(false)
+
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(listOf<ConnectedAppMetadata>())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Recent access")).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText("6:40 PM")).check(matches(isDisplayed()))
+        onView(withText("View all")).check(matches(isDisplayed()))
+        onView(withText("See all recent access")).check(doesNotExist())
+    }
+
+    @Test
+    // TODO (b/390418465) update this to B when the flag condition changes
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM, codeName = "VanillaIceCream")
+    @DisableFlags(Flags.FLAG_ONBOARDING)
+    fun expressive_withNoRecentAccessApps() {
+        (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(true)
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
+                )
+            )
+        }
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("No recent access")).check(matches(isDisplayed()))
+        onView(withText("Apps which have recently accessed your data will automatically show here"))
+            .check(matches(isDisplayed()))
+        onView(withText("App permissions")).check(matches(isDisplayed()))
+        onView(withText("2 apps have access")).check(matches(isDisplayed()))
+        onView(withText("Data and access")).check(matches(isDisplayed()))
+        onView(withText("Manage data")).check(matches(isDisplayed()))
+
+        onView(withText("Recent access")).check(doesNotExist())
+        onView(withText("No apps recently accessed Health\u00A0Connect")).check(doesNotExist())
     }
 
     // endregion

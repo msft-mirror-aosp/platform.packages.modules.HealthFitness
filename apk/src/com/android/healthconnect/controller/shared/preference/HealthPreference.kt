@@ -18,7 +18,6 @@ package com.android.healthconnect.controller.shared.preference
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.Preference
-import androidx.preference.Preference.OnPreferenceClickListener
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -42,7 +41,11 @@ constructor(context: Context, attrs: AttributeSet? = null) :
         onPreferenceClickListener: OnPreferenceClickListener?
     ) {
         super.setOnPreferenceClickListener(
-            HealthPreferenceUtils.loggingListener(logger, logName, onPreferenceClickListener)
+            HealthPreferenceUtils.loggingPreferenceClickListener(
+                logger,
+                logName,
+                onPreferenceClickListener,
+            )
         )
     }
 

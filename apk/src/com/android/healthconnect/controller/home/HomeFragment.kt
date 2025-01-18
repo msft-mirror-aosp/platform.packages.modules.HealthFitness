@@ -47,12 +47,14 @@ import com.android.healthconnect.controller.shared.Constants.LOCK_SCREEN_BANNER_
 import com.android.healthconnect.controller.shared.Constants.LOCK_SCREEN_BANNER_SEEN_MEDICAL
 import com.android.healthconnect.controller.shared.Constants.MIGRATION_NOT_COMPLETE_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.IExpressiveThemingHelper
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.shared.preference.BannerPreference
+import com.android.healthconnect.controller.shared.preference.HealthButtonPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
@@ -70,8 +72,8 @@ import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordE
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
 import com.android.healthfitness.flags.Flags.personalHealthRecordLockScreenBanner
-import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.TopIntroPreference
+import com.android.settingslib.widget.ZeroStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -82,6 +84,7 @@ class HomeFragment : Hilt_HomeFragment() {
 
     companion object {
         private const val TOP_INTRO_PREFERENCE_KEY = "health_connect_top_intro"
+        private const val NO_RECENT_ACCESS = "no_recent_access"
         private const val DATA_AND_ACCESS_PREFERENCE_KEY = "data_and_access"
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
         private const val CONNECTED_APPS_PREFERENCE_KEY = "connected_apps"
@@ -106,23 +109,20 @@ class HomeFragment : Hilt_HomeFragment() {
 
     @Inject lateinit var timeSource: TimeSource
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var expressiveThemingHelper: IExpressiveThemingHelper
 
     private val recentAccessViewModel: RecentAccessViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by activityViewModels()
     private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
 
-    private val mTopIntroPreference: TopIntroPreference? by lazy {
-        preferenceScreen.findPreference(TOP_INTRO_PREFERENCE_KEY)
-    }
+    private val mTopIntroPreference: TopIntroPreference by pref(TOP_INTRO_PREFERENCE_KEY)
 
-    private val mDataAndAccessPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(DATA_AND_ACCESS_PREFERENCE_KEY)
-    }
+    private val noRecentAccessPreference: ZeroStatePreference by pref(NO_RECENT_ACCESS)
 
-    private val mRecentAccessPreference: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(RECENT_ACCESS_PREFERENCE_KEY)
-    }
+    private val mDataAndAccessPreference: HealthPreference by pref(DATA_AND_ACCESS_PREFERENCE_KEY)
+
+    private val mRecentAccessPreference: PreferenceGroup by pref(RECENT_ACCESS_PREFERENCE_KEY)
 
     private val mConnectedAppsPreference: HealthPreference by pref(CONNECTED_APPS_PREFERENCE_KEY)
 
@@ -146,15 +146,15 @@ class HomeFragment : Hilt_HomeFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
-        mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+        mDataAndAccessPreference.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
 
         if (newInformationArchitecture()) {
-            mDataAndAccessPreference?.summary = getString(R.string.browse_data_subtitle)
-            mTopIntroPreference?.isVisible = false
+            mDataAndAccessPreference.summary = getString(R.string.browse_data_subtitle)
+            mTopIntroPreference.isVisible = false
         } else {
-            mTopIntroPreference?.isVisible = true
+            mTopIntroPreference.isVisible = true
         }
-        mDataAndAccessPreference?.setOnPreferenceClickListener {
+        mDataAndAccessPreference.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
         }
@@ -634,10 +634,20 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun updateRecentApps(recentAppsList: List<RecentAccessEntry>) {
-        mRecentAccessPreference?.removeAll()
+        if (
+            expressiveThemingHelper.isExpressiveTheme(requireContext()) && recentAppsList.isEmpty()
+        ) {
+            noRecentAccessPreference.isVisible = true
+            mRecentAccessPreference.isVisible = false
+            return
+        }
+
+        noRecentAccessPreference.isVisible = false
+        mRecentAccessPreference.isVisible = true
+        mRecentAccessPreference.removeAll()
 
         if (recentAppsList.isEmpty()) {
-            mRecentAccessPreference?.addPreference(
+            mRecentAccessPreference.addPreference(
                 Preference(requireContext())
                     .also { it.setSummary(R.string.no_recent_access) }
                     .also { it.isSelectable = false }
@@ -645,24 +655,42 @@ class HomeFragment : Hilt_HomeFragment() {
         } else {
             recentAppsList.forEach { recentApp ->
                 val newRecentAccessPreference = getRecentAccessPreference(recentApp)
-                mRecentAccessPreference?.addPreference(newRecentAccessPreference)
+                mRecentAccessPreference.addPreference(newRecentAccessPreference)
             }
-            val seeAllPreference =
+            mRecentAccessPreference.addPreference(getSeeAllPreference())
+        }
+    }
+
+    private fun getSeeAllPreference(): Preference {
+        val seeAllPreference =
+            if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
+                HealthButtonPreference(requireContext()).also {
+                    it.setTitle(R.string.recent_access_view_all_button)
+                    it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.optionsIcon))
+                    it.logName = HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON
+                    it.setOnClickListener {
+                        findNavController()
+                            .navigate(R.id.action_homeFragment_to_recentAccessFragment)
+                    }
+                }
+            } else {
                 HealthPreference(requireContext()).also {
                     it.setTitle(R.string.show_recent_access_entries_button_title)
                     it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.seeAllIcon))
                     it.logName = HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON
+                    it.setOnPreferenceClickListener {
+                        findNavController()
+                            .navigate(R.id.action_homeFragment_to_recentAccessFragment)
+                        true
+                    }
                 }
-            seeAllPreference.setOnPreferenceClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_recentAccessFragment)
-                true
             }
-            mRecentAccessPreference?.addPreference(seeAllPreference)
-        }
+
+        return seeAllPreference
     }
 
     private fun getRecentAccessPreference(recentApp: RecentAccessEntry): HealthPreference {
-        return if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
+        return if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
             HealthPreference(requireContext()).also { newPreference ->
                 newPreference.title = recentApp.metadata.appName
                 newPreference.icon = recentApp.metadata.icon
