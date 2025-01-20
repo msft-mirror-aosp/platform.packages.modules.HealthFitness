@@ -44,8 +44,8 @@ import java.time.Instant;
  */
 public final class ExportImportSettingsStorage {
     // Scheduled Export Settings
-    private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
-    private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
+    public static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
+    public static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
 
     // Scheduled Export State
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
