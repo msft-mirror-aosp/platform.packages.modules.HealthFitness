@@ -19,6 +19,7 @@ package android.healthconnect.cts.aggregation;
 import static android.health.connect.datatypes.ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL;
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
 import static android.health.connect.datatypes.StepsCadenceRecord.STEPS_CADENCE_RATE_MAX;
+import static android.health.connect.datatypes.StepsCadenceRecord.STEPS_CADENCE_RATE_MIN;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_AVG;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_MAX;
@@ -468,6 +469,31 @@ public class AggregationApisTest {
                                                 .build(),
                                         Duration.ofSeconds(1)));
         assertThat(thrown).hasMessageThat().contains("Number of buckets");
+    }
+
+    @Test
+    public void aggregateWithInstantFilter_stepsCadenceMin() throws Exception {
+        Instant time = Instant.now().minus(1, DAYS);
+        insertRecords(
+                List.of(
+                        getStepsCadenceRecord(
+                                time,
+                                time.plus(8, HOURS),
+                                UTC,
+                                getStepsCadenceRecordSample(54.1, time.plus(1, HOURS)),
+                                getStepsCadenceRecordSample(39.2, time.plus(2, HOURS)),
+                                getStepsCadenceRecordSample(44.7, time.plus(3, HOURS)),
+                                getStepsCadenceRecordSample(369.2, time.plus(4, HOURS)),
+                                getStepsCadenceRecordSample(3.0, time.plus(6, HOURS)))));
+
+        TimeInstantRangeFilter timeFilter = getTimeFilter(time, time.plus(3, HOURS));
+        AggregateRecordsRequest<Double> aggregateRecordsRequest =
+                new AggregateRecordsRequest.Builder<Double>(timeFilter)
+                        .addAggregationType(STEPS_CADENCE_RATE_MIN)
+                        .build();
+
+        AggregateRecordsResponse<Double> response = getAggregateResponse(aggregateRecordsRequest);
+        assertDoubleWithTolerance(response.get(STEPS_CADENCE_RATE_MIN), 39.2);
     }
 
     private static StepsCadenceRecord getStepsCadenceRecord(
