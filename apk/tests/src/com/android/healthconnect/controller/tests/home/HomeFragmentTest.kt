@@ -94,6 +94,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -430,7 +431,6 @@ class HomeFragmentTest {
         onView(withText("See all recent access")).check(doesNotExist())
     }
 
-
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
     fun withNoRecentAccessApps() {
@@ -485,6 +485,7 @@ class HomeFragmentTest {
         onView(withText("See data and which apps can access it")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
     }
+
     // endregion
 
     // region Migration tests
@@ -1323,6 +1324,7 @@ class HomeFragmentTest {
         launchFragment<HomeFragment>(Bundle())
 
         onView(withText("Set a screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("More items")).check(doesNotExist())
     }
 
     @Test
@@ -1359,11 +1361,124 @@ class HomeFragmentTest {
         launchFragment<HomeFragment>(Bundle())
 
         onView(withText("Set screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withId(R.id.dismiss_button)).perform(scrollTo()).perform(click())
+        onView(withId(com.android.settingslib.widget.preference.banner.R.id.banner_dismiss_btn))
+            .perform(scrollTo())
+            .perform(click())
         verify(healthConnectLogger)
             .logInteraction(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON)
 
         onView(withText("Set screen lock")).check(doesNotExist())
+    }
+
+    // endregion
+
+    // region BannerGroup
+    @Test
+    @EnableFlags(
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_LOCK_SCREEN_BANNER,
+    )
+    fun multipleBanners_canExpand_andCollapseGroup() {
+        // Export and Lock Screen banners
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.ShowBanner())
+        }
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
+                )
+            )
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
+                        periodInDays = TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        lastFailedExportTime = NOW,
+                    )
+                )
+            )
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        // Export banner shown first
+        onView(withText("Couldn't export data")).check(matches(isDisplayed()))
+        onView(withText("Set up")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "There was a problem with the export for October 20, 2022. Please set up a new scheduled export and try again."
+                )
+            )
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(HomePageElement.EXPORT_ERROR_BANNER)
+        verify(healthConnectLogger).logImpression(HomePageElement.EXPORT_ERROR_BANNER_BUTTON)
+
+        onView(withText("Set a screen lock")).check(doesNotExist())
+        onView(
+                withText(
+                    "For added security for your health data, set a PIN, pattern, or password for this device"
+                )
+            )
+            .check(doesNotExist())
+        onView(withText("Set screen lock")).check(doesNotExist())
+
+        onView(withText("More items")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("1")).check(matches(isDisplayed()))
+
+        // Expand group
+        onView(withText("More items")).perform(click())
+
+        // Check appearance of second banner
+        onView(withText("Set a screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "For added security for your health data, set a PIN, pattern, or password for this device"
+                )
+            )
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Set screen lock")).perform(scrollTo()).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER)
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.LOCK_SCREEN_BANNER_DISMISS_BUTTON)
+
+        onView(withText("Fewer items")).perform(scrollTo()).check(matches(isDisplayed()))
+
+        // Collapse group
+        onView(withText("Fewer items")).perform(click())
+
+        // Check export banner still shown
+        onView(withText("Couldn't export data")).check(matches(isDisplayed()))
+        onView(withText("Set up")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "There was a problem with the export for October 20, 2022. Please set up a new scheduled export and try again."
+                )
+            )
+            .check(matches(isDisplayed()))
+
+        // But not the lock screen banner
+        onView(withText("Set a screen lock")).check(doesNotExist())
+        onView(
+                withText(
+                    "For added security for your health data, set a PIN, pattern, or password for this device"
+                )
+            )
+            .check(doesNotExist())
+        onView(withText("Set screen lock")).check(doesNotExist())
+
+        onView(withText("More items")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("1")).check(matches(isDisplayed()))
     }
 
     // endregion
