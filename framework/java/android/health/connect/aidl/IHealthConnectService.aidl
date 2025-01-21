@@ -55,6 +55,7 @@ import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.health.connect.backuprestore.BackupChange;
+import android.health.connect.backuprestore.RestoreChange;
 import android.net.Uri;
 import android.os.UserHandle;
 
@@ -576,5 +577,5 @@ interface IHealthConnectService {
      * @param changes Changes to be restored.
      * @param callback Callback to receive result of performing this operation.
      */
-     void pushChangesForRestore(in List<BackupChange> changes, in IEmptyResponseCallback callback);
+     void pushChangesForRestore(in List<RestoreChange> changes, in IEmptyResponseCallback callback);
 }

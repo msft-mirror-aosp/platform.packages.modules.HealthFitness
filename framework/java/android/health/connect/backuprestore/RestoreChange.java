@@ -25,73 +25,46 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 /** @hide */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
-public final class BackupChange implements Parcelable {
+public final class RestoreChange implements Parcelable {
 
-    // A uid that identifies the specific data point this change refers to.
-    // Note: The module should ensure that this uid doesn't allow us to infer any user data.
-    @NonNull private final String mUid;
-
-    private final boolean mIsDeletion;
-
-    // Only present if isDeletion is false.
     // The data is returned as bytes rather than records to keep the data opaque from the client.
     // As long as the client doesn't parse the data, it doesn't know what type of data this is.
-    @Nullable private final byte[] mData;
+    @NonNull private final byte[] mData;
 
-    public BackupChange(@NonNull String uid, boolean isDeletion, @Nullable byte[] data) {
-        mUid = uid;
-        mIsDeletion = isDeletion;
+    public RestoreChange(@NonNull byte[] data) {
         mData = data;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BackupChange that)) return false;
-        return mIsDeletion == that.mIsDeletion
-                && mUid.equals(that.mUid)
-                && Arrays.equals(mData, that.mData);
+        return (o instanceof RestoreChange that) && Arrays.equals(mData, that.mData);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(mUid, mIsDeletion);
-        result = 31 * result + Arrays.hashCode(mData);
-        return result;
+        return Arrays.hashCode(mData);
     }
 
-    private BackupChange(Parcel in) {
-        mUid = in.readString();
-        mIsDeletion = in.readByte() != 0;
+    private RestoreChange(Parcel in) {
         mData = in.readBlob();
     }
 
     @NonNull
-    public static final Creator<BackupChange> CREATOR =
+    public static final Creator<RestoreChange> CREATOR =
             new Creator<>() {
                 @Override
-                public BackupChange createFromParcel(Parcel in) {
-                    return new BackupChange(in);
+                public RestoreChange createFromParcel(Parcel in) {
+                    return new RestoreChange(in);
                 }
 
                 @Override
-                public BackupChange[] newArray(int size) {
-                    return new BackupChange[size];
+                public RestoreChange[] newArray(int size) {
+                    return new RestoreChange[size];
                 }
             };
-
-    @NonNull
-    public String getUid() {
-        return mUid;
-    }
-
-    public boolean isDeletion() {
-        return mIsDeletion;
-    }
 
     @Nullable
     public byte[] getData() {
@@ -105,8 +78,6 @@ public final class BackupChange implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(mUid);
-        dest.writeByte((byte) (mIsDeletion ? 1 : 0));
         dest.writeBlob(mData);
     }
 }

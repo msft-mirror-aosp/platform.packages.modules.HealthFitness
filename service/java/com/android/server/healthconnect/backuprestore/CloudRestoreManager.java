@@ -20,8 +20,8 @@ import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTOR
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 
 import android.annotation.FlaggedApi;
-import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.BackupSettings;
+import android.health.connect.backuprestore.RestoreChange;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
@@ -72,25 +72,24 @@ public class CloudRestoreManager {
     }
 
     /** Restores backup data changes. */
-    public void pushChangesForRestore(List<BackupChange> changes) {
+    public void pushChangesForRestore(List<RestoreChange> changes) {
         List<Record> records =
                 changes.stream()
-                        .filter(change -> !change.isDeletion())
                         .map(this::toRecord)
                         .toList();
         records.stream()
                 .collect(Collectors.toMap(Record::getPackageName, Record::getAppName, (a, b) -> b))
                 .forEach(mAppInfoHelper::addOrUpdateAppInfoIfNoAppInfoEntryExists);
-        UpsertTransactionRequest request =
+        UpsertTransactionRequest upsertRequest =
                 UpsertTransactionRequest.createForRestore(
                         records.stream().map(this::toRecordInternal).toList(),
                         mDeviceInfoHelper,
                         mAppInfoHelper);
-        mTransactionManager.insertAllRecords(mAppInfoHelper, null, request);
+        mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertRequest);
         mAppInfoHelper.syncAppInfoRecordTypesUsed();
     }
 
-    private Record toRecord(BackupChange backupChange) {
+    private Record toRecord(RestoreChange backupChange) {
         try {
             return BackupData.parseFrom(backupChange.getData()).getRecord();
         } catch (Exception e) {
