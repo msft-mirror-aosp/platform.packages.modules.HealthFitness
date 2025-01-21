@@ -340,8 +340,8 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"懷孕"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"懷孕"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"讀取懷孕資料"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"程序"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"程序"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"醫療程序"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"醫療程序"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"閱讀程序資料"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"生活型態"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"社交活動記錄"</string>

@@ -319,7 +319,7 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergia"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergia"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Allergiainformációk olvasása"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Állapotok"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Állapotadatok"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"állapotok"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Állapotok elolvasása"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Oltások"</string>
@@ -340,7 +340,7 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Terhesség"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"terhesség"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Terhességi adatok olvasása"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Eljárások"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Beavatkozások"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"eljárások"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Eljárások olvasása"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"Szociális kórelőzmény"</string>

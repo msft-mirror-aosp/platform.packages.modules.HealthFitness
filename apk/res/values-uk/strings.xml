@@ -22,7 +22,7 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Дозволи й дані"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Керуйте даними про здоров’я і фізичну активність на пристрої, а також визначайте додатки, які матимуть доступ до цих даних"</string>
     <string name="data_title" msgid="4456619761533380816">"Дані й доступ"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"Переглянути медичні дані"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Перегляд медичних даних"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Переглядайте свої медичні дані й додатки, які мають до них доступ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Усі категорії"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Переглянути всі категорії"</string>
@@ -37,7 +37,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Немає"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Деталі запису"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"Переглянути дані"</string>
-    <string name="browse_data_subtitle" msgid="7025164374898103993">"Переглянути дані й додатки, які мають доступ до них"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Переглядайте дані й додатки, які мають доступ до них"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Автоматичне видалення, джерела даних, резервне копіювання й відновлення"</string>
     <string name="backup_title" msgid="211503191266235085">"Резервне копіювання"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Джерела даних і пріоритет"</string>

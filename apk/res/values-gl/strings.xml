@@ -319,8 +319,8 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Alerxias"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"alerxias"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Ler os datos das alerxias"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Condicións"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"condicións"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Problemas de saúde"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"problemas de saúde"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Ler as condicións"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vacinas"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vacinas"</string>
@@ -540,7 +540,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Comeza a usar Saúde conectada"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Saúde conectada almacena os teus datos de saúde e actividade física, e permíteche sincronizar facilmente as distintas aplicacións do dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Saúde conectada almacena e sincroniza os teus datos de saúde e actividade física de distintas aplicacións.\n\n"<b>"Datos de actividade física e benestar:"</b>" Sesións de exercicio, pasos, nutrición, sono e moito máis\n\n"<b>"Rexistros de información sanitaria:"</b>" Vacinas ou resultados de análises, por exemplo"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Saúde conectada podes"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Saúde conectada"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"Comparte os datos coas túas aplicacións"</b>\n"Escolle os datos que pode ler ou escribir cada aplicación en Saúde conectada"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Xestiona a configuración e a privacidade"</b>\n"Cambia os permisos de aplicacións e xestiona os teus datos en calquera momento"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atrás"</string>

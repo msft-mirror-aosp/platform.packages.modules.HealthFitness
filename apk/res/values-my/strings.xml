@@ -51,8 +51,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"ပြီးခဲ့သော ၂၄ နာရီတွင် မည်သည့်အက်ပ်က သင့်ဒေတာကိုသုံးထားကြောင်း ကြည့်နိုင်သည်"</string>
     <string name="today_header" msgid="1006837293203834373">"ယနေ့"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"မနေ့က"</string>
-    <string name="read_data_access_label" msgid="8968758932021241976">"ဖတ်ရန်- <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"ရေးရန်- <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"ဖတ်သည်- <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"ရေးသည်- <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">"၊ "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ခွင့်ပြုချက်များကို စီမံရန်"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"အချိန်- <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -319,7 +319,7 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"ဓာတ်မတည့်မှုများ"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"ဓာတ်မတည့်မှုများ"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"ဓာတ်မတည့်မှုများကို ဖတ်ရန်"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"အခြေအနေများ"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"ကျန်းမာရေး အခြေအနေ"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"အခြေအနေများ"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"အခြေအနေများကို ဖတ်ရန်"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"ကာကွယ်ဆေးများ"</string>
@@ -341,12 +341,12 @@
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ကိုယ်ဝန်ဆောင်ခြင်း"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"ကိုယ်ဝန်ဆောင်ခြင်းကို ဖတ်ရန်"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"လုပ်ငန်းစဉ်များ"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"လုပ်ငန်းစဉ်များ"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"ခွဲစိတ်ကုသမှုများ"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"လုပ်ငန်းစဉ်များကို ဖတ်ရန်"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"လူမှုမှတ်တမ်း"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"လူနေမှုမှတ်တမ်း"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"လူနေမှုမှတ်တမ်းကို ဖတ်ရန်"</string>
-    <string name="visits_uppercase_label" msgid="8532619758336375886">"သွားရောက်မှုများ"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"ဆေးရုံဆေးခန်း သွားရောက်မှု"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"သွားရောက်မှုများ"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"သွားရောက်မှုများကို ဖတ်ရန်"</string>
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"အဓိကကိုယ်တွင်းအင်္ဂါအခြေအနေ လက္ခဏာများ"</string>
@@ -539,7 +539,7 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store သို့ သွားရန်"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect စတင်အသုံးပြုခြင်း"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect သည် သင့်စက်ပေါ်ရှိ အက်ပ်အမျိုးမျိုး ရိုးရှင်းစွာစင့်ခ်လုပ်နည်းကို ပေးပြီး သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းသည်"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect သည် အခြားအက်ပ်များမှ သင့်ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး စင့်ခ်လုပ်သည်။\n\nလေ့ကျင့်ခန်း စက်ရှင်များ၊ ခြေလှမ်းများ၊ အာဟာရ၊ အိပ်ခြင်း စသည်တို့အပါအဝင် "<b>"ကျန်းမာကြံ့ခိုင်ရေးဒေတာ"</b>\n\n"ကာကွယ်ဆေး၊ ဓာတ်ခွဲခန်းရလဒ် စသည်တို့အပါအဝင် "<b>"ကျန်းမာရေး မှတ်တမ်းများ"</b></string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect သည် အခြားအက်ပ်များမှ သင့်ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး စင့်ခ်လုပ်သည်။\n\n"<b>"ကျန်းမာကြံ့ခိုင်ရေးဒေတာ-"</b>" လေ့ကျင့်ခန်း စက်ရှင်များ၊ ခြေလှမ်းများ၊ အာဟာရ၊ အိပ်ခြင်း စသည်တို့အပါအဝင် \n\n"<b>"ကျန်းမာရေး မှတ်တမ်းများ-"</b>" ကာကွယ်ဆေး၊ ဓာတ်ခွဲခန်းရလဒ် စသည်တို့အပါအဝင်"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ဖြင့် သင်လုပ်နိုင်သည်များ"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</b>\n"Health Connect တွင် အက်ပ်တစ်ခုစီ ဖတ်နိုင် (သို့) ရေးနိုင်သည့် ဒေတာကို သင်ရွေးနိုင်သည်"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"သင့်ဆက်တင်များနှင့် ကိုယ်ရေးအချက်အလက်လုံခြုံမှုကို စီမံရန်"</b>\n"အက်ပ်ခွင့်ပြုချက်များပြောင်းပြီး သင့်ဒေတာကို အချိန်မရွေးစီမံနိုင်သည်"</string>
