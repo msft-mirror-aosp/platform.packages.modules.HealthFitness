@@ -23,8 +23,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
-import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.BackupSettings;
+import android.health.connect.backuprestore.RestoreChange;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -128,26 +128,20 @@ public class CloudRestoreManagerTest {
         Record stepsRecord =
                 com.android.server.healthconnect.backuprestore.ProtoTestData.generateRecord(
                         RecordTypeIdentifier.RECORD_TYPE_STEPS);
-        BackupChange stepsChange =
-                new BackupChange(
-                        stepsRecord.getUuid(),
-                        false,
+        RestoreChange stepsChange =
+                new RestoreChange(
                         BackupData.newBuilder().setRecord(stepsRecord).build().toByteArray());
-        BackupChange deletionChange = new BackupChange(UUID.randomUUID().toString(), true, null);
         Record bloodPressureRecord =
                 com.android.server.healthconnect.backuprestore.ProtoTestData.generateRecord(
                         RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE);
-        BackupChange bloodPressureChange =
-                new BackupChange(
-                        bloodPressureRecord.getUuid(),
-                        false,
+        RestoreChange bloodPressureChange =
+                new RestoreChange(
                         BackupData.newBuilder()
                                 .setRecord(bloodPressureRecord)
                                 .build()
                                 .toByteArray());
 
-        mCloudRestoreManager.pushChangesForRestore(
-                List.of(stepsChange, deletionChange, bloodPressureChange));
+        mCloudRestoreManager.pushChangesForRestore(List.of(stepsChange, bloodPressureChange));
 
         ReadTransactionRequest request =
                 mTransactionTestUtils.getReadTransactionRequest(

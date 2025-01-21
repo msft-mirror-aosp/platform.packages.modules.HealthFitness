@@ -126,8 +126,8 @@ import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
 import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
-import android.health.connect.backuprestore.BackupChange;
 import android.health.connect.backuprestore.BackupSettings;
+import android.health.connect.backuprestore.RestoreChange;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
@@ -3314,7 +3314,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
-    public void pushChangesForRestore(List<BackupChange> changes, IEmptyResponseCallback callback) {
+    public void pushChangesForRestore(
+            List<RestoreChange> changes, IEmptyResponseCallback callback) {
         if (mCloudRestoreManager == null) return;
         checkParamsNonNull(changes);
         final int uid = Binder.getCallingUid();
