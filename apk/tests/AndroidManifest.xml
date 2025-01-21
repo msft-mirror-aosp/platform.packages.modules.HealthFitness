@@ -17,9 +17,13 @@
 
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.android.healthconnect.controller.tests">
 
-  <application android:debuggable="true">
+  <application
+      android:name="dagger.hilt.android.testing.HiltTestApplication"
+      android:debuggable="true"
+      tools:replace="android:name">
     <uses-library android:name="android.test.runner" />
     <activity
         android:name=".TestActivity"
