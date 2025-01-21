@@ -78,6 +78,7 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         }
     }
 
+    // TODO only change this if there are devices without new IA on
     @Test
     fun categoriesFragment_openAllCategories() {
         context.launchDataActivity {

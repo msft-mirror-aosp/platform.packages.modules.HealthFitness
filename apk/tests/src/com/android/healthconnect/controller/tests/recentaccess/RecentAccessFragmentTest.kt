@@ -43,6 +43,9 @@ import com.google.common.truth.Truth
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.time.Instant
+import java.time.ZoneId
+import java.util.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -54,9 +57,6 @@ import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import java.time.Instant
-import java.time.ZoneId
-import java.util.*
 
 @HiltAndroidTest
 class RecentAccessFragmentTest {
@@ -87,7 +87,7 @@ class RecentAccessFragmentTest {
     }
 
     @Test
-    fun test_RecentAccessFragment_displaysCorrectly() {
+    fun displaysCorrectly() {
         val recentApp1 =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -97,11 +97,14 @@ class RecentAccessFragmentTest {
                 dataTypesWritten =
                     mutableSetOf(
                         HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle()),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
                     mutableSetOf(
                         HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+            )
 
         val recentApp2 =
             RecentAccessEntry(
@@ -112,17 +115,21 @@ class RecentAccessFragmentTest {
                 dataTypesWritten =
                     mutableSetOf(
                         HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle()),
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
                 dataTypesRead =
                     mutableSetOf(
                         HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle()))
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
+            )
 
         timeSource.setIs24Hour(true)
 
         whenever(viewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(
-                RecentAccessState.WithData(listOf(recentApp1, recentApp2)))
+                RecentAccessState.WithData(listOf(recentApp1, recentApp2))
+            )
         }
 
         launchFragment<RecentAccessFragment>(Bundle())
@@ -146,7 +153,7 @@ class RecentAccessFragmentTest {
     }
 
     @Test
-    fun test_RecentAccessFragment_inactiveApp_doesNotNavigate() {
+    fun inactiveApp_doesNotNavigate() {
         val recentApp1 =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -156,11 +163,14 @@ class RecentAccessFragmentTest {
                 dataTypesWritten =
                     mutableSetOf(
                         HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle()),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
                     mutableSetOf(
                         HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+            )
 
         val recentApp2 =
             RecentAccessEntry(
@@ -171,15 +181,19 @@ class RecentAccessFragmentTest {
                 dataTypesWritten =
                     mutableSetOf(
                         HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle()),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
                     mutableSetOf(
                         HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+            )
 
         whenever(viewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(
-                RecentAccessState.WithData(listOf(recentApp1, recentApp2)))
+                RecentAccessState.WithData(listOf(recentApp1, recentApp2))
+            )
         }
 
         launchFragment<RecentAccessFragment>(Bundle())
@@ -191,7 +205,7 @@ class RecentAccessFragmentTest {
     }
 
     @Test
-    fun test_RecentAccessFragment_display12HourFormatCorrectly() {
+    fun displays12HourFormatCorrectly() {
         val recentApp =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -201,11 +215,14 @@ class RecentAccessFragmentTest {
                 dataTypesWritten =
                     mutableSetOf(
                         HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle()),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
                     mutableSetOf(
                         HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+            )
 
         timeSource.setIs24Hour(false)
 
@@ -230,13 +247,16 @@ class RecentAccessFragmentTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten =
-                mutableSetOf(
-                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                    HealthDataCategory.VITALS.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
-                mutableSetOf(
-                    HealthDataCategory.SLEEP.uppercaseTitle(),
-                    HealthDataCategory.NUTRITION.uppercaseTitle()))
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+            )
         whenever(viewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
@@ -249,7 +269,8 @@ class RecentAccessFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
+        Truth.assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.fitnessAppFragment)
     }
 
     @Test
@@ -261,14 +282,17 @@ class RecentAccessFragmentTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten =
-                mutableSetOf(
-                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                    HealthDataCategory.VITALS.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
-                mutableSetOf(
-                    HealthDataCategory.SLEEP.uppercaseTitle(),
-                    HealthDataCategory.NUTRITION.uppercaseTitle()),
-                appPermissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY)
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+                appPermissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY,
+            )
         whenever(viewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
@@ -281,7 +305,8 @@ class RecentAccessFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
+        Truth.assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.medicalAppFragment)
     }
 
     @Test
@@ -293,14 +318,17 @@ class RecentAccessFragmentTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten =
-                mutableSetOf(
-                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                    HealthDataCategory.VITALS.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
-                mutableSetOf(
-                    HealthDataCategory.SLEEP.uppercaseTitle(),
-                    HealthDataCategory.NUTRITION.uppercaseTitle()),
-                appPermissionsType = AppPermissionsType.COMBINED_PERMISSIONS)
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+                appPermissionsType = AppPermissionsType.COMBINED_PERMISSIONS,
+            )
         whenever(viewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
@@ -313,6 +341,7 @@ class RecentAccessFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
+        Truth.assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.combinedPermissionsFragment)
     }
 }
