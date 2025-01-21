@@ -22,7 +22,7 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Ruxsatlar va maʼlumotlar"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Qurilmadagi jismoniy va salomatlik maʼlumotlarini tekshirish va boshqarish hamda buni koʻrishga qaysi ilovalarga ruxsat berilishi"</string>
     <string name="data_title" msgid="4456619761533380816">"Maʼlumotlar va ruxsat"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"Salomatlik qaydlarini varaqlash"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Salomatlik qaydlari"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Salomatlik axboroti va ularga ruxsati bor ilovalar"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Barcha turkumlar"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Barcha turkumlarni ochish"</string>
@@ -319,7 +319,7 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergiyalar"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergiyalar"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Allergiyalarni oʻqish"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Shartlar"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Kasalliklar"</string>
     <string name="conditions_lowercase_label" msgid="2678248918552246997">"shartlar"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Shartlarni oʻqish"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vaksinalar"</string>
@@ -334,8 +334,8 @@
     <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Shaxsiy maʼlumotlar"</string>
     <string name="personal_details_lowercase_label" msgid="1907848447611775151">"shaxsiy maʼlumotlar"</string>
     <string name="personal_details_content_description" msgid="3191211304673909831">"Shaxsiy maʼlumotlarni oʻqish"</string>
-    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Amaliyotchi tafsilotlari"</string>
-    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"amaliyotchi tafsilotlari"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Mutaxassislar tafsilotlari"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"mutaxassislar tafsilotlari"</string>
     <string name="practitioner_details_content_description" msgid="8775396516928504185">"Amaliyotchi tafsilotlarini oʻqish"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Homiladorlik"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"homiladorlik"</string>
@@ -343,8 +343,8 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Muolajalar"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"muolajalar"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Muolajalar axborotini oʻqish"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Ijtimoiy anamnez"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"ijtimoiy anamnez"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Ijtimoiy hayot tarixi"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"ijtimoiy hayot tarixi"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Ijtimoiy anamnez axborotini oʻqish"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Tashriflar"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"tashriflar"</string>
@@ -1112,7 +1112,7 @@
     <string name="last_week_header" msgid="5194448963146719382">"Avvalgi hafta"</string>
     <string name="this_month_header" msgid="2452395268894677189">"Shu oyda"</string>
     <string name="last_month_header" msgid="1359164797239191253">"Avvalgi oy"</string>
-    <string name="tab_entries" msgid="3402700951602029493">"Maʼlumotlar kiritish"</string>
+    <string name="tab_entries" msgid="3402700951602029493">"Qaydlar"</string>
     <string name="tab_access" msgid="7818197975407243701">"Ruxsat"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect ishlatishni boshlash"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Salomatlik va fitnes maʼlumotlarni oʻzaro ulashadigan ilk ilovalaringizni sinxronlang"</string>
@@ -1146,7 +1146,7 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>dagi barcha maʼlumotlar butunlay oʻchirilsinmi?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>dagi tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> haftasidagi tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>dagi tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> sanasidagi tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Bu yozuv butunlay oʻchirib tashlansinmi?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>dagi barcha <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari oʻchirib tashlansinmi?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> haftasidagi barcha <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari oʻchirib tashlansinmi?"</string>
@@ -1170,9 +1170,9 @@
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga <xliff:g id="DATA_TYPE">%2$s</xliff:g> qurilmasidan foydalanishga ruxsat berilsinmi?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes va salomatlik"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"doimiy"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ilova ishlatilganda"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ishlatilayotganda"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Doimiy"</string>
-    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Ilova ishlatilganda"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Ishlatilayotganda"</string>
     <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi salomatlik va fitnes maʼlumotlaridan <xliff:g id="ALLOW_MODE">%2$s</xliff:g> foydalanishi mumkin"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Ruxsat berilgan"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Oʻqishga ruxsat berilgan"</string>

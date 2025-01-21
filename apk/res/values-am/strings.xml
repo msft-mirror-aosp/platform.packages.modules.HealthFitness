@@ -107,7 +107,7 @@
     <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"እንዲሁም <xliff:g id="APP_NAME">%1$s</xliff:g> እነዚህን የጤና አገናኝ ቅንብሮች መድረስ ይፈልጋል"</string>
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"በዳራ ውስጥ ያለን ውሂብ በሙሉ መድረስ"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"በዳራ ውስጥ የጤና መዝገቦችን መድረስ"</string>
-    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"በዳራ ውስጥ የአካት ብቃት እና ጤንነት ውሂብን መድረስ"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"በዳራ ውስጥ የአካል ብቃት እና ጤንነት ውሂብን መድረስ"</string>
     <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው የአካል ብቃት እና ጤንነት ውሂብን እና የጤና መዝገቦችን እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>
@@ -123,7 +123,7 @@
     <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"ስለ ፈቃዶች የበለጠ ያንብቡ"</string>
     <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"በዳራ ውስጥ ያለን ውሂብ በሙሉ መድረስ"</string>
     <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"በዳራ ውስጥ የጤና መዝገቦችን መድረስ"</string>
-    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"በዳራ ውስጥ የአካት ብቃት እና ጤንነት ውሂብን መድረስ"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"በዳራ ውስጥ የአካል ብቃት እና ጤንነት ውሂብን መድረስ"</string>
     <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው የአካል ብቃት እና ጤንነት ውሂብን እና የጤና መዝገቦችን እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>

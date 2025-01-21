@@ -68,7 +68,7 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"praćenje ciklusa"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Ishrana"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"ishranu"</string>
-    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Dobrobit"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Kvalitet života"</string>
     <string name="wellness_category_lowercase" msgid="1327642415424743588">"dobrobit"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Pregledajte podatke"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Upravljajte podacima"</string>
@@ -371,7 +371,7 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Možete saznati kako aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> obrađuje vaše podatke u dokumentu \"<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>\""</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilima privatnosti"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Dozvoliti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa zdravstvenim evidencijama?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ako joj odobrite pristup, aplikacija može čitati i pisati podatke kao što su podaci o alergijama, laboratorijskim nalazima, vakcinama i drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ako joj odobrite pristup, aplikacija može čitati i zapisivati podatke kao što su podaci o alergijama, laboratorijskim nalazima, vakcinama i drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ako joj odobrite pristup, aplikacija može čitati podatke kao što su podaci o alergijama, laboratorijskim nalazima, vakcinama i drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"O zdravstvenim evidencijama"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Podaci za dijeljenje uključuju"</string>
@@ -384,7 +384,7 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti zapisivati podatke iz Health Connecta, uključujući historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti zapisivati podatke iz Health Connecta, uključujući pozadinske i historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Izbriši i podatke aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> iz Health Connecta"</string>
-    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Ukloniti sva odobrenja za fitnes i dobrobit?"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Ukloniti sva odobrenja za fitnes i wellness?"</string>
     <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Iz aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> izbriši i podatke o fitnesu koji potiču iz Health Connecta"</string>
     <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Ukloniti sva odobrenja za zdravstvene evidencije?"</string>
     <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Iz aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> izbriši i zdravstvene evidencije koje potiču iz Health Connecta"</string>
@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"Prijašnji i pozadinski podaci"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Uklonjena su dodatna odobrenja za ovu aplikaciju"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Odobrenja"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"Fitnes i dobrobit"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitnes i wellness"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Vježbanje, spavanje, prehrana i drugo"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Zdravstvene evidencije"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"zdravstvene evidencije"</string>
@@ -539,8 +539,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Idite u Play trgovinu"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Počnite koristiti Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect pohranjuje vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizirate različite aplikacije na uređaju"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect pohranjuje i sinhronizira vaše podatke o zdravlju i fitnesu iz raznih aplikacija.\n\n"<b>"Podaci o fitnesu i dobrobiti,"</b>" uključujući sesije vježbanja, korake, prehranu, spavanje i druge \n\n"<b>"zdravstvene evidencije,"</b>" uključujući vakcine, laboratorijske nalaze i drugo"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Putem Health Connecta možete"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect pohranjuje i sinhronizira vaše podatke o zdravlju i fitnesu iz raznih aplikacija.\n\n"<b>"Podaci o fitnesu i wellnessu,"</b>" uključujući sesije vježbanja, korake, prehranu, spavanje i druge \n\n"<b>"zdravstvene evidencije,"</b>" uključujući vakcine, laboratorijske nalaze i drugo"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Uz Health Connect možete raditi sljedeće"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke sa svojim aplikacijama"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Odaberite podatke koje svaka aplikacija može čitati ili zapisivati u Health Connectu"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Upravljajte postavkama i privatnošću"</string>
@@ -1142,17 +1142,17 @@
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Trajno izbrisati sve podatke aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Trajno izbrisati odabrane podatke aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Trajno izbrisati sve unose za <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Trajno izbrisati sve unose za sedmicu od <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Trajno izbrisati sve unose za sedmicu <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Trajno izbrisati sve unose za <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Trajno izbrisati odabrane unose za <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Trajno izbrisati odabrane unose za sedmicu od <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Trajno izbrisati odabrane unose za sedmicu <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Trajno izbrisati odabrane unose za <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Trajno izbrisati ovaj unos?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Trajno izbrisati sve unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Trajno izbrisati sve unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za sedmicu od <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Trajno izbrisati sve unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Trajno izbrisati odabrane unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Trajno izbrisati odabrane unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za sedmicu od <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Trajno izbrisati odabrane unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za sedmicu <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Trajno izbrisati odabrane unose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Trajno izbrisati ovaj unos aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Trajno izbrisati podatke \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\" za aplikaciju <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
@@ -1168,12 +1168,12 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Dozvoliti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima o fitnesu i wellnessu?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> traži pristup podacima vrste <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nOdaberite želite li dozvoliti sve ili upravljati njima pojedinačno."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Dozvoliti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima vrste <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes i dobrobit"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes i wellness"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"sve vrijeme"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"tokom upotrebe"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Sve vrijeme"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Tokom upotrebe"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> može pristupati svim vašim podacima o fitnesu i dobrobiti <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> može pristupati svim vašim podacima o fitnesu i wellnessu <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Dozvoljen pristup"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Dozvoljeno čitanje"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Ova odobrenja daju aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> pristup podacima sa senzora uređaja."</string>
@@ -1185,8 +1185,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Ukloniti pristup podacima vrste \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" za sve aplikacije na satu?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Kvačica"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Znak prekriženo"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> trenutno može pristupati podacima o fitnesu i dobrobiti <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
-    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Dozvoliti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima o fitnesu i dobrobiti sve vrijeme?"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> trenutno može pristupati podacima o fitnesu i wellnessu <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Dozvoliti da <xliff:g id="APP_NAME">%1$s</xliff:g> pristupa podacima o fitnesu i wellnessu sve vrijeme?"</string>
     <string name="current_access" msgid="1457167070428176139">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ima pristup podacima vrste <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Upravljajte odobrenjima za podatke o fitnesu i dobrobiti"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Upravljajte odobrenjima za fitnes i wellness"</string>
 </resources>

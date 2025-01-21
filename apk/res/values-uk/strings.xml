@@ -22,7 +22,7 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Дозволи й дані"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Керуйте даними про здоров’я і фізичну активність на пристрої, а також визначайте додатки, які матимуть доступ до цих даних"</string>
     <string name="data_title" msgid="4456619761533380816">"Дані й доступ"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"Переглянути медичні дані"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Перегляд медичних даних"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Переглядайте свої медичні дані й додатки, які мають до них доступ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Усі категорії"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Переглянути всі категорії"</string>
@@ -37,7 +37,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Немає"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Деталі запису"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"Переглянути дані"</string>
-    <string name="browse_data_subtitle" msgid="7025164374898103993">"Переглянути дані й додатки, які мають доступ до них"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Переглядайте дані й додатки, які мають доступ до них"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Автоматичне видалення, джерела даних, резервне копіювання й відновлення"</string>
     <string name="backup_title" msgid="211503191266235085">"Резервне копіювання"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Джерела даних і пріоритет"</string>
@@ -79,7 +79,7 @@
     <string name="app_priority_button" msgid="3126133977893705098">"Пріоритет додатків"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"Видалити дані типу \"<xliff:g id="CATEGORY">%s</xliff:g>\""</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Усі додатки"</string>
-    <string name="can_read" msgid="4568261079308309564">"Можуть читати дані типу \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
+    <string name="can_read" msgid="4568261079308309564">"Можуть переглядати дані типу \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
     <string name="can_write" msgid="5082414937218423823">"Можуть записувати дані типу \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Неактивні додатки"</string>
     <string name="inactive_apps_message" msgid="8335803540719022910">"Ці додатки більше не можуть переглядати або записувати дані типу \"<xliff:g id="DATA_TYPE">%s</xliff:g>\", однак їх дані досі зберігаються в Health Connect"</string>
@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> зчитувати дані"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> записувати дані"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Дозволити"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дозволити все"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дозволити всі"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Не дозволяти"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Виберіть дані, які цей додаток зможе читати або записувати в Health Connect"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Виберіть дані, які цей додаток зможе читати в Health Connect"</string>
@@ -1167,7 +1167,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Відхилити всі"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до даних про фізичну активність і здоров’я?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> запитує доступ до таких даних: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nНадайте доступ до всіх типів даних або керуйте кожним із них окремо."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до даних (<xliff:g id="DATA_TYPE">%2$s</xliff:g>)?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до даних типу \"<xliff:g id="DATA_TYPE">%2$s</xliff:g>\"?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Фізична активність і здоров’я"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"завжди"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"під час використання"</string>
@@ -1181,12 +1181,12 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"Жоден додаток не запитує дозвіл"</string>
     <string name="allowed" msgid="4158456017482263737">"Дозволено"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Немає дозволу"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"Додатки із цим дозволом можуть отримувати доступ до даних \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" від датчиків пристрою."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Скасувати доступ до даних \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" для всіх додатків на годиннику?"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Додатки із цим дозволом можуть отримувати доступ до даних типу \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" від датчиків пристрою."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Скасувати доступ до даних типу \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" для всіх додатків на годиннику?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Прапорець"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Хрестик"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Наразі додаток <xliff:g id="APP_NAME">%1$s</xliff:g> може отримувати доступ до даних про фізичну активність і здоров’я <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Наразі додаток <xliff:g id="APP_NAME">%1$s</xliff:g> може <xliff:g id="ALLOW_MODE">%2$s</xliff:g> отримувати доступ до даних про фізичну активність і здоров’я"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Завжди дозволяти додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до даних про фізичну активність і здоров’я?"</string>
     <string name="current_access" msgid="1457167070428176139">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> має доступ до таких даних: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Керувати дозволами на доступ до даних про активність і здоров’я"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Керувати дозволами для даних про активність і здоров’я"</string>
 </resources>

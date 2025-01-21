@@ -82,7 +82,7 @@
     <string name="can_read" msgid="4568261079308309564">"Може да чита податке типа: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Може да уписује податке типа: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Неактивне апликације"</string>
-    <string name="inactive_apps_message" msgid="8335803540719022910">"Ове апликације више не могу да читају ни да уписују податке типа <xliff:g id="DATA_TYPE">%s</xliff:g>, али још имате податке у Повезивању здравља."</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Ове апликације више не могу да читају ни да уписују податке типа <xliff:g id="DATA_TYPE">%s</xliff:g>, али још увек имају податке у Повезивању здравља."</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Апликације више не могу да читају ни уписују податке типа <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, а никакви подаци <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> нису сачувани у Повезивању здравља"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Ови подаци обухватају информације попут времена активности, типа вежбања, кругова, понављања, сесија или завеслаја"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Ови подаци обухватају информације попут фаза сна и сесија спавања"</string>
@@ -145,8 +145,8 @@
     <string name="background_read_description" msgid="3203594555849969283">"Дозволите овој апликацији да приступа подацима Повезивања здравља када је не користите"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Утрошене активне калорије"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"утрошене активне калорије"</string>
-    <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Читање утрошених активних калорија"</string>
-    <string name="active_calories_burned_write_content_description" msgid="8794383690157452892">"Писање утрошених активних калорија"</string>
+    <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Читање потрошених активних калорија"</string>
+    <string name="active_calories_burned_write_content_description" msgid="8794383690157452892">"Писање потрошених активних калорија"</string>
     <string name="exercise_uppercase_label" msgid="9174662895529523172">"Вежбање"</string>
     <string name="exercise_lowercase_label" msgid="7210988327804427943">"вежбање"</string>
     <string name="exercise_read_content_description" msgid="2079728018078185556">"Читање података о вежбању"</string>
@@ -184,8 +184,8 @@
     <string name="steps_lowercase_label" msgid="706153549312838582">"кораци"</string>
     <string name="steps_read_content_description" msgid="7839297670092769964">"Читање података о корацима"</string>
     <string name="steps_write_content_description" msgid="6360223825799711659">"Уписивање података о корацима"</string>
-    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"Укупно утрошених калорија"</string>
-    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"укупно утрошених калорија"</string>
+    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"Укупно потрошених калорија"</string>
+    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"укупно потрошених калорија"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Читање података о укупно утрошеним калоријама"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Уписивање података о укупно утрошеним калоријама"</string>
     <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Максимална потрошња кисеоника"</string>
@@ -431,7 +431,7 @@
     <string name="delete_app_data" msgid="6890357774873859952">"Избриши податке апликација"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Неактивне апликације"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Ове апликације више немају приступ, али и даље имају сачуване податке у Повезивању здравља"</string>
-    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да чита податке додате после <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
+    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да чита податке додате после: <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Да бисте управљали другим дозволама за Android којима ова апликација може да приступа, идите у Подешавања &gt; Апликације"</string>
     <string name="manage_permissions_rationale" msgid="2780008055185441703">"У политици приватности програмера можете да сазнате како <xliff:g id="APP_NAME">%1$s</xliff:g> управља вашим подацима"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Да бисте управљали другим дозволама за Android којима ова апликација може да приступа, идите у Подешавања, па додирните Апликације"</string>
@@ -540,7 +540,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Започните са Повезивањем здравља"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Повезивање здравља чува ваше податке о здрављу и фитнесу и пружа вам једноставан начин да синхронизујете различите апликације на уређају"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Повезивање здравља чува и синхронизује податке о здрављу и фитнесу из различитих апликација.\n\n"<b>"Подаци о фитнесу и здрављу,"</b>" укључујући сесије вежбања, број корака, исхрану, спавање и друго\n\n"<b>"Здравствена евиденција,"</b>" укључујући вакцинације, лабораторијске резултате и друго"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Помоћу Повезивања здравља можете:"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Помоћу Повезивања здравља:"</string>
     <string name="share_data" msgid="3481932156368883946">"Делите податке са апликацијама"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Одаберите податке које свака апликације може да чита и уписује у Повезивање здравља"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Управљајте подешавањима и приватношћу"</string>
@@ -1167,7 +1167,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Одбиј све"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Желите да дозволите да <xliff:g id="APP_NAME">%1$s</xliff:g> приступа подацима о фитнесу и велнесу?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> тражи приступ за: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nИзаберите да ли желите да дозволите све или да их контролишете појединачно."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Дозвољавате да <xliff:g id="APP_NAME">%1$s</xliff:g> приступа уређају <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Дозвољавате да <xliff:g id="APP_NAME">%1$s</xliff:g> приступа подацима: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Фитнес и велнес"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"све време"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"док се користи"</string>
@@ -1187,6 +1187,6 @@
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Знак x"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Тренутно, <xliff:g id="APP_NAME">%1$s</xliff:g> може да приступа подацима о фитнесу и велнесу <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Желите да дозволите да <xliff:g id="APP_NAME">%1$s</xliff:g> стално приступа подацима о фитнесу и велнесу?"</string>
-    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> има приступ за: <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> има приступ за: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Управљај дозволама за фитнес и велнес"</string>
 </resources>

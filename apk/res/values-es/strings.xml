@@ -45,7 +45,7 @@
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferencias"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Gestionar datos"</string>
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Exporta e importa datos"</string>
-    <string name="recent_access_header" msgid="7623497371790225888">"Acceso reciente"</string>
+    <string name="recent_access_header" msgid="7623497371790225888">"Accesos recientes"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Ninguna aplicación ha accedido a Salud conectada recientemente"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Ver todos los accesos recientes"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Consulta qué aplicaciones han accedido a tus datos en las últimas 24 horas"</string>
@@ -200,8 +200,8 @@
     <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensidad de la actividad"</string>
     <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Leer intensidad de la actividad"</string>
     <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Escribir intensidad de la actividad"</string>
-    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Tasa metabólica basal"</string>
-    <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"tasa metabólica basal"</string>
+    <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Metabolismo basal"</string>
+    <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"metabolismo basal"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Leer tasa metabólica basal"</string>
     <string name="basal_metabolic_rate_write_content_description" msgid="4246137679868953443">"Escribir tasa metabólica basal"</string>
     <string name="body_fat_uppercase_label" msgid="4618860235119416449">"Grasa corporal"</string>
@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> lea"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> escriba"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Permitir"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todos"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todo"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"No permitir"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Selecciona los datos que quieres que esta aplicación lea o escriba en Salud conectada"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Selecciona los datos que quieres que esta aplicación lea en Salud conectada"</string>
@@ -426,8 +426,8 @@
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Ninguna de tus aplicaciones podrá acceder ni añadir nuevos datos a Salud conectada. No se eliminarán los datos ya almacenados.\n\nEsta acción no afecta a otros permisos que pueda tener esta aplicación, como los de ubicación, cámara o micrófono."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Quitar todos"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Gestionar aplicación"</string>
-    <string name="see_app_data" msgid="3951030076195119476">"Ver datos de aplicaciones"</string>
-    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Quitar acceso a esta aplicación"</string>
+    <string name="see_app_data" msgid="3951030076195119476">"Ver datos de la aplicación"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Quitar acceso de esta aplicación"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Eliminar datos de la aplicación"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Aplicaciones inactivas"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Estas aplicaciones ya no tienen acceso, pero siguen teniendo datos almacenados en Salud conectada"</string>
@@ -1102,7 +1102,7 @@
     <string name="data_sources_add_app" msgid="319926596123692514">"Añadir una aplicación"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Editar fuentes de la aplicación"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Predeterminado por el dispositivo"</string>
-    <string name="app_data_title" msgid="6499967982291000837">"Datos de aplicaciones"</string>
+    <string name="app_data_title" msgid="6499967982291000837">"Datos de la aplicación"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"Los datos de <xliff:g id="APP_NAME">%1$s</xliff:g> se mostrarán aquí"</string>
     <string name="all_data_no_data_footer" msgid="2553443887019153340">"Los datos de las aplicaciones con acceso a Salud conectada se mostrarán aquí"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Día"</string>
@@ -1179,10 +1179,10 @@
     <string name="give_permission_prompt" msgid="5788144216023065504">"Estos permisos dan a <xliff:g id="APP_NAME">%1$s</xliff:g> acceso a los datos de los sensores de tu dispositivo."</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplicaciones permitidas"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"No hay aplicaciones que lo soliciten"</string>
-    <string name="allowed" msgid="4158456017482263737">"Permitida"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"No permitida"</string>
+    <string name="allowed" msgid="4158456017482263737">"Permitidas"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"No permitidas"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"Las aplicaciones con este permiso pueden acceder a los datos de <xliff:g id="DATA_TYPE">%s</xliff:g> de los sensores de tu dispositivo."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quitar el acceso a <xliff:g id="DATA_TYPE">%s</xliff:g> de todas las aplicaciones de tu reloj?"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"¿Quitar el acceso de todas las aplicaciones de tu reloj a <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificación"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Marca de cierre"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Actualmente, <xliff:g id="APP_NAME">%1$s</xliff:g> puede acceder a los datos de actividad física y bienestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>

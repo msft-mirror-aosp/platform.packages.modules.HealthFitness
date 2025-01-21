@@ -343,7 +343,7 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Date despre proceduri"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"date despre proceduri"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Să citească datele despre proceduri"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Istoricul rețelelor sociale"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Istoric social"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"istoricul rețelelor sociale"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Să citească istoricul rețelelor sociale"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Vizite"</string>
@@ -1177,7 +1177,7 @@
     <string name="allowed_to_access" msgid="4179317387300812335">"Poate accesa"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Poate citi"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Aceste permisiuni oferă acces <xliff:g id="APP_NAME">%1$s</xliff:g> la datele de la senzorii dispozitivului."</string>
-    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> din <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplicație(i) au această permisiune"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> din <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplicație(i) are(au) această permisiune"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"Nicio aplicație care solicită"</string>
     <string name="allowed" msgid="4158456017482263737">"Permisă"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Nepermisă"</string>

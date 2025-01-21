@@ -37,7 +37,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ешқандай"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Енгізілген дерек мәліметтері"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"Деректерді шолу"</string>
-    <string name="browse_data_subtitle" msgid="7025164374898103993">"Оларды пайдалана алатын деректер мен қолданбаларды қарау"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Деректерді және оларды пайдалана алатын қолданбаларды көру"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Автоматты түрде жою, деректер көзі, сақтық көшірме жасау және қалпына келтіру"</string>
     <string name="backup_title" msgid="211503191266235085">"Сақтық көшірме жасау"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Дереккөздер және басымдық"</string>
@@ -108,7 +108,7 @@
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Фондық режимде барлық деректі пайдалану"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Фондық режимде денсаулық туралы ақпаратты пайдалану"</string>
     <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Фондық режимде фитнес пен сауықтыру деректерін пайдалану"</string>
-    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Бұл қолданбаға сіз оны пайдаланбаған кезде, фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Бұл қолданбаға сіз оны пайдаланбаған кезде де фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_combined_request_title" msgid="4184649296697480520">"Фондағы деректерді пайдалану"</string>
@@ -124,7 +124,7 @@
     <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Фондық режимде барлық деректі пайдалану"</string>
     <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Фондық режимде денсаулық туралы ақпаратты пайдалану"</string>
     <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Фондық режимде фитнес пен сауықтыру деректерін пайдалану"</string>
-    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Бұл қолданбаға сіз оны пайдаланбаған кезде, фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Бұл қолданбаға сіз оны пайдаланбаған кезде де фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_access_title" msgid="4184498185599147117">"Фондағы деректерді пайдалану"</string>
@@ -309,7 +309,7 @@
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Тынығу кезіндегі жүрек қағысы деректерін оқу"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Тынығу кезіндегі жүрек қағысы деректерін жазу"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Тері температурасы"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"Тері температурасы"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"тері температурасы"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Тері температурасын оқу"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Тері температурасын жазу"</string>
     <string name="browse_health_records_intro" msgid="1611488691642390523">"Бұған Health Connect қолданбасымен синхрондалған және оған қосылған денсаулық туралы бүкіл ақпарат кіреді. Бұны толық медициналық журналыңыз деп есептеуге болмайды және онда денсаулық туралы ақпаратыңыздың медициналық сипаттамасы жоқ."</string>
@@ -353,7 +353,7 @@
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"тіршілік үшін маңызды көрсеткіштер"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Тіршілік үшін маңызды көрсеткіштерді оқу"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Ой сергектігі"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ой сергектігі"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"Ой сергектігі"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Ой сергектігі сеансының деректерін оқу"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Ой сергектігі сеансының деректерін жазу"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" қолданбасына оқуға рұқсат беру"</string>
@@ -1146,14 +1146,14 @@
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Таңдалған айдағы (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>) барлық жазба біржола жойылсын ба?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Белгілі бір күн (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>) бойынша таңдалған жазбалар біржола жойылсын ба?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Белгілі бір апта (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>) бойынша таңдалған жазбалар біржола жойылсын ба?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Белгілі бір ай (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>) бойынша таңдалған жазбалар біржола жойылсын ба?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> бойынша таңдалған жазбалар біржола жойылсын ба?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Бұл жазба біржола жойылсын ба?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Таңдалған күндегі (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) барлық <xliff:g id="APP_NAME">%1$s</xliff:g> жазбасы біржола жойылсын ба?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Таңдалған аптадағы (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) барлық <xliff:g id="APP_NAME">%1$s</xliff:g> жазбасы біржола жойылсын ба?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Таңдалған айдағы (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) барлық <xliff:g id="APP_NAME">%1$s</xliff:g> жазбасы біржола жойылсын ба?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Белгілі бір күн (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) бойынша таңдалған <xliff:g id="APP_NAME">%1$s</xliff:g> жазбалары біржола жойылсын ба?"</string>
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Белгілі бір апта (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) бойынша таңдалған <xliff:g id="APP_NAME">%1$s</xliff:g> жазбалары біржола жойылсын ба?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Белгілі бір ай (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) бойынша таңдалған <xliff:g id="APP_NAME">%1$s</xliff:g> жазбалары біржола жойылсын ба?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> бойынша таңдалған <xliff:g id="APP_NAME">%1$s</xliff:g> жазбалары біржола жойылсын ба?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Бұл <xliff:g id="APP_NAME">%s</xliff:g> жазбасы біржола жойылсын ба?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> қолданбасындағы <xliff:g id="DATA_TYPE">%1$s</xliff:g> деректерін біржола жою керек пе?"</string>
     <string name="on" msgid="8266542510798355807">"Қосулы"</string>
@@ -1185,7 +1185,7 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Сағатыңызда барлық қолданба үшін <xliff:g id="DATA_TYPE">%s</xliff:g> пайдалану рұқсатын өшіру керек пе?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Құсбелгі"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Айқас белгі"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Қазір <xliff:g id="APP_NAME">%1$s</xliff:g> фитнес пен сауықтыру деректерін (<xliff:g id="ALLOW_MODE">%2$s</xliff:g> режимінде) пайдалана алады."</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы фитнес пен сауықтыру деректеріне <xliff:g id="ALLOW_MODE">%2$s</xliff:g> кіре алады."</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына фитнес пен сауықтыру деректерін пайдалануға біржола рұқсат берілсін бе?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасының мынадай деректерді пайдалануға рұқсаты бар: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Фитнес пен сауықтыру дерегін пайдалану рұқсаттарын басқару"</string>
