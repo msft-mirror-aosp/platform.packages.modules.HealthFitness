@@ -403,7 +403,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mCloudRestoreManager =
                 Flags.cloudBackupAndRestore()
                         ? new CloudRestoreManager(
-                                transactionManager, deviceInfoHelper, appInfoHelper)
+                                mTransactionManager,
+                                mDeviceInfoHelper,
+                                mAppInfoHelper,
+                                mHealthDataCategoryPriorityHelper,
+                                mPreferenceHelper)
                         : null;
     }
 

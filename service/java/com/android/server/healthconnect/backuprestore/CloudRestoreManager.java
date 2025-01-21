@@ -27,9 +27,12 @@ import android.util.Slog;
 
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.proto.backuprestore.Record;
+import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 
 import java.util.LinkedHashMap;
@@ -50,21 +53,39 @@ public class CloudRestoreManager {
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
     private final RecordProtoConverter mRecordProtoConverter;
+    private final HealthDataCategoryPriorityHelper mPriorityHelper;
+    private final PreferenceHelper mPreferenceHelper;
 
     public CloudRestoreManager(
             TransactionManager transactionManager,
             DeviceInfoHelper deviceInfoHelper,
-            AppInfoHelper appInfoHelper) {
+            AppInfoHelper appInfoHelper,
+            HealthDataCategoryPriorityHelper priorityHelper,
+            PreferenceHelper preferenceHelper) {
         mTransactionManager = transactionManager;
         mDeviceInfoHelper = deviceInfoHelper;
         mAppInfoHelper = appInfoHelper;
         mRecordProtoConverter = new RecordProtoConverter();
+        mPriorityHelper = priorityHelper;
+        mPreferenceHelper = preferenceHelper;
     }
 
     /** Takes the serialized user settings and overwrites existing settings. */
     public void pushSettingsForRestore(BackupSettings newSettings) {
         Slog.i(TAG, "Restoring user settings.");
-        throw new UnsupportedOperationException("Not implemented yet.");
+        BackupSettingsHelper backupSettingsHelper =
+                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+
+        byte[] data = newSettings.getData();
+        try {
+            SettingsRecord parsedSettings = SettingsRecord.parseFrom(data);
+            backupSettingsHelper.restoreUserSettings(parsedSettings);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Unable to parse BackupSettings object back into"
+                            + "Settings Record. Details: ",
+                    e.getCause());
+        }
     }
 
     /** Checks whether data with a certain version could be restored. */
@@ -74,10 +95,7 @@ public class CloudRestoreManager {
 
     /** Restores backup data changes. */
     public void pushChangesForRestore(List<RestoreChange> changes) {
-        List<Record> records =
-                changes.stream()
-                        .map(this::toRecord)
-                        .toList();
+        List<Record> records = changes.stream().map(this::toRecord).toList();
         records.stream()
                 .collect(Collectors.toMap(Record::getPackageName, Record::getAppName, (a, b) -> b))
                 .forEach(mAppInfoHelper::addOrUpdateAppInfoIfNoAppInfoEntryExists);
