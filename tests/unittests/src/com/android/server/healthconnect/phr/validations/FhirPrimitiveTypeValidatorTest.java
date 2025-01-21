@@ -31,6 +31,7 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_POS
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STRING;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_TIME;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_UNSIGNED_INT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_XHTML;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -1159,5 +1160,56 @@ public class FhirPrimitiveTypeValidatorTest {
         assertThat(exception)
                 .hasMessageThat()
                 .contains(INTEGER_TYPE_EXCEPTION_MESSAGE + unsignedIntFieldName);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4XhtmlValid_succeeds() throws JSONException {
+        JSONObject jsonObjectNarrative =
+                new JSONObject()
+                        .put("status", "generated")
+                        .put(
+                                "div",
+                                "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Narrative</p></div>");
+
+        validate(jsonObjectNarrative.get("div"), "text.div", R4_FHIR_TYPE_XHTML);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4Xhtml_emptyString_succeeds() throws JSONException {
+        JSONObject jsonObjectNarrative =
+                new JSONObject(
+                        """
+                        {
+                            \"status\": \"generated\",
+                            \"div\": \"\"
+                        }
+                        """);
+
+        validate(jsonObjectNarrative.get("div"), "text.div", R4_FHIR_TYPE_XHTML);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION})
+    @Test
+    public void testValidate_r4XHTMLInvalid_objectIsInt_throws() throws JSONException {
+        JSONObject jsonObjectNarrative =
+                new JSONObject(
+                        """
+                        {
+                            \"status\": \"generated\",
+                            \"div\": 123
+                        }
+                        """);
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validate(
+                                        jsonObjectNarrative.get("div"),
+                                        "text.div",
+                                        R4_FHIR_TYPE_XHTML));
+        assertThat(exception).hasMessageThat().contains(STRING_TYPE_EXCEPTION_MESSAGE + "text.div");
     }
 }
