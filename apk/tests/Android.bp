@@ -24,6 +24,7 @@ java_defaults {
         "src/**/HiltTestRunner.kt",
         "src/**/TestActivity.kt",
     ],
+    kotlin_lang_version: "1.9",
     defaults: ["modules-utils-testable-device-config-defaults"],
     sdk_version: "module_current",
     min_sdk_version: "34",
